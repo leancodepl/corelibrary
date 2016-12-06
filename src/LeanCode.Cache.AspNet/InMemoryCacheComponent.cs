@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Cache.AspNet
 {
-    public class InMemoryCacheApp : IAppComponent
+    public class InMemoryCacheComponent : IAppComponent
     {
         public Profile MapperProfile => null;
         public IModule AutofacModule { get; } = new InMemoryCacheModule();

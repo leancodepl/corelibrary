@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+
+    "Serilog": "2.3.0",
+    "Serilog.Sinks.RollingFile": "2.2.0",
+    "Serilog.Sinks.Literate": "2.0.0",
+
+    "LeanCode.Cache": "1.0.0",
+    "LeanCode.Cache.AspNet": "1.0.0",
+    "LeanCode.Components": "1.0.0",
+    "LeanCode.Components.Startup": "1.0.0",
+    "LeanCode.CQRS": "1.0.0",
+    "LeanCode.CQRS.Autofac": "1.0.0",
+    "LeanCode.CQRS.Default": "1.0.0",
+    "LeanCode.CQRS.FluentValidation": "1.0.0",
+    "LeanCode.CQRS.MvcValidation": "1.0.0",
+    "LeanCode.DomainModels": "1.0.0",
+    "LeanCode.DomainModels.EF": "1.0.0",
+    "LeanCode.TimeProvider": "1.0.0"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
+    }
+  },
+  "userSecretsId": "LeanCode.Example"
+}

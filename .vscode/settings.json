@@ -8,6 +8,7 @@
     ".fake": true,
     ".paket": true,
     "packages": true,
-    "build": true
+    "build": true,
+    "**/Logs": true
   }
 }

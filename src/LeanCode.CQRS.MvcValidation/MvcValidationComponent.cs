@@ -6,14 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.MvcValidation
 {
-    public class MvcValidationAdapterApp : IAppComponent
+    public class MvcValidationComponent : IAppComponent
     {
         public Profile MapperProfile => null;
         public IModule AutofacModule { get; }
 
-        public MvcValidationAdapterApp(Type[] searchAssemblies)
+        public MvcValidationComponent(Type[] searchAssemblies)
         {
-            AutofacModule = new MvcValidationAdapterModule(searchAssemblies);
+            AutofacModule = new MvcValidationModule(searchAssemblies);
         }
 
         public void ConfigureServices(IServiceCollection services)

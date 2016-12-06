@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace LeanCode.CQRS.MvcValidation
 {
-    public class MvcValidationAdapterModule : Autofac.Module
+    public class MvcValidationModule : Autofac.Module
     {
         private readonly Assembly[] assemblies;
 
-        public MvcValidationAdapterModule(Type[] searchAssemblies)
+        public MvcValidationModule(Type[] searchAssemblies)
         {
             assemblies = searchAssemblies
                 .Select(t => t.GetTypeInfo().Assembly)
