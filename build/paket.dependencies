@@ -1,0 +1,5 @@
+source https://www.nuget.org/api/v2/
+
+nuget FAKE
+nuget FSharp.Data 2.3.2.0
+nuget Fake.Azure.WebApps >= 0.2.0
