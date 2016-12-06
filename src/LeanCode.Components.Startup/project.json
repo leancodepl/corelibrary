@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging.Filter": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
+
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+
+    "Autofac": "4.2.1",
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "AutoMapper": "5.2.0",
+
+    "Serilog": "2.3.0",
+    "Serilog.Extensions.Logging": "1.3.1",
+    "Serilog.Settings.Configuration": "2.2.0",
+
+    "LeanCode.Components": "1.0.0"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
+    }
+  }
+}
