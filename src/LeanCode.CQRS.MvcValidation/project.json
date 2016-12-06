@@ -5,10 +5,11 @@
   },
   "dependencies": {
     "Autofac": "4.2.1",
+    "AutoMapper": "5.2.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
 
-    "LeanCode.Components": "1.0.0",
     "LeanCode.CQRS": "1.0.0",
-    "LeanCode.CQRS.Default": "1.0.0"
+    "LeanCode.Components": "1.0.0"
   },
   "frameworks": {
     "netstandard1.6": {

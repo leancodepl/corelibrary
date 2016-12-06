@@ -4,8 +4,8 @@ using System.Reflection;
 using Autofac;
 using Autofac.Features.Variance;
 using LeanCode.CQRS.Default;
-using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Default.Security;
+using LeanCode.CQRS.Security;
 
 using Module = Autofac.Module;
 

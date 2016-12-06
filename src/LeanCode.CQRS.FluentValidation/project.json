@@ -4,11 +4,11 @@
     "debugType": "portable"
   },
   "dependencies": {
+    "FluentValidation": "6.4.0-beta9",
     "Autofac": "4.2.1",
 
     "LeanCode.Components": "1.0.0",
-    "LeanCode.CQRS": "1.0.0",
-    "LeanCode.CQRS.Default": "1.0.0"
+    "LeanCode.CQRS": "1.0.0"
   },
   "frameworks": {
     "netstandard1.6": {

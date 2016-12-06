@@ -1,14 +1,13 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.0-*",
   "buildOptions": {
     "debugType": "portable"
   },
   "dependencies": {
-    "Autofac": "4.2.1",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
 
-    "LeanCode.Components": "1.0.0",
-    "LeanCode.CQRS": "1.0.0",
-    "LeanCode.CQRS.Default": "1.0.0"
+    "LeanCode.DomainModels": "1.0.0",
+    "LeanCode.TimeProvider": "1.0.0"
   },
   "frameworks": {
     "netstandard1.6": {

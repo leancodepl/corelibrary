@@ -12,7 +12,6 @@ namespace LeanCode.DomainModels.DataAccess
         where TEntity : class, IAggregateRoot<TIdentity>
     {
         TEntity Find(TIdentity id);
-        TEntity Find(Func<TEntity, bool> func);
         void Add(TEntity entity);
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);

@@ -4,11 +4,10 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Autofac": "4.2.1",
+    "Microsoft.Extensions.Caching.Memory": "1.0.0",
 
-    "LeanCode.Components": "1.0.0",
-    "LeanCode.CQRS": "1.0.0",
-    "LeanCode.CQRS.Default": "1.0.0"
+    "LeanCode.Cache": "1.0.0",
+    "LeanCode.Components": "1.0.0"
   },
   "frameworks": {
     "netstandard1.6": {

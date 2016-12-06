@@ -16,20 +16,6 @@
           "lib/netstandard1.1/Autofac.dll": {}
         }
       },
-      "Autofac.Extensions.DependencyInjection/4.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Autofac": "4.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.dll": {}
-        }
-      },
       "AutoMapper/5.2.0": {
         "type": "package",
         "dependencies": {
@@ -787,61 +773,6 @@
           "lib/netstandard1.1/Microsoft.Extensions.Configuration.Binder.dll": {}
         }
       },
-      "Microsoft.Extensions.Configuration.EnvironmentVariables/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration": "1.0.0"
-        },
-        "compile": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.EnvironmentVariables.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.EnvironmentVariables.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Configuration.FileExtensions/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration": "1.0.0",
-          "Microsoft.Extensions.FileProviders.Physical": "1.0.0",
-          "System.AppContext": "4.1.0"
-        },
-        "compile": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.FileExtensions.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.FileExtensions.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Configuration.Json/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration": "1.0.0",
-          "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
-          "Newtonsoft.Json": "9.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.IO.FileSystem": "4.0.1",
-          "System.Runtime.Serialization.Primitives": "4.1.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.Json.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.Json.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Configuration.UserSecrets/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Json": "1.0.0"
-        },
-        "compile": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.UserSecrets.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.Extensions.Configuration.UserSecrets.dll": {}
-        }
-      },
       "Microsoft.Extensions.DependencyInjection/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -998,20 +929,6 @@
           "lib/netstandard1.0/Microsoft.Extensions.Localization.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Logging/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-          "System.Threading": "4.0.11"
-        },
-        "compile": {
-          "lib/netstandard1.1/Microsoft.Extensions.Logging.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.1/Microsoft.Extensions.Logging.dll": {}
-        }
-      },
       "Microsoft.Extensions.Logging.Abstractions/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1030,32 +947,6 @@
         },
         "runtime": {
           "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Logging.Debug/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-          "System.Diagnostics.Debug": "4.0.11"
-        },
-        "compile": {
-          "lib/netstandard1.3/Microsoft.Extensions.Logging.Debug.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Microsoft.Extensions.Logging.Debug.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Logging.Filter/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0"
-        },
-        "compile": {
-          "lib/netstandard1.1/Microsoft.Extensions.Logging.Filter.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.1/Microsoft.Extensions.Logging.Filter.dll": {}
         }
       },
       "Microsoft.Extensions.ObjectPool/1.0.0": {
@@ -1360,56 +1251,6 @@
         },
         "runtime": {
           "lib/netstandard1.0/_._": {}
-        }
-      },
-      "Serilog/2.3.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.0.1",
-          "System.Collections": "4.0.11",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Globalization": "4.0.11",
-          "System.Linq": "4.1.0",
-          "System.Reflection": "4.1.0",
-          "System.Reflection.Extensions": "4.0.1",
-          "System.Runtime": "4.1.0",
-          "System.Runtime.Extensions": "4.1.0",
-          "System.Text.RegularExpressions": "4.1.0",
-          "System.Threading": "4.0.11"
-        },
-        "compile": {
-          "lib/netstandard1.3/Serilog.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Serilog.dll": {}
-        }
-      },
-      "Serilog.Extensions.Logging/1.3.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-          "Serilog": "2.0.0",
-          "System.Threading": "4.0.11"
-        },
-        "compile": {
-          "lib/netstandard1.3/Serilog.Extensions.Logging.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/Serilog.Extensions.Logging.dll": {}
-        }
-      },
-      "Serilog.Settings.Configuration/2.2.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
-          "Microsoft.Extensions.DependencyModel": "1.0.0",
-          "Serilog": "2.0.0"
-        },
-        "compile": {
-          "lib/netstandard1.6/Serilog.Settings.Configuration.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.6/Serilog.Settings.Configuration.dll": {}
         }
       },
       "System.AppContext/4.1.0": {
@@ -2936,6 +2777,14 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
           "NETStandard.Library": "1.6.0"
         }
+      },
+      "LeanCode.CQRS/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v1.6",
+        "dependencies": {
+          "Microsoft.CSharp": "4.0.1",
+          "NETStandard.Library": "1.6.0"
+        }
       }
     }
   },
@@ -2951,17 +2800,6 @@
         "lib/net45/Autofac.xml",
         "lib/netstandard1.1/Autofac.dll",
         "lib/netstandard1.1/Autofac.xml"
-      ]
-    },
-    "Autofac.Extensions.DependencyInjection/4.0.0": {
-      "sha512": "UQP+CkHs6wfjWhisuhSFoG8CNrG8fmYOclFwx/aYNc+He1Qoi8s9UDTSzcPncJ2JOtmZmFRWSLT0jhtT6KmYJg==",
-      "type": "package",
-      "path": "Autofac.Extensions.DependencyInjection/4.0.0",
-      "files": [
-        "Autofac.Extensions.DependencyInjection.4.0.0.nupkg.sha512",
-        "Autofac.Extensions.DependencyInjection.nuspec",
-        "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.dll",
-        "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.xml"
       ]
     },
     "AutoMapper/5.2.0": {
@@ -3575,58 +3413,6 @@
         "lib/netstandard1.1/Microsoft.Extensions.Configuration.Binder.xml"
       ]
     },
-    "Microsoft.Extensions.Configuration.EnvironmentVariables/1.0.0": {
-      "sha512": "A0yqS98VtPNlFkFI7YBlwkAekUHE/9mMeNc+K4RmgTjCrskuk6pX3LGhDU7aD5CPYc9Px7M2To/2u4xDSnRikg==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Configuration.EnvironmentVariables/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Configuration.EnvironmentVariables.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Configuration.EnvironmentVariables.nuspec",
-        "lib/net451/Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
-        "lib/net451/Microsoft.Extensions.Configuration.EnvironmentVariables.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.EnvironmentVariables.xml"
-      ]
-    },
-    "Microsoft.Extensions.Configuration.FileExtensions/1.0.0": {
-      "sha512": "MO7XtmLiqnpgVTX34uzFPvIS7jPmBUGLN0MP5MsYu6CqYTIs90ULjtrV5TegH5mTqKTXWjZRGXL26R6apTyc4w==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Configuration.FileExtensions/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Configuration.FileExtensions.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Configuration.FileExtensions.nuspec",
-        "lib/net451/Microsoft.Extensions.Configuration.FileExtensions.dll",
-        "lib/net451/Microsoft.Extensions.Configuration.FileExtensions.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.FileExtensions.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.FileExtensions.xml"
-      ]
-    },
-    "Microsoft.Extensions.Configuration.Json/1.0.0": {
-      "sha512": "KRyEOe5/Xi3qyDMdEVh++e2pQRsI6C3wzINVExOcu9lOsFmXK/k4qOf244fyo59rnn6s5xKnIW3WbhxWS1hu2w==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Configuration.Json/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Configuration.Json.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Configuration.Json.nuspec",
-        "lib/net451/Microsoft.Extensions.Configuration.Json.dll",
-        "lib/net451/Microsoft.Extensions.Configuration.Json.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.Json.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.Json.xml"
-      ]
-    },
-    "Microsoft.Extensions.Configuration.UserSecrets/1.0.0": {
-      "sha512": "2d4ycB89yzoDR40kfoK7iSCrW67mExz4RLm84JFDcgOoMYr1K4vgWjfL2YUjXqjKVNBi6USwhIDkCKXRYWLQ2Q==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Configuration.UserSecrets/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Configuration.UserSecrets.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Configuration.UserSecrets.nuspec",
-        "lib/net451/Microsoft.Extensions.Configuration.UserSecrets.dll",
-        "lib/net451/Microsoft.Extensions.Configuration.UserSecrets.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.UserSecrets.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.Configuration.UserSecrets.xml"
-      ]
-    },
     "Microsoft.Extensions.DependencyInjection/1.0.0": {
       "sha512": "zdtkiZNV6LB8xtpmfyUjP/9N9ZCL/ydQ+0bfjun38fbrk+MDEm9M2yeLzRdq+OIt5xExw/KU04wFaVwJ1bhQPg==",
       "type": "package",
@@ -3743,17 +3529,6 @@
         "lib/netstandard1.0/Microsoft.Extensions.Localization.Abstractions.xml"
       ]
     },
-    "Microsoft.Extensions.Logging/1.0.0": {
-      "sha512": "0mDuASVrd/nMeBYIJSK+9lT3TSmWxUXP/ipVB1pF1ApMN5fqGCckPTNwmOfT4Z9wPkXGnhbwFTGrxZvbzTWxOg==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Logging/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Logging.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Logging.nuspec",
-        "lib/netstandard1.1/Microsoft.Extensions.Logging.dll",
-        "lib/netstandard1.1/Microsoft.Extensions.Logging.xml"
-      ]
-    },
     "Microsoft.Extensions.Logging.Abstractions/1.0.0": {
       "sha512": "wHT6oY50q36mAXBRKtFaB7u07WxKC5u2M8fi3PqHOOnHyUo9gD0u1TlCNR8UObHQxKMYwqlgI8TLcErpt29n8A==",
       "type": "package",
@@ -3763,30 +3538,6 @@
         "Microsoft.Extensions.Logging.Abstractions.nuspec",
         "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll",
         "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.xml"
-      ]
-    },
-    "Microsoft.Extensions.Logging.Debug/1.0.0": {
-      "sha512": "V8fP8pGJxieGa1DAYOF1RX+cCGGqdOGNoAQUzxmy27+qNzbHB/cUXc7mCZT72jPZMB4U12zSVWlIt26GMsUIOg==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Logging.Debug/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Logging.Debug.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Logging.Debug.nuspec",
-        "lib/net451/Microsoft.Extensions.Logging.Debug.dll",
-        "lib/net451/Microsoft.Extensions.Logging.Debug.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.Logging.Debug.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.Logging.Debug.xml"
-      ]
-    },
-    "Microsoft.Extensions.Logging.Filter/1.0.0": {
-      "sha512": "kaaLmv27pRZeBcYDiVMBwSz6/iaG9ROk8F6uat1Cs4cxqrahlVgeqnKBP+gANa5hZwgwMQLwaaLUb6qPI/l1Yw==",
-      "type": "package",
-      "path": "Microsoft.Extensions.Logging.Filter/1.0.0",
-      "files": [
-        "Microsoft.Extensions.Logging.Filter.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.Logging.Filter.nuspec",
-        "lib/netstandard1.1/Microsoft.Extensions.Logging.Filter.dll",
-        "lib/netstandard1.1/Microsoft.Extensions.Logging.Filter.xml"
       ]
     },
     "Microsoft.Extensions.ObjectPool/1.0.0": {
@@ -4041,51 +3792,6 @@
         "lib/netstandard1.0/_._",
         "runtime.native.System.Security.Cryptography.4.0.0.nupkg.sha512",
         "runtime.native.System.Security.Cryptography.nuspec"
-      ]
-    },
-    "Serilog/2.3.0": {
-      "sha512": "JJMEqTUGe/bA4OEMefGd8W6si9oStSa3CF47dIHzkRKJHqFWFOW8D2aZTOW6VIgNLY2hzruQXhvp2tX0NVkgsw==",
-      "type": "package",
-      "path": "Serilog/2.3.0",
-      "files": [
-        "Serilog.2.3.0.nupkg.sha512",
-        "Serilog.nuspec",
-        "lib/net45/Serilog.dll",
-        "lib/net45/Serilog.xml",
-        "lib/net46/Serilog.dll",
-        "lib/net46/Serilog.xml",
-        "lib/netstandard1.0/Serilog.dll",
-        "lib/netstandard1.0/Serilog.xml",
-        "lib/netstandard1.3/Serilog.dll",
-        "lib/netstandard1.3/Serilog.xml"
-      ]
-    },
-    "Serilog.Extensions.Logging/1.3.1": {
-      "sha512": "qKLSag8emX5GOd074Xfjcs9CZpulfBockAHkNb6oC0EpI7xm5byBXRWKXQthzNCxo20ctYKZguxYvePQH8l3+g==",
-      "type": "package",
-      "path": "Serilog.Extensions.Logging/1.3.1",
-      "files": [
-        "Serilog.Extensions.Logging.1.3.1.nupkg.sha512",
-        "Serilog.Extensions.Logging.nuspec",
-        "lib/net45/Serilog.Extensions.Logging.dll",
-        "lib/net45/Serilog.Extensions.Logging.xml",
-        "lib/net46/Serilog.Extensions.Logging.dll",
-        "lib/net46/Serilog.Extensions.Logging.xml",
-        "lib/netstandard1.3/Serilog.Extensions.Logging.dll",
-        "lib/netstandard1.3/Serilog.Extensions.Logging.xml"
-      ]
-    },
-    "Serilog.Settings.Configuration/2.2.0": {
-      "sha512": "jq8KPftT4DK13yq1qMge7ucPudZaghiUliTOF9iDsroirN3k0pdK148YWLHS2HnQZ8jMe0GDnRUwBMk63DQ2Gw==",
-      "type": "package",
-      "path": "Serilog.Settings.Configuration/2.2.0",
-      "files": [
-        "Serilog.Settings.Configuration.2.2.0.nupkg.sha512",
-        "Serilog.Settings.Configuration.nuspec",
-        "lib/net451/Serilog.Settings.Configuration.dll",
-        "lib/net451/Serilog.Settings.Configuration.xml",
-        "lib/netstandard1.6/Serilog.Settings.Configuration.dll",
-        "lib/netstandard1.6/Serilog.Settings.Configuration.xml"
       ]
     },
     "System.AppContext/4.1.0": {
@@ -8089,26 +7795,19 @@
     "LeanCode.Components/1.0.0": {
       "type": "project",
       "path": "../LeanCode.Components/project.json"
+    },
+    "LeanCode.CQRS/1.0.0": {
+      "type": "project",
+      "path": "../LeanCode.CQRS/project.json"
     }
   },
   "projectFileDependencyGroups": {
     "": [
       "AutoMapper >= 5.2.0",
       "Autofac >= 4.2.1",
-      "Autofac.Extensions.DependencyInjection >= 4.0.0",
+      "LeanCode.CQRS >= 1.0.0",
       "LeanCode.Components >= 1.0.0",
-      "Microsoft.AspNetCore.Mvc >= 1.0.0",
-      "Microsoft.Extensions.Configuration.EnvironmentVariables >= 1.0.0",
-      "Microsoft.Extensions.Configuration.Json >= 1.0.0",
-      "Microsoft.Extensions.Configuration.UserSecrets >= 1.0.0",
-      "Microsoft.Extensions.Logging >= 1.0.0",
-      "Microsoft.Extensions.Logging.Debug >= 1.0.0",
-      "Microsoft.Extensions.Logging.Filter >= 1.0.0",
-      "Microsoft.Extensions.Options >= 1.0.0",
-      "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.0.0",
-      "Serilog >= 2.3.0",
-      "Serilog.Extensions.Logging >= 1.3.1",
-      "Serilog.Settings.Configuration >= 2.2.0"
+      "Microsoft.AspNetCore.Mvc >= 1.0.0"
     ],
     ".NETStandard,Version=v1.6": [
       "NETStandard.Library >= 1.6.0"
