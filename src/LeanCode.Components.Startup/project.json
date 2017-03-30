@@ -16,12 +16,12 @@
     "Microsoft.Extensions.Options": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
 
-    "Autofac": "4.2.1",
+    "Autofac": "4.3.0",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "AutoMapper": "5.2.0",
 
-    "Serilog": "2.3.0",
-    "Serilog.Extensions.Logging": "1.3.1",
+    "Serilog": "2.4.0",
+    "Serilog.Extensions.Logging": "1.4.0",
     "Serilog.Settings.Configuration": "2.2.0",
 
     "LeanCode.Components": "1.0.0"

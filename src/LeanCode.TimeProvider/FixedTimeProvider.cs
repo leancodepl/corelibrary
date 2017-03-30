@@ -2,7 +2,7 @@ using System;
 
 namespace LeanCode.TimeProvider
 {
-    public class FixedTimeProvider : ITimeProvider
+    public sealed class FixedTimeProvider : ITimeProvider
     {
         public DateTime Now { get; }
 

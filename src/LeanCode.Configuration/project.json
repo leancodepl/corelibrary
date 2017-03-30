@@ -4,11 +4,12 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Autofac": "4.3.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
 
-    "LeanCode.Components": "1.0.0",
-    "LeanCode.CQRS": "1.0.0",
-    "LeanCode.CQRS.Default": "1.0.0"
+    "Autofac": "4.3.0",
+    "AutoMapper": "5.2.0"
   },
   "frameworks": {
     "netstandard1.6": {

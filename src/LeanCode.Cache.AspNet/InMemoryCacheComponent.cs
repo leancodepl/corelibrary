@@ -11,6 +11,8 @@ namespace LeanCode.Cache.AspNet
         public IModule AutofacModule { get; } = new InMemoryCacheModule();
 
         public void ConfigureServices(IServiceCollection services)
-        { }
+        {
+            services.AddMemoryCache();
+        }
     }
 }

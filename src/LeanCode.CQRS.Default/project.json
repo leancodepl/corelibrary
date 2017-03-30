@@ -4,7 +4,7 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Serilog": "2.3.0",
+    "Serilog": "2.4.0",
     "LeanCode.CQRS": "1.0.0",
     "LeanCode.Cache": "1.0.0"
   },

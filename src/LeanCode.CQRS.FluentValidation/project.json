@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "FluentValidation": "6.4.0-beta9",
-    "Autofac": "4.2.1",
+    "Autofac": "4.3.0",
 
     "LeanCode.Components": "1.0.0",
     "LeanCode.CQRS": "1.0.0"

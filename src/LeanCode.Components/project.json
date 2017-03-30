@@ -12,7 +12,7 @@
     "Microsoft.Extensions.Options": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
 
-    "Autofac": "4.2.1",
+    "Autofac": "4.3.0",
     "AutoMapper": "5.2.0"
   },
   "frameworks": {

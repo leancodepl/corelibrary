@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETCoreApp,Version=v1.0": {
-      "Autofac/4.2.1": {
+      "Autofac/4.3.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
@@ -1785,11 +1785,12 @@
           }
         }
       },
-      "Serilog/2.3.0": {
+      "Serilog/2.4.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.0.1",
           "System.Collections": "4.0.11",
+          "System.Collections.NonGeneric": "4.0.1",
           "System.Dynamic.Runtime": "4.0.11",
           "System.Globalization": "4.0.11",
           "System.Linq": "4.1.0",
@@ -1807,12 +1808,11 @@
           "lib/netstandard1.3/Serilog.dll": {}
         }
       },
-      "Serilog.Extensions.Logging/1.3.1": {
+      "Serilog.Extensions.Logging/1.4.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-          "Serilog": "2.0.0",
-          "System.Threading": "4.0.11"
+          "Serilog": "2.3.0"
         },
         "compile": {
           "lib/netstandard1.3/Serilog.Extensions.Logging.dll": {}
@@ -1835,13 +1835,16 @@
           "lib/netstandard1.6/Serilog.Settings.Configuration.dll": {}
         }
       },
-      "Serilog.Sinks.File/2.0.0": {
+      "Serilog.Sinks.File/3.2.0": {
         "type": "package",
         "dependencies": {
-          "Serilog": "2.0.0",
+          "Serilog": "2.3.0",
           "System.IO": "4.1.0",
           "System.IO.FileSystem": "4.0.1",
-          "System.IO.FileSystem.Primitives": "4.0.1"
+          "System.IO.FileSystem.Primitives": "4.0.1",
+          "System.Text.Encoding.Extensions": "4.0.11",
+          "System.Threading": "4.0.11",
+          "System.Threading.Timer": "4.0.1"
         },
         "compile": {
           "lib/netstandard1.3/Serilog.Sinks.File.dll": {}
@@ -1850,7 +1853,7 @@
           "lib/netstandard1.3/Serilog.Sinks.File.dll": {}
         }
       },
-      "Serilog.Sinks.Literate/2.0.0": {
+      "Serilog.Sinks.Literate/2.1.0": {
         "type": "package",
         "dependencies": {
           "Serilog": "2.0.0",
@@ -1863,11 +1866,10 @@
           "lib/netstandard1.3/Serilog.Sinks.Literate.dll": {}
         }
       },
-      "Serilog.Sinks.RollingFile/2.2.0": {
+      "Serilog.Sinks.RollingFile/3.3.0": {
         "type": "package",
         "dependencies": {
-          "Serilog": "2.0.0",
-          "Serilog.Sinks.File": "2.0.0",
+          "Serilog.Sinks.File": "3.2.0",
           "System.IO": "4.1.0",
           "System.IO.FileSystem.Primitives": "4.0.1",
           "System.Runtime.InteropServices": "4.1.0",
@@ -3833,7 +3835,7 @@
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
           "AutoMapper": "5.2.0",
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
           "Microsoft.Extensions.Configuration.Binder": "1.0.0",
@@ -3848,7 +3850,7 @@
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
           "AutoMapper": "5.2.0",
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "Autofac.Extensions.DependencyInjection": "4.0.0",
           "LeanCode.Components": "1.0.0",
           "Microsoft.AspNetCore.Mvc": "1.0.0",
@@ -3861,9 +3863,21 @@
           "Microsoft.Extensions.Options": "1.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
           "NETStandard.Library": "1.6.0",
-          "Serilog": "2.3.0",
-          "Serilog.Extensions.Logging": "1.3.1",
+          "Serilog": "2.4.0",
+          "Serilog.Extensions.Logging": "1.4.0",
           "Serilog.Settings.Configuration": "2.2.0"
+        }
+      },
+      "LeanCode.Configuration/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v1.6",
+        "dependencies": {
+          "AutoMapper": "5.2.0",
+          "Autofac": "4.3.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Options": "1.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+          "NETStandard.Library": "1.6.0"
         }
       },
       "LeanCode.CQRS/1.0.0": {
@@ -3878,7 +3892,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "LeanCode.CQRS": "1.0.0",
           "LeanCode.CQRS.Default": "1.0.0",
           "LeanCode.Components": "1.0.0",
@@ -3892,14 +3906,14 @@
           "LeanCode.CQRS": "1.0.0",
           "LeanCode.Cache": "1.0.0",
           "NETStandard.Library": "1.6.0",
-          "Serilog": "2.3.0"
+          "Serilog": "2.4.0"
         }
       },
       "LeanCode.CQRS.FluentValidation/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "FluentValidation": "6.4.0-beta9",
           "LeanCode.CQRS": "1.0.0",
           "LeanCode.Components": "1.0.0",
@@ -3911,7 +3925,7 @@
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
           "AutoMapper": "5.2.0",
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "LeanCode.CQRS": "1.0.0",
           "LeanCode.Components": "1.0.0",
           "Microsoft.AspNetCore.Mvc": "1.0.0",
@@ -3945,12 +3959,12 @@
     }
   },
   "libraries": {
-    "Autofac/4.2.1": {
-      "sha512": "mLXJziTZPIt7R6m8SmPIOjMTd4k8Ok9L21j4yFniyA8AogHxEL2XburSwElJLmGU5KsgeMkpuTI22S3GSOeLqQ==",
+    "Autofac/4.3.0": {
+      "sha512": "fCrt0EBW99+q1R6iA3+JBYmtfCDYfMHzsAtaDZ8/kbq9tW+Ze5W8SrxwTHqpbPI4Cp4/0NeJDaODD+D3cOfdHQ==",
       "type": "package",
-      "path": "Autofac/4.2.1",
+      "path": "Autofac/4.3.0",
       "files": [
-        "Autofac.4.2.1.nupkg.sha512",
+        "Autofac.4.3.0.nupkg.sha512",
         "Autofac.nuspec",
         "lib/net45/Autofac.dll",
         "lib/net45/Autofac.xml",
@@ -5458,12 +5472,12 @@
         "runtimes/win7-x86/native/sni.dll"
       ]
     },
-    "Serilog/2.3.0": {
-      "sha512": "JJMEqTUGe/bA4OEMefGd8W6si9oStSa3CF47dIHzkRKJHqFWFOW8D2aZTOW6VIgNLY2hzruQXhvp2tX0NVkgsw==",
+    "Serilog/2.4.0": {
+      "sha512": "Bzfqn8iwozwOrlBMO88u0TPy0oXZb9v79rRM9cL6N/cIBUUqEKm3HNncTxIKzspYz2dEzQDHKc3ONaZJ05Cbng==",
       "type": "package",
-      "path": "Serilog/2.3.0",
+      "path": "Serilog/2.4.0",
       "files": [
-        "Serilog.2.3.0.nupkg.sha512",
+        "Serilog.2.4.0.nupkg.sha512",
         "Serilog.nuspec",
         "lib/net45/Serilog.dll",
         "lib/net45/Serilog.xml",
@@ -5475,12 +5489,12 @@
         "lib/netstandard1.3/Serilog.xml"
       ]
     },
-    "Serilog.Extensions.Logging/1.3.1": {
-      "sha512": "qKLSag8emX5GOd074Xfjcs9CZpulfBockAHkNb6oC0EpI7xm5byBXRWKXQthzNCxo20ctYKZguxYvePQH8l3+g==",
+    "Serilog.Extensions.Logging/1.4.0": {
+      "sha512": "nsg2CFYIQsZcNXYajDBNL+Li0EnFibOSLaACcpy+XGyrbmIEhGdLYiMXxadUE10kFfLLLbruZtdbGJ7OOudXlA==",
       "type": "package",
-      "path": "Serilog.Extensions.Logging/1.3.1",
+      "path": "Serilog.Extensions.Logging/1.4.0",
       "files": [
-        "Serilog.Extensions.Logging.1.3.1.nupkg.sha512",
+        "Serilog.Extensions.Logging.1.4.0.nupkg.sha512",
         "Serilog.Extensions.Logging.nuspec",
         "lib/net45/Serilog.Extensions.Logging.dll",
         "lib/net45/Serilog.Extensions.Logging.xml",
@@ -5503,12 +5517,12 @@
         "lib/netstandard1.6/Serilog.Settings.Configuration.xml"
       ]
     },
-    "Serilog.Sinks.File/2.0.0": {
-      "sha512": "atGnXIHSM5Lg9E14mXc1Yf8CuKnNSaenW+ZPVCrM1O/+lXwl3BgZ6ZXvLE1n4XF71ZU1U9dx/Yg47ci90QbjrQ==",
+    "Serilog.Sinks.File/3.2.0": {
+      "sha512": "VHbo68pMg5hwSWrzLEdZv5b/rYmIgHIRhd4d5rl8GnC5/a8Fr+RShT5kWyeJOXax1el6mNJ+dmHDOVgnNUQxaw==",
       "type": "package",
-      "path": "Serilog.Sinks.File/2.0.0",
+      "path": "Serilog.Sinks.File/3.2.0",
       "files": [
-        "Serilog.Sinks.File.2.0.0.nupkg.sha512",
+        "Serilog.Sinks.File.3.2.0.nupkg.sha512",
         "Serilog.Sinks.File.nuspec",
         "lib/net45/Serilog.Sinks.File.dll",
         "lib/net45/Serilog.Sinks.File.xml",
@@ -5516,12 +5530,12 @@
         "lib/netstandard1.3/Serilog.Sinks.File.xml"
       ]
     },
-    "Serilog.Sinks.Literate/2.0.0": {
-      "sha512": "dR5O5nkzSGQ1IHAVgLENeCMQypj1Ch2IWxQ/2sO/t6k8i6Qej2S7sb5+HhaxXJ9Al0rTv3fsBtlg/cDrX2MKjg==",
+    "Serilog.Sinks.Literate/2.1.0": {
+      "sha512": "Y9PhVZZgleKR4eOTqTFrBaqAsrKSPTrdwaFW0FhJZdLYhbSyRBThGQra0GPYlp82oM4Z2ux4LOyF/sm2kQTSKw==",
       "type": "package",
-      "path": "Serilog.Sinks.Literate/2.0.0",
+      "path": "Serilog.Sinks.Literate/2.1.0",
       "files": [
-        "Serilog.Sinks.Literate.2.0.0.nupkg.sha512",
+        "Serilog.Sinks.Literate.2.1.0.nupkg.sha512",
         "Serilog.Sinks.Literate.nuspec",
         "lib/net45/Serilog.Sinks.Literate.dll",
         "lib/net45/Serilog.Sinks.Literate.xml",
@@ -5529,12 +5543,12 @@
         "lib/netstandard1.3/Serilog.Sinks.Literate.xml"
       ]
     },
-    "Serilog.Sinks.RollingFile/2.2.0": {
-      "sha512": "/L6gmS5b91rPspK4GnLKbJMZyQ6aE7DFUEOVn/kR+6HMPz/SoVgaixy6XUTHLX/HWIDN528+EXW4og5eZArUpA==",
+    "Serilog.Sinks.RollingFile/3.3.0": {
+      "sha512": "2lT5X1r3GH4P0bRWJfhA7etGl8Q2Ipw9AACvtAHWRUSpYZ42NGVyHoVs2ALBZ/cAkkS+tA4jl80Zie144eLQPg==",
       "type": "package",
-      "path": "Serilog.Sinks.RollingFile/2.2.0",
+      "path": "Serilog.Sinks.RollingFile/3.3.0",
       "files": [
-        "Serilog.Sinks.RollingFile.2.2.0.nupkg.sha512",
+        "Serilog.Sinks.RollingFile.3.3.0.nupkg.sha512",
         "Serilog.Sinks.RollingFile.nuspec",
         "lib/net45/Serilog.Sinks.RollingFile.dll",
         "lib/net45/Serilog.Sinks.RollingFile.xml",
@@ -10206,6 +10220,10 @@
       "type": "project",
       "path": "../LeanCode.Components.Startup/project.json"
     },
+    "LeanCode.Configuration/1.0.0": {
+      "type": "project",
+      "path": "../LeanCode.Configuration/project.json"
+    },
     "LeanCode.CQRS/1.0.0": {
       "type": "project",
       "path": "../LeanCode.CQRS/project.json"
@@ -10250,15 +10268,16 @@
       "LeanCode.Cache.AspNet >= 1.0.0",
       "LeanCode.Components >= 1.0.0",
       "LeanCode.Components.Startup >= 1.0.0",
+      "LeanCode.Configuration >= 1.0.0",
       "LeanCode.DomainModels >= 1.0.0",
       "LeanCode.DomainModels.EF >= 1.0.0",
       "LeanCode.TimeProvider >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Mvc >= 1.0.0",
       "Microsoft.AspNetCore.Server.Kestrel >= 1.0.0",
-      "Serilog >= 2.3.0",
-      "Serilog.Sinks.Literate >= 2.0.0",
-      "Serilog.Sinks.RollingFile >= 2.2.0"
+      "Serilog >= 2.4.0",
+      "Serilog.Sinks.Literate >= 2.1.0",
+      "Serilog.Sinks.RollingFile >= 3.3.0"
     ],
     ".NETCoreApp,Version=v1.0": [
       "Microsoft.NETCore.App >= 1.0.1"

@@ -139,8 +139,8 @@ namespace LeanCode.Components.Startup
                 .AsSelf()
                 .As<AutoMapper.IConfigurationProvider>();
 
-            builder.Register(
-                ctx => ctx.Resolve<MapperConfiguration>().CreateMapper(ctx.Resolve))
+            builder.Register(ctx =>
+                ctx.Resolve<MapperConfiguration>().CreateMapper(ctx.Resolve))
                 .As<IMapper>()
                 .InstancePerLifetimeScope();
         }

@@ -4,7 +4,7 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Autofac": "4.2.1",
+    "Autofac": "4.3.0",
     "AutoMapper": "5.2.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
 

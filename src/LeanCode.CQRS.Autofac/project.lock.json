@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETStandard,Version=v1.6": {
-      "Autofac/4.2.1": {
+      "Autofac/4.3.0": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
@@ -341,11 +341,12 @@
           "lib/netstandard1.0/_._": {}
         }
       },
-      "Serilog/2.3.0": {
+      "Serilog/2.4.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.0.1",
           "System.Collections": "4.0.11",
+          "System.Collections.NonGeneric": "4.0.1",
           "System.Dynamic.Runtime": "4.0.11",
           "System.Globalization": "4.0.11",
           "System.Linq": "4.1.0",
@@ -1505,7 +1506,7 @@
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
           "AutoMapper": "5.2.0",
-          "Autofac": "4.2.1",
+          "Autofac": "4.3.0",
           "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
           "Microsoft.Extensions.Configuration.Binder": "1.0.0",
@@ -1530,18 +1531,18 @@
           "LeanCode.CQRS": "1.0.0",
           "LeanCode.Cache": "1.0.0",
           "NETStandard.Library": "1.6.0",
-          "Serilog": "2.3.0"
+          "Serilog": "2.4.0"
         }
       }
     }
   },
   "libraries": {
-    "Autofac/4.2.1": {
-      "sha512": "mLXJziTZPIt7R6m8SmPIOjMTd4k8Ok9L21j4yFniyA8AogHxEL2XburSwElJLmGU5KsgeMkpuTI22S3GSOeLqQ==",
+    "Autofac/4.3.0": {
+      "sha512": "fCrt0EBW99+q1R6iA3+JBYmtfCDYfMHzsAtaDZ8/kbq9tW+Ze5W8SrxwTHqpbPI4Cp4/0NeJDaODD+D3cOfdHQ==",
       "type": "package",
-      "path": "Autofac/4.2.1",
+      "path": "Autofac/4.3.0",
       "files": [
-        "Autofac.4.2.1.nupkg.sha512",
+        "Autofac.4.3.0.nupkg.sha512",
         "Autofac.nuspec",
         "lib/net45/Autofac.dll",
         "lib/net45/Autofac.xml",
@@ -1845,12 +1846,12 @@
         "runtime.native.System.Security.Cryptography.nuspec"
       ]
     },
-    "Serilog/2.3.0": {
-      "sha512": "JJMEqTUGe/bA4OEMefGd8W6si9oStSa3CF47dIHzkRKJHqFWFOW8D2aZTOW6VIgNLY2hzruQXhvp2tX0NVkgsw==",
+    "Serilog/2.4.0": {
+      "sha512": "Bzfqn8iwozwOrlBMO88u0TPy0oXZb9v79rRM9cL6N/cIBUUqEKm3HNncTxIKzspYz2dEzQDHKc3ONaZJ05Cbng==",
       "type": "package",
-      "path": "Serilog/2.3.0",
+      "path": "Serilog/2.4.0",
       "files": [
-        "Serilog.2.3.0.nupkg.sha512",
+        "Serilog.2.4.0.nupkg.sha512",
         "Serilog.nuspec",
         "lib/net45/Serilog.dll",
         "lib/net45/Serilog.xml",
@@ -5192,7 +5193,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Autofac >= 4.2.1",
+      "Autofac >= 4.3.0",
       "LeanCode.CQRS >= 1.0.0",
       "LeanCode.CQRS.Default >= 1.0.0",
       "LeanCode.Components >= 1.0.0"
