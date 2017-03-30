@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../targets/Mvc.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.Cache.AspNet</AssemblyName>
+    <PackageId>LeanCode.Cache.AspNet</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Cache/LeanCode.Cache.csproj" />
+    <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(ExtensionsVersion)" />
+  </ItemGroup>
+  <Import Project="../targets/Common.targets" />
+</Project>

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <Import Project="../targets/Mvc.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.Example</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>LeanCode.Example</PackageId>
+    <UserSecretsId>LeanCode.Example</UserSecretsId>
+    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Cache/LeanCode.Cache.csproj" />
+    <ProjectReference Include="../LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
+    <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
+    <ProjectReference Include="../LeanCode.Configuration/LeanCode.Configuration.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Autofac/LeanCode.CQRS.Autofac.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.FluentValidation/LeanCode.CQRS.FluentValidation.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.MvcValidation/LeanCode.CQRS.MvcValidation.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
+    <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(MvcVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(EXtensionsVersion)" />
+
+    <!-- Required, it generates UserSecretsIdAttribute on the assembly -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
+
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
+  </ItemGroup>
+  <Import Project="../targets/Common.targets" />
+</Project>

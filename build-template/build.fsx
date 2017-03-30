@@ -61,7 +61,7 @@ let publishApp zipFile settingsLoader =
     let settings = settingsLoader ()
     let config = Azure.WebApps.acquireCredentials settings
 
-    Azure.WebApps.stopWebAppAndWait config
+    Azure.WebApps.stopDotNetCoreAppAndWait config
     Azure.WebApps.pushZipFile config zipFile
     Azure.WebApps.startWebApp config
 

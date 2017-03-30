@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Example
 {
-    public class Startup : LeanStartup
+    public class Startup : LeanStartup<Startup>
     {
         public Startup(IHostingEnvironment hostEnv)
             : base("LeanCode.Example", hostEnv)

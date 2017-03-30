@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <MvcVersion>1.1.2</MvcVersion>
+    <ExtensionsVersion>1.1.1</ExtensionsVersion>
+  </PropertyGroup>
+</Project>

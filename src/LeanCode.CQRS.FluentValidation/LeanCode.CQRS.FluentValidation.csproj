@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.CQRS.FluentValidation</AssemblyName>
+    <PackageId>LeanCode.CQRS.FluentValidation</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="6.4.1" />
+  </ItemGroup>
+  <Import Project="../targets/Common.targets" />
+</Project>

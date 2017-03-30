@@ -5,6 +5,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using LeanCode.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,8 @@ using Serilog;
 
 namespace LeanCode.Components.Startup
 {
-    public abstract class LeanStartup
+    public abstract class LeanStartup<TStartup>
+        where TStartup: class
     {
         public const string DatabaseConnectionStringName = "Default";
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
@@ -41,7 +43,7 @@ namespace LeanCode.Components.Startup
 
             if (hostEnv.IsDevelopment())
             {
-                builder = builder.AddUserSecrets();
+                builder = builder.AddUserSecrets<TStartup>();
             }
 
             builder = builder.AddEnvironmentVariables();
@@ -55,7 +57,7 @@ namespace LeanCode.Components.Startup
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
 
-            logger = Log.ForContext<LeanStartup>();
+            logger = Log.ForContext<LeanStartup<TStartup>>();
 
             logger.Information("Configuration loaded, starting app");
         }

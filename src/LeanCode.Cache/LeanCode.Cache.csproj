@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.Cache</AssemblyName>
+    <PackageId>LeanCode.Cache</PackageId>
+  </PropertyGroup>
+</Project>

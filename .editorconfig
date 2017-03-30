@@ -19,5 +19,5 @@ indent_size = 4
 [*.{json, yml}]
 indent_size = 2
 
-[*.{xml}]
-indent_size = 4
+[*.{xml, targets, csproj}]
+indent_size = 2
