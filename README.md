@@ -7,6 +7,8 @@ These packages have to be correctly versioned. Use [Semantic Versioning](http://
 
 Change in required dependencies (major version bump) may be also considered a breaking change.
 
+To simplify versioning process, there exists `Lib.targets` file that specifies version and some NuGet-related properties. This forces all libs to have the same version. If this stops to be desirable approach, the `Version` element i the targets file should be abandoned.
+
 ### Referencing packages
 
 Try not to reference too many NuGets in the core library projects, as this will make versioning harder. There are packages "common" to all infrastructure-related projects, that is:

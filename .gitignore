@@ -235,3 +235,4 @@ paket-files/
 # Custom
 **/Logs
 build/.paket/paket.exe
+packed
