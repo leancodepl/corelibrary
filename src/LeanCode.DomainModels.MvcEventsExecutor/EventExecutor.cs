@@ -46,12 +46,12 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
                 .Handle<Exception>();
             if (disableWait)
             {
-                policy = builder.Retry(EventRetryWaitTimes.Length,
+                policy = builder.RetryAsync(EventRetryWaitTimes.Length,
                     (e, _) => logger.Error(e, "Cannot execute handler for the event, retrying"));
             }
             else
             {
-                policy = builder.WaitAndRetry(EventRetryWaitTimes,
+                policy = builder.WaitAndRetryAsync(EventRetryWaitTimes,
                     (e, _) => logger.Error(e, "Cannot execute handler for the event, retrying"));
             }
         }
@@ -59,9 +59,9 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
         public async Task Execute(RequestDelegate next, HttpContext context)
         {
             var storedEvents = new Queue<IDomainEvent>();
-            if (await ExecuteHttpRequest(next, context, storedEvents))
+            if (await ExecuteHttpRequest(next, context, storedEvents).ConfigureAwait(false))
             {
-                ExecuteEvents(storedEvents);
+                await ExecuteEvents(storedEvents).ConfigureAwait(false);
             }
         }
 
@@ -72,7 +72,7 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
             storage.UseNewQueue();
             try
             {
-                await next(context);
+                await next(context).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
             return true;
         }
 
-        private void ExecuteEvents(Queue<IDomainEvent> storedEvents)
+        private async Task ExecuteEvents(Queue<IDomainEvent> storedEvents)
         {
             using (var innerScope = scopeFactory.CreateScope())
             {
@@ -109,22 +109,23 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
                     foreach (var handler in handlers)
                     {
                         logger.Verbose("Executing handler {Handler} with event {Event}", handler.GetType(), domainEvent);
-                        ExecuteEvent(handler, domainEvent, storedEvents);
+                        await ExecuteEvent(handler, domainEvent, storedEvents).ConfigureAwait(false);
                     }
                 }
             }
         }
 
-        private void ExecuteEvent(IDomainEventHandlerWrapper handler, IDomainEvent domainEvent, Queue<IDomainEvent> output)
+        private async Task ExecuteEvent(IDomainEventHandlerWrapper handler, IDomainEvent domainEvent, Queue<IDomainEvent> output)
         {
             var handlerType = handler.GetType();
-            var result = policy
-                .ExecuteAndCapture(() =>
+            var result = await policy
+                .ExecuteAndCaptureAsync(async () =>
                 {
                     storage.UseNewQueue();
-                    handler.Handle(domainEvent);
+                    await handler.HandleAsync(domainEvent).ConfigureAwait(false);
                     return storage.CaptureQueue();
-                });
+                })
+                .ConfigureAwait(false);
 
             if (result.Outcome == OutcomeType.Failure)
             {

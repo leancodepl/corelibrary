@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MvcEventsExecutor
 {
-    public class MvcEventsExecutorApp : IAppComponent
+    public class MvcEventsExecutorComponent : IAppComponent
     {
         public Profile MapperProfile => null;
         public IModule AutofacModule { get; } = new MvcEventsExecutorModule();

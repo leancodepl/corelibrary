@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LeanCode.DomainModels.Model
 {
@@ -10,6 +11,6 @@ namespace LeanCode.DomainModels.Model
 
     public interface IDomainEventHandlerWrapper
     {
-        void Handle(IDomainEvent @event);
+        Task HandleAsync(IDomainEvent @event);
     }
 }

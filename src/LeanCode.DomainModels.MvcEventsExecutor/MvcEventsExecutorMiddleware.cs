@@ -26,7 +26,7 @@ namespace LeanCode.DomainModels.MvcEventsExecutor
 
     public static class MvcEventsExecutorMiddlewareExtensions
     {
-        public static IApplicationBuilder UseEventExecutor(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseEventsExecutor(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<MvcEventsExecutorMiddleware>();
         }
