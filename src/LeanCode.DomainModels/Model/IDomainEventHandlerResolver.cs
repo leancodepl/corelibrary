@@ -11,6 +11,6 @@ namespace LeanCode.DomainModels.Model
 
     public interface IDomainEventHandlerWrapper
     {
-        Task HandleAsync(IDomainEvent @event);
+        Task HandleAsync(IDomainEvent domainEvent);
     }
 }

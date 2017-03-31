@@ -1,4 +1,5 @@
 using LeanCode.Components;
+using LeanCode.DomainModels.MvcEventsExecutor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ namespace LeanCode.Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseEventsExecutor();
             app.UseMvc();
         }
     }

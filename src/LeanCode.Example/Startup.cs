@@ -1,10 +1,12 @@
 using System;
 using LeanCode.Cache.AspNet;
+using LeanCode.ComainModels.Autofac;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Autofac;
 using LeanCode.CQRS.FluentValidation;
 using LeanCode.CQRS.MvcValidation;
+using LeanCode.DomainModels.MvcEventsExecutor;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,6 +51,8 @@ namespace LeanCode.Example
                 new CQRSComponent(SearchAssemblies),
                 new FluentValidationComponent(SearchAssemblies),
                 new MvcValidationComponent(SearchAssemblies),
+                new DomainModelsComponent(SearchAssemblies),
+                new MvcEventsExecutorComponent(),
 
                 new MvcComponent()
             };

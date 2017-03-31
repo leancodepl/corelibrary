@@ -1,5 +1,6 @@
 using System;
 using LeanCode.CQRS;
+using LeanCode.DomainModels.Model;
 
 namespace LeanCode.Example.CQRS
 {
@@ -14,6 +15,8 @@ namespace LeanCode.Example.CQRS
             {
                 throw new InvalidOperationException("Randomness isn't on our side...");
             }
+
+            DomainEvents.Raise(new SampleEvent());
         }
     }
 }
