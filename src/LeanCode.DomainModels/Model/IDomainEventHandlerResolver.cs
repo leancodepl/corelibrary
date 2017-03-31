@@ -5,6 +5,11 @@ namespace LeanCode.DomainModels.Model
 {
     public interface IDomainEventHandlerResolver
     {
-        IReadOnlyList<IDomainEventHandler> FindEventHandlers(Type eventType);
+        IReadOnlyList<IDomainEventHandlerWrapper> FindEventHandlers(Type eventType);
+    }
+
+    public interface IDomainEventHandlerWrapper
+    {
+        void Handle(IDomainEvent @event);
     }
 }
