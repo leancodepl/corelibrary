@@ -1,8 +1,22 @@
-﻿namespace LeanCode.CQRS
+﻿using System;
+using System.Threading.Tasks;
+
+namespace LeanCode.CQRS
 {
     public interface ICommandExecutor
     {
-        CommandResult Execute<TCommand>(TCommand command)
+        Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
             where TCommand : ICommand;
+    }
+
+    public class CommandHandlerNotFoundException : Exception
+    {
+        public Type CommandType { get; }
+
+        public CommandHandlerNotFoundException(Type commandType)
+            : base($"Cannot find handler for command {commandType.Name}.")
+        {
+            CommandType = commandType;
+        }
     }
 }

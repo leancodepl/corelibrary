@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LeanCode.Cache;
 using LeanCode.CQRS.Exceptions;
 using LeanCode.CQRS.Security;
@@ -26,7 +27,7 @@ namespace LeanCode.CQRS.Default
             this.authorizationChecker = authorizationChecker;
         }
 
-        public TResult Execute<TResult>(IQuery<TResult> query)
+        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
         {
             logger.Verbose("Executing query {@Query}", query);
             AuthorizeQuery(query);
@@ -51,24 +52,26 @@ namespace LeanCode.CQRS.Default
             }
         }
 
-        private TResult JustExecuteQuery<TResult>(IQuery<TResult> query)
+        private async Task<TResult> JustExecuteQuery<TResult>(IQuery<TResult> query)
         {
             var handler = queryHandlerResolver.FindQueryHandler(query);
             if (handler == null)
             {
                 logger.Fatal("Cannot find a handler for query {@Query}", query);
-                throw new NotSupportedException($"Cannot find a handler for the query of type: {query.GetType()}");
+                throw new QueryHandlerNotFoundException(query.GetType());
             }
-
-            var result = (TResult)((dynamic)handler).Execute((dynamic)query);
+            var result = await handler.ExecuteAsync(query).ConfigureAwait(false);
             logger.Debug("Query {@Query} executed successfuly", query);
             return result;
         }
 
-        private TResult LoadFromCache<TResult>(IQuery<TResult> query, TimeSpan? duration)
+        private async Task<TResult> LoadFromCache<TResult>(IQuery<TResult> query, TimeSpan? duration)
         {
             var key = keyProvider.GetKey(query);
-            var res = cacher.GetOrCreate(key, duration.Value, () => Wrap(JustExecuteQuery(query)));
+            var res = await cacher.GetOrCreate(
+                key, duration.Value,
+                async () => Wrap(await JustExecuteQuery(query).ConfigureAwait(false))
+                ).ConfigureAwait(false);
             logger.Debug("Query result for {@Query}(key: {Key}) retrieved from cache", query, key);
             return res.Item;
         }

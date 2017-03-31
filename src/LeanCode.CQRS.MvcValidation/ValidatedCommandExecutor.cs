@@ -2,6 +2,7 @@ using System;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.MvcValidation
 {
@@ -24,7 +25,7 @@ namespace LeanCode.CQRS.MvcValidation
             this.contextAccesor = contextAccesor;
         }
 
-        public bool ValidateAndExecute<TCommand>(object vm)
+        public Task<bool> ValidateAndExecuteAsync<TCommand>(object vm)
             where TCommand : ICommand
         {
             var modelState = contextAccesor.ActionContext.ModelState;
@@ -33,10 +34,10 @@ namespace LeanCode.CQRS.MvcValidation
                 var cmd = mapper.Map<TCommand>(vm);
                 return Execute(cmd, modelState);
             }
-            return false;
+            return Task.FromResult(false);
         }
 
-        public bool ValidateAndExecute<TCommand>(object vm, Action<IMappingOperationOptions> opts)
+        public Task<bool> ValidateAndExecuteAsync<TCommand>(object vm, Action<IMappingOperationOptions> opts)
             where TCommand : ICommand
         {
             var modelState = contextAccesor.ActionContext.ModelState;
@@ -45,17 +46,17 @@ namespace LeanCode.CQRS.MvcValidation
                 var cmd = mapper.Map<TCommand>(vm, opts);
                 return Execute(cmd, modelState);
             }
-            return false;
+            return Task.FromResult(false);
         }
 
-        public bool Execute<TCommand>(TCommand command)
+        public Task<bool> ExecuteAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             var modelState = contextAccesor.ActionContext.ModelState;
             return Execute(command, modelState);
         }
 
-        private bool Execute<TCommand>(TCommand command, ModelStateDictionary modelState)
+        private Task<bool> Execute<TCommand>(TCommand command, ModelStateDictionary modelState)
             where TCommand : ICommand
         {
             var translator = resolver.Resolve<TCommand>();
@@ -69,10 +70,10 @@ namespace LeanCode.CQRS.MvcValidation
             }
         }
 
-        private bool ExecuteAndMap<TCommand>(TCommand command, ModelStateDictionary modelState)
+        private async Task<bool> ExecuteAndMap<TCommand>(TCommand command, ModelStateDictionary modelState)
             where TCommand : ICommand
         {
-            var result = commandExecutor.Execute(command);
+            var result = await commandExecutor.ExecuteAsync(command).ConfigureAwait(false);
             if (!result.WasSuccessful)
             {
                 DirectMapToModelState(result, modelState);
@@ -80,7 +81,7 @@ namespace LeanCode.CQRS.MvcValidation
             return result.WasSuccessful;
         }
 
-        private bool ExecuteAndTranslate<TCommand>(
+        private async Task<bool> ExecuteAndTranslate<TCommand>(
             TCommand command,
             ICommandResultTranslator<TCommand> translator,
             ModelStateDictionary modelState)
@@ -88,7 +89,7 @@ namespace LeanCode.CQRS.MvcValidation
         {
             try
             {
-                var result = commandExecutor.Execute(command);
+                var result = await commandExecutor.ExecuteAsync(command).ConfigureAwait(false);
                 if (!result.WasSuccessful)
                 {
                     MapResultToModelState(command, result, translator, modelState);

@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace LeanCode.CQRS.Default
 {
     public class DefaultCqrs : ICqrs
@@ -13,15 +15,15 @@ namespace LeanCode.CQRS.Default
             this.queryExecutor = queryExecutor;
         }
 
-        public CommandResult Execute<TCommand>(TCommand command)
+        public Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            return commandExecutor.Execute(command);
+            return commandExecutor.ExecuteAsync(command);
         }
 
-        public TResult Execute<TResult>(IQuery<TResult> query)
+        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
         {
-            return queryExecutor.Execute(query);
+            return queryExecutor.QueryAsync(query);
         }
     }
 }

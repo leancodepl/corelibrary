@@ -5,6 +5,7 @@ open Fake
 
 let rootDir = "." |> FullName
 let srcDir = rootDir @@ "src"
+let testDir = rootDir @@ "test"
 
 let configuration = getBuildParamOrDefault "configuration" "Release"
 
@@ -24,7 +25,11 @@ Target "Build" (fun () ->
     DotNetCli.Build (fun c -> { c with WorkingDir = rootDir; Configuration = configuration })
 )
 
-Target "Test" DoNothing
+Target "Test" (fun () ->
+    trace "Testing"
+    !! (testDir @@ "**/*.csproj")
+        |> Seq.iter (fun p -> DotNetCli.Test (fun c -> { c with WorkingDir = rootDir; Project = p }))
+)
 
 Target "Pack" DoNothing
 

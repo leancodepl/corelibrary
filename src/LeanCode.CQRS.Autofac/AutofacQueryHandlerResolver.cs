@@ -1,10 +1,18 @@
 using System;
+using System.Collections.Concurrent;
+using System.Reflection;
 using Autofac;
 
 namespace LeanCode.CQRS.Autofac
 {
     public class AutofacQueryHandlerResolver : IQueryHandlerResolver
     {
+        private static readonly Type QueryHandlerBase = typeof(IQueryHandler<,>);
+        private static readonly Type QueryHandlerWrapperBase = typeof(QueryHandlerWrapper<,>);
+
+        private readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
+            new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
+
         private readonly Func<IComponentContext> componentContext;
 
         public AutofacQueryHandlerResolver(Func<IComponentContext> componentContext)
@@ -15,21 +23,24 @@ namespace LeanCode.CQRS.Autofac
         public IQueryHandlerWrapper<TResult> FindQueryHandler<TResult>(IQuery<TResult> query)
         {
             var queryType = query.GetType();
+            var resultType = typeof(TResult);
 
-            var handlerType = typeof(IQueryHandler<,>)
-                .MakeGenericType(queryType, typeof(TResult));
+            var cached = typesCache.GetOrAdd(queryType, _ =>
+            {
+                var queryHandlerType = QueryHandlerBase.MakeGenericType(queryType, resultType);
+                var wrappedHandlerType = QueryHandlerWrapperBase.MakeGenericType(queryType, resultType);
+                var ctor = wrappedHandlerType.GetConstructors()[0];
+                return Tuple.Create(queryHandlerType, ctor);
+            });
 
             object handler;
-            componentContext().TryResolve(handlerType, out handler);
-            return GetWrapper<TResult>(queryType, handler);
-        }
+            componentContext().TryResolve(cached.Item1, out handler);
 
-        private IQueryHandlerWrapper<TResult> GetWrapper<TResult>(Type query, object handler)
-        {
-            // PERF: cache the type for the query
-            var wrapperType = typeof(QueryHandlerWrapper<,>)
-                .MakeGenericType(query, typeof(TResult));
-            return (IQueryHandlerWrapper<TResult>)Activator.CreateInstance(wrapperType, handler);
+            if (handler == null)
+            {
+                return null;
+            }
+            return (IQueryHandlerWrapper<TResult>)cached.Item2.Invoke(new[] { handler });
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace LeanCode.CQRS.Autofac
 {
     public class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
@@ -10,9 +12,9 @@ namespace LeanCode.CQRS.Autofac
             this.handler = handler;
         }
 
-        public TResult Execute(IQuery<TResult> query)
+        public Task<TResult> ExecuteAsync(IQuery<TResult> query)
         {
-            return handler.Execute((TQuery)query);
+            return handler.ExecuteAsync((TQuery)query);
         }
     }
 }

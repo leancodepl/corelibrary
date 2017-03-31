@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace LeanCode.Cache.AspNet
@@ -28,6 +29,20 @@ namespace LeanCode.Cache.AspNet
         }
 
         public T GetOrCreate<T>(string key, TimeSpan duration, Func<T> getValueToCache) where T : class
+        {
+            return cache.GetOrCreate(key, e =>
+            {
+                e.AbsoluteExpirationRelativeToNow = duration;
+                return getValueToCache();
+            });
+        }
+
+        public Task<T> GetOrCreate<T>(string key, Func<Task<T>> getValueToCache) where T : class
+        {
+            return cache.GetOrCreate(key, _ => getValueToCache());
+        }
+
+        public Task<T> GetOrCreate<T>(string key, TimeSpan duration, Func<Task<T>> getValueToCache) where T : class
         {
             return cache.GetOrCreate(key, e =>
             {

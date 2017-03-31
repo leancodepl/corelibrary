@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LeanCode.CQRS.Exceptions;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
@@ -22,7 +23,7 @@ namespace LeanCode.CQRS.Default
             this.commandValidatorResolver = commandValidatorResolver;
         }
 
-        public CommandResult Execute<TCommand>(TCommand command)
+        public Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             logger.Verbose("Executing command {@Command}", command);
@@ -31,11 +32,9 @@ namespace LeanCode.CQRS.Default
             var failure = ValidateCommand(command);
             if (failure != null)
             {
-                return failure;
+                return Task.FromResult(failure);
             }
-            RunCommand(command);
-            logger.Information("Command {@Command} executed successfully", command);
-            return CommandResult.Success();
+            return RunCommand(command);
         }
 
         private void AuthorizeCommand<TCommand>(TCommand command)
@@ -64,25 +63,27 @@ namespace LeanCode.CQRS.Default
             return null;
         }
 
-        private void RunCommand<TCommand>(TCommand command)
+        private async Task<CommandResult> RunCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             var handler = commandHandlerResolver.FindCommandHandler<TCommand>();
             if (handler == null)
             {
                 logger.Fatal("Cannot find a handler for the command {@Command}", command);
-                throw new NotSupportedException($"Cannot find a handler for the command of type: {typeof(TCommand)}");
+                throw new CommandHandlerNotFoundException(typeof(TCommand));
             }
 
             try
             {
-                handler.Execute(command);
+                await handler.ExecuteAsync(command).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Cannot execute command {@Command} because of internal error", command);
                 throw;
             }
+            logger.Information("Command {@Command} executed successfully", command);
+            return CommandResult.Success();
         }
     }
 }

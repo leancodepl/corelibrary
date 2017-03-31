@@ -1,16 +1,21 @@
-﻿namespace LeanCode.CQRS
+﻿using System.Threading.Tasks;
+
+namespace LeanCode.CQRS
 {
-    public interface IQueryHandler<in TQuery, out TResult>
+    public interface IQueryHandler<in TQuery, TResult>
         where TQuery : IQuery<TResult>
     {
-        TResult Execute(TQuery query);
+        Task<TResult> ExecuteAsync(TQuery query);
     }
 
-    /// <summary>
-    /// Marker interface, do not use directly.
-    /// </summary>
-    public interface IQueryHandlerWrapper<TResult>
+    public abstract class SyncQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+        where TQuery : IQuery<TResult>
     {
-        TResult Execute(IQuery<TResult> query);
+        Task<TResult> IQueryHandler<TQuery, TResult>.ExecuteAsync(TQuery query)
+        {
+            return Task.FromResult(Execute(query));
+        }
+
+        public abstract TResult Execute(TQuery query);
     }
 }
