@@ -2,7 +2,7 @@ using Autofac;
 
 namespace LeanCode.DomainModels.MvcEventsExecutor
 {
-    public class MvcEventsExecutorModule : Module
+    class MvcEventsExecutorModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

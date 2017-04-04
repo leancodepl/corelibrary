@@ -9,7 +9,7 @@ using Polly;
 
 namespace LeanCode.DomainModels.MvcEventsExecutor
 {
-    public sealed class EventExecutor
+    sealed class EventExecutor
     {
         private static readonly TimeSpan[] EventRetryWaitTimes = new[]
         {

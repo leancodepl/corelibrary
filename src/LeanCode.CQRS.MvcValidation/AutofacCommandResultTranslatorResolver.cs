@@ -3,7 +3,7 @@ using Autofac;
 
 namespace LeanCode.CQRS.MvcValidation
 {
-    public class AutofacCommandResultTranslatorResolver : ICommandResultTranslatorResolver
+    class AutofacCommandResultTranslatorResolver : ICommandResultTranslatorResolver
     {
         private readonly Func<IComponentContext> componentContext;
 

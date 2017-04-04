@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace LeanCode.CQRS.MvcValidation
 {
-    public class MvcValidationModule : Autofac.Module
+    class MvcValidationModule : Autofac.Module
     {
         private readonly Assembly[] assemblies;
 

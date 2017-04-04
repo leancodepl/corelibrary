@@ -3,7 +3,7 @@ using Autofac;
 
 namespace LeanCode.CQRS.Autofac
 {
-    public class AutofacCommandHandlerResolver : ICommandHandlerResolver
+    class AutofacCommandHandlerResolver : ICommandHandlerResolver
     {
         private readonly Func<IComponentContext> componentContext;
 

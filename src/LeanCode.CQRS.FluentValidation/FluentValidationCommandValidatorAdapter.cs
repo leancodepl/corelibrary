@@ -6,7 +6,7 @@ using ValidationFailure = FluentValidation.Results.ValidationFailure;
 
 namespace LeanCode.CQRS.FluentValidation
 {
-    public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidator<TCommand>
+    class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidator<TCommand>
         where TCommand : ICommand
     {
         private readonly IValidator fluentValidator;

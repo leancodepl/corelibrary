@@ -5,7 +5,7 @@ using Autofac;
 
 namespace LeanCode.CQRS.Autofac
 {
-    public class AutofacQueryHandlerResolver : IQueryHandlerResolver
+    class AutofacQueryHandlerResolver : IQueryHandlerResolver
     {
         private static readonly Type QueryHandlerBase = typeof(IQueryHandler<,>);
         private static readonly Type QueryHandlerWrapperBase = typeof(QueryHandlerWrapper<,>);

@@ -2,7 +2,7 @@ using Autofac;
 
 namespace LeanCode.Cache.AspNet
 {
-    public class InMemoryCacheModule : Module
+    class InMemoryCacheModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

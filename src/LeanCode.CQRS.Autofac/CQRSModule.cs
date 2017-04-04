@@ -11,7 +11,7 @@ using Module = Autofac.Module;
 
 namespace LeanCode.CQRS.Autofac
 {
-    public class CQRSModule : Module
+    class CQRSModule : Module
     {
         private readonly Assembly[] assemblies;
 

@@ -5,7 +5,7 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.MvcEventsExecutor
 {
-    public class PerRequestEventsStorage : IDomainEventStorage, IStartable
+    class PerRequestEventsStorage : IDomainEventStorage, IStartable
     {
         private readonly AsyncLocal<ConcurrentQueue<IDomainEvent>> storage
             = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();

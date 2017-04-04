@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.DomainModels.MvcEventsExecutor
 {
-    public class MvcEventsExecutorMiddleware
+    class MvcEventsExecutorMiddleware
     {
         private readonly EventExecutor eventExecutor;
 

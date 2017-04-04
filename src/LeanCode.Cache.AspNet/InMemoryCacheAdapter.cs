@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LeanCode.Cache.AspNet
 {
-    public class InMemoryCacheAdapter : ICacher
+    class InMemoryCacheAdapter : ICacher
     {
         private readonly IMemoryCache cache;
 

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Autofac
 {
-    public class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
+    class QueryHandlerWrapper<TQuery, TResult> : IQueryHandlerWrapper<TResult>
         where TQuery : IQuery<TResult>
     {
         private readonly IQueryHandler<TQuery, TResult> handler;

@@ -7,7 +7,7 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.FluentValidation
 {
-    public class FluentValidationModule : Autofac.Module
+    class FluentValidationModule : Autofac.Module
     {
         private readonly Assembly[] assemblies;
 
