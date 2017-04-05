@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace LeanCode.CQRS
 {
     public interface IQueryHandlerResolver
     {
-        IQueryHandlerWrapper<TResult> FindQueryHandler<TResult>(IQuery<TResult> query);
+        IQueryHandlerWrapper<TResult> FindQueryHandler<TResult>(Type queryType);
     }
 
     /// <summary>

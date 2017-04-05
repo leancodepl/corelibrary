@@ -20,9 +20,8 @@ namespace LeanCode.CQRS.Autofac
             this.componentContext = componentContext;
         }
 
-        public IQueryHandlerWrapper<TResult> FindQueryHandler<TResult>(IQuery<TResult> query)
+        public IQueryHandlerWrapper<TResult> FindQueryHandler<TResult>(Type queryType)
         {
-            var queryType = query.GetType();
             var resultType = typeof(TResult);
 
             var cached = typesCache.GetOrAdd(queryType, _ =>

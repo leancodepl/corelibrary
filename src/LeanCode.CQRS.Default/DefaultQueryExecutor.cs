@@ -54,7 +54,7 @@ namespace LeanCode.CQRS.Default
 
         private async Task<TResult> JustExecuteQuery<TResult>(IQuery<TResult> query)
         {
-            var handler = queryHandlerResolver.FindQueryHandler(query);
+            var handler = queryHandlerResolver.FindQueryHandler<TResult>(query.GetType());
             if (handler == null)
             {
                 logger.Fatal("Cannot find a handler for query {@Query}", query);

@@ -4,7 +4,6 @@ namespace LeanCode.CQRS
 {
     public interface IRemoteCommandExecutor
     {
-        Task<CommandResult> ExecuteCommand<TCommand>(TCommand command)
-            where TCommand : IRemoteCommand;
+        Task<CommandResult> ExecuteAsync(IRemoteCommand command);
     }
 }
