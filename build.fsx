@@ -12,16 +12,30 @@ let libVersionFile = srcDir @@ "targets/Lib.targets"
 
 let configuration = getBuildParamOrDefault "configuration" "Release"
 
-let changeLog = ChangeLogHelper.LoadChangeLog "CHANGELOG.md"
-let version = changeLog.LatestEntry.NuGetVersion
-
-let formatChangelog () =
+let formatChangelog (changeLog: ChangeLogHelper.ChangeLog) =
     let desc = defaultArg changeLog.LatestEntry.Description ""
     let changes = System.String.Join("\n", changeLog.LatestEntry.Changes)
     if String.IsNullOrWhiteSpace desc && String.IsNullOrWhiteSpace changes then ""
     else if String.IsNullOrWhiteSpace desc then "Changes:\n" + changes
     else if String.IsNullOrWhiteSpace changes then desc
     else desc + "\n\nChanges:\n" + changes
+
+let updateChangelog (changeLog: ChangeLogHelper.ChangeLog) =
+    let branch = Git.Information.getBranchName ""
+    if branch = "master" then changeLog
+    else
+        let lastTag = Git.Information.getLastTag ()
+        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD ^" + lastTag)
+        let newVersion = { changeLog.LatestEntry.SemVer with Minor = changeLog.LatestEntry.SemVer.Minor + 1 }
+        let newVerString = newVersion.ToString() + "-alpha." + commits
+        changeLog.PromoteUnreleased newVerString
+
+let changeLog = ChangeLogHelper.LoadChangeLog "CHANGELOG.md" |> updateChangelog
+let version = changeLog.LatestEntry.NuGetVersion
+
+Target "Test" (fun () ->
+    trace version
+)
 
 Target "Clean" (fun () ->
     !! (srcDir @@ "*/bin")
@@ -48,7 +62,7 @@ Target "Test" (fun () ->
 
 Target "UpdateVersion" (fun () ->
     XmlPokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
-    XmlPokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog ())
+    XmlPokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
 )
 
 Target "Pack" (fun () ->
@@ -56,7 +70,14 @@ Target "Pack" (fun () ->
     DotNetCli.Pack (fun c -> { c with WorkingDir = rootDir; Configuration = configuration; OutputPath = packDir })
 )
 
-Target "PublishToMyGet" DoNothing
+Target "PublishToMyGet" (fun () ->
+    trace "Publishing NuGets..."
+    Paket.Push (fun cfg ->
+        { cfg with
+            WorkingDir = packDir
+            PublishUrl = "https://www.myget.org/F/leancode"
+        })
+)
 
 Target "Release" (fun () ->
     let tagName = "v" + version
@@ -78,7 +99,7 @@ Target "Default" DoNothing
     ==> "Default"
     ==> "UpdateVersion"
     ==> "Pack"
-    ==> "PublishToMyGet"
+    // ==> "PublishToMyGet"
 
 "UpdateVersion" ==> "Release"
 
