@@ -25,17 +25,17 @@ let updateChangelog (changeLog: ChangeLogHelper.ChangeLog) =
     if branch = "master" then changeLog
     else
         let lastTag = Git.Information.getLastTag ()
-        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD ^" + lastTag)
-        let newVersion = { changeLog.LatestEntry.SemVer with Minor = changeLog.LatestEntry.SemVer.Minor + 1 }
+        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD ^" + lastTag + " --count")
+        let newVersion = { changeLog.LatestEntry.SemVer with Minor = changeLog.LatestEntry.SemVer.Minor + 1; Patch = 0 }
         let newVerString = newVersion.ToString() + "-alpha." + commits
-        changeLog.PromoteUnreleased newVerString
+        if Option.isSome changeLog.Unreleased
+        then changeLog.PromoteUnreleased newVerString
+        else
+            let newEntry = ChangeLogHelper.ChangeLogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
+            { changeLog with Entries = newEntry :: changeLog.Entries }
 
 let changeLog = ChangeLogHelper.LoadChangeLog "CHANGELOG.md" |> updateChangelog
 let version = changeLog.LatestEntry.NuGetVersion
-
-Target "Test" (fun () ->
-    trace version
-)
 
 Target "Clean" (fun () ->
     !! (srcDir @@ "*/bin")
@@ -76,10 +76,14 @@ Target "PublishToMyGet" (fun () ->
         { cfg with
             WorkingDir = packDir
             PublishUrl = "https://www.myget.org/F/leancode"
+            DegreeOfParallelism = 0
         })
 )
 
 Target "Release" (fun () ->
+    let branch = Git.Information.getBranchName ""
+    if branch <> "master" then failwith "You can make a release only from master branch"
+
     let tagName = "v" + version
 
     Git.Staging.StageAll ""
@@ -99,7 +103,7 @@ Target "Default" DoNothing
     ==> "Default"
     ==> "UpdateVersion"
     ==> "Pack"
-    // ==> "PublishToMyGet"
+    ==> "PublishToMyGet"
 
 "UpdateVersion" ==> "Release"
 
