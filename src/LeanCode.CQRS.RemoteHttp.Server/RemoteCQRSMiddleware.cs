@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
@@ -12,6 +13,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private readonly RemoteQueryHandler queryHandler;
 
         public RemoteCQRSMiddleware(
+            RequestDelegate next,
             Assembly typesAssembly,
             IIndex<Assembly, RemoteCommandHandler> commandHandlerFactory,
             IIndex<Assembly, RemoteQueryHandler> queryHandlerFactory)
@@ -50,6 +52,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, Assembly typesAssembly)
         {
             return builder.UseMiddleware<RemoteCQRSMiddleware>(typesAssembly);
+        }
+
+        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, Type typesAssembly)
+        {
+            var assembly = typesAssembly.GetTypeInfo().Assembly;
+            return builder.UseMiddleware<RemoteCQRSMiddleware>(assembly);
         }
     }
 }

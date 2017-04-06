@@ -1,4 +1,5 @@
 using LeanCode.Components;
+using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.DomainModels.MvcEventsExecutor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,8 @@ namespace LeanCode.Example
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.Map("/api", cfg => cfg.UseRemoteCQRS(typeof(Startup)));
 
             app.UseEventsExecutor();
             app.UseMvc();

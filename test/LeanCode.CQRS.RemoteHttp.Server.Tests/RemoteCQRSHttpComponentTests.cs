@@ -99,10 +99,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         private void Register()
         {
-            var component1 = new RemoteHttpServerComponent(ThisAssembly);
+            var component1 = new RemoteCQRSHttpComponent(ThisAssembly);
             builder.RegisterModule(component1.AutofacModule);
 
-            var component2 = new RemoteHttpServerComponent(OtherAssembly);
+            var component2 = new RemoteCQRSHttpComponent(OtherAssembly);
             builder.RegisterModule(component2.AutofacModule);
         }
     }

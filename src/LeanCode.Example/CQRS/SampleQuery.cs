@@ -2,7 +2,7 @@ using LeanCode.CQRS;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SampleQuery : IQuery<SampleQuery.Result>
+    public class SampleQuery : IRemoteQuery<SampleQuery.Result>
     {
         public sealed class Result
         {

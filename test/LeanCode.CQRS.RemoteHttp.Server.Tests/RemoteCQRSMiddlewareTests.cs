@@ -16,7 +16,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var assembly = typeof(RemoteCQRSMiddlewareQueriesTests).GetTypeInfo().Assembly;
             var command = new RemoteCommandHandler(new StubCommandExecutor(), assembly);
             var query = new RemoteQueryHandler(new StubQueryExecutor(), assembly);
-            middleware = new RemoteCQRSMiddleware(assembly, StubIndex.Create(command), StubIndex.Create(query));
+            middleware = new RemoteCQRSMiddleware(null, assembly, StubIndex.Create(command), StubIndex.Create(query));
         }
 
         [Fact]
