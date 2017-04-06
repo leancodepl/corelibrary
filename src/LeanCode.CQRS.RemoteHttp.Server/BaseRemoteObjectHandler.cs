@@ -11,13 +11,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private readonly JsonSerializer Serializer = new JsonSerializer();
 
-        private readonly Assembly typesAssembly;
+        public Assembly TypesAssembly { get; }
 
         protected Serilog.ILogger Logger { get; }
 
-        public BaseRemoteObjectHandler(Serilog.ILogger logger, Assembly assembly)
+        public BaseRemoteObjectHandler(Serilog.ILogger logger, Assembly typesAssembly)
         {
-            typesAssembly = assembly;
+            TypesAssembly = typesAssembly;
 
             Logger = logger;
         }
@@ -69,7 +69,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var idx = request.Path.Value.LastIndexOf('/');
             var name = idx != -1 ? request.Path.Value.Substring(idx + 1) : request.Path.Value;
-            return typesAssembly.GetType(name);
+            return TypesAssembly.GetType(name);
         }
 
         private object DeserializeObject(Type destType, Stream body)

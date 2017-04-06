@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Threading.Tasks;
+using Autofac.Features.Indexed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -9,10 +11,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private readonly RemoteCommandHandler commandHandler;
         private readonly RemoteQueryHandler queryHandler;
 
-        public RemoteCQRSMiddleware(RemoteCommandHandler commandHandler, RemoteQueryHandler queryHandler)
+        public RemoteCQRSMiddleware(
+            Assembly typesAssembly,
+            IIndex<Assembly, RemoteCommandHandler> commandHandlerFactory,
+            IIndex<Assembly, RemoteQueryHandler> queryHandlerFactory)
         {
-            this.commandHandler = commandHandler;
-            this.queryHandler = queryHandler;
+            this.commandHandler = commandHandlerFactory[typesAssembly];
+            this.queryHandler = queryHandlerFactory[typesAssembly];
         }
 
         public async Task Invoke(HttpContext context)
@@ -42,9 +47,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
     public static class RemoteCQRSMiddlewareExtensions
     {
-        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, Assembly typesAssembly)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware>();
+            return builder.UseMiddleware<RemoteCQRSMiddleware>(typesAssembly);
         }
     }
 }

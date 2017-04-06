@@ -15,11 +15,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<RemoteCommandHandler>()
-                .AsSelf().WithParameter(nameof(typesAssembly), typesAssembly)
+                .Keyed<RemoteCommandHandler>(typesAssembly).WithParameter(nameof(typesAssembly), typesAssembly)
                 .SingleInstance();
 
             builder.RegisterType<RemoteQueryHandler>()
-                .AsSelf().WithParameter(nameof(typesAssembly), typesAssembly)
+                .Keyed<RemoteQueryHandler>(typesAssembly).WithParameter(nameof(typesAssembly), typesAssembly)
                 .SingleInstance();
         }
     }
