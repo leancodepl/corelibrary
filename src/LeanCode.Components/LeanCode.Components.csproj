@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
   <Import Project="../targets/Mvc.targets" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.Components</AssemblyName>
     <PackageId>LeanCode.Components</PackageId>
@@ -12,7 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(ExtensionsVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LeanCode.Configuration\LeanCode.Configuration.csproj" />
+    <ProjectReference Include="../LeanCode.Configuration/LeanCode.Configuration.csproj" />
   </ItemGroup>
   <Import Project="../targets/Common.targets" />
 </Project>

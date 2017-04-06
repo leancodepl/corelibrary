@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
   <Import Project="../targets/Mvc.targets" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.DomainModels.MvcEventsExecutor</AssemblyName>
     <PackageId>LeanCode.DomainModels.MvcEventsExecutor</PackageId>

@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LeanCode.CQRS.RemoteHttp.Server\LeanCode.CQRS.RemoteHttp.Server.csproj" />
+    <ProjectReference Include="../../src/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />

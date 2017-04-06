@@ -1,21 +1,22 @@
-using System;
+using FluentValidation;
 using LeanCode.CQRS;
+using LeanCode.CQRS.FluentValidation;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.Example.CQRS
 {
+    public class SampleCommandValidator : AbstractValidator<SampleCommand>
+    {
+        public SampleCommandValidator()
+        {
+            RuleFor(c => c.Name).NotNull().NotEmpty().WithCode(1).WithMessage("Name must not be empty");
+        }
+    }
+
     public class SampleCommandHandler : SyncCommandHandler<SampleCommand>
     {
-        private static readonly Random rnd = new Random();
-
         public override void Execute(SampleCommand command)
         {
-            var d = rnd.NextDouble();
-            if (d < 0.5)
-            {
-                throw new InvalidOperationException("Randomness isn't on our side...");
-            }
-
             DomainEvents.Raise(new SampleEvent());
         }
     }

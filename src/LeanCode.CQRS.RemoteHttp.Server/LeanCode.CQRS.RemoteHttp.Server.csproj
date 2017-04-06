@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
   <Import Project="../targets/Mvc.targets" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.CQRS.RemoteHttp.Server</AssemblyName>
     <PackageId>LeanCode.CQRS.CQRS.RemoteHttp.Server</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="..\LeanCode.Components\LeanCode.Components.csproj" />
+    <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(ExtensionsVersion)" />

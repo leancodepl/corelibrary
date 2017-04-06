@@ -22,12 +22,13 @@
     <ProjectReference Include="../LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.FluentValidation/LeanCode.CQRS.FluentValidation.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.MvcValidation/LeanCode.CQRS.MvcValidation.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.Autofac/LeanCode.DomainModels.Autofac.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.MvcEventsExecutor/LeanCode.DomainModels.MvcEventsExecutor.csproj" />
     <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
-    <ProjectReference Include="..\LeanCode.CQRS.RemoteHttp.Server\LeanCode.CQRS.RemoteHttp.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(MvcVersion)" />

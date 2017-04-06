@@ -37,7 +37,7 @@ namespace LeanCode.Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Map("/api", cfg => cfg.UseRemoteCQRS(typeof(Startup)));
+            app.Map("/api", cfg => cfg.UseEventsExecutor().UseRemoteCQRS(typeof(Startup)));
 
             app.UseEventsExecutor();
             app.UseMvc();

@@ -17,7 +17,7 @@ namespace LeanCode.CQRS.Default
 
         private static void SerializeProperties(StringBuilder builder, Type type, object obj)
         {
-            foreach (var prop in type.GetTypeInfo().GetProperties())
+            foreach (var prop in type.GetTypeInfo().DeclaredProperties)
             {
                 builder.Append('-');
                 var value = prop.GetValue(obj);

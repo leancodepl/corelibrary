@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.TimeProvider</AssemblyName>
     <PackageId>LeanCode.TimeProvider</PackageId>

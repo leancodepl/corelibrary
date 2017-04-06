@@ -42,11 +42,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             if (cmdResult.WasSuccessful)
             {
-                return new StatusCodeResult(StatusCodes.Status200OK);
+                return new JsonResult(cmdResult);
             }
             else
             {
-                return new JsonResult(cmdResult.ValidationErrors, StatusCodes.Status422UnprocessableEntity);
+                return new JsonResult(cmdResult, StatusCodes.Status422UnprocessableEntity);
             }
         }
 

@@ -3,7 +3,7 @@
   <Import Project="../targets/Mvc.targets" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.Configuration</AssemblyName>
     <PackageId>LeanCode.Configuration</PackageId>

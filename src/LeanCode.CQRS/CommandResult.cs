@@ -9,7 +9,7 @@ namespace LeanCode.CQRS
         public IReadOnlyList<ValidationError> ValidationErrors { get; }
         public bool WasSuccessful => ValidationErrors.Count == 0;
 
-        private CommandResult(IReadOnlyList<ValidationError> validationErrors)
+        public CommandResult(IReadOnlyList<ValidationError> validationErrors)
         {
             this.ValidationErrors = validationErrors ?? new ValidationError[0];
         }

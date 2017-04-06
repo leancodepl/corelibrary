@@ -1,15 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>LeanCode.CQRS.Default</AssemblyName>
-    <PackageId>LeanCode.CQRS.Default</PackageId>
+    <AssemblyName>LeanCode.CQRS.RemoteHttp.Client</AssemblyName>
+    <PackageId>LeanCode.CQRS.CQRS.RemoteHttp.Client</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="../LeanCode.Cache/LeanCode.Cache.csproj" />
   </ItemGroup>
-  <Import Project="../targets/Common.targets" />
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
 </Project>
+
