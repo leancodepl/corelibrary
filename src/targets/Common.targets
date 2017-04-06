@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Autofac" Version="4.4.0" />
     <PackageReference Include="AutoMapper" Version="6.0.2" />
     <PackageReference Include="Serilog" Version="2.4.0" />
