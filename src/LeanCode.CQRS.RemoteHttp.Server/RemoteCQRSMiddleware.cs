@@ -4,22 +4,17 @@ using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    sealed class RemoteCQRSMiddleware
+    public sealed class RemoteCQRSMiddleware
     {
-        private readonly RemoteCommandHandler commandHandler;
-        private readonly RemoteQueryHandler queryHandler;
+        private readonly Assembly typesAssembly;
 
-        public RemoteCQRSMiddleware(
-            RequestDelegate next,
-            Assembly typesAssembly,
-            IIndex<Assembly, RemoteCommandHandler> commandHandlerFactory,
-            IIndex<Assembly, RemoteQueryHandler> queryHandlerFactory)
+        public RemoteCQRSMiddleware(RequestDelegate next, Assembly typesAssembly)
         {
-            this.commandHandler = commandHandlerFactory[typesAssembly];
-            this.queryHandler = queryHandlerFactory[typesAssembly];
+            this.typesAssembly = typesAssembly;
         }
 
         public async Task Invoke(HttpContext context)
@@ -32,10 +27,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
+                var index = context.RequestServices.GetService<IIndex<Assembly, RemoteQueryHandler>>();
+                var queryHandler = index[typesAssembly];
                 actionResult = await queryHandler.ExecuteAsync(request).ConfigureAwait(false);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
+                var index = context.RequestServices.GetService<IIndex<Assembly, RemoteCommandHandler>>();
+                var commandHandler = index[typesAssembly];
                 actionResult = await commandHandler.ExecuteAsync(request).ConfigureAwait(false);
             }
             else

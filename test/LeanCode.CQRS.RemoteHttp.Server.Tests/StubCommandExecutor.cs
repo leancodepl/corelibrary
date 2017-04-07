@@ -3,7 +3,7 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    class StubCommandExecutor : ICommandExecutor
+    public class StubCommandExecutor : ICommandExecutor
     {
         public static readonly ValidationError SampleError = new ValidationError("Prop", "999", 2, 999);
         public ICommand LastCommand { get; private set; }

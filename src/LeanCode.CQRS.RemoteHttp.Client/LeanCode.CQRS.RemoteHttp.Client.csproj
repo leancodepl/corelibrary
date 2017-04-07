@@ -5,7 +5,7 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.CQRS.RemoteHttp.Client</AssemblyName>
-    <PackageId>LeanCode.CQRS.CQRS.RemoteHttp.Client</PackageId>
+    <PackageId>LeanCode.CQRS.RemoteHttp.Client</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />

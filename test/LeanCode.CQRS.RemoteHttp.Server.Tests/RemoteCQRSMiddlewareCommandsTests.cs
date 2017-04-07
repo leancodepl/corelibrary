@@ -1,27 +1,15 @@
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    public class RemoteCQRSMiddlewareCommandsTests
+    public class RemoteCQRSMiddlewareCommandsTests : BaseMiddlewareTests
     {
-        private readonly StubCommandExecutor command;
-        private readonly RemoteCQRSMiddleware middleware;
-
         public RemoteCQRSMiddlewareCommandsTests()
-        {
-            command = new StubCommandExecutor();
-
-            var assembly = typeof(RemoteCQRSMiddlewareCommandsTests).GetTypeInfo().Assembly;
-            var commandHandler = new RemoteCommandHandler(command, assembly);
-            var queryHandler = new RemoteQueryHandler(new StubQueryExecutor(), assembly);
-            middleware = new RemoteCQRSMiddleware(null, assembly, StubIndex.Create(commandHandler), StubIndex.Create(queryHandler));
-        }
+            : base("command", typeof(SampleRemoteCommand))
+        { }
 
         [Fact]
         public async Task Returns_NotFound_if_command_cannot_be_found()
@@ -96,18 +84,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.Equal(StubCommandExecutor.SampleError.AttemptedValue, (int)(long)err.AttemptedValue);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorCode, err.ErrorCode);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorMessage, err.ErrorMessage);
-        }
-
-        private async Task<(int statusCode, string response)> Invoke(string type = null, string content = "{}", string method = "POST")
-        {
-            type = type ?? typeof(SampleRemoteCommand).FullName;
-
-            var ctx = new StubContext(method, "/command/" + type, content);
-            await middleware.Invoke(ctx);
-
-            var statusCode = ctx.Response.StatusCode;
-            var body = (MemoryStream)ctx.Response.Body;
-            return (statusCode, Encoding.UTF8.GetString(body.ToArray()));
         }
     }
 

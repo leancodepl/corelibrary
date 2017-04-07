@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    class StubQueryExecutor : IQueryExecutor
+    public class StubQueryExecutor : IQueryExecutor
     {
         public object LastQuery { get; private set; }
 

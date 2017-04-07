@@ -1,26 +1,14 @@
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    public class RemoteCQRSMiddlewareQueriesTests
+    public class RemoteCQRSMiddlewareQueriesTests : BaseMiddlewareTests
     {
-        private readonly StubQueryExecutor query;
-        private readonly RemoteCQRSMiddleware middleware;
-
         public RemoteCQRSMiddlewareQueriesTests()
-        {
-            query = new StubQueryExecutor();
-
-            var assembly = typeof(RemoteCQRSMiddlewareQueriesTests).GetTypeInfo().Assembly;
-            var command = new RemoteCommandHandler(new StubCommandExecutor(), assembly);
-            var queryHandler = new RemoteQueryHandler(query, assembly);
-            middleware = new RemoteCQRSMiddleware(null, assembly, StubIndex.Create(command), StubIndex.Create(queryHandler));
-        }
+            : base("query", typeof(SampleRemoteQuery))
+        { }
 
         [Fact]
         public async Task Writes_NotFound_if_query_cannot_be_found()
@@ -71,18 +59,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke();
             Assert.Equal("0", content);
-        }
-
-        private async Task<(int statusCode, string response)> Invoke(string type = null, string content = "{}", string method = "POST")
-        {
-            type = type ?? typeof(SampleRemoteQuery).FullName;
-
-            var ctx = new StubContext(method, "/query/" + type, content);
-            await middleware.Invoke(ctx);
-
-            var statusCode = ctx.Response.StatusCode;
-            var body = (MemoryStream)ctx.Response.Body;
-            return (statusCode, Encoding.UTF8.GetString(body.ToArray()));
         }
     }
 
