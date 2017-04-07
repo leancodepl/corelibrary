@@ -4,6 +4,6 @@ namespace LeanCode.CQRS
 {
     public interface IRemoteQueryExecutor
     {
-        Task<TResult> ExecuteQuery<TResult>(IRemoteQuery<TResult> query);
+        Task<TResult> ExecuteAsync<TResult>(IRemoteQuery<TResult> query);
     }
 }

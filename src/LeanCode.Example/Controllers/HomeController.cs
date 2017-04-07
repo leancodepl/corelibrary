@@ -41,13 +41,14 @@ namespace LeanCode.Example.Controllers
         public async Task<IActionResult> RemoteQuery()
         {
             var client = new HttpQueriesExecutor(new Uri("http://localhost:5000/api/"));
-            return Json(await client.ExecuteQuery(new CQRS.SampleQuery()));
+            return Json(await client.ExecuteAsync(new CQRS.SampleQuery()));
         }
 
         [HttpGet("remote/do")]
         public async Task<IActionResult> RemoteCommand(string name = "")
         {
             var client = new HttpCommandsExecutor(new Uri("http://localhost:5000/api/"));
+            await client.ExecuteAsync(new CQRS.SampleCommand(name));
             return Json(await client.ExecuteAsync(new CQRS.SampleCommand(name)));
         }
     }
