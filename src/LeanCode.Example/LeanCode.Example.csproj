@@ -27,7 +27,7 @@
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.Autofac/LeanCode.DomainModels.Autofac.csproj" />
-    <ProjectReference Include="../LeanCode.DomainModels.MvcEventsExecutor/LeanCode.DomainModels.MvcEventsExecutor.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels.RequestEventsExecutor/LeanCode.DomainModels.RequestEventsExecutor.csproj" />
     <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
   </ItemGroup>
   <ItemGroup>

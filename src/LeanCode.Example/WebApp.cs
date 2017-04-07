@@ -1,6 +1,6 @@
 using LeanCode.Components;
 using LeanCode.CQRS.RemoteHttp.Server;
-using LeanCode.DomainModels.MvcEventsExecutor;
+using LeanCode.DomainModels.RequestEventsExecutor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

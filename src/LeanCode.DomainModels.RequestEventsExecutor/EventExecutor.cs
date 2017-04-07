@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 
-namespace LeanCode.DomainModels.MvcEventsExecutor
+namespace LeanCode.DomainModels.RequestEventsExecutor
 {
     sealed class EventExecutor
     {

@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System;
-using Serilog;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {

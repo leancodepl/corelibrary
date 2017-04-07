@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Example", "src\Lea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.TimeProvider", "src\LeanCode.TimeProvider\LeanCode.TimeProvider.csproj", "{618B76C9-F0EB-4D48-8EFA-A25FDC4D194E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DomainModels.MvcEventsExecutor", "src\LeanCode.DomainModels.MvcEventsExecutor\LeanCode.DomainModels.MvcEventsExecutor.csproj", "{D0813377-EEE4-47A4-9460-EF4359ABDC83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DomainModels.RequestEventsExecutor", "src\LeanCode.DomainModels.RequestEventsExecutor\LeanCode.DomainModels.RequestEventsExecutor.csproj", "{D0813377-EEE4-47A4-9460-EF4359ABDC83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DomainModels.Autofac", "src\LeanCode.DomainModels.Autofac\LeanCode.DomainModels.Autofac.csproj", "{08511DBA-AC83-4136-8E6B-7E9A422464D9}"
 EndProject

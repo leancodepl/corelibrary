@@ -1,8 +1,8 @@
 using Autofac;
 
-namespace LeanCode.DomainModels.MvcEventsExecutor
+namespace LeanCode.DomainModels.RequestEventsExecutor
 {
-    class MvcEventsExecutorModule : Module
+    class RequestEventsExecutorModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

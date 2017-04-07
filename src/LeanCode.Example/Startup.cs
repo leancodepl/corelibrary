@@ -7,7 +7,7 @@ using LeanCode.CQRS.Autofac;
 using LeanCode.CQRS.FluentValidation;
 using LeanCode.CQRS.MvcValidation;
 using LeanCode.CQRS.RemoteHttp.Server;
-using LeanCode.DomainModels.MvcEventsExecutor;
+using LeanCode.DomainModels.RequestEventsExecutor;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -53,7 +53,7 @@ namespace LeanCode.Example
                 new FluentValidationComponent(SearchAssemblies),
                 new MvcValidationComponent(SearchAssemblies),
                 new DomainModelsComponent(SearchAssemblies),
-                new MvcEventsExecutorComponent(),
+                new RequestEventsExecutorComponent(),
                 new RemoteCQRSHttpComponent(typeof(Startup)),
 
                 new MvcComponent()

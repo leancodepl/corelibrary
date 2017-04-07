@@ -4,8 +4,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>LeanCode.DomainModels.MvcEventsExecutor</AssemblyName>
-    <PackageId>LeanCode.DomainModels.MvcEventsExecutor</PackageId>
+    <AssemblyName>LeanCode.DomainModels.RequestEventsExecutor</AssemblyName>
+    <PackageId>LeanCode.DomainModels.RequestEventsExecutor</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />

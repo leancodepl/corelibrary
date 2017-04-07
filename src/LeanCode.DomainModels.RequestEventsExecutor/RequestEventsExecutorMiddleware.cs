@@ -1,34 +1,31 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.DomainModels.MvcEventsExecutor
+namespace LeanCode.DomainModels.RequestEventsExecutor
 {
-    class MvcEventsExecutorMiddleware
+    class RequestEventsExecutorMiddleware
     {
-        private readonly EventExecutor eventExecutor;
-
         private readonly RequestDelegate next;
 
-        public MvcEventsExecutorMiddleware(
-            EventExecutor eventExecutor,
-            RequestDelegate next)
+        public RequestEventsExecutorMiddleware(RequestDelegate next)
         {
-            this.eventExecutor = eventExecutor;
             this.next = next;
         }
 
         public Task Invoke(HttpContext httpContext)
         {
+            var eventExecutor = httpContext.RequestServices.GetService<EventExecutor>();
             return eventExecutor.Execute(next, httpContext);
         }
     }
 
-    public static class MvcEventsExecutorMiddlewareExtensions
+    public static class RequestEventsExecutorMiddlewareExtensions
     {
         public static IApplicationBuilder UseEventsExecutor(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<MvcEventsExecutorMiddleware>();
+            return builder.UseMiddleware<RequestEventsExecutorMiddleware>();
         }
     }
 }

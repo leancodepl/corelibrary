@@ -3,7 +3,7 @@ using System.Threading;
 using Autofac;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.MvcEventsExecutor
+namespace LeanCode.DomainModels.RequestEventsExecutor
 {
     class PerRequestEventsStorage : IDomainEventStorage, IStartable
     {

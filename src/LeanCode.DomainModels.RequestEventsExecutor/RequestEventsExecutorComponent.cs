@@ -3,12 +3,12 @@ using AutoMapper;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.DomainModels.MvcEventsExecutor
+namespace LeanCode.DomainModels.RequestEventsExecutor
 {
-    public class MvcEventsExecutorComponent : IAppComponent
+    public class RequestEventsExecutorComponent : IAppComponent
     {
         public Profile MapperProfile => null;
-        public IModule AutofacModule { get; } = new MvcEventsExecutorModule();
+        public IModule AutofacModule { get; } = new RequestEventsExecutorModule();
 
         public void ConfigureServices(IServiceCollection services)
         { }
