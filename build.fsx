@@ -8,7 +8,7 @@ let srcDir = rootDir @@ "src"
 let testDir = rootDir @@ "test"
 let packDir = rootDir @@ "packed"
 
-let libVersionFile = srcDir @@ "targets/Lib.targets"
+let libVersionFile = srcDir @@ "targets/Version.targets"
 
 let configuration = getBuildParamOrDefault "configuration" "Release"
 

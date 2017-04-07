@@ -3,13 +3,12 @@
     <Authors>LeanCode</Authors>
     <IncludeSymbols>true</IncludeSymbols>
     <Description>LeanCode Core library</Description>
-
-    <!-- Generated (semi)automatically, do not change manually -->
-    <Version>0.1.0</Version>
-    <PackageReleaseNotes></PackageReleaseNotes>
-
   </PropertyGroup>
+
   <ItemGroup>
     <Content Include="../../*.md" PackagePath="" />
   </ItemGroup>
+
+  <Import Project="Version.targets" />
+  <Import Project="Dependencies.targets" />
 </Project>

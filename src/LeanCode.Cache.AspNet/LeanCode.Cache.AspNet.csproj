@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
-  <Import Project="../targets/Mvc.targets" />
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
