@@ -101,10 +101,11 @@ Target "Default" DoNothing
     ==> "Build"
     ==> "Test"
     ==> "Default"
-    ==> "UpdateVersion"
     ==> "Pack"
     ==> "PublishToMyGet"
 
+"UpdateVersion" ?=> "Restore"
+"UpdateVersion" ==> "Pack"
 "UpdateVersion" ==> "Release"
 
 RunTargetOrDefault "Default"
