@@ -1,13 +1,12 @@
-using System;
 using Autofac;
 
 namespace LeanCode.CQRS.Autofac
 {
     class AutofacCommandHandlerResolver : ICommandHandlerResolver
     {
-        private readonly Func<IComponentContext> componentContext;
+        private readonly IComponentContext componentContext;
 
-        public AutofacCommandHandlerResolver(Func<IComponentContext> componentContext)
+        public AutofacCommandHandlerResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
@@ -15,7 +14,7 @@ namespace LeanCode.CQRS.Autofac
         public ICommandHandler<TCommand> FindCommandHandler<TCommand>() where TCommand : ICommand
         {
             ICommandHandler<TCommand> handler;
-            componentContext().TryResolve<ICommandHandler<TCommand>>(out handler);
+            componentContext.TryResolve<ICommandHandler<TCommand>>(out handler);
             return handler;
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using Autofac;
 using FluentValidation;
 using LeanCode.CQRS.Validation;
@@ -7,9 +6,9 @@ namespace LeanCode.CQRS.FluentValidation
 {
     class AutofacFluentValidatorResolver : ICommandValidatorResolver
     {
-        private readonly Func<IComponentContext> componentContext;
+        private readonly IComponentContext componentContext;
 
-        public AutofacFluentValidatorResolver(Func<IComponentContext> componentContext)
+        public AutofacFluentValidatorResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
@@ -18,7 +17,7 @@ namespace LeanCode.CQRS.FluentValidation
             where TCommand : ICommand
         {
             IValidator<TCommand> validator;
-            if (componentContext().TryResolve<IValidator<TCommand>>(out validator))
+            if (componentContext.TryResolve<IValidator<TCommand>>(out validator))
             {
                 return new FluentValidationCommandValidatorAdapter<TCommand>(validator);
             }

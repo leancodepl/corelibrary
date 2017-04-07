@@ -26,8 +26,8 @@ namespace LeanCode.CQRS.Autofac
         {
             builder.RegisterSource(new ContravariantRegistrationSource());
 
-            builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>().SingleInstance();
-            builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>().SingleInstance();
+            builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
+            builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
 
             builder.RegisterType<DefaultQueryExecutor>().As<IQueryExecutor>();
             builder.RegisterType<DefaultCommandExecutor>().As<ICommandExecutor>();

@@ -1,13 +1,12 @@
-using System;
 using Autofac;
 
 namespace LeanCode.CQRS.MvcValidation
 {
     class AutofacCommandResultTranslatorResolver : ICommandResultTranslatorResolver
     {
-        private readonly Func<IComponentContext> componentContext;
+        private readonly IComponentContext componentContext;
 
-        public AutofacCommandResultTranslatorResolver(Func<IComponentContext> componentContext)
+        public AutofacCommandResultTranslatorResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
@@ -16,7 +15,7 @@ namespace LeanCode.CQRS.MvcValidation
             where TCommand : ICommand
         {
             ICommandResultTranslator<TCommand> validator;
-            componentContext().TryResolve<ICommandResultTranslator<TCommand>>(out validator);
+            componentContext.TryResolve<ICommandResultTranslator<TCommand>>(out validator);
             return validator;
         }
     }

@@ -10,12 +10,12 @@ namespace LeanCode.CQRS.Autofac
         private static readonly Type QueryHandlerBase = typeof(IQueryHandler<,>);
         private static readonly Type QueryHandlerWrapperBase = typeof(QueryHandlerWrapper<,>);
 
-        private readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
+        private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
             new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
 
-        private readonly Func<IComponentContext> componentContext;
+        private readonly IComponentContext componentContext;
 
-        public AutofacQueryHandlerResolver(Func<IComponentContext> componentContext)
+        public AutofacQueryHandlerResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
@@ -33,7 +33,7 @@ namespace LeanCode.CQRS.Autofac
             });
 
             object handler;
-            componentContext().TryResolve(cached.Item1, out handler);
+            componentContext.TryResolve(cached.Item1, out handler);
 
             if (handler == null)
             {

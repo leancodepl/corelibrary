@@ -14,12 +14,12 @@ namespace LeanCode.ComainModels.Autofac
         private static readonly Type EventHandlerBase = typeof(IDomainEventHandler<>);
         private static readonly Type EventHandlerWrapperBase = typeof(EventHandlerWrapper<>);
 
-        private readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
+        private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
             new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
 
-        private readonly Func<IComponentContext> componentContext;
+        private readonly IComponentContext componentContext;
 
-        public AutofacEventHandlerResolver(Func<IComponentContext> componentContext)
+        public AutofacEventHandlerResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
@@ -35,7 +35,7 @@ namespace LeanCode.ComainModels.Autofac
             });
 
             object handlers;
-            componentContext().TryResolve(cached.Item1, out handlers);
+            componentContext.TryResolve(cached.Item1, out handlers);
             return ((IEnumerable<object>)handlers)
                 .Select(h => (IDomainEventHandlerWrapper)cached.Item2.Invoke(new[] { h }))
                 .ToList();
