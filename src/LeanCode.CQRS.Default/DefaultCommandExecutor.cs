@@ -23,7 +23,7 @@ namespace LeanCode.CQRS.Default
             this.commandValidatorResolver = commandValidatorResolver;
         }
 
-        public Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
+        public Task<CommandResult> RunAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             logger.Verbose("Executing command {@Command}", command);

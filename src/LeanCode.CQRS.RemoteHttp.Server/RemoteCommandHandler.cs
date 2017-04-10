@@ -53,7 +53,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private Task<CommandResult> ExecuteCommand<TCommand>(object cmd)
             where TCommand : IRemoteCommand
         {
-            return commandExecutor.ExecuteAsync((TCommand)cmd);
+            return commandExecutor.RunAsync((TCommand)cmd);
         }
     }
 }

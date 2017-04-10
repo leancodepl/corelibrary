@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public static readonly ValidationError SampleError = new ValidationError("Prop", "999", 2, 999);
         public ICommand LastCommand { get; private set; }
 
-        public Task<CommandResult> ExecuteAsync<TCommand>(TCommand command) where TCommand : ICommand
+        public Task<CommandResult> RunAsync<TCommand>(TCommand command) where TCommand : ICommand
         {
             LastCommand = command;
             if (LastCommand is SampleRemoteCommand cmd)

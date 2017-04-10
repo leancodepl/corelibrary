@@ -15,15 +15,15 @@ namespace LeanCode.CQRS.Default
             this.queryExecutor = queryExecutor;
         }
 
-        public Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
+        public Task<CommandResult> RunAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            return commandExecutor.ExecuteAsync(command);
+            return commandExecutor.RunAsync(command);
         }
 
-        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
+        public Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
         {
-            return queryExecutor.QueryAsync(query);
+            return queryExecutor.GetAsync(query);
         }
     }
 }

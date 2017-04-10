@@ -35,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             };
         }
 
-        public async Task<TResult> ExecuteAsync<TResult>(IRemoteQuery<TResult> query)
+        public async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
         {
             var stringified = JsonConvert.SerializeObject(query);
             using (var content = new StringContent(stringified, Encoding.UTF8, "application/json"))

@@ -5,7 +5,7 @@ namespace LeanCode.CQRS
 {
     public interface ICommandExecutor
     {
-        Task<CommandResult> ExecuteAsync<TCommand>(TCommand command)
+        Task<CommandResult> RunAsync<TCommand>(TCommand command)
             where TCommand : ICommand;
     }
 

@@ -49,7 +49,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private Task<object> ExecuteQuery<TQuery, TResult>(object cmd)
             where TQuery : IRemoteQuery<TResult>
         {
-            return queryExecutor.QueryAsync((TQuery)cmd).ContinueWith(e => (object)e.Result);
+            return queryExecutor.GetAsync((TQuery)cmd).ContinueWith(e => (object)e.Result);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)

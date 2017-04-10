@@ -5,7 +5,7 @@ namespace LeanCode.CQRS
 {
     public interface IQueryExecutor
     {
-        Task<TResult> QueryAsync<TResult>(IQuery<TResult> query);
+        Task<TResult> GetAsync<TResult>(IQuery<TResult> query);
     }
 
     public class QueryHandlerNotFoundException : Exception

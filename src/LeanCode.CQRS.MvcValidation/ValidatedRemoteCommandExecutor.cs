@@ -73,7 +73,7 @@ namespace LeanCode.CQRS.MvcValidation
         private async Task<bool> ExecuteAndMap<TCommand>(TCommand command, ModelStateDictionary modelState)
             where TCommand : IRemoteCommand
         {
-            var result = await commandExecutor.ExecuteAsync(command);
+            var result = await commandExecutor.RunAsync(command);
             if (!result.WasSuccessful)
             {
                 DirectMapToModelState(result, modelState);
@@ -89,7 +89,7 @@ namespace LeanCode.CQRS.MvcValidation
         {
             try
             {
-                var result = await commandExecutor.ExecuteAsync(command);
+                var result = await commandExecutor.RunAsync(command);
                 if (!result.WasSuccessful)
                 {
                     MapResultToModelState(command, result, translator, modelState);

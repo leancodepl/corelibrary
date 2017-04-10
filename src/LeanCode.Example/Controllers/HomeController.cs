@@ -19,7 +19,7 @@ namespace LeanCode.Example.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var result = await cqrs.QueryAsync(new CQRS.SampleQuery());
+            var result = await cqrs.GetAsync(new CQRS.SampleQuery());
             return Content(result.Name);
         }
 
@@ -28,7 +28,7 @@ namespace LeanCode.Example.Controllers
         {
             try
             {
-                await cqrs.ExecuteAsync(new CQRS.SampleCommand("Name"));
+                await cqrs.RunAsync(new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }
             catch (Exception e)
@@ -41,15 +41,15 @@ namespace LeanCode.Example.Controllers
         public async Task<IActionResult> RemoteQuery()
         {
             var client = new HttpQueriesExecutor(new Uri("http://localhost:5000/api/"));
-            return Json(await client.ExecuteAsync(new CQRS.SampleQuery()));
+            return Json(await client.GetAsync(new CQRS.SampleQuery()));
         }
 
         [HttpGet("remote/do")]
         public async Task<IActionResult> RemoteCommand(string name = "")
         {
             var client = new HttpCommandsExecutor(new Uri("http://localhost:5000/api/"));
-            await client.ExecuteAsync(new CQRS.SampleCommand(name));
-            return Json(await client.ExecuteAsync(new CQRS.SampleCommand(name)));
+            await client.RunAsync(new CQRS.SampleCommand(name));
+            return Json(await client.RunAsync(new CQRS.SampleCommand(name)));
         }
     }
 }

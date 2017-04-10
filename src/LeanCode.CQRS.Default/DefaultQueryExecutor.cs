@@ -27,7 +27,7 @@ namespace LeanCode.CQRS.Default
             this.authorizationChecker = authorizationChecker;
         }
 
-        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query)
+        public Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
         {
             logger.Verbose("Executing query {@Query}", query);
             AuthorizeQuery(query);
