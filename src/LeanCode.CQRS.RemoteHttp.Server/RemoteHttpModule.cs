@@ -1,4 +1,5 @@
 using Autofac;
+using LeanCode.Components;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {

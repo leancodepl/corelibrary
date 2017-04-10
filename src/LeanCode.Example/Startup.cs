@@ -25,16 +25,9 @@ namespace LeanCode.Example
             return base.ConfigureServices(services);
         }
 
-        protected override Type[] SearchAssemblies
-        {
-            get
-            {
-                return new[]
-                {
-                    typeof(Startup)
-                };
-            }
-        }
+        protected override TypesCatalog TypesCatalog { get; } = new TypesCatalog(
+            typeof(Startup)
+        );
 
         protected override IWebApplication[] CreateApplications()
         {
@@ -49,12 +42,12 @@ namespace LeanCode.Example
             return new IAppComponent[]
             {
                 new InMemoryCacheComponent(),
-                new CQRSComponent(SearchAssemblies),
-                new FluentValidationComponent(SearchAssemblies),
-                new MvcValidationComponent(SearchAssemblies),
-                new DomainModelsComponent(SearchAssemblies),
+                new CQRSComponent(TypesCatalog),
+                new FluentValidationComponent(TypesCatalog),
+                new MvcValidationComponent(TypesCatalog),
+                new DomainModelsComponent(TypesCatalog),
                 new RequestEventsExecutorComponent(),
-                new RemoteCQRSHttpComponent(new TypesCatalog(typeof(Startup))),
+                new RemoteCQRSHttpComponent(TypesCatalog),
 
                 new MvcComponent()
             };

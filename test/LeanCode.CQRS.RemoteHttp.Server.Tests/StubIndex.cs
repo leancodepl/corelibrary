@@ -1,4 +1,5 @@
 using Autofac.Features.Indexed;
+using LeanCode.Components;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {

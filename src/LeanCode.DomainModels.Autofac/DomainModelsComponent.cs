@@ -1,4 +1,3 @@
-using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
@@ -11,9 +10,9 @@ namespace LeanCode.ComainModels.Autofac
         public IModule AutofacModule { get; }
         public Profile MapperProfile => null;
 
-        public DomainModelsComponent(Type[] searchAssemblies)
+        public DomainModelsComponent(TypesCatalog catalog)
         {
-            AutofacModule = new DomainModelsModule(searchAssemblies);
+            AutofacModule = new DomainModelsModule(catalog);
         }
 
         public void ConfigureServices(IServiceCollection services)

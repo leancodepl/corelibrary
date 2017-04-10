@@ -1,4 +1,3 @@
-using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
@@ -11,9 +10,9 @@ namespace LeanCode.CQRS.FluentValidation
         public IModule AutofacModule { get; }
         public Profile MapperProfile => null;
 
-        public FluentValidationComponent(Type[] searchAssemblies)
+        public FluentValidationComponent(TypesCatalog catalog)
         {
-            AutofacModule = new FluentValidationModule(searchAssemblies);
+            AutofacModule = new FluentValidationModule(catalog);
         }
 
         public void ConfigureServices(IServiceCollection services)

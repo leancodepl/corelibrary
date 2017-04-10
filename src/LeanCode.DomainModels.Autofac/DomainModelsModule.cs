@@ -1,8 +1,6 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Autofac;
 using Autofac.Features.Variance;
+using LeanCode.Components;
 using LeanCode.DomainModels.Model;
 using Module = Autofac.Module;
 
@@ -10,13 +8,11 @@ namespace LeanCode.ComainModels.Autofac
 {
     public class DomainModelsModule : Module
     {
-        private readonly Assembly[] assemblies;
+        private readonly TypesCatalog catalog;
 
-        public DomainModelsModule(Type[] searchAssemblies)
+        public DomainModelsModule(TypesCatalog catalog)
         {
-            assemblies = searchAssemblies
-                .Select(t => t.GetTypeInfo().Assembly)
-                .ToArray();
+            this.catalog = catalog;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -24,7 +20,7 @@ namespace LeanCode.ComainModels.Autofac
             builder.RegisterSource(new ContravariantRegistrationSource());
 
             builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();
-            builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
         }
     }
 }

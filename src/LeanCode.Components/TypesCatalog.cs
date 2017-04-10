@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace LeanCode.CQRS.RemoteHttp.Server
+namespace LeanCode.Components
 {
     public sealed class TypesCatalog : IEquatable<TypesCatalog>
     {

@@ -52,7 +52,7 @@ namespace LeanCode.Components.Startup
             DefaultConnectionString = Configuration.GetConnectionString(DatabaseConnectionStringName);
 
             Log.Logger = new LoggerConfiguration()
-                .DestructureCommonObjects(SearchAssemblies)
+                .DestructureCommonObjects(TypesCatalog.Assemblies)
                 .EnrichWithAppName(appName)
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
@@ -149,6 +149,6 @@ namespace LeanCode.Components.Startup
 
         protected abstract IAppComponent[] CreateComponents();
         protected abstract IWebApplication[] CreateApplications();
-        protected abstract Type[] SearchAssemblies { get; }
+        protected abstract TypesCatalog TypesCatalog { get; }
     }
 }

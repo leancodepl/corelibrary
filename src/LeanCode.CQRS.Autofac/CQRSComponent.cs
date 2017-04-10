@@ -1,4 +1,3 @@
-using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
@@ -11,9 +10,9 @@ namespace LeanCode.CQRS.Autofac
         public IModule AutofacModule { get; }
         public Profile MapperProfile => null;
 
-        public CQRSComponent(Type[] searchAssemblies)
+        public CQRSComponent(TypesCatalog catalog)
         {
-            AutofacModule = new CQRSModule(searchAssemblies);
+            AutofacModule = new CQRSModule(catalog);
         }
 
         public void ConfigureServices(IServiceCollection services)

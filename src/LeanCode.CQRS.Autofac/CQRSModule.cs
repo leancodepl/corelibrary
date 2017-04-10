@@ -1,25 +1,19 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Autofac;
 using Autofac.Features.Variance;
+using LeanCode.Components;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Default.Security;
 using LeanCode.CQRS.Security;
-
-using Module = Autofac.Module;
 
 namespace LeanCode.CQRS.Autofac
 {
     class CQRSModule : Module
     {
-        private readonly Assembly[] assemblies;
+        private readonly TypesCatalog catalog;
 
-        public CQRSModule(Type[] searchAssemblies)
+        public CQRSModule(TypesCatalog catalog)
         {
-            assemblies = searchAssemblies
-                .Select(t => t.GetTypeInfo().Assembly)
-                .ToArray();
+            this.catalog = catalog;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -35,8 +29,8 @@ namespace LeanCode.CQRS.Autofac
             builder.RegisterType<DefaultQueryCacheKeyProvider>().As<IQueryCacheKeyProvider>();
             builder.RegisterType<PositiveAuthorizationChecker>().As<IAuthorizationChecker>();
 
-            builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(ICommandHandler<>));
-            builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(IQueryHandler<,>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,>));
         }
     }
 }

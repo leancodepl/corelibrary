@@ -1,20 +1,16 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Autofac;
+using LeanCode.Components;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace LeanCode.CQRS.MvcValidation
 {
     class MvcValidationModule : Autofac.Module
     {
-        private readonly Assembly[] assemblies;
+        private readonly TypesCatalog catalog;
 
-        public MvcValidationModule(Type[] searchAssemblies)
+        public MvcValidationModule(TypesCatalog catalog)
         {
-            assemblies = searchAssemblies
-                .Select(t => t.GetTypeInfo().Assembly)
-                .ToArray();
+            this.catalog = catalog;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -24,7 +20,7 @@ namespace LeanCode.CQRS.MvcValidation
             builder.RegisterType<ValidatedCommandExecutor>().AsSelf();
             builder.RegisterType<ValidatedRemoteCommandExecutor>().AsSelf();
 
-            builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(ICommandResultTranslator<>)).SingleInstance();
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandResultTranslator<>)).SingleInstance();
         }
     }
 }

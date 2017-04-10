@@ -1,14 +1,15 @@
 using System;
 using Autofac;
 using Autofac.Features.Indexed;
+using LeanCode.Components;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     public class RemoteHttpServerComponentTests
     {
-        private static readonly TypesCatalog ThisCatalog = new TypesCatalog(typeof(RemoteHttpServerComponentTests));
-        private static readonly TypesCatalog OtherCatalog = new TypesCatalog(typeof(String));
+        private static TypesCatalog ThisCatalog => new TypesCatalog(typeof(RemoteHttpServerComponentTests));
+        private static TypesCatalog OtherCatalog => new TypesCatalog(typeof(String));
 
         private readonly ContainerBuilder builder;
 
@@ -34,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.True(builder.Build().TryResolve<IIndex<TypesCatalog, RemoteQueryHandler>>(out var factory));
 
             var qh = factory[ThisCatalog];
-            Assert.Same(ThisCatalog, qh.Catalog);
+            Assert.Equal(ThisCatalog, qh.Catalog);
         }
 
         [Fact]
@@ -45,7 +46,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.True(builder.Build().TryResolve<IIndex<TypesCatalog, RemoteCommandHandler>>(out var factory));
 
             var ch = factory[ThisCatalog];
-            Assert.Same(ThisCatalog, ch.Catalog);
+            Assert.Equal(ThisCatalog, ch.Catalog);
         }
 
         [Fact]

@@ -40,7 +40,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             var stringified = JsonConvert.SerializeObject(command);
             using (var content = new StringContent(stringified, Encoding.UTF8, "application/json"))
             {
-                using (var response = await client.PostAsync("command/" + command.GetType().FullName, content))
+                using (var response = await client.PostAsync("command/" + command.GetType().FullName, content).ConfigureAwait(false))
                 {
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -56,7 +56,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                     }
                     if ((int)response.StatusCode == 422)
                     {
-                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         return JsonConvert.DeserializeObject<CommandResult>(responseContent);
                     }
                     return CommandResult.Success();

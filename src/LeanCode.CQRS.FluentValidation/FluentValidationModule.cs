@@ -1,30 +1,24 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Autofac;
 using FluentValidation;
+using LeanCode.Components;
 using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.FluentValidation
 {
-    class FluentValidationModule : Autofac.Module
+    class FluentValidationModule : Module
     {
-        private readonly Assembly[] assemblies;
+        private readonly TypesCatalog catalog;
 
-        public FluentValidationModule(Type[] searchAssemblies)
+        public FluentValidationModule(TypesCatalog catalog)
         {
-            assemblies = searchAssemblies
-                .Select(t => t.GetTypeInfo().Assembly)
-                .ToArray();
+            this.catalog = catalog;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<AutofacFluentValidatorResolver>().As<ICommandValidatorResolver>();
 
-            builder.RegisterAssemblyTypes(assemblies)
-                .AsClosedTypesOf(typeof(IValidator<>))
-                .SingleInstance();
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IValidator<>)).SingleInstance();
         }
     }
 }

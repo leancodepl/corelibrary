@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using LeanCode.Components;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {

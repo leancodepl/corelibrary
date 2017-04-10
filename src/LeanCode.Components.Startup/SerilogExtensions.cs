@@ -11,7 +11,7 @@ namespace LeanCode.Components.Startup
     {
         public static LoggerConfiguration DestructureCommonObjects(
             this LoggerConfiguration config,
-            Type[] searchAssemblies)
+            Assembly[] searchAssemblies)
         {
             var policies = SelectTypes<IDestructuringPolicy>(searchAssemblies);
             return policies.Aggregate(config, (a, s) => a.Destructure.With(s));
@@ -24,11 +24,11 @@ namespace LeanCode.Components.Startup
             return config.Enrich.WithProperty("AppName", appName);
         }
 
-        private static List<TType> SelectTypes<TType>(Type[] searchAssemblies)
+        private static List<TType> SelectTypes<TType>(Assembly[] searchAssemblies)
         {
             return
                 searchAssemblies
-                .SelectMany(t => t.GetTypeInfo().Assembly.ExportedTypes)
+                .SelectMany(a => a.ExportedTypes)
                 .Where(t =>
                     typeof(TType).IsAssignableFrom(t) &&
                     t.GetTypeInfo().IsPublic &&
