@@ -1,19 +1,18 @@
-using System.Reflection;
 using Autofac.Features.Indexed;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    class StubIndex<T> : IIndex<Assembly, T>
+    class StubIndex<T> : IIndex<TypesCatalog, T>
     {
         private readonly T obj;
-        public T this[Assembly key] => obj;
+        public T this[TypesCatalog key] => obj;
 
         public StubIndex(T obj)
         {
             this.obj = obj;
         }
 
-        public bool TryGetValue(Assembly key, out T value)
+        public bool TryGetValue(TypesCatalog key, out T value)
         {
             value = obj;
             return true;

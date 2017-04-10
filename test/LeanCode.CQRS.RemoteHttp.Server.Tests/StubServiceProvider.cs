@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Autofac.Features.Indexed;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
@@ -17,11 +16,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         public object GetService(Type serviceType)
         {
-            if (serviceType == typeof(IIndex<Assembly, RemoteCommandHandler>))
+            if (serviceType == typeof(IIndex<TypesCatalog, RemoteCommandHandler>))
             {
                 return StubIndex.Create(command);
             }
-            else if (serviceType == typeof(IIndex<Assembly, RemoteQueryHandler>))
+            else if (serviceType == typeof(IIndex<TypesCatalog, RemoteQueryHandler>))
             {
                 return StubIndex.Create(query);
             }

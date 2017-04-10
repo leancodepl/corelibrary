@@ -54,7 +54,7 @@ namespace LeanCode.Example
                 new MvcValidationComponent(SearchAssemblies),
                 new DomainModelsComponent(SearchAssemblies),
                 new RequestEventsExecutorComponent(),
-                new RemoteCQRSHttpComponent(typeof(Startup)),
+                new RemoteCQRSHttpComponent(new TypesCatalog(typeof(Startup))),
 
                 new MvcComponent()
             };

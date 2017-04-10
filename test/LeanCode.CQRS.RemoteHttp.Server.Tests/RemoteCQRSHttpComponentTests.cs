@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Autofac;
 using Autofac.Features.Indexed;
 using Xunit;
@@ -8,8 +7,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     public class RemoteHttpServerComponentTests
     {
-        private static readonly Assembly ThisAssembly = typeof(RemoteHttpServerComponentTests).GetTypeInfo().Assembly;
-        private static readonly Assembly OtherAssembly = typeof(String).GetTypeInfo().Assembly;
+        private static readonly TypesCatalog ThisCatalog = new TypesCatalog(typeof(RemoteHttpServerComponentTests));
+        private static readonly TypesCatalog OtherCatalog = new TypesCatalog(typeof(String));
 
         private readonly ContainerBuilder builder;
 
@@ -32,10 +31,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             Register();
 
-            Assert.True(builder.Build().TryResolve<IIndex<Assembly, RemoteQueryHandler>>(out var factory));
+            Assert.True(builder.Build().TryResolve<IIndex<TypesCatalog, RemoteQueryHandler>>(out var factory));
 
-            var qh = factory[ThisAssembly];
-            Assert.Same(ThisAssembly, qh.TypesAssembly);
+            var qh = factory[ThisCatalog];
+            Assert.Same(ThisCatalog, qh.Catalog);
         }
 
         [Fact]
@@ -43,20 +42,20 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             Register();
 
-            Assert.True(builder.Build().TryResolve<IIndex<Assembly, RemoteCommandHandler>>(out var factory));
+            Assert.True(builder.Build().TryResolve<IIndex<TypesCatalog, RemoteCommandHandler>>(out var factory));
 
-            var ch = factory[ThisAssembly];
-            Assert.Same(ThisAssembly, ch.TypesAssembly);
+            var ch = factory[ThisCatalog];
+            Assert.Same(ThisCatalog, ch.Catalog);
         }
 
         [Fact]
         public void Returns_different_query_handlers_for_different_assemblies()
         {
             Register();
-            var factory = builder.Build().Resolve<IIndex<Assembly, RemoteQueryHandler>>();
+            var factory = builder.Build().Resolve<IIndex<TypesCatalog, RemoteQueryHandler>>();
 
-            var qh1 = factory[ThisAssembly];
-            var qh2 = factory[OtherAssembly];
+            var qh1 = factory[ThisCatalog];
+            var qh2 = factory[OtherCatalog];
 
             Assert.NotSame(qh1, qh2);
         }
@@ -65,10 +64,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public void Returns_the_same_query_handlers_for_the_same_assemblies()
         {
             Register();
-            var factory = builder.Build().Resolve<IIndex<Assembly, RemoteQueryHandler>>();
+            var factory = builder.Build().Resolve<IIndex<TypesCatalog, RemoteQueryHandler>>();
 
-            var qh1 = factory[ThisAssembly];
-            var qh2 = factory[ThisAssembly];
+            var qh1 = factory[ThisCatalog];
+            var qh2 = factory[ThisCatalog];
 
             Assert.Same(qh1, qh2);
         }
@@ -77,10 +76,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public void Returns_different_command_handlers_for_different_assemblies()
         {
             Register();
-            var factory = builder.Build().Resolve<IIndex<Assembly, RemoteCommandHandler>>();
+            var factory = builder.Build().Resolve<IIndex<TypesCatalog, RemoteCommandHandler>>();
 
-            var qh1 = factory[ThisAssembly];
-            var qh2 = factory[OtherAssembly];
+            var qh1 = factory[ThisCatalog];
+            var qh2 = factory[OtherCatalog];
 
             Assert.NotSame(qh1, qh2);
         }
@@ -89,20 +88,20 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public void Returns_the_same_command_handlers_for_the_same_assemblies()
         {
             Register();
-            var factory = builder.Build().Resolve<IIndex<Assembly, RemoteCommandHandler>>();
+            var factory = builder.Build().Resolve<IIndex<TypesCatalog, RemoteCommandHandler>>();
 
-            var qh1 = factory[ThisAssembly];
-            var qh2 = factory[ThisAssembly];
+            var qh1 = factory[ThisCatalog];
+            var qh2 = factory[ThisCatalog];
 
             Assert.Same(qh1, qh2);
         }
 
         private void Register()
         {
-            var component1 = new RemoteCQRSHttpComponent(ThisAssembly);
+            var component1 = new RemoteCQRSHttpComponent(ThisCatalog);
             builder.RegisterModule(component1.AutofacModule);
 
-            var component2 = new RemoteCQRSHttpComponent(OtherAssembly);
+            var component2 = new RemoteCQRSHttpComponent(OtherCatalog);
             builder.RegisterModule(component2.AutofacModule);
         }
     }

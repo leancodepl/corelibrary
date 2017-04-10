@@ -1,14 +1,13 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 using System;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     public abstract class BaseMiddlewareTests
     {
-        private readonly Assembly assembly = typeof(BaseMiddlewareTests).GetTypeInfo().Assembly;
+        private readonly TypesCatalog catalog = new TypesCatalog(typeof(BaseMiddlewareTests));
         protected readonly StubQueryExecutor query = new StubQueryExecutor();
         protected readonly StubCommandExecutor command = new StubCommandExecutor();
         protected readonly RemoteCQRSMiddleware middleware;
@@ -22,10 +21,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName;
 
-            middleware = new RemoteCQRSMiddleware(null, assembly);
+            middleware = new RemoteCQRSMiddleware(null, catalog);
 
-            var commandHandler = new RemoteCommandHandler(command, assembly);
-            var queryHandler = new RemoteQueryHandler(query, assembly);
+            var commandHandler = new RemoteCommandHandler(command, catalog);
+            var queryHandler = new RemoteQueryHandler(query, catalog);
             this.serviceProvider = new StubServiceProvider(commandHandler, queryHandler);
         }
 

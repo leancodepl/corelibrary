@@ -1,25 +1,24 @@
-using System.Reflection;
 using Autofac;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
     class RemoteHttpModule : Autofac.Module
     {
-        private readonly Assembly typesAssembly;
+        private readonly TypesCatalog catalog;
 
-        public RemoteHttpModule(Assembly typesAssembly)
+        public RemoteHttpModule(TypesCatalog catalog)
         {
-            this.typesAssembly = typesAssembly;
+            this.catalog = catalog;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<RemoteCommandHandler>()
-                .Keyed<RemoteCommandHandler>(typesAssembly).WithParameter(nameof(typesAssembly), typesAssembly)
+                .Keyed<RemoteCommandHandler>(catalog).WithParameter(nameof(catalog), catalog)
                 .SingleInstance();
 
             builder.RegisterType<RemoteQueryHandler>()
-                .Keyed<RemoteQueryHandler>(typesAssembly).WithParameter(nameof(typesAssembly), typesAssembly)
+                .Keyed<RemoteQueryHandler>(catalog).WithParameter(nameof(catalog), catalog)
                 .SingleInstance();
         }
     }

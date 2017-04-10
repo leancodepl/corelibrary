@@ -13,8 +13,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly ICommandExecutor commandExecutor;
 
-        public RemoteCommandHandler(ICommandExecutor commandExecutor, Assembly typesAssembly)
-            : base(Serilog.Log.ForContext<RemoteCommandHandler>(), typesAssembly)
+        public RemoteCommandHandler(ICommandExecutor commandExecutor, TypesCatalog catalog)
+            : base(Serilog.Log.ForContext<RemoteCommandHandler>(), catalog)
         {
             this.commandExecutor = commandExecutor;
         }

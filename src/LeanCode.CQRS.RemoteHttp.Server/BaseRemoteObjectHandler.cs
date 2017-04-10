@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -11,15 +10,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private readonly JsonSerializer Serializer = new JsonSerializer();
 
-        public Assembly TypesAssembly { get; }
+        public TypesCatalog Catalog { get; }
 
         protected Serilog.ILogger Logger { get; }
 
-        public BaseRemoteObjectHandler(Serilog.ILogger logger, Assembly typesAssembly)
+        public BaseRemoteObjectHandler(Serilog.ILogger logger, TypesCatalog catalog)
         {
-            TypesAssembly = typesAssembly;
-
             Logger = logger;
+            Catalog = catalog;
         }
 
         public async Task<IActionResult> ExecuteAsync(HttpRequest request)
@@ -69,7 +67,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var idx = request.Path.Value.LastIndexOf('/');
             var name = idx != -1 ? request.Path.Value.Substring(idx + 1) : request.Path.Value;
-            return TypesAssembly.GetType(name);
+            return Catalog.GetType(name);
         }
 
         private object DeserializeObject(Type destType, Stream body)

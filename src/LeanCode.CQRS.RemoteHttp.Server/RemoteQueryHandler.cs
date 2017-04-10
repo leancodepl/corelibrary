@@ -14,8 +14,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IQueryExecutor queryExecutor;
 
-        public RemoteQueryHandler(IQueryExecutor queryExecutor, Assembly typesAssembly)
-            : base(Serilog.Log.ForContext<RemoteQueryHandler>(), typesAssembly)
+        public RemoteQueryHandler(IQueryExecutor queryExecutor, TypesCatalog catalog)
+            : base(Serilog.Log.ForContext<RemoteQueryHandler>(), catalog)
         {
             this.queryExecutor = queryExecutor;
         }

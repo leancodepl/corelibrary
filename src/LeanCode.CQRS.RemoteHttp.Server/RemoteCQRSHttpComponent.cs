@@ -1,5 +1,3 @@
-using System;
-using System.Reflection;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
@@ -13,13 +11,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         public Profile MapperProfile => null;
 
-        public RemoteCQRSHttpComponent(Type typesAssembly)
-            : this(typesAssembly.GetTypeInfo().Assembly)
-        { }
-
-        public RemoteCQRSHttpComponent(Assembly typesAssembly)
+        public RemoteCQRSHttpComponent(TypesCatalog catalog)
         {
-            AutofacModule = new RemoteHttpModule(typesAssembly);
+            AutofacModule = new RemoteHttpModule(catalog);
         }
 
         public void ConfigureServices(IServiceCollection services)
