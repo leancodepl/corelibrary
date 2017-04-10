@@ -7,7 +7,7 @@ These packages have to be correctly versioned. Use [Semantic Versioning](http://
 
 Change in required dependencies (major version bump) may be also considered a breaking change.
 
-To simplify versioning process, there exists `Lib.targets` file that specifies version and some NuGet-related properties. This forces all libs to have the same version. The file is generated automatically by `build.fsx`, based on `CHANGELOG.md`, so most of the changes should be made there, not in the `Lib.targets` file.
+To simplify versioning process, there exists `Version.targets` file that specifies version. This forces all libs to have the same version. The file is generated automatically by `build.fsx`, based on `CHANGELOG.md`, so changes should be made there, not in the `Version.targets` file.
 
 ### Referencing packages
 
