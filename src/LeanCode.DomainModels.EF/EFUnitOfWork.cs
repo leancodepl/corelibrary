@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LeanCode.DomainModels.DataAccess;
+using System.Threading.Tasks;
 
 namespace LeanCode.DomainModels.EF
 {
@@ -9,9 +10,9 @@ namespace LeanCode.DomainModels.EF
             : base(options)
         { }
 
-        public void Commit()
+        public Task CommitAsync()
         {
-            base.SaveChanges();
+            return base.SaveChangesAsync();
         }
     }
 }
