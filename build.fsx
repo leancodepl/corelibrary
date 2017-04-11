@@ -24,8 +24,7 @@ let updateChangelog (changeLog: ChangeLogHelper.ChangeLog) =
     let branch = Git.Information.getBranchName ""
     if branch = "master" then changeLog
     else
-        let lastTag = Git.Information.getLastTag ()
-        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD ^" + lastTag + " --count")
+        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD --count")
         let newVersion = { changeLog.LatestEntry.SemVer with Minor = changeLog.LatestEntry.SemVer.Minor + 1; Patch = 0 }
         let newVerString = newVersion.ToString() + "-alpha." + commits
         if Option.isSome changeLog.Unreleased
