@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
@@ -35,9 +36,9 @@ namespace LeanCode.DomainModels.EF
 
         public void DeleteRange(IEnumerable<TEntity> entities) => dbSet.RemoveRange(entities);
 
-        public TEntity Find(TIdentity id)
+        public async Task<TEntity> FindAsync(TIdentity id)
         {
-            return ProcessEntity(Load(id));
+            return ProcessEntity(await LoadAsync(id).ConfigureAwait(false));
         }
 
         private static TEntity ProcessEntity(TEntity entity)
@@ -50,6 +51,6 @@ namespace LeanCode.DomainModels.EF
             return entity;
         }
 
-        protected abstract TEntity Load(TIdentity id);
+        protected abstract Task<TEntity> LoadAsync(TIdentity id);
     }
 }

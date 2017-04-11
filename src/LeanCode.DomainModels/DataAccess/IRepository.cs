@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.DataAccess
@@ -11,7 +12,7 @@ namespace LeanCode.DomainModels.DataAccess
     public interface IRepository<TEntity, in TIdentity>
         where TEntity : class, IAggregateRoot<TIdentity>
     {
-        TEntity Find(TIdentity id);
+        Task<TEntity> FindAsync(TIdentity id);
         void Add(TEntity entity);
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);
