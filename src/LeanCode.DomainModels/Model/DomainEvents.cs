@@ -12,7 +12,7 @@ namespace LeanCode.DomainModels.Model
         public static void Raise<TEvent>(TEvent domainEvent)
             where TEvent : IDomainEvent
         {
-            eventsStorage.Store(domainEvent);
+            eventsStorage?.Store(domainEvent);
         }
     }
 }
