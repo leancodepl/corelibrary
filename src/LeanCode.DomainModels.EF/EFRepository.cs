@@ -18,7 +18,7 @@ namespace LeanCode.DomainModels.EF
     }
 
     public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<TEntity, TIdentity>
-        where TEntity: class, IAggregateRoot<TIdentity>
+        where TEntity : class, IAggregateRoot<TIdentity>
         where TContext : DbContext, IUnitOfWork
     {
         protected readonly DbSet<TEntity> dbSet;
