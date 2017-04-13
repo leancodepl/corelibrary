@@ -14,7 +14,7 @@ namespace LeanCode.CQRS
         Task ICommandHandler<TCommand>.ExecuteAsync(TCommand command)
         {
             Execute(command);
-            return Task.CompletedTask;
+            return Task.FromResult<object>(null);
         }
 
         public abstract void Execute(TCommand command);

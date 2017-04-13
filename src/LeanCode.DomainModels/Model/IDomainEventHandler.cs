@@ -14,7 +14,7 @@ namespace LeanCode.DomainModels.Model
         public Task HandleAsync(TEvent domainEvent)
         {
             Handle(domainEvent);
-            return Task.CompletedTask;
+            return Task.FromResult<object>(null);
         }
 
         public abstract void Handle(TEvent domainEvent);
