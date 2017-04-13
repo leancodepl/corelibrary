@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
-  <Import Project="../targets/PCL.targets" />
 
   <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.CQRS</AssemblyName>
     <PackageId>LeanCode.CQRS</PackageId>
