@@ -2,7 +2,7 @@
   <Import Project="../targets/Lib.targets" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.CQRS.RemoteHttp.Client</AssemblyName>
     <PackageId>LeanCode.CQRS.RemoteHttp.Client</PackageId>
