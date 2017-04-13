@@ -1,16 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../targets/Lib.targets" />
-  <Import Project="../targets/PCL.targets" />
-
+<Project>
   <PropertyGroup>
-    <DebugType>portable</DebugType>
-    <AssemblyName>LeanCode.DomainModels</AssemblyName>
-    <PackageId>LeanCode.DomainModels</PackageId>
+    <TargetFrameworks>netstandard1.3;portable-net45+win8+wpa81</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'portable-net45+win8+wpa81'">
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-</PropertyGroup>
+  </PropertyGroup>
 </Project>
