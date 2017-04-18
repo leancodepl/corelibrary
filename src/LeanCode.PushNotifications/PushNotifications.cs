@@ -26,15 +26,8 @@ namespace LeanCode.PushNotifications
             var token = await tokenProvider.GetToken(to, device).ConfigureAwait(false);
             if (token != null)
             {
-                try
-                {
-                    await Send(token, notification).ConfigureAwait(false);
-                    logger.Information("Notification to user {UserId} on device {Device} sent successfully", to, device);
-                }
-                catch (Exception e)
-                {
-                    logger.Warning(e, "Cannot send notification to user {UserId} on device {Device}", to, device);
-                }
+                var result = await Send(token, notification).ConfigureAwait(false);
+                await HandleResult(to, token, result).ConfigureAwait(false);
             }
             else
             {
@@ -49,15 +42,11 @@ namespace LeanCode.PushNotifications
             var tokens = await tokenProvider.GetAll(to).ConfigureAwait(false);
             if (tokens.Count > 0)
             {
-                var tasks = tokens.Select(t => Send(t, notification));
-                try
+                var results = await Task.WhenAll(tokens.Select(t => Send(t, notification))).ConfigureAwait(false);
+                // This may touch database, we need to linearize it
+                for (int i = 0; i < results.Length; i++)
                 {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-                    logger.Information("Notification to user {UserId} sent to devices {Devices}", tokens.Select(t => t.DeviceType));
-                }
-                catch (Exception e)
-                {
-                    logger.Warning(e, "Cannot send notification to user {UserId}", to);
+                    await HandleResult(to, tokens[i], results[i]).ConfigureAwait(false);
                 }
             }
             else
@@ -66,11 +55,46 @@ namespace LeanCode.PushNotifications
             }
         }
 
-        private Task Send(PushNotificationToken<TUserId> token, PushNotification notification)
+        private async Task<FCMResult> Send(PushNotificationToken<TUserId> token, PushNotification notification)
         {
             var converted = NotificationTransformer.Convert(token.DeviceType, notification);
             converted.To = token.Token;
-            return fcmClient.Send(converted);
+            try
+            {
+                return await fcmClient.Send(converted);
+            }
+            catch (Exception ex)
+            {
+                logger.Warning(ex, "Cannot send notification to device {DeviceType} - generic error", token.DeviceType);
+                return new FCMOtherError("Exception");
+            }
+        }
+
+        private Task HandleResult(TUserId to, PushNotificationToken<TUserId> token, FCMResult result)
+        {
+            switch (result)
+            {
+                case FCMHttpError e:
+                    logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, HTTP status {StatusCode}", to, token.DeviceType, e.StatusCode);
+                    break;
+
+                case FCMOtherError e:
+                    logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, FCM error: {FCMError}", to, token.DeviceType, e.Error);
+                    break;
+
+                case FCMInvalidToken e:
+                    logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, token is invalid", to, token.DeviceType);
+                    return tokenProvider.RemoveInvalidToken(to, token.DeviceType);
+
+                case FCMTokenUpdated e:
+                    logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);
+                    return tokenProvider.UpdateOrAddToken(to, token.DeviceType, e.NewToken);
+
+                case FCMSuccess e:
+                    logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);
+                    break;
+            }
+            return Task.CompletedTask;
         }
     }
 }

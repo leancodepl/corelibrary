@@ -13,11 +13,11 @@ namespace LeanCode.PushNotifications
 
     }
 
-    public sealed class FCMHTTPError : FCMResult
+    public sealed class FCMHttpError : FCMResult
     {
         public HttpStatusCode StatusCode { get; }
 
-        public FCMHTTPError(HttpStatusCode statusCode)
+        public FCMHttpError(HttpStatusCode statusCode)
         {
             this.StatusCode = statusCode;
         }

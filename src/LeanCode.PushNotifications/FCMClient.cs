@@ -42,7 +42,7 @@ namespace LeanCode.PushNotifications
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        return new FCMHTTPError(response.StatusCode);
+                        return new FCMHttpError(response.StatusCode);
                     }
 
                     var resultStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
