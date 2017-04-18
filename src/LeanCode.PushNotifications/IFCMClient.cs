@@ -1,9 +1,52 @@
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LeanCode.PushNotifications
 {
     public interface IFCMClient
     {
-        Task Send(FCMNotification notification);
+        Task<FCMResult> Send(FCMNotification notification);
     }
+
+    public abstract class FCMResult
+    {
+
+    }
+
+    public sealed class FCMHTTPError : FCMResult
+    {
+        public HttpStatusCode StatusCode { get; }
+
+        public FCMHTTPError(HttpStatusCode statusCode)
+        {
+            this.StatusCode = statusCode;
+        }
+    }
+
+    public sealed class FCMOtherError : FCMResult
+    {
+        public string Error { get; }
+
+        public FCMOtherError(string error)
+        {
+            this.Error = error;
+        }
+    }
+
+    public sealed class FCMInvalidToken : FCMResult
+    { }
+
+    public sealed class FCMSuccess : FCMResult
+    { }
+
+    public sealed class FCMTokenUpdated : FCMResult
+    {
+        public string NewToken { get; }
+
+        public FCMTokenUpdated(string newToken)
+        {
+            this.NewToken = newToken;
+        }
+    }
+
 }
