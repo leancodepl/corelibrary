@@ -19,7 +19,7 @@ namespace LeanCode.CQRS.FluentValidation
             IValidator<TCommand> validator;
             if (componentContext.TryResolve<IValidator<TCommand>>(out validator))
             {
-                return new FluentValidationCommandValidatorAdapter<TCommand>(validator);
+                return new FluentValidationCommandValidatorAdapter<TCommand>(validator, this.componentContext);
             }
             return null;
         }
