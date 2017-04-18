@@ -11,10 +11,10 @@ namespace LeanCode.PushNotifications
 
     public class PushNotificationToken<TUserId>
     {
-        public TUserId UserId { get; }
-        public DeviceType DeviceType { get; }
+        public TUserId UserId { get; set; }
+        public DeviceType DeviceType { get; set; }
 
-        public string Token { get; }
-        public DateTime DateCreated { get; }
+        public string Token { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }

@@ -7,6 +7,7 @@
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
     <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="NSubstitute" Version="2.0.2" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta1-build3642" />
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
   </ItemGroup>

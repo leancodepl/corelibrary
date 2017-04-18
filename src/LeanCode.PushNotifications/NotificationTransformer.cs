@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -8,6 +9,20 @@ namespace LeanCode.PushNotifications
         const string Priority = "high";
         const int TTL = 28 * 24 * 60 * 60;
         const string TypeField = "Type";
+
+        public static FCMNotification Convert(DeviceType deviceType, PushNotification notification)
+        {
+            switch (deviceType)
+            {
+                case DeviceType.Android:
+                    return ConvertToAndroid(notification);
+                case DeviceType.iOS:
+                    return ConvertToiOS(notification);
+                case DeviceType.Chrome:
+                    return ConvertToChrome(notification);
+            }
+            throw new ArgumentException("Unknown device type.", nameof(deviceType));
+        }
 
         public static FCMNotification ConvertToAndroid(PushNotification notification)
         {
