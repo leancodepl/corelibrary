@@ -1,17 +1,24 @@
+using System;
 using Xunit;
 
 namespace LeanCode.PushNotifications.Tests
 {
-    public class NotificationTransformerAndroidTests
+    public class NotificationTransformerAndroidTests : BaseNotificationTransformerTests<FCMAndroidNotificationPayload>
     {
+        protected override Func<PushNotification, FCMNotification<FCMAndroidNotificationPayload>> Convert { get; }
+            = NotificationTransformer.ConvertToAndroid;
+
         [Fact]
-        public void Sets_basic_fields_to_corresponding_values()
+        public void Sets_Android_specific_notification_payload_fields()
         {
-            var result = NotificationTransformer.ConvertToAndroid(new PushNotification(
-                title: "",
-                content: "",
-                data: null
-            ));
+            var notification = new PushNotification(
+                title: "The title",
+                content: "The content",
+                data: null);
+            var result = Convert(notification);
+
+            Assert.Null(result.Notification.Icon);
+            Assert.Equal("default", result.Notification.Sound);
         }
     }
 }
