@@ -6,7 +6,7 @@ namespace LeanCode.PushNotifications
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<FCMPushNotifications<TUserId>>().As<IPushNotifications<TUserId>>().SingleInstance();
+            // builder.RegisterType<FCMPushNotifications<TUserId>>().As<IPushNotifications<TUserId>>().SingleInstance();
         }
     }
 }

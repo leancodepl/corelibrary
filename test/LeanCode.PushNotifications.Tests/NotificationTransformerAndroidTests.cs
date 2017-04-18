@@ -3,9 +3,9 @@ using Xunit;
 
 namespace LeanCode.PushNotifications.Tests
 {
-    public class NotificationTransformerAndroidTests : BaseNotificationTransformerTests<FCMAndroidNotificationPayload>
+    public class NotificationTransformerAndroidTests : BaseNotificationTransformerTests
     {
-        protected override Func<PushNotification, FCMNotification<FCMAndroidNotificationPayload>> Convert { get; }
+        protected override Func<PushNotification, FCMNotification> Convert { get; }
             = NotificationTransformer.ConvertToAndroid;
 
         [Fact]
@@ -19,6 +19,7 @@ namespace LeanCode.PushNotifications.Tests
 
             Assert.Null(result.Notification.Icon);
             Assert.Equal("default", result.Notification.Sound);
+            Assert.Null(result.Notification.Badge);
         }
     }
 }

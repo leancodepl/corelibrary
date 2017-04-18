@@ -3,10 +3,9 @@ using Xunit;
 
 namespace LeanCode.PushNotifications.Tests
 {
-    public abstract class BaseNotificationTransformerTests<TPayload>
-        where TPayload : FCMNotificationPayload
+    public abstract class BaseNotificationTransformerTests
     {
-        protected abstract Func<PushNotification, FCMNotification<TPayload>> Convert { get; }
+        protected abstract Func<PushNotification, FCMNotification> Convert { get; }
 
         [Fact]
         public void Sets_basic_fields_to_corresponding_values()
@@ -94,7 +93,7 @@ namespace LeanCode.PushNotifications.Tests
             AssertElement(result, "Type", data.GetType().Name);
         }
 
-        private static void AssertElement(FCMNotification<TPayload> notification, string key, string expectedValue)
+        private static void AssertElement(FCMNotification notification, string key, string expectedValue)
         {
             Assert.True(notification.Data.TryGetValue(key, out var value));
             Assert.Equal(expectedValue, value);

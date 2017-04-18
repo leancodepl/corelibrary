@@ -9,39 +9,61 @@ namespace LeanCode.PushNotifications
         const int TTL = 28 * 24 * 60 * 60;
         const string TypeField = "Type";
 
-        public static FCMAndroidNotification ConvertToAndroid(PushNotification notification)
+        public static FCMNotification ConvertToAndroid(PushNotification notification)
         {
-            return new FCMAndroidNotification
+            return new FCMNotification
             {
                 To = null,
                 ContentAvailable = true,
                 Priority = "high",
                 TimeToLive = TTL,
-                Notification = new FCMAndroidNotificationPayload
+                Notification = new FCMNotificationPayload
                 {
                     Title = notification.Title,
                     Body = notification.Content,
                     Sound = "default",
-                    Icon = null
+                    Icon = null,
+                    Badge = null
                 },
                 Data = ConvertData(notification.Data)
             };
         }
 
-        public static FCMiOSNotification ConvertToiOS(PushNotification notification)
+        public static FCMNotification ConvertToiOS(PushNotification notification)
         {
-            return new FCMiOSNotification
+            return new FCMNotification
             {
                 To = null,
                 ContentAvailable = true,
                 Priority = "high",
                 TimeToLive = TTL,
-                Notification = new FCMiOSNotificationPayload
+                Notification = new FCMNotificationPayload
                 {
                     Title = notification.Title,
                     Body = notification.Content,
                     Sound = null,
+                    Icon = null,
                     Badge = "1"
+                },
+                Data = ConvertData(notification.Data)
+            };
+        }
+
+        public static FCMNotification ConvertToChrome(PushNotification notification)
+        {
+            return new FCMNotification
+            {
+                To = null,
+                ContentAvailable = true,
+                Priority = "high",
+                TimeToLive = TTL,
+                Notification = new FCMNotificationPayload
+                {
+                    Title = notification.Title,
+                    Body = notification.Content,
+                    Sound = null,
+                    Icon = null,
+                    Badge = null
                 },
                 Data = ConvertData(notification.Data)
             };
