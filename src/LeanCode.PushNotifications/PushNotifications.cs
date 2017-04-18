@@ -8,14 +8,14 @@ namespace LeanCode.PushNotifications
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotifications<TUserId>>();
 
-        private readonly IPushNotificationTokenProvider<TUserId> tokenProvider;
+        private readonly IPushNotificationTokenStore<TUserId> tokenStore;
         private readonly IFCMClient fcmClient;
 
         public PushNotifications(
-            IPushNotificationTokenProvider<TUserId> tokenProvider,
+            IPushNotificationTokenStore<TUserId> tokenStore,
             IFCMClient fcmClient)
         {
-            this.tokenProvider = tokenProvider;
+            this.tokenStore = tokenStore;
             this.fcmClient = fcmClient;
         }
 
@@ -23,7 +23,7 @@ namespace LeanCode.PushNotifications
         {
             logger.Verbose("Sending notification to user {UserId} on device {Device}", to, device);
 
-            var token = await tokenProvider.GetToken(to, device).ConfigureAwait(false);
+            var token = await tokenStore.GetToken(to, device).ConfigureAwait(false);
             if (token != null)
             {
                 var result = await Send(token, notification).ConfigureAwait(false);
@@ -39,7 +39,7 @@ namespace LeanCode.PushNotifications
         {
             logger.Verbose("Sending notification to user {UserId} on all devices", to);
 
-            var tokens = await tokenProvider.GetAll(to).ConfigureAwait(false);
+            var tokens = await tokenStore.GetAll(to).ConfigureAwait(false);
             if (tokens.Count > 0)
             {
                 var results = await Task.WhenAll(tokens.Select(t => Send(t, notification))).ConfigureAwait(false);
@@ -84,11 +84,11 @@ namespace LeanCode.PushNotifications
 
                 case FCMInvalidToken e:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, token is invalid", to, token.DeviceType);
-                    return tokenProvider.RemoveInvalidToken(to, token.DeviceType);
+                    return tokenStore.RemoveInvalidToken(to, token.DeviceType);
 
                 case FCMTokenUpdated e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);
-                    return tokenProvider.UpdateOrAddToken(to, token.DeviceType, e.NewToken);
+                    return tokenStore.UpdateOrAddToken(to, token.DeviceType, e.NewToken);
 
                 case FCMSuccess e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);

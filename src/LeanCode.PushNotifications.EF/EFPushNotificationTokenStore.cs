@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.PushNotifications.EF
 {
-    public sealed class EFPushNotificationTokenProvider : IPushNotificationTokenProvider<Guid>
+    public sealed class EFPushNotificationTokenStore : IPushNotificationTokenStore<Guid>
     {
         private readonly DbContext unitOfWork;
         private readonly DbSet<PushNotificationTokenEntity> dbSet;
 
-        public EFPushNotificationTokenProvider(DbContext unitOfWork)
+        public EFPushNotificationTokenStore(DbContext unitOfWork)
         {
             this.unitOfWork = unitOfWork;
             this.dbSet = unitOfWork.Set<PushNotificationTokenEntity>();

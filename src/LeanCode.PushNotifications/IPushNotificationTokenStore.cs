@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.PushNotifications
 {
-    public interface IPushNotificationTokenProvider<TUserId>
+    public interface IPushNotificationTokenStore<TUserId>
     {
         Task<PushNotificationToken<TUserId>> GetToken(TUserId userId, DeviceType deviceType);
         Task<List<PushNotificationToken<TUserId>>> GetAll(TUserId userId);
@@ -13,6 +13,6 @@ namespace LeanCode.PushNotifications
         Task RemoveInvalidToken(TUserId userId, DeviceType deviceType);
     }
 
-    public interface IPushNotificationTokenProvider : IPushNotificationTokenProvider<Guid>
+    public interface IPushNotificationTokenStore : IPushNotificationTokenStore<Guid>
     { }
 }
