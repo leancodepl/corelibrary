@@ -23,18 +23,18 @@ namespace LeanCode.CQRS.Default
             this.commandValidatorResolver = commandValidatorResolver;
         }
 
-        public Task<CommandResult> RunAsync<TCommand>(TCommand command)
+        public async Task<CommandResult> RunAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             logger.Verbose("Executing command {@Command}", command);
 
             AuthorizeCommand(command);
-            var failure = ValidateCommand(command);
+            var failure = await ValidateCommand(command).ConfigureAwait(false);
             if (failure != null)
             {
-                return Task.FromResult(failure);
+                return failure;
             }
-            return RunCommand(command);
+            return await RunCommand(command).ConfigureAwait(false);
         }
 
         private void AuthorizeCommand<TCommand>(TCommand command)
@@ -47,13 +47,13 @@ namespace LeanCode.CQRS.Default
             }
         }
 
-        private CommandResult ValidateCommand<TCommand>(TCommand command)
+        private async Task<CommandResult> ValidateCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             var commandValidator = commandValidatorResolver.GetValidator<TCommand>();
             if (commandValidator != null)
             {
-                var result = commandValidator.Validate(command);
+                var result = await commandValidator.ValidateAsync(command).ConfigureAwait(false);
                 if (!result.IsValid)
                 {
                     logger.Information("Command {@Command} is not valid", command);

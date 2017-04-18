@@ -1,8 +1,10 @@
-﻿namespace LeanCode.CQRS.Validation
+﻿using System.Threading.Tasks;
+
+namespace LeanCode.CQRS.Validation
 {
     public interface ICommandValidator<TCommand>
         where TCommand : ICommand
     {
-        ValidationResult Validate(TCommand command);
+        Task<ValidationResult> ValidateAsync(TCommand command);
     }
 }

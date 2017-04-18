@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Internal;
 
 using ValidationFailure = FluentValidation.Results.ValidationFailure;
+using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.FluentValidation
 {
@@ -20,11 +21,11 @@ namespace LeanCode.CQRS.FluentValidation
             this.componentContext = componentContext;
         }
 
-        public ValidationResult Validate(TCommand command)
+        public async Task<ValidationResult> ValidateAsync(TCommand command)
         {
             var ctx = PrepareContext(command);
 
-            var fluentValidationResult = fluentValidator.Validate(ctx);
+            var fluentValidationResult = await fluentValidator.ValidateAsync(ctx).ConfigureAwait(false);
             var mappedResult = fluentValidationResult.Errors
                 .Select(MapFluentError)
                 .ToList();
