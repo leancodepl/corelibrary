@@ -114,9 +114,9 @@ namespace LeanCode.PushNotifications.Tests
 
             provider.GetAll(uid).Returns(Task.FromResult(new List<PushNotificationToken<Guid>>
             {
-                new PushNotificationToken<Guid>{ Token = "a", DeviceType = DeviceType.Android },
-                new PushNotificationToken<Guid>{ Token = "b", DeviceType = DeviceType.iOS },
-                new PushNotificationToken<Guid>{ Token = "c", DeviceType = DeviceType.Chrome },
+                new PushNotificationToken<Guid>(uid, DeviceType.Android, "a"),
+                new PushNotificationToken<Guid>(uid, DeviceType.iOS, "b"),
+                new PushNotificationToken<Guid>(uid, DeviceType.Chrome, "c"),
             }));
 
             await sender.SendToAll(uid, new PushNotification("", "", null));
@@ -183,7 +183,7 @@ namespace LeanCode.PushNotifications.Tests
 
         private void SetToken(string token, Guid uid, DeviceType deviceType = DeviceType.Android)
         {
-            provider.GetToken(uid, deviceType).Returns(new PushNotificationToken<Guid> { Token = token, DeviceType = deviceType });
+            provider.GetToken(uid, deviceType).Returns(new PushNotificationToken<Guid>(uid, deviceType, token));
         }
 
         private async Task TestSendResult(FCMResult result)

@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.PushNotifications
 {
     public enum DeviceType
@@ -11,10 +9,15 @@ namespace LeanCode.PushNotifications
 
     public class PushNotificationToken<TUserId>
     {
-        public TUserId UserId { get; set; }
-        public DeviceType DeviceType { get; set; }
+        public TUserId UserId { get; }
+        public DeviceType DeviceType { get; }
+        public string Token { get; }
 
-        public string Token { get; set; }
-        public DateTime DateCreated { get; set; }
+        public PushNotificationToken(TUserId userId, DeviceType deviceType, string token)
+        {
+            UserId = userId;
+            DeviceType = deviceType;
+            Token = token;
+        }
     }
 }
