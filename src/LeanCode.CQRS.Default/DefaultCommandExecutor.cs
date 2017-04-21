@@ -11,15 +11,15 @@ namespace LeanCode.CQRS.Default
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultCommandExecutor>();
 
         private readonly ICommandHandlerResolver commandHandlerResolver;
-        private readonly IAuthorizationChecker authorizationChecker;
+        private readonly IAuthorizer authorizer;
         private readonly ICommandValidatorResolver commandValidatorResolver;
 
         public DefaultCommandExecutor(ICommandHandlerResolver commandHandlerResolver,
-            IAuthorizationChecker authorizationChecker,
+            IAuthorizer authorizer,
             ICommandValidatorResolver commandValidatorResolver)
         {
             this.commandHandlerResolver = commandHandlerResolver;
-            this.authorizationChecker = authorizationChecker;
+            this.authorizer = authorizer;
             this.commandValidatorResolver = commandValidatorResolver;
         }
 
@@ -40,7 +40,7 @@ namespace LeanCode.CQRS.Default
         private void AuthorizeCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            if (!authorizationChecker.CheckIfAuthorized(command))
+            if (!authorizer.CheckIfAuthorized(command))
             {
                 logger.Warning("Command {@Command} not authorized", command);
                 throw new InsufficientPermissionException($"User not authorized for {command.GetType()}");

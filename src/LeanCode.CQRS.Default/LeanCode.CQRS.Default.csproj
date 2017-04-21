@@ -10,6 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../LeanCode.Cache/LeanCode.Cache.csproj" />
+
+    <PackageReference Include="Microsoft.AspNetCore" Version="$(ExtensionsVersion)" />
   </ItemGroup>
   <Import Project="../targets/Common.targets" />
 </Project>

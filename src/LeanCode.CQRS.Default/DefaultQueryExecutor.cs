@@ -13,18 +13,18 @@ namespace LeanCode.CQRS.Default
         private readonly IQueryHandlerResolver queryHandlerResolver;
         private readonly ICacher cacher;
         private readonly IQueryCacheKeyProvider keyProvider;
-        private readonly IAuthorizationChecker authorizationChecker;
+        private readonly IAuthorizer authorizer;
 
         public DefaultQueryExecutor(
             IQueryHandlerResolver queryHandlerResolver,
             ICacher cacher,
             IQueryCacheKeyProvider keyProvider,
-            IAuthorizationChecker authorizationChecker)
+            IAuthorizer authorizer)
         {
             this.queryHandlerResolver = queryHandlerResolver;
             this.cacher = cacher;
             this.keyProvider = keyProvider;
-            this.authorizationChecker = authorizationChecker;
+            this.authorizer = authorizer;
         }
 
         public Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.Default
 
         private void AuthorizeQuery<TResult>(IQuery<TResult> query)
         {
-            if (!authorizationChecker.CheckIfAuthorized(query))
+            if (!authorizer.CheckIfAuthorized(query))
             {
                 logger.Warning("Query {@Query} not authorized", query);
                 throw new InsufficientPermissionException($"User not authorized for {query.GetType()}");

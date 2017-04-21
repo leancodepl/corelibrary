@@ -2,9 +2,9 @@
 
 namespace LeanCode.CQRS.Default.Security
 {
-    public class PositiveAuthorizationChecker : IAuthorizationChecker
+    public class PositiveAuthorizer : IAuthorizer
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PositiveAuthorizationChecker>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PositiveAuthorizer>();
 
         public bool CheckIfAuthorized<T>(T obj)
         {

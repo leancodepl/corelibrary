@@ -3,19 +3,19 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Security
 {
-    public class DefaultAuthorizationChecker : IAuthorizationChecker
+    public class DefaultAuthorizer : IAuthorizer
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultAuthorizationChecker>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultAuthorizer>();
 
         private readonly ICurrentUserWithRolesProvider currentUserProvider;
-        private readonly IAuthorizationCheckerResolver authorizationCheckerResolver;
+        private readonly IAuthorizerResolver authorizerResolver;
 
-        public DefaultAuthorizationChecker(
+        public DefaultAuthorizer(
             ICurrentUserWithRolesProvider currentUserProvider,
-            IAuthorizationCheckerResolver authorizationCheckerResolver)
+            IAuthorizerResolver authorizerResolver)
         {
             this.currentUserProvider = currentUserProvider;
-            this.authorizationCheckerResolver = authorizationCheckerResolver;
+            this.authorizerResolver = authorizerResolver;
         }
 
         public bool CheckIfAuthorized<T>(T obj)
@@ -41,13 +41,13 @@ namespace LeanCode.CQRS.Default.Security
 
         private bool CheckCustomAccess<T>(T obj)
         {
-            var customAccessCheckers = AuthorizeWithCheckerAttribute.GetAuthorizationCheckers(obj);
-            foreach (var customAccessCheckerType in customAccessCheckers)
+            var customAuthorizers = AuthorizeWithAttribute.GetAuthorizers(obj);
+            foreach (var customAuthorizerType in customAuthorizers)
             {
-                var customAccessChecker = authorizationCheckerResolver.FindAuthorizationChecker(customAccessCheckerType);
-                if (!customAccessChecker.CheckIfAuthorized(obj))
+                var customAuthorizer = authorizerResolver.FindAuthorizer(customAuthorizerType);
+                if (!customAuthorizer.CheckIfAuthorized(obj))
                 {
-                    logger.Warning("Checker {Chcker} failed to authorize the user to run {@Object}", customAccessChecker.GetType().FullName, obj);
+                    logger.Warning("Authorizer {Authorizer} failed to authorize the user to run {@Object}", customAuthorizer.GetType().FullName, obj);
                     return false;
                 }
             }

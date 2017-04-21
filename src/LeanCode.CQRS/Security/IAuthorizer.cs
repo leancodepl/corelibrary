@@ -1,6 +1,6 @@
 ﻿namespace LeanCode.CQRS.Security
 {
-    public interface IAuthorizationChecker
+    public interface IAuthorizer
     {
         bool CheckIfAuthorized<T>(T obj);
     }
