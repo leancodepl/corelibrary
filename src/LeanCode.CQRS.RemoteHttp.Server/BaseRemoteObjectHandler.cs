@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -51,6 +52,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             try
             {
                 result = await ExecuteObjectAsync(obj);
+            }
+            catch (UnauthenticatedException)
+            {
+                return new StatusCodeResult(StatusCodes.Status401Unauthorized);
+            }
+            catch (InsufficientPermissionException)
+            {
+                return new StatusCodeResult(StatusCodes.Status403Forbidden);
             }
             catch (Exception ex)
             {

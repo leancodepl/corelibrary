@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Exceptions;
 using LeanCode.CQRS.Security;
+using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default

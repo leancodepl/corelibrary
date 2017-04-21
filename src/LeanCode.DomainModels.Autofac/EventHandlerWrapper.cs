@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.ComainModels.Autofac
+namespace LeanCode.DomainModels.Autofac
 {
     public class EventHandlerWrapper<TEvent> : IDomainEventHandlerWrapper
         where TEvent : IDomainEvent

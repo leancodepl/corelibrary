@@ -6,7 +6,7 @@ using System.Reflection;
 using Autofac;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.ComainModels.Autofac
+namespace LeanCode.DomainModels.Autofac
 {
     public class AutofacEventHandlerResolver : IDomainEventHandlerResolver
     {

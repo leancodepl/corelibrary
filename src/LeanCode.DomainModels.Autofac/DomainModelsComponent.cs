@@ -3,7 +3,7 @@ using AutoMapper;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.ComainModels.Autofac
+namespace LeanCode.DomainModels.Autofac
 {
     public class DomainModelsComponent : IAppComponent
     {

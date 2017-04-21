@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using LeanCode.CQRS.Security;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Default.Security
 {
@@ -7,15 +8,15 @@ namespace LeanCode.CQRS.Default.Security
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultAuthorizer>();
 
-        private readonly ICurrentUserWithRolesProvider currentUserProvider;
+        private readonly IHttpContextAccessor contextAccessor;
         private readonly IAuthorizerResolver authorizerResolver;
 
         public DefaultAuthorizer(
-            ICurrentUserWithRolesProvider currentUserProvider,
+            IHttpContextAccessor contextAccessor,
             IAuthorizerResolver authorizerResolver)
         {
-            this.currentUserProvider = currentUserProvider;
             this.authorizerResolver = authorizerResolver;
+            this.contextAccessor = contextAccessor;
         }
 
         public bool CheckIfAuthorized<T>(T obj)
@@ -25,13 +26,12 @@ namespace LeanCode.CQRS.Default.Security
 
         private bool CheckIfSufficientRole<T>(T obj)
         {
-            var permissions = AuthorizeWithPermissionAttribute.GetPerrmissions(obj);
+            var permissions = AuthorizeWithPermissionAttribute.GetPermissions(obj);
             if (permissions.Any())
             {
-                var user = currentUserProvider.GetCurrentUser();
-                if (!permissions.Any(permission => user.Permissions.Contains(permission)))
+                if (!contextAccessor.HttpContext.User.HasPermission(permissions))
                 {
-                    logger.Warning("User {@User} does not have sufficient roles ({Roles}) to run {@Object}", user, permissions, obj);
+                    logger.Warning("User does not have sufficient roles ({Roles}) to run {@Object}", permissions, obj);
                     return false;
                 }
             }

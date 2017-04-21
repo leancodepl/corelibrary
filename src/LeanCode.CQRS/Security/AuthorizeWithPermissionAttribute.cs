@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -15,14 +14,14 @@ namespace LeanCode.CQRS.Security
             this.Permission = Permission;
         }
 
-        public static IList<string> GetPermissions(Type type)
+        public static string[] GetPermissions(Type type)
         {
             return type.GetTypeInfo()
                 .GetCustomAttributes<AuthorizeWithPermissionAttribute>()
                 .Select(attr => attr.Permission)
-                .ToList();
+                .ToArray();
         }
 
-        public static IList<string> GetPerrmissions(object obj) => GetPermissions(obj.GetType());
+        public static string[] GetPermissions(object obj) => GetPermissions(obj.GetType());
     }
 }

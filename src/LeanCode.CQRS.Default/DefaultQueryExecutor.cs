@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LeanCode.Cache;
-using LeanCode.CQRS.Exceptions;
 using LeanCode.CQRS.Security;
+using LeanCode.CQRS.Security.Exceptions;
 
 namespace LeanCode.CQRS.Default
 {

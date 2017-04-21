@@ -30,7 +30,6 @@ namespace LeanCode.CQRS.Autofac
             builder.RegisterType<DefaultCqrs>().As<ICqrs>();
             builder.RegisterType<DefaultQueryCacheKeyProvider>().As<IQueryCacheKeyProvider>();
             builder.RegisterType<DefaultAuthorizer>().As<IAuthorizer>();
-            builder.RegisterType<DefaultCurrentUserWithRolesProvider>().As<ICurrentUserWithRolesProvider>();
 
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,>));

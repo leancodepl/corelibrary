@@ -1,6 +1,6 @@
 using System;
 using LeanCode.Cache.AspNet;
-using LeanCode.ComainModels.Autofac;
+using LeanCode.DomainModels.Autofac;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Autofac;

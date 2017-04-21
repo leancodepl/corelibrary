@@ -4,7 +4,7 @@ using LeanCode.Components;
 using LeanCode.DomainModels.Model;
 using Module = Autofac.Module;
 
-namespace LeanCode.ComainModels.Autofac
+namespace LeanCode.DomainModels.Autofac
 {
     public class DomainModelsModule : Module
     {
