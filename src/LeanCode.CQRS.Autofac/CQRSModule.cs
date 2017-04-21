@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Features.Variance;
 using LeanCode.Components;
+using LeanCode.CQRS.Autofac.Security;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Default.Security;
 using LeanCode.CQRS.Security;
@@ -22,12 +23,14 @@ namespace LeanCode.CQRS.Autofac
 
             builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
             builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
+            builder.RegisterType<AutofacAuthorizerResolver>().As<IAuthorizerResolver>();
 
             builder.RegisterType<DefaultQueryExecutor>().As<IQueryExecutor>();
             builder.RegisterType<DefaultCommandExecutor>().As<ICommandExecutor>();
             builder.RegisterType<DefaultCqrs>().As<ICqrs>();
             builder.RegisterType<DefaultQueryCacheKeyProvider>().As<IQueryCacheKeyProvider>();
-            builder.RegisterType<PositiveAuthorizer>().As<IAuthorizer>();
+            builder.RegisterType<DefaultAuthorizer>().As<IAuthorizer>();
+            builder.RegisterType<DefaultCurrentUserWithRolesProvider>().As<ICurrentUserWithRolesProvider>();
 
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,>));
