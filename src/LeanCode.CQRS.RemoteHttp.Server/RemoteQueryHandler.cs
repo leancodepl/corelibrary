@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using Microsoft.AspNetCore.Http;
@@ -35,11 +36,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
 
             var type = obj.GetType();
-            var result = (Task<object>)method.Invoke(this, new[] { obj });
             try
             {
+                var result = (Task<object>)method.Invoke(this, new[] { obj });
                 var objResult = await result.ConfigureAwait(false);
                 return new JsonResult(objResult);
+            }
+            catch (TargetInvocationException ex)
+            {
+                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                return null;
             }
             catch (QueryHandlerNotFoundException)
             {

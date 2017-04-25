@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
 
