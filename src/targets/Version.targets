@@ -1,7 +1,7 @@
 <Project>
-    <!-- Generated automatically, do not change manually -->
-    <PropertyGroup>
-        <Version>0.1.0</Version>
-        <PackageReleaseNotes></PackageReleaseNotes>
-    </PropertyGroup>
+  <!-- Generated automatically, do not change manually -->
+  <PropertyGroup>
+    <Version>0.1.0-alpha.56</Version>
+    <PackageReleaseNotes>Initial release with base packages</PackageReleaseNotes>
+  </PropertyGroup>
 </Project>

@@ -59,6 +59,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var qh2 = factory[OtherCatalog];
 
             Assert.NotSame(qh1, qh2);
+            Assert.NotEqual(qh1.Catalog, qh2.Catalog);
         }
 
         [Fact]
@@ -70,7 +71,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var qh1 = factory[ThisCatalog];
             var qh2 = factory[ThisCatalog];
 
-            Assert.Same(qh1, qh2);
+            Assert.NotSame(qh1, qh2);
+            Assert.Equal(qh1.Catalog, qh2.Catalog);
         }
 
         [Fact]
@@ -83,6 +85,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var qh2 = factory[OtherCatalog];
 
             Assert.NotSame(qh1, qh2);
+            Assert.NotEqual(qh1.Catalog, qh2.Catalog);
         }
 
         [Fact]
@@ -94,7 +97,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var qh1 = factory[ThisCatalog];
             var qh2 = factory[ThisCatalog];
 
-            Assert.Same(qh1, qh2);
+            Assert.NotSame(qh1, qh2);
+            Assert.Equal(qh1.Catalog, qh2.Catalog);
         }
 
         private void Register()
