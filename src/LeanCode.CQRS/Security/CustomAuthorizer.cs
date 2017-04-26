@@ -4,23 +4,28 @@ namespace LeanCode.CQRS.Security
 {
     public interface ICustomAuthorizer
     {
-        bool CheckIfAuthorized(object obj);
+        bool CheckIfAuthorized(object obj, object customData = null);
     }
 
-    public abstract class CustomAuthorizer<T> : ICustomAuthorizer
-        where T : class
+    public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
+        where TObject : class
+        where TCustomData : class
     {
-        public bool CheckIfAuthorized(object obj)
+        public bool CheckIfAuthorized(object obj, object customData = null)
         {
-            T customAuthorizer = obj as T;
+            TObject customAuthorizer = obj as TObject;
             if (customAuthorizer == null)
             {
                 throw new ArgumentNullException(nameof(customAuthorizer), $"{GetType()} is not valid Authorizer for {obj.GetType()}.");
             }
 
-            return CheckIfAuthorized(customAuthorizer);
+            return CheckIfAuthorized(customAuthorizer, customData as TCustomData);
         }
 
-        public abstract bool CheckIfAuthorized(T obj);
+        public abstract bool CheckIfAuthorized(TObject obj, TCustomData customData = null);
     }
+
+    public abstract class CustomAuthorizer<TObject> : CustomAuthorizer<TObject, object>
+        where TObject : class
+    { }
 }
