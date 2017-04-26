@@ -27,5 +27,12 @@ namespace LeanCode.CQRS.Security
 
     public abstract class CustomAuthorizer<TObject> : CustomAuthorizer<TObject, object>
         where TObject : class
-    { }
+    {
+        public override bool CheckIfAuthorized(TObject obj, object customData = null)
+        {
+            return CheckIfAuthorized(obj);
+        }
+
+        public abstract bool CheckIfAuthorized(TObject obj);
+    }
 }
