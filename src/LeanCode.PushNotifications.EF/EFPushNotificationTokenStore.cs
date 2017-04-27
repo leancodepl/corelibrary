@@ -44,7 +44,7 @@ namespace LeanCode.PushNotifications.EF
 
         public async Task RemoveInvalidToken(PushNotificationToken<Guid> token)
         {
-            RemoveToken(token.Id);
+            await RemoveToken(token.Id).ConfigureAwait(false);
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -67,14 +67,13 @@ namespace LeanCode.PushNotifications.EF
 
         public async Task UpdateToken(PushNotificationToken<Guid> token, string newToken)
         {
-            RemoveToken(token.Id);
+            await RemoveToken(token.Id).ConfigureAwait(false);
             await UpdateOrAddToken(token.UserId, token.DeviceType, newToken).ConfigureAwait(false);
         }
 
-        private void RemoveToken(Guid tokenId)
+        private async Task RemoveToken(Guid tokenId)
         {
-            var entity = new PushNotificationTokenEntity { Id = tokenId };
-            dbSet.Attach(entity);
+            var entity = await dbSet.FindAsync(tokenId).ConfigureAwait(false);
             dbSet.Remove(entity);
         }
 

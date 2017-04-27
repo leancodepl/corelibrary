@@ -56,7 +56,7 @@ namespace LeanCode.PushNotifications
                     else if (result["failure"].Value<int>() == 1)
                     {
                         var error = result["results"][0]["error"].Value<string>();
-                        if (error == "NotRegistered")
+                        if (error == "NotRegistered" || error == "InvalidRegistration")
                         {
                             return new FCMResult.InvalidToken();
                         }
