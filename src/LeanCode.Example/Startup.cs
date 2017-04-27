@@ -49,7 +49,7 @@ namespace LeanCode.Example
                 new DomainModelsComponent(TypesCatalog),
                 new RequestEventsExecutorComponent(),
                 new RemoteCQRSHttpComponent(TypesCatalog),
-                new PushNotificationsComponent(),
+                new PushNotificationsComponent(Configuration),
 
                 new MvcComponent()
             };

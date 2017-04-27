@@ -40,6 +40,7 @@ namespace LeanCode.Example
             app.Map("/api", cfg => cfg.UseEventsExecutor().UseRemoteCQRS(typeof(Startup)));
 
             app.UseEventsExecutor();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

@@ -23,6 +23,12 @@ namespace LeanCode.Example.Controllers
             return Content(result.Name);
         }
 
+        [HttpGet("push")]
+        public IActionResult PushNotifications()
+        {
+            return Redirect("push/index.html");
+        }
+
         [HttpGet("do")]
         public async Task<IActionResult> DoAction()
         {
