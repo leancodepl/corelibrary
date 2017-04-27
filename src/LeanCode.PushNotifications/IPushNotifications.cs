@@ -8,7 +8,4 @@ namespace LeanCode.PushNotifications
         Task Send(TUserId to, DeviceType device, PushNotification notification);
         Task SendToAll(TUserId to, PushNotification notification);
     }
-
-    public interface IPushNotifications : IPushNotifications<Guid>
-    { }
 }

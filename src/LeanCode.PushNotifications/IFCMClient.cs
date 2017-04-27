@@ -10,43 +10,43 @@ namespace LeanCode.PushNotifications
 
     public abstract class FCMResult
     {
+        private FCMResult()
+        { }
 
-    }
-
-    public sealed class FCMHttpError : FCMResult
-    {
-        public HttpStatusCode StatusCode { get; }
-
-        public FCMHttpError(HttpStatusCode statusCode)
+        public sealed class HttpError : FCMResult
         {
-            this.StatusCode = statusCode;
+            public HttpStatusCode StatusCode { get; }
+
+            public HttpError(HttpStatusCode statusCode)
+            {
+                this.StatusCode = statusCode;
+            }
+        }
+
+        public sealed class OtherError : FCMResult
+        {
+            public string Error { get; }
+
+            public OtherError(string error)
+            {
+                this.Error = error;
+            }
+        }
+
+        public sealed class InvalidToken : FCMResult
+        { }
+
+        public sealed class Success : FCMResult
+        { }
+
+        public sealed class TokenUpdated : FCMResult
+        {
+            public string NewToken { get; }
+
+            public TokenUpdated(string newToken)
+            {
+                this.NewToken = newToken;
+            }
         }
     }
-
-    public sealed class FCMOtherError : FCMResult
-    {
-        public string Error { get; }
-
-        public FCMOtherError(string error)
-        {
-            this.Error = error;
-        }
-    }
-
-    public sealed class FCMInvalidToken : FCMResult
-    { }
-
-    public sealed class FCMSuccess : FCMResult
-    { }
-
-    public sealed class FCMTokenUpdated : FCMResult
-    {
-        public string NewToken { get; }
-
-        public FCMTokenUpdated(string newToken)
-        {
-            this.NewToken = newToken;
-        }
-    }
-
 }

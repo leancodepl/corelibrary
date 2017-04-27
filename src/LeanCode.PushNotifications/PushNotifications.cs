@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,15 +24,14 @@ namespace LeanCode.PushNotifications
         {
             logger.Verbose("Sending notification to user {UserId} on device {Device}", to, device);
 
-            var token = await tokenStore.GetToken(to, device).ConfigureAwait(false);
+            var token = await tokenStore.GetForDevice(to, device).ConfigureAwait(false);
             if (token != null)
             {
-                var result = await Send(token, notification).ConfigureAwait(false);
-                await HandleResult(to, token, result).ConfigureAwait(false);
+                await SendSingle(to, notification, token);
             }
             else
             {
-                logger.Verbose("User {UserId} does not have token for device {Device}", to, device);
+                logger.Verbose("User {UserId} does not have tokens for device {Device}", to, device);
             }
         }
 
@@ -42,16 +42,21 @@ namespace LeanCode.PushNotifications
             var tokens = await tokenStore.GetAll(to).ConfigureAwait(false);
             if (tokens.Count > 0)
             {
-                var results = await Task.WhenAll(tokens.Select(t => Send(t, notification))).ConfigureAwait(false);
-                // This may touch database, we need to linearize it
-                for (int i = 0; i < results.Length; i++)
-                {
-                    await HandleResult(to, tokens[i], results[i]).ConfigureAwait(false);
-                }
+                await SendSingle(to, notification, tokens);
             }
             else
             {
                 logger.Verbose("User {UserId} does not have any tokens", to);
+            }
+        }
+
+        private async Task SendSingle(TUserId to, PushNotification notification, List<PushNotificationToken<TUserId>> tokens)
+        {
+            var results = await Task.WhenAll(tokens.Select(t => Send(t, notification))).ConfigureAwait(false);
+            // This may touch database, we need to linearize it
+            for (int i = 0; i < results.Length; i++)
+            {
+                await HandleResult(to, tokens[i], results[i]).ConfigureAwait(false);
             }
         }
 
@@ -66,7 +71,7 @@ namespace LeanCode.PushNotifications
             catch (Exception ex)
             {
                 logger.Warning(ex, "Cannot send notification to device {DeviceType} - generic error", token.DeviceType);
-                return new FCMOtherError("Exception");
+                return new FCMResult.OtherError("Exception");
             }
         }
 
@@ -74,23 +79,23 @@ namespace LeanCode.PushNotifications
         {
             switch (result)
             {
-                case FCMHttpError e:
+                case FCMResult.HttpError e:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, HTTP status {StatusCode}", to, token.DeviceType, e.StatusCode);
                     break;
 
-                case FCMOtherError e:
+                case FCMResult.OtherError e:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, FCM error: {FCMError}", to, token.DeviceType, e.Error);
                     break;
 
-                case FCMInvalidToken e:
+                case FCMResult.InvalidToken e:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, token is invalid", to, token.DeviceType);
-                    return tokenStore.RemoveInvalidToken(to, token.DeviceType);
+                    return tokenStore.RemoveInvalidToken(token);
 
-                case FCMTokenUpdated e:
+                case FCMResult.TokenUpdated e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);
-                    return tokenStore.UpdateOrAddToken(to, token.DeviceType, e.NewToken);
+                    return tokenStore.UpdateOrAddToken(token, e.NewToken);
 
-                case FCMSuccess e:
+                case FCMResult.Success e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);
                     break;
             }

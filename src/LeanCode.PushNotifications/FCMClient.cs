@@ -42,7 +42,7 @@ namespace LeanCode.PushNotifications
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        return new FCMHttpError(response.StatusCode);
+                        return new FCMResult.HttpError(response.StatusCode);
                     }
 
                     var resultStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -51,23 +51,23 @@ namespace LeanCode.PushNotifications
                     if (result["canonical_ids"].Value<int>() == 1)
                     {
                         var newToken = result["results"][0]["registration_id"].Value<string>();
-                        return new FCMTokenUpdated(newToken);
+                        return new FCMResult.TokenUpdated(newToken);
                     }
                     else if (result["failure"].Value<int>() == 1)
                     {
                         var error = result["results"][0]["error"].Value<string>();
                         if (error == "NotRegistered")
                         {
-                            return new FCMInvalidToken();
+                            return new FCMResult.InvalidToken();
                         }
                         else
                         {
-                            return new FCMOtherError(error);
+                            return new FCMResult.OtherError(error);
                         }
                     }
                     else
                     {
-                        return new FCMSuccess();
+                        return new FCMResult.Success();
                     }
                 }
             }

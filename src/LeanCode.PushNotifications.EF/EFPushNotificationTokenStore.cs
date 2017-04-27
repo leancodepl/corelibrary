@@ -18,6 +18,18 @@ namespace LeanCode.PushNotifications.EF
             this.dbSet = unitOfWork.Set<PushNotificationTokenEntity>();
         }
 
+        public async Task<List<PushNotificationToken<Guid>>> GetForDevice(Guid userId, DeviceType deviceType)
+        {
+            var entities = await dbSet
+                .Where(e => e.UserId == userId && e.DeviceType == deviceType)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return entities
+                .Select(e => new PushNotificationToken<Guid>(e.Id, e.UserId, e.DeviceType, e.Token))
+                .ToList();
+        }
+
         public async Task<List<PushNotificationToken<Guid>>> GetAll(Guid userId)
         {
             var entities = await dbSet
@@ -26,38 +38,33 @@ namespace LeanCode.PushNotifications.EF
                 .ConfigureAwait(false);
 
             return entities
-                .Select(e => new PushNotificationToken<Guid>(e.UserId, e.DeviceType, e.Token))
+                .Select(e => new PushNotificationToken<Guid>(e.Id, e.UserId, e.DeviceType, e.Token))
                 .ToList();
         }
 
-        public async Task<PushNotificationToken<Guid>> GetToken(Guid userId, DeviceType deviceType)
+        public async Task RemoveInvalidToken(PushNotificationToken<Guid> token)
         {
-            var entity = await dbSet.FindAsync(userId, deviceType).ConfigureAwait(false);
-            return entity != null ? new PushNotificationToken<Guid>(entity.UserId, entity.DeviceType, entity.Token) : null;
-        }
-
-        public async Task RemoveInvalidToken(Guid userId, DeviceType deviceType)
-        {
-            RemoveToken(userId, deviceType);
+            RemoveToken(token.Id);
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateOrAddToken(Guid userId, DeviceType deviceType, string newToken)
+        public async Task UpdateOrAddToken(PushNotificationToken<Guid> token, string newToken)
         {
-            RemoveToken(userId, deviceType);
+            RemoveToken(token.Id);
             dbSet.Add(new PushNotificationTokenEntity
             {
-                UserId = userId,
-                DeviceType = deviceType,
+                Id = Guid.NewGuid(),
+                UserId = token.UserId,
+                DeviceType = token.DeviceType,
                 Token = newToken,
                 DateCreated = Time.Now
             });
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        private void RemoveToken(Guid userId, DeviceType deviceType)
+        private void RemoveToken(Guid tokenId)
         {
-            var entity = new PushNotificationTokenEntity { UserId = userId, DeviceType = deviceType };
+            var entity = new PushNotificationTokenEntity { Id = tokenId };
             dbSet.Attach(entity);
             dbSet.Remove(entity);
         }
