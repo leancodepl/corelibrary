@@ -10,6 +10,7 @@ using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.DomainModels.RequestEventsExecutor;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using LeanCode.PushNotifications;
 
 namespace LeanCode.Example
 {
@@ -48,6 +49,7 @@ namespace LeanCode.Example
                 new DomainModelsComponent(TypesCatalog),
                 new RequestEventsExecutorComponent(),
                 new RemoteCQRSHttpComponent(TypesCatalog),
+                new PushNotificationsComponent(),
 
                 new MvcComponent()
             };
