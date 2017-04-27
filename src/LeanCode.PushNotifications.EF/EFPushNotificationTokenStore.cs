@@ -48,18 +48,27 @@ namespace LeanCode.PushNotifications.EF
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateOrAddToken(PushNotificationToken<Guid> token, string newToken)
+        public async Task UpdateOrAddToken(Guid userId, DeviceType deviceType, string newToken)
+        {
+            var existing = await LoadExisting(userId, deviceType, newToken).ConfigureAwait(false);
+            if (existing == null)
+            {
+                dbSet.Add(new PushNotificationTokenEntity
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    DeviceType = deviceType,
+                    Token = newToken,
+                    DateCreated = Time.Now
+                });
+            }
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task UpdateToken(PushNotificationToken<Guid> token, string newToken)
         {
             RemoveToken(token.Id);
-            dbSet.Add(new PushNotificationTokenEntity
-            {
-                Id = Guid.NewGuid(),
-                UserId = token.UserId,
-                DeviceType = token.DeviceType,
-                Token = newToken,
-                DateCreated = Time.Now
-            });
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await UpdateOrAddToken(token.UserId, token.DeviceType, newToken).ConfigureAwait(false);
         }
 
         private void RemoveToken(Guid tokenId)
@@ -67,6 +76,11 @@ namespace LeanCode.PushNotifications.EF
             var entity = new PushNotificationTokenEntity { Id = tokenId };
             dbSet.Attach(entity);
             dbSet.Remove(entity);
+        }
+
+        private Task<PushNotificationTokenEntity> LoadExisting(Guid userId, DeviceType deviceType, string newToken)
+        {
+            return dbSet.FirstOrDefaultAsync(e => e.UserId == userId && e.DeviceType == deviceType && e.Token == newToken);
         }
     }
 }

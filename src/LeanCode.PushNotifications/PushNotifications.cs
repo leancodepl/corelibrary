@@ -93,7 +93,7 @@ namespace LeanCode.PushNotifications
 
                 case FCMResult.TokenUpdated e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);
-                    return tokenStore.UpdateOrAddToken(token, e.NewToken);
+                    return tokenStore.UpdateToken(token, e.NewToken);
 
                 case FCMResult.Success e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);

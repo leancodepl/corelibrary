@@ -17,6 +17,7 @@ namespace LeanCode.PushNotifications.EF
             {
                 c.HasKey(e => e.Id);
                 c.HasIndex(e => new { e.UserId, e.DeviceType });
+                c.HasIndex(e => new { e.Token });
                 c.Property(e => e.Token).IsRequired(true).HasMaxLength(1024);
             });
         }

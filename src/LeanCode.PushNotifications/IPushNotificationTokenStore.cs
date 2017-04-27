@@ -9,7 +9,8 @@ namespace LeanCode.PushNotifications
         Task<List<PushNotificationToken<TUserId>>> GetForDevice(TUserId userId, DeviceType deviceType);
         Task<List<PushNotificationToken<TUserId>>> GetAll(TUserId userId);
 
-        Task UpdateOrAddToken(PushNotificationToken<TUserId> token, string newToken);
+        Task UpdateOrAddToken(TUserId userId, DeviceType type, string newToken);
+        Task UpdateToken(PushNotificationToken<TUserId> existing, string newToken);
         Task RemoveInvalidToken(PushNotificationToken<TUserId> token);
     }
 }
