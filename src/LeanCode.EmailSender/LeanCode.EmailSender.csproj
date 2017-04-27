@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../targets/Lib.targets" />
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.EmailSender</AssemblyName>
+    <PackageId>LeanCode.EmailSender</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LeanCode.ViewRenderer.Templates\LeanCode.ViewRenderer.Templates.csproj" />
+  </ItemGroup>
+  <Import Project="../targets/Common.targets" />
+</Project>
