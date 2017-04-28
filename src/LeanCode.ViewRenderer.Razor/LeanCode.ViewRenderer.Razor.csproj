@@ -2,14 +2,19 @@
   <Import Project="../targets/Lib.targets" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard1.5</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.ViewRenderer.Razor</AssemblyName>
     <PackageId>LeanCode.ViewRenderer.Razor</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="1.3.2" />
   </ItemGroup>
 
   <ItemGroup>
