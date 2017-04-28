@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LeanCode.ViewRenderer
+namespace LeanCode.ViewRenderer.Razor
 {
     public class ViewRendererOptions
     {

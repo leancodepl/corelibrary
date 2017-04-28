@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using LeanCode.Components;
 using LeanCode.ViewRenderer.Razor;
 
-namespace LeanCode.ViewRenderer
+namespace LeanCode.ViewRenderer.Razor
 {
     public class ViewRendererComponent : IAppComponent
     {

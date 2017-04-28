@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
-using LeanCode.ViewRenderer.Templates;
+using LeanCode.ViewRenderer;
 
 namespace LeanCode.EmailSender.SendGrid
 {

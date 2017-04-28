@@ -7,8 +7,5 @@
     <PackageId>LeanCode.EmailSender</PackageId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LeanCode.ViewRenderer.Templates\LeanCode.ViewRenderer.Templates.csproj" />
-  </ItemGroup>
   <Import Project="../targets/Common.targets" />
 </Project>

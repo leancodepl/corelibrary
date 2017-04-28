@@ -4,63 +4,63 @@ VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{591E1969-D022-438A-99A6-EE8A14BEBE98}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Cache.AspNet", "src\LeanCode.Cache.AspNet\LeanCode.Cache.AspNet.csproj", "{90C65FCB-C4F1-472B-B120-A7FB9E69A31C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Cache.AspNet", "src/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj", "{90C65FCB-C4F1-472B-B120-A7FB9E69A31C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Cache", "src\LeanCode.Cache\LeanCode.Cache.csproj", "{9D0F7CA8-285C-49AA-B742-541220C51247}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Cache", "src/LeanCode.Cache/LeanCode.Cache.csproj", "{9D0F7CA8-285C-49AA-B742-541220C51247}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Components", "src\LeanCode.Components\LeanCode.Components.csproj", "{DF608771-B722-4723-852E-B598192B1ECA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Components", "src/LeanCode.Components/LeanCode.Components.csproj", "{DF608771-B722-4723-852E-B598192B1ECA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Components.Startup", "src\LeanCode.Components.Startup\LeanCode.Components.Startup.csproj", "{F7A0AB6E-FA6D-40F7-90A9-3A33F4E4C5A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Components.Startup", "src/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj", "{F7A0AB6E-FA6D-40F7-90A9-3A33F4E4C5A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Configuration", "src\LeanCode.Configuration\LeanCode.Configuration.csproj", "{3C62E043-6589-4DFA-9E4A-D403CA8EA068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Configuration", "src/LeanCode.Configuration/LeanCode.Configuration.csproj", "{3C62E043-6589-4DFA-9E4A-D403CA8EA068}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Autofac", "src\LeanCode.CQRS.Autofac\LeanCode.CQRS.Autofac.csproj", "{09907D4A-B56F-4D45-8A15-2783A26FC641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Autofac", "src/LeanCode.CQRS.Autofac/LeanCode.CQRS.Autofac.csproj", "{09907D4A-B56F-4D45-8A15-2783A26FC641}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Default", "src\LeanCode.CQRS.Default\LeanCode.CQRS.Default.csproj", "{9C9982F7-9023-40C5-A790-AAF88536C660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Default", "src/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj", "{9C9982F7-9023-40C5-A790-AAF88536C660}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.FluentValidation", "src\LeanCode.CQRS.FluentValidation\LeanCode.CQRS.FluentValidation.csproj", "{6991DCE1-0930-4B15-8023-A2DD7BC10F8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.FluentValidation", "src/LeanCode.CQRS.FluentValidation/LeanCode.CQRS.FluentValidation.csproj", "{6991DCE1-0930-4B15-8023-A2DD7BC10F8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS", "src\LeanCode.CQRS\LeanCode.CQRS.csproj", "{8926EE97-FF05-4D49-9A33-AA5A2F4CEA1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS", "src/LeanCode.CQRS/LeanCode.CQRS.csproj", "{8926EE97-FF05-4D49-9A33-AA5A2F4CEA1D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.MvcValidation", "src\LeanCode.CQRS.MvcValidation\LeanCode.CQRS.MvcValidation.csproj", "{FEE92F9E-43C3-4793-9351-BB2FAB5427A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.MvcValidation", "src/LeanCode.CQRS.MvcValidation/LeanCode.CQRS.MvcValidation.csproj", "{FEE92F9E-43C3-4793-9351-BB2FAB5427A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.EF", "src\LeanCode.DomainModels.EF\LeanCode.DomainModels.EF.csproj", "{191638C6-4CF5-46BB-A664-D209C367A2E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.EF", "src/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj", "{191638C6-4CF5-46BB-A664-D209C367A2E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels", "src\LeanCode.DomainModels\LeanCode.DomainModels.csproj", "{22A3AF1D-FF0C-45A4-9D77-562F137DBF57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels", "src/LeanCode.DomainModels/LeanCode.DomainModels.csproj", "{22A3AF1D-FF0C-45A4-9D77-562F137DBF57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Example", "src\LeanCode.Example\LeanCode.Example.csproj", "{2340AB4C-8F7E-41B4-8676-24EB145B9F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.Example", "src/LeanCode.Example/LeanCode.Example.csproj", "{2340AB4C-8F7E-41B4-8676-24EB145B9F6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.TimeProvider", "src\LeanCode.TimeProvider\LeanCode.TimeProvider.csproj", "{618B76C9-F0EB-4D48-8EFA-A25FDC4D194E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.TimeProvider", "src/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj", "{618B76C9-F0EB-4D48-8EFA-A25FDC4D194E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.RequestEventsExecutor", "src\LeanCode.DomainModels.RequestEventsExecutor\LeanCode.DomainModels.RequestEventsExecutor.csproj", "{D0813377-EEE4-47A4-9460-EF4359ABDC83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.RequestEventsExecutor", "src/LeanCode.DomainModels.RequestEventsExecutor/LeanCode.DomainModels.RequestEventsExecutor.csproj", "{D0813377-EEE4-47A4-9460-EF4359ABDC83}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.Autofac", "src\LeanCode.DomainModels.Autofac\LeanCode.DomainModels.Autofac.csproj", "{08511DBA-AC83-4136-8E6B-7E9A422464D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.DomainModels.Autofac", "src/LeanCode.DomainModels.Autofac/LeanCode.DomainModels.Autofac.csproj", "{08511DBA-AC83-4136-8E6B-7E9A422464D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Server", "src\LeanCode.CQRS.RemoteHttp.Server\LeanCode.CQRS.RemoteHttp.Server.csproj", "{6287944C-237A-4734-871A-8D4035655FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Server", "src/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj", "{6287944C-237A-4734-871A-8D4035655FB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AB0FFC32-4BF7-49E3-9AFE-3DE43C0356BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Server.Tests", "test\LeanCode.CQRS.RemoteHttp.Server.Tests\LeanCode.CQRS.RemoteHttp.Server.Tests.csproj", "{1F92408A-4D8A-4B85-AFC9-950FBB71AA73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Server.Tests", "test/LeanCode.CQRS.RemoteHttp.Server.Tests/LeanCode.CQRS.RemoteHttp.Server.Tests.csproj", "{1F92408A-4D8A-4B85-AFC9-950FBB71AA73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Client", "src\LeanCode.CQRS.RemoteHttp.Client\LeanCode.CQRS.RemoteHttp.Client.csproj", "{610B3791-C102-4D22-BE84-6A0237CD5705}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.RemoteHttp.Client", "src/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj", "{610B3791-C102-4D22-BE84-6A0237CD5705}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications", "src\LeanCode.PushNotifications\LeanCode.PushNotifications.csproj", "{D56ABA16-0884-488D-B4A3-3D67B5BC3981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications", "src/LeanCode.PushNotifications/LeanCode.PushNotifications.csproj", "{D56ABA16-0884-488D-B4A3-3D67B5BC3981}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications.Tests", "test\LeanCode.PushNotifications.Tests\LeanCode.PushNotifications.Tests.csproj", "{35520D49-8AC1-46A4-9FF5-B1280C2D18A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications.Tests", "test/LeanCode.PushNotifications.Tests/LeanCode.PushNotifications.Tests.csproj", "{35520D49-8AC1-46A4-9FF5-B1280C2D18A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications.EF", "src\LeanCode.PushNotifications.EF\LeanCode.PushNotifications.EF.csproj", "{5DB269CB-FD8C-4505-9BA5-8BB72ED1016C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.PushNotifications.EF", "src/LeanCode.PushNotifications.EF/LeanCode.PushNotifications.EF.csproj", "{5DB269CB-FD8C-4505-9BA5-8BB72ED1016C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.FluentValidation.Tests", "test\LeanCode.CQRS.FluentValidation.Tests\LeanCode.CQRS.FluentValidation.Tests.csproj", "{EBD6EC76-AC39-4255-8A83-02C3AFA2924D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.FluentValidation.Tests", "test/LeanCode.CQRS.FluentValidation.Tests/LeanCode.CQRS.FluentValidation.Tests.csproj", "{EBD6EC76-AC39-4255-8A83-02C3AFA2924D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Default.Tests", "test\LeanCode.CQRS.Default.Tests\LeanCode.CQRS.Default.Tests.csproj", "{CC4CB1C1-67A5-4A4A-9BD8-9C520B8D0A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeanCode.CQRS.Default.Tests", "test/LeanCode.CQRS.Default.Tests/LeanCode.CQRS.Default.Tests.csproj", "{CC4CB1C1-67A5-4A4A-9BD8-9C520B8D0A52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer", "src\LeanCode.ViewRenderer\LeanCode.ViewRenderer.csproj", "{493A2649-538D-4C80-AE15-223A57225DC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer", "src/LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj", "{493A2649-538D-4C80-AE15-223A57225DC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.EmailSender", "src\LeanCode.EmailSender\LeanCode.EmailSender.csproj", "{8BF16E47-FDBA-4640-BA0C-1C911FBADF12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.EmailSender", "src/LeanCode.EmailSender/LeanCode.EmailSender.csproj", "{8BF16E47-FDBA-4640-BA0C-1C911FBADF12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.EmailSender.SendGrid", "src\LeanCode.EmailSender.SendGrid\LeanCode.EmailSender.SendGrid.csproj", "{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.EmailSender.SendGrid", "src/LeanCode.EmailSender.SendGrid/LeanCode.EmailSender.SendGrid.csproj", "{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer.Templates", "src\LeanCode.ViewRenderer.Templates\LeanCode.ViewRenderer.Templates.csproj", "{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer.Razor", "src/LeanCode.ViewRenderer.Razor/LeanCode.ViewRenderer.Razor.csproj", "{4E30586F-8B06-4CA7-9349-8F3056B11A5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -395,19 +395,19 @@ Global
 		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}.Release|x64.ActiveCfg = Release|Any CPU
 		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}.Release|x64.Build.0 = Release|Any CPU
 		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}.Release|x86.ActiveCfg = Release|Any CPU
-		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}.Release|x86.Build.0 = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|x64.Build.0 = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Debug|x86.Build.0 = Debug|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|x64.ActiveCfg = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|x64.Build.0 = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|x86.ActiveCfg = Release|Any CPU
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0}.Release|x86.Build.0 = Release|Any CPU
+		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672}.Release|x86.Build.0 = Release|Any
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|x64.ActiveCfg = Debug|x64
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|x64.Build.0 = Debug|x64
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|x86.ActiveCfg = Debug|x86
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Debug|x86.Build.0 = Debug|x86
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|x64.ActiveCfg = Release|x64
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|x64.Build.0 = Release|x64
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|x86.ActiveCfg = Release|x86
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -440,6 +440,6 @@ Global
 		{493A2649-538D-4C80-AE15-223A57225DC3} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 		{8BF16E47-FDBA-4640-BA0C-1C911FBADF12} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
-		{B9BA35BC-F4BD-4F20-B61B-60AF1D7399A0} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
+		{4E30586F-8B06-4CA7-9349-8F3056B11A5F} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 	EndGlobalSection
 EndGlobal

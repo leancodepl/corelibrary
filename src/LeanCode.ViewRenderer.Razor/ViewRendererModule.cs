@@ -1,8 +1,7 @@
 ﻿using Autofac;
 using LeanCode.ViewRenderer.Razor;
-using LeanCode.ViewRenderer.Templates;
 
-namespace LeanCode.ViewRenderer
+namespace LeanCode.ViewRenderer.Razor
 {
     class ViewRendererModule : Module
     {
