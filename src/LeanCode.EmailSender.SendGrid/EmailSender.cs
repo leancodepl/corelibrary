@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
-using LeanCode.ViewRenderer.Templates;
+using LeanCode.ViewRenderer;
 
 namespace LeanCode.EmailSender.SendGrid
 {
@@ -41,7 +41,8 @@ namespace LeanCode.EmailSender.SendGrid
         public IEmailSender WithModel<TModel>(TModel model)
         {
             string viewName = GetViewNameFromModel<TModel>();
-            string email = viewRenderer.RenderToString(viewName, model);
+            // TODO: this is BAD, will be fixed later
+            string email = viewRenderer.RenderToString(viewName, model).Result;
             emailClient.Contents.Add(new EmailContent(email, "text/html"));
             return this;
         }
@@ -49,7 +50,8 @@ namespace LeanCode.EmailSender.SendGrid
         public IEmailSender WithModelTxt<TModel>(TModel model)
         {
             string viewName = GetViewNameFromModel<TModel>() + ".txt";
-            string email = viewRenderer.RenderToString(viewName, model);
+            // TODO: this is BAD, will be fixed later
+            string email = viewRenderer.RenderToString(viewName, model).Result;
             emailClient.Contents.Add(new EmailContent(email, "text"));
             return this;
         }
