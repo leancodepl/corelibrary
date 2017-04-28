@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="$(ExtensionsVersion)" />
