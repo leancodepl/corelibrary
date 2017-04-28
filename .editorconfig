@@ -21,3 +21,6 @@ indent_size = 2
 
 [*.{xml, targets, csproj}]
 indent_size = 2
+
+[*.{cshtml, cstxt}]
+insert_final_newline = false
