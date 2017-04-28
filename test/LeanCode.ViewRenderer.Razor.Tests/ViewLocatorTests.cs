@@ -1,3 +1,4 @@
+using System.IO;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests
@@ -28,33 +29,34 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         [Fact]
         public void Correctly_locates_view()
         {
-            var locator = new ViewLocator(BothDefault);
-
-            Assert.Equal("./Views/A/ViewC.cshtml", locator.LocateView("ViewC"));
+            AssertPath("ViewC", "./Views/A/ViewC.cshtml");
         }
 
         [Fact]
         public void Selects_first_view_if_multiple_are_present()
         {
-            var locator = new ViewLocator(BothDefault);
-
-            Assert.Equal("./Views/A/ViewA.cshtml", locator.LocateView("ViewA"));
+            AssertPath("ViewA", "./Views/A/ViewA.cshtml");
         }
 
         [Fact]
         public void Searches_all_locations()
         {
-            var locator = new ViewLocator(BothDefault);
-
-            Assert.Equal("./Views/B/ViewD.cshtml", locator.LocateView("ViewD"));
+            AssertPath("ViewD", "./Views/B/ViewD.cshtml");
         }
 
         [Fact]
         public void Respects_different_extensions()
         {
-            var locator = new ViewLocator(BothTXT);
+            AssertPath("ViewB", "./Views/B/ViewB.cstxt", BothTXT);
+        }
 
-            Assert.Equal("./Views/B/ViewB.cstxt", locator.LocateView("ViewB"));
+        private static void AssertPath(string viewName, string relativeLocation, RazorViewRendererOptions opts = null)
+        {
+            opts = opts ?? BothDefault;
+
+            var expected = Path.GetFullPath(relativeLocation);
+            var real = new ViewLocator(opts).LocateView(viewName);
+            Assert.Equal(expected, real);
         }
     }
 }

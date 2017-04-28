@@ -22,7 +22,7 @@ namespace LeanCode.ViewRenderer.Razor
                 var fullPath = Path.Combine(path, fileName);
                 if (File.Exists(fullPath))
                 {
-                    return fullPath.Replace("\\", "/");
+                    return Path.GetFullPath(fullPath);
                 }
             }
             return null;
