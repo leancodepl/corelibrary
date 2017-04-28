@@ -32,6 +32,8 @@ namespace LeanCode.ViewRenderer.Razor
 
     class ViewCompiler
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ViewCompiler>();
+
         private static readonly List<PortableExecutableReference> References = new[]
         {
             Assembly.Load(new AssemblyName("mscorlib")),
@@ -60,10 +62,13 @@ namespace LeanCode.ViewRenderer.Razor
 
         public async Task<CompiledView> Compile(string fullPath)
         {
+            logger.Debug("Compiling view {ViewPath}", fullPath);
             var (layout, reader, size) = await ExtractLayout(fullPath);
             var code = await GenerateCode(fullPath, reader);
+            logger.Debug("Code for view {ViewPath} generated", fullPath);
             var assembly = await Task.Run(() => GenerateAssembly(fullPath, code));
             var type = assembly.GetExportedTypes()[0];
+            logger.Information("View {ViewPath} compiled to assembly {Assembly} to type {Type}", fullPath, assembly, type);
             return new CompiledView(layout, type, size);
         }
 
@@ -77,6 +82,7 @@ namespace LeanCode.ViewRenderer.Razor
             }
             catch (Exception ex)
             {
+                logger.Warning(ex, "Cannot parse syntax tree for view {ViewPath}", fullPath);
                 throw new CompilationFailedException(fullPath, new string[0], "Cannot parse syntax tree.", ex);
             }
             var assemblyName = typeof(ViewCompiler).FullName + ".GeneratedViews-" + Guid.NewGuid();
@@ -88,9 +94,16 @@ namespace LeanCode.ViewRenderer.Razor
 
                 if (!compilationResult.Success)
                 {
+                    var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
+                    logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
+                    foreach(var err in errors)
+                    {
+                        logger.Warning("\t {Error}", err);
+                    }
+
                     throw new CompilationFailedException(
                         fullPath,
-                        compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList(),
+                        errors,
                         "Cannot compile the generated code."
                         );
                 }
@@ -103,6 +116,7 @@ namespace LeanCode.ViewRenderer.Razor
                 }
                 catch (Exception ex)
                 {
+                    logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
                     throw new CompilationFailedException(
                         fullPath,
                         new string[0],
@@ -123,14 +137,57 @@ namespace LeanCode.ViewRenderer.Razor
 
             if (!genResult.Success)
             {
+                var errors = genResult.ParserErrors.Select(e => e.ToString()).ToList();
+                logger.Warning("Cannot generate code for the view {ViewPath}, errors:", fullPath);
+                foreach (var err in errors)
+                {
+                    logger.Warning("\t {Error}", err);
+                }
+
                 throw new CompilationFailedException(
                     fullPath,
-                    genResult.ParserErrors.Select(e => e.ToString()).ToList(),
+                    errors,
                     "Cannot compile view - Razor syntax errors"
                 );
             }
 
             return genResult.GeneratedCode;
+        }
+
+        private async Task<(string, StreamReader, int)> ExtractLayout(string fullPath)
+        {
+            StreamReader file;
+            try
+            {
+                file = File.OpenText(fullPath);
+            }
+            catch (Exception ex)
+            {
+                logger.Warning(ex, "Cannot open view {ViewPath}", fullPath);
+                throw new CompilationFailedException(fullPath, new string[0], "Cannot open view file.", ex);
+            }
+
+            var size = (int)((FileStream)file.BaseStream).Length;
+            var firstLine = await file.ReadLineAsync().ConfigureAwait(false);
+            if (firstLine != null && firstLine.StartsWith("@layout "))
+            {
+                var quoted = firstLine.Substring("@layout ".Length);
+                if (quoted[0] != '"' || quoted[quoted.Length - 1] != '"')
+                {
+                    logger.Warning("Cannot extract layout from the view {ViewPath} - invalid quotes", fullPath);
+                    throw new CompilationFailedException(
+                        fullPath,
+                        new string[0],
+                        "Cannot compile the view - invalid layout specification.");
+                }
+                return (quoted.Substring(1, quoted.Length - 2), file, size - firstLine.Length - 1);
+            }
+            else
+            {
+                file.BaseStream.Seek(0, SeekOrigin.Begin);
+                file.DiscardBufferedData();
+                return (null, file, size);
+            }
         }
 
         private static RazorTemplateEngine PrepareEngine()
@@ -152,38 +209,5 @@ namespace LeanCode.ViewRenderer.Razor
             return new RazorTemplateEngine(host);
         }
 
-        private static async Task<(string, StreamReader, int)> ExtractLayout(string fullPath)
-        {
-            StreamReader file;
-            try
-            {
-                file = File.OpenText(fullPath);
-            }
-            catch (Exception ex)
-            {
-                throw new CompilationFailedException(fullPath, new string[0], "Cannot open view file.", ex);
-            }
-
-            var size = (int)((FileStream)file.BaseStream).Length;
-            var firstLine = await file.ReadLineAsync().ConfigureAwait(false);
-            if (firstLine != null && firstLine.StartsWith("@layout "))
-            {
-                var quoted = firstLine.Substring("@layout ".Length);
-                if (quoted[0] != '"' || quoted[quoted.Length - 1] != '"')
-                {
-                    throw new CompilationFailedException(
-                        fullPath,
-                        new string[0],
-                        "Cannot compile the view - invalid layout specification.");
-                }
-                return (quoted.Substring(1, quoted.Length - 2), file, size - firstLine.Length - 1);
-            }
-            else
-            {
-                file.BaseStream.Seek(0, SeekOrigin.Begin);
-                file.DiscardBufferedData();
-                return (null, file, size);
-            }
-        }
     }
 }

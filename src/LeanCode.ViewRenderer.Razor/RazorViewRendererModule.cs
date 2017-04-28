@@ -10,7 +10,7 @@ namespace LeanCode.ViewRenderer.Razor
 
         protected override void Load(ContainerBuilder builder)
         {
-            // builder.RegisterType<RazorViewRenderer>().As<IViewRenderer>();
+            builder.RegisterType<RazorViewRenderer>().As<IViewRenderer>().SingleInstance();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace LeanCode.ViewRenderer.Razor
 {
     class CompiledViewsCache
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CompiledViewsCache>();
+
         private readonly ViewLocator locator;
         private readonly ViewCompiler compiler;
 
@@ -26,10 +28,12 @@ namespace LeanCode.ViewRenderer.Razor
         {
             if (cache.TryGetValue(viewName, out var compiled))
             {
+                logger.Verbose("View type for {ViewName} retrieved from cache", viewName);
                 return new ValueTask<CompiledView>(compiled);
             }
             else
             {
+                logger.Verbose("View type for {ViewName} is not in cache, compiling", viewName);
                 var tcs = new TaskCompletionSource<CompiledView>();
                 var newTcs = buildCache.GetOrAdd(viewName, tcs);
                 if (tcs == newTcs)
@@ -38,6 +42,7 @@ namespace LeanCode.ViewRenderer.Razor
                 }
                 else
                 {
+                    logger.Verbose("View type for {ViewName} is being compiled, waiting", viewName);
                     return new ValueTask<CompiledView>(newTcs.Task);
                 }
             }
@@ -71,9 +76,11 @@ namespace LeanCode.ViewRenderer.Razor
             var viewLocation = locator.LocateView(viewName);
             if (viewLocation == null)
             {
+                logger.Warning("Cannot locate view {ViewName}", viewName);
                 throw new ViewNotFoundException(viewName, "Cannot locate view.");
             }
 
+            logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, viewLocation);
             return await compiler.Compile(viewLocation).ConfigureAwait(false);
         }
     }
