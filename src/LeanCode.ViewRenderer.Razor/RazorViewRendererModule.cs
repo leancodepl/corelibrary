@@ -3,14 +3,14 @@ using LeanCode.ViewRenderer.Razor;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class ViewRendererModule : Module
+    class RazorViewRendererModule : Module
     {
-        public ViewRendererModule()
+        public RazorViewRendererModule(RazorViewRendererOptions opts)
         { }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<RazorViewRenderer>().As<IViewRenderer>();
+            // builder.RegisterType<RazorViewRenderer>().As<IViewRenderer>();
         }
     }
 }

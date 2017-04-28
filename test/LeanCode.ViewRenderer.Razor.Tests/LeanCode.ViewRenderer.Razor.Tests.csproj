@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/LeanCode.ViewRenderer.Razor/LeanCode.ViewRenderer.Razor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views/**/*.cs*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Import Project="../targets/Tests.targets" />
+</Project>
