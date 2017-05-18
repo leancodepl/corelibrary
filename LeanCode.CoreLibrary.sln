@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer.Razor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer.Razor.Tests", "test\LeanCode.ViewRenderer.Razor.Tests\LeanCode.ViewRenderer.Razor.Tests.csproj", "{15217E8D-1760-4E5C-B1E8-6EE05C3054C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DataStorage", "src\LeanCode.DataStorage\LeanCode.DataStorage.csproj", "{4022CFB5-5D03-4C09-AAB6-ED50D389908D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -422,6 +424,18 @@ Global
 		{15217E8D-1760-4E5C-B1E8-6EE05C3054C9}.Release|x64.Build.0 = Release|x64
 		{15217E8D-1760-4E5C-B1E8-6EE05C3054C9}.Release|x86.ActiveCfg = Release|x86
 		{15217E8D-1760-4E5C-B1E8-6EE05C3054C9}.Release|x86.Build.0 = Release|x86
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|x64.ActiveCfg = Debug|x64
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|x64.Build.0 = Debug|x64
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|x86.ActiveCfg = Debug|x86
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Debug|x86.Build.0 = Debug|x86
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|x64.ActiveCfg = Release|x64
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|x64.Build.0 = Release|x64
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|x86.ActiveCfg = Release|x86
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -456,5 +470,6 @@ Global
 		{C0471EC6-64F1-47C6-BDC4-EBFCC984B672} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 		{4E30586F-8B06-4CA7-9349-8F3056B11A5F} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 		{15217E8D-1760-4E5C-B1E8-6EE05C3054C9} = {AB0FFC32-4BF7-49E3-9AFE-3DE43C0356BA}
+		{4022CFB5-5D03-4C09-AAB6-ED50D389908D} = {591E1969-D022-438A-99A6-EE8A14BEBE98}
 	EndGlobalSection
 EndGlobal
