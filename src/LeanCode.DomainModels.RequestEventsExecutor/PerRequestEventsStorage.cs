@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using Autofac;
@@ -24,6 +25,10 @@ namespace LeanCode.DomainModels.RequestEventsExecutor
 
         public void Store(IDomainEvent domainEvent)
         {
+            if (storage.Value == null)
+            {
+                throw new InvalidOperationException("Call UseEventExecutor on the current ASP.NET Core pipeline before using domain events.");
+            }
             storage.Value.Enqueue(domainEvent);
         }
 

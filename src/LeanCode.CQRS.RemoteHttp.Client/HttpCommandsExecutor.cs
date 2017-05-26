@@ -42,23 +42,14 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 using (var response = await client.PostAsync("command/" + command.GetType().FullName, content).ConfigureAwait(false))
                 {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        throw new CommandNotFoundException();
-                    }
-                    if (response.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        throw new InvalidCommandException();
-                    }
-                    if (response.StatusCode == HttpStatusCode.InternalServerError)
-                    {
-                        throw new InternalServerErrorException();
-                    }
+                    // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
                     if ((int)response.StatusCode == 422)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         return JsonConvert.DeserializeObject<CommandResult>(responseContent);
                     }
+                    response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
+
                     return CommandResult.Success();
                 }
             }

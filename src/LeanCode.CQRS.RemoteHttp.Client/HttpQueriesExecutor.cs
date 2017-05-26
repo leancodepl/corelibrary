@@ -42,18 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 using (var response = await client.PostAsync("query/" + query.GetType().FullName, content).ConfigureAwait(false))
                 {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        throw new QueryNotFoundException();
-                    }
-                    if (response.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        throw new InvalidQueryException();
-                    }
-                    if (response.StatusCode == HttpStatusCode.InternalServerError)
-                    {
-                        throw new InternalServerErrorException();
-                    }
+                    response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return JsonConvert.DeserializeObject<TResult>(responseContent);
