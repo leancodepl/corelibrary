@@ -22,7 +22,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.queryExecutor = queryExecutor;
         }
 
-        protected override async Task<IActionResult> ExecuteObjectAsync(object obj)
+        protected override async Task<ActionResult> ExecuteObjectAsync(object obj)
         {
             MethodInfo method;
             try
@@ -31,8 +31,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch
             {
+                Logger.Warning("The type {Type} is not an IRemoteQuery", obj.GetType());
                 // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                return new StatusCodeResult(StatusCodes.Status404NotFound);
+                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
             var type = obj.GetType();
@@ -40,7 +41,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 var result = (Task<object>)method.Invoke(this, new[] { obj });
                 var objResult = await result.ConfigureAwait(false);
-                return new JsonResult(objResult);
+                return new ActionResult.Json(objResult);
             }
             catch (TargetInvocationException ex)
             {
@@ -49,7 +50,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (QueryHandlerNotFoundException)
             {
-                return new StatusCodeResult(StatusCodes.Status404NotFound);
+                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
         }
 

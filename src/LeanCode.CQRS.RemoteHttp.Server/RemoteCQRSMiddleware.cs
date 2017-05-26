@@ -21,10 +21,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public async Task Invoke(HttpContext context)
         {
             var request = context.Request;
-            IActionResult actionResult;
+            ActionResult actionResult;
             if (request.Method != HttpMethods.Post)
             {
-                actionResult = new StatusCodeResult(StatusCodes.Status405MethodNotAllowed);
+                actionResult = new ActionResult.StatusCode(StatusCodes.Status405MethodNotAllowed);
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
@@ -40,7 +40,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             else
             {
-                actionResult = new StatusCodeResult(StatusCodes.Status404NotFound);
+                actionResult = new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
             actionResult.Execute(context);

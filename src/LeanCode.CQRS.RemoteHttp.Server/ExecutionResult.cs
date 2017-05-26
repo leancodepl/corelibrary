@@ -4,49 +4,50 @@ using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    interface IActionResult
+    abstract class ActionResult
     {
-        void Execute(HttpContext ctx);
-    }
+        public abstract void Execute(HttpContext ctx);
 
-    sealed class StatusCodeResult : IActionResult
-    {
-        public int StatusCode { get; }
-
-        public StatusCodeResult(int statusCode)
+        public sealed class StatusCode : ActionResult
         {
-            StatusCode = statusCode;
-        }
+            public int Code { get; }
 
-        public void Execute(HttpContext ctx)
-        {
-            ctx.Response.StatusCode = StatusCode;
-        }
-    }
-
-    sealed class JsonResult : IActionResult
-    {
-        public object Payload { get; }
-        public int StatusCode { get; }
-
-        public JsonResult(object payload, int statusCode)
-        {
-            StatusCode = statusCode;
-            Payload = payload;
-        }
-
-        public JsonResult(object payload)
-            : this(payload, StatusCodes.Status200OK)
-        { }
-
-        public void Execute(HttpContext ctx)
-        {
-            ctx.Response.ContentType = "application/json";
-            ctx.Response.StatusCode = StatusCode;
-            using (var writer = new StreamWriter(ctx.Response.Body))
+            public StatusCode(int statusCode)
             {
-                new JsonSerializer().Serialize(writer, Payload);
+                Code = statusCode;
+            }
+
+            public override void Execute(HttpContext ctx)
+            {
+                ctx.Response.StatusCode = Code;
+            }
+        }
+
+        public sealed class Json : ActionResult
+        {
+            public object Payload { get; }
+            public int Code { get; }
+
+            public Json(object payload, int statusCode)
+            {
+                Code = statusCode;
+                Payload = payload;
+            }
+
+            public Json(object payload)
+                : this(payload, StatusCodes.Status200OK)
+            { }
+
+            public override void Execute(HttpContext ctx)
+            {
+                ctx.Response.ContentType = "application/json";
+                ctx.Response.StatusCode = Code;
+                using (var writer = new StreamWriter(ctx.Response.Body))
+                {
+                    new JsonSerializer().Serialize(writer, Payload);
+                }
             }
         }
     }
+
 }

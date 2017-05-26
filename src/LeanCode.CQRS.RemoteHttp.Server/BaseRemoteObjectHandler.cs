@@ -22,13 +22,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             Catalog = catalog;
         }
 
-        public async Task<IActionResult> ExecuteAsync(HttpRequest request)
+        public async Task<ActionResult> ExecuteAsync(HttpRequest request)
         {
             var type = ExtractType(request);
             if (type == null)
             {
                 Logger.Verbose("Cannot retrieve type from path {Path}, type not found", request.Path);
-                return new StatusCodeResult(StatusCodes.Status404NotFound);
+                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
             object obj;
@@ -39,39 +39,54 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (Exception ex)
             {
                 Logger.Verbose(ex, "Cannot deserialize object body from the request stream");
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                return new ActionResult.StatusCode(StatusCodes.Status400BadRequest);
             }
 
             if (obj == null)
             {
                 Logger.Verbose("Client sent an empty object, ignoring");
-                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                return new ActionResult.StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            IActionResult result;
+            ActionResult result;
             try
             {
                 result = await ExecuteObjectAsync(obj);
             }
             catch (UnauthenticatedException)
             {
-                return new StatusCodeResult(StatusCodes.Status401Unauthorized);
+                result = new ActionResult.StatusCode(StatusCodes.Status401Unauthorized);
             }
             catch (InsufficientPermissionException)
             {
-                return new StatusCodeResult(StatusCodes.Status403Forbidden);
+                result = new ActionResult.StatusCode(StatusCodes.Status403Forbidden);
             }
             catch (Exception ex)
             {
                 Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                result = new ActionResult.StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            Logger.Debug("Remote object of type {Type} executed successfully", type);
+            var isSuccess = true;
+            switch (result)
+            {
+                case ActionResult.StatusCode sc:
+                    isSuccess = sc.Code < 300;
+                    break;
+                case ActionResult.Json j:
+                    isSuccess = j.Code < 300;
+                    break;
+            }
+
+            if (isSuccess)
+            {
+                Logger.Debug("Remote object of type {Type} executed successfully", type);
+            }
+
             return result;
         }
 
-        protected abstract Task<IActionResult> ExecuteObjectAsync(object obj);
+        protected abstract Task<ActionResult> ExecuteObjectAsync(object obj);
 
         private Type ExtractType(HttpRequest request)
         {

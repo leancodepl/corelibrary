@@ -20,12 +20,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.commandExecutor = commandExecutor;
         }
 
-        protected override async Task<IActionResult> ExecuteObjectAsync(object obj)
+        protected override async Task<ActionResult> ExecuteObjectAsync(object obj)
         {
             var type = obj.GetType();
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
             {
-                return new StatusCodeResult(StatusCodes.Status404NotFound);
+                Logger.Warning("The type {Type} is not an IRemoteCommand", type);
+                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
             var method = methodCache.GetOrAdd(type, t => ExecCommandMethod.MakeGenericMethod(t));
@@ -38,16 +39,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (CommandHandlerNotFoundException)
             {
-                return new StatusCodeResult(StatusCodes.Status404NotFound);
+                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
             if (cmdResult.WasSuccessful)
             {
-                return new JsonResult(cmdResult);
+                return new ActionResult.Json(cmdResult);
             }
             else
             {
-                return new JsonResult(cmdResult, StatusCodes.Status422UnprocessableEntity);
+                return new ActionResult.Json(cmdResult, StatusCodes.Status422UnprocessableEntity);
             }
         }
 
