@@ -8,13 +8,13 @@ namespace LeanCode.CQRS.Security
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
     public class AuthorizeWhenAttribute : Attribute
     {
-        private Type authorizer { get; }
-        private object customData { get; }
+        private readonly Type authorizerType;
+        private readonly object customData;
 
-        public AuthorizeWhenAttribute(Type Authorizer, object CustomData = null)
+        public AuthorizeWhenAttribute(Type authorizerType, object customData = null)
         {
-            authorizer = Authorizer;
-            customData = CustomData;
+            this.authorizerType = authorizerType;
+            this.customData = customData;
         }
 
         public static List<AuthorizerDefinition> GetCustomAuthorizers(Type type)
@@ -34,7 +34,7 @@ namespace LeanCode.CQRS.Security
 
             private AuthorizerDefinition(AuthorizeWhenAttribute attr)
             {
-                this.Authorizer = attr.authorizer;
+                this.Authorizer = attr.authorizerType;
                 this.CustomData = attr.customData;
             }
 

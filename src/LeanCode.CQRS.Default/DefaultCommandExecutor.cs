@@ -40,10 +40,15 @@ namespace LeanCode.CQRS.Default
         private void AuthorizeCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            if (!authorizer.CheckIfAuthorized(command))
+            switch (authorizer.CheckIfAuthorized(command))
             {
-                logger.Warning("Command {@Command} not authorized", command);
-                throw new InsufficientPermissionException($"User not authorized for {command.GetType()}");
+                case AuthorizationResult.InsufficientPermission:
+                    logger.Warning("Command {@Command} not authorized", command);
+                    throw new InsufficientPermissionException($"User is not authorized for {command.GetType()}.");
+
+                case AuthorizationResult.Unauthenticated:
+                    logger.Warning("Command {@Command} requires authorization and user is not authenticated", command);
+                    throw new UnauthenticatedException($"User is not authenticated.");
             }
         }
 

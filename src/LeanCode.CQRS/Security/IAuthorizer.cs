@@ -1,7 +1,14 @@
 ﻿namespace LeanCode.CQRS.Security
 {
+    public enum AuthorizationResult
+    {
+        Unauthenticated,
+        InsufficientPermission,
+        Authorized
+    }
+
     public interface IAuthorizer
     {
-        bool CheckIfAuthorized<T>(T obj);
+        AuthorizationResult CheckIfAuthorized<T>(T obj);
     }
 }

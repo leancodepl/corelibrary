@@ -13,8 +13,7 @@ namespace LeanCode.CQRS.Autofac
 
         public ICommandHandler<TCommand> FindCommandHandler<TCommand>() where TCommand : ICommand
         {
-            ICommandHandler<TCommand> handler;
-            componentContext.TryResolve<ICommandHandler<TCommand>>(out handler);
+            componentContext.TryResolve<ICommandHandler<TCommand>>(out var handler);
             return handler;
         }
     }

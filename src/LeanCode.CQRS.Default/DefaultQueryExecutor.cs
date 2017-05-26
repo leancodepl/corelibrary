@@ -45,10 +45,15 @@ namespace LeanCode.CQRS.Default
 
         private void AuthorizeQuery<TResult>(IQuery<TResult> query)
         {
-            if (!authorizer.CheckIfAuthorized(query))
+            switch (authorizer.CheckIfAuthorized(query))
             {
-                logger.Warning("Query {@Query} not authorized", query);
-                throw new InsufficientPermissionException($"User not authorized for {query.GetType()}");
+                case AuthorizationResult.InsufficientPermission:
+                    logger.Warning("Query {@Query} not authorized", query);
+                    throw new InsufficientPermissionException($"User is not authorized for {query.GetType()}.");
+
+                case AuthorizationResult.Unauthenticated:
+                    logger.Warning("Query {@Query} requires authorization and user is not authenticated", query);
+                    throw new UnauthenticatedException($"User is not authenticated.");
             }
         }
 

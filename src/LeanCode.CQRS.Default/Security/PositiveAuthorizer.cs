@@ -6,10 +6,10 @@ namespace LeanCode.CQRS.Default.Security
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PositiveAuthorizer>();
 
-        public bool CheckIfAuthorized<T>(T obj)
+        public AuthorizationResult CheckIfAuthorized<T>(T obj)
         {
             logger.Verbose("Skipping authorization for object {@Object}", obj);
-            return true;
+            return AuthorizationResult.Authorized;
         }
     }
 }

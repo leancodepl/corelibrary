@@ -32,8 +32,7 @@ namespace LeanCode.CQRS.Autofac
                 return Tuple.Create(queryHandlerType, ctor);
             });
 
-            object handler;
-            componentContext.TryResolve(cached.Item1, out handler);
+            componentContext.TryResolve(cached.Item1, out var handler);
 
             if (handler == null)
             {
