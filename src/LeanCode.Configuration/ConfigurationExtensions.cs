@@ -7,11 +7,12 @@ namespace LeanCode.Configuration
     public static class ConfigurationExtensions
     {
         public static ContainerBuilder ConfigSection<TConfig>(this ContainerBuilder builder, IConfiguration config)
-            where TConfig : class
+            where TConfig : class, new()
         {
             var section = config.GetSection(Name<TConfig>());
             builder.Register(_ => new ConfigureFromConfigurationOptions<TConfig>(section))
                 .As<IConfigureOptions<TConfig>>();
+            builder.Register(ctx => ctx.Resolve<IOptions<TConfig>>().Value).AsSelf();
             return builder;
         }
 
