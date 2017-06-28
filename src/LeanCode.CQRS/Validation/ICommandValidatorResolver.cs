@@ -1,4 +1,4 @@
-﻿namespace LeanCode.CQRS.Validation
+namespace LeanCode.CQRS.Validation
 {
     public interface ICommandValidatorResolver
     {

@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using LeanCode.ViewRenderer.Razor;
 
 namespace LeanCode.ViewRenderer.Razor

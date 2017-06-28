@@ -1,4 +1,4 @@
-﻿using Autofac.Core;
+using Autofac.Core;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

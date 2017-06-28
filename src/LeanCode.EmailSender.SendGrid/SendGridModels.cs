@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LeanCode.EmailSender.Model;
 
 namespace LeanCode.EmailSender.SendGrid

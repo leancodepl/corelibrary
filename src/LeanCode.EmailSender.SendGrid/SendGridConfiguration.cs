@@ -1,4 +1,4 @@
-﻿namespace LeanCode.EmailSender.SendGrid
+namespace LeanCode.EmailSender.SendGrid
 {
     sealed class SendGridConfiguration
     {

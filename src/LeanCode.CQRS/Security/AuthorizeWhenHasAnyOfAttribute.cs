@@ -1,4 +1,4 @@
-﻿namespace LeanCode.CQRS.Security
+namespace LeanCode.CQRS.Security
 {
     public abstract class PermissionAuthorizer : CustomAuthorizer<object, string[]>
     { }

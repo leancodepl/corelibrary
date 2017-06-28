@@ -1,4 +1,4 @@
-﻿namespace LeanCode.Cache
+namespace LeanCode.Cache
 {
     public interface ICacheCleaner
     {

@@ -1,4 +1,4 @@
-﻿namespace LeanCode.EmailSender.Model
+namespace LeanCode.EmailSender.Model
 {
     public class EmailContent
     {

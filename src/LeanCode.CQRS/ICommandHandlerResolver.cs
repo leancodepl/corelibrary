@@ -1,4 +1,4 @@
-﻿namespace LeanCode.CQRS
+namespace LeanCode.CQRS
 {
     public interface ICommandHandlerResolver
     {

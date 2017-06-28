@@ -1,4 +1,4 @@
-﻿using LeanCode.CQRS.Security;
+using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Security
 {
