@@ -15,7 +15,10 @@ namespace LeanCode.PushNotifications
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<FCMConfiguration>(config);
+            if (config != null)
+            {
+                builder.ConfigSection<FCMConfiguration>(config);
+            }
             builder.RegisterType<PushNotifications<TUserId>>().As<IPushNotifications<TUserId>>();
             builder.RegisterType<FCMClient>().As<IFCMClient>().SingleInstance();
         }

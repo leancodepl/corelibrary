@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using LeanCode.PushNotifications;
 using System;
 using LeanCode.PushNotifications.EF;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Example
 {
@@ -16,6 +17,7 @@ namespace LeanCode.Example
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<ExampleDbContext>(opts => opts.UseSqlite("Data Source=example.db"));
             services.AddScoped<IPushNotificationTokenStore<Guid>>(p => new EFPushNotificationTokenStore(p.GetRequiredService<ExampleDbContext>()));
             services.AddMvc();

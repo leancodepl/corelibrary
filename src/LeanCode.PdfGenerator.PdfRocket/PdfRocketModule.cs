@@ -14,7 +14,10 @@ namespace LeanCode.PdfGenerator.PdfRocket
         }
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<PdfRocketConfiguration>(config);
+            if (config != null)
+            {
+                builder.ConfigSection<PdfRocketConfiguration>(config);
+            }
             builder.RegisterType<PdfRocketGenerator>().As<IPdfGenerator>().SingleInstance();
         }
     }

@@ -25,9 +25,9 @@ namespace LeanCode.EmailSender.SendGrid
         public List<EmailAttachment> Attachments { get; set; }
         public string Subject { get; set; }
 
-        public SendGridClient(IOptions<SendGridConfiguration> sendGridConfiguration)
+        public SendGridClient(SendGridConfiguration sendGridConfiguration)
         {
-            this.sendGridConfiguration = sendGridConfiguration.Value;
+            this.sendGridConfiguration = sendGridConfiguration;
 
             this.Recipients = new List<EmailAddress>();
             this.Contents = new List<EmailContent>();

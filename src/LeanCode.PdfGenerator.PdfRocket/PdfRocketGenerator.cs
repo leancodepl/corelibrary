@@ -16,9 +16,9 @@ namespace LeanCode.PdfGenerator.PdfRocket
 
         private readonly HttpClient client;
 
-        public PdfRocketGenerator(IOptions<PdfRocketConfiguration> config, IViewRenderer viewRenderer)
+        public PdfRocketGenerator(PdfRocketConfiguration config, IViewRenderer viewRenderer)
         {
-            this.config = config.Value;
+            this.config = config;
             this.viewRenderer = viewRenderer;
             client = new HttpClient
             {

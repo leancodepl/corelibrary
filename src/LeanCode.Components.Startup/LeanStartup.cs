@@ -92,13 +92,17 @@ namespace LeanCode.Components.Startup
                 .AddDebug()
                 .AddSerilog();
 
-            foreach (var leanApp in applications
-                .OrderByDescending(a => a.BasePath.Length))
+            foreach (var leanApp in applications.OrderByDescending(a => a.BasePath.Length))
             {
                 logger.Debug("Mapping app {App} to {BasePath}", leanApp.GetType(), leanApp.BasePath);
-                app.MapWhen(
-                    c => c.Request.Path.Value.StartsWith(leanApp.BasePath),
-                    leanApp.Configure);
+                if (string.IsNullOrEmpty(leanApp.BasePath) || leanApp.BasePath == "/")
+                {
+                    leanApp.Configure(app);
+                }
+                else
+                {
+                    app.Map(leanApp.BasePath, leanApp.Configure);
+                }
             }
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);

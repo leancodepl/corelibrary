@@ -15,10 +15,12 @@ namespace LeanCode.EmailSender.SendGrid
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<SendGridConfiguration>(configuration);
+            if (configuration != null)
+            {
+                builder.ConfigSection<SendGridConfiguration>(configuration);
+            }
 
             builder.RegisterType<SendGridClient>().As<IEmailClient>();
-
             builder.RegisterType<EmailSender>().As<IEmailSender>();
         }
     }

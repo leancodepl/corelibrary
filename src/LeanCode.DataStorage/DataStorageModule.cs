@@ -15,7 +15,10 @@ namespace LeanCode.DataStorage
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<AzureStorageConfiguration>(config);
+            if (config != null)
+            {
+                builder.ConfigSection<AzureStorageConfiguration>(config);
+            }
 
             builder.RegisterType<AzureDataStorage>().As<IDataStorage>();
         }
