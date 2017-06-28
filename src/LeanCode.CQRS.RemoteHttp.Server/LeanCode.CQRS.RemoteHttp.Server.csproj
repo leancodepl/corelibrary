@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../targets/Lib.targets" />
 
   <PropertyGroup>
@@ -16,4 +16,3 @@
   </ItemGroup>
   <Import Project="../targets/Common.targets" />
 </Project>
-
