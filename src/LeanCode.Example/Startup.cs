@@ -11,6 +11,7 @@ using LeanCode.DomainModels.RequestEventsExecutor;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using LeanCode.PushNotifications;
+using LeanCode.DomainModels.EventsExecutor;
 
 namespace LeanCode.Example
 {
