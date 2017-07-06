@@ -25,21 +25,21 @@ namespace LeanCode.DomainModels.RequestEventsExecutor
                 logger.Debug("Executing request to {Path} and capturing its events",
                     context.Request.Path);
                 await next(context);
-                if (ShouldAbort(context.Response))
+                if (ShouldProcess(context.Response))
+                {
+                    return ExecutionResult.Process();
+                }
+                else
                 {
                     logger.Warning(
                         "Execution of request to {Path} resulted in {StatusCode} status code, skipping event execution",
                         context.Request.Path, context.Response.StatusCode);
                     return ExecutionResult.Skip();
                 }
-                else
-                {
-                    return ExecutionResult.Process();
-                }
             });
         }
 
-        private static bool ShouldAbort(HttpResponse response)
+        private static bool ShouldProcess(HttpResponse response)
         {
             if (response != null)
             {
@@ -48,7 +48,7 @@ namespace LeanCode.DomainModels.RequestEventsExecutor
             }
             else
             {
-                return false;
+                return true;
             }
         }
     }
