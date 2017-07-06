@@ -12,7 +12,7 @@ namespace LeanCode.DomainModels.EventsExecutor
                 .SingleInstance();
 
             builder.RegisterType<RetryPolicies>().AsSelf().SingleInstance();
-            builder.RegisterType<EventsExecutor>().AsSelf();
+            builder.RegisterType<EventsExecutor>().AsImplementedInterfaces();
         }
     }
 }
