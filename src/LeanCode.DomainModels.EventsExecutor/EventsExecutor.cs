@@ -42,7 +42,7 @@ namespace LeanCode.DomainModels.EventsExecutor
             catch (Exception ex)
             {
                 storage.CaptureQueue();
-                logger.Error(ex, "Exception occured during execution od {Action}, skipping event execution",
+                logger.Error(ex, "Exception occured during execution of {Action}, skipping event execution",
                     action);
                 throw;
             }
