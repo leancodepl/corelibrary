@@ -47,7 +47,7 @@ namespace LeanCode.Example
                 new FluentValidationComponent(TypesCatalog),
                 new MvcValidationComponent(TypesCatalog),
                 new DomainModelsComponent(TypesCatalog),
-                new RequestEventsExecutorComponent(),
+                new EventsExecutorComponent(),
                 new RemoteCQRSHttpComponent(TypesCatalog),
                 PushNotificationsComponent<Guid>.WithConfiguration(Configuration),
 
