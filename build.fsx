@@ -56,7 +56,9 @@ Target "Build" (fun () ->
 Target "Test" (fun () ->
     trace "Testing"
     !! (testDir @@ "**/*.csproj")
-        |> Seq.iter (fun p -> DotNetCli.Test (fun c -> { c with WorkingDir = rootDir; Project = p }))
+        |> Seq.map DirectoryName
+        |> Seq.iter (fun p ->
+            DotNetCli.RunCommand (fun c -> { c with WorkingDir = p }) "xunit")
 )
 
 Target "UpdateVersion" (fun () ->
