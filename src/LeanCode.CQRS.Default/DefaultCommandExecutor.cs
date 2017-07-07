@@ -40,7 +40,9 @@ namespace LeanCode.CQRS.Default
         private async Task AuthorizeCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            switch (await authorizer.CheckIfAuthorized(command))
+            var result = await authorizer.CheckIfAuthorized(command)
+                .ConfigureAwait(false);
+            switch (result)
             {
                 case AuthorizationResult.InsufficientPermission:
                     logger.Warning("Command {@Command} not authorized", command);

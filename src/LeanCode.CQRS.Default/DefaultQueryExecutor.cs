@@ -45,7 +45,9 @@ namespace LeanCode.CQRS.Default
 
         private async Task AuthorizeQuery<TResult>(IQuery<TResult> query)
         {
-            switch (await authorizer.CheckIfAuthorized(query))
+            var result = await authorizer.CheckIfAuthorized(query)
+                .ConfigureAwait(false);
+            switch (result)
             {
                 case AuthorizationResult.InsufficientPermission:
                     logger.Warning("Query {@Query} not authorized", query);

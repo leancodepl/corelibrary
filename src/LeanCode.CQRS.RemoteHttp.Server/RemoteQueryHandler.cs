@@ -54,10 +54,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<object> ExecuteQuery<TQuery, TResult>(object cmd)
+        private async Task<object> ExecuteQuery<TQuery, TResult>(object cmd)
             where TQuery : IRemoteQuery<TResult>
         {
-            return queryExecutor.GetAsync((TQuery)cmd).ContinueWith(e => (object)e.Result);
+            // TResult gets cast to object, so its necessary to await the Task.
+            // ContinueWith will not propagate exceptions correctly.
+            return await queryExecutor.GetAsync((TQuery)cmd).ConfigureAwait(false);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)
