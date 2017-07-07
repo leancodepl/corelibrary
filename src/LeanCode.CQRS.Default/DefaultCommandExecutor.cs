@@ -28,7 +28,7 @@ namespace LeanCode.CQRS.Default
         {
             logger.Verbose("Executing command {@Command}", command);
 
-            AuthorizeCommand(command);
+            await AuthorizeCommand(command);
             var failure = await ValidateCommand(command).ConfigureAwait(false);
             if (failure != null)
             {
@@ -37,10 +37,10 @@ namespace LeanCode.CQRS.Default
             return await RunCommand(command).ConfigureAwait(false);
         }
 
-        private void AuthorizeCommand<TCommand>(TCommand command)
+        private async Task AuthorizeCommand<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            switch (authorizer.CheckIfAuthorized(command))
+            switch (await authorizer.CheckIfAuthorized(command))
             {
                 case AuthorizationResult.InsufficientPermission:
                     logger.Warning("Command {@Command} not authorized", command);

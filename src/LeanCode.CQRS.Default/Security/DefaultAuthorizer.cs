@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
 
@@ -21,7 +22,7 @@ namespace LeanCode.CQRS.Default.Security
             this.authorizerResolver = authorizerResolver;
         }
 
-        public AuthorizationResult CheckIfAuthorized<T>(T obj)
+        public async Task<AuthorizationResult> CheckIfAuthorized<T>(T obj)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(obj);
 
@@ -37,9 +38,13 @@ namespace LeanCode.CQRS.Default.Security
             foreach (var customAuthorizerDefinition in customAuthorizers)
             {
                 var customAuthorizer = authorizerResolver.FindAuthorizer(customAuthorizerDefinition.Authorizer);
-                if (!customAuthorizer.CheckIfAuthorized(obj, customAuthorizerDefinition.CustomData))
+                var authorized = await customAuthorizer
+                    .CheckIfAuthorized(obj, customAuthorizerDefinition.CustomData)
+                    .ConfigureAwait(false);
+                if (!authorized)
                 {
-                    logger.Warning("Authorizer {Authorizer} failed to authorize the user to run {@Object}", customAuthorizer.GetType().FullName, obj);
+                    logger.Warning("Authorizer {Authorizer} failed to authorize the user to run {@Object}",
+                        customAuthorizer.GetType().FullName, obj);
                     return AuthorizationResult.InsufficientPermission;
                 }
             }

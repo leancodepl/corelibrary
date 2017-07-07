@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Security
@@ -6,10 +7,10 @@ namespace LeanCode.CQRS.Default.Security
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PositiveAuthorizer>();
 
-        public AuthorizationResult CheckIfAuthorized<T>(T obj)
+        public Task<AuthorizationResult> CheckIfAuthorized<T>(T obj)
         {
             logger.Verbose("Skipping authorization for object {@Object}", obj);
-            return AuthorizationResult.Authorized;
+            return Task.FromResult(AuthorizationResult.Authorized);
         }
     }
 }

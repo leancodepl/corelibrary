@@ -1,38 +1,41 @@
 using System;
+using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
     public interface ICustomAuthorizer
     {
-        bool CheckIfAuthorized(object obj, object customData = null);
+        Task<bool> CheckIfAuthorized(object obj, object customData = null);
     }
 
     public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
         where TObject : class
         where TCustomData : class
     {
-        public bool CheckIfAuthorized(object obj, object customData = null)
+        public Task<bool> CheckIfAuthorized(object obj, object customData = null)
         {
             TObject customAuthorizer = obj as TObject;
             if (customAuthorizer == null)
             {
-                throw new ArgumentNullException(nameof(customAuthorizer), $"{GetType()} is not valid Authorizer for {obj.GetType()}.");
+                throw new ArgumentNullException(nameof(customAuthorizer),
+                    $"{GetType()} is not valid Authorizer for {obj.GetType()}.");
             }
 
             return CheckIfAuthorized(customAuthorizer, customData as TCustomData);
         }
 
-        public abstract bool CheckIfAuthorized(TObject obj, TCustomData customData = null);
+        public abstract Task<bool> CheckIfAuthorized(TObject obj, TCustomData customData = null);
     }
 
     public abstract class CustomAuthorizer<TObject> : CustomAuthorizer<TObject, object>
         where TObject : class
     {
-        public override bool CheckIfAuthorized(TObject obj, object customData = null)
+        public override Task<bool> CheckIfAuthorized(TObject obj,
+            object customData = null)
         {
             return CheckIfAuthorized(obj);
         }
 
-        public abstract bool CheckIfAuthorized(TObject obj);
+        public abstract Task<bool> CheckIfAuthorized(TObject obj);
     }
 }

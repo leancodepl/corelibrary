@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
 
@@ -15,15 +16,18 @@ namespace LeanCode.CQRS.Default.Security
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public override bool CheckIfAuthorized(object obj, string[] permissions = null)
+        public override Task<bool> CheckIfAuthorized(object obj, string[] permissions = null)
         {
             if (!httpContextAccessor.HttpContext.User.HasPermission(permissions))
             {
-                logger.Warning("User does not have sufficient permissions ({Permissions}) to run {@Object}", permissions, obj);
-                return false;
+                logger.Warning("User does not have sufficient permissions ({Permissions}) to run {@Object}",
+                    permissions, obj);
+                return Task.FromResult(false);
             }
-
-            return true;
+            else
+            {
+                return Task.FromResult(true);
+            }
         }
     }
 }

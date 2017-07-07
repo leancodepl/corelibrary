@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Threading.Tasks;
 using LeanCode.CQRS.Default.Security;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
@@ -56,11 +57,11 @@ namespace LeanCode.CQRS.Default.Tests.Security
         }
 
         [Fact]
-        public void Object_with_no_auhorizers_authorizes()
+        public async Task Object_with_no_auhorizers_authorizes()
         {
             var obj = new NoAuthorizers();
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             Assert.Equal(AuthorizationResult.Authorized, result);
         }
@@ -68,12 +69,12 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Object_with_single_authorizer_authorizes_accordingly(bool isPositive)
+        public async Task Object_with_single_authorizer_authorizes_accordingly(bool isPositive)
         {
             var obj = new SingleAuthorizer();
             SetUpFirstAuthorizer(isPositive);
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             if (isPositive)
             {
@@ -83,7 +84,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 Assert.Equal(AuthorizationResult.InsufficientPermission, result);
             }
-            firstAuthorizer.Received().CheckIfAuthorized(obj, Arg.Any<object>());
+            _ = firstAuthorizer.Received().CheckIfAuthorized(obj, Arg.Any<object>());
         }
 
         [Theory]
@@ -91,13 +92,13 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [InlineData(false, true)]
         [InlineData(true, false)]
         [InlineData(true, true)]
-        public void Object_with_multiple_authorizers_authorizes_accordingly(bool isFirstAuthorizerPositive, bool isSecondAuthorizerPositive)
+        public async Task Object_with_multiple_authorizers_authorizes_accordingly(bool isFirstAuthorizerPositive, bool isSecondAuthorizerPositive)
         {
             var obj = new MultipleAuthorizers();
             SetUpFirstAuthorizer(isFirstAuthorizerPositive);
             SetUpSecondAuthorizer(isSecondAuthorizerPositive);
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             if (isFirstAuthorizerPositive && isSecondAuthorizerPositive)
             {
@@ -112,12 +113,12 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public void Object_with_derived_authorize_when_attribute_authorizes_correctly(bool isPositive)
+        public async Task Object_with_derived_authorize_when_attribute_authorizes_correctly(bool isPositive)
         {
             var obj = new DerivedAuthorizer();
             SetUpDerivedAuthorizer(isPositive);
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             if (isPositive)
             {
@@ -127,53 +128,53 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 Assert.Equal(AuthorizationResult.InsufficientPermission, result);
             }
-            derivedAuthorizer.Received().CheckIfAuthorized(obj, DerivedAttributeParam);
+            _ = derivedAuthorizer.Received().CheckIfAuthorized(obj, DerivedAttributeParam);
         }
 
         [Fact]
-        public void Requires_user_if_command_has_authorizers()
+        public async Task Requires_user_if_command_has_authorizers()
         {
             var obj = new SingleAuthorizer();
 
             SetUpFirstAuthorizer(true);
             httpContext.User.Returns((ClaimsPrincipal)null);
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             Assert.Equal(AuthorizationResult.Unauthenticated, result);
         }
 
         [Fact]
-        public void Requires_user_authentication_if_command_has_authorizers()
+        public async Task Requires_user_authentication_if_command_has_authorizers()
         {
             var obj = new SingleAuthorizer();
 
             SetUpFirstAuthorizer(true);
             httpContext.User.Returns(new ClaimsPrincipal(new ClaimsIdentity()));
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             Assert.Equal(AuthorizationResult.Unauthenticated, result);
         }
 
         [Fact]
-        public void Does_not_require_user_authentication_if_command_does_not_have_authorizers()
+        public async Task Does_not_require_user_authentication_if_command_does_not_have_authorizers()
         {
             var obj = new NoAuthorizers();
             httpContext.User.Returns(new ClaimsPrincipal(new ClaimsIdentity()));
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             Assert.Equal(AuthorizationResult.Authorized, result);
         }
 
         [Fact]
-        public void Does_not_require_user_if_command_does_not_have_authorizers()
+        public async Task Does_not_require_user_if_command_does_not_have_authorizers()
         {
             var obj = new NoAuthorizers();
             httpContext.User.Returns((ClaimsPrincipal)null);
 
-            var result = authorizer.CheckIfAuthorized(obj);
+            var result = await authorizer.CheckIfAuthorized(obj);
 
             Assert.Equal(AuthorizationResult.Authorized, result);
         }

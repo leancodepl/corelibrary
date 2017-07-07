@@ -27,25 +27,25 @@ namespace LeanCode.CQRS.Default
             this.authorizer = authorizer;
         }
 
-        public Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
+        public async Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
         {
             logger.Verbose("Executing query {@Query}", query);
-            AuthorizeQuery(query);
+            await AuthorizeQuery(query);
 
             var duration = QueryCacheAttribute.GetDuration(query);
             if (!duration.HasValue)
             {
-                return JustExecuteQuery(query);
+                return await JustExecuteQuery(query);
             }
             else
             {
-                return LoadFromCache(query, duration);
+                return await LoadFromCache(query, duration);
             }
         }
 
-        private void AuthorizeQuery<TResult>(IQuery<TResult> query)
+        private async Task AuthorizeQuery<TResult>(IQuery<TResult> query)
         {
-            switch (authorizer.CheckIfAuthorized(query))
+            switch (await authorizer.CheckIfAuthorized(query))
             {
                 case AuthorizationResult.InsufficientPermission:
                     logger.Warning("Query {@Query} not authorized", query);

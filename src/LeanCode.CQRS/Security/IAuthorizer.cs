@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace LeanCode.CQRS.Security
 {
     public enum AuthorizationResult
@@ -9,6 +11,6 @@ namespace LeanCode.CQRS.Security
 
     public interface IAuthorizer
     {
-        AuthorizationResult CheckIfAuthorized<T>(T obj);
+        Task<AuthorizationResult> CheckIfAuthorized<T>(T obj);
     }
 }
