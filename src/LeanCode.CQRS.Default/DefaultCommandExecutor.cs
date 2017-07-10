@@ -34,9 +34,9 @@ namespace LeanCode.CQRS.Default
 
             await AuthorizeCommand(command);
 
-            var interceptorFailure = await InterceptCommand(command).ConfigureAwait(false);
-            if(interceptorFailure != null)
-                return interceptorFailure;
+            var interceptorResult = await InterceptCommand(command).ConfigureAwait(false);
+            if (interceptorResult != null)
+                return interceptorResult;
 
             var failure = await ValidateCommand(command).ConfigureAwait(false);
             if (failure != null)
@@ -104,14 +104,14 @@ namespace LeanCode.CQRS.Default
 
         private async Task<CommandResult> InterceptCommand(ICommand command)
         {
-            foreach(var interceptor in commandInterceptors)
+            foreach (var interceptor in commandInterceptors)
             {
                 var validationResult = await interceptor.InterceptAsync(command);
-                if(!validationResult.IsValid)
-                {
-                    logger.Information("Command {@Command} is not valid. Interceptor: {@Interceptor}", command, interceptor.GetType().Name);
-                    return CommandResult.NotValid(validationResult);
-                }
+                if (validationResult != null)
+                    {
+                        logger.Information("Command {@Command} intercepted by {Interceptor}", command, interceptor.GetType().Name);
+                        return validationResult;
+                    }
             }
             return null;
         }

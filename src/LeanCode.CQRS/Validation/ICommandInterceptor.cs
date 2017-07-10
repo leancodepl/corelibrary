@@ -4,6 +4,6 @@ namespace LeanCode.CQRS.Validation
 {
     public interface ICommandInterceptor
     {
-        Task<ValidationResult> InterceptAsync(ICommand command);
+        Task<CommandResult> InterceptAsync(ICommand command);
     }
 }
