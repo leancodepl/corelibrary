@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Security.Exceptions;
@@ -13,14 +14,17 @@ namespace LeanCode.CQRS.Default
         private readonly ICommandHandlerResolver commandHandlerResolver;
         private readonly IAuthorizer authorizer;
         private readonly ICommandValidatorResolver commandValidatorResolver;
+        private readonly IEnumerable<ICommandInterceptor> commandInterceptors;
 
         public DefaultCommandExecutor(ICommandHandlerResolver commandHandlerResolver,
             IAuthorizer authorizer,
-            ICommandValidatorResolver commandValidatorResolver)
+            ICommandValidatorResolver commandValidatorResolver,
+            IEnumerable<ICommandInterceptor> commandInterceptors)
         {
             this.commandHandlerResolver = commandHandlerResolver;
             this.authorizer = authorizer;
             this.commandValidatorResolver = commandValidatorResolver;
+            this.commandInterceptors = commandInterceptors;
         }
 
         public async Task<CommandResult> RunAsync<TCommand>(TCommand command)
@@ -29,6 +33,11 @@ namespace LeanCode.CQRS.Default
             logger.Verbose("Executing command {@Command}", command);
 
             await AuthorizeCommand(command);
+
+            var interceptorResult = await InterceptCommand(command).ConfigureAwait(false);
+            if (interceptorResult != null)
+                return interceptorResult;
+
             var failure = await ValidateCommand(command).ConfigureAwait(false);
             if (failure != null)
             {
@@ -91,6 +100,20 @@ namespace LeanCode.CQRS.Default
             }
             logger.Information("Command {@Command} executed successfully", command);
             return CommandResult.Success();
+        }
+
+        private async Task<CommandResult> InterceptCommand(ICommand command)
+        {
+            foreach (var interceptor in commandInterceptors)
+            {
+                var validationResult = await interceptor.InterceptAsync(command);
+                if (validationResult != null)
+                    {
+                        logger.Information("Command {@Command} intercepted by {Interceptor}", command, interceptor.GetType().Name);
+                        return validationResult;
+                    }
+            }
+            return null;
         }
     }
 }
