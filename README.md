@@ -21,7 +21,7 @@ They change frequently, and sometimes we really want them to be up-to-date, so t
 
 There may be more NuGets that are shared between projects that have not been identified yet. If you find one - report it.
 
-There's also problem with ASP.NET Core MVC - we want to have it up-to-date, but it has many, many packages that are not required for all of the project. Hence the `Mvc.targets` file that just binds the versions. Each package is responsible for referencing the required set of MVC-related packages.
+There's also a problem with ASP.NET Core MVC - we want to have it up-to-date, but it has many, many packages that are not required for all of the project. Hence the `Mvc.targets` file that just binds the versions. Each package is responsible for referencing the required set of MVC-related packages.
 
 ### Using LeanCode packages in your project
 
