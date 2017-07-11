@@ -38,8 +38,7 @@ namespace LeanCode.CQRS.FluentValidation
             return new ValidationError(
                 failure.PropertyName,
                 failure.ErrorMessage,
-                state?.ErrorCode ?? 0,
-                failure.AttemptedValue
+                state?.ErrorCode ?? 0
             );
         }
 

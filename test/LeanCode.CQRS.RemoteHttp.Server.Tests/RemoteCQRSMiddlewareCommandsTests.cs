@@ -81,7 +81,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.False(result.WasSuccessful);
             var err = Assert.Single(result.ValidationErrors);
             Assert.Equal(StubCommandExecutor.SampleError.PropertyName, err.PropertyName);
-            Assert.Equal(StubCommandExecutor.SampleError.AttemptedValue, (int)(long)err.AttemptedValue);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorCode, err.ErrorCode);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorMessage, err.ErrorMessage);
         }
