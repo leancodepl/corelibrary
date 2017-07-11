@@ -1,8 +1,6 @@
-using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
-using LeanCode.ViewRenderer.Razor;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.ViewRenderer.Razor

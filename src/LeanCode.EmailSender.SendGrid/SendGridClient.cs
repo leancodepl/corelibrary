@@ -1,14 +1,13 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+using LeanCode.EmailSender.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using LeanCode.EmailSender.Model;
 
 namespace LeanCode.EmailSender.SendGrid
 {

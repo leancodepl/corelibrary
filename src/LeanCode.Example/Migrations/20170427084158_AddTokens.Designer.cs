@@ -1,10 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using LeanCode.Example;
-using LeanCode.PushNotifications;
 
 namespace LeanCode.Example.Migrations
 {

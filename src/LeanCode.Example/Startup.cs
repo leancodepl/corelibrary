@@ -1,17 +1,16 @@
 using System;
 using LeanCode.Cache.AspNet;
-using LeanCode.DomainModels.Autofac;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Autofac;
 using LeanCode.CQRS.FluentValidation;
 using LeanCode.CQRS.MvcValidation;
 using LeanCode.CQRS.RemoteHttp.Server;
-using LeanCode.DomainModels.RequestEventsExecutor;
+using LeanCode.DomainModels.Autofac;
+using LeanCode.DomainModels.EventsExecutor;
+using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using LeanCode.PushNotifications;
-using LeanCode.DomainModels.EventsExecutor;
 
 namespace LeanCode.Example
 {

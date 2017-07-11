@@ -106,12 +106,15 @@ namespace LeanCode.CQRS.Default
         {
             foreach (var interceptor in commandInterceptors)
             {
-                var validationResult = await interceptor.InterceptAsync(command);
-                if (validationResult != null)
-                    {
-                        logger.Information("Command {@Command} intercepted by {Interceptor}", command, interceptor.GetType().Name);
-                        return validationResult;
-                    }
+                var commandResult = await interceptor.InterceptAsync(command)
+                    .ConfigureAwait(false);
+                if (commandResult != null)
+                {
+                    logger.Information(
+                        "Command {@Command} intercepted by {Interceptor}",
+                        command, interceptor.GetType());
+                    return commandResult;
+                }
             }
             return null;
         }

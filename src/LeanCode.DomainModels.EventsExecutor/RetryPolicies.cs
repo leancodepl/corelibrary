@@ -1,6 +1,5 @@
 using System;
 using Polly;
-using Polly.Registry;
 
 namespace LeanCode.DomainModels.EventsExecutor
 {

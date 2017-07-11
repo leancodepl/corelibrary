@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.CodeGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 
 namespace LeanCode.ViewRenderer.Razor
@@ -96,7 +95,7 @@ namespace LeanCode.ViewRenderer.Razor
                 {
                     var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
                     logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
-                    foreach(var err in errors)
+                    foreach (var err in errors)
                     {
                         logger.Warning("\t {Error}", err);
                     }
