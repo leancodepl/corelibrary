@@ -8,5 +8,9 @@
     <PackageId>LeanCode.Facebook</PackageId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+  </ItemGroup>
+
   <Import Project="../targets/Common.targets" />
 </Project>
