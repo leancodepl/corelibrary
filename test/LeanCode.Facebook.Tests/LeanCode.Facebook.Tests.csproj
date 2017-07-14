@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/LeanCode.Facebook/LeanCode.Facebook.csproj" />
+  </ItemGroup>
+  <Import Project="../targets/Tests.targets" />
+</Project>

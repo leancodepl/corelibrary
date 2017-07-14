@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../targets/Lib.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>LeanCode.Facebook</AssemblyName>
+    <PackageId>LeanCode.Facebook</PackageId>
+  </PropertyGroup>
+
+  <Import Project="../targets/Common.targets" />
+</Project>
