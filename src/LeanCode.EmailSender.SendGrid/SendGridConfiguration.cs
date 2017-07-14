@@ -1,6 +1,6 @@
 namespace LeanCode.EmailSender.SendGrid
 {
-    sealed class SendGridConfiguration
+    public class SendGridConfiguration
     {
         public string ApiKey { get; set; }
     }
