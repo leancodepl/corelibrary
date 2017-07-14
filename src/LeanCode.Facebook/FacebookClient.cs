@@ -42,7 +42,6 @@ namespace LeanCode.Facebook
         {
             var proof = GenerateProof(accessToken);
             var uri = $"me?fields={fieldsStr}&access_token={accessToken}&appsecret_proof={proof}";
-            System.Console.WriteLine(uri);
             try
             {
                 using (var response = await client.GetAsync(uri))
