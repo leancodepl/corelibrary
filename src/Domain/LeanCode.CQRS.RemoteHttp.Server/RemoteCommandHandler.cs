@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server

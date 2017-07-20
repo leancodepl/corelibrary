@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public sealed class SimpleEFRepository<TEntity, TContext> : EFRepository<TEntity, TContext>
+    public sealed class SimpleEFRepository<TEntity, TContext>
+        : EFRepository<TEntity, TContext>
         where TEntity : class, IAggregateRoot<Guid>
         where TContext : DbContext, IUnitOfWork
     {
@@ -14,13 +15,14 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext)
         { }
 
-        protected override Task<TEntity> LoadAsync(Guid id)
+        public override Task<TEntity> FindAsync(Guid id)
         {
             return dbSet.FindAsync(id);
         }
     }
 
-    public sealed class SimpleEFRepository<TEntity, TIdentity, TContext> : EFRepository<TEntity, TIdentity, TContext>
+    public sealed class SimpleEFRepository<TEntity, TIdentity, TContext>
+        : EFRepository<TEntity, TIdentity, TContext>
         where TEntity : class, IAggregateRoot<TIdentity>
         where TContext : DbContext, IUnitOfWork
     {
@@ -28,7 +30,7 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext)
         { }
 
-        protected override Task<TEntity> LoadAsync(TIdentity id)
+        public override Task<TEntity> FindAsync(TIdentity id)
         {
             return dbSet.FindAsync(id);
         }

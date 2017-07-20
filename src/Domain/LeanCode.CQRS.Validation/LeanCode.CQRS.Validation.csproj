@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>LeanCode.CQRS.Validation</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+  </ItemGroup>
+
+</Project>

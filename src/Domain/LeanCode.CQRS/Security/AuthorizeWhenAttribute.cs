@@ -25,9 +25,12 @@ namespace LeanCode.CQRS.Security
                 .ToList();
         }
 
-        public static List<AuthorizerDefinition> GetAuthorizers(object obj) => GetCustomAuthorizers(obj.GetType());
+        public static List<AuthorizerDefinition> GetAuthorizers(object obj)
+        {
+            return GetCustomAuthorizers(obj.GetType());
+        }
 
-        public class AuthorizerDefinition
+        public sealed class AuthorizerDefinition
         {
             public Type Authorizer { get; }
             public object CustomData { get; }
@@ -38,8 +41,11 @@ namespace LeanCode.CQRS.Security
                 this.CustomData = attr.customData;
             }
 
-            internal static AuthorizerDefinition Create(AuthorizeWhenAttribute attr) =>
-                new AuthorizerDefinition(attr);
+            internal static AuthorizerDefinition Create(
+                AuthorizeWhenAttribute attr)
+            {
+                return new AuthorizerDefinition(attr);
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
-using LeanCode.TimeProvider;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
@@ -36,21 +35,6 @@ namespace LeanCode.DomainModels.EF
 
         public void DeleteRange(IEnumerable<TEntity> entities) => dbSet.RemoveRange(entities);
 
-        public async Task<TEntity> FindAsync(TIdentity id)
-        {
-            return ProcessEntity(await LoadAsync(id).ConfigureAwait(false));
-        }
-
-        private static TEntity ProcessEntity(TEntity entity)
-        {
-            if (entity is IOptimisticConcurrency)
-            {
-                var op = (IOptimisticConcurrency)entity;
-                op.DateModified = Time.Now;
-            }
-            return entity;
-        }
-
-        protected abstract Task<TEntity> LoadAsync(TIdentity id);
+        public abstract Task<TEntity> FindAsync(TIdentity id);
     }
 }

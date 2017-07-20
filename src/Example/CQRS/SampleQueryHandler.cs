@@ -1,12 +1,13 @@
-using LeanCode.CQRS;
+using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SampleQueryHandler : SyncQueryHandler<SampleQuery, SampleQuery.Result>
+    public class SampleQueryHandler : IQueryHandler<SampleQuery, SampleQuery.Result>
     {
-        public override SampleQuery.Result Execute(SampleQuery query)
+        public Task<SampleQuery.Result> ExecuteAsync(SampleQuery query)
         {
-            return new SampleQuery.Result("LeanCode");
+            return Task.FromResult(new SampleQuery.Result("LeanCode"));
         }
     }
 }

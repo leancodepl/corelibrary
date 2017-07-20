@@ -1,12 +1,14 @@
+using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using LeanCode.Pipelines;
+using LeanCode.Pipelines.Autofac;
 using LeanCode.PushNotifications;
-using System;
 using LeanCode.PushNotifications.EF;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Example
 {
@@ -21,6 +23,8 @@ namespace LeanCode.Example
             services.AddDbContext<ExampleDbContext>(opts => opts.UseSqlite("Data Source=example.db"));
             services.AddScoped<IPushNotificationTokenStore<Guid>>(p => new EFPushNotificationTokenStore(p.GetRequiredService<ExampleDbContext>()));
             services.AddMvc();
+
+            services.AddSingleton<IPipelineFactory, AutofacPipelineFactory>();
         }
     }
 }

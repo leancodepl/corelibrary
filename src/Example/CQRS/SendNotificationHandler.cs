@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.CQRS.Execution;
 using LeanCode.PushNotifications;
 
 namespace LeanCode.Example.CQRS

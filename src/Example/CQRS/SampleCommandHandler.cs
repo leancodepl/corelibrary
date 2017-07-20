@@ -1,7 +1,8 @@
+using System.Threading.Tasks;
 using Autofac;
 using FluentValidation;
-using LeanCode.CQRS;
-using LeanCode.CQRS.FluentValidation;
+using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.Example.CQRS
@@ -14,7 +15,7 @@ namespace LeanCode.Example.CQRS
         }
     }
 
-    public class SampleCommandHandler : SyncCommandHandler<SampleCommand>
+    public class SampleCommandHandler : ICommandHandler<SampleCommand>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SampleCommandHandler>();
 
@@ -25,11 +26,13 @@ namespace LeanCode.Example.CQRS
             this.scope = scope;
         }
 
-        public override void Execute(SampleCommand command)
+        public Task ExecuteAsync(SampleCommand command)
         {
             logger.Fatal("Tag: {Tag}, Hash: {Hash}, This: {This}", scope.Tag, scope.GetHashCode(), this.GetHashCode());
+            logger.Information("Name: {Name}", command.Name);
 
             DomainEvents.Raise(new SampleEvent());
+            return Task.CompletedTask;
         }
     }
 }

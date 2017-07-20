@@ -34,6 +34,14 @@ namespace LeanCode.Pipelines
             return this;
         }
 
+        public PipelineBuilder<TInput, TOutput> Configure(
+            Func<
+                PipelineBuilder<TInput, TOutput>,
+                PipelineBuilder<TInput, TOutput>> config)
+        {
+            return config(this);
+        }
+
         public ConfiguredPipeline<TInput, TOutput> Finalize<TPipeline>()
             where TPipeline : class, IPipelineFinalizer<TInput, TOutput>
         {
@@ -42,5 +50,6 @@ namespace LeanCode.Pipelines
                 typeof(TPipeline)
             );
         }
+
     }
 }

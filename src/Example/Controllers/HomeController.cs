@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.RemoteHttp.Client;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,17 +9,19 @@ namespace LeanCode.Example.Controllers
     [Route("")]
     public class HomeController : Controller
     {
-        private readonly ICqrs cqrs;
+        private readonly ICommandExecutor commands;
+        private readonly IQueryExecutor queries;
 
-        public HomeController(ICqrs cqrs)
+        public HomeController(ICommandExecutor commands, IQueryExecutor queries)
         {
-            this.cqrs = cqrs;
+            this.commands = commands;
+            this.queries = queries;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var result = await cqrs.GetAsync(new CQRS.SampleQuery());
+            var result = await queries.GetAsync(new CQRS.SampleQuery());
             return Content(result.Name);
         }
 
@@ -34,7 +36,7 @@ namespace LeanCode.Example.Controllers
         {
             try
             {
-                await cqrs.RunAsync(new CQRS.SampleCommand("Name"));
+                await commands.RunAsync(new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }
             catch (Exception e)
