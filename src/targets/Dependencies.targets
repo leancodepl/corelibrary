@@ -3,13 +3,13 @@
     <MvcVersion>1.1.2</MvcVersion>
 
     <!-- ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
-    <ExtensionsVersion>1.1.1</ExtensionsVersion>
+    <ExtensionsVersion>1.1.2</ExtensionsVersion>
     <!-- Microsoft.Extensions.DependencyInjection package has different version -->
-    <DIVersion>1.1.0</DIVersion>
+    <DIVersion>1.1.1</DIVersion>
 
-    <JsonNetVersion>10.0.2</JsonNetVersion>
-    <AutofacVersion>4.4.0</AutofacVersion>
-    <AutoMapperVersion>6.0.2</AutoMapperVersion>
-    <SerilogVersion>2.4.0</SerilogVersion>
+    <JsonNetVersion>10.0.3</JsonNetVersion>
+    <AutofacVersion>4.6.0</AutofacVersion>
+    <AutoMapperVersion>6.1.1</AutoMapperVersion>
+    <SerilogVersion>2.5.0</SerilogVersion>
   </PropertyGroup>
 </Project>
