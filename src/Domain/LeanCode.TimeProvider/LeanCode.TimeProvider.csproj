@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>LeanCode.TimeProvider</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+
+</Project>

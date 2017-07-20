@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <AssemblyName>LeanCode.CQRS.RemoteHttp.Client</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
+  </ItemGroup>
+
+</Project>

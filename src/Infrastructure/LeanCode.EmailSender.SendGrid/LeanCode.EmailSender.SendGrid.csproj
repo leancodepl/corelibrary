@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>LeanCode.EmailSender.SendGrid</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+  <Import Project="../../targets/Common.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../LeanCode.EmailSender/LeanCode.EmailSender.csproj" />
+    <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
+  </ItemGroup>
+
+</Project>

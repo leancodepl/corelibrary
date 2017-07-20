@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../src/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
-  </ItemGroup>
-  <Import Project="../targets/Tests.targets" />
-</Project>

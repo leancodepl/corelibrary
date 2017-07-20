@@ -1,8 +1,16 @@
 <Project>
   <PropertyGroup>
+    <PackageId>$(AssemblyName)</PackageId>
     <Authors>LeanCode</Authors>
-    <IncludeSymbols>true</IncludeSymbols>
     <Description>LeanCode Core library</Description>
+    <IsPackable>true</IsPackable>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <DebugType>portable</DebugType>
+
+    <!-- Generate the documentation but don't require it on all public members -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
