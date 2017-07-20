@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
+TODO: Separated CQRS public interfaces/implementations
+TODO: Pipelines
 ## [0.1.0]
 Initial release with base packages
 Basic CQRS, domain models, basic infrastructure

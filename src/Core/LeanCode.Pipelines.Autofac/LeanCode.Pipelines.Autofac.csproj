@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>LeanCode.Pipelines.Autofac</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="$(AutofacVersion)" />
+  </ItemGroup>
+
+</Project>
