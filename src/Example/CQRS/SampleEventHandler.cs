@@ -1,14 +1,16 @@
-using LeanCode.DomainModels.Model;
+using System.Threading.Tasks;
+using LeanCode.DomainModels.EventsExecutor;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SampleEventHandler : SyncDomainEventHandler<SampleEvent>
+    public class SampleEventHandler : IDomainEventHandler<SampleEvent>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SampleEventHandler>();
 
-        public override void Handle(SampleEvent domainEvent)
+        public Task HandleAsync(SampleEvent domainEvent)
         {
             logger.Information("SampleEventHandler executed for event {EventId}", domainEvent.Id);
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Autofac;
 using LeanCode.DomainModels.Model;
+using LeanCode.Pipelines;
 using NSubstitute;
 using Xunit;
 
@@ -10,11 +12,11 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
     public class EventsExecutorTests
     {
         private static readonly RetryPolicies policies = new RetryPolicies();
-        private static readonly AsyncEventsStorage storage = new AsyncEventsStorage();
+        private static readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
 
         public EventsExecutorTests()
         {
-            ((IStartable)storage).Start();
+            ((IStartable)interceptor).Start();
         }
 
         [Fact]
@@ -26,7 +28,7 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
             await ee.HandleEventsOf(() =>
             {
                 called = true;
-                return Task.FromResult(ExecutionResult.Process(ee));
+                return 0;
             });
 
             Assert.True(called, "The action has not been called.");
@@ -35,10 +37,11 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
         [Fact]
         public async Task Sets_the_storage_before_execution()
         {
-            var queue = await Prepare().HandleEventsOf(() =>
+            ConcurrentQueue<IDomainEvent> queue = null;
+            await Prepare().HandleEventsOf(() =>
             {
-                var q = storage.PeekQueue();
-                return Task.FromResult(ExecutionResult.Process(q));
+                queue = interceptor.PeekQueue();
+                return 0;
             });
             Assert.NotNull(queue);
         }
@@ -46,10 +49,9 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
         [Fact]
         public async Task Resets_storage_after_execution()
         {
-            await Prepare().HandleEventsOf(() =>
-                Task.FromResult(ExecutionResult.Process(1)));
+            await Prepare().HandleEventsOf(() => 0);
 
-            Assert.Null(storage.PeekQueue());
+            Assert.Null(interceptor.PeekQueue());
         }
 
         [Fact]
@@ -216,13 +218,28 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
             _ = h.DidNotReceiveWithAnyArgs().HandleAsync(null);
         }
 
-        private static IEventsExecutor Prepare(params object[] handlers)
+        private static PipelineExecutor<Context, Func<int>, int> Prepare(params object[] handlers)
         {
             var resolver = new HandlerResolver(handlers);
-            return new EventsExecutor(policies, storage, resolver);
+            var interp = new EventsInterceptorElement<Context, Func<int>, int>(interceptor);
+            var exec = new EventsExecutorElement<Context, Func<int>, int>(policies, interceptor, resolver);
+
+            var scope = Substitute.For<IPipelineScope>();
+            scope.ResolveElement<Context, Func<int>, int>(interp.GetType()).Returns(interp);
+            scope.ResolveElement<Context, Func<int>, int>(exec.GetType()).Returns(exec);
+            scope.ResolveFinalizer<Context, Func<int>, int>(null).ReturnsForAnyArgs(new ExecFinalizer());
+
+            var factory = Substitute.For<IPipelineFactory>();
+            factory.BeginScope().Returns(scope);
+
+            var cfg = Pipeline.Build<Context, Func<int>, int>()
+                .Use<EventsExecutorElement<Context, Func<int>, int>>()
+                .Use<EventsInterceptorElement<Context, Func<int>, int>>()
+                .Finalize<ExecFinalizer>();
+            return PipelineExecutor.Create(factory, cfg);
         }
 
-        private static Func<Task<ExecutionResult<int>>> Publish(
+        private static Func<int> Publish(
             params IDomainEvent[] events)
         {
             return () =>
@@ -231,20 +248,7 @@ namespace LeanCode.DomainModels.EventsExecutor.Tests
                 {
                     DomainEvents.Raise(e);
                 }
-                return Task.FromResult(ExecutionResult.Process(1));
-            };
-        }
-
-        private static Func<Task<ExecutionResult<int>>> Skip(
-            params IDomainEvent[] events)
-        {
-            return () =>
-            {
-                foreach (var e in events)
-                {
-                    DomainEvents.Raise(e);
-                }
-                return Task.FromResult(ExecutionResult.Skip(1));
+                return 1;
             };
         }
     }

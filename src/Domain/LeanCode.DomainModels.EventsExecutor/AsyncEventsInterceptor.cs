@@ -6,21 +6,23 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.EventsExecutor
 {
-    class AsyncEventsStorage : IDomainEventStorage, IStartable
+    public sealed class AsyncEventsInterceptor
+        : IDomainEventInterceptor, IStartable
     {
         private readonly AsyncLocal<ConcurrentQueue<IDomainEvent>> storage
             = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();
 
         void IStartable.Start()
         {
-            DomainEvents.SetStorage(this);
+            DomainEvents.SetInterceptor(this);
         }
 
-        void IDomainEventStorage.Store(IDomainEvent domainEvent)
+        void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
         {
             if (storage.Value == null)
             {
-                throw new InvalidOperationException("Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
+                throw new InvalidOperationException(
+                    "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
             }
 
             storage.Value.Enqueue(domainEvent);

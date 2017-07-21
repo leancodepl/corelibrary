@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.EventsExecutor
 {
     public interface IDomainEventHandlerResolver
     {

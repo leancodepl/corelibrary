@@ -8,7 +8,6 @@ using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.CQRS.Validation.Fluent;
-using LeanCode.DomainModels.Autofac;
 using LeanCode.DomainModels.EventsExecutor;
 using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
@@ -50,8 +49,7 @@ namespace LeanCode.Example
                     b => b.Secure().Cache()
                 ),
                 new FluentValidationComponent(TypesCatalog),
-                new DomainModelsComponent(TypesCatalog),
-                new EventsExecutorComponent(),
+                new EventsExecutorComponent(TypesCatalog),
                 new RemoteCQRSHttpComponent(TypesCatalog),
                 PushNotificationsComponent<Guid>.WithConfiguration(Configuration),
 

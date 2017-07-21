@@ -5,7 +5,7 @@ namespace LeanCode.DomainModels.EventsExecutor
 {
     sealed class RetryPolicies
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsExecutor>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<RetryPolicies>();
 
         private static readonly TimeSpan[] EventRetryWaitTimes = new[]
         {

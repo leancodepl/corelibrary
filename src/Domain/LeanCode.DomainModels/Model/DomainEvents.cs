@@ -2,17 +2,17 @@ namespace LeanCode.DomainModels.Model
 {
     public static class DomainEvents
     {
-        private static IDomainEventStorage eventsStorage;
+        private static IDomainEventInterceptor eventInterceptor;
 
-        public static void SetStorage(IDomainEventStorage storage)
+        public static void SetInterceptor(IDomainEventInterceptor interceptor)
         {
-            eventsStorage = storage;
+            eventInterceptor = interceptor;
         }
 
         public static void Raise<TEvent>(TEvent domainEvent)
             where TEvent : IDomainEvent
         {
-            eventsStorage?.Store(domainEvent);
+            eventInterceptor?.Intercept(domainEvent);
         }
     }
 }

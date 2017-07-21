@@ -8,7 +8,12 @@ namespace LeanCode.DomainModels.EventsExecutor
     public class EventsExecutorComponent : IAppComponent
     {
         public Profile MapperProfile => null;
-        public IModule AutofacModule { get; } = new EventsExecutorModule();
+        public IModule AutofacModule { get; }
+
+        public EventsExecutorComponent(TypesCatalog catalog)
+        {
+            AutofacModule = new EventsExecutorModule(catalog);
+        }
 
         public void ConfigureServices(IServiceCollection services)
         { }
