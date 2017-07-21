@@ -21,7 +21,7 @@ namespace LeanCode.Example.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var result = await queries.GetAsync(new CQRS.SampleQuery());
+            var result = await queries.GetAsync(User, new CQRS.SampleQuery());
             return Content(result.Name);
         }
 
@@ -36,7 +36,7 @@ namespace LeanCode.Example.Controllers
         {
             try
             {
-                await commands.RunAsync(new CQRS.SampleCommand("Name"));
+                await commands.RunAsync(User, new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }
             catch (Exception e)

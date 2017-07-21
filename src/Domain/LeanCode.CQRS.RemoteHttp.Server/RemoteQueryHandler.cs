@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
@@ -23,7 +24,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.queryExecutor = queryExecutor;
         }
 
-        protected override async Task<ActionResult> ExecuteObjectAsync(object obj)
+        protected override async Task<ActionResult> ExecuteObjectAsync(
+            ClaimsPrincipal user, object obj)
         {
             MethodInfo method;
             try
@@ -40,7 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             var type = obj.GetType();
             try
             {
-                var result = (Task<object>)method.Invoke(this, new[] { obj });
+                var result = (Task<object>)method.Invoke(this, new[] { user, obj });
                 var objResult = await result.ConfigureAwait(false);
                 return new ActionResult.Json(objResult);
             }
@@ -55,12 +57,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private async Task<object> ExecuteQuery<TQuery, TResult>(object cmd)
+        private async Task<object> ExecuteQuery<TQuery, TResult>(
+            ClaimsPrincipal user, object cmd)
             where TQuery : IRemoteQuery<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
-            return await queryExecutor.GetAsync((TQuery)cmd).ConfigureAwait(false);
+            return await queryExecutor
+                .GetAsync(user, (TQuery)cmd)
+                .ConfigureAwait(false);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)

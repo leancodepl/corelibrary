@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Security.Exceptions;
@@ -22,7 +23,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             Catalog = catalog;
         }
 
-        public async Task<ActionResult> ExecuteAsync(HttpRequest request)
+        public async Task<ActionResult> ExecuteAsync(ClaimsPrincipal user, HttpRequest request)
         {
             var type = ExtractType(request);
             if (type == null)
@@ -51,7 +52,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             ActionResult result;
             try
             {
-                result = await ExecuteObjectAsync(obj);
+                result = await ExecuteObjectAsync(user, obj);
             }
             catch (UnauthenticatedException)
             {
@@ -86,7 +87,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             return result;
         }
 
-        protected abstract Task<ActionResult> ExecuteObjectAsync(object obj);
+        protected abstract Task<ActionResult> ExecuteObjectAsync(
+            ClaimsPrincipal user, object obj);
 
         private Type ExtractType(HttpRequest request)
         {

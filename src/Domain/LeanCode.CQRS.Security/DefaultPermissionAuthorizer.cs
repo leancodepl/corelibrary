@@ -1,5 +1,5 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security
 {
@@ -7,17 +7,10 @@ namespace LeanCode.CQRS.Security
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
 
-        private readonly IHttpContextAccessor httpContextAccessor;
-
-        public DefaultPermissionAuthorizer(
-            IHttpContextAccessor httpContextAccessor)
+        public override Task<bool> CheckIfAuthorized(
+            ClaimsPrincipal user, object obj, string[] permissions = null)
         {
-            this.httpContextAccessor = httpContextAccessor;
-        }
-
-        public override Task<bool> CheckIfAuthorized(object obj, string[] permissions = null)
-        {
-            if (!httpContextAccessor.HttpContext.User.HasPermission(permissions))
+            if (!user.HasPermission(permissions))
             {
                 logger.Warning(
                     "User does not have sufficient permissions ({Permissions}) to run {@Object}",

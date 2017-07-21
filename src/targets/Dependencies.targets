@@ -11,6 +11,6 @@
     <AutofacVersion>4.6.0</AutofacVersion>
     <AutoMapperVersion>6.1.1</AutoMapperVersion>
     <SerilogVersion>2.5.0</SerilogVersion>
-    <SystemValueTuple>4.3.0</SystemValueTuple>
+    <NetCoreLib>4.3.0</NetCoreLib>
   </PropertyGroup>
 </Project>

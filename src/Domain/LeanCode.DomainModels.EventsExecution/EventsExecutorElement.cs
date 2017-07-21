@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.EventsExecution
         private readonly AsyncEventsInterceptor interceptor;
         private readonly IDomainEventHandlerResolver resolver;
 
-        internal EventsExecutorElement(
+        public EventsExecutorElement(
             RetryPolicies policies,
             AsyncEventsInterceptor interceptor,
             IDomainEventHandlerResolver resolver)

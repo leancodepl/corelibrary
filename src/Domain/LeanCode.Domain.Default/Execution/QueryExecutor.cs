@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
@@ -22,10 +23,12 @@ namespace LeanCode.Domain.Default.Execution
             executor = PipelineExecutor.Create(factory, cfg);
         }
 
-        public async Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
+        public async Task<TResult> GetAsync<TResult>(
+            ClaimsPrincipal user, IQuery<TResult> query)
         {
+            var ctx = new ExecutionContext { User = user };
             var res = await executor
-                .ExecuteAsync(new ExecutionContext(), query)
+                .ExecuteAsync(ctx, query)
                 .ConfigureAwait(false);
             return (TResult)res;
         }

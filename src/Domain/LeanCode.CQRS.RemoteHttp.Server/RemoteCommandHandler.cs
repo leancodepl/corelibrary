@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
@@ -21,7 +22,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.commandExecutor = commandExecutor;
         }
 
-        protected override async Task<ActionResult> ExecuteObjectAsync(object obj)
+        protected override async Task<ActionResult> ExecuteObjectAsync(
+            ClaimsPrincipal user, object obj)
         {
             var type = obj.GetType();
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
@@ -31,7 +33,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
 
             var method = methodCache.GetOrAdd(type, t => ExecCommandMethod.MakeGenericMethod(t));
-            var result = (Task<CommandResult>)method.Invoke(this, new[] { obj });
+            var result = (Task<CommandResult>)method.Invoke(this, new[] { user, obj });
 
             CommandResult cmdResult;
             try
@@ -53,10 +55,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TCommand>(object cmd)
+        private Task<CommandResult> ExecuteCommand<TCommand>(ClaimsPrincipal user, object cmd)
             where TCommand : IRemoteCommand
         {
-            return commandExecutor.RunAsync((TCommand)cmd);
+            return commandExecutor.RunAsync(user, (TCommand)cmd);
         }
     }
 }

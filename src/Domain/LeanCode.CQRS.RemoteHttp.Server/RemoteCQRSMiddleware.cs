@@ -21,6 +21,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public async Task Invoke(HttpContext context)
         {
             var request = context.Request;
+            var user = context.User;
             ActionResult actionResult;
             if (request.Method != HttpMethods.Post)
             {
@@ -30,13 +31,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 var index = context.RequestServices.GetService<IIndex<TypesCatalog, RemoteQueryHandler>>();
                 var queryHandler = index[catalog];
-                actionResult = await queryHandler.ExecuteAsync(request).ConfigureAwait(false);
+                actionResult = await queryHandler.ExecuteAsync(user, request).ConfigureAwait(false);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
                 var index = context.RequestServices.GetService<IIndex<TypesCatalog, RemoteCommandHandler>>();
                 var commandHandler = index[catalog];
-                actionResult = await commandHandler.ExecuteAsync(request).ConfigureAwait(false);
+                actionResult = await commandHandler.ExecuteAsync(user, request).ConfigureAwait(false);
             }
             else
             {

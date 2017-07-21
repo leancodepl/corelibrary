@@ -2,29 +2,19 @@ using System;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
-using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security
 {
     public class SecurityElement<TContext, TInput, TOutput>
         : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : IPipelineContext
+        where TContext : ISecurityContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SecurityElement<TContext, TInput, TOutput>>();
 
-        // This is bad, we need to switch to context-based information that is
-        // passed by the caller of executor and do not rely on HttpContextAccessor.
-        // That way we may be able to use the CQRS infrastructure outside of HTTP
-        // context (async command queues) and avoid many errors related to not-so-perfect
-        // human memory (e.g. latest change - handling unauthorized users correctly)
-        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IAuthorizerResolver authorizerResolver;
 
-        public SecurityElement(
-            IHttpContextAccessor httpContextAccessor,
-            IAuthorizerResolver authorizerResolver)
+        public SecurityElement(IAuthorizerResolver authorizerResolver)
         {
-            this.httpContextAccessor = httpContextAccessor;
             this.authorizerResolver = authorizerResolver;
         }
 
@@ -34,11 +24,11 @@ namespace LeanCode.CQRS.Security
             Func<TContext, TInput, Task<TOutput>> next)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
+            var user = ctx.User;
 
             if (customAuthorizers.Count > 0)
             {
-                var curr = httpContextAccessor.HttpContext;
-                if (curr.User == null || curr.User.Identity == null || !curr.User.Identity.IsAuthenticated)
+                if (user == null || user.Identity == null || !user.Identity.IsAuthenticated)
                 {
                     throw new UnauthenticatedException(
                         "The current user is not authenticated and the object requires authorization");
@@ -49,7 +39,7 @@ namespace LeanCode.CQRS.Security
             {
                 var customAuthorizer = authorizerResolver.FindAuthorizer(customAuthorizerDefinition.Authorizer);
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorized(input, customAuthorizerDefinition.CustomData)
+                    .CheckIfAuthorized(user, input, customAuthorizerDefinition.CustomData)
                     .ConfigureAwait(false);
                 if (!authorized)
                 {
@@ -68,7 +58,7 @@ namespace LeanCode.CQRS.Security
     {
         public static PipelineBuilder<TContext, TInput, TOutput> Secure<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : IPipelineContext
+            where TContext : ISecurityContext
         {
             return builder.Use<SecurityElement<TContext, TInput, TOutput>>();
         }

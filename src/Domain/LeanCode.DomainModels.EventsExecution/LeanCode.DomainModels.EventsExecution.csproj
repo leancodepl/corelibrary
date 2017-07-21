@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
+    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLib)" />
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
 
     <PackageReference Include="Polly" Version="5.2.0" />

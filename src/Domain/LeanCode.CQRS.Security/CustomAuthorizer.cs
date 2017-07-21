@@ -1,18 +1,19 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
     public interface ICustomAuthorizer
     {
-        Task<bool> CheckIfAuthorized(object obj, object customData = null);
+        Task<bool> CheckIfAuthorized(ClaimsPrincipal user, object obj, object customData = null);
     }
 
     public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
         where TObject : class
         where TCustomData : class
     {
-        public Task<bool> CheckIfAuthorized(object obj, object customData = null)
+        public Task<bool> CheckIfAuthorized(ClaimsPrincipal user, object obj, object customData = null)
         {
             var customAuthorizer = obj as TObject;
             if (customAuthorizer == null)
@@ -29,22 +30,25 @@ namespace LeanCode.CQRS.Security
                     nameof(customData));
             }
 
-            return CheckIfAuthorized(customAuthorizer, data);
+            return CheckIfAuthorized(user, customAuthorizer, data);
         }
 
         public abstract Task<bool> CheckIfAuthorized(
+            ClaimsPrincipal user,
             TObject obj, TCustomData customData = null);
     }
 
     public abstract class CustomAuthorizer<TObject> : CustomAuthorizer<TObject, object>
         where TObject : class
     {
-        public override Task<bool> CheckIfAuthorized(TObject obj,
-            object customData = null)
+        public override Task<bool> CheckIfAuthorized(
+            ClaimsPrincipal user,
+            TObject obj, object customData = null)
         {
-            return CheckIfAuthorized(obj);
+            return CheckIfAuthorized(user, obj);
         }
 
-        public abstract Task<bool> CheckIfAuthorized(TObject obj);
+        public abstract Task<bool> CheckIfAuthorized(
+            ClaimsPrincipal user, TObject obj);
     }
 }
