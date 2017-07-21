@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="../../*.md" PackagePath="" />
+    <Content Include="../../**/*.md" PackagePath="" />
   </ItemGroup>
 
   <Import Project="Version.targets" />
