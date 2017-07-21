@@ -27,7 +27,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override AuthenticationManager Authentication => throw new NotImplementedException();
         public override ConnectionInfo Connection => throw new NotImplementedException();
         public override WebSocketManager WebSockets => throw new NotImplementedException();
-        public override ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override ClaimsPrincipal User { get; set; }
         public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
