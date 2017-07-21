@@ -5,21 +5,21 @@ using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.Domain.Default.Autofac;
-using LeanCode.Domain.Default.Execution;
+using LeanCode.CQRS.Default.Autofac;
+using LeanCode.CQRS.Default.Execution;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.CQRS.Default
 {
-    class DomainModule : Module
+    class CQRSModule : Module
     {
         private readonly TypesCatalog catalog;
         private readonly CommandBuilder cmdBuilder;
         private readonly QueryBuilder queryBuilder;
 
-        public DomainModule(
+        public CQRSModule(
             TypesCatalog catalog,
             CommandBuilder cmdBuilder,
             QueryBuilder queryBuilder)

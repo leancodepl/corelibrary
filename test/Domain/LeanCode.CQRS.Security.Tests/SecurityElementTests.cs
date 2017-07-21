@@ -5,7 +5,7 @@ using LeanCode.CQRS.Security.Exceptions;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.Domain.Default.Tests.Security
+namespace LeanCode.CQRS.Default.Tests.Security
 {
     public class DefaultAuthorizerTests
     {

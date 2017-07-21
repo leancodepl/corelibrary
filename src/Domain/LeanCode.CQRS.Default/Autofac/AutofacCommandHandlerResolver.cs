@@ -2,32 +2,32 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac;
-using LeanCode.CQRS.Validation;
-using LeanCode.Domain.Default.Wrappers;
+using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Default.Wrappers;
 
-namespace LeanCode.Domain.Default.Autofac
+namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacValidatorResolver : ICommandValidatorResolver
+    class AutofacCommandHandlerResolver : ICommandHandlerResolver
     {
-        private static readonly Type ValidatorBase = typeof(ICommandValidator<>);
-        private static readonly Type ValidatorWrapperBase = typeof(CommandValidatorWrapper<>);
+        private static readonly Type HandlerBase = typeof(ICommandHandler<>);
+        private static readonly Type HandlerWrapperBase = typeof(CommandHandlerWrapper<>);
 
         private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
             new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
 
         private readonly IComponentContext componentContext;
 
-        public AutofacValidatorResolver(IComponentContext componentContext)
+        public AutofacCommandHandlerResolver(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
         }
 
-        public ICommandValidatorWrapper FindCommandValidator(Type commandType)
+        public ICommandHandlerWrapper FindCommandHandler(Type commandType)
         {
             var cached = typesCache.GetOrAdd(commandType, _ =>
             {
-                var queryHandlerType = ValidatorBase.MakeGenericType(commandType);
-                var wrappedHandlerType = ValidatorWrapperBase.MakeGenericType(commandType);
+                var queryHandlerType = HandlerBase.MakeGenericType(commandType);
+                var wrappedHandlerType = HandlerWrapperBase.MakeGenericType(commandType);
                 var ctor = wrappedHandlerType.GetConstructors()[0];
                 return Tuple.Create(queryHandlerType, ctor);
             });
@@ -38,7 +38,7 @@ namespace LeanCode.Domain.Default.Autofac
             {
                 return null;
             }
-            return (ICommandValidatorWrapper)cached.Item2.Invoke(new[] { handler });
+            return (ICommandHandlerWrapper)cached.Item2.Invoke(new[] { handler });
         }
     }
 }

@@ -1,8 +1,7 @@
-using LeanCode.CQRS;
-using LeanCode.Domain.Default.Execution;
+using LeanCode.CQRS.Default.Execution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.CQRS.Default
 {
     using CommandPipeline = PipelineBuilder<ExecutionContext, ICommand, CommandResult>;
     using QueryPipeline = PipelineBuilder<ExecutionContext, IQuery, object>;

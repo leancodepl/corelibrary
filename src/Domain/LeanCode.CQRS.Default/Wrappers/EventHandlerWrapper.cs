@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.Domain.Default.Wrappers
+namespace LeanCode.CQRS.Default.Wrappers
 {
     public class EventHandlerWrapper<TEvent> : IDomainEventHandlerWrapper
         where TEvent : IDomainEvent

@@ -95,7 +95,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.PushNotifications.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ViewRenderer.Razor.Tests", "test\Infrastructure\LeanCode.ViewRenderer.Razor.Tests\LeanCode.ViewRenderer.Razor.Tests.csproj", "{91EDC625-A55B-477C-A56A-2BF81F7AE7C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Domain.Default", "src\Domain\LeanCode.Domain.Default\LeanCode.Domain.Default.csproj", "{355095C7-8278-4A90-903A-11F7211EE2B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CQRS.Default", "src\Domain\LeanCode.CQRS.Default\LeanCode.CQRS.Default.csproj", "{355095C7-8278-4A90-903A-11F7211EE2B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

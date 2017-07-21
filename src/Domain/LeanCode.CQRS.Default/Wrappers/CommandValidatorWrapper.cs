@@ -1,8 +1,7 @@
 using System.Threading.Tasks;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Validation;
 
-namespace LeanCode.Domain.Default.Wrappers
+namespace LeanCode.CQRS.Default.Wrappers
 {
     class CommandValidatorWrapper<TCommand> : ICommandValidatorWrapper
         where TCommand : ICommand

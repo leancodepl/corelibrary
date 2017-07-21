@@ -1,10 +1,9 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.Domain.Default.Execution
+namespace LeanCode.CQRS.Default.Execution
 {
     using Executor = PipelineExecutor<ExecutionContext, IQuery, object>;
 

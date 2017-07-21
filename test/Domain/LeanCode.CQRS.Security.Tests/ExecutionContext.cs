@@ -2,7 +2,7 @@ using System.Security.Claims;
 using LeanCode.CQRS.Security;
 using LeanCode.Pipelines;
 
-namespace LeanCode.Domain.Default.Tests.Security
+namespace LeanCode.CQRS.Default.Tests.Security
 {
     public class ExecutionContext : ISecurityContext
     {

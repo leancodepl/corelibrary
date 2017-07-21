@@ -3,11 +3,10 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
-using LeanCode.Domain.Default.Wrappers;
+using LeanCode.CQRS.Default.Wrappers;
 
-namespace LeanCode.Domain.Default.Autofac
+namespace LeanCode.CQRS.Default.Autofac
 {
     class AutofacQueryHandlerResolver : IQueryHandlerResolver
     {

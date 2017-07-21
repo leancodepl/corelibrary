@@ -26,7 +26,7 @@
     <ProjectReference Include="../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
     <ProjectReference Include="../Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
-    <ProjectReference Include="../Domain/LeanCode.Domain.Default/LeanCode.Domain.Default.csproj" />
+    <ProjectReference Include="../Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
 
     <ProjectReference Include="../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />

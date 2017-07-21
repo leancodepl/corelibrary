@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <AssemblyName>LeanCode.Domain.Default</AssemblyName>
+    <AssemblyName>LeanCode.CQRS.Default</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
   <Import Project="../../targets/Common.targets" />

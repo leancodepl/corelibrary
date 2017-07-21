@@ -3,7 +3,7 @@ using LeanCode.Cache.AspNet;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Cache;
-using LeanCode.Domain.Default;
+using LeanCode.CQRS.Default;
 using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
@@ -44,7 +44,7 @@ namespace LeanCode.Example
             return new IAppComponent[]
             {
                 new InMemoryCacheComponent(),
-                new DomainComponent(TypesCatalog,
+                new CQRSComponent(TypesCatalog,
                     b => b.ExecuteEvents().Secure().Validate().InterceptEvents(),
                     b => b.Secure().Cache()
                 ),

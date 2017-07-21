@@ -6,7 +6,7 @@ using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 
-namespace LeanCode.Domain.Default.Execution
+namespace LeanCode.CQRS.Default.Execution
 {
     public sealed class ExecutionContext : IEventsContext, ISecurityContext
     {
