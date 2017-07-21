@@ -1,8 +1,6 @@
-using System;
 using Autofac;
 using Autofac.Features.Variance;
 using LeanCode.Components;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -15,9 +13,6 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.Domain.Default
 {
-    using CommandBuilder = Func<PipelineBuilder<ExecutionContext, ICommand, CommandResult>, PipelineBuilder<ExecutionContext, ICommand, CommandResult>>;
-    using QueryBuilder = Func<PipelineBuilder<ExecutionContext, IQuery, object>, PipelineBuilder<ExecutionContext, IQuery, object>>;
-
     class DomainModule : Module
     {
         private readonly TypesCatalog catalog;

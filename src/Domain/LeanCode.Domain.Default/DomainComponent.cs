@@ -1,16 +1,10 @@
-using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
-using LeanCode.CQRS;
-using LeanCode.Domain.Default.Execution;
-using LeanCode.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Domain.Default
 {
-    using CommandBuilder = Func<PipelineBuilder<ExecutionContext, ICommand, CommandResult>, PipelineBuilder<ExecutionContext, ICommand, CommandResult>>;
-    using QueryBuilder = Func<PipelineBuilder<ExecutionContext, IQuery, object>, PipelineBuilder<ExecutionContext, IQuery, object>>;
 
     public class DomainComponent : IAppComponent
     {

@@ -11,6 +11,7 @@ using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using LeanCode.DomainModels.EventsExecution;
 
 namespace LeanCode.Example
 {
@@ -44,7 +45,7 @@ namespace LeanCode.Example
             {
                 new InMemoryCacheComponent(),
                 new DomainComponent(TypesCatalog,
-                    b => b.Secure().Validate(),
+                    b => b.ExecuteEvents().Secure().Validate().InterceptEvents(),
                     b => b.Secure().Cache()
                 ),
                 new FluentValidationComponent(TypesCatalog),

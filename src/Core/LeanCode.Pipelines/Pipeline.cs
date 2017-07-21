@@ -25,6 +25,11 @@ namespace LeanCode.Pipelines
         }
     }
 
+    public delegate PipelineBuilder<TContext, TInput, TOutput>
+        ConfigPipeline<TContext, TInput, TOutput>(
+            PipelineBuilder<TContext, TInput, TOutput> builder)
+        where TContext : IPipelineContext;
+
     public class PipelineBuilder<TContext, TInput, TOutput>
         where TContext : IPipelineContext
     {
@@ -38,9 +43,7 @@ namespace LeanCode.Pipelines
         }
 
         public PipelineBuilder<TContext, TInput, TOutput> Configure(
-            Func<
-                PipelineBuilder<TContext, TInput, TOutput>,
-                PipelineBuilder<TContext, TInput, TOutput>> config)
+           ConfigPipeline<TContext, TInput, TOutput> config)
         {
             return config(this);
         }
