@@ -8,9 +8,6 @@ namespace LeanCode.EmailSender.SendGrid
         public string Email { get; set; }
         public string Name { get; set; }
 
-        public SendGridEmail()
-        { }
-
         public SendGridEmail(EmailAddress emailAddress)
         {
             Email = emailAddress.Email;
@@ -21,41 +18,26 @@ namespace LeanCode.EmailSender.SendGrid
     class SendGridPersonalization
     {
         public List<SendGridEmail> To { get; set; }
-
-        public SendGridPersonalization()
-        { }
     }
 
     class SendGridContent
     {
         public string Type { get; set; }
         public string Value { get; set; }
-
-        public SendGridContent()
-        { }
-
-        public SendGridContent(EmailContent emailContent)
-        {
-            this.Type = emailContent.Type;
-            this.Value = emailContent.Content;
-        }
     }
 
     class SendGridMessage
     {
         public List<SendGridPersonalization> Personalizations { get; set; }
         public SendGridEmail From { get; set; }
-        public List<SendGridContent> Content { get; set; }
-        public List<SendGridAttachment> Attachments { get; set; }
+        public SendGridContent[] Content { get; set; }
+        public SendGridAttachment[] Attachments { get; set; }
         public string Subject { get; set; }
 
         public bool ShouldSerializeAttachments()
         {
-            return Attachments != null && Attachments.Count > 0;
+            return Attachments != null && Attachments.Length > 0;
         }
-
-        public SendGridMessage()
-        { }
     }
 
     class SendGridAttachment
@@ -63,12 +45,5 @@ namespace LeanCode.EmailSender.SendGrid
         public string Content { get; set; }
         public string Type { get; set; }
         public string Filename { get; set; }
-
-        public SendGridAttachment(EmailAttachment emailAttachment)
-        {
-            Content = emailAttachment.Content;
-            Type = emailAttachment.ContentType;
-            Filename = emailAttachment.Name;
-        }
     }
 }

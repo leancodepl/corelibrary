@@ -2,8 +2,8 @@ namespace LeanCode.EmailSender.Model
 {
     public class EmailAddress
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
+        public string Email { get; }
+        public string Name { get; }
 
         public EmailAddress(string email, string name)
         {

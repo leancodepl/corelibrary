@@ -60,7 +60,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             Assert.Equal("PRE-MODEL\nCHILD\nPOST-MODEL", result);
         }
 
-        private Task<string> Render(string viewName, TestModel model = null) => renderer.RenderToString<TestModel>(viewName, model);
+        private Task<string> Render(string viewName, TestModel model = null) => renderer.RenderToString(viewName, model);
     }
 
     public class TestModel

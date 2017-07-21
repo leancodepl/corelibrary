@@ -1,6 +1,6 @@
 using Autofac;
-using Microsoft.Extensions.Configuration;
 using LeanCode.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace LeanCode.EmailSender.SendGrid
 {
@@ -20,8 +20,7 @@ namespace LeanCode.EmailSender.SendGrid
                 builder.ConfigSection<SendGridConfiguration>(configuration);
             }
 
-            builder.RegisterType<SendGridClient>().As<IEmailClient>();
-            builder.RegisterType<EmailSender>().As<IEmailSender>();
+            builder.RegisterType<SendGridClient>().As<IEmailClient>().SingleInstance();
         }
     }
 }

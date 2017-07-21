@@ -17,14 +17,14 @@ namespace LeanCode.ViewRenderer.Razor
             cache = new CompiledViewsCache(options);
         }
 
-        public async Task RenderToStream<TModel>(string viewName, TModel model, Stream outputStream)
+        public async Task RenderToStream(string viewName, object model, Stream outputStream)
         {
             logger.Debug("Rendering view {ViewName}", viewName);
             await Render(outputStream, viewName, model, null, 0).ConfigureAwait(false);
             logger.Information("View {ViewName} rendered", viewName);
         }
 
-        public async Task<string> RenderToString<TModel>(string viewName, TModel model)
+        public async Task<string> RenderToString(string viewName, object model)
         {
             using (var ms = new MemoryStream())
             {

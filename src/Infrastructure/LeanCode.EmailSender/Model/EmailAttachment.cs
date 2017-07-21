@@ -1,12 +1,14 @@
+using System.IO;
+
 namespace LeanCode.EmailSender.Model
 {
     public class EmailAttachment
     {
-        public string Content { get; set; }
-        public string Name { get; set; }
-        public string ContentType { get; set; }
+        public Stream Content { get; }
+        public string Name { get; }
+        public string ContentType { get; }
 
-        public EmailAttachment(string content, string name, string contentType)
+        public EmailAttachment(Stream content, string name, string contentType)
         {
             Content = content;
             Name = name;

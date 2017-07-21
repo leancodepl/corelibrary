@@ -2,13 +2,13 @@ namespace LeanCode.EmailSender.Model
 {
     public class EmailContent
     {
-        public string Type { get; set; }
-        public string Content { get; set; }
+        public string ContentType { get; }
+        public object Model { get; }
 
-        public EmailContent(string content, string type)
+        public EmailContent(object model, string mimeType)
         {
-            Content = content;
-            Type = type;
+            ContentType = mimeType;
+            Model = model;
         }
     }
 }
