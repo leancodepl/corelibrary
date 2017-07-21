@@ -6,6 +6,11 @@ using Xunit;
 
 namespace LeanCode.Pipelines.Tests
 {
+    using Element = IPipelineElement<PipelineContext, int, int>;
+    using Finalizer = IPipelineFinalizer<PipelineContext, int, int>;
+    using Executor = PipelineExecutor<PipelineContext, int, int>;
+    using Next = Func<PipelineContext, int, Task<int>>;
+
     public class PipelineExecutorTests
     {
         [Fact]
@@ -13,9 +18,9 @@ namespace LeanCode.Pipelines.Tests
         {
             var fin = Finalizer(0, 1);
 
-            var result = await Prepare(fin).ExecuteAsync(0);
+            var result = await Prepare(fin).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = fin.Received().ExecuteAsync(0);
+            _ = fin.Received().SubExecuteAsync(0);
             Assert.Equal(1, result);
         }
 
@@ -25,9 +30,9 @@ namespace LeanCode.Pipelines.Tests
             var el = Pass(0);
             var fin = Finalizer(1, 2);
 
-            var result = await Prepare(fin, el).ExecuteAsync(0);
+            var result = await Prepare(fin, el).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = el.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
+            _ = el.Received().SubExecuteAsync(0);
         }
 
         [Fact]
@@ -37,10 +42,10 @@ namespace LeanCode.Pipelines.Tests
             var el2 = Pass(0);
             var fin = Finalizer(0, 2);
 
-            var result = await Prepare(fin, el1, el2).ExecuteAsync(0);
+            var result = await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = el1.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
-            _ = el2.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
+            _ = el1.Received().SubExecuteAsync(0);
+            _ = el2.Received().SubExecuteAsync(0);
         }
 
         [Fact]
@@ -50,9 +55,9 @@ namespace LeanCode.Pipelines.Tests
             var el2 = Pass(0);
             var fin = Finalizer(0, 2);
 
-            var result = await Prepare(fin, el1, el2).ExecuteAsync(0);
+            var result = await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = fin.Received().ExecuteAsync(0);
+            _ = fin.Received().SubExecuteAsync(0);
         }
 
         [Fact]
@@ -63,12 +68,12 @@ namespace LeanCode.Pipelines.Tests
             var el3 = Pass(10);
             var fin = Finalizer(10, 2);
 
-            var result = await Prepare(fin, el1, el2, el3).ExecuteAsync(0);
+            var result = await Prepare(fin, el1, el2, el3).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = el1.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
-            _ = el2.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
-            _ = el3.DidNotReceiveWithAnyArgs().ExecuteAsync(0, null);
-            _ = fin.DidNotReceiveWithAnyArgs().ExecuteAsync(0);
+            _ = el1.Received().SubExecuteAsync(0);
+            _ = el2.Received().SubExecuteAsync(0);
+            _ = el3.DidNotReceiveWithAnyArgs().SubExecuteAsync(0);
+            _ = fin.DidNotReceiveWithAnyArgs().SubExecuteAsync(0);
         }
 
         [Fact]
@@ -78,49 +83,46 @@ namespace LeanCode.Pipelines.Tests
             var el2 = Mod(1, 1);
             var fin = Finalizer(2, 10);
 
-            var result = await Prepare(fin, el1, el2).ExecuteAsync(0);
+            var result = await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
 
-            _ = el1.Received().ExecuteAsync(0, Arg.Any<Func<int, Task<int>>>());
-            _ = el2.Received().ExecuteAsync(1, Arg.Any<Func<int, Task<int>>>());
-            _ = fin.Received().ExecuteAsync(2);
+            _ = el1.Received().SubExecuteAsync(0);
+            _ = el2.Received().SubExecuteAsync(1);
+            _ = fin.Received().SubExecuteAsync(2);
 
             Assert.Equal(10, result);
         }
 
-        private static IPipelineElement<int, int> Pass(int input)
+        private static Element Pass(int input)
         {
-            var e = Substitute.For<IPipelineElement<int, int>>();
-            e.ExecuteAsync(input, Arg.Any<Func<int, Task<int>>>())
-                .Returns(c => c.Arg<Func<int, Task<int>>>().Invoke(input));
+            var e = Substitute.For<Element>();
+            e.SubExecuteAsync(input).Returns(c => c.Arg<Next>().Invoke(c.Arg<PipelineContext>(), input));
             return e;
         }
 
-        private static IPipelineElement<int, int> Mod(int input, int mod)
+        private static Element Mod(int input, int mod)
         {
-            var e = Substitute.For<IPipelineElement<int, int>>();
-            e.ExecuteAsync(input, Arg.Any<Func<int, Task<int>>>())
-                .Returns(c => c.Arg<Func<int, Task<int>>>().Invoke(input + mod));
+            var e = Substitute.For<Element>();
+            e.SubExecuteAsync(input).Returns(c => c.Arg<Next>().Invoke(c.Arg<PipelineContext>(), input + mod));
             return e;
         }
 
-        private static IPipelineElement<int, int> Break(int input, int output)
+        private static Element Break(int input, int output)
         {
-            var e = Substitute.For<IPipelineElement<int, int>>();
-            e.ExecuteAsync(input, Arg.Any<Func<int, Task<int>>>())
-                .Returns(Task.FromResult(output));
+            var e = Substitute.For<Element>();
+            e.SubExecuteAsync(input).Returns(Task.FromResult(output));
             return e;
         }
 
-        private static IPipelineFinalizer<int, int> Finalizer(int input, int output)
+        private static Finalizer Finalizer(int input, int output)
         {
-            var fin = Substitute.For<IPipelineFinalizer<int, int>>();
-            fin.ExecuteAsync(input).Returns(Task.FromResult(output));
+            var fin = Substitute.For<Finalizer>();
+            fin.SubExecuteAsync(input).Returns(Task.FromResult(output));
             return fin;
         }
 
-        private static PipelineExecutor<TInput, TOutput> Prepare<TInput, TOutput>(
-            IPipelineFinalizer<TInput, TOutput> fin,
-            params IPipelineElement<TInput, TOutput>[] elements
+        private static Executor Prepare(
+            Finalizer fin,
+            params Element[] elements
         )
         {
             var scope = Substitute.For<IPipelineScope>();
@@ -128,21 +130,45 @@ namespace LeanCode.Pipelines.Tests
 
             factory.BeginScope().Returns(scope);
 
-            scope.ResolveFinalizer<TInput, TOutput>(null)
+            scope.ResolveFinalizer<PipelineContext, int, int>(null)
                 .ReturnsForAnyArgs(fin);
 
             if (elements.Length > 0)
             {
-                scope.ResolveElement<TInput, TOutput>(null)
+                scope.ResolveElement<PipelineContext, int, int>(null)
                     .ReturnsForAnyArgs(elements[0], elements.Skip(1).ToArray());
             }
 
-            var cfg = new ConfiguredPipeline<TInput, TOutput>(
+            var cfg = new ConfiguredPipeline<PipelineContext, int, int>(
                     elements
                     .Select(e => e.GetType())
                     .ToArray(),
                 fin.GetType());
             return PipelineExecutor.Create(factory, cfg);
+        }
+    }
+
+    static class PipelineExtensions
+    {
+        public static Task<int> SubExecuteAsync(
+            this Element el,
+            int input)
+        {
+            return el.ExecuteAsync(Arg.Any<PipelineContext>(), input, Arg.Any<Func<PipelineContext, int, Task<int>>>());
+        }
+
+        public static Task<int> SubExecuteAsync(
+            this Finalizer el,
+            int input)
+        {
+            return el.ExecuteAsync(Arg.Any<PipelineContext>(), input);
+        }
+
+        public static Task<int> SubExecuteAsync(
+            this Executor el,
+            int input)
+        {
+            return el.ExecuteAsync(Arg.Any<PipelineContext>(), input);
         }
     }
 }

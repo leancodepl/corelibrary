@@ -2,13 +2,14 @@ using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
+using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
-    using CommandBuilder = Func<PipelineBuilder<ICommand, CommandResult>, PipelineBuilder<ICommand, CommandResult>>;
-    using QueryBuilder = Func<PipelineBuilder<IQuery, object>, PipelineBuilder<IQuery, object>>;
+    using CommandBuilder = Func<PipelineBuilder<ExecutionContext, ICommand, CommandResult>, PipelineBuilder<ExecutionContext, ICommand, CommandResult>>;
+    using QueryBuilder = Func<PipelineBuilder<ExecutionContext, IQuery, object>, PipelineBuilder<ExecutionContext, IQuery, object>>;
 
     public class CQRSComponent : IAppComponent
     {

@@ -1,12 +1,14 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security
 {
-    public class SecurityElement<TInput, TOutput> : IPipelineElement<TInput, TOutput>
+    public class SecurityElement<TInput, TOutput>
+        : IPipelineElement<ExecutionContext, TInput, TOutput>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SecurityElement<TInput, TOutput>>();
 
@@ -27,8 +29,9 @@ namespace LeanCode.CQRS.Security
         }
 
         public async Task<TOutput> ExecuteAsync(
+            ExecutionContext ctx,
             TInput input,
-            Func<TInput, Task<TOutput>> next)
+            Func<ExecutionContext, TInput, Task<TOutput>> next)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
 
@@ -57,14 +60,14 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            return await next(input).ConfigureAwait(false);
+            return await next(ctx, input).ConfigureAwait(false);
         }
     }
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TInput, TOutput> Secure<TInput, TOutput>(
-            this PipelineBuilder<TInput, TOutput> builder
+        public static PipelineBuilder<ExecutionContext, TInput, TOutput> Secure<TInput, TOutput>(
+            this PipelineBuilder<ExecutionContext, TInput, TOutput> builder
         )
         {
             return builder.Use<SecurityElement<TInput, TOutput>>();

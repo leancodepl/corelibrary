@@ -11,8 +11,8 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default
 {
-    using CommandBuilder = Func<PipelineBuilder<ICommand, CommandResult>, PipelineBuilder<ICommand, CommandResult>>;
-    using QueryBuilder = Func<PipelineBuilder<IQuery, object>, PipelineBuilder<IQuery, object>>;
+    using CommandBuilder = Func<PipelineBuilder<ExecutionContext, ICommand, CommandResult>, PipelineBuilder<ExecutionContext, ICommand, CommandResult>>;
+    using QueryBuilder = Func<PipelineBuilder<ExecutionContext, IQuery, object>, PipelineBuilder<ExecutionContext, IQuery, object>>;
 
     class CQRSModule : Module
     {

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
-    public sealed class HttpQueriesExecutor : IRemoteQueryExecutor, IDisposable
+    public class HttpQueriesExecutor : IRemoteQueryExecutor, IDisposable
     {
         private readonly HttpClient client;
 

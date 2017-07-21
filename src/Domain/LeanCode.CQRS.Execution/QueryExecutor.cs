@@ -4,8 +4,8 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution
 {
-    using Executor = PipelineExecutor<IQuery, object>;
-    using Builder = PipelineBuilder<IQuery, object>;
+    using Executor = PipelineExecutor<ExecutionContext, IQuery, object>;
+    using Builder = PipelineBuilder<ExecutionContext, IQuery, object>;
 
     public class QueryExecutor : IQueryExecutor
     {
@@ -15,7 +15,7 @@ namespace LeanCode.CQRS.Execution
             IPipelineFactory factory,
             Func<Builder, Builder> config)
         {
-            var cfg = Pipeline.Build<IQuery, object>()
+            var cfg = Pipeline.Build<ExecutionContext, IQuery, object>()
                 .Configure(config)
                 .Finalize<QueryFinalizer>();
 
@@ -24,7 +24,9 @@ namespace LeanCode.CQRS.Execution
 
         public async Task<TResult> GetAsync<TResult>(IQuery<TResult> query)
         {
-            var res = await executor.ExecuteAsync(query).ConfigureAwait(false);
+            var res = await executor
+                .ExecuteAsync(new ExecutionContext(), query)
+                .ConfigureAwait(false);
             return (TResult)res;
         }
     }

@@ -9,7 +9,9 @@ namespace LeanCode.Pipelines
 
     public interface IPipelineScope : IDisposable
     {
-        IPipelineElement<TInput, TOutput> ResolveElement<TInput, TOutput>(Type type);
-        IPipelineFinalizer<TInput, TOutput> ResolveFinalizer<TInput, TOutput>(Type type);
+        IPipelineElement<TContext, TInput, TOutput> ResolveElement<TContext, TInput, TOutput>(Type type)
+            where TContext : IPipelineContext;
+        IPipelineFinalizer<TContext, TInput, TOutput> ResolveFinalizer<TContext, TInput, TOutput>(Type type)
+            where TContext : IPipelineContext;
     }
 }

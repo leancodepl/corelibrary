@@ -58,7 +58,9 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
         private Task Authorize(object obj)
         {
-            return element.ExecuteAsync(obj, i => Task.FromResult<object>(null));
+            return element.ExecuteAsync(
+                new Execution.ExecutionContext(), obj,
+                (ctx, i) => Task.FromResult<object>(null));
         }
 
         [Fact]

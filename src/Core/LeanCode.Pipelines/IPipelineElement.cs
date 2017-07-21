@@ -3,15 +3,18 @@ using System.Threading.Tasks;
 
 namespace LeanCode.Pipelines
 {
-    public interface IPipelineElement<TInput, TOutput>
+    public interface IPipelineElement<TContext, TInput, TOutput>
+        where TContext : IPipelineContext
     {
         Task<TOutput> ExecuteAsync(
+            TContext ctx,
             TInput input,
-            Func<TInput, Task<TOutput>> next);
+            Func<TContext, TInput, Task<TOutput>> next);
     }
 
-    public interface IPipelineFinalizer<in TInput, TOutput>
+    public interface IPipelineFinalizer<TContext, in TInput, TOutput>
+        where TContext : IPipelineContext
     {
-        Task<TOutput> ExecuteAsync(TInput input);
+        Task<TOutput> ExecuteAsync(TContext ctx, TInput input);
     }
 }

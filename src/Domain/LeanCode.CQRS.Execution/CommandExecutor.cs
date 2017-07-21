@@ -4,8 +4,8 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution
 {
-    using Executor = PipelineExecutor<ICommand, CommandResult>;
-    using Builder = PipelineBuilder<ICommand, CommandResult>;
+    using Executor = PipelineExecutor<ExecutionContext, ICommand, CommandResult>;
+    using Builder = PipelineBuilder<ExecutionContext, ICommand, CommandResult>;
 
     public class CommandExecutor : ICommandExecutor
     {
@@ -15,7 +15,7 @@ namespace LeanCode.CQRS.Execution
             IPipelineFactory factory,
             Func<Builder, Builder> config)
         {
-            var cfg = Pipeline.Build<ICommand, CommandResult>()
+            var cfg = Pipeline.Build<ExecutionContext, ICommand, CommandResult>()
                 .Configure(config)
                 .Finalize<CommandFinalizer>();
 
@@ -25,7 +25,7 @@ namespace LeanCode.CQRS.Execution
         public Task<CommandResult> RunAsync<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            return executor.ExecuteAsync(command);
+            return executor.ExecuteAsync(new ExecutionContext(), command);
         }
     }
 }

@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using LeanCode.Cache;
+using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Cache
 {
-    public class CacheElement : IPipelineElement<IQuery, object>
+    public class CacheElement : IPipelineElement<ExecutionContext, IQuery, object>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CacheElement>();
 
@@ -17,8 +18,9 @@ namespace LeanCode.CQRS.Cache
         }
 
         public async Task<object> ExecuteAsync(
+            ExecutionContext ctx,
             IQuery input,
-            Func<IQuery, Task<object>> next)
+            Func<ExecutionContext, IQuery, Task<object>> next)
         {
             var duration = QueryCacheAttribute.GetDuration(input);
             if (duration.HasValue)
@@ -26,7 +28,7 @@ namespace LeanCode.CQRS.Cache
                 var key = QueryCacheKeyProvider.GetKey(input);
                 var res = await cacher
                     .GetOrCreate(key, duration.Value,
-                        async () => Wrap(await next(input).ConfigureAwait(false))
+                        () => Wrap(ctx, input, next)
                     ).ConfigureAwait(false);
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
@@ -36,26 +38,29 @@ namespace LeanCode.CQRS.Cache
             }
             else
             {
-                return await next(input).ConfigureAwait(false);
+                return await next(ctx, input).ConfigureAwait(false);
             }
         }
 
-        private static CacheItemWrapper<TResult> Wrap<TResult>(TResult result)
+        private static async Task<CacheItemWrapper> Wrap(
+            ExecutionContext ctx,
+            IQuery query,
+            Func<ExecutionContext, IQuery, Task<object>> next)
         {
-            return new CacheItemWrapper<TResult>() { Item = result };
+            var result = await next(ctx, query).ConfigureAwait(false);
+            return new CacheItemWrapper() { Item = result };
         }
 
-        public sealed class CacheItemWrapper<TItem>
+        public sealed class CacheItemWrapper
         {
-            public TItem Item { get; set; }
+            public object Item { get; set; }
         }
     }
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<IQuery, object> Cache(
-            this PipelineBuilder<IQuery, object> builder
-        )
+        public static PipelineBuilder<ExecutionContext, IQuery, object> Cache(
+            this PipelineBuilder<ExecutionContext, IQuery, object> builder)
         {
             return builder.Use<CacheElement>();
         }

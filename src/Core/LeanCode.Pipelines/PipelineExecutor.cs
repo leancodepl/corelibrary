@@ -5,37 +5,41 @@ namespace LeanCode.Pipelines
 {
     public static class PipelineExecutor
     {
-        public static PipelineExecutor<TInput, TOutput> Create<TInput, TOutput>(
+        public static PipelineExecutor<TContext, TInput, TOutput> Create<TContext, TInput, TOutput>(
             IPipelineFactory factory,
-            ConfiguredPipeline<TInput, TOutput> cfg)
+            ConfiguredPipeline<TContext, TInput, TOutput> cfg)
+            where TContext : IPipelineContext
+
         {
-            return new PipelineExecutor<TInput, TOutput>(factory, cfg);
+            return new PipelineExecutor<TContext, TInput, TOutput>(factory, cfg);
         }
     }
 
-    public class PipelineExecutor<TInput, TOutput>
+    public class PipelineExecutor<TContext, TInput, TOutput>
+        where TContext : IPipelineContext
     {
         private readonly IPipelineFactory factory;
-        private readonly Func<IPipelineScope, TInput, Task<TOutput>> exec;
+        private readonly Func<TContext, TInput, Task<TOutput>> exec;
 
         public PipelineExecutor(
             IPipelineFactory factory,
-            ConfiguredPipeline<TInput, TOutput> config)
+            ConfiguredPipeline<TContext, TInput, TOutput> config)
         {
             this.factory = factory;
             this.exec = BuildPipeline(config);
         }
 
-        public async Task<TOutput> ExecuteAsync(TInput input)
+        public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input)
         {
             using (var scope = factory.BeginScope())
             {
-                return await exec(scope, input).ConfigureAwait(false);
+                ctx.Scope = scope;
+                return await exec(ctx, input).ConfigureAwait(false);
             }
         }
 
-        private static Func<IPipelineScope, TInput, Task<TOutput>> BuildPipeline(
-            ConfiguredPipeline<TInput, TOutput> config)
+        private static Func<TContext, TInput, Task<TOutput>> BuildPipeline(
+            ConfiguredPipeline<TContext, TInput, TOutput> config)
         {
             var app = BuildNext(config.Finalizer);
             for (int i = config.Elements.Count - 1; i >= 0; i--)
@@ -46,25 +50,26 @@ namespace LeanCode.Pipelines
             return app;
         }
 
-        private static Func<IPipelineScope, TInput, Task<TOutput>> BuildNext(
+        private static Func<TContext, TInput, Task<TOutput>> BuildNext(
             Type finalType)
         {
-            return (scope, input) =>
+            return (ctx, input) =>
             {
-                var final = scope.ResolveFinalizer<TInput, TOutput>(finalType);
-                return final.ExecuteAsync(input);
+                var final = ctx.Scope
+                    .ResolveFinalizer<TContext, TInput, TOutput>(finalType);
+                return final.ExecuteAsync(ctx, input);
             };
         }
 
-        private static Func<IPipelineScope, TInput, Task<TOutput>> BuildNext(
+        private static Func<TContext, TInput, Task<TOutput>> BuildNext(
             Type pipelineType,
-            Func<IPipelineScope, TInput, Task<TOutput>> next
-        )
+            Func<TContext, TInput, Task<TOutput>> next)
         {
-            return (scope, input) =>
+            return (ctx, input) =>
             {
-                var element = scope.ResolveElement<TInput, TOutput>(pipelineType);
-                return element.ExecuteAsync(input, input2 => next(scope, input2));
+                var element = ctx.Scope
+                    .ResolveElement<TContext, TInput, TOutput>(pipelineType);
+                return element.ExecuteAsync(ctx, input, next);
             };
         }
     }

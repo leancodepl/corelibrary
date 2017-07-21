@@ -26,16 +26,18 @@ namespace LeanCode.Pipelines.Autofac
                 this.scope = scope;
             }
 
-            public IPipelineElement<TInput, TOutput>
-                ResolveElement<TInput, TOutput>(Type type)
+            public IPipelineElement<TContext, TInput, TOutput>
+                ResolveElement<TContext, TInput, TOutput>(Type type)
+                where TContext : IPipelineContext
             {
-                return (IPipelineElement<TInput, TOutput>)scope.Resolve(type);
+                return (IPipelineElement<TContext, TInput, TOutput>)scope.Resolve(type);
             }
 
-            public IPipelineFinalizer<TInput, TOutput>
-                ResolveFinalizer<TInput, TOutput>(Type type)
+            public IPipelineFinalizer<TContext, TInput, TOutput>
+                ResolveFinalizer<TContext, TInput, TOutput>(Type type)
+                where TContext : IPipelineContext
             {
-                return (IPipelineFinalizer<TInput, TOutput>)scope.Resolve(type);
+                return (IPipelineFinalizer<TContext, TInput, TOutput>)scope.Resolve(type);
             }
 
             public void Dispose()
