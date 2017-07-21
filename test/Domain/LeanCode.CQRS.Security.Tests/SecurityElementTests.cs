@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;

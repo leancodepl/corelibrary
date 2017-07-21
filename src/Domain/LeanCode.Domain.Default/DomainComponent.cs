@@ -3,7 +3,7 @@ using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
 using LeanCode.CQRS;
-using LeanCode.CQRS.Execution;
+using LeanCode.Domain.Default.Execution;
 using LeanCode.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 

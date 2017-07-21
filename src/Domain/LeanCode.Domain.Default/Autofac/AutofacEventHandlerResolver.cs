@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using LeanCode.Domain.Default.Wrappers;
 using LeanCode.DomainModels.EventsExecution;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.Domain.Default.Autofac
 {
     public class AutofacEventHandlerResolver : IDomainEventHandlerResolver
     {

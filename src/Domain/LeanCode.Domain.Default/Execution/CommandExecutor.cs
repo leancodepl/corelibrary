@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS;
+using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.CQRS.Execution
+namespace LeanCode.Domain.Default.Execution
 {
     using Executor = PipelineExecutor<ExecutionContext, ICommand, CommandResult>;
     using Builder = PipelineBuilder<ExecutionContext, ICommand, CommandResult>;
@@ -17,7 +19,7 @@ namespace LeanCode.CQRS.Execution
         {
             var cfg = Pipeline.Build<ExecutionContext, ICommand, CommandResult>()
                 .Configure(config)
-                .Finalize<CommandFinalizer>();
+                .Finalize<CommandFinalizer<ExecutionContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
         }

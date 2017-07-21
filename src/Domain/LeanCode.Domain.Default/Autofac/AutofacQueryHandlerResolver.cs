@@ -5,8 +5,9 @@ using System.Reflection;
 using Autofac;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
+using LeanCode.Domain.Default.Wrappers;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.Domain.Default.Autofac
 {
     class AutofacQueryHandlerResolver : IQueryHandlerResolver
     {

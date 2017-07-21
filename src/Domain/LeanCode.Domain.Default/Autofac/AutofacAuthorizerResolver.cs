@@ -2,7 +2,7 @@ using System;
 using Autofac;
 using LeanCode.CQRS.Security;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.Domain.Default.Autofac
 {
     class AutofacAuthorizerResolver : IAuthorizerResolver
     {

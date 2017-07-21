@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.Domain.Default.Wrappers
 {
     class CommandHandlerWrapper<TCommand> : ICommandHandlerWrapper
         where TCommand : ICommand

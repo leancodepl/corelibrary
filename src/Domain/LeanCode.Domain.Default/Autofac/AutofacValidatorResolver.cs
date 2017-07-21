@@ -3,8 +3,9 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac;
 using LeanCode.CQRS.Validation;
+using LeanCode.Domain.Default.Wrappers;
 
-namespace LeanCode.Domain.Default
+namespace LeanCode.Domain.Default.Autofac
 {
     class AutofacValidatorResolver : ICommandValidatorResolver
     {

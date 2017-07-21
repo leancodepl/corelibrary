@@ -7,6 +7,8 @@ using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
+using LeanCode.Domain.Default.Autofac;
+using LeanCode.Domain.Default.Execution;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
@@ -36,19 +38,20 @@ namespace LeanCode.Domain.Default
         {
             builder.RegisterSource(new ContravariantRegistrationSource());
 
-            builder.Register(c => new CommandExecutor(c.Resolve<IPipelineFactory>(), cmdBuilder)).As<ICommandExecutor>();
-            builder.Register(c => new QueryExecutor(c.Resolve<IPipelineFactory>(), queryBuilder)).As<IQueryExecutor>();
-
-            builder.RegisterType<AutofacPipelineFactory>().As<IPipelineFactory>();
-            builder.RegisterType<CommandFinalizer>().AsSelf();
-            builder.RegisterType<QueryFinalizer>().AsSelf();
+            builder.RegisterType<AutofacPipelineFactory>().As<IPipelineFactory>()
+                .SingleInstance();
 
             builder.RegisterGeneric(typeof(SecurityElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(ValidationElement<>)).AsSelf();
             builder.RegisterGeneric(typeof(CacheElement<>)).AsSelf();
+            builder.RegisterGeneric(typeof(CommandFinalizer<>)).AsSelf();
+            builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
 
             builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
+
+            builder.Register(c => new CommandExecutor(c.Resolve<IPipelineFactory>(), cmdBuilder)).As<ICommandExecutor>();
+            builder.Register(c => new QueryExecutor(c.Resolve<IPipelineFactory>(), queryBuilder)).As<IQueryExecutor>();
 
             builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
             builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
