@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Validation
 {
-    public class ValidationElement
-        : IPipelineElement<ExecutionContext, ICommand, CommandResult>
+    public class ValidationElement<TContext>
+        : IPipelineElement<TContext, ICommand, CommandResult>
+        where TContext : IPipelineContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement<TContext>>();
 
         private readonly ICommandValidatorResolver resolver;
 
@@ -18,9 +18,9 @@ namespace LeanCode.CQRS.Validation
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            ExecutionContext ctx,
+            TContext ctx,
             ICommand input,
-            Func<ExecutionContext, ICommand, Task<CommandResult>> next)
+            Func<TContext, ICommand, Task<CommandResult>> next)
         {
             var commandType = input.GetType();
             var validator = resolver.FindCommandValidator(commandType);
@@ -41,11 +41,11 @@ namespace LeanCode.CQRS.Validation
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<ExecutionContext, ICommand, CommandResult> Validate(
-            this PipelineBuilder<ExecutionContext, ICommand, CommandResult> builder
-        )
+        public static PipelineBuilder<TContext, ICommand, CommandResult> Validate<TContext>(
+            this PipelineBuilder<TContext, ICommand, CommandResult> builder)
+            where TContext : IPipelineContext
         {
-            return builder.Use<ValidationElement>();
+            return builder.Use<ValidationElement<TContext>>();
         }
     }
 }

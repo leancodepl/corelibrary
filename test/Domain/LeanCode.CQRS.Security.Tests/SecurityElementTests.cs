@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CQRS.Default.Tests.Security
+namespace LeanCode.Domain.Default.Tests.Security
 {
     public class DefaultAuthorizerTests
     {
@@ -14,7 +15,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
         private readonly HttpContext httpContext;
         private readonly IAuthorizerResolver authorizerResolver;
-        private readonly SecurityElement<object, object> element;
+        private readonly SecurityElement<ExecutionContext, object, object> element;
         private IFirstAuthorizer firstAuthorizer;
         private ISecondAuthorizer secondAuthorizer;
         private IDerivedAuthorizer derivedAuthorizer;
@@ -27,7 +28,8 @@ namespace LeanCode.CQRS.Default.Tests.Security
             var accessor = Substitute.For<IHttpContextAccessor>();
             accessor.HttpContext.Returns(httpContext);
 
-            element = new SecurityElement<object, object>(accessor, authorizerResolver);
+            element = new SecurityElement<ExecutionContext, object, object>(
+                accessor, authorizerResolver);
 
             httpContext.User.Returns(new ClaimsPrincipal(new ClaimsIdentity("TEST")));
         }
@@ -59,7 +61,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         private Task Authorize(object obj)
         {
             return element.ExecuteAsync(
-                new Execution.ExecutionContext(), obj,
+                new ExecutionContext(), obj,
                 (ctx, i) => Task.FromResult<object>(null));
         }
 

@@ -3,12 +3,11 @@ using LeanCode.Cache.AspNet;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Cache;
-using LeanCode.CQRS.Default;
+using LeanCode.Domain.Default;
 using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.CQRS.Validation.Fluent;
-using LeanCode.DomainModels.EventsExecutor;
 using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,12 +43,11 @@ namespace LeanCode.Example
             return new IAppComponent[]
             {
                 new InMemoryCacheComponent(),
-                new CQRSComponent(TypesCatalog,
+                new DomainComponent(TypesCatalog,
                     b => b.Secure().Validate(),
                     b => b.Secure().Cache()
                 ),
                 new FluentValidationComponent(TypesCatalog),
-                new EventsExecutorComponent(TypesCatalog),
                 new RemoteCQRSHttpComponent(TypesCatalog),
                 PushNotificationsComponent<Guid>.WithConfiguration(Configuration),
 

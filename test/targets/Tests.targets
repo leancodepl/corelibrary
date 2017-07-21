@@ -3,6 +3,7 @@
     <IsPackable>false</IsPackable>
     <XUnitVersion>2.3.0-beta3-build3705</XUnitVersion>
   </PropertyGroup>
+  <Import Project="../../src/targets/Dependencies.targets" />
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using LeanCode.DomainModels.EventsExecutor;
+using LeanCode.DomainModels.EventsExecution;
 
 namespace LeanCode.Example.CQRS
 {

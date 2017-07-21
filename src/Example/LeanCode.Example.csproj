@@ -26,15 +26,16 @@
     <ProjectReference Include="../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
     <ProjectReference Include="../Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
+    <ProjectReference Include="../Domain/LeanCode.Domain.Default/LeanCode.Domain.Default.csproj" />
+
     <ProjectReference Include="../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="../Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
-    <ProjectReference Include="../Domain/LeanCode.DomainModels.EventsExecutor/LeanCode.DomainModels.EventsExecutor.csproj" />
+    <ProjectReference Include="../Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
     <ProjectReference Include="../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../Helpers/LeanCode.Configuration/LeanCode.Configuration.csproj" />
     <ProjectReference Include="../Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />

@@ -2,18 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <AssemblyName>LeanCode.CQRS.Security</AssemblyName>
+    <AssemblyName>LeanCode.DomainModels.EventsExecution</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+
+    <PackageReference Include="Polly" Version="5.2.0" />
   </ItemGroup>
 
 </Project>

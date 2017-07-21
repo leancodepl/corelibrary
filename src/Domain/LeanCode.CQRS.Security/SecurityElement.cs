@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security
 {
-    public class SecurityElement<TInput, TOutput>
-        : IPipelineElement<ExecutionContext, TInput, TOutput>
+    public class SecurityElement<TContext, TInput, TOutput>
+        : IPipelineElement<TContext, TInput, TOutput>
+        where TContext : IPipelineContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SecurityElement<TInput, TOutput>>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SecurityElement<TContext, TInput, TOutput>>();
 
         // This is bad, we need to switch to context-based information that is
         // passed by the caller of executor and do not rely on HttpContextAccessor.
@@ -29,9 +29,9 @@ namespace LeanCode.CQRS.Security
         }
 
         public async Task<TOutput> ExecuteAsync(
-            ExecutionContext ctx,
+            TContext ctx,
             TInput input,
-            Func<ExecutionContext, TInput, Task<TOutput>> next)
+            Func<TContext, TInput, Task<TOutput>> next)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
 
@@ -66,11 +66,11 @@ namespace LeanCode.CQRS.Security
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<ExecutionContext, TInput, TOutput> Secure<TInput, TOutput>(
-            this PipelineBuilder<ExecutionContext, TInput, TOutput> builder
-        )
+        public static PipelineBuilder<TContext, TInput, TOutput> Secure<TContext, TInput, TOutput>(
+            this PipelineBuilder<TContext, TInput, TOutput> builder)
+            where TContext : IPipelineContext
         {
-            return builder.Use<SecurityElement<TInput, TOutput>>();
+            return builder.Use<SecurityElement<TContext, TInput, TOutput>>();
         }
     }
 }

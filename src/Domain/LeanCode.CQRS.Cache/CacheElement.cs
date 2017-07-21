@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using LeanCode.Cache;
-using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Cache
 {
-    public class CacheElement : IPipelineElement<ExecutionContext, IQuery, object>
+    public class CacheElement<TContext> : IPipelineElement<TContext, IQuery, object>
+        where TContext : IPipelineContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CacheElement>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CacheElement<TContext>>();
 
         private readonly ICacher cacher;
 
@@ -18,9 +18,9 @@ namespace LeanCode.CQRS.Cache
         }
 
         public async Task<object> ExecuteAsync(
-            ExecutionContext ctx,
+            TContext ctx,
             IQuery input,
-            Func<ExecutionContext, IQuery, Task<object>> next)
+            Func<TContext, IQuery, Task<object>> next)
         {
             var duration = QueryCacheAttribute.GetDuration(input);
             if (duration.HasValue)
@@ -43,9 +43,9 @@ namespace LeanCode.CQRS.Cache
         }
 
         private static async Task<CacheItemWrapper> Wrap(
-            ExecutionContext ctx,
+            TContext ctx,
             IQuery query,
-            Func<ExecutionContext, IQuery, Task<object>> next)
+            Func<TContext, IQuery, Task<object>> next)
         {
             var result = await next(ctx, query).ConfigureAwait(false);
             return new CacheItemWrapper() { Item = result };
@@ -59,10 +59,11 @@ namespace LeanCode.CQRS.Cache
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<ExecutionContext, IQuery, object> Cache(
-            this PipelineBuilder<ExecutionContext, IQuery, object> builder)
+        public static PipelineBuilder<TContext, IQuery, object> Cache<TContext>(
+            this PipelineBuilder<TContext, IQuery, object> builder)
+            where TContext : IPipelineContext
         {
-            return builder.Use<CacheElement>();
+            return builder.Use<CacheElement<TContext>>();
         }
     }
 }

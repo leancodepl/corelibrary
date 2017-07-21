@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>LeanCode.Domain.Default</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+  <Import Project="../../targets/Common.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
+
+    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+    <ProjectReference Include="../LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
+
+    <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+  </ItemGroup>
+
+</Project>

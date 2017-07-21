@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />
   </ItemGroup>
