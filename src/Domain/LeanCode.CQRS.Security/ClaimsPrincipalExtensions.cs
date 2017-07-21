@@ -7,9 +7,10 @@ namespace LeanCode.CQRS.Security
     {
         public static bool HasPermission(
             this ClaimsPrincipal claimsPrincipal,
+            RoleRegistry registry,
             params string[] permissions)
         {
-            foreach (var role in RoleRegistry.All)
+            foreach (var role in registry.All)
             {
                 if (claimsPrincipal.IsInRole(role.Name))
                 {

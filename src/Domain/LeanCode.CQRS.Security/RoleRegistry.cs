@@ -1,18 +1,15 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LeanCode.CQRS.Security
 {
-    public static class RoleRegistry
+    public sealed class RoleRegistry
     {
-        private static List<Role> allRoles = new List<Role>();
+        public IReadOnlyList<Role> All { get; }
 
-        public static IReadOnlyList<Role> All => allRoles;
-
-        public static void Register(Role newRole)
+        public RoleRegistry(IEnumerable<IRoleRegistration> registrations)
         {
-            if (newRole == null) throw new ArgumentNullException(nameof(newRole));
-            allRoles.Add(newRole);
+            All = registrations.SelectMany(r => r.Roles).ToArray();
         }
     }
 }

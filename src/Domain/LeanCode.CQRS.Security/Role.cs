@@ -5,26 +5,37 @@ namespace LeanCode.CQRS.Security
 {
     public class Role
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-        public HashSet<string> Permissions { get; private set; }
+        public string Name { get; }
+        public HashSet<string> Permissions { get; }
 
-        private Role() { }
-
-        public static Role New(Guid id, string name, HashSet<string> permissions)
+        public Role(string name, params string[] permissions)
         {
-            if (permissions == null) throw new ArgumentNullException(nameof(permissions));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Parameter cannot be null or empty", nameof(name));
-            if (id == Guid.Empty)
-                throw new ArgumentException("Parameter cannot be empty", nameof(id));
+            Validate(name, permissions);
 
-            return new Role()
+            this.Name = name;
+            this.Permissions = new HashSet<string>(permissions);
+        }
+
+        public Role(string name, IEnumerable<string> permissions)
+        {
+            Validate(name, permissions);
+
+            this.Name = name;
+            this.Permissions = new HashSet<string>(permissions);
+        }
+
+        private static void Validate(string name, IEnumerable<string> permissions)
+        {
+            if (string.IsNullOrWhiteSpace(name))
             {
-                Id = id,
-                Name = name,
-                Permissions = permissions
-            };
+                throw new ArgumentNullException(
+                    "Name must be specified.", nameof(name));
+            }
+            if (permissions == null)
+            {
+                throw new ArgumentNullException(
+                    "Permissions must be non-null", nameof(permissions));
+            }
         }
     }
 }

@@ -7,10 +7,17 @@ namespace LeanCode.CQRS.Security
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
 
+        private readonly RoleRegistry registry;
+
+        public DefaultPermissionAuthorizer(RoleRegistry registry)
+        {
+            this.registry = registry;
+        }
+
         public override Task<bool> CheckIfAuthorized(
             ClaimsPrincipal user, object obj, string[] permissions = null)
         {
-            if (!user.HasPermission(permissions))
+            if (!user.HasPermission(registry, permissions))
             {
                 logger.Warning(
                     "User does not have sufficient permissions ({Permissions}) to run {@Object}",

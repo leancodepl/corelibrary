@@ -41,7 +41,6 @@ namespace LeanCode.Domain.Default
             builder.RegisterGeneric(typeof(CacheElement<>)).AsSelf();
             builder.RegisterGeneric(typeof(CommandFinalizer<>)).AsSelf();
             builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
-
             builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
 
@@ -53,6 +52,8 @@ namespace LeanCode.Domain.Default
             builder.RegisterType<AutofacAuthorizerResolver>().As<IAuthorizerResolver>();
             builder.RegisterType<AutofacValidatorResolver>().As<ICommandValidatorResolver>();
             builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();
+
+            builder.RegisterType<RoleRegistry>().AsSelf().SingleInstance();
 
             builder.RegisterType<AsyncEventsInterceptor>()
                 .AsSelf().AsImplementedInterfaces()
