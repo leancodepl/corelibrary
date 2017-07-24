@@ -22,15 +22,15 @@ namespace LeanCode.CQRS.Security
                     $"{GetType()} is not valid Authorizer for {obj.GetType()}.",
                     nameof(customAuthorizer));
             }
-            var data = customData as TCustomData;
-            if (data == null)
+            if (!(customData is TCustomData))
             {
                 throw new ArgumentException(
                     $"{GetType()} requires {typeof(TCustomData)} as custom data.",
                     nameof(customData));
             }
 
-            return CheckIfAuthorized(user, customAuthorizer, data);
+            return CheckIfAuthorized(user, customAuthorizer,
+                (TCustomData)customData);
         }
 
         public abstract Task<bool> CheckIfAuthorized(
