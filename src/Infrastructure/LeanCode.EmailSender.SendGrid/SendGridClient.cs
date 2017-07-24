@@ -140,7 +140,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         private static string GetViewNameFromModel(Type type, string mimeType)
         {
-            var ext = mimeType == "text/plain" ? ".txt" : ".html";
+            var ext = mimeType == "text/plain" ? ".txt" : "";
 
             var viewName = type.Name;
             if (viewName.EndsWith("VM"))
