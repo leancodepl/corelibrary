@@ -44,8 +44,8 @@ namespace LeanCode.CQRS.Default
             builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
 
-            builder.Register(c => new CommandExecutor(c.Resolve<IPipelineFactory>(), cmdBuilder)).As<ICommandExecutor>();
-            builder.Register(c => new QueryExecutor(c.Resolve<IPipelineFactory>(), queryBuilder)).As<IQueryExecutor>();
+            builder.Register(c => new CommandExecutor(c.Resolve<IPipelineFactory>(), cmdBuilder)).As<ICommandExecutor>().SingleInstance();
+            builder.Register(c => new QueryExecutor(c.Resolve<IPipelineFactory>(), queryBuilder)).As<IQueryExecutor>().SingleInstance();
 
             builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
             builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
