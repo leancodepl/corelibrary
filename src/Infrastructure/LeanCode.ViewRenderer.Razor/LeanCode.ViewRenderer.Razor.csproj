@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLib)" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLib)" />
+    <PackageReference Include="System.Runtime.Loader" Version="$(NetCoreLib)" />
 
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />

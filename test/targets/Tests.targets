@@ -6,7 +6,7 @@
   <Import Project="../../src/targets/Dependencies.targets" />
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLib)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
     <PackageReference Include="NSubstitute" Version="2.0.3" />
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
