@@ -15,8 +15,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public ICustomAuthorizer FindAuthorizer(Type type)
         {
-            componentContext.TryResolve(type, out var authorizer);
-            return authorizer as ICustomAuthorizer;
+            return (ICustomAuthorizer)componentContext.Resolve(type);
         }
     }
 }

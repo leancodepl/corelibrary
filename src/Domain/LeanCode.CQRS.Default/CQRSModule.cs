@@ -54,6 +54,7 @@ namespace LeanCode.CQRS.Default
             builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();
 
             builder.RegisterType<RoleRegistry>().AsSelf().SingleInstance();
+            builder.RegisterType<DefaultPermissionAuthorizer>().AsSelf().AsImplementedInterfaces();
 
             builder.RegisterType<AsyncEventsInterceptor>()
                 .AsSelf().AsImplementedInterfaces()
