@@ -4,24 +4,17 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
-    public interface ICustomAuthorizer
+    public interface ICustomAuthorizer<in TAppContext, in TObject>
     {
-        Task<bool> CheckIfAuthorized(ClaimsPrincipal user, object obj, object customData = null);
+        Task<bool> CheckIfAuthorized(TAppContext context, TObject obj, object customData = null);
     }
 
-    public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
-        where TObject : class
+    public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData>
+        : ICustomAuthorizer<TAppContext, TObject>
         where TCustomData : class
     {
-        public Task<bool> CheckIfAuthorized(ClaimsPrincipal user, object obj, object customData = null)
+        public Task<bool> CheckIfAuthorized(TAppContext context, TObject obj, object customData = null)
         {
-            var customAuthorizer = obj as TObject;
-            if (customAuthorizer == null)
-            {
-                throw new ArgumentException(
-                    $"{GetType()} is not valid Authorizer for {obj.GetType()}.",
-                    nameof(customAuthorizer));
-            }
             if (customData != null && !(customData is TCustomData))
             {
                 throw new ArgumentException(
@@ -29,26 +22,25 @@ namespace LeanCode.CQRS.Security
                     nameof(customData));
             }
 
-            return CheckIfAuthorized(user, customAuthorizer,
-                (TCustomData)customData);
+            return RealCheckIfAuthorized(context, obj, (TCustomData)customData);
         }
 
-        public abstract Task<bool> CheckIfAuthorized(
-            ClaimsPrincipal user,
+        protected abstract Task<bool> RealCheckIfAuthorized(
+            TAppContext context,
             TObject obj, TCustomData customData = null);
     }
 
-    public abstract class CustomAuthorizer<TObject> : CustomAuthorizer<TObject, object>
+    public abstract class CustomAuthorizer<TAppContext, TObject> : CustomAuthorizer<TAppContext, TObject, object>
         where TObject : class
     {
-        public override Task<bool> CheckIfAuthorized(
-            ClaimsPrincipal user,
+        protected override Task<bool> RealCheckIfAuthorized(
+            TAppContext context,
             TObject obj, object customData = null)
         {
-            return CheckIfAuthorized(user, obj);
+            return CheckIfAuthorized(context, obj);
         }
 
-        public abstract Task<bool> CheckIfAuthorized(
-            ClaimsPrincipal user, TObject obj);
+        protected abstract Task<bool> RealCheckIfAuthorized(
+            TAppContext context, TObject obj);
     }
 }

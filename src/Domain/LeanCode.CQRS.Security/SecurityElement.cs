@@ -19,12 +19,12 @@ namespace LeanCode.CQRS.Security
         }
 
         public async Task<TOutput> ExecuteAsync(
-            TContext ctx,
+            TContext context,
             TInput input,
             Func<TContext, TInput, Task<TOutput>> next)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
-            var user = ctx.User;
+            var user = context.User;
 
             if (customAuthorizers.Count > 0)
             {
@@ -35,22 +35,32 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
+            var contextType = context.GetType();
+            var objectType = input.GetType();
             foreach (var customAuthorizerDefinition in customAuthorizers)
             {
-                var customAuthorizer = authorizerResolver.FindAuthorizer(customAuthorizerDefinition.Authorizer);
+                var authorizerType = customAuthorizerDefinition.Authorizer;
+                var customAuthorizer = authorizerResolver.FindAuthorizer(
+                    contextType, authorizerType, objectType);
+
+                if (customAuthorizer == null)
+                {
+                    throw new CustomAuthorizerNotFoundException(contextType, authorizerType);
+                }
+
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorized(user, input, customAuthorizerDefinition.CustomData)
+                    .CheckIfAuthorized(context, input, customAuthorizerDefinition.CustomData)
                     .ConfigureAwait(false);
                 if (!authorized)
                 {
                     logger.Warning("Authorizer {Authorizer} failed to authorize the user to run {@Object}",
-                        customAuthorizer.GetType().FullName, input);
+                        customAuthorizer.UnderlyingAuthorizer.FullName, input);
                     throw new InsufficientPermissionException(
                         $"User is not authorized for {input.GetType()}.");
                 }
             }
 
-            return await next(ctx, input).ConfigureAwait(false);
+            return await next(context, input).ConfigureAwait(false);
         }
     }
 

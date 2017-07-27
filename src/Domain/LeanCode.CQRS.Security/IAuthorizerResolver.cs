@@ -1,9 +1,16 @@
 using System;
+using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
     public interface IAuthorizerResolver
     {
-        ICustomAuthorizer FindAuthorizer(Type type);
+        ICustomAuthorizerWrapper FindAuthorizer(Type contextType, Type authorizerType, Type objectType);
+    }
+
+    public interface ICustomAuthorizerWrapper
+    {
+        Type UnderlyingAuthorizer { get; }
+        Task<bool> CheckIfAuthorized(object context, object obj, object customData);
     }
 }

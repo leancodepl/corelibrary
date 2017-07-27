@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/LeanCode.Example/bin/Debug/netcoreapp1.1/LeanCode.Example.dll",
+            "program": "${workspaceRoot}/src/Example/bin/Debug/netcoreapp1.1/LeanCode.Example.dll",
             "args": [],
-            "cwd": "${workspaceRoot}/src/LeanCode.Example",
+            "cwd": "${workspaceRoot}/src/Example",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,
@@ -28,7 +28,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceRoot}/src/LeanCode.Example/Views"
+                "/Views": "${workspaceRoot}/src/Example/Views"
             }
         }
     ]
