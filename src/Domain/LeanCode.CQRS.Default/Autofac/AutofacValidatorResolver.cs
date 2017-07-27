@@ -2,18 +2,17 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac;
-using LeanCode.CQRS.Validation;
 using LeanCode.CQRS.Default.Wrappers;
+using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
     class AutofacValidatorResolver : ICommandValidatorResolver
     {
-        private static readonly Type ValidatorBase = typeof(ICommandValidator<>);
-        private static readonly Type ValidatorWrapperBase = typeof(CommandValidatorWrapper<>);
+        private static readonly Type ValidatorBase = typeof(ICommandValidator<,>);
+        private static readonly Type WrapperBase = typeof(CommandValidatorWrapper<,>);
 
-        private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
-            new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
+        private static readonly TypesCache typesCache = new TypesCache(ValidatorBase, WrapperBase);
 
         private readonly IComponentContext componentContext;
 
@@ -22,23 +21,20 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICommandValidatorWrapper FindCommandValidator(Type commandType)
+        public ICommandValidatorWrapper FindCommandValidator(
+            Type contextType, Type commandType)
         {
-            var cached = typesCache.GetOrAdd(commandType, _ =>
+            var cached = typesCache.Get(contextType, commandType);
+
+            if (componentContext.TryResolve(cached.HandlerType, out var handler))
             {
-                var queryHandlerType = ValidatorBase.MakeGenericType(commandType);
-                var wrappedHandlerType = ValidatorWrapperBase.MakeGenericType(commandType);
-                var ctor = wrappedHandlerType.GetConstructors()[0];
-                return Tuple.Create(queryHandlerType, ctor);
-            });
-
-            componentContext.TryResolve(cached.Item1, out var handler);
-
-            if (handler == null)
+                var cv = cached.Constructor.Invoke(new[] { handler });
+                return (ICommandValidatorWrapper)cv;
+            }
+            else
             {
                 return null;
             }
-            return (ICommandValidatorWrapper)cached.Item2.Invoke(new[] { handler });
         }
     }
 }

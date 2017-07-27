@@ -5,7 +5,8 @@ namespace LeanCode.CQRS.Validation
 {
     public interface ICommandValidatorResolver
     {
-        ICommandValidatorWrapper FindCommandValidator(Type commandType);
+        ICommandValidatorWrapper FindCommandValidator(
+            Type contextType, Type commandType);
     }
 
     /// <summary>
@@ -13,6 +14,6 @@ namespace LeanCode.CQRS.Validation
     /// </summary>
     public interface ICommandValidatorWrapper
     {
-        Task<ValidationResult> ValidateAsync(ICommand command);
+        Task<ValidationResult> ValidateAsync(object context, ICommand command);
     }
 }

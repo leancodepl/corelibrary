@@ -18,16 +18,17 @@ namespace LeanCode.CQRS.Validation
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            TContext ctx,
+            TContext context,
             ICommand input,
             Func<TContext, ICommand, Task<CommandResult>> next)
         {
+            var contextType = context.GetType();
             var commandType = input.GetType();
-            var validator = resolver.FindCommandValidator(commandType);
+            var validator = resolver.FindCommandValidator(contextType, commandType);
             if (validator != null)
             {
                 var result = await validator
-                    .ValidateAsync(input)
+                    .ValidateAsync(context, input)
                     .ConfigureAwait(false);
                 if (!result.IsValid)
                 {
@@ -35,7 +36,7 @@ namespace LeanCode.CQRS.Validation
                     return CommandResult.NotValid(result);
                 }
             }
-            return await next(ctx, input).ConfigureAwait(false);
+            return await next(context, input).ConfigureAwait(false);
         }
     }
 

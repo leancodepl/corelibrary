@@ -11,6 +11,7 @@ namespace LeanCode.CQRS.Default.Autofac
     {
         private static readonly Type HandlerBase = typeof(ICommandHandler<,>);
         private static readonly Type HandlerWrapperBase = typeof(CommandHandlerWrapper<,>);
+
         private static readonly TypesCache typesCache = new TypesCache(HandlerBase, HandlerWrapperBase);
 
         private readonly IComponentContext componentContext;
