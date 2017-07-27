@@ -1,7 +1,8 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Xunit;
 using Newtonsoft.Json;
+using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
@@ -83,6 +84,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.Equal(StubCommandExecutor.SampleError.PropertyName, err.PropertyName);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorCode, err.ErrorCode);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorMessage, err.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task Uses_the_translator_to_create_app_context()
+        {
+            var user = new ClaimsPrincipal();
+
+            await Invoke(user: user);
+
+            Assert.NotNull(command.LastContext);
+            Assert.Equal(user, command.LastContext.User);
         }
     }
 

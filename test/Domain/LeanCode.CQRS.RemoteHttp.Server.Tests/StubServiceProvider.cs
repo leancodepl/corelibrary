@@ -6,10 +6,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     class StubServiceProvider : IServiceProvider
     {
-        private readonly RemoteCommandHandler command;
-        private readonly RemoteQueryHandler query;
+        private readonly RemoteCommandHandler<AppContext> command;
+        private readonly RemoteQueryHandler<AppContext> query;
 
-        public StubServiceProvider(RemoteCommandHandler command, RemoteQueryHandler query)
+        public StubServiceProvider(RemoteCommandHandler<AppContext> command, RemoteQueryHandler<AppContext> query)
         {
             this.command = command;
             this.query = query;
@@ -17,13 +17,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         public object GetService(Type serviceType)
         {
-            if (serviceType == typeof(IIndex<TypesCatalog, RemoteCommandHandler>))
+            if (serviceType == typeof(IRemoteCommandHandler))
             {
-                return StubIndex.Create(command);
+                return command;
             }
-            else if (serviceType == typeof(IIndex<TypesCatalog, RemoteQueryHandler>))
+            else if (serviceType == typeof(IRemoteQueryHandler))
             {
-                return StubIndex.Create(query);
+                return query;
             }
             throw new NotImplementedException();
         }

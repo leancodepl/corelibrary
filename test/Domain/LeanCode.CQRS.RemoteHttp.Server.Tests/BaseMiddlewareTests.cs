@@ -1,7 +1,8 @@
+using System;
 using System.IO;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using LeanCode.Components;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
@@ -22,19 +23,24 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName;
 
-            middleware = new RemoteCQRSMiddleware(null, catalog);
+            middleware = new RemoteCQRSMiddleware(null);
 
-            var commandHandler = new RemoteCommandHandler(command, catalog);
-            var queryHandler = new RemoteQueryHandler(query, catalog);
+            var commandHandler = new RemoteCommandHandler<AppContext>(command, catalog, c => new AppContext(c.User));
+            var queryHandler = new RemoteQueryHandler<AppContext>(query, catalog, c => new AppContext(c.User));
             this.serviceProvider = new StubServiceProvider(commandHandler, queryHandler);
         }
 
-        protected async Task<(int statusCode, string response)> Invoke(string type = null, string content = "{}", string method = "POST")
+        protected async Task<(int statusCode, string response)> Invoke(
+            string type = null,
+            string content = "{}",
+            string method = "POST",
+            ClaimsPrincipal user = null)
         {
             type = type ?? defaultObject;
 
             var ctx = new StubContext(method, $"/{endpoint}/" + type, content);
             ctx.RequestServices = serviceProvider;
+            ctx.User = user;
             await middleware.Invoke(ctx);
 
             var statusCode = ctx.Response.StatusCode;

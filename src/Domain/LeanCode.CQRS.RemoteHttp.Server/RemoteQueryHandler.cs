@@ -11,21 +11,35 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    sealed class RemoteQueryHandler : BaseRemoteObjectHandler
+    interface IRemoteQueryHandler
     {
-        private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler).GetMethod("ExecuteQuery", BindingFlags.NonPublic | BindingFlags.Instance);
+        TypesCatalog Catalog { get; }
+        Task<ActionResult> ExecuteAsync(HttpContext context);
+    }
+
+    sealed class RemoteQueryHandler<TAppContext>
+        : BaseRemoteObjectHandler<TAppContext>, IRemoteQueryHandler
+    {
+        private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
+            .GetMethod("ExecuteQuery", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
-        private readonly IQueryExecutor queryExecutor;
+        private readonly IQueryExecutor<TAppContext> queryExecutor;
 
-        public RemoteQueryHandler(IQueryExecutor queryExecutor, TypesCatalog catalog)
-            : base(Serilog.Log.ForContext<RemoteQueryHandler>(), catalog)
+        public RemoteQueryHandler(
+            IQueryExecutor<TAppContext> queryExecutor,
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator)
+            : base(
+                Serilog.Log.ForContext<RemoteQueryHandler<TAppContext>>(),
+                catalog,
+                contextTranslator)
         {
             this.queryExecutor = queryExecutor;
         }
 
         protected override async Task<ActionResult> ExecuteObjectAsync(
-            ClaimsPrincipal user, object obj)
+            TAppContext context, object obj)
         {
             MethodInfo method;
             try
@@ -42,7 +56,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             var type = obj.GetType();
             try
             {
-                var result = (Task<object>)method.Invoke(this, new[] { user, obj });
+                var result = (Task<object>)method.Invoke(this, new[] { context, obj });
                 var objResult = await result.ConfigureAwait(false);
                 return new ActionResult.Json(objResult);
             }
@@ -58,13 +72,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         }
 
         private async Task<object> ExecuteQuery<TQuery, TResult>(
-            ClaimsPrincipal user, object cmd)
+            TAppContext context, object query)
             where TQuery : IRemoteQuery<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
             return await queryExecutor
-                .GetAsync(user, (TQuery)cmd)
+                .GetAsync(context, (TQuery)query)
                 .ConfigureAwait(false);
         }
 

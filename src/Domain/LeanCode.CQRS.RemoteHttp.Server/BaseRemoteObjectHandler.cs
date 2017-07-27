@@ -6,25 +6,31 @@ using LeanCode.Components;
 using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    abstract class BaseRemoteObjectHandler
+    abstract class BaseRemoteObjectHandler<TAppContext>
     {
         private readonly JsonSerializer Serializer = new JsonSerializer();
 
+        private readonly Func<HttpContext, TAppContext> contextTranslator;
         public TypesCatalog Catalog { get; }
 
         protected Serilog.ILogger Logger { get; }
 
-        public BaseRemoteObjectHandler(Serilog.ILogger logger, TypesCatalog catalog)
+        public BaseRemoteObjectHandler(
+            Serilog.ILogger logger, TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator)
         {
             Logger = logger;
             Catalog = catalog;
+            this.contextTranslator = contextTranslator;
         }
 
-        public async Task<ActionResult> ExecuteAsync(ClaimsPrincipal user, HttpRequest request)
+        public async Task<ActionResult> ExecuteAsync(HttpContext context)
         {
+            var request = context.Request;
             var type = ExtractType(request);
             if (type == null)
             {
@@ -50,9 +56,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
 
             ActionResult result;
+            var appContext = contextTranslator(context);
             try
             {
-                result = await ExecuteObjectAsync(user, obj);
+                result = await ExecuteObjectAsync(appContext, obj);
             }
             catch (UnauthenticatedException)
             {
@@ -88,7 +95,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         }
 
         protected abstract Task<ActionResult> ExecuteObjectAsync(
-            ClaimsPrincipal user, object obj);
+            TAppContext appContext, object obj);
 
         private Type ExtractType(HttpRequest request)
         {

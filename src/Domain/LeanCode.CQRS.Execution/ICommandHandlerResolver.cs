@@ -5,7 +5,8 @@ namespace LeanCode.CQRS.Execution
 {
     public interface ICommandHandlerResolver
     {
-        ICommandHandlerWrapper FindCommandHandler(Type commandType);
+        ICommandHandlerWrapper FindCommandHandler(
+            Type contextType, Type commandType);
     }
 
     /// <summary>
@@ -13,6 +14,6 @@ namespace LeanCode.CQRS.Execution
     /// </summary>
     public interface ICommandHandlerWrapper
     {
-        Task ExecuteAsync(ICommand command);
+        Task ExecuteAsync(object context, ICommand command);
     }
 }

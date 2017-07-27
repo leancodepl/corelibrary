@@ -1,12 +1,10 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface ICommandExecutor
+    public interface ICommandExecutor<TContext>
     {
-        Task<CommandResult> RunAsync<TCommand>(
-            ClaimsPrincipal user, TCommand command)
+        Task<CommandResult> RunAsync<TCommand>(TContext context, TCommand command)
             where TCommand : ICommand;
     }
 }

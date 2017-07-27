@@ -17,21 +17,21 @@ namespace LeanCode.CQRS.Execution
         }
 
         public async Task<object> ExecuteAsync(
-            TContext ctx,
-            IQuery query)
+            TContext context, IQuery query)
         {
+            var contextType = context.GetType();
             var queryType = query.GetType();
-            var handler = resolver.FindQueryHandler(queryType);
+            var handler = resolver.FindQueryHandler(contextType, queryType);
             if (handler == null)
             {
                 logger.Fatal("Cannot find a handler for query {@Query}", query);
-                throw new QueryHandlerNotFoundException(query.GetType());
+                throw new QueryHandlerNotFoundException(contextType, queryType);
             }
 
             object result;
             try
             {
-                result = await handler.ExecuteAsync(query).ConfigureAwait(false);
+                result = await handler.ExecuteAsync(context, query).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

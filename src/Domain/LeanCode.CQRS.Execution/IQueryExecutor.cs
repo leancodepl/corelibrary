@@ -1,11 +1,9 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface IQueryExecutor
+    public interface IQueryExecutor<TContext>
     {
-        Task<TResult> GetAsync<TResult>(
-            ClaimsPrincipal user, IQuery<TResult> query);
+        Task<TResult> GetAsync<TResult>(TContext context, IQuery<TResult> query);
     }
 }

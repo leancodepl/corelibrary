@@ -13,16 +13,17 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default
 {
-    class CQRSModule : Module
+    class CQRSModule<TAppContext> : Module
+        where TAppContext : IPipelineContext
     {
         private readonly TypesCatalog catalog;
-        private readonly CommandBuilder cmdBuilder;
-        private readonly QueryBuilder queryBuilder;
+        private readonly CommandBuilder<TAppContext> cmdBuilder;
+        private readonly QueryBuilder<TAppContext> queryBuilder;
 
         public CQRSModule(
             TypesCatalog catalog,
-            CommandBuilder cmdBuilder,
-            QueryBuilder queryBuilder)
+            CommandBuilder<TAppContext> cmdBuilder,
+            QueryBuilder<TAppContext> queryBuilder)
         {
             this.catalog = catalog;
             this.cmdBuilder = cmdBuilder;
@@ -44,8 +45,12 @@ namespace LeanCode.CQRS.Default
             builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
 
-            builder.Register(c => new CommandExecutor(c.Resolve<IPipelineFactory>(), cmdBuilder)).As<ICommandExecutor>().SingleInstance();
-            builder.Register(c => new QueryExecutor(c.Resolve<IPipelineFactory>(), queryBuilder)).As<IQueryExecutor>().SingleInstance();
+            builder.Register(c => new CommandExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), cmdBuilder))
+                .As<ICommandExecutor<TAppContext>>()
+                .SingleInstance();
+            builder.Register(c => new QueryExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), queryBuilder))
+                .As<IQueryExecutor<TAppContext>>()
+                .SingleInstance();
 
             builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
             builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
@@ -64,8 +69,8 @@ namespace LeanCode.CQRS.Default
                 .AsSelf()
                 .SingleInstance();
 
-            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<>));
-            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
         }
     }

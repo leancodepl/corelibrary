@@ -18,22 +18,22 @@ namespace LeanCode.CQRS.Execution
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            TContext ctx,
-            ICommand command)
+            TContext context, ICommand command)
         {
+            var contextType = context.GetType();
             var commandType = command.GetType();
-            var handler = resolver.FindCommandHandler(commandType);
+            var handler = resolver.FindCommandHandler(contextType, commandType);
             if (handler == null)
             {
                 logger.Fatal(
                     "Cannot find a handler for the command {@Command}",
                     command);
-                throw new CommandHandlerNotFoundException(commandType);
+                throw new CommandHandlerNotFoundException(contextType, commandType);
             }
 
             try
             {
-                await handler.ExecuteAsync(command).ConfigureAwait(false);
+                await handler.ExecuteAsync(context, command).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

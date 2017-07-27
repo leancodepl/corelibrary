@@ -9,10 +9,10 @@ namespace LeanCode.Example.Controllers
     [Route("")]
     public class HomeController : Controller
     {
-        private readonly ICommandExecutor commands;
-        private readonly IQueryExecutor queries;
+        private readonly ICommandExecutor<AppContext> commands;
+        private readonly IQueryExecutor<AppContext> queries;
 
-        public HomeController(ICommandExecutor commands, IQueryExecutor queries)
+        public HomeController(ICommandExecutor<AppContext> commands, IQueryExecutor<AppContext> queries)
         {
             this.commands = commands;
             this.queries = queries;
@@ -21,7 +21,8 @@ namespace LeanCode.Example.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var result = await queries.GetAsync(User, new CQRS.SampleQuery());
+            var ctx = new AppContext { User = User };
+            var result = await queries.GetAsync(ctx, new CQRS.SampleQuery());
             return Content(result.Name);
         }
 
@@ -36,7 +37,8 @@ namespace LeanCode.Example.Controllers
         {
             try
             {
-                await commands.RunAsync(User, new CQRS.SampleCommand("Name"));
+                var ctx = new AppContext { User = User };
+                await commands.RunAsync(ctx, new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }
             catch (Exception e)

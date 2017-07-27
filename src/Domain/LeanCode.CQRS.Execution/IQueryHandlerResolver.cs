@@ -5,7 +5,7 @@ namespace LeanCode.CQRS.Execution
 {
     public interface IQueryHandlerResolver
     {
-        IQueryHandlerWrapper FindQueryHandler(Type queryType);
+        IQueryHandlerWrapper FindQueryHandler(Type contextType, Type queryType);
     }
 
     /// <summary>
@@ -13,6 +13,6 @@ namespace LeanCode.CQRS.Execution
     /// </summary>
     public interface IQueryHandlerWrapper
     {
-        Task<object> ExecuteAsync(IQuery query);
+        Task<object> ExecuteAsync(object context, IQuery query);
     }
 }

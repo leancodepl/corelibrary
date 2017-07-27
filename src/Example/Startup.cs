@@ -8,10 +8,10 @@ using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.DomainModels.EventsExecution;
 using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using LeanCode.DomainModels.EventsExecution;
 
 namespace LeanCode.Example
 {
@@ -44,12 +44,9 @@ namespace LeanCode.Example
             return new IAppComponent[]
             {
                 new InMemoryCacheComponent(),
-                new CQRSComponent(TypesCatalog,
-                    b => b.ExecuteEvents().Secure().Validate().InterceptEvents(),
-                    b => b.Secure().Cache()
-                ),
                 new FluentValidationComponent(TypesCatalog),
-                new RemoteCQRSHttpComponent(TypesCatalog),
+                CQRSComponent.WithDefaultPipelines<AppContext>(TypesCatalog),
+                RemoteCQRSHttpComponent.Create(TypesCatalog, ctx => new AppContext { User = ctx.User }),
                 PushNotificationsComponent<Guid>.WithConfiguration(Configuration),
 
                 new MvcComponent()

@@ -9,21 +9,35 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    sealed class RemoteCommandHandler : BaseRemoteObjectHandler
+    interface IRemoteCommandHandler
     {
-        private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler).GetMethod("ExecuteCommand", BindingFlags.NonPublic | BindingFlags.Instance);
+        TypesCatalog Catalog { get; }
+        Task<ActionResult> ExecuteAsync(HttpContext context);
+    }
+
+    sealed class RemoteCommandHandler<TAppContext>
+        : BaseRemoteObjectHandler<TAppContext>, IRemoteCommandHandler
+    {
+        private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
+            .GetMethod("ExecuteCommand", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
-        private readonly ICommandExecutor commandExecutor;
+        private readonly ICommandExecutor<TAppContext> commandExecutor;
 
-        public RemoteCommandHandler(ICommandExecutor commandExecutor, TypesCatalog catalog)
-            : base(Serilog.Log.ForContext<RemoteCommandHandler>(), catalog)
+        public RemoteCommandHandler(
+            ICommandExecutor<TAppContext> commandExecutor,
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator)
+            : base(
+                Serilog.Log.ForContext<RemoteCommandHandler<TAppContext>>(),
+                catalog,
+                contextTranslator)
         {
             this.commandExecutor = commandExecutor;
         }
 
         protected override async Task<ActionResult> ExecuteObjectAsync(
-            ClaimsPrincipal user, object obj)
+            TAppContext context, object obj)
         {
             var type = obj.GetType();
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
@@ -33,7 +47,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
 
             var method = methodCache.GetOrAdd(type, t => ExecCommandMethod.MakeGenericMethod(t));
-            var result = (Task<CommandResult>)method.Invoke(this, new[] { user, obj });
+            var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj });
 
             CommandResult cmdResult;
             try
@@ -55,10 +69,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TCommand>(ClaimsPrincipal user, object cmd)
+        private Task<CommandResult> ExecuteCommand<TCommand>(
+            TAppContext context,
+            object cmd)
             where TCommand : IRemoteCommand
         {
-            return commandExecutor.RunAsync(user, (TCommand)cmd);
+            return commandExecutor.RunAsync(context, (TCommand)cmd);
         }
     }
 }

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
-    <PackageReference Include="System.Security.Claims" Version="$(NetCoreLib)" />
   </ItemGroup>
 
 </Project>

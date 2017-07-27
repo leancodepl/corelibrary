@@ -11,17 +11,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 {
     public sealed class RemoteCQRSMiddleware
     {
-        private readonly TypesCatalog catalog;
-
-        public RemoteCQRSMiddleware(RequestDelegate next, TypesCatalog catalog)
-        {
-            this.catalog = catalog;
-        }
+        public RemoteCQRSMiddleware(RequestDelegate next)
+        { }
 
         public async Task Invoke(HttpContext context)
         {
             var request = context.Request;
-            var user = context.User;
             ActionResult actionResult;
             if (request.Method != HttpMethods.Post)
             {
@@ -29,15 +24,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
-                var index = context.RequestServices.GetService<IIndex<TypesCatalog, RemoteQueryHandler>>();
-                var queryHandler = index[catalog];
-                actionResult = await queryHandler.ExecuteAsync(user, request).ConfigureAwait(false);
+                var queryHandler = context.RequestServices.GetService<IRemoteQueryHandler>();
+                actionResult = await queryHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
-                var index = context.RequestServices.GetService<IIndex<TypesCatalog, RemoteCommandHandler>>();
-                var commandHandler = index[catalog];
-                actionResult = await commandHandler.ExecuteAsync(user, request).ConfigureAwait(false);
+                var commandHandler = context.RequestServices.GetService<IRemoteCommandHandler>();
+                actionResult = await commandHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else
             {
@@ -50,19 +43,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
     public static class RemoteCQRSMiddlewareExtensions
     {
-        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, TypesCatalog catalog)
+        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware>(catalog);
-        }
-
-        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, params Assembly[] assemblies)
-        {
-            return builder.UseRemoteCQRS(new TypesCatalog(assemblies));
-        }
-
-        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder, params Type[] types)
-        {
-            return builder.UseRemoteCQRS(new TypesCatalog(types));
+            return builder.UseMiddleware<RemoteCQRSMiddleware>();
         }
     }
 }

@@ -5,29 +5,27 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
-    using Executor = PipelineExecutor<ExecutionContext, IQuery, object>;
-
-    public class QueryExecutor : IQueryExecutor
+    public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
+        where TAppContext : IPipelineContext
     {
-        private readonly Executor executor;
+        private readonly PipelineExecutor<TAppContext, IQuery, object> executor;
 
         public QueryExecutor(
             IPipelineFactory factory,
-            QueryBuilder config)
+            QueryBuilder<TAppContext> config)
         {
-            var cfg = Pipeline.Build<ExecutionContext, IQuery, object>()
-                .Configure(new ConfigPipeline<ExecutionContext, IQuery, object>(config))
-                .Finalize<QueryFinalizer<ExecutionContext>>();
+            var cfg = Pipeline.Build<TAppContext, IQuery, object>()
+                .Configure(new ConfigPipeline<TAppContext, IQuery, object>(config))
+                .Finalize<QueryFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
         }
 
         public async Task<TResult> GetAsync<TResult>(
-            ClaimsPrincipal user, IQuery<TResult> query)
+            TAppContext context, IQuery<TResult> query)
         {
-            var ctx = new ExecutionContext { User = user };
             var res = await executor
-                .ExecuteAsync(ctx, query)
+                .ExecuteAsync(context, query)
                 .ConfigureAwait(false);
             return (TResult)res;
         }

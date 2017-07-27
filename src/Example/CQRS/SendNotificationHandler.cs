@@ -5,7 +5,7 @@ using LeanCode.PushNotifications;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SendNotificationHandler : ICommandHandler<SendNotification>
+    public class SendNotificationHandler : ICommandHandler<object, SendNotification>
     {
         private readonly IPushNotifications<Guid> pns;
 
@@ -14,10 +14,12 @@ namespace LeanCode.Example.CQRS
             this.pns = pns;
         }
 
-        public Task ExecuteAsync(SendNotification command)
+        public Task ExecuteAsync(object _, SendNotification command)
         {
-            return
-                pns.Send(command.UserId, DeviceType.Android, new PushNotification("Notification", command.Content, null));
+            return pns.Send(
+                command.UserId, DeviceType.Android,
+                new PushNotification("Notification", command.Content, null)
+            );
         }
     }
 }

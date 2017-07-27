@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Xunit;
@@ -59,6 +60,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke();
             Assert.Equal("0", content);
+        }
+
+        [Fact]
+        public async Task Uses_the_translator_to_create_app_context()
+        {
+            var user = new ClaimsPrincipal();
+
+            await Invoke(user: user);
+
+            Assert.NotNull(query.LastContext);
+            Assert.Equal(user, query.LastContext.User);
         }
     }
 

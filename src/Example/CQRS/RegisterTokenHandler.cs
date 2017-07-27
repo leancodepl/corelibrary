@@ -5,7 +5,7 @@ using LeanCode.PushNotifications;
 
 namespace LeanCode.Example.CQRS
 {
-    public class RegisterTokenHandler : ICommandHandler<RegisterToken>
+    public class RegisterTokenHandler : ICommandHandler<object, RegisterToken>
     {
         private readonly IPushNotificationTokenStore<Guid> store;
 
@@ -14,7 +14,7 @@ namespace LeanCode.Example.CQRS
             this.store = store;
         }
 
-        public Task ExecuteAsync(RegisterToken command)
+        public Task ExecuteAsync(object _, RegisterToken command)
         {
             return store.UpdateOrAddToken(command.UserId, DeviceType.Android, command.Token);
         }

@@ -5,29 +5,27 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
-    using Executor = PipelineExecutor<ExecutionContext, ICommand, CommandResult>;
-
-    public class CommandExecutor : ICommandExecutor
+    public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
+        where TAppContext : IPipelineContext
     {
-        private readonly Executor executor;
+        private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
 
         public CommandExecutor(
             IPipelineFactory factory,
-            CommandBuilder config)
+            CommandBuilder<TAppContext> config)
         {
-            var cfg = Pipeline.Build<ExecutionContext, ICommand, CommandResult>()
-                .Configure(new ConfigPipeline<ExecutionContext, ICommand, CommandResult>(config))
-                .Finalize<CommandFinalizer<ExecutionContext>>();
+            var cfg = Pipeline.Build<TAppContext, ICommand, CommandResult>()
+                .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
+                .Finalize<CommandFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
         }
 
         public Task<CommandResult> RunAsync<TCommand>(
-            ClaimsPrincipal user, TCommand command)
+            TAppContext context, TCommand command)
             where TCommand : ICommand
         {
-            var ctx = new ExecutionContext { User = user };
-            return executor.ExecuteAsync(ctx, command);
+            return executor.ExecuteAsync(context, command);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LeanCode.Example.CQRS
         }
     }
 
-    public class SampleCommandHandler : ICommandHandler<SampleCommand>
+    public class SampleCommandHandler : ICommandHandler<object, SampleCommand>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SampleCommandHandler>();
 
@@ -26,7 +26,7 @@ namespace LeanCode.Example.CQRS
             this.scope = scope;
         }
 
-        public Task ExecuteAsync(SampleCommand command)
+        public Task ExecuteAsync(object _, SampleCommand command)
         {
             logger.Fatal("Tag: {Tag}, Hash: {Hash}, This: {This}", scope.Tag, scope.GetHashCode(), this.GetHashCode());
             logger.Information("Name: {Name}", command.Name);

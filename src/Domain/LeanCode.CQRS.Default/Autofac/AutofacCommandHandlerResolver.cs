@@ -9,11 +9,9 @@ namespace LeanCode.CQRS.Default.Autofac
 {
     class AutofacCommandHandlerResolver : ICommandHandlerResolver
     {
-        private static readonly Type HandlerBase = typeof(ICommandHandler<>);
-        private static readonly Type HandlerWrapperBase = typeof(CommandHandlerWrapper<>);
-
-        private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
-            new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
+        private static readonly Type HandlerBase = typeof(ICommandHandler<,>);
+        private static readonly Type HandlerWrapperBase = typeof(CommandHandlerWrapper<,>);
+        private static readonly TypesCache typesCache = new TypesCache(HandlerBase, HandlerWrapperBase);
 
         private readonly IComponentContext componentContext;
 
@@ -22,23 +20,18 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICommandHandlerWrapper FindCommandHandler(Type commandType)
+        public ICommandHandlerWrapper FindCommandHandler(Type contextType, Type commandType)
         {
-            var cached = typesCache.GetOrAdd(commandType, _ =>
+            var cached = typesCache.Get(contextType, commandType);
+            if (componentContext.TryResolve(cached.HandlerType, out var handler))
             {
-                var queryHandlerType = HandlerBase.MakeGenericType(commandType);
-                var wrappedHandlerType = HandlerWrapperBase.MakeGenericType(commandType);
-                var ctor = wrappedHandlerType.GetConstructors()[0];
-                return Tuple.Create(queryHandlerType, ctor);
-            });
-
-            componentContext.TryResolve(cached.Item1, out var handler);
-
-            if (handler == null)
+                var wrapper = cached.Constructor.Invoke(new[] { handler });
+                return (ICommandHandlerWrapper)wrapper;
+            }
+            else
             {
                 return null;
             }
-            return (ICommandHandlerWrapper)cached.Item2.Invoke(new[] { handler });
         }
     }
 }

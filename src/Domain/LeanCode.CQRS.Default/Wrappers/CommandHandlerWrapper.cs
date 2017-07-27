@@ -3,19 +3,19 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class CommandHandlerWrapper<TCommand> : ICommandHandlerWrapper
+    class CommandHandlerWrapper<TContext, TCommand> : ICommandHandlerWrapper
         where TCommand : ICommand
     {
-        private readonly ICommandHandler<TCommand> handler;
+        private readonly ICommandHandler<TContext, TCommand> handler;
 
-        public CommandHandlerWrapper(ICommandHandler<TCommand> handler)
+        public CommandHandlerWrapper(ICommandHandler<TContext, TCommand> handler)
         {
             this.handler = handler;
         }
 
-        public Task ExecuteAsync(ICommand command)
+        public Task ExecuteAsync(object context, ICommand command)
         {
-            return handler.ExecuteAsync((TCommand)command);
+            return handler.ExecuteAsync((TContext)context, (TCommand)command);
         }
     }
 }
