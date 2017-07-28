@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Wrappers

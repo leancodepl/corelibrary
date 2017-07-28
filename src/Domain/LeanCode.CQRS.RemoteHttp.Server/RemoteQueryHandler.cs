@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;

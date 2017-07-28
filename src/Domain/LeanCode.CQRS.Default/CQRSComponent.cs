@@ -2,7 +2,6 @@ using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
 using LeanCode.CQRS.Cache;
-using LeanCode.CQRS.Default.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;

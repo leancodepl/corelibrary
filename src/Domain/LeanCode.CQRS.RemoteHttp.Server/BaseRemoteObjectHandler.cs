@@ -1,12 +1,10 @@
 using System;
 using System.IO;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using Serilog;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {

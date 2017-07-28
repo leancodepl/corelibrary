@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Reflection;
 using Autofac;
 using LeanCode.CQRS.Default.Wrappers;
 using LeanCode.CQRS.Validation;

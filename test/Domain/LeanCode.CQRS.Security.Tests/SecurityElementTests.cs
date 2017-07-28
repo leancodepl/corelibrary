@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Security;
@@ -33,26 +34,29 @@ namespace LeanCode.CQRS.Default.Tests.Security
         private void SetUpFirstAuthorizer(bool isPositive)
         {
             firstAuthorizer = Substitute.For<IFirstAuthorizer>();
+            firstAuthorizer.UnderlyingAuthorizer.Returns(firstAuthorizer.GetType());
             firstAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(
-                context.GetType(), typeof(IFirstAuthorizer), typeof(object)).Returns(firstAuthorizer);
+                context.GetType(), typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
         }
 
         private void SetUpSecondAuthorizer(bool isPositive)
         {
             secondAuthorizer = Substitute.For<ISecondAuthorizer>();
+            secondAuthorizer.UnderlyingAuthorizer.Returns(secondAuthorizer.GetType());
             secondAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
-            authorizerResolver.FindAuthorizer(context.GetType(), typeof(ISecondAuthorizer), typeof(object)).Returns(secondAuthorizer);
+            authorizerResolver.FindAuthorizer(context.GetType(), typeof(ISecondAuthorizer), Arg.Any<Type>()).Returns(secondAuthorizer);
         }
 
         private void SetUpDerivedAuthorizer(bool isPositive)
         {
             derivedAuthorizer = Substitute.For<IDerivedAuthorizer>();
+            derivedAuthorizer.UnderlyingAuthorizer.Returns(derivedAuthorizer.GetType());
             derivedAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
-            authorizerResolver.FindAuthorizer(context.GetType(), typeof(IDerivedAuthorizer), typeof(object)).Returns(derivedAuthorizer);
+            authorizerResolver.FindAuthorizer(context.GetType(), typeof(IDerivedAuthorizer), Arg.Any<Type>()).Returns(derivedAuthorizer);
         }
 
         private Task Authorize(object obj)

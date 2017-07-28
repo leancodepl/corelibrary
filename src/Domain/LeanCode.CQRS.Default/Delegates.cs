@@ -1,4 +1,3 @@
-using LeanCode.CQRS.Default.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default

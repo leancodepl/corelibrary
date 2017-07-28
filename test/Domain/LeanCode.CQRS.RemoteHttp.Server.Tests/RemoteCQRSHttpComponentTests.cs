@@ -1,6 +1,4 @@
-using System;
 using Autofac;
-using Autofac.Features.Indexed;
 using LeanCode.Components;
 using Xunit;
 
