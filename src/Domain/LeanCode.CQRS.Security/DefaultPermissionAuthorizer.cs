@@ -13,7 +13,7 @@ namespace LeanCode.CQRS.Security
             this.registry = registry;
         }
 
-        protected override Task<bool> RealCheckIfAuthorized(
+        protected override Task<bool> CheckIfAuthorized(
             ISecurityContext context, object obj, string[] permissions = null)
         {
             var user = context.User;
