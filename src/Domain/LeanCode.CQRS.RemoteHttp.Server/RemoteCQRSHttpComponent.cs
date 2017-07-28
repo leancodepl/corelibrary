@@ -30,7 +30,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public static RemoteCQRSHttpComponent<TAppContext> Create<TAppContext>(
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
-            where TAppContext : ISecurityContext, new()
         {
             return new RemoteCQRSHttpComponent<TAppContext>(catalog, contextTranslator);
         }
