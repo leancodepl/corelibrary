@@ -8,9 +8,12 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 {
     public class HttpQueriesExecutor : IRemoteQueryExecutor, IDisposable
     {
+        private readonly JsonSerializerSettings serializerSettings;
         private readonly HttpClient client;
 
-        public HttpQueriesExecutor(Uri baseAddress)
+        public HttpQueriesExecutor(
+            Uri baseAddress,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient
             {
@@ -18,7 +21,10 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             };
         }
 
-        public HttpQueriesExecutor(Uri baseAddress, HttpMessageHandler handler)
+        public HttpQueriesExecutor(
+            Uri baseAddress,
+            HttpMessageHandler handler,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient(handler)
             {
@@ -43,8 +49,9 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                 {
                     response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 
-                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<TResult>(responseContent);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<TResult>(
+                        responseContent, serializerSettings);
                 }
             }
         }

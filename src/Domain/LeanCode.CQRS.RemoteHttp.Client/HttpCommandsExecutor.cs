@@ -8,22 +8,30 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 {
     public class HttpCommandsExecutor : IRemoteCommandExecutor, IDisposable
     {
+        private readonly JsonSerializerSettings serializerSettings;
         private readonly HttpClient client;
 
-        public HttpCommandsExecutor(Uri baseAddress)
+        public HttpCommandsExecutor(
+            Uri baseAddress,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
-        public HttpCommandsExecutor(Uri baseAddress, HttpMessageHandler handler)
+        public HttpCommandsExecutor(
+            Uri baseAddress,
+            HttpMessageHandler handler,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient(handler)
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
         public HttpCommandsExecutor(Uri baseAddress, HttpMessageHandler handler, bool disposeHandler)
@@ -44,8 +52,9 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                     // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
                     if ((int)response.StatusCode == 422)
                     {
-                        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        return JsonConvert.DeserializeObject<CommandResult>(responseContent);
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<CommandResult>(
+                            responseContent, serializerSettings);
                     }
                     response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
 
