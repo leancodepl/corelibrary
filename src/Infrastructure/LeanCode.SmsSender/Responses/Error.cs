@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace LeanCode.SmsSender.SmsApi.Responses
+namespace LeanCode.SmsSender.Responses
 {
     public class Error
     {

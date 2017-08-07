@@ -12,12 +12,29 @@ namespace LeanCode.SmsSender
         public IModule AutofacModule { get; }
         public Profile MapperProfile { get; }
 
-        public SmsSenderComponent(IConfigurationRoot configuration)
+        [Obsolete("Use WithConfiguration/WithoutConfiguration factory methods.")]
+        public SmsSenderComponent(IConfigurationRoot config)
+            :this(config, true)
+        { }
+
+        private SmsSenderComponent(IConfiguration config, bool useConfig)
         {
-            AutofacModule = new SmsSenderModule(configuration);
+            if(useConfig && config == null)
+            {
+                throw new ArgumentNullException("Provide config when using configuration.", nameof(config));
+            }
+            else if(!useConfig && config != null)
+            {
+                throw new ArgumentNullException("Do not provide config, when config is not used.", nameof(config));
+            }
+            AutofacModule = new SmsSenderModule(config);
         }
+  
         public void ConfigureServices(IServiceCollection services)
         { }
+
+        public static SmsSenderComponent WithoutConfiguration() => new SmsSenderComponent(null, false);
+        public static SmsSenderComponent WithConfiguration(IConfiguration config) => new SmsSenderComponent(config, true);
 
     }
 }

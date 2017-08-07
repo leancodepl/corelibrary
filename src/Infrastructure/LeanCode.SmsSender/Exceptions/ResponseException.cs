@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.SmsSender.SmsApi.Exceptions
+namespace LeanCode.SmsSender.Exceptions
 {
     public abstract class ResponseException : Exception
     {

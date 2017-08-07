@@ -1,6 +1,5 @@
 using Autofac;
 using Microsoft.Extensions.Configuration;
-using LeanCode.SmsSender.SmsApi;
 using LeanCode.Configuration;
 
 namespace LeanCode.SmsSender
@@ -16,9 +15,12 @@ namespace LeanCode.SmsSender
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<SmsApiConfiguration>(configuration);
+            if (configuration != null)
+            {
+                builder.ConfigSection<SmsSenderConfiguration>(configuration);
+            }
 
-            builder.RegisterType<SmsApiSender>().As<ISmsSender>();
+            builder.RegisterType<SmsSenderClient>().As<ISmsSender>().SingleInstance();
         }
     }
 }

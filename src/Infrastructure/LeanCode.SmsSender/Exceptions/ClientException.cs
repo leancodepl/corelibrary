@@ -1,4 +1,4 @@
-namespace LeanCode.SmsSender.SmsApi.Exceptions
+namespace LeanCode.SmsSender.Exceptions
 {
     public class ClientException : ResponseException
     {
