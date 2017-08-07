@@ -32,12 +32,17 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             };
         }
 
-        public HttpQueriesExecutor(Uri baseAddress, HttpMessageHandler handler, bool disposeHandler)
+        public HttpQueriesExecutor(
+            Uri baseAddress,
+            HttpMessageHandler handler,
+            bool disposeHandler,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient(handler, disposeHandler)
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
         public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)

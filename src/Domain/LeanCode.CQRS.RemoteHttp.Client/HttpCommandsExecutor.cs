@@ -34,12 +34,17 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             serializerSettings = settings;
         }
 
-        public HttpCommandsExecutor(Uri baseAddress, HttpMessageHandler handler, bool disposeHandler)
+        public HttpCommandsExecutor(
+            Uri baseAddress,
+            HttpMessageHandler handler,
+            bool disposeHandler,
+            JsonSerializerSettings settings = null)
         {
             client = new HttpClient(handler, disposeHandler)
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
         public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
