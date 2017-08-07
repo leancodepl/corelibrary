@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>  
+    <AssemblyName>LeanCode.SmsSender</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+  <Import Project="../../targets/Common.targets" />  
+  <ItemGroup>
+    <PackageReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+  </ItemGroup>  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
+  </ItemGroup>
+</Project>
