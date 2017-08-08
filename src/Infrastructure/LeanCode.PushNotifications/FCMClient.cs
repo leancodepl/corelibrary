@@ -29,10 +29,6 @@ namespace LeanCode.PushNotifications
             client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + configuration.ApiKey);
         }
 
-        public FCMClient(IOptions<FCMConfiguration> configuration)
-            : this(configuration.Value)
-        { }
-
         public async Task<FCMResult> Send(FCMNotification notification)
         {
             var stringified = JsonConvert.SerializeObject(notification, Settings);
