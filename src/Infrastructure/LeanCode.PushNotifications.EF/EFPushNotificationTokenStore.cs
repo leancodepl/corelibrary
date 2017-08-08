@@ -22,8 +22,7 @@ namespace LeanCode.PushNotifications.EF
         {
             var entities = await dbSet
                 .Where(e => e.UserId == userId && e.DeviceType == deviceType)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
 
             return entities
                 .Select(e => new PushNotificationToken<Guid>(e.Id, e.UserId, e.DeviceType, e.Token))
@@ -34,8 +33,7 @@ namespace LeanCode.PushNotifications.EF
         {
             var entities = await dbSet
                 .Where(e => e.UserId == userId)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
 
             return entities
                 .Select(e => new PushNotificationToken<Guid>(e.Id, e.UserId, e.DeviceType, e.Token))
@@ -44,13 +42,13 @@ namespace LeanCode.PushNotifications.EF
 
         public async Task RemoveInvalidToken(PushNotificationToken<Guid> token)
         {
-            await RemoveToken(token.Id).ConfigureAwait(false);
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await RemoveToken(token.Id);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateOrAddToken(Guid userId, DeviceType deviceType, string newToken)
         {
-            var existing = await LoadExisting(userId, deviceType, newToken).ConfigureAwait(false);
+            var existing = await LoadExisting(userId, deviceType, newToken);
             if (existing == null)
             {
                 dbSet.Add(new PushNotificationTokenEntity
@@ -62,18 +60,18 @@ namespace LeanCode.PushNotifications.EF
                     DateCreated = Time.Now
                 });
             }
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateToken(PushNotificationToken<Guid> token, string newToken)
         {
-            await RemoveToken(token.Id).ConfigureAwait(false);
-            await UpdateOrAddToken(token.UserId, token.DeviceType, newToken).ConfigureAwait(false);
+            await RemoveToken(token.Id);
+            await UpdateOrAddToken(token.UserId, token.DeviceType, newToken);
         }
 
         private async Task RemoveToken(Guid tokenId)
         {
-            var entity = await dbSet.FindAsync(tokenId).ConfigureAwait(false);
+            var entity = await dbSet.FindAsync(tokenId);
             dbSet.Remove(entity);
         }
 

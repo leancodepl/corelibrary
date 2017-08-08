@@ -30,6 +30,5 @@ namespace LeanCode.SmsSender
 
         public static SmsSenderComponent WithoutConfiguration() => new SmsSenderComponent(null, false);
         public static SmsSenderComponent WithConfiguration(IConfiguration config) => new SmsSenderComponent(config, true);
-
     }
 }

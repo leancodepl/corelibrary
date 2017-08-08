@@ -69,7 +69,7 @@ namespace LeanCode.SmsSender
             client.Dispose();
         }
 
-        public static void HandleResponse(string response)
+        private static void HandleResponse(string response)
         {
             var parsedResponse = JObject.Parse(response);
             if (parsedResponse.Property("error") != null)
@@ -78,7 +78,6 @@ namespace LeanCode.SmsSender
                 {
                     var errorCode = parsedResponse.Value<int>("error");
                     var errorMessage = parsedResponse.Value<string>("message");
-
 
                     if (isClientError(errorCode))
                     {
@@ -107,5 +106,4 @@ namespace LeanCode.SmsSender
             return hostErrors.Contains(code);
         }
     }
-
 }

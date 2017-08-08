@@ -15,10 +15,11 @@ namespace LeanCode.PushNotifications.EF
         {
             builder.Entity<PushNotificationTokenEntity>(c =>
             {
-                c.HasKey(e => e.Id);
-                c.HasIndex(e => new { e.UserId, e.DeviceType });
-                c.HasIndex(e => new { e.Token });
-                c.Property(e => e.Token).IsRequired(true).HasMaxLength(1024);
+                c.HasKey(e => e.Id).ForSqlServerIsClustered(false);
+                c.HasIndex(e => new { e.UserId, e.DeviceType }).ForSqlServerIsClustered(true);
+                c.HasIndex(e => new { e.UserId, e.DeviceType, e.Token });
+
+                c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
             });
         }
     }
