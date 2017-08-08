@@ -16,7 +16,7 @@ namespace LeanCode.SmsSender
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsSenderClient>();
         private readonly HttpClient client;
-        private readonly SmsSenderConfiguration smsSenderConfiguration;
+        private readonly SmsApiConfiguration smsApiConfiguration;
         private readonly Dictionary<string, string> parameters;
         private static int[] clientErrors = {
                 101,  // Invalid or no authorization data
@@ -27,28 +27,28 @@ namespace LeanCode.SmsSender
                 1000, // Action is available only for main user
                 1001  // Invalid action
             };
-        private static int[] hosErrors = {
+        private static int[] hostErrors = {
                 8,   // Error in request
                 666, // Internal system error
                 999, // Internal system error
                 201  // Internal system error
             };
 
-        public SmsSenderClient(SmsSenderConfiguration smsSenderConfiguration)
+        public SmsSenderClient(SmsApiConfiguration smsApiConfiguration)
         {
-            this.smsSenderConfiguration = smsSenderConfiguration;
+            this.smsApiConfiguration = smsApiConfiguration;
 
             parameters = new Dictionary<string, string>();
 
-            parameters["username"] = smsSenderConfiguration.Login;
-            parameters["password"] = smsSenderConfiguration.Password;
-            parameters["from"] = smsSenderConfiguration.From;
+            parameters["username"] = smsApiConfiguration.Login;
+            parameters["password"] = smsApiConfiguration.Password;
+            parameters["from"] = smsApiConfiguration.From;
             parameters["format"] = "json";
             parameters["encoding"] = "UTF-8";
 
-            if (smsSenderConfiguration.TestMode)
+            if (smsApiConfiguration.TestMode)
                 parameters["test"] = "1";
-            if (smsSenderConfiguration.FastMode)
+            if (smsApiConfiguration.FastMode)
                 parameters["fast"] = "1";
 
             client = new HttpClient();
@@ -75,10 +75,8 @@ namespace LeanCode.SmsSender
         public async Task Send()
         {
             var body = new FormUrlEncodedContent(parameters);
-
             var response = await client.PostAsync(smsSenderUrl, body);
             var content = await response.Content.ReadAsStringAsync();
-
             HandleResponse(content);
         }
 
@@ -130,7 +128,7 @@ namespace LeanCode.SmsSender
 
         private static bool isHostError(int code)
         {
-            return hosErrors.Contains(code);
+            return hostErrors.Contains(code);
         }
     }
 

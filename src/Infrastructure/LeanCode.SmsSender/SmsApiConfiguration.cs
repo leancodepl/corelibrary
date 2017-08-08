@@ -1,6 +1,6 @@
 namespace LeanCode.SmsSender
 {
-    public class SmsSenderConfiguration
+    public class SmsApiConfiguration
     {
         public string Login { get; set; }
         public string Password { get; set; }

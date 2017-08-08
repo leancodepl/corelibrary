@@ -17,7 +17,7 @@ namespace LeanCode.SmsSender
         {
             if (configuration != null)
             {
-                builder.ConfigSection<SmsSenderConfiguration>(configuration);
+                builder.ConfigSection<SmsApiConfiguration>(configuration);
             }
 
             builder.RegisterType<SmsSenderClient>().As<ISmsSender>().SingleInstance();

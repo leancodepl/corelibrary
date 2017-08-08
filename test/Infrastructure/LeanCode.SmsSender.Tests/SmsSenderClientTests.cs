@@ -5,7 +5,7 @@ namespace LeanCode.SmsSender.Tests
 {
     public class SmsSenderClientTests
     {
-        private static readonly SmsSenderConfiguration Config = new SmsSenderConfiguration
+        private static readonly SmsApiConfiguration Config = new SmsApiConfiguration
         {
             Login = "",
             Password = "",
@@ -22,14 +22,14 @@ namespace LeanCode.SmsSender.Tests
         }
 
 #pragma warning disable xUnit1004
-        [Fact(Skip = "SmsApi credentials required")] 
+        [Fact(Skip = "SmsApi credentials required")]
         public async Task Sends_sms_correctly()
         {
             var message = "SmsSender works fine";
             var phoneNumber = "";
-            await client.Send(message,phoneNumber);
+            await client.Send(message, phoneNumber);
         }
 #pragma warning restore xUnit1004
     }
-    
+
 }
