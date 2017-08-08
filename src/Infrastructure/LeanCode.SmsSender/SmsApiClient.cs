@@ -10,14 +10,13 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.SmsSender
 {
-    public class SmsSenderClient : ISmsSender, IDisposable
+    public class SmsApiClient : ISmsSender, IDisposable
     {
         private const string smsSenderUrl = "https://api.smsapi.pl/sms.do";
 
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsSenderClient>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
         private readonly HttpClient client;
         private readonly SmsApiConfiguration smsApiConfiguration;
-        private readonly Dictionary<string, string> parameters;
         private static int[] clientErrors = {
                 101,  // Invalid or no authorization data
                 102,  // Invalid login or password
@@ -34,60 +33,35 @@ namespace LeanCode.SmsSender
                 201  // Internal system error
             };
 
-        public SmsSenderClient(SmsApiConfiguration smsApiConfiguration)
+        public SmsApiClient(SmsApiConfiguration smsApiConfiguration)
         {
             this.smsApiConfiguration = smsApiConfiguration;
-
-            parameters = new Dictionary<string, string>();
-
-            parameters["username"] = smsApiConfiguration.Login;
-            parameters["password"] = smsApiConfiguration.Password;
-            parameters["from"] = smsApiConfiguration.From;
-            parameters["format"] = "json";
-            parameters["encoding"] = "UTF-8";
-
-            if (smsApiConfiguration.TestMode)
-                parameters["test"] = "1";
-            if (smsApiConfiguration.FastMode)
-                parameters["fast"] = "1";
-
             client = new HttpClient();
-        }
-
-        public SmsSenderClient Message(string message)
-        {
-            parameters["message"] = message;
-            return this;
-        }
-
-        public SmsSenderClient To(string phoneNumber)
-        {
-            parameters["to"] = phoneNumber;
-            return this;
-        }
-
-        public SmsSenderClient From(string sender)
-        {
-            parameters["from"] = sender;
-            return this;
-        }
-
-        public async Task Send()
-        {
-            var body = new FormUrlEncodedContent(parameters);
-            var response = await client.PostAsync(smsSenderUrl, body);
-            var content = await response.Content.ReadAsStringAsync();
-            HandleResponse(content);
         }
 
         public async Task Send(string message, string phoneNumber)
         {
             logger.Verbose("Sending sms to {PhoneNumber} with content {Message}", phoneNumber, message);
 
-            await this
-                .To(phoneNumber)
-                .Message(message)
-                .Send();
+            var parameters = new Dictionary<string, string>();
+
+            parameters["username"] = smsApiConfiguration.Login;
+            parameters["password"] = smsApiConfiguration.Password;
+            parameters["from"] = smsApiConfiguration.From;
+            parameters["format"] = "json";
+            parameters["encoding"] = "UTF-8";
+            parameters["message"] = message;
+            parameters["to"] = phoneNumber;
+
+            if (smsApiConfiguration.TestMode)
+                parameters["test"] = "1";
+            if (smsApiConfiguration.FastMode)
+                parameters["fast"] = "1";
+
+            var body = new FormUrlEncodedContent(parameters);
+            var response = await client.PostAsync(smsSenderUrl, body);
+            var content = await response.Content.ReadAsStringAsync();
+            HandleResponse(content);
         }
 
         public void Dispose()
@@ -102,17 +76,19 @@ namespace LeanCode.SmsSender
             {
                 try
                 {
-                    Responses.Error error = JsonConvert.DeserializeObject<Responses.Error>(response);
+                    var errorCode = parsedResponse.Value<int>("error");
+                    var errorMessage = parsedResponse.Value<string>("message");
 
-                    if (isClientError(error.Code))
+
+                    if (isClientError(errorCode))
                     {
-                        throw new ClientException(error.Code, error.Message);
+                        throw new ClientException(errorCode, errorMessage);
                     }
-                    if (isHostError(error.Code))
+                    if (isHostError(errorCode))
                     {
-                        throw new HostException(error.Code, error.Message);
+                        throw new HostException(errorCode, errorMessage);
                     }
-                    throw new ActionException(error.Code, error.Message);
+                    throw new ActionException(errorCode, errorMessage);
                 }
                 catch (JsonSerializationException)
                 {

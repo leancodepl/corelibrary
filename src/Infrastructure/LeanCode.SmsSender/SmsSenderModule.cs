@@ -20,7 +20,7 @@ namespace LeanCode.SmsSender
                 builder.ConfigSection<SmsApiConfiguration>(configuration);
             }
 
-            builder.RegisterType<SmsSenderClient>().As<ISmsSender>().SingleInstance();
+            builder.RegisterType<SmsApiClient>().As<ISmsSender>().SingleInstance();
         }
     }
 }

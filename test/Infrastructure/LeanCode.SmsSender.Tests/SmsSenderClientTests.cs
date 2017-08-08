@@ -14,11 +14,11 @@ namespace LeanCode.SmsSender.Tests
             TestMode = false,
         };
 
-        private readonly SmsSenderClient client;
+        private readonly SmsApiClient client;
 
         public SmsSenderClientTests()
         {
-            this.client = new SmsSenderClient(Config);
+            this.client = new SmsApiClient(Config);
         }
 
 #pragma warning disable xUnit1004
