@@ -2,12 +2,13 @@ using Autofac;
 using Autofac.Features.Variance;
 using LeanCode.Components;
 using LeanCode.CQRS.Cache;
+using LeanCode.CQRS.Default.Autofac;
+using LeanCode.CQRS.Default.Execution;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.CQRS.Default.Autofac;
-using LeanCode.CQRS.Default.Execution;
 using LeanCode.DomainModels.EventsExecution;
+using LeanCode.DomainModels.EventsExecution.Simple;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
 
@@ -66,6 +67,9 @@ namespace LeanCode.CQRS.Default
                 .OnActivated(a => DomainModels.Model.DomainEvents.SetInterceptor(a.Instance))
                 .SingleInstance();
             builder.RegisterType<RetryPolicies>()
+                .AsSelf()
+                .SingleInstance();
+            builder.RegisterType<SimpleEventsExecutor>()
                 .AsSelf()
                 .SingleInstance();
 
