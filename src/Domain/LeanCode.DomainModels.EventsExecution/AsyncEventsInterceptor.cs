@@ -6,34 +6,44 @@ using LeanCode.DomainModels.Model;
 namespace LeanCode.DomainModels.EventsExecution
 {
     public sealed class AsyncEventsInterceptor
-        : IDomainEventInterceptor
     {
-        private readonly AsyncLocal<ConcurrentQueue<IDomainEvent>> storage
-            = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();
+        private static readonly Interceptor interceptor = new Interceptor();
 
-        void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
+        public void Configure()
         {
-            if (storage.Value == null)
-            {
-                throw new InvalidOperationException(
-                    "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
-            }
-
-            storage.Value.Enqueue(domainEvent);
+            DomainEvents.SetInterceptor(interceptor);
         }
 
         public void Prepare()
         {
-            storage.Value = new ConcurrentQueue<IDomainEvent>();
+            interceptor.storage.Value = new ConcurrentQueue<IDomainEvent>();
         }
 
         public ConcurrentQueue<IDomainEvent> CaptureQueue()
         {
-            var result = storage.Value;
-            storage.Value = null;
+            var result = interceptor.storage.Value;
+            interceptor.storage.Value = null;
             return result;
         }
 
-        public ConcurrentQueue<IDomainEvent> PeekQueue() => storage.Value;
+        public ConcurrentQueue<IDomainEvent> PeekQueue() => interceptor.storage.Value;
+
+        private sealed class Interceptor
+            : IDomainEventInterceptor
+        {
+            public readonly AsyncLocal<ConcurrentQueue<IDomainEvent>> storage
+                = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();
+
+            void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
+            {
+                if (storage.Value == null)
+                {
+                    throw new InvalidOperationException(
+                        "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
+                }
+
+                storage.Value.Enqueue(domainEvent);
+            }
+        }
     }
 }

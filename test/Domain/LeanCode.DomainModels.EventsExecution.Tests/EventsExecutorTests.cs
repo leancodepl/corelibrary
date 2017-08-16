@@ -15,7 +15,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
 
         public EventsExecutorTests()
         {
-            DomainEvents.SetInterceptor(interceptor);
+            interceptor.Configure();
         }
 
         [Fact]

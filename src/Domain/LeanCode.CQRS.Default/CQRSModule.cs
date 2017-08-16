@@ -63,8 +63,8 @@ namespace LeanCode.CQRS.Default
             builder.RegisterType<DefaultPermissionAuthorizer>().AsSelf().AsImplementedInterfaces();
 
             builder.RegisterType<AsyncEventsInterceptor>()
-                .AsSelf().AsImplementedInterfaces()
-                .OnActivated(a => DomainModels.Model.DomainEvents.SetInterceptor(a.Instance))
+                .AsSelf()
+                .OnActivated(a => a.Instance.Configure())
                 .SingleInstance();
             builder.RegisterType<RetryPolicies>()
                 .AsSelf()
