@@ -4,7 +4,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.EventsExecution.Simple
 {
-    class SimpleFinalizer
+    public class SimpleFinalizer
         : IPipelineFinalizer<SimplePipelineContext, Func<Task>, Unit>
     {
         public async Task<Unit> ExecuteAsync(

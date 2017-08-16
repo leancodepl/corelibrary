@@ -72,6 +72,7 @@ namespace LeanCode.CQRS.Default
             builder.RegisterType<SimpleEventsExecutor>()
                 .AsSelf()
                 .SingleInstance();
+            builder.RegisterType<SimpleFinalizer>().AsSelf();
 
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
