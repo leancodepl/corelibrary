@@ -4,7 +4,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.EventsExecution.Simple
 {
-    public class SimpleEventsExecutor
+    public sealed class SimpleEventsExecutor
     {
         private readonly PipelineExecutor<SimplePipelineContext, Func<Task>, Unit> exec;
 

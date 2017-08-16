@@ -5,7 +5,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.EventsExecution.Simple
 {
-    class SimplePipelineContext : IEventsContext
+    public sealed class SimplePipelineContext : IEventsContext
     {
         public List<IDomainEvent> SavedEvents { get; set; }
         public List<(IDomainEvent Event, Type Handler)> ExecutedHandlers { get; set; }
