@@ -1,5 +1,6 @@
 using LeanCode.PushNotifications.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace LeanCode.Example
 {
@@ -14,6 +15,16 @@ namespace LeanCode.Example
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             PushNotificationTokenEntity.Configure(modelBuilder);
+        }
+    }
+
+    public class ExampleDbContextDesignFactory : IDesignTimeDbContextFactory<ExampleDbContext>
+    {
+        public ExampleDbContext CreateDbContext(string[] args)
+        {
+            var optsBuilder = new DbContextOptionsBuilder<ExampleDbContext>()
+                .UseSqlite("Data Source=example.db");
+            return new ExampleDbContext(optsBuilder.Options);
         }
     }
 }

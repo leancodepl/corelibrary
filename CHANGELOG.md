@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+Migrate to .NET Core 2
+## [0.2.0]
 Separated CQRS public interfaces/implementations
 Pipelines
 ## [0.1.0]

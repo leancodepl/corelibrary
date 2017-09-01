@@ -53,7 +53,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCoreVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(EFCoreVersion)" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCoreVersion)" />
 
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="$(SerilogSinksRollingFileVersion)" />
     <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterateVersion)" />

@@ -12,8 +12,9 @@ namespace LeanCode.Components.Startup
             where TStartup : class
         {
             return new WebHostBuilder()
-                .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup<TStartup>()
+                .UseKestrel()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var env = hostingContext.HostingEnvironment;
