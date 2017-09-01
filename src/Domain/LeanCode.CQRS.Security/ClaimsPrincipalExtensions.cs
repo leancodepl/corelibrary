@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace LeanCode.CQRS.Security
 {
-    static class ClaimsPrincipalExtensions
+    public static class ClaimsPrincipalExtensions
     {
         public static bool HasPermission(
             this ClaimsPrincipal claimsPrincipal,
@@ -14,7 +14,7 @@ namespace LeanCode.CQRS.Security
             {
                 if (claimsPrincipal.IsInRole(role.Name))
                 {
-                    if (role.Permissions.Any(role.Permissions.Contains))
+                    if (permissions.Any(role.Permissions.Contains))
                     {
                         return true;
                     }

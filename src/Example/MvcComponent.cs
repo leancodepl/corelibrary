@@ -2,6 +2,8 @@ using System;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
+using LeanCode.CQRS.Security;
+using LeanCode.Example.Security;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
 using LeanCode.PushNotifications;
@@ -25,6 +27,7 @@ namespace LeanCode.Example
             services.AddMvc();
 
             services.AddSingleton<IPipelineFactory, AutofacPipelineFactory>();
+            services.AddSingleton<IRoleRegistration, AppRoles>();
         }
     }
 }
