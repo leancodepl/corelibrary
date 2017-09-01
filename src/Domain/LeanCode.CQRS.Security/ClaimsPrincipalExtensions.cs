@@ -14,7 +14,7 @@ namespace LeanCode.CQRS.Security
             {
                 if (claimsPrincipal.IsInRole(role.Name))
                 {
-                    if (role.Permissions.Any(role.Permissions.Contains))
+                    if (permissions.Any(role.Permissions.Contains))
                     {
                         return true;
                     }
