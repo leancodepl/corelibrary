@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace LeanCode.CQRS.Security
 {
-    static class ClaimsPrincipalExtensions
+    public static class ClaimsPrincipalExtensions
     {
         public static bool HasPermission(
             this ClaimsPrincipal claimsPrincipal,
