@@ -20,7 +20,7 @@ namespace LeanCode.ViewRenderer.Razor
         public CompiledViewsCache(RazorViewRendererOptions opts)
         {
             locator = new ViewLocator(opts);
-            compiler = new ViewCompiler();
+            compiler = new ViewCompiler(locator);
         }
 
         public ValueTask<CompiledView> GetOrCompile(string viewName)
@@ -72,15 +72,15 @@ namespace LeanCode.ViewRenderer.Razor
 
         private async Task<CompiledView> Compile(string viewName)
         {
-            var viewLocation = locator.LocateView(viewName);
-            if (viewLocation == null)
+            var item = locator.GetItem(viewName);
+            if (!item.Exists)
             {
                 logger.Warning("Cannot locate view {ViewName}", viewName);
                 throw new ViewNotFoundException(viewName, "Cannot locate view.");
             }
 
-            logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, viewLocation);
-            return await compiler.Compile(viewLocation).ConfigureAwait(false);
+            logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item);
+            return await compiler.Compile(item).ConfigureAwait(false);
         }
     }
 }

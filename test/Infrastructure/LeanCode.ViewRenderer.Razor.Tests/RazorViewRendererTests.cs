@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Serilog;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests

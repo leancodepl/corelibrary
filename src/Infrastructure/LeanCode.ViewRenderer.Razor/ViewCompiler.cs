@@ -8,7 +8,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor;
-using Microsoft.AspNetCore.Razor.CodeGenerators;
+using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -31,16 +31,20 @@ namespace LeanCode.ViewRenderer.Razor
 
     class ViewCompiler
     {
+        private const string FilePreamble = @"@using System";
+
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ViewCompiler>();
 
         private static readonly List<PortableExecutableReference> References = new[]
         {
             Assembly.Load(new AssemblyName("mscorlib")),
-            Assembly.Load(new AssemblyName("System.Private.CoreLib")),
+            Assembly.Load(new AssemblyName("netstandard")),
             Assembly.Load(new AssemblyName("System.Runtime")),
+            Assembly.Load(new AssemblyName("System.Private.CoreLib")),
             Assembly.Load(new AssemblyName("System.Threading.Tasks")),
             Assembly.Load(new AssemblyName("System.ValueTuple")),
-            Assembly.Load(new AssemblyName("System.IO")),
+            Assembly.Load(new AssemblyName("System.Linq.Expressions")),
+
             Assembly.Load(new AssemblyName("Microsoft.CSharp")),
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
             typeof(ViewCompiler).GetTypeInfo().Assembly,
@@ -50,25 +54,34 @@ namespace LeanCode.ViewRenderer.Razor
         .Select(a => MetadataReference.CreateFromFile(a.Location))
         .ToList();
 
-        private static CSharpCompilationOptions Options = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary);
+        private static CSharpCompilationOptions Options
+            = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary);
 
         private readonly RazorTemplateEngine engine;
 
-        public ViewCompiler()
+        public ViewCompiler(ViewLocator locator)
         {
-            engine = PrepareEngine();
+            engine = PrepareEngine(locator);
         }
 
-        public async Task<CompiledView> Compile(string fullPath)
+        public async Task<CompiledView> Compile(RazorProjectItem item)
         {
-            logger.Debug("Compiling view {ViewPath}", fullPath);
-            var (layout, reader, size) = await ExtractLayout(fullPath);
-            var code = await GenerateCode(fullPath, reader);
-            logger.Debug("Code for view {ViewPath} generated", fullPath);
-            var assembly = await Task.Run(() => GenerateAssembly(fullPath, code));
+            logger.Debug("Compiling view {ViewPath}", item.PhysicalPath);
+
+            var code = await GenerateCode(item);
+            logger.Debug("Code for view {ViewPath} generated", item.PhysicalPath);
+
+            var assembly = await Task.Run(() => GenerateAssembly(item.PhysicalPath, code));
             var type = assembly.GetExportedTypes()[0];
-            logger.Information("View {ViewPath} compiled to assembly {Assembly} to type {Type}", fullPath, assembly, type);
-            return new CompiledView(layout, type, size);
+            logger.Information(
+                "View {ViewPath} compiled to assembly {Assembly} to type {Type}",
+                item.PhysicalPath, assembly, type);
+
+            var field = type.GetField(Extensions.LayoutNode.LayoutFieldName);
+            var layout = (string)field.GetValue(null);
+
+            var size = new FileInfo(item.PhysicalPath).Length;
+            return new CompiledView(layout, type, (int)size);
         }
 
         private Assembly GenerateAssembly(string fullPath, string code)
@@ -94,15 +107,16 @@ namespace LeanCode.ViewRenderer.Razor
                 if (!compilationResult.Success)
                 {
                     var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
-                    logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
+                    logger.Warning(
+                        "Cannot emit IL to in-memory stream for view {ViewPath}, errors:",
+                        fullPath);
                     foreach (var err in errors)
                     {
                         logger.Warning("\t {Error}", err);
                     }
 
                     throw new CompilationFailedException(
-                        fullPath,
-                        errors,
+                        fullPath, errors,
                         "Cannot compile the generated code."
                         );
                 }
@@ -117,96 +131,72 @@ namespace LeanCode.ViewRenderer.Razor
                 {
                     logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
                     throw new CompilationFailedException(
-                        fullPath,
-                        new string[0],
-                        "Cannot load generated assembluy.",
-                        ex
+                        fullPath, new string[0],
+                        "Cannot load generated assembly.", ex
                     );
                 }
             }
         }
 
-        private async Task<string> GenerateCode(string fullPath, StreamReader reader)
+        private async Task<string> GenerateCode(RazorProjectItem item)
         {
-            GeneratorResults genResult;
-            using (reader)
-            {
-                genResult = await Task.Run(() => engine.GenerateCode(reader));
-            }
+            var genResult = await Task.Run(() => engine.GenerateCode(item));
 
-            if (!genResult.Success)
+            if (genResult.Diagnostics.Any(d => d.Severity == RazorDiagnosticSeverity.Error))
             {
-                var errors = genResult.ParserErrors.Select(e => e.ToString()).ToList();
-                logger.Warning("Cannot generate code for the view {ViewPath}, errors:", fullPath);
+                var errors = genResult.Diagnostics
+                    .Select(d => d.ToString())
+                    .ToList();
+                logger.Warning(
+                    "Cannot generate code for the view {ViewPath}, errors:",
+                    item.PhysicalPath);
                 foreach (var err in errors)
                 {
                     logger.Warning("\t {Error}", err);
                 }
 
                 throw new CompilationFailedException(
-                    fullPath,
-                    errors,
+                    item.PhysicalPath, errors,
                     "Cannot compile view - Razor syntax errors"
                 );
+            }
+            else if (genResult.Diagnostics.Count > 0)
+            {
+                var diags = genResult.Diagnostics
+                    .Select(d => d.ToString())
+                    .ToList();
+                logger.Information(
+                    "Diagnostics for {ViewPath} compilation:",
+                    item.PhysicalPath);
+                foreach (var diag in diags)
+                {
+                    logger.Warning("\t {Diagnostic}", diag);
+                }
             }
 
             return genResult.GeneratedCode;
         }
 
-        private async Task<(string, StreamReader, int)> ExtractLayout(string fullPath)
+        private static RazorTemplateEngine PrepareEngine(ViewLocator locator)
         {
-            StreamReader file;
-            try
+            var engine = RazorEngine.Create(builder =>
             {
-                file = File.OpenText(fullPath);
-            }
-            catch (Exception ex)
-            {
-                logger.Warning(ex, "Cannot open view {ViewPath}", fullPath);
-                throw new CompilationFailedException(fullPath, new string[0], "Cannot open view file.", ex);
-            }
-
-            var size = (int)((FileStream)file.BaseStream).Length;
-            var firstLine = await file.ReadLineAsync().ConfigureAwait(false);
-            if (firstLine != null && firstLine.StartsWith("@layout "))
-            {
-                var quoted = firstLine.Substring("@layout ".Length);
-                if (quoted[0] != '"' || quoted[quoted.Length - 1] != '"')
+                builder.SetBaseType(typeof(BaseView).FullName);
+                builder.ConfigureClass((doc, @class) =>
                 {
-                    logger.Warning("Cannot extract layout from the view {ViewPath} - invalid quotes", fullPath);
-                    throw new CompilationFailedException(
-                        fullPath,
-                        new string[0],
-                        "Cannot compile the view - invalid layout specification.");
-                }
-                return (quoted.Substring(1, quoted.Length - 2), file, size - firstLine.Length - 1);
-            }
-            else
-            {
-                file.BaseStream.Seek(0, SeekOrigin.Begin);
-                file.DiscardBufferedData();
-                return (null, file, size);
-            }
+                    @class.ClassName = Path.GetFileNameWithoutExtension(doc.Source.FilePath);
+                    @class.Modifiers.Clear();
+                    @class.Modifiers.Add("public");
+                    @class.Modifiers.Add("sealed");
+                });
+                builder.AddDirective(Extensions.Layout.Directive);
+                builder.Features.Add(new Extensions.LayoutDirectivePass());
+            });
+            var templateEngine = new RazorTemplateEngine(engine, locator);
+            templateEngine.Options.DefaultImports
+                = RazorSourceDocument.Create(FilePreamble, null);
+
+            return templateEngine;
         }
-
-        private static RazorTemplateEngine PrepareEngine()
-        {
-            var codeLang = new CSharpRazorCodeLanguage();
-            var host = new RazorEngineHost(codeLang);
-
-            host.DefaultBaseClass = typeof(BaseView).FullName;
-            host.GeneratedClassContext = new GeneratedClassContext(
-                executeMethodName: nameof(BaseView.ExecuteAsync),
-                writeMethodName: "Write", // accessibility
-                writeLiteralMethodName: "WriteLiteral",
-                writeToMethodName: "WriteTo",
-                writeLiteralToMethodName: "WriteLiteralTo",
-                templateTypeName: nameof(HelperResult),
-                generatedTagHelperContext: new GeneratedTagHelperContext());
-            host.NamespaceImports.Add("System");
-
-            return new RazorTemplateEngine(host);
-        }
-
     }
 }

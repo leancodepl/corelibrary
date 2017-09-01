@@ -7,20 +7,19 @@ using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Example
 {
-    public class Startup : LeanStartup<Startup>
+    public class Startup : LeanStartup
     {
-        public Startup(IHostingEnvironment hostEnv)
-            : base("LeanCode.Example", hostEnv)
-        { }
+        private readonly IHostingEnvironment hostEnv;
 
-        // This is required for EF migrations to inject services properly
-        public override IServiceProvider ConfigureServices(IServiceCollection services)
+        public Startup(IConfiguration config, IHostingEnvironment hostEnv)
+            : base("LeanCode.Example", config)
         {
-            return base.ConfigureServices(services);
+            this.hostEnv = hostEnv;
         }
 
         protected override TypesCatalog TypesCatalog { get; } = new TypesCatalog(
@@ -31,7 +30,7 @@ namespace LeanCode.Example
         {
             return new IWebApplication[]
             {
-                new WebApp(Configuration, HostingEnvironment)
+                new WebApp(Configuration, hostEnv)
             };
         }
 

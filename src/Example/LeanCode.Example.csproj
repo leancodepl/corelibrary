@@ -2,13 +2,13 @@
   <Import Project="../targets/Dependencies.targets" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.Example</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>LeanCode.Example</PackageId>
     <UserSecretsId>LeanCode.Example</UserSecretsId>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -48,17 +48,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(MvcVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="$(ExtensionsVersion)" />
     <!-- Required, it generates UserSecretsIdAttribute on the assembly -->
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-    <PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCoreVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(EFCoreVersion)" PrivateAssets="All" />
+
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="$(SerilogSinksRollingFileVersion)" />
+    <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterateVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(ToolsVersion)" />
   </ItemGroup>
 
 </Project>

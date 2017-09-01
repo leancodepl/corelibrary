@@ -15,14 +15,12 @@ using Serilog;
 
 namespace LeanCode.Components.Startup
 {
-    public abstract class LeanStartup<TStartup>
-        where TStartup: class
+    public abstract class LeanStartup : IStartup
     {
         public const string DatabaseConnectionStringName = "Default";
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
 
-        protected readonly IConfigurationRoot Configuration;
-        protected readonly IHostingEnvironment HostingEnvironment;
+        protected readonly IConfiguration Configuration;
         protected readonly string DefaultConnectionString;
 
         private readonly Serilog.ILogger logger;
@@ -32,22 +30,9 @@ namespace LeanCode.Components.Startup
 
         private IEnumerable<IAppComponent> AllComponents => components.Concat(applications);
 
-        public LeanStartup(string appName, IHostingEnvironment hostEnv)
+        public LeanStartup(string appName, IConfiguration config)
         {
-            HostingEnvironment = hostEnv;
-
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile($"appsettings.{hostEnv.EnvironmentName}.json", true, true);
-
-            if (hostEnv.IsDevelopment())
-            {
-                builder = builder.AddUserSecrets<TStartup>();
-            }
-
-            builder = builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = config;
 
             DefaultConnectionString = Configuration.GetConnectionString(DatabaseConnectionStringName);
 
@@ -57,19 +42,18 @@ namespace LeanCode.Components.Startup
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
 
-            logger = Log.ForContext<LeanStartup<TStartup>>();
+            logger = Log.ForContext<LeanStartup>();
 
             logger.Information("Configuration loaded, starting app");
         }
 
-        public virtual IServiceProvider ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             components = CreateComponents();
             applications = CreateApplications();
 
             logger.Debug("Loading common services");
             services.AddOptions();
-            services.AddMvc();
 
             foreach (var component in AllComponents)
             {
@@ -80,18 +64,8 @@ namespace LeanCode.Components.Startup
             return ConfigureContainer(services);
         }
 
-        public void Configure(
-            IApplicationBuilder app,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
-            IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app)
         {
-            var opts = Configuration.Options<Dictionary<string, LogLevel>>(SystemLoggersEntryName);
-            loggerFactory
-                .WithFilter(new FilterLoggerSettings { Switches = opts })
-                .AddDebug()
-                .AddSerilog();
-
             foreach (var leanApp in applications.OrderByDescending(a => a.BasePath.Length))
             {
                 logger.Debug("Mapping app {App} to {BasePath}", leanApp.GetType(), leanApp.BasePath);
@@ -105,6 +79,8 @@ namespace LeanCode.Components.Startup
                 }
             }
 
+            var appLifetime = app.ApplicationServices
+                .GetRequiredService<IApplicationLifetime>();
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
 

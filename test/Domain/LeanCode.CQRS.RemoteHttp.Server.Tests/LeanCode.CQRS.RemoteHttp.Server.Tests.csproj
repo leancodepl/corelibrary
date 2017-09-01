@@ -1,16 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <Import Project="../../targets/Tests.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

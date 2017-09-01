@@ -13,7 +13,7 @@ Or you can just modify the following project template (most of the projects use 
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.(...)</AssemblyName>
   </PropertyGroup>
   <Import Project="src/targets/Lib.targets" />

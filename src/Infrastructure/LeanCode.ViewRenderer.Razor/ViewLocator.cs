@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.AspNetCore.Razor.Language;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class ViewLocator
+    class ViewLocator : RazorProject
     {
         private readonly RazorViewRendererOptions options;
 
@@ -11,21 +14,70 @@ namespace LeanCode.ViewRenderer.Razor
             this.options = options;
         }
 
-        public string LocateView(string viewName) => LocateFile(GetFileName(viewName));
+        public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override RazorProjectItem GetItem(string path)
+        {
+            var view = LocateFile(GetFileName(path));
+            if (view.FullPath == null)
+            {
+                return new Item(path);
+            }
+            else
+            {
+                return new Item(view.BasePath, view.FileName, view.FullPath);
+            }
+        }
 
         private string GetFileName(string viewName) => viewName + options.Extension;
 
-        private string LocateFile(string fileName)
+        private (string BasePath, string FullPath, string FileName) LocateFile(string fileName)
         {
             foreach (var path in options.ViewLocations)
             {
-                var fullPath = Path.Combine(path, fileName);
+                var fullPath = Path.GetFullPath(Path.Combine(path, fileName));
                 if (File.Exists(fullPath))
                 {
-                    return Path.GetFullPath(fullPath);
+                    return (path, fullPath, fileName);
                 }
             }
-            return null;
+            return (null, null, null);
+        }
+
+        class Item : RazorProjectItem
+        {
+            public override string BasePath { get; }
+            public override string FilePath { get; }
+            public override string PhysicalPath { get; }
+            public override bool Exists { get; }
+
+            public Item(string basePath, string filename, string fullPath)
+            {
+                BasePath = basePath;
+                FilePath = filename;
+                PhysicalPath = fullPath;
+                Exists = true;
+            }
+
+            public Item(string path)
+            {
+                BasePath = string.Empty;
+                FilePath = path;
+                PhysicalPath = string.Empty;
+                Exists = false;
+            }
+
+            public override Stream Read()
+            {
+                if (!Exists)
+                {
+                    throw new InvalidOperationException("File does not exist.");
+                }
+                return File.OpenRead(PhysicalPath);
+            }
         }
     }
 }

@@ -1,17 +1,39 @@
 <Project>
+  <!-- Common libraries -->
   <PropertyGroup>
-    <MvcVersion>1.1.2</MvcVersion>
-
-    <!-- ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
-    <ExtensionsVersion>1.1.2</ExtensionsVersion>
-    <!-- Microsoft.Extensions.DependencyInjection package has different version -->
-    <DIVersion>1.1.1</DIVersion>
-
+    <MvcVersion>2.0.0</MvcVersion>
+    <!-- .NET Core/ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
+    <ExtensionsVersion>2.0.0</ExtensionsVersion>
     <JsonNetVersion>10.0.3</JsonNetVersion>
-    <AutofacVersion>4.6.0</AutofacVersion>
+    <AutofacVersion>4.6.1</AutofacVersion>
     <AutoMapperVersion>6.1.1</AutoMapperVersion>
     <SerilogVersion>2.5.0</SerilogVersion>
-    <SystemValueTuple>4.3.1</SystemValueTuple>
-    <NetCoreLib>4.3.0</NetCoreLib>
+    <!-- System.* libraries -->
+    <NetCoreLibVersion>4.4.0</NetCoreLibVersion>
+    <EFCoreVersion>2.0.0</EFCoreVersion>
+    <ToolsVersion>2.0.0</ToolsVersion>
+
+    <!-- Libs used in one place -->
+    <AutofacExtensionsDependencyInjectionVersion>4.2.0</AutofacExtensionsDependencyInjectionVersion>
+    <FluentValidationVersion>7.1.1</FluentValidationVersion>
+    <PollyVersion>5.3.1</PollyVersion>
+
+    <SerilogExtensionsLoggingVersion>2.0.2</SerilogExtensionsLoggingVersion>
+    <SerilogSettingsConfigurationVersion>2.4.0</SerilogSettingsConfigurationVersion>
+    <SerilogSinksLiterateVersion>3.0.0</SerilogSinksLiterateVersion>
+    <SerilogSinksRollingFileVersion>3.3.0</SerilogSinksRollingFileVersion>
+
+    <!-- Tests -->
+    <XUnitVersion>2.3.0-beta4-build3742</XUnitVersion>
+    <XUnitAnalyzersVersion>0.7.0</XUnitAnalyzersVersion>
+    <MicrosoftNETTestSdkVersion>15.3.0</MicrosoftNETTestSdkVersion>
+    <NSubstituteVersion>2.0.3</NSubstituteVersion>
+    <CastleCoreVersion>4.1.1</CastleCoreVersion>
+
+    <!-- Razor -->
+    <MicrosoftCSharpVersion>4.4.0</MicrosoftCSharpVersion>
+    <MicrosoftCodeAnalysisCSharpVersion>2.3.2</MicrosoftCodeAnalysisCSharpVersion>
+    <SystemRuntimeLoaderVersion>4.3.0</SystemRuntimeLoaderVersion>
+    <SystemDynamicRuntimeVersion>4.3.0</SystemDynamicRuntimeVersion>
   </PropertyGroup>
 </Project>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.ViewRenderer.Razor</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
@@ -13,13 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLib)" />
-    <PackageReference Include="System.Runtime.Loader" Version="$(NetCoreLib)" />
+    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLibVersion)" />
+    <PackageReference Include="System.Runtime.Loader" Version="$(SystemRuntimeLoaderVersion)" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(SystemDynamicRuntimeVersion)" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="1.3.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(MicrosoftCodeAnalysisCSharpVersion)" />
   </ItemGroup>
 
 </Project>

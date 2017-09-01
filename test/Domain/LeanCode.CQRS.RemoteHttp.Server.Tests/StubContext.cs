@@ -24,7 +24,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         public override IFeatureCollection Features => throw new NotImplementedException();
+#pragma warning disable 612, 618
+        [Obsolete]
         public override AuthenticationManager Authentication => throw new NotImplementedException();
+#pragma warning restore 612, 618
         public override ConnectionInfo Connection => throw new NotImplementedException();
         public override WebSocketManager WebSockets => throw new NotImplementedException();
         public override ClaimsPrincipal User { get; set; }

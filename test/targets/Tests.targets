@@ -1,22 +1,23 @@
 <Project>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <XUnitVersion>2.3.0-beta3-build3705</XUnitVersion>
   </PropertyGroup>
   <Import Project="../../src/targets/Dependencies.targets" />
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
-    <PackageReference Include="NSubstitute" Version="2.0.3" />
+    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />
+    <PackageReference Include="Castle.Core" Version="$(CastleCoreVersion)" />
+    <PackageReference Include="NSubstitute" Version="$(NSubstituteVersion)" />
 
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XUnitVersion)" />
+    <PackageReference Include="xunit.analyzers" Version="$(XUnitAnalyzersVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-xunit" Version="$(XUnitVersion)" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.1" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="$(ToolsVersion)" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.DomainModels.EventsExecution</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
@@ -12,10 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuple)" />
+    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
 
-    <PackageReference Include="Polly" Version="5.2.0" />
+    <PackageReference Include="Polly" Version="$(PollyVersion)" />
   </ItemGroup>
 
 </Project>

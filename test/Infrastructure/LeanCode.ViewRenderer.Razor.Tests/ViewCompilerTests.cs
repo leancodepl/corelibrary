@@ -4,18 +4,22 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
+using Microsoft.AspNetCore.Razor.Language;
+using Serilog;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests
 {
     public class ViewCompilerTests
     {
+        private readonly ViewLocator locator;
         private readonly ViewCompiler compiler;
 
 
         public ViewCompilerTests()
         {
-            compiler = new ViewCompiler();
+            locator = new ViewLocator(new RazorViewRendererOptions("./Views/Compiler/"));
+            compiler = new ViewCompiler(locator);
         }
 
         [Fact]
@@ -72,17 +76,19 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         }
 
         [Fact]
-        public async Task Layout_specification_on_invalid_line_results_in_error()
+        public async Task Layout_specification_on_non_first_line_works_correctly()
         {
-            await Assert.ThrowsAsync<CompilationFailedException>(() => Compile("LayoutedInvalidLine"));
+            var result = await Compile("LayoutedSecondLine");
+
+            Assert.Equal("Simple", result.Layout);
         }
 
         [Fact]
-        public async Task Projected_size_is_equal_to_file_size_minus_layout_directive_if_specified()
+        public async Task Projected_size_is_equal_to_file_size()
         {
             var result = await Compile("Layouted");
 
-            Assert.Equal(GetSize("Layouted") - 17, result.ProjectedSize);
+            Assert.Equal(GetSize("Layouted"), result.ProjectedSize);
         }
 
         [Fact]
@@ -117,15 +123,14 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             Assert.Equal("this is simple view\n", content);
         }
 
-        private Task<CompiledView> Compile(string viewName) => compiler.Compile(View(viewName));
-        private static string View(string name) => Path.GetFullPath($"./Views/Compiler/{name}.cshtml");
-
-        private static int GetSize(string name)
+        private Task<CompiledView> Compile(string viewName)
         {
-            using (var f = File.OpenRead(View(name)))
-            {
-                return (int)f.Length;
-            }
+            return compiler.Compile(locator.GetItem(viewName));
+        }
+
+        private int GetSize(string name)
+        {
+            return (int)new FileInfo(locator.GetItem(name).PhysicalPath).Length;
         }
     }
 }
