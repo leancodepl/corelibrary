@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 Migrate to .NET Core 2
+Migrate to Razor 2
+
 ## [0.2.0]
 Separated CQRS public interfaces/implementations
 Pipelines
