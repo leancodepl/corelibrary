@@ -2,7 +2,7 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <Import Project="../../src/targets/Dependencies.targets" />
+  <Import Project="../../src/Core/LeanCode.Targets/Dependencies.props" />
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />

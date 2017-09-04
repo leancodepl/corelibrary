@@ -18,5 +18,5 @@
   </ItemGroup>
 
   <Import Project="Version.targets" />
-  <Import Project="Dependencies.targets" />
+  <Import Project="../Core/LeanCode.Targets/Dependencies.props" />
 </Project>
