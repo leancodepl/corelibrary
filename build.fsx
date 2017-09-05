@@ -9,6 +9,7 @@ let testDir = rootDir @@ "test"
 let packDir = rootDir @@ "packed"
 
 let libVersionFile = srcDir @@ "targets/Version.targets"
+let dependenciesFile = srcDir @@ "Core/LeanCode.Targets/Dependencies.props"
 
 let configuration = getBuildParamOrDefault "configuration" "Release"
 
@@ -63,6 +64,7 @@ Target "Test" (fun () ->
 
 Target "UpdateVersion" (fun () ->
     XmlPokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
+    XmlPokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
     XmlPokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
 )
 
