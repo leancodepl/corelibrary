@@ -4,7 +4,7 @@
     <!-- Self version, generated automatically -->
     <CoreLibVersion>GENERATED_DURING_BUILD</CoreLibVersion>
 
-    <MvcVersion>2.0.0</MvcVersion>
+    <AspNetCoreVersion>2.0.0</AspNetCoreVersion>
     <!-- .NET Core/ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
     <ExtensionsVersion>2.0.0</ExtensionsVersion>
     <JsonNetVersion>10.0.3</JsonNetVersion>

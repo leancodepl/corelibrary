@@ -8,21 +8,21 @@ namespace LeanCode.Components.Startup
 {
     public static class LeanProgram
     {
-        public static IWebHostBuilder BuildDefaultWebHost<TStartup>()
+        public static IWebHostBuilder BuildDefaultWebHost<TStartup>(
+            bool requireEnvSettings = false,
+            bool requireBaseSettings = true)
             where TStartup : class
         {
             return new WebHostBuilder()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<TStartup>()
-                .UseKestrel()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var env = hostingContext.HostingEnvironment;
 
                     config
                         .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", true, true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
+                        .AddJsonFile("appsettings.json", requireBaseSettings, true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", requireEnvSettings, true);
 
                     if (env.IsDevelopment())
                     {
@@ -42,7 +42,8 @@ namespace LeanCode.Components.Startup
                 .UseDefaultServiceProvider((context, options) =>
                 {
                     options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
-                });
+                })
+                .UseStartup<TStartup>();
         }
     }
 }
