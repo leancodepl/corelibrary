@@ -21,8 +21,8 @@ namespace LeanCode.Components.Startup
 
                     config
                         .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", requireBaseSettings, true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", requireEnvSettings, true);
+                        .AddJsonFile("appsettings.json", !requireBaseSettings, true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", !requireEnvSettings, true);
 
                     if (env.IsDevelopment())
                     {
