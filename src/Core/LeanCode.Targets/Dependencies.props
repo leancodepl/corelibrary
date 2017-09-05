@@ -11,6 +11,7 @@
     <AutofacVersion>4.6.1</AutofacVersion>
     <AutoMapperVersion>6.1.1</AutoMapperVersion>
     <SerilogVersion>2.5.0</SerilogVersion>
+
     <!-- System.* libraries -->
     <NetCoreLibVersion>4.4.0</NetCoreLibVersion>
     <EFCoreVersion>2.0.0</EFCoreVersion>
@@ -38,5 +39,10 @@
     <MicrosoftCodeAnalysisCSharpVersion>2.3.2</MicrosoftCodeAnalysisCSharpVersion>
     <SystemRuntimeLoaderVersion>4.3.0</SystemRuntimeLoaderVersion>
     <SystemDynamicRuntimeVersion>4.3.0</SystemDynamicRuntimeVersion>
+
+    <!-- IdentityServer & related -->
+    <IdentityServer4Version>2.0.0-rc1</IdentityServer4Version>
+    <MicrosoftAzureKeyVaultVersion>2.3.2</MicrosoftAzureKeyVaultVersion>
+    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.16.0</MicrosoftIdentityModelClientsActiveDirectoryVersion>
   </PropertyGroup>
 </Project>
