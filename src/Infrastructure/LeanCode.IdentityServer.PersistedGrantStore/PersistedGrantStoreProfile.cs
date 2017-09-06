@@ -10,7 +10,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         public PersistedGrantStoreProfile()
         {
             CreateMap<PersistedGrantEntity, PersistedGrant>(MemberList.Destination);
-            CreateMap<PersistedGrant, PersistedGrant>(MemberList.Source);
+            CreateMap<PersistedGrant, PersistedGrantEntity>(MemberList.Source);
         }
     }
 }
