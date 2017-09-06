@@ -19,6 +19,9 @@ namespace LeanCode.IdentityServer.KeyVault
             {
                 builder.ConfigSection<IdentityServerKeyVaultConfiguration>(config);
             }
+            builder.RegisterType<SigningService>().AsSelf().SingleInstance();
+            builder.RegisterType<KeyMaterialService>().AsImplementedInterfaces();
+            builder.RegisterType<TokenCreationService>().AsImplementedInterfaces();
         }
     }
 }
