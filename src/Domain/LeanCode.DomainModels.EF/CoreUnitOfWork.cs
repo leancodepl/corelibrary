@@ -2,7 +2,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
-using LeanCode.DomainModels.EF.Exceptions;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 
