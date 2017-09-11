@@ -12,7 +12,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         private readonly TypesCatalog catalog = new TypesCatalog(typeof(BaseMiddlewareTests));
         protected readonly StubQueryExecutor query = new StubQueryExecutor();
         protected readonly StubCommandExecutor command = new StubCommandExecutor();
-        protected readonly RemoteCQRSMiddleware middleware;
+        protected readonly RemoteCQRSMiddleware<AppContext> middleware;
 
         private readonly string endpoint;
         private readonly string defaultObject;
@@ -23,7 +23,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName;
 
-            middleware = new RemoteCQRSMiddleware(null);
+            middleware = new RemoteCQRSMiddleware<AppContext>(null);
 
             var commandHandler = new RemoteCommandHandler<AppContext>(command, catalog, c => new AppContext(c.User));
             var queryHandler = new RemoteQueryHandler<AppContext>(query, catalog, c => new AppContext(c.User));
