@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
+using Autofac.Core;
 using Autofac.Features.Variance;
 using LeanCode.Components;
 using LeanCode.CQRS.Cache;
@@ -14,21 +17,19 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default
 {
-    class CQRSModule<TAppContext> : Module
-        where TAppContext : IPipelineContext
+    using CommandsQueriesModules = IReadOnlyList<IModule>;
+
+    class CQRSModule : Module
     {
+        private readonly CommandsQueriesModules commandsQueriesModules;
         private readonly TypesCatalog catalog;
-        private readonly CommandBuilder<TAppContext> cmdBuilder;
-        private readonly QueryBuilder<TAppContext> queryBuilder;
 
         public CQRSModule(
             TypesCatalog catalog,
-            CommandBuilder<TAppContext> cmdBuilder,
-            QueryBuilder<TAppContext> queryBuilder)
+            CommandsQueriesModules commandsQueriesModules)
         {
+            this.commandsQueriesModules = commandsQueriesModules;
             this.catalog = catalog;
-            this.cmdBuilder = cmdBuilder;
-            this.queryBuilder = queryBuilder;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -45,13 +46,6 @@ namespace LeanCode.CQRS.Default
             builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
-
-            builder.Register(c => new CommandExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), cmdBuilder))
-                .As<ICommandExecutor<TAppContext>>()
-                .SingleInstance();
-            builder.Register(c => new QueryExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), queryBuilder))
-                .As<IQueryExecutor<TAppContext>>()
-                .SingleInstance();
 
             builder.RegisterType<AutofacCommandHandlerResolver>().As<ICommandHandlerResolver>();
             builder.RegisterType<AutofacQueryHandlerResolver>().As<IQueryHandlerResolver>();
@@ -77,6 +71,11 @@ namespace LeanCode.CQRS.Default
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
+
+            foreach (var commandQueryModule in this.commandsQueriesModules)
+            {
+                builder.RegisterModule(commandQueryModule);
+            }
         }
     }
 }
