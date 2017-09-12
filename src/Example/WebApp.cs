@@ -38,7 +38,7 @@ namespace LeanCode.Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Map("/api", cfg => cfg.UseRemoteCQRS());
+            app.Map("/api", cfg => cfg.UseRemoteCQRS<AppContext>());
 
             app.UseStaticFiles();
             app.UseMvc();

@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    interface IRemoteCommandHandler
+    interface IRemoteCommandHandler<TAppContext>
     {
         TypesCatalog Catalog { get; }
         Task<ActionResult> ExecuteAsync(HttpContext context);
     }
 
     sealed class RemoteCommandHandler<TAppContext>
-        : BaseRemoteObjectHandler<TAppContext>, IRemoteCommandHandler
+        : BaseRemoteObjectHandler<TAppContext>, IRemoteCommandHandler<TAppContext>
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
             .GetMethod("ExecuteCommand", BindingFlags.NonPublic | BindingFlags.Instance);

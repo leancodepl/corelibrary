@@ -29,7 +29,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public void Registers_query_executor_correctly()
         {
-            Assert.True(builder.Build().TryResolve<IRemoteQueryHandler>(out var qh));
+            Assert.True(builder.Build().TryResolve<IRemoteQueryHandler<AppContext>>(out var qh));
 
             Assert.Equal(ThisCatalog, qh.Catalog);
         }
@@ -37,7 +37,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public void Register_command_executor_correctly()
         {
-            Assert.True(builder.Build().TryResolve<IRemoteCommandHandler>(out var ch));
+            Assert.True(builder.Build().TryResolve<IRemoteCommandHandler<AppContext>>(out var ch));
 
             Assert.Equal(ThisCatalog, ch.Catalog);
         }

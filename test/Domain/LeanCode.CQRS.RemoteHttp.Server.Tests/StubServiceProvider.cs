@@ -15,11 +15,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         public object GetService(Type serviceType)
         {
-            if (serviceType == typeof(IRemoteCommandHandler))
+            if (serviceType == typeof(IRemoteCommandHandler<AppContext>))
             {
                 return command;
             }
-            else if (serviceType == typeof(IRemoteQueryHandler))
+            else if (serviceType == typeof(IRemoteQueryHandler<AppContext>))
             {
                 return query;
             }

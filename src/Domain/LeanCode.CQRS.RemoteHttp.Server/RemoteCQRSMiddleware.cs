@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    public sealed class RemoteCQRSMiddleware
+    public sealed class RemoteCQRSMiddleware<TAppContext>
     {
         public RemoteCQRSMiddleware(RequestDelegate next)
         { }
@@ -20,12 +20,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
-                var queryHandler = context.RequestServices.GetService<IRemoteQueryHandler>();
+                var queryHandler = context.RequestServices.GetService<IRemoteQueryHandler<TAppContext>>();
                 actionResult = await queryHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
-                var commandHandler = context.RequestServices.GetService<IRemoteCommandHandler>();
+                var commandHandler = context.RequestServices.GetService<IRemoteCommandHandler<TAppContext>>();
                 actionResult = await commandHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else
@@ -39,9 +39,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
     public static class RemoteCQRSMiddlewareExtensions
     {
-        public static IApplicationBuilder UseRemoteCQRS(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseRemoteCQRS<TAppContext>(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware>();
+            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>();
         }
     }
 }

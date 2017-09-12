@@ -77,5 +77,20 @@ namespace LeanCode.Components
                 return code;
             }
         }
+
+        public TypesCatalog Merge(TypesCatalog other)
+        {
+            var assemblies = this.Assemblies.ToList();
+
+            foreach (var assembly in other.Assemblies)
+            {
+                if (!assemblies.Any(assembly.Equals))
+                {
+                    assemblies.Add(assembly);
+                }
+            }
+
+            return new TypesCatalog(assemblies.ToArray());
+        }
     }
 }

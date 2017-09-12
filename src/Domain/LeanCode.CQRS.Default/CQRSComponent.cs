@@ -1,43 +1,37 @@
+using System.Collections.Generic;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Security;
-using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;
-using LeanCode.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
-    public class CQRSComponent<TAppContext> : IAppComponent
-        where TAppContext : IPipelineContext
+    public class CQRSComponent : IAppComponent
     {
         public IModule AutofacModule { get; }
         public Profile MapperProfile => null;
 
-        public CQRSComponent(
+        internal CQRSComponent(
             TypesCatalog catalog,
-            CommandBuilder<TAppContext> cmdBuilder,
-            QueryBuilder<TAppContext> queryBuilder)
+            List<IModule> commandsQueriesModules)
         {
-            AutofacModule = new CQRSModule<TAppContext>(
-                catalog, cmdBuilder, queryBuilder);
+            AutofacModule = new CQRSModule(catalog, commandsQueriesModules);
         }
 
         public void ConfigureServices(IServiceCollection services)
         { }
-    }
 
-    public static class CQRSComponent
-    {
-        public static CQRSComponent<TAppContext> WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
+        public static CQRSComponentBuilder New()
+        {
+            return new CQRSComponentBuilder();
+        }
+
+        public static CQRSComponent WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
             where TAppContext : ISecurityContext, IEventsContext
         {
-            return new CQRSComponent<TAppContext>(catalog,
-                b => b.Secure().Validate().ExecuteEvents().InterceptEvents(),
-                b => b.Secure().Cache()
-            );
+            return New().WithDefaultPipelines<TAppContext>(catalog).Build();
         }
     }
 }
