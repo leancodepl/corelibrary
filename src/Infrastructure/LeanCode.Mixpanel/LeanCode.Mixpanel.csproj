@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>LeanCode.Mixpanel<AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+  <Import Project="../../targets/Common.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="$(ExtensionsVersion)" />
+  </ItemGroup>
+
+</Project>
