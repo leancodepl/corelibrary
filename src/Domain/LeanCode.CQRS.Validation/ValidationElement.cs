@@ -32,7 +32,8 @@ namespace LeanCode.CQRS.Validation
                     .ConfigureAwait(false);
                 if (!result.IsValid)
                 {
-                    logger.Information("Command {@Command} is not valid", input);
+                    logger.Information("Command {@Command} is not valid with result {@Result}",
+                        input, result);
                     return CommandResult.NotValid(result);
                 }
             }
