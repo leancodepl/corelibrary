@@ -10,9 +10,9 @@ namespace LeanCode.UnitTests.TestHelpers
     {
         private static readonly TestDomainEventInterceptor testInterceptor = new TestDomainEventInterceptor();
 
-        static EventsInterceptor()
+        public static void Configure()
         {
-            LeanCode.DomainModels.Model.DomainEvents.SetInterceptor(testInterceptor);
+            DomainEvents.SetInterceptor(testInterceptor);
         }
 
         public static SingleStorage<TEvent> Single<TEvent>()

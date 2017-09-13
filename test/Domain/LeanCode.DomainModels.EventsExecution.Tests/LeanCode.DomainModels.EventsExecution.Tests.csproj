@@ -9,4 +9,9 @@
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterate)" />
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+  </ItemGroup>
+
 </Project>
