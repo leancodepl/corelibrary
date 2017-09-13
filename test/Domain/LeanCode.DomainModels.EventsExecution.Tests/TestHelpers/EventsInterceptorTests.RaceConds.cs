@@ -10,17 +10,17 @@ namespace LeanCode.DomainModels.EventsExecution.Tests.TestHelpers
     {
         const int Iterations = 1000;
 
-        [Fact(Skip="a")]
+        [Fact]
         public Task Clash_Async_Test1() => RunTaskTest();
-        [Fact(Skip="a")]
+        [Fact]
         public Task Clash_Async_Test2() => RunTaskTest();
-        [Fact(Skip="a")]
+        [Fact]
         public Task Clash_Async_Test3() => RunTaskTest();
-        [Fact(Skip="a")]
+        [Fact]
         public void Clash_Thread_Test1() => RunThreadTest();
-        [Fact(Skip="a")]
+        [Fact]
         public void Clash_Thread_Test2() => RunThreadTest();
-        [Fact(Skip="a")]
+        [Fact]
         public void Clash_Thread_Test3() => RunThreadTest();
 
         private static async Task RunTaskTest()
