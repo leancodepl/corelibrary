@@ -3,7 +3,7 @@ using LeanCode.DomainModels.Model;
 using LeanCode.UnitTests.TestHelpers;
 using Xunit;
 
-namespace LeanCode.DomainModels.EventsExecution.Tests.TestHelpers
+namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
     public class EventsInterceptorTests
     {

@@ -3,6 +3,7 @@ namespace LeanCode.DomainModels.Model
     public static class DomainEvents
     {
         private static IDomainEventInterceptor eventInterceptor;
+        public static IDomainEventInterceptor EventInterceptor => eventInterceptor;
 
         public static void SetInterceptor(IDomainEventInterceptor interceptor)
         {

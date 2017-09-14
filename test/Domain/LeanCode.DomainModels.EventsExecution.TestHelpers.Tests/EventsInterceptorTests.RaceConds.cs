@@ -4,11 +4,16 @@ using LeanCode.DomainModels.Model;
 using LeanCode.UnitTests.TestHelpers;
 using Xunit;
 
-namespace LeanCode.DomainModels.EventsExecution.Tests.TestHelpers
+namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
     public abstract class EventsInterceptorTests_RaceCondsBase
     {
         const int Iterations = 1000;
+
+        public EventsInterceptorTests_RaceCondsBase()
+        {
+            EventsInterceptor.Configure();
+        }
 
         [Fact]
         public Task Clash_Async_Test1() => RunTaskTest();

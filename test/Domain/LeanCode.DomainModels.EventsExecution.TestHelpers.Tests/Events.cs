@@ -1,7 +1,7 @@
 using System;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.EventsExecution.Tests.TestHelpers
+namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
     sealed class SampleEvent1 : IDomainEvent
     {

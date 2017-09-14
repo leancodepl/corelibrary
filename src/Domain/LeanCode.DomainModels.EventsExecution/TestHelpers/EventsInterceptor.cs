@@ -12,6 +12,12 @@ namespace LeanCode.UnitTests.TestHelpers
 
         public static void Configure()
         {
+            var existing = DomainEvents.EventInterceptor;
+            if (existing != null &&
+                existing != testInterceptor)
+            {
+                throw new InvalidOperationException("Cannot use EventInterceptor when other interceptor is already configured.");
+            }
             DomainEvents.SetInterceptor(testInterceptor);
         }
 

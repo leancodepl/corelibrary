@@ -5,18 +5,20 @@
     <AssemblyName>LeanCode.IntegrationTestHelpers</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
-  
+
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="xunit" Version="$(XUnitVersion)" />
+
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFCoreVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCoreVersion)" />
+
     <PackageReference Include="Serilog.Extensions.Logging" Version="$(SerilogExtensionsLoggingVersion)" />
-    <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterate)" />
+    <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterateVersion)" />
+
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
