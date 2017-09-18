@@ -17,11 +17,9 @@ namespace LeanCode.Components.Startup
 {
     public abstract class LeanStartup : IStartup
     {
-        public const string DatabaseConnectionStringName = "Default";
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
 
         protected readonly IConfiguration Configuration;
-        protected readonly string DefaultConnectionString;
 
         private readonly Serilog.ILogger logger;
 
@@ -33,8 +31,6 @@ namespace LeanCode.Components.Startup
         public LeanStartup(string appName, IConfiguration config)
         {
             Configuration = config;
-
-            DefaultConnectionString = Configuration.GetConnectionString(DatabaseConnectionStringName);
 
             Log.Logger = new LoggerConfiguration()
                 .DestructureCommonObjects(TypesCatalog.Assemblies)
