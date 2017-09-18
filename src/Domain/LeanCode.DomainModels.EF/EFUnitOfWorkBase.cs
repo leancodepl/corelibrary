@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public class CoreUnitOfWork<TContext> : IUnitOfWork
+    public abstract class EFUnitOfWorkBase<TContext> : IUnitOfWork
         where TContext : DbContext
     {
         private readonly TContext dbContext;
 
-        public CoreUnitOfWork(TContext dbContext)
+        public EFUnitOfWorkBase(TContext dbContext)
         {
             this.dbContext = dbContext;
         }

@@ -7,18 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public abstract class EFRepository<TEntity, TContext> : EFRepository<TEntity, Guid, TContext>, IRepository<TEntity>
+    public abstract class EFRepository<TEntity, TContext>
+        : EFRepository<TEntity, Guid, TContext>, IRepository<TEntity>
         where TEntity : class, IAggregateRoot<Guid>
-        where TContext : DbContext, IUnitOfWork
+        where TContext : DbContext
     {
         public EFRepository(TContext dbContext)
             : base(dbContext)
         { }
     }
 
-    public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<TEntity, TIdentity>
+    public abstract class EFRepository<TEntity, TIdentity, TContext>
+        : IRepository<TEntity, TIdentity>
         where TEntity : class, IAggregateRoot<TIdentity>
-        where TContext : DbContext, IUnitOfWork
+        where TContext : DbContext
     {
         protected readonly DbSet<TEntity> dbSet;
 

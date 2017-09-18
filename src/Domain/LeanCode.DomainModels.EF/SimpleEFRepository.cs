@@ -9,7 +9,7 @@ namespace LeanCode.DomainModels.EF
     public sealed class SimpleEFRepository<TEntity, TContext>
         : EFRepository<TEntity, TContext>
         where TEntity : class, IAggregateRoot<Guid>
-        where TContext : DbContext, IUnitOfWork
+        where TContext : DbContext
     {
         public SimpleEFRepository(TContext dbContext)
             : base(dbContext)
@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.EF
     public sealed class SimpleEFRepository<TEntity, TIdentity, TContext>
         : EFRepository<TEntity, TIdentity, TContext>
         where TEntity : class, IAggregateRoot<TIdentity>
-        where TContext : DbContext, IUnitOfWork
+        where TContext : DbContext
     {
         public SimpleEFRepository(TContext dbContext)
             : base(dbContext)
