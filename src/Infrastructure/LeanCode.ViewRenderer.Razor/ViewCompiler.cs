@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.Language;
+using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -191,6 +192,9 @@ namespace LeanCode.ViewRenderer.Razor
                 });
                 builder.AddDirective(Extensions.Layout.Directive);
                 builder.Features.Add(new Extensions.LayoutDirectivePass());
+
+                builder.AddDirective(FunctionsDirective.Directive);
+                builder.Features.Add(new FunctionsDirectivePass());
             });
             var templateEngine = new RazorTemplateEngine(engine, locator);
             templateEngine.Options.DefaultImports
