@@ -49,19 +49,19 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public EmailBuilder WithHtmlContent(object model)
+        public EmailBuilder WithHtmlContent(object model, string templateName = null)
         {
             model = model ?? throw new ArgumentNullException(nameof(model));
 
-            contents.Add(new EmailContent(model, "text/html"));
+            contents.Add(new EmailContent(model, "text/html", templateName));
             return this;
         }
 
-        public EmailBuilder WithTextContent(object model)
+        public EmailBuilder WithTextContent(object model, string templateName = null)
         {
             model = model ?? throw new ArgumentNullException(nameof(model));
 
-            contents.Add(new EmailContent(model, "text/plain"));
+            contents.Add(new EmailContent(model, "text/plain", templateName));
             return this;
         }
 
