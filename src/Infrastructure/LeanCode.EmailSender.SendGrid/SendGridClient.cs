@@ -107,7 +107,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         private async Task<SendGridContent> Convert(EmailContent content)
         {
-            var viewName = GetViewNameFromModel(content.Model.GetType(), content.ContentType);
+            var viewName = GetViewNameFromContent(content);
             var rendered = await viewRenderer.RenderToString(viewName, content.Model).ConfigureAwait(false);
             return new SendGridContent
             {
@@ -136,6 +136,13 @@ namespace LeanCode.EmailSender.SendGrid
                     Type = attachment.ContentType
                 };
             }
+        }
+
+        private static string GetViewNameFromContent(EmailContent content)
+        {
+            if (!string.IsNullOrWhiteSpace(content.TemplateName))
+                return content.TemplateName;
+            return GetViewNameFromModel(content.Model.GetType(), content.ContentType);
         }
 
         private static string GetViewNameFromModel(Type type, string mimeType)
