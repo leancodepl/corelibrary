@@ -79,7 +79,7 @@ namespace LeanCode.ViewRenderer.Razor
                 throw new ViewNotFoundException(viewName, "Cannot locate view.");
             }
 
-            logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item);
+            logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item.PhysicalPath);
             return await compiler.Compile(item).ConfigureAwait(false);
         }
     }

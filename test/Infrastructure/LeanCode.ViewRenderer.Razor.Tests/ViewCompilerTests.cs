@@ -123,6 +123,14 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             Assert.Equal("this is simple view\n", content);
         }
 
+        [Fact]
+        public async Task Generating_views_with_dots_in_file_name_works()
+        {
+            var result = await Compile("Dotted.Name");
+
+            Assert.NotNull(result.ViewType);
+        }
+
         private Task<CompiledView> Compile(string viewName)
         {
             return compiler.Compile(locator.GetItem(viewName));

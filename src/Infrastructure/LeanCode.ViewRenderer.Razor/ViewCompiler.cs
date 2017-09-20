@@ -185,7 +185,7 @@ namespace LeanCode.ViewRenderer.Razor
                 builder.SetBaseType(typeof(BaseView).FullName);
                 builder.ConfigureClass((doc, @class) =>
                 {
-                    @class.ClassName = Path.GetFileNameWithoutExtension(doc.Source.FilePath);
+                    @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
                     @class.Modifiers.Clear();
                     @class.Modifiers.Add("public");
                     @class.Modifiers.Add("sealed");
