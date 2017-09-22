@@ -20,7 +20,7 @@ namespace LeanCode.PushNotifications
                 builder.ConfigSection<FCMConfiguration>(config);
             }
             builder.RegisterType<PushNotifications<TUserId>>().As<IPushNotifications<TUserId>>();
-            builder.RegisterType<FCMClient>().As<IFCMClient>().SingleInstance();
+            builder.RegisterType<FCMClient>().AsSelf().SingleInstance();
         }
     }
 }

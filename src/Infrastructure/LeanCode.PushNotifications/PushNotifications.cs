@@ -10,11 +10,11 @@ namespace LeanCode.PushNotifications
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotifications<TUserId>>();
 
         private readonly IPushNotificationTokenStore<TUserId> tokenStore;
-        private readonly IFCMClient fcmClient;
+        private readonly FCMClient fcmClient;
 
         public PushNotifications(
             IPushNotificationTokenStore<TUserId> tokenStore,
-            IFCMClient fcmClient)
+            FCMClient fcmClient)
         {
             this.tokenStore = tokenStore;
             this.fcmClient = fcmClient;

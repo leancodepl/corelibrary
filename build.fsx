@@ -59,7 +59,7 @@ Target "Test" (fun () ->
     !! (testDir @@ "**/*.csproj")
         |> Seq.map DirectoryName
         |> Seq.iter (fun p ->
-            DotNetCli.RunCommand (fun c -> { c with WorkingDir = p }) "xunit")
+            DotNetCli.RunCommand (fun c -> { c with WorkingDir = p }) "xunit -nobuild")
 )
 
 Target "UpdateVersion" (fun () ->
@@ -99,8 +99,7 @@ Target "Release" (fun () ->
 
 Target "Default" DoNothing
 
-"Clean"
-    ==> "Restore"
+"Restore"
     ==> "Build"
     ==> "Test"
     ==> "Default"

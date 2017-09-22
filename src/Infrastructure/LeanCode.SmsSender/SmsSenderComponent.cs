@@ -7,6 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.SmsSender
 {
+    /// <summary>
+    /// Registers <see cref="SmsApiClient" /> as <see cref="ISmsSender" /> along
+    /// with the required configuration. Use separately if needed.
+    /// </summary>
     public class SmsSenderComponent : IAppComponent
     {
         public IModule AutofacModule { get; }

@@ -22,7 +22,10 @@ namespace LeanCode.Facebook
             this.fieldsStr = GetFields(config.PhotoSize);
             this.hmac = new HMACSHA256(ParseKey(config.AppSecret));
 
-            this.client = new HttpClient { BaseAddress = new Uri(ApiBase) };
+            this.client = new HttpClient
+            {
+                BaseAddress = new Uri(ApiBase)
+            };
         }
 
         public FacebookClient(

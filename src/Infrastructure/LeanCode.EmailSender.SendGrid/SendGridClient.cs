@@ -13,7 +13,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace LeanCode.EmailSender.SendGrid
 {
-    class SendGridClient : IEmailClient, IDisposable
+    public class SendGridClient : IEmailClient, IDisposable
     {
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {

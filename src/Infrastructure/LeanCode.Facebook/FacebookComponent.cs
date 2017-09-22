@@ -6,6 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Facebook
 {
+    /// <summary>
+    /// Registers <see cref="FacebookClient" /> along with the configuration.
+    /// If needed, use <see cref="FacebookClient" /> directly.
+    /// </summary>
     public class FacebookComponent : IAppComponent
     {
         public IModule AutofacModule { get; }

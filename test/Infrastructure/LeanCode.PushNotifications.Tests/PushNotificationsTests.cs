@@ -11,14 +11,14 @@ namespace LeanCode.PushNotifications.Tests
     public class PushNotificationsTests
     {
         private readonly IPushNotificationTokenStore<Guid> store;
-        private readonly IFCMClient client;
+        private readonly FCMClient client;
 
         private readonly PushNotifications<Guid> sender;
 
         public PushNotificationsTests()
         {
             store = Substitute.For<IPushNotificationTokenStore<Guid>>();
-            client = Substitute.For<IFCMClient>();
+            client = Substitute.For<FCMClient>();
 
             store.GetForDevice(Guid.Empty, DeviceType.Android).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
             store.GetAll(Guid.Empty).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));

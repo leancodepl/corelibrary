@@ -3,11 +3,6 @@ using System.Threading.Tasks;
 
 namespace LeanCode.PushNotifications
 {
-    public interface IFCMClient
-    {
-        Task<FCMResult> Send(FCMNotification notification);
-    }
-
     public abstract class FCMResult
     {
         private FCMResult()

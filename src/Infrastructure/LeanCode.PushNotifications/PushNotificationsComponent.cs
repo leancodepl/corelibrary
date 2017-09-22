@@ -6,6 +6,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace LeanCode.PushNotifications
 {
+    /// <summary>
+    /// Registers <see cref="PushNotifications{TUserId}" /> implementation of
+    /// <see cref="IPushNotifications{TUserId}" /> that uses <see cref="FCMClient" />
+    /// under the hood. It also registers <see cref="FCMClient" /> with
+    /// necessary configuration. If needed, use directly.
+    ///
+    /// It requires a separate implementation of
+    /// <see cref="IPushNotificationTokenStore{TUserId}" />.
+    /// </summary>
     public class PushNotificationsComponent<TUserId> : IAppComponent
     {
         public IModule AutofacModule { get; }

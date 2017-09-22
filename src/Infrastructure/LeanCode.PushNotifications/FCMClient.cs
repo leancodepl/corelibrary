@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.PushNotifications
 {
-    class FCMClient : IFCMClient
+    public class FCMClient
     {
         private const string Endpoint = "https://fcm.googleapis.com/fcm/send";
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings
@@ -29,7 +29,7 @@ namespace LeanCode.PushNotifications
             client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + configuration.ApiKey);
         }
 
-        public async Task<FCMResult> Send(FCMNotification notification)
+        public virtual async Task<FCMResult> Send(FCMNotification notification)
         {
             var stringified = JsonConvert.SerializeObject(notification, Settings);
             using (var content = new StringContent(stringified, Encoding.UTF8, "application/json"))
