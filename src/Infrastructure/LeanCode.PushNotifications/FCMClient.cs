@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.PushNotifications
 {
-    public class FCMClient
+    public class FCMClient : IDisposable
     {
         private const string Endpoint = "https://fcm.googleapis.com/fcm/send";
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings
@@ -67,6 +67,11 @@ namespace LeanCode.PushNotifications
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            client.Dispose();
         }
     }
 }
