@@ -13,11 +13,16 @@ namespace LeanCode.Mixpanel
         private readonly HttpClient client;
         private readonly MixpanelConfiguration mixpanelConfiguration;
 
+        public MixpanelAnalytics(MixpanelConfiguration configuration)
+            : this(new HttpClient(), configuration)
+        { }
+
         public MixpanelAnalytics(
-            IOptions<MixpanelConfiguration> mixpanelConfiguration)
+            HttpClient client,
+            MixpanelConfiguration mixpanelConfiguration)
         {
-            this.mixpanelConfiguration = mixpanelConfiguration.Value;
-            this.client = new HttpClient();
+            this.mixpanelConfiguration = mixpanelConfiguration;
+            this.client = client;
         }
 
         public Task Alias(string newId, string oldId)
@@ -33,49 +38,49 @@ namespace LeanCode.Mixpanel
             => Track(userId, mixpanelEvent.EventName, mixpanelEvent.Properties, isImport);
 
         public Task Track(string userId, string eventName, string propertyName, string propertyValue, bool isImport = false)
-            => Track(userId, eventName, new Dictionary<string, object>() {[propertyName] = propertyValue}, isImport);
+            => Track(userId, eventName, new Dictionary<string, object>() { [propertyName] = propertyValue }, isImport);
 
         public Task Track(string userId, string eventName, Dictionary<string, object> properties, bool isImport = false)
             => TrackEvent(userId, eventName, properties, isImport);
 
 
         public Task Set(string userId, string name, string value)
-            => Set(userId, new Dictionary<string, string>() {[name] = value});
+            => Set(userId, new Dictionary<string, string>() { [name] = value });
 
         public Task Set(string userId, Dictionary<string, string> properties)
             => Engage(userId, "$set", properties);
 
 
         public Task Add(string userId, string name, string value)
-            => Add(userId, new Dictionary<string, string>() {[name] = value});
+            => Add(userId, new Dictionary<string, string>() { [name] = value });
 
         public Task Add(string userId, Dictionary<string, string> properties)
             => Engage(userId, "$add", properties);
 
 
         public Task Append(string userId, string name, object value)
-            => Append(userId, new Dictionary<string, object>() {[name] = value });
+            => Append(userId, new Dictionary<string, object>() { [name] = value });
 
         public Task Append(string userId, Dictionary<string, object> properties)
             => Engage(userId, "$append", properties);
 
 
         public Task SetOnce(string userId, string name, string value)
-            => SetOnce(userId, new Dictionary<string, string>() {[name] = value});
+            => SetOnce(userId, new Dictionary<string, string>() { [name] = value });
 
         public Task SetOnce(string userId, Dictionary<string, string> properties)
             => Engage(userId, "$set_once", properties);
 
 
         public Task Union(string userId, string name, List<string> elements)
-            => Union(userId, new Dictionary<string, List<string>>() {[name] = elements});
+            => Union(userId, new Dictionary<string, List<string>>() { [name] = elements });
 
         public Task Union(string userId, Dictionary<string, List<string>> properties)
             => Engage(userId, "$union", properties);
 
 
         public Task Unset(string userId, string property)
-            => Unset(userId, new List<string>() {property});
+            => Unset(userId, new List<string>() { property });
 
         public Task Unset(string userId, List<string> properties)
             => Engage(userId, "$unset", properties);

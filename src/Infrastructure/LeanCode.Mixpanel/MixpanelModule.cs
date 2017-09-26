@@ -15,9 +15,24 @@ namespace LeanCode.Mixpanel
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.ConfigSection<MixpanelConfiguration>(configuration);
+            if (configuration != null)
+            {
+                builder.ConfigSection<MixpanelConfiguration>(configuration);
+            }
 
-            builder.RegisterType<MixpanelAnalytics>().As<IMixpanelAnalytics>();
+            builder.RegisterType<MixpanelAnalytics>()
+                .As<IMixpanelAnalytics>()
+                .SingleInstance();
+        }
+    }
+
+    class MixpanelWithFactoryModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterType<MixpanelAnalyticsFactory>()
+                .As<IMixpanelAnalyticsFactory>()
+                .SingleInstance();
         }
     }
 }
