@@ -10,19 +10,26 @@ namespace LeanCode.Mixpanel
 {
     class MixpanelAnalytics : IMixpanelAnalytics, IDisposable
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
+
         private readonly HttpClient client;
-        private readonly MixpanelConfiguration mixpanelConfiguration;
+        private readonly MixpanelConfiguration configuration;
+        private bool shouldDisposeClient;
 
         public MixpanelAnalytics(MixpanelConfiguration configuration)
-            : this(new HttpClient(), configuration)
-        { }
+        {
+            client = new HttpClient();
+            shouldDisposeClient = true;
+            this.configuration = configuration;
+        }
 
         public MixpanelAnalytics(
             HttpClient client,
-            MixpanelConfiguration mixpanelConfiguration)
+            MixpanelConfiguration configuration)
         {
-            this.mixpanelConfiguration = mixpanelConfiguration;
+            this.configuration = configuration;
             this.client = client;
+            this.shouldDisposeClient = false;
         }
 
         public Task Alias(string newId, string oldId)
@@ -98,7 +105,7 @@ namespace LeanCode.Mixpanel
                 properties = new Dictionary<string, object>();
             }
 
-            properties["token"] = mixpanelConfiguration.Token;
+            properties["token"] = configuration.Token;
             if (!properties.ContainsKey("distinct_id"))
             {
                 properties["distinct_id"] = userId;
@@ -107,32 +114,55 @@ namespace LeanCode.Mixpanel
             data["event"] = name;
             data["properties"] = properties;
 
-            return MakeRequest(isImport ? "import" : "track", data);
+            logger.Verbose("Sending Mixpanel event {eventName} for user {userId}", name, userId);
+            return MakeRequest(userId, isImport ? "import" : "track", name, data);
         }
 
         private Task Engage(string userId, string operation, object properties = null)
         {
+            logger.Verbose("Engaging Mixpanel operation {name} for user {userId}", operation, userId);
             Dictionary<string, object> data = new Dictionary<string, object>
             {
-                ["$token"] = mixpanelConfiguration.Token,
+                ["$token"] = configuration.Token,
                 ["$distinct_id"] = userId,
                 [operation] = properties
             };
 
-            return MakeRequest("engage", data);
+            return MakeRequest(userId, "engage", operation, data);
         }
 
-        private Task MakeRequest(string uri, Dictionary<string, object> data)
+        private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object> data)
         {
             string dataString = JsonConvert.SerializeObject(data);
             dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataString));
+            var jsonResponse = await client.GetStringAsync($"http://api.mixpanel.com/{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
+            var response = JsonConvert.DeserializeObject<MixpanelResponse>(jsonResponse);
 
-            return client.GetAsync($"http://api.mixpanel.com/{uri}/?data={dataString}&verbose=1&api_key={mixpanelConfiguration.ApiKey}");
+            if (response.Status == MixpanelResponse.Success)
+            {
+                logger.Information("Mixpanel request {requestName} for user {userId} sent successfully", requestName, userId);
+            }
+            else
+            {
+                logger.Warning("Error sending mixpanel request {requestName} for user {userId} with data: {@EventData}", requestName, userId, data);
+                logger.Warning("Mixpanel returned error: {Error}", response.Error);
+            }
         }
 
         void IDisposable.Dispose()
         {
-            client.Dispose();
+            if (shouldDisposeClient)
+                client.Dispose();
         }
+    }
+
+    class MixpanelResponse
+    {
+        public const int Success = 1;
+        public const int Failure = 0;
+
+
+        public int Status { get; set; }
+        public string Error { get; set; }
     }
 }
