@@ -101,7 +101,7 @@ Target "Default" DoNothing
 
 "Restore"
     ==> "Build"
-    ==> "Test"
+    // ==> "Test"
     ==> "Default"
     ==> "Pack"
     ==> "PublishToMyGet"
