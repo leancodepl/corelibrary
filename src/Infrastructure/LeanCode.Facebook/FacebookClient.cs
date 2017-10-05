@@ -20,7 +20,7 @@ namespace LeanCode.Facebook
         public FacebookClient(FacebookConfiguration config)
         {
             this.fieldsStr = GetFields(config.PhotoSize);
-            this.hmac = new HMACSHA256(ParseKey(config.AppSecret));
+            this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
 
             this.client = new HttpClient
             {
@@ -33,7 +33,7 @@ namespace LeanCode.Facebook
             HttpMessageHandler innerHandler)
         {
             this.fieldsStr = GetFields(config.PhotoSize);
-            this.hmac = new HMACSHA256(ParseKey(config.AppSecret));
+            this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
 
             this.client = new HttpClient(innerHandler)
             {
@@ -44,7 +44,7 @@ namespace LeanCode.Facebook
         public async Task<FacebookUser> GetUserInfo(string accessToken)
         {
             var proof = GenerateProof(accessToken);
-            var uri = $"me?fields={fieldsStr}&access_token={accessToken}&appsecret_proof={proof}";
+            var uri = $"me?fields={fieldsStr}&access_token={accessToken}{proof}";
             try
             {
                 using (var response = await client.GetAsync(uri))
@@ -103,9 +103,16 @@ namespace LeanCode.Facebook
 
         private string GenerateProof(string accessToken)
         {
-            var bytes = Encoding.ASCII.GetBytes(accessToken);
-            var hash = hmac.ComputeHash(bytes);
-            return ToHexString(hash);
+            if (hmac != null)
+            {
+                logger.Debug("Signing facebook request enabled - signing request.");
+                var bytes = Encoding.ASCII.GetBytes(accessToken);
+                var hash = hmac.ComputeHash(bytes);
+                return "&appsecret_proof=" + ToHexString(hash);
+            }
+
+            logger.Debug("Signing facebook request is disabled. Proceeding.");
+            return string.Empty;
         }
 
         private static byte[] ParseKey(string v)
