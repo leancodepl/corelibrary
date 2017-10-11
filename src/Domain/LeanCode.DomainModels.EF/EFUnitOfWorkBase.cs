@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.EF
             this.dbContext = dbContext;
         }
 
-        public Task CommitAsync()
+        public virtual Task CommitAsync()
         {
             SoftDeleteItems();
             return dbContext.SaveChangesAsync();
