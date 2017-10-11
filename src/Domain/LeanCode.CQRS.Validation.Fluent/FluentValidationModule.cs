@@ -16,8 +16,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterGeneric(typeof(AdapterLoader<,>))
-                .AsImplementedInterfaces()
-                .SingleInstance();
+                .AsImplementedInterfaces();
 
             builder
                 .RegisterAssemblyTypes(catalog.Assemblies)

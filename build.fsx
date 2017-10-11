@@ -44,6 +44,11 @@ Target "Clean" (fun () ->
         |> CleanDirs
 )
 
+
+Target "CleanDeploy" (fun () ->
+    CleanDirs [packDir]
+)
+
 Target "Restore" (fun () ->
     trace "Restoring packages"
     DotNetCli.Restore (fun c -> { c with WorkingDir = rootDir })
@@ -99,7 +104,8 @@ Target "Release" (fun () ->
 
 Target "Default" DoNothing
 
-"Restore"
+"CleanDeploy"
+    ==> "Restore"
     ==> "Build"
     ==> "Test"
     ==> "Default"
