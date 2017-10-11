@@ -18,7 +18,7 @@ namespace LeanCode.PushNotifications.Tests
         public PushNotificationsTests()
         {
             store = Substitute.For<IPushNotificationTokenStore<Guid>>();
-            client = Substitute.For<FCMClient>();
+            client = Substitute.For<FCMClient>(new FCMConfiguration { ApiKey = "" });
 
             store.GetForDevice(Guid.Empty, DeviceType.Android).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
             store.GetAll(Guid.Empty).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
