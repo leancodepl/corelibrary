@@ -93,6 +93,7 @@ namespace LeanCode.Facebook
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
             var photoUrl = result["picture"]["data"]["url"]?.Value<string>();
+            var languageCode = result["locale"].Value<string>();
             return new FacebookUser(id, email, firstName, lastName, photoUrl);
         }
 
@@ -127,7 +128,7 @@ namespace LeanCode.Facebook
 
         private static string GetFields(int photoSize)
         {
-            return $"id,email,first_name,last_name,picture.width({photoSize}).height({photoSize})";
+            return $"id,email,first_name,last_name,picture.width({photoSize}).height({photoSize}),locale";
         }
     }
 }
