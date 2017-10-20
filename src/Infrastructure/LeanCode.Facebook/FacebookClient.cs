@@ -94,7 +94,7 @@ namespace LeanCode.Facebook
             var lastName = result["last_name"]?.Value<string>();
             var photoUrl = result["picture"]["data"]["url"]?.Value<string>();
             var languageCode = result["locale"].Value<string>();
-            return new FacebookUser(id, email, firstName, lastName, photoUrl);
+            return new FacebookUser(id, email, firstName, lastName, photoUrl, languageCode);
         }
 
         public void Dispose()
