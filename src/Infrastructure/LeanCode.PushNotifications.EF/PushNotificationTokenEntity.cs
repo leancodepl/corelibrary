@@ -17,7 +17,7 @@ namespace LeanCode.PushNotifications.EF
             {
                 c.HasKey(e => e.Id).ForSqlServerIsClustered(false);
                 c.HasIndex(e => new { e.UserId, e.DeviceType }).ForSqlServerIsClustered(true);
-                c.HasIndex(e => new { e.UserId, e.DeviceType, e.Token });
+                c.HasIndex(e => new { e.UserId, e.DeviceType, e.Token }).IsUnique(true);
 
                 c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
             });
