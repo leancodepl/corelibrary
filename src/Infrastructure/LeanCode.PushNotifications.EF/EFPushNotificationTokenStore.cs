@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.TimeProvider;
@@ -9,6 +10,7 @@ namespace LeanCode.PushNotifications.EF
 {
     public sealed class EFPushNotificationTokenStore : IPushNotificationTokenStore<Guid>
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EFPushNotificationTokenStore>();
         private readonly DbContext unitOfWork;
         private readonly DbSet<PushNotificationTokenEntity> dbSet;
 
@@ -60,7 +62,27 @@ namespace LeanCode.PushNotifications.EF
                     DateCreated = Time.Now
                 });
             }
-            await unitOfWork.SaveChangesAsync();
+
+            try
+            {
+                await unitOfWork.SaveChangesAsync();
+            }
+            catch (DbUpdateException exception)
+            {
+                var sqlException = exception?.InnerException?.InnerException as SqlException;
+                if (sqlException != null)
+                {
+                    switch (sqlException.Number)
+                    {
+                        // Constraint violation exception
+                        // case 2627:  // Unique constraint error (throws when primary key duplicates)
+                        // case 547:   // Constraint check violation
+                        case 2601:  // Duplicated key row error
+                            logger.Verbose("Duplicate token received for user {UserId} on device {DeviceType}", userId, deviceType.ToString());
+                            break;
+                    }
+                }
+            }
         }
 
         public async Task UpdateToken(PushNotificationToken<Guid> token, string newToken)
