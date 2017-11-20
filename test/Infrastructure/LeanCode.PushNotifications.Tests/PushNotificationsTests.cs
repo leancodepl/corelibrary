@@ -180,7 +180,7 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.Send(uid, DeviceType.Android, new PushNotification("", "", null));
 
-            var _ = store.Received().RemoveInvalidToken(token);
+            var _ = store.Received().RemoveToken(token);
         }
 
         [Fact]
@@ -221,7 +221,7 @@ namespace LeanCode.PushNotifications.Tests
             await sender.Send(uid, DeviceType.Android, new PushNotification("", "", null));
 
             var _ = store.DidNotReceiveWithAnyArgs().UpdateToken(null, null);
-            _ = store.DidNotReceiveWithAnyArgs().RemoveInvalidToken(null);
+            _ = store.DidNotReceiveWithAnyArgs().RemoveToken(null);
         }
     }
 }

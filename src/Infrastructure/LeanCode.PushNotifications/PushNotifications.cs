@@ -89,7 +89,7 @@ namespace LeanCode.PushNotifications
 
                 case FCMResult.InvalidToken e:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, token is invalid", to, token.DeviceType);
-                    return tokenStore.RemoveInvalidToken(token);
+                    return tokenStore.RemoveToken(token);
 
                 case FCMResult.TokenUpdated e:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);

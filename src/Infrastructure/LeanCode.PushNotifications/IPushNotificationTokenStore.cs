@@ -10,6 +10,6 @@ namespace LeanCode.PushNotifications
 
         Task UpdateOrAddToken(TUserId userId, DeviceType type, string newToken);
         Task UpdateToken(PushNotificationToken<TUserId> existing, string newToken);
-        Task RemoveInvalidToken(PushNotificationToken<TUserId> token);
+        Task RemoveToken(PushNotificationToken<TUserId> token);
     }
 }
