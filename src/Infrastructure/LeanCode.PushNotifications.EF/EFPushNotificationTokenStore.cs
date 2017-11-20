@@ -48,6 +48,15 @@ namespace LeanCode.PushNotifications.EF
             await unitOfWork.SaveChangesAsync();
         }
 
+        public async Task RemoveForDevice(Guid userId, DeviceType deviceType)
+        {
+            var entities = await dbSet
+                .Where(e => e.UserId == userId && e.DeviceType == deviceType).ToListAsync();
+
+            dbSet.RemoveRange(entities);
+            await unitOfWork.SaveChangesAsync();
+        }
+
         public async Task UpdateOrAddToken(Guid userId, DeviceType deviceType, string newToken)
         {
             var existing = await LoadExisting(userId, deviceType, newToken);
