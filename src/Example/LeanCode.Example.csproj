@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <PackageId>LeanCode.Example</PackageId>
     <UserSecretsId>LeanCode.Example</UserSecretsId>
-    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -59,7 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(ToolsVersion)" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="$(MicrosoftEntityFrameworkCoreToolsDotNet)" />
   </ItemGroup>
 
 </Project>

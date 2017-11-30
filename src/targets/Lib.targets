@@ -5,6 +5,8 @@
     <Description>LeanCode Core library</Description>
     <IsPackable>true</IsPackable>
 
+    <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
+
     <IncludeSymbols>true</IncludeSymbols>
     <DebugType>portable</DebugType>
 

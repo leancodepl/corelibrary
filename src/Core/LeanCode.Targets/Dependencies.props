@@ -4,23 +4,27 @@
     <!-- Self version, generated automatically -->
     <CoreLibVersion>GENERATED_DURING_BUILD</CoreLibVersion>
 
-    <AspNetCoreVersion>2.0.0</AspNetCoreVersion>
+    <AspNetCoreVersion>2.0.1</AspNetCoreVersion>
     <!-- .NET Core/ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
     <ExtensionsVersion>2.0.0</ExtensionsVersion>
     <JsonNetVersion>10.0.3</JsonNetVersion>
-    <AutofacVersion>4.6.1</AutofacVersion>
-    <AutoMapperVersion>6.1.1</AutoMapperVersion>
+    <AutofacVersion>4.6.2</AutofacVersion>
+    <AutoMapperVersion>6.2.1</AutoMapperVersion>
     <SerilogVersion>2.5.0</SerilogVersion>
+
+    <MicrosoftExtensionsConfigurationVersion>2.0.0</MicrosoftExtensionsConfigurationVersion>
+    <MicrosoftExtensionsConfigurationJsonVersion>2.0.0</MicrosoftExtensionsConfigurationJsonVersion>
 
     <!-- System.* libraries -->
     <NetCoreLibVersion>4.4.0</NetCoreLibVersion>
-    <EFCoreVersion>2.0.0</EFCoreVersion>
-    <ToolsVersion>2.0.0</ToolsVersion>
+    <EFCoreVersion>2.0.1</EFCoreVersion>
+    <MicrosoftDotNetWatcherTools>2.0.0</MicrosoftDotNetWatcherTools>
+    <MicrosoftEntityFrameworkCoreToolsDotNet>2.0.1</MicrosoftEntityFrameworkCoreToolsDotNet>
 
     <!-- Libs used in one place -->
     <AutofacExtensionsDependencyInjectionVersion>4.2.0</AutofacExtensionsDependencyInjectionVersion>
-    <FluentValidationVersion>7.1.1</FluentValidationVersion>
-    <PollyVersion>5.3.1</PollyVersion>
+    <FluentValidationVersion>7.2.1</FluentValidationVersion>
+    <PollyVersion>5.6.1</PollyVersion>
 
     <SerilogExtensionsLoggingVersion>2.0.2</SerilogExtensionsLoggingVersion>
     <SerilogSettingsConfigurationVersion>2.4.0</SerilogSettingsConfigurationVersion>
@@ -28,22 +32,21 @@
     <SerilogSinksRollingFileVersion>3.3.0</SerilogSinksRollingFileVersion>
 
     <!-- Tests -->
-    <XUnitVersion>2.3.0-beta4-build3742</XUnitVersion>
-    <XUnitAnalyzersVersion>0.7.0</XUnitAnalyzersVersion>
-    <MicrosoftNETTestSdkVersion>15.3.0</MicrosoftNETTestSdkVersion>
-    <NSubstituteVersion>2.0.3</NSubstituteVersion>
-    <CastleCoreVersion>4.1.1</CastleCoreVersion>
+    <XUnitVersion>2.3.1</XUnitVersion>
+    <XUnitAnalyzersVersion>0.8.0</XUnitAnalyzersVersion>
+    <MicrosoftNETTestSdkVersion>15.5.0</MicrosoftNETTestSdkVersion>
+    <NSubstituteVersion>3.1.0</NSubstituteVersion>
 
     <!-- Razor -->
     <MicrosoftCSharpVersion>4.4.0</MicrosoftCSharpVersion>
-    <MicrosoftCodeAnalysisCSharpVersion>2.3.2</MicrosoftCodeAnalysisCSharpVersion>
+    <MicrosoftCodeAnalysisCSharpVersion>2.4.0</MicrosoftCodeAnalysisCSharpVersion>
     <SystemRuntimeLoaderVersion>4.3.0</SystemRuntimeLoaderVersion>
     <SystemDynamicRuntimeVersion>4.3.0</SystemDynamicRuntimeVersion>
 
     <!-- IdentityServer & related -->
-    <IdentityServer4Version>2.0.0-rc1</IdentityServer4Version>
+    <IdentityServer4Version>2.0.4</IdentityServer4Version>
     <MicrosoftAzureKeyVaultVersion>2.3.2</MicrosoftAzureKeyVaultVersion>
-    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.16.0</MicrosoftIdentityModelClientsActiveDirectoryVersion>
-    <IdentityModelVersion>2.11.0</IdentityModelVersion>
+    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.17.2</MicrosoftIdentityModelClientsActiveDirectoryVersion>
+    <IdentityModelVersion>2.16.0</IdentityModelVersion>
   </PropertyGroup>
 </Project>
