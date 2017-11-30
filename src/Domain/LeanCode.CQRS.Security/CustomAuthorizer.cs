@@ -1,27 +1,40 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Security
 {
-    public interface ICustomAuthorizer<in TAppContext, in TObject>
+    public interface ICustomAuthorizer<TAppContext>
     {
-        Task<bool> CheckIfAuthorized(TAppContext context, TObject obj, object customData);
+        Task<bool> CheckIfAuthorized(TAppContext appContext, QueryExecutionPayload payload, object customData);
+        Task<bool> CheckIfAuthorized(TAppContext appContext, CommandExecutionPayload payload, object customData);
     }
 
-    public abstract class CustomAuthorizer<TAppContext, TObject> : ICustomAuthorizer<TAppContext, TObject>
+    public abstract class CustomAuthorizer<TAppContext, TContext, TObject>
+        : ICustomAuthorizer<TAppContext>
     {
         public Task<bool> CheckIfAuthorized(
-            TAppContext context, TObject obj, object customData)
+            TAppContext appContext,
+            QueryExecutionPayload payload,
+            object customData)
         {
-            return CheckIfAuthorized(context, obj);
+            return CheckIfAuthorized(appContext, (TContext)payload.Context, (TObject)payload.Query);
+        }
+
+        public Task<bool> CheckIfAuthorized(
+            TAppContext appContext,
+            CommandExecutionPayload payload,
+            object customData)
+        {
+            return CheckIfAuthorized(appContext, (TContext)payload.Context, (TObject)payload.Command);
         }
 
         protected abstract Task<bool> CheckIfAuthorized(
-            TAppContext context, TObject obj);
+            TAppContext appContext, TContext objContext, TObject obj);
     }
 
-    public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData>
-        : ICustomAuthorizer<TAppContext, TObject>
+    public abstract class CustomAuthorizer<TAppContext, TContext, TObject, TCustomData>
+        : ICustomAuthorizer<TAppContext>
         where TCustomData : class
     {
         public Task<bool> CheckIfAuthorized(TAppContext context, TObject obj, object customData)

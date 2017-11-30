@@ -1,5 +1,5 @@
 namespace LeanCode.CQRS
 {
-    public interface IRemoteCommand : ICommand
+    public interface IRemoteCommand<in TContext> : ICommand<TContext>
     { }
 }

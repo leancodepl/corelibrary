@@ -6,6 +6,9 @@ namespace LeanCode.CQRS
     public interface IQuery
     { }
 
-    public interface IQuery<out TResult> : IQuery
+    public interface IQuery<in TContext, out TResult> : IQuery
+    { }
+
+    public interface INoContextQuery<out TResult> : IQuery<VoidContext, TResult>
     { }
 }

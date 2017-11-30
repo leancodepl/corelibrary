@@ -5,7 +5,7 @@ using LeanCode.Pipelines;
 namespace LeanCode.CQRS.Execution
 {
     public sealed class QueryFinalizer<TContext>
-        : IPipelineFinalizer<TContext, IQuery, object>
+        : IPipelineFinalizer<TContext, QueryExecutionPayload, object>
         where TContext : IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<QueryFinalizer<TContext>>();
@@ -17,8 +17,11 @@ namespace LeanCode.CQRS.Execution
         }
 
         public async Task<object> ExecuteAsync(
-            TContext context, IQuery query)
+            TContext _, QueryExecutionPayload payload)
         {
+            var context = payload.Context;
+            var query = payload.Query;
+
             var contextType = context.GetType();
             var queryType = query.GetType();
             var handler = resolver.FindQueryHandler(contextType, queryType);

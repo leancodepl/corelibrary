@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface IQueryExecutor<TContext>
+    public interface IQueryExecutor
     {
-        Task<TResult> GetAsync<TResult>(TContext context, IQuery<TResult> query);
+        Task<TResult> GetAsync<TContext, TResult>(TContext context, IQuery<TContext, TResult> query);
     }
 }
