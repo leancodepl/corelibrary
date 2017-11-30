@@ -1,14 +1,32 @@
 using System;
+using System.Threading;
 
 namespace LeanCode.TimeProvider
 {
     public sealed class FixedTimeProvider : ITimeProvider
     {
-        public DateTime Now { get; }
+        public static readonly FixedTimeProvider SharedInstance = new FixedTimeProvider();
 
-        public FixedTimeProvider(DateTime now)
+        private AsyncLocal<DateTime> savedTime = new AsyncLocal<DateTime>();
+
+        /// <summary>
+        /// Gets or sets the time for <b>current async context</b>.
+        /// </summary>
+        public DateTime Now
         {
-            Now = now;
+            get => savedTime.Value;
+            set => savedTime.Value = value;
+        }
+
+        private FixedTimeProvider() { }
+
+        /// <summary>
+        /// Sets this provider as current and updates time for current async context.
+        /// </summary>
+        public static void SetTo(DateTime time)
+        {
+            Time.UseTimeProvider(SharedInstance);
+            SharedInstance.Now = time;
         }
     }
 }
