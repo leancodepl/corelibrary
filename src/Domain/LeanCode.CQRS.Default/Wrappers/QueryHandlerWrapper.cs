@@ -4,7 +4,7 @@ using LeanCode.CQRS.Execution;
 namespace LeanCode.CQRS.Default.Wrappers
 {
     class QueryHandlerWrapper<TContext, TQuery, TResult> : IQueryHandlerWrapper
-        where TQuery : IQuery<TResult>
+        where TQuery : IQuery<TContext, TResult>
     {
         private readonly IQueryHandler<TContext, TQuery, TResult> handler;
 

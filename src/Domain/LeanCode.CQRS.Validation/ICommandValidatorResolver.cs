@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Validation
 {
-    public interface ICommandValidatorResolver
+    public interface ICommandValidatorResolver<TAppContext>
     {
-        ICommandValidatorWrapper FindCommandValidator(
-            Type contextType, Type commandType);
+        ICommandValidatorWrapper FindCommandValidator(Type commandType);
     }
 
     /// <summary>
@@ -14,6 +13,6 @@ namespace LeanCode.CQRS.Validation
     /// </summary>
     public interface ICommandValidatorWrapper
     {
-        Task<ValidationResult> ValidateAsync(object context, ICommand command);
+        Task<ValidationResult> ValidateAsync(object appContext, object context, ICommand command);
     }
 }

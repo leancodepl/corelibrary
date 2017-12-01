@@ -4,6 +4,6 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 {
     public interface IRemoteCommandExecutor
     {
-        Task<CommandResult> RunAsync(IRemoteCommand command);
+        Task<CommandResult> RunAsync<TContext>(IRemoteCommand<TContext> command);
     }
 }

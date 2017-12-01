@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface IQueryHandlerResolver
+    public interface IQueryHandlerResolver<TAppContext>
     {
-        IQueryHandlerWrapper FindQueryHandler(Type contextType, Type queryType);
+        IQueryHandlerWrapper FindQueryHandler(Type queryType);
     }
 
     /// <summary>

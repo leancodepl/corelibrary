@@ -1,6 +1,6 @@
 namespace LeanCode.CQRS.Execution
 {
-    public class QueryExecutionPayload
+    public struct QueryExecutionPayload
     {
         public object Context { get; }
         public IQuery Query { get; }

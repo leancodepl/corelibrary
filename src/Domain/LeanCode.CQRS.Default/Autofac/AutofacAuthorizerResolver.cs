@@ -5,11 +5,14 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacAuthorizerResolver : IAuthorizerResolver
+    class AutofacAuthorizerResolver<TAppContext> : IAuthorizerResolver<TAppContext>
     {
-        private static readonly Type AuthorizerBase = typeof(ICustomAuthorizer<,>);
-        private static readonly Type AuthorizerWrapperBase = typeof(CustomAuthorizerWrapper<,>);
-        private static readonly TypesCache typesCache = new TypesCache(AuthorizerBase, AuthorizerWrapperBase);
+        private static readonly Type AuthorizerBase = typeof(ICustomAuthorizer<TAppContext>);
+        private static readonly Type QueryAuthorizerWrapperBase = typeof(CustomQueryAuthorizerWrapper<TAppContext>);
+        private static readonly Type CommandAuthorizerWrapperBase = typeof(CustomCommandAuthorizerWrapper<TAppContext>);
+        private static readonly TypesCache typesCache = new TypesCache(
+            a => AuthorizerBase.MakeGenericType(a),
+            ConstructWrapperType);
 
         private readonly IComponentContext componentContext;
 
@@ -18,9 +21,9 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICustomAuthorizerWrapper FindAuthorizer(Type contextType, Type authorizerType, Type objectType)
+        public ICustomAuthorizerWrapper FindAuthorizer(Type authorizerType, Type objectType)
         {
-            var cached = typesCache.Get(contextType, objectType);
+            var cached = typesCache.Get(objectType);
             if (componentContext.TryResolve(authorizerType, out var handler))
             {
                 var wrapper = cached.Constructor.Invoke(new[] { handler });
@@ -29,6 +32,18 @@ namespace LeanCode.CQRS.Default.Autofac
             else
             {
                 return null;
+            }
+        }
+
+        private static Type ConstructWrapperType(Type objType)
+        {
+            if (typeof(IQuery).IsAssignableFrom(objType))
+            {
+                return QueryAuthorizerWrapperBase;
+            }
+            else
+            {
+                return CommandAuthorizerWrapperBase;
             }
         }
     }

@@ -8,13 +8,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     {
         public static readonly ValidationError SampleError = new ValidationError("Prop", "999", 2);
 
-        public AppContext LastContext { get; private set; }
+        public AppContext LastAppContext { get; private set; }
+        public object LastContext { get; private set; }
         public ICommand LastCommand { get; private set; }
 
-        public Task<CommandResult> RunAsync<TCommand>(
-            AppContext context, TCommand command)
-            where TCommand : ICommand
+        public Task<CommandResult> RunAsync<TContext, TCommand>(
+            AppContext appContext,
+            TContext context,
+            TCommand command)
+            where TCommand : ICommand<TContext>
         {
+            LastAppContext = appContext;
             LastContext = context;
             LastCommand = command;
             if (LastCommand is SampleRemoteCommand cmd)

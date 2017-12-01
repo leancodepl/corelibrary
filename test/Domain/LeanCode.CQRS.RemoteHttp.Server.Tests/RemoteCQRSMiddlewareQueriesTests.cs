@@ -69,15 +69,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
             await Invoke(user: user);
 
-            Assert.NotNull(query.LastContext);
-            Assert.Equal(user, query.LastContext.User);
+            Assert.NotNull(query.LastAppContext);
+            Assert.Equal(user, query.LastAppContext.User);
         }
     }
 
-    public class SampleQuery : IQuery<int>
+    public class SampleQuery : IQuery<VoidContext, int>
     { }
 
-    public class SampleRemoteQuery : IRemoteQuery<int>
+    public class SampleRemoteQuery : IRemoteQuery<VoidContext, int>
     {
         public int Prop { get; set; }
     }

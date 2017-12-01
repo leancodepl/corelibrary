@@ -16,7 +16,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         private readonly string endpoint;
         private readonly string defaultObject;
-        private readonly StubServiceProvider serviceProvider;
 
         public BaseMiddlewareTests(string endpoint, Type defaultObject)
         {
@@ -24,10 +23,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             this.defaultObject = defaultObject.FullName;
 
             middleware = new RemoteCQRSMiddleware<AppContext>(null);
-
-            var commandHandler = new RemoteCommandHandler<AppContext>(command, catalog, c => new AppContext(c.User));
-            var queryHandler = new RemoteQueryHandler<AppContext>(query, catalog, c => new AppContext(c.User));
-            this.serviceProvider = new StubServiceProvider(commandHandler, queryHandler);
         }
 
         protected async Task<(int statusCode, string response)> Invoke(

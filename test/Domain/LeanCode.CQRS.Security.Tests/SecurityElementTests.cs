@@ -12,8 +12,8 @@ namespace LeanCode.CQRS.Default.Tests.Security
     {
         private const string DerivedAttributeParam = nameof(DerivedAttributeParam);
 
-        private readonly IAuthorizerResolver authorizerResolver;
-        private readonly SecurityElement<ISecurityContext, object, object> element;
+        private readonly IAuthorizerResolver<ISecurityContext> authorizerResolver;
+        private readonly CQRSSecurityElement<ISecurityContext, object, object> element;
         private IFirstAuthorizer firstAuthorizer;
         private ISecondAuthorizer secondAuthorizer;
         private IDerivedAuthorizer derivedAuthorizer;
@@ -22,9 +22,9 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
         public DefaultAuthorizerTests()
         {
-            authorizerResolver = Substitute.For<IAuthorizerResolver>();
+            authorizerResolver = Substitute.For<IAuthorizerResolver<ISecurityContext>>();
 
-            element = new SecurityElement<ISecurityContext, object, object>(
+            element = new CQRSSecurityElement<ISecurityContext, object, object>(
                 authorizerResolver);
 
             context = Substitute.For<ISecurityContext>();
@@ -35,28 +35,28 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             firstAuthorizer = Substitute.For<IFirstAuthorizer>();
             firstAuthorizer.UnderlyingAuthorizer.Returns(firstAuthorizer.GetType());
-            firstAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(
-                context.GetType(), typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
+                typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
         }
 
         private void SetUpSecondAuthorizer(bool isPositive)
         {
             secondAuthorizer = Substitute.For<ISecondAuthorizer>();
             secondAuthorizer.UnderlyingAuthorizer.Returns(secondAuthorizer.GetType());
-            secondAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            secondAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
-            authorizerResolver.FindAuthorizer(context.GetType(), typeof(ISecondAuthorizer), Arg.Any<Type>()).Returns(secondAuthorizer);
+            authorizerResolver.FindAuthorizer(typeof(ISecondAuthorizer), Arg.Any<Type>()).Returns(secondAuthorizer);
         }
 
         private void SetUpDerivedAuthorizer(bool isPositive)
         {
             derivedAuthorizer = Substitute.For<IDerivedAuthorizer>();
             derivedAuthorizer.UnderlyingAuthorizer.Returns(derivedAuthorizer.GetType());
-            derivedAuthorizer.CheckIfAuthorized(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            derivedAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
-            authorizerResolver.FindAuthorizer(context.GetType(), typeof(IDerivedAuthorizer), Arg.Any<Type>()).Returns(derivedAuthorizer);
+            authorizerResolver.FindAuthorizer(typeof(IDerivedAuthorizer), Arg.Any<Type>()).Returns(derivedAuthorizer);
         }
 
         private Task Authorize(object obj)
@@ -90,7 +90,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = firstAuthorizer.Received().CheckIfAuthorized(context, obj, Arg.Any<object>());
+            _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, Arg.Any<object>());
         }
 
         [Theory]
@@ -130,7 +130,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = derivedAuthorizer.Received().CheckIfAuthorized(context, obj, DerivedAttributeParam);
+            _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, DerivedAttributeParam);
         }
 
         [Fact]

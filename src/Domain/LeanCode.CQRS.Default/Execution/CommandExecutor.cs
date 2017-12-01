@@ -7,24 +7,27 @@ namespace LeanCode.CQRS.Default.Execution
     public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
         where TAppContext : IPipelineContext
     {
-        private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
+        private readonly PipelineExecutor<TAppContext, CommandExecutionPayload, CommandResult> executor;
 
         public CommandExecutor(
             IPipelineFactory factory,
             CommandBuilder<TAppContext> config)
         {
-            var cfg = Pipeline.Build<TAppContext, ICommand, CommandResult>()
-                .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
+            var cfg = Pipeline.Build<TAppContext, CommandExecutionPayload, CommandResult>()
+                .Configure(new ConfigPipeline<TAppContext, CommandExecutionPayload, CommandResult>(config))
                 .Finalize<CommandFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
         }
 
-        public Task<CommandResult> RunAsync<TCommand>(
-            TAppContext context, TCommand command)
-            where TCommand : ICommand
+        public Task<CommandResult> RunAsync<TContext, TCommand>(
+            TAppContext appcontext,
+            TContext context,
+            TCommand command)
+            where TCommand : ICommand<TContext>
         {
-            return executor.ExecuteAsync(context, command);
+            var payload = new CommandExecutionPayload(context, command);
+            return executor.ExecuteAsync(appcontext, payload);
         }
     }
 }

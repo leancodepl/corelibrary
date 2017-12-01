@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface ICommandHandlerResolver
+    public interface ICommandHandlerResolver<TAppContext>
     {
-        ICommandHandlerWrapper FindCommandHandler(
-            Type contextType, Type commandType);
+        ICommandHandlerWrapper FindCommandHandler(Type commandType);
     }
 
     /// <summary>

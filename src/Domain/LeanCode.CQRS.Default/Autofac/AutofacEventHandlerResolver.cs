@@ -14,9 +14,9 @@ namespace LeanCode.CQRS.Default.Autofac
         private static readonly Type EnumerableType = typeof(IEnumerable<>);
         private static readonly Type EventHandlerBase = typeof(IDomainEventHandler<>);
         private static readonly Type EventHandlerWrapperBase = typeof(EventHandlerWrapper<>);
-
-        private static readonly ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>> typesCache =
-            new ConcurrentDictionary<Type, Tuple<Type, ConstructorInfo>>();
+        private static readonly TypesCache typesCache = new TypesCache(
+            a => EnumerableType.MakeGenericType(EventHandlerBase.MakeGenericType(a)),
+            a => EventHandlerWrapperBase.MakeGenericType(a));
 
         private readonly IComponentContext componentContext;
 
@@ -27,14 +27,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public IReadOnlyList<IDomainEventHandlerWrapper> FindEventHandlers(Type eventType)
         {
-            var cached = typesCache.GetOrAdd(eventType, type =>
-            {
-                var queryHandlerType = EnumerableType.MakeGenericType(EventHandlerBase.MakeGenericType(type));
-                var wrappedHandlerType = EventHandlerWrapperBase.MakeGenericType(type);
-                var ctor = wrappedHandlerType.GetConstructors()[0];
-                return Tuple.Create(queryHandlerType, ctor);
-            });
-
+            var cached = typesCache.Get(eventType);
             object handlers;
             componentContext.TryResolve(cached.Item1, out handlers);
             return ((IEnumerable<object>)handlers)

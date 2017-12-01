@@ -1,4 +1,8 @@
+using System;
 using System.Threading.Tasks;
+using Autofac;
+using LeanCode.Components;
+using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,8 +11,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 {
     public sealed class RemoteCQRSMiddleware<TAppContext>
     {
-        public RemoteCQRSMiddleware(RequestDelegate next)
-        { }
+        private readonly TypesCatalog catalog;
+        private readonly Func<HttpContext, TAppContext> contextTranslator;
+
+        public RemoteCQRSMiddleware(
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator,
+            RequestDelegate next)
+        {
+            this.catalog = catalog;
+            this.contextTranslator = contextTranslator;
+        }
 
         public async Task Invoke(HttpContext context)
         {
@@ -20,12 +33,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
-                var queryHandler = context.RequestServices.GetService<IRemoteQueryHandler<TAppContext>>();
+                var executor = context.RequestServices.GetService<IQueryExecutor<TAppContext>>();
+                var queryHandler = new RemoteQueryHandler<TAppContext>(executor, catalog, contextTranslator);
                 actionResult = await queryHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
-                var commandHandler = context.RequestServices.GetService<IRemoteCommandHandler<TAppContext>>();
+                var executor = context.RequestServices.GetService<ICommandExecutor<TAppContext>>();
+                var commandHandler = new RemoteCommandHandler<TAppContext>(executor, catalog, contextTranslator);
                 actionResult = await commandHandler.ExecuteAsync(context).ConfigureAwait(false);
             }
             else
@@ -39,9 +54,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
     public static class RemoteCQRSMiddlewareExtensions
     {
-        public static IApplicationBuilder UseRemoteCQRS<TAppContext>(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
+            this IApplicationBuilder builder,
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>();
+            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator);
         }
     }
 }

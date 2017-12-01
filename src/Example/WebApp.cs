@@ -16,6 +16,7 @@ namespace LeanCode.Example
         public Autofac.Core.IModule AutofacModule => null;
         public AutoMapper.Profile MapperProfile => null;
 
+
         public WebApp(IConfiguration configuration, IHostingEnvironment env)
         {
             this.configuration = configuration;
@@ -38,7 +39,8 @@ namespace LeanCode.Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Map("/api", cfg => cfg.UseRemoteCQRS<AppContext>());
+            var catalog = new TypesCatalog(typeof(Startup));
+            app.Map("/api", cfg => cfg.UseRemoteCQRS<AppContext>(catalog, ctx => new AppContext { User = ctx.User }));
 
             app.UseStaticFiles();
             app.UseMvc();

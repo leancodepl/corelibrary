@@ -4,7 +4,7 @@ using LeanCode.CQRS.Execution;
 namespace LeanCode.CQRS.Default.Wrappers
 {
     class CommandHandlerWrapper<TContext, TCommand> : ICommandHandlerWrapper
-        where TCommand : ICommand
+        where TCommand : ICommand<TContext>
     {
         private readonly ICommandHandler<TContext, TCommand> handler;
 

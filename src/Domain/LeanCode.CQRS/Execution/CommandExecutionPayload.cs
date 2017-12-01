@@ -1,6 +1,6 @@
 namespace LeanCode.CQRS.Execution
 {
-    public class CommandExecutionPayload
+    public struct CommandExecutionPayload
     {
         public object Context { get; }
         public ICommand Command { get; }

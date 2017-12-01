@@ -1,30 +1,31 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Security
 {
-    public class SecurityElement<TContext, TInput, TOutput>
-        : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : ISecurityContext
+    public class CQRSSecurityElement<TAppContext, TInput, TOutput>
+        : IPipelineElement<TAppContext, TInput, TOutput>
+        where TAppContext : ISecurityContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SecurityElement<TContext, TInput, TOutput>>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSSecurityElement<TAppContext, TInput, TOutput>>();
 
-        private readonly IAuthorizerResolver authorizerResolver;
+        private readonly IAuthorizerResolver<TAppContext> authorizerResolver;
 
-        public SecurityElement(IAuthorizerResolver authorizerResolver)
+        public CQRSSecurityElement(IAuthorizerResolver<TAppContext> authorizerResolver)
         {
             this.authorizerResolver = authorizerResolver;
         }
 
         public async Task<TOutput> ExecuteAsync(
-            TContext context,
+            TAppContext appContext,
             TInput input,
-            Func<TContext, TInput, Task<TOutput>> next)
+            Func<TAppContext, TInput, Task<TOutput>> next)
         {
             var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
-            var user = context.User;
+            var user = appContext.User;
 
             if (customAuthorizers.Count > 0)
             {
@@ -35,21 +36,20 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            var contextType = context.GetType();
             var objectType = input.GetType();
             foreach (var customAuthorizerDefinition in customAuthorizers)
             {
                 var authorizerType = customAuthorizerDefinition.Authorizer;
                 var customAuthorizer = authorizerResolver.FindAuthorizer(
-                    contextType, authorizerType, objectType);
+                    authorizerType, objectType);
 
                 if (customAuthorizer == null)
                 {
-                    throw new CustomAuthorizerNotFoundException(contextType, authorizerType);
+                    throw new CustomAuthorizerNotFoundException(authorizerType);
                 }
 
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorized(context, input, customAuthorizerDefinition.CustomData)
+                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData)
                     .ConfigureAwait(false);
                 if (!authorized)
                 {
@@ -60,17 +60,24 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            return await next(context, input).ConfigureAwait(false);
+            return await next(appContext, input).ConfigureAwait(false);
         }
     }
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TContext, TInput, TOutput> Secure<TContext, TInput, TOutput>(
-            this PipelineBuilder<TContext, TInput, TOutput> builder)
+        public static PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> Secure<TContext>(
+            this PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> builder)
             where TContext : ISecurityContext
         {
-            return builder.Use<SecurityElement<TContext, TInput, TOutput>>();
+            return builder.Use<CQRSSecurityElement<TContext, CommandExecutionPayload, CommandResult>>();
+        }
+
+        public static PipelineBuilder<TContext, QueryExecutionPayload, object> Secure<TContext>(
+            this PipelineBuilder<TContext, QueryExecutionPayload, object> builder)
+            where TContext : ISecurityContext
+        {
+            return builder.Use<CQRSSecurityElement<TContext, QueryExecutionPayload, object>>();
         }
     }
 }
