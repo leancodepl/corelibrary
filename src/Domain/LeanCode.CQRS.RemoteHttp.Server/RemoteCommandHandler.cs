@@ -67,26 +67,24 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             TAppContext appContext,
             object cmd)
             where TCommand : IRemoteCommand<TContext>
-            where TContext : new()
         {
-            var ctx = new TContext();
-            if (ctx is IInitializeFromAppContext<TAppContext> ii)
-            {
-                ii.Initialize(appContext);
-            }
-            return commandExecutor.RunAsync(appContext, ctx, (TCommand)cmd);
+            return commandExecutor.RunAsync<TContext, TCommand>(appContext, (TCommand)cmd);
         }
 
         private static MethodInfo MakeExecutorMethod(Type commandType)
         {
             var types = commandType
                 .GetInterfaces()
-                .Where(i =>
+                .Single(i =>
                     i.IsConstructedGenericType &&
                     i.GetGenericTypeDefinition() == typeof(ICommand<>))
-                .Single()
                 .GenericTypeArguments;
-            return ExecCommandMethod.MakeGenericMethod(types[0], commandType);
+            var contextType = types[0];
+            if (contextType.GetConstructor(Type.EmptyTypes) == null)
+            {
+                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
+            }
+            return ExecCommandMethod.MakeGenericMethod(contextType, commandType);
         }
     }
 }

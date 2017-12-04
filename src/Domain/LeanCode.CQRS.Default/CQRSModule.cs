@@ -19,7 +19,7 @@ namespace LeanCode.CQRS.Default
 {
     using CommandsQueriesModules = IReadOnlyList<IModule>;
 
-    class CQRSModule<TAppContext> : Module
+    public class CQRSModule<TAppContext> : Module
         where TAppContext : IPipelineContext
     {
         private readonly TypesCatalog catalog;
@@ -75,11 +75,20 @@ namespace LeanCode.CQRS.Default
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
+            builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IObjectContextFromAppContextFactory<,>));
 
-            builder.Register(c => new CommandExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), cmdBuilder))
+            builder.Register(c =>
+                new CommandExecutor<TAppContext>(
+                    c.Resolve<IPipelineFactory>(),
+                    cmdBuilder,
+                    c.Resolve<ILifetimeScope>()))
                 .As<ICommandExecutor<TAppContext>>()
                 .SingleInstance();
-            builder.Register(c => new QueryExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), queryBuilder))
+            builder.Register(c =>
+                new QueryExecutor<TAppContext>(
+                    c.Resolve<IPipelineFactory>(),
+                    queryBuilder,
+                    c.Resolve<ILifetimeScope>()))
                 .As<IQueryExecutor<TAppContext>>()
                 .SingleInstance();
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
 
@@ -18,6 +19,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             LastContext = context;
             LastQuery = query;
             return Task.FromResult(default(TResult));
+        }
+
+        public Task<TResult> GetAsync<TContext, TResult>(
+            AppContext appContext,
+            IQuery<TContext, TResult> query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

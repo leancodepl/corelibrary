@@ -67,18 +67,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private async Task<object> ExecuteQuery<TContext, TQuery, TResult>(
             TAppContext appContext, object query)
             where TQuery : IRemoteQuery<TContext, TResult>
-            where TContext : new()
         {
-            var ctx = new TContext();
-            if (ctx is IInitializeFromAppContext<TAppContext> ii)
-            {
-                ii.Initialize(appContext);
-            }
-
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
             return await queryExecutor
-                .GetAsync(appContext, ctx, (TQuery)query)
+                .GetAsync<TContext, TResult>(appContext, (TQuery)query)
                 .ConfigureAwait(false);
         }
 
@@ -89,7 +82,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     i.IsConstructedGenericType &&
                     i.GetGenericTypeDefinition() == typeof(IRemoteQuery<,>))
                 .GenericTypeArguments;
-            return ExecQueryMethod.MakeGenericMethod(types[0], queryType, types[1]);
+
+            var contextType = types[0];
+            var resultType = types[1];
+            if (contextType.GetConstructor(Type.EmptyTypes) == null)
+            {
+                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
+            }
+            return ExecQueryMethod.MakeGenericMethod(contextType, queryType, resultType);
         }
     }
 }

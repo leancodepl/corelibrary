@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
@@ -34,6 +35,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
                 }
             }
             return Task.FromResult(CommandResult.Success());
+        }
+
+        public Task<CommandResult> RunAsync<TContext, TCommand>(
+            AppContext appContext,
+            TCommand command) where TCommand : ICommand<TContext>
+        {
+            throw new NotImplementedException();
         }
     }
 }
