@@ -40,7 +40,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             AppContext appContext,
             ICommand<TContext> command)
         {
-            throw new NotImplementedException();
+            if (typeof(TContext) == typeof(ObjContext))
+            {
+                var ctx = new ObjContextFromAppContextFactory().Create(appContext);
+                return RunAsync(appContext, ctx, (ICommand<ObjContext>)command);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 }

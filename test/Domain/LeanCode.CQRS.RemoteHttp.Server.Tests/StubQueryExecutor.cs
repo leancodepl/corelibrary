@@ -25,7 +25,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             AppContext appContext,
             IQuery<TContext, TResult> query)
         {
-            throw new NotImplementedException();
+            if (typeof(TContext) == typeof(ObjContext))
+            {
+                var ctx = new ObjContextFromAppContextFactory().Create(appContext);
+                return GetAsync(appContext, ctx, (IQuery<ObjContext, TResult>)query);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 }

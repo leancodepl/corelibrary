@@ -34,7 +34,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             TAppContext context, object obj)
         {
             var type = obj.GetType();
-            if (!typeof(IRemoteCommand<>).IsAssignableFrom(type))
+            if (!typeof(IRemoteCommand).IsAssignableFrom(type))
             {
                 Logger.Warning("The type {Type} is not an IRemoteCommand", type);
                 return new ActionResult.StatusCode(StatusCodes.Status404NotFound);

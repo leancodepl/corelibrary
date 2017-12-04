@@ -74,10 +74,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleQuery : IQuery<VoidContext, int>
+    public class SampleQuery : IQuery<ObjContext, int>
     { }
 
-    public class SampleRemoteQuery : IRemoteQuery<VoidContext, int>
+    public class SampleRemoteQuery : IRemoteQuery<ObjContext, int>
     {
         public int Prop { get; set; }
     }

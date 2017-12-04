@@ -98,10 +98,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleCommand : ICommand
+    public class SampleCommand : ICommand<ObjContext>
     { }
 
-    public class SampleRemoteCommand : IRemoteCommand<VoidContext>
+    public class SampleRemoteCommand : IRemoteCommand<ObjContext>
     {
         public int Prop { get; set; }
     }
