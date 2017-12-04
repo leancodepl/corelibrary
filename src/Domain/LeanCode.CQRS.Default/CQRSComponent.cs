@@ -11,28 +11,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
-    public class CQRSComponent<TAppContext> : IAppComponent
-        where TAppContext : IPipelineContext
+    public class CQRSComponent : IAppComponent
     {
-        public IModule AutofacModule { get; }
+        private readonly CombinedCQRSModule module = new CombinedCQRSModule();
+
+        public IModule AutofacModule => module;
         public Profile MapperProfile => null;
 
-        internal CQRSComponent(
-            TypesCatalog catalog,
-            CommandBuilder<TAppContext> cmdBuilder,
-            QueryBuilder<TAppContext> queryBuilder)
+        public CQRSComponent()
         {
-            AutofacModule = new CQRSModule<TAppContext>(catalog, cmdBuilder, queryBuilder);
+            module.AddModule(new SharedCQRSModule());
         }
 
         public void ConfigureServices(IServiceCollection services)
         { }
 
-    }
-
-    public static class CQRSComponent
-    {
-        public static CQRSComponent<TAppContext> WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
+        public CQRSComponent WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
             where TAppContext : ISecurityContext, IEventsContext
         {
             return WithCustomPipelines<TAppContext>(
@@ -42,13 +36,14 @@ namespace LeanCode.CQRS.Default
             );
         }
 
-        public static CQRSComponent<TAppContext> WithCustomPipelines<TAppContext>(
+        public CQRSComponent WithCustomPipelines<TAppContext>(
             TypesCatalog catalog,
             CommandBuilder<TAppContext> commandBuilder,
             QueryBuilder<TAppContext> queryBuilder)
             where TAppContext : IPipelineContext
         {
-            return new CQRSComponent<TAppContext>(catalog, commandBuilder, queryBuilder);
+            module.AddModule(new CQRSModule<TAppContext>(catalog, commandBuilder, queryBuilder));
+            return this;
         }
     }
 }

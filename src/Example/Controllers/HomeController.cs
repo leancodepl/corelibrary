@@ -23,7 +23,7 @@ namespace LeanCode.Example.Controllers
         public async Task<IActionResult> Index()
         {
             var ctx = new AppContext { User = User };
-            var result = await queries.GetAsync(ctx, new VoidContext(), new CQRS.SampleQuery());
+            var result = await queries.GetAsync(ctx, new CQRS.SampleQuery());
             return Content(result.Name);
         }
 
@@ -39,7 +39,7 @@ namespace LeanCode.Example.Controllers
             try
             {
                 var ctx = new AppContext { User = User };
-                await commands.RunAsync(ctx, new VoidContext(), new CQRS.SampleCommand("Name"));
+                await commands.RunAsync(ctx, new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }
             catch (Exception e)

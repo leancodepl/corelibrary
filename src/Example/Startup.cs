@@ -40,7 +40,7 @@ namespace LeanCode.Example
             {
                 new InMemoryCacheComponent(),
                 new FluentValidationComponent(TypesCatalog),
-                CQRSComponent.WithDefaultPipelines<AppContext>(TypesCatalog),
+                new CQRSComponent().WithDefaultPipelines<AppContext>(TypesCatalog),
                 PushNotificationsComponent<Guid>.WithConfiguration(Configuration),
 
                 new MvcComponent()

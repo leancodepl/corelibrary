@@ -30,6 +30,7 @@ namespace LeanCode.CQRS.Tests
 
             var catalog = new TypesCatalog(typeof(BaseCQRSTests));
             var builder = new ContainerBuilder();
+            builder.RegisterModule(new SharedCQRSModule());
             builder.RegisterModule(new CQRSModule<AppContext>(catalog, cmdBuilder, queryBuilder));
             builder.RegisterType<SampleAuthorizer>().AsImplementedInterfaces();
             builder.RegisterType<SampleValidator>().AsImplementedInterfaces();

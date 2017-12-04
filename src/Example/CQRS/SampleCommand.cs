@@ -2,7 +2,7 @@ using LeanCode.CQRS;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SampleCommand : IRemoteCommand<VoidContext>
+    public class SampleCommand : IRemoteCommand<LocalContext>
     {
         public string Name { get; }
 

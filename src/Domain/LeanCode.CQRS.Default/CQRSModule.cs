@@ -40,42 +40,15 @@ namespace LeanCode.CQRS.Default
         {
             builder.RegisterSource(new ContravariantRegistrationSource());
 
-            builder.RegisterType<AutofacPipelineFactory>().As<IPipelineFactory>()
-                .SingleInstance();
-
-            builder.RegisterGeneric(typeof(CQRSSecurityElement<,,>)).AsSelf();
-            builder.RegisterGeneric(typeof(ValidationElement<>)).AsSelf();
-            builder.RegisterGeneric(typeof(CacheElement<>)).AsSelf();
-            builder.RegisterGeneric(typeof(CommandFinalizer<>)).AsSelf();
-            builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
-            builder.RegisterGeneric(typeof(EventsInterceptorElement<,,>)).AsSelf();
-            builder.RegisterGeneric(typeof(EventsExecutorElement<,,>)).AsSelf();
-
-            builder.RegisterType<AutofacCommandHandlerResolver<TAppContext>>().As<ICommandHandlerResolver<TAppContext>>();
-            builder.RegisterType<AutofacQueryHandlerResolver<TAppContext>>().As<IQueryHandlerResolver<TAppContext>>();
-            builder.RegisterType<AutofacAuthorizerResolver<TAppContext>>().As<IAuthorizerResolver<TAppContext>>();
-            builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();
-            builder.RegisterType<AutofacValidatorResolver<TAppContext>>().As<ICommandValidatorResolver<TAppContext>>();
-
-            builder.RegisterType<RoleRegistry>().AsSelf().SingleInstance();
-            builder.RegisterType<DefaultPermissionAuthorizer>().AsSelf().AsImplementedInterfaces();
-
-            builder.RegisterType<AsyncEventsInterceptor>()
-                .AsSelf()
-                .OnActivated(a => a.Instance.Configure())
-                .SingleInstance();
-            builder.RegisterType<RetryPolicies>()
-                .AsSelf()
-                .SingleInstance();
-            builder.RegisterType<SimpleEventsExecutor>()
-                .AsSelf()
-                .SingleInstance();
-            builder.RegisterType<SimpleFinalizer>().AsSelf();
-
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IObjectContextFromAppContextFactory<,>));
+
+            builder.RegisterType<AutofacCommandHandlerResolver<TAppContext>>().As<ICommandHandlerResolver<TAppContext>>();
+            builder.RegisterType<AutofacQueryHandlerResolver<TAppContext>>().As<IQueryHandlerResolver<TAppContext>>();
+            builder.RegisterType<AutofacAuthorizerResolver<TAppContext>>().As<IAuthorizerResolver<TAppContext>>();
+            builder.RegisterType<AutofacValidatorResolver<TAppContext>>().As<ICommandValidatorResolver<TAppContext>>();
 
             builder.Register(c =>
                 new CommandExecutor<TAppContext>(
