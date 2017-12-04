@@ -13,11 +13,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public object LastContext { get; private set; }
         public ICommand LastCommand { get; private set; }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TContext>(
             AppContext appContext,
             TContext context,
-            TCommand command)
-            where TCommand : ICommand<TContext>
+            ICommand<TContext> command)
         {
             LastAppContext = appContext;
             LastContext = context;
@@ -37,9 +36,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             return Task.FromResult(CommandResult.Success());
         }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TContext>(
             AppContext appContext,
-            TCommand command) where TCommand : ICommand<TContext>
+            ICommand<TContext> command)
         {
             throw new NotImplementedException();
         }

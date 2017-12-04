@@ -7,18 +7,16 @@ namespace LeanCode.CQRS.Execution
         /// <summary>
         /// Executes handler for the command.
         /// </summary>
-        Task<CommandResult> RunAsync<TContext, TCommand>(
+        Task<CommandResult> RunAsync<TContext>(
             TAppContext appContext,
             TContext context,
-            TCommand command)
-            where TCommand : ICommand<TContext>;
+            ICommand<TContext> command);
 
         /// <summary>
         /// Executes handler for the command, creating context using <see cref="IObjectContextFromAppContextFactory{TAppContext, TContext}" />.
         /// </summary>
-        Task<CommandResult> RunAsync<TContext, TCommand>(
+        Task<CommandResult> RunAsync<TContext>(
             TAppContext appContext,
-            TCommand command)
-            where TCommand : ICommand<TContext>;
+            ICommand<TContext> command);
     }
 }

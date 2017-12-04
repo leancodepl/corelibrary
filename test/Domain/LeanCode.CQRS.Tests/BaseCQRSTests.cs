@@ -30,11 +30,11 @@ namespace LeanCode.CQRS.Tests
 
             var catalog = new TypesCatalog(typeof(BaseCQRSTests));
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new CQRSModule<AppContext>(
-                catalog, cmdBuilder, queryBuilder));
+            builder.RegisterModule(new CQRSModule<AppContext>(catalog, cmdBuilder, queryBuilder));
             builder.RegisterType<SampleAuthorizer>().AsImplementedInterfaces();
             builder.RegisterType<SampleValidator>().AsImplementedInterfaces();
             builder.RegisterType<SingleInstanceCommandHandler>().AsImplementedInterfaces().AsSelf().SingleInstance();
+            builder.RegisterType<SingleInstanceQueryHandler>().AsImplementedInterfaces().AsSelf().SingleInstance();
             builder.RegisterType<SamplePipelineElement<CommandExecutionPayload, CommandResult>>().AsSelf().SingleInstance();
             builder.RegisterType<SamplePipelineElement<QueryExecutionPayload, object>>().AsSelf().SingleInstance();
             Container = builder.Build();

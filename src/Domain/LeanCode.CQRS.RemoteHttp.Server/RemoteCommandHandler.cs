@@ -68,7 +68,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             object cmd)
             where TCommand : IRemoteCommand<TContext>
         {
-            return commandExecutor.RunAsync<TContext, TCommand>(appContext, (TCommand)cmd);
+            return commandExecutor.RunAsync(appContext, (TCommand)cmd);
         }
 
         private static MethodInfo MakeExecutorMethod(Type commandType)

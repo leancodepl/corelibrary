@@ -43,5 +43,21 @@ namespace LeanCode.CQRS.Tests
             Assert.Equal(objCtx, element.Data.Context);
             Assert.Equal(cmd, element.Data.Command);
         }
+
+        [Fact]
+        public async Task Creates_obj_context_based_on_app_context_if_needed()
+        {
+            Prepare();
+
+            var appCtx = new AppContext();
+            var cmd = new SingleInstanceCommand();
+
+            var handler = Container.Resolve<SingleInstanceCommandHandler>();
+
+            await CommandExecutor.RunAsync(appCtx, cmd);
+
+            Assert.Equal(appCtx, handler.Context.SourceAppContext);
+            Assert.Equal(cmd, handler.Command);
+        }
     }
 }

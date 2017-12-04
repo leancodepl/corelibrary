@@ -15,7 +15,18 @@ namespace LeanCode.CQRS.Tests
         IPipelineScope IPipelineContext.Scope { get; set; }
     }
 
-    public class ObjContext { }
+    public class ObjContext
+    {
+        public AppContext SourceAppContext { get; set; }
+    }
+
+    public class ObjContextFromAppContext : IObjectContextFromAppContextFactory<AppContext, ObjContext>
+    {
+        public ObjContext Create(AppContext appContext)
+        {
+            return new ObjContext { SourceAppContext = appContext };
+        }
+    }
 
     public class SampleCommand : ICommand<ObjContext>, IAuthorizerData
     { }
@@ -173,6 +184,23 @@ namespace LeanCode.CQRS.Tests
             Command = command;
 
             return Task.CompletedTask;
+        }
+    }
+
+    public class SingleInstanceQuery : IQuery<ObjContext, object>
+    { }
+
+    public class SingleInstanceQueryHandler : IQueryHandler<ObjContext, SingleInstanceQuery, object>
+    {
+        public ObjContext Context { get; private set; }
+        public SingleInstanceQuery Query { get; private set; }
+        public object Result { get; set; }
+
+        public Task<object> ExecuteAsync(ObjContext context, SingleInstanceQuery query)
+        {
+            Context = context;
+            Query = query;
+            return Task.FromResult(Result);
         }
     }
 

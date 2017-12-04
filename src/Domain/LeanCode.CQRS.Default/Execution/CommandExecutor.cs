@@ -25,20 +25,18 @@ namespace LeanCode.CQRS.Default.Execution
             this.lifetimeScope = lifetimeScope;
         }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TContext>(
             TAppContext appcontext,
             TContext context,
-            TCommand command)
-            where TCommand : ICommand<TContext>
+            ICommand<TContext> command)
         {
             var payload = new CommandExecutionPayload(context, command);
             return executor.ExecuteAsync(appcontext, payload);
         }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TContext>(
             TAppContext appContext,
-            TCommand command)
-            where TCommand : ICommand<TContext>
+            ICommand<TContext> command)
         {
             var factory = lifetimeScope.Resolve<IObjectContextFromAppContextFactory<TAppContext, TContext>>();
             var context = factory.Create(appContext);

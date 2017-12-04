@@ -71,7 +71,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
             return await queryExecutor
-                .GetAsync<TContext, TResult>(appContext, (TQuery)query)
+                .GetAsync(appContext, (TQuery)query)
                 .ConfigureAwait(false);
         }
 
