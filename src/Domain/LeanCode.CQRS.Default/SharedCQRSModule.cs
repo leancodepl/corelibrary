@@ -19,7 +19,7 @@ namespace LeanCode.CQRS.Default
 {
     using CommandsQueriesModules = IReadOnlyList<IModule>;
 
-    public class SharedCQRSModule : Module
+    class SharedCQRSModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

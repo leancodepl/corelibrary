@@ -1,32 +1,19 @@
 using Autofac;
-using Microsoft.Extensions.Configuration;
-using LeanCode.Configuration;
+using LeanCode.Components;
 
 namespace LeanCode.Mixpanel
 {
-    class MixpanelModule : Module
+    public class MixpanelModule : AppModule
     {
-        private readonly IConfiguration configuration;
-
-        public MixpanelModule(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
-
         protected override void Load(ContainerBuilder builder)
         {
-            if (configuration != null)
-            {
-                builder.ConfigSection<MixpanelConfiguration>(configuration);
-            }
-
             builder.RegisterType<MixpanelAnalytics>()
                 .As<IMixpanelAnalytics>()
                 .SingleInstance();
         }
     }
 
-    class MixpanelWithFactoryModule : Module
+    public class MixpanelWithFactoryModule : AppModule
     {
         protected override void Load(ContainerBuilder builder)
         {

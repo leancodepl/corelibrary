@@ -1,8 +1,9 @@
 using Autofac;
+using LeanCode.Components;
 
 namespace LeanCode.Cache.AspNet
 {
-    class InMemoryCacheModule : Module
+    public class InMemoryCacheModule : AppModule
     {
         protected override void Load(ContainerBuilder builder)
         {

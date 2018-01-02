@@ -4,7 +4,7 @@ using LeanCode.Components;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class FluentValidationModule : Module
+    public class FluentValidationModule : AppModule
     {
         private readonly TypesCatalog catalog;
 

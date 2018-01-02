@@ -1,24 +1,12 @@
 using Autofac;
-using LeanCode.Configuration;
-using Microsoft.Extensions.Configuration;
+using LeanCode.Components;
 
 namespace LeanCode.IdentityServer.KeyVault
 {
-    class IdentityServerKeyVaultModule : Module
+    public class IdentityServerKeyVaultModule : AppModule
     {
-        private readonly IConfiguration config;
-
-        public IdentityServerKeyVaultModule(IConfiguration config)
-        {
-            this.config = config;
-        }
-
         protected override void Load(ContainerBuilder builder)
         {
-            if (config != null)
-            {
-                builder.ConfigSection<IdentityServerKeyVaultConfiguration>(config);
-            }
             builder.RegisterType<SigningService>().AsSelf().SingleInstance();
             builder.RegisterType<KeyMaterialService>().AsImplementedInterfaces();
             builder.RegisterType<TokenCreationService>().AsImplementedInterfaces();
