@@ -43,7 +43,9 @@ namespace LeanCode.CQRS.Default.Autofac
                     i.GetGenericTypeDefinition() == typeof(IQuery<,>))
                 .Single()
                 .GenericTypeArguments;
-            return new[] { types[0], queryType, types[1] };
+            var contextType = types[0];
+            var resultType = types[1];
+            return new[] { contextType, queryType, queryType };
         }
     }
 }

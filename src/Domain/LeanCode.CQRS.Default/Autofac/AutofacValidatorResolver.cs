@@ -43,7 +43,8 @@ namespace LeanCode.CQRS.Default.Autofac
                     i.GetGenericTypeDefinition() == typeof(ICommand<>))
                 .Single()
                 .GenericTypeArguments;
-            return new[] { typeof(TAppContext), types[0], commandType };
+            var contextType = types[0];
+            return new[] { typeof(TAppContext), contextType, commandType };
         }
     }
 }
