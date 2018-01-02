@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.Default.Autofac
                 .GenericTypeArguments;
             var contextType = types[0];
             var resultType = types[1];
-            return new[] { contextType, queryType, queryType };
+            return new[] { contextType, queryType, resultType };
         }
     }
 }
