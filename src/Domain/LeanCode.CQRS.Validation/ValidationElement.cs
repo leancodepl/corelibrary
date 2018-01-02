@@ -1,53 +1,56 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Validation
 {
-    public class ValidationElement<TContext>
-        : IPipelineElement<TContext, ICommand, CommandResult>
-        where TContext : IPipelineContext
+    public class ValidationElement<TAppContext>
+        : IPipelineElement<TAppContext, CommandExecutionPayload, CommandResult>
+        where TAppContext : IPipelineContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement<TContext>>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement<TAppContext>>();
 
-        private readonly ICommandValidatorResolver resolver;
+        private readonly ICommandValidatorResolver<TAppContext> resolver;
 
-        public ValidationElement(ICommandValidatorResolver resolver)
+        public ValidationElement(ICommandValidatorResolver<TAppContext> resolver)
         {
             this.resolver = resolver;
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            TContext context,
-            ICommand input,
-            Func<TContext, ICommand, Task<CommandResult>> next)
+            TAppContext appContext,
+            CommandExecutionPayload payload,
+            Func<TAppContext, CommandExecutionPayload, Task<CommandResult>> next)
         {
-            var contextType = context.GetType();
-            var commandType = input.GetType();
-            var validator = resolver.FindCommandValidator(contextType, commandType);
+            var context = payload.Context;
+            var command = payload.Command;
+
+            var commandType = command.GetType();
+            var validator = resolver.FindCommandValidator(commandType);
             if (validator != null)
             {
                 var result = await validator
-                    .ValidateAsync(context, input)
+                    .ValidateAsync(appContext, context, command)
                     .ConfigureAwait(false);
                 if (!result.IsValid)
                 {
                     logger.Information("Command {@Command} is not valid with result {@Result}",
-                        input, result);
+                        command, result);
                     return CommandResult.NotValid(result);
                 }
             }
-            return await next(context, input).ConfigureAwait(false);
+            return await next(appContext, payload).ConfigureAwait(false);
         }
     }
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TContext, ICommand, CommandResult> Validate<TContext>(
-            this PipelineBuilder<TContext, ICommand, CommandResult> builder)
-            where TContext : IPipelineContext
+        public static PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> Validate<TAppContext>(
+            this PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> builder)
+            where TAppContext : IPipelineContext
         {
-            return builder.Use<ValidationElement<TContext>>();
+            return builder.Use<ValidationElement<TAppContext>>();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.RemoteHttp.Client;
 using Microsoft.AspNetCore.Mvc;

@@ -8,7 +8,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
-    public abstract class BaseExecutionContext : IEventsContext, ISecurityContext
+    public class DefaultExecutionContext : IEventsContext, ISecurityContext
     {
         public ClaimsPrincipal User { get; set; }
 

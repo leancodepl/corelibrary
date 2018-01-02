@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using LeanCode.Components;
@@ -8,19 +9,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    interface IRemoteCommandHandler<TAppContext>
-    {
-        TypesCatalog Catalog { get; }
-        Task<ActionResult> ExecuteAsync(HttpContext context);
-    }
-
     sealed class RemoteCommandHandler<TAppContext>
-        : BaseRemoteObjectHandler<TAppContext>, IRemoteCommandHandler<TAppContext>
+        : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
             .GetMethod("ExecuteCommand", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly ICommandExecutor<TAppContext> commandExecutor;
 
         public RemoteCommandHandler(
@@ -45,7 +40,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
             }
 
-            var method = methodCache.GetOrAdd(type, t => ExecCommandMethod.MakeGenericMethod(t));
+            var method = methodCache.GetOrAdd(type, MakeExecutorMethod);
             var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj });
 
             CommandResult cmdResult;
@@ -68,12 +63,28 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TCommand>(
-            TAppContext context,
+        private Task<CommandResult> ExecuteCommand<TContext, TCommand>(
+            TAppContext appContext,
             object cmd)
-            where TCommand : IRemoteCommand
+            where TCommand : IRemoteCommand<TContext>
         {
-            return commandExecutor.RunAsync(context, (TCommand)cmd);
+            return commandExecutor.RunAsync(appContext, (TCommand)cmd);
+        }
+
+        private static MethodInfo MakeExecutorMethod(Type commandType)
+        {
+            var types = commandType
+                .GetInterfaces()
+                .Single(i =>
+                    i.IsConstructedGenericType &&
+                    i.GetGenericTypeDefinition() == typeof(ICommand<>))
+                .GenericTypeArguments;
+            var contextType = types[0];
+            if (contextType.GetConstructor(Type.EmptyTypes) == null)
+            {
+                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
+            }
+            return ExecCommandMethod.MakeGenericMethod(contextType, commandType);
         }
     }
 }

@@ -8,10 +8,10 @@ namespace LeanCode.Example
     {
         public static void Main(string[] args)
         {
-            var host = LeanProgram.BuildDefaultWebHost<Startup>()
-                .Build();
-
-            host.Run();
+            LeanProgram.BuildDefaultWebHost<Startup>()
+                .UseKestrel()
+                .Build()
+                .Run();
         }
     }
 }

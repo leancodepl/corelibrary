@@ -5,7 +5,7 @@ using LeanCode.Example.Security;
 namespace LeanCode.Example.CQRS
 {
     [AuthorizeWhenHasAnyOf(Permissions.View)]
-    public class SampleAuthorizedQuery : IRemoteQuery<SampleAuthorizedQuery.Result>
+    public class SampleAuthorizedQuery : IRemoteQuery<LocalContext, SampleAuthorizedQuery.Result>
     {
         public sealed class Result
         {

@@ -93,15 +93,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
             await Invoke(user: user);
 
-            Assert.NotNull(command.LastContext);
-            Assert.Equal(user, command.LastContext.User);
+            Assert.NotNull(command.LastAppContext);
+            Assert.Equal(user, command.LastAppContext.User);
         }
     }
 
-    public class SampleCommand : ICommand
+    public class SampleCommand : ICommand<ObjContext>
     { }
 
-    public class SampleRemoteCommand : IRemoteCommand
+    public class SampleRemoteCommand : IRemoteCommand<ObjContext>
     {
         public int Prop { get; set; }
     }

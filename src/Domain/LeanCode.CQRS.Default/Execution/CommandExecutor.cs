@@ -1,30 +1,46 @@
 using System.Threading.Tasks;
+using Autofac;
 using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
-    public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
+    class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
         where TAppContext : IPipelineContext
     {
-        private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
+        private readonly PipelineExecutor<TAppContext, CommandExecutionPayload, CommandResult> executor;
+
+        private readonly ILifetimeScope lifetimeScope;
 
         public CommandExecutor(
             IPipelineFactory factory,
-            CommandBuilder<TAppContext> config)
+            CommandBuilder<TAppContext> config,
+            ILifetimeScope lifetimeScope)
         {
-            var cfg = Pipeline.Build<TAppContext, ICommand, CommandResult>()
-                .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
+            var cfg = Pipeline.Build<TAppContext, CommandExecutionPayload, CommandResult>()
+                .Configure(new ConfigPipeline<TAppContext, CommandExecutionPayload, CommandResult>(config))
                 .Finalize<CommandFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
+            this.lifetimeScope = lifetimeScope;
         }
 
-        public Task<CommandResult> RunAsync<TCommand>(
-            TAppContext context, TCommand command)
-            where TCommand : ICommand
+        public Task<CommandResult> RunAsync<TContext>(
+            TAppContext appcontext,
+            TContext context,
+            ICommand<TContext> command)
         {
-            return executor.ExecuteAsync(context, command);
+            var payload = new CommandExecutionPayload(context, command);
+            return executor.ExecuteAsync(appcontext, payload);
+        }
+
+        public Task<CommandResult> RunAsync<TContext>(
+            TAppContext appContext,
+            ICommand<TContext> command)
+        {
+            var factory = lifetimeScope.Resolve<IObjectContextFromAppContextFactory<TAppContext, TContext>>();
+            var context = factory.Create(appContext);
+            return RunAsync(appContext, context, command);
         }
     }
 }

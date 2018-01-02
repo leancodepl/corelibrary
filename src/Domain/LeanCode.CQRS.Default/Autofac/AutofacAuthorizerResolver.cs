@@ -1,16 +1,13 @@
 using System;
 using Autofac;
 using LeanCode.CQRS.Default.Wrappers;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacAuthorizerResolver : IAuthorizerResolver
+    class AutofacAuthorizerResolver<TAppContext> : IAuthorizerResolver<TAppContext>
     {
-        private static readonly Type AuthorizerBase = typeof(ICustomAuthorizer<,>);
-        private static readonly Type AuthorizerWrapperBase = typeof(CustomAuthorizerWrapper<,>);
-        private static readonly TypesCache typesCache = new TypesCache(AuthorizerBase, AuthorizerWrapperBase);
-
         private readonly IComponentContext componentContext;
 
         public AutofacAuthorizerResolver(IComponentContext componentContext)
@@ -18,13 +15,19 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICustomAuthorizerWrapper FindAuthorizer(Type contextType, Type authorizerType, Type objectType)
+        public ICustomAuthorizerWrapper FindAuthorizer(Type authorizerType, Type objectType)
         {
-            var cached = typesCache.Get(contextType, objectType);
             if (componentContext.TryResolve(authorizerType, out var handler))
             {
-                var wrapper = cached.Constructor.Invoke(new[] { handler });
-                return (ICustomAuthorizerWrapper)wrapper;
+                var typed = (ICustomAuthorizer<TAppContext>)handler;
+                if (objectType == typeof(CommandExecutionPayload))
+                {
+                    return new CustomCommandAuthorizerWrapper<TAppContext>(typed);
+                }
+                else
+                {
+                    return new CustomQueryAuthorizerWrapper<TAppContext>(typed);
+                }
             }
             else
             {

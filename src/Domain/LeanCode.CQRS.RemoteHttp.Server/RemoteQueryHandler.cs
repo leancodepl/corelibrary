@@ -10,14 +10,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    interface IRemoteQueryHandler<TAppContext>
-    {
-        TypesCatalog Catalog { get; }
-        Task<ActionResult> ExecuteAsync(HttpContext context);
-    }
-
     sealed class RemoteQueryHandler<TAppContext>
-        : BaseRemoteObjectHandler<TAppContext>, IRemoteQueryHandler<TAppContext>
+        : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
             .GetMethod("ExecuteQuery", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -70,24 +64,32 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private async Task<object> ExecuteQuery<TQuery, TResult>(
-            TAppContext context, object query)
-            where TQuery : IRemoteQuery<TResult>
+        private async Task<object> ExecuteQuery<TContext, TQuery, TResult>(
+            TAppContext appContext, object query)
+            where TQuery : IRemoteQuery<TContext, TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
             return await queryExecutor
-                .GetAsync(context, (TQuery)query)
+                .GetAsync(appContext, (TQuery)query)
                 .ConfigureAwait(false);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)
         {
-            var implemented = queryType.GetInterfaces()
-                .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IRemoteQuery<>));
-            var resultType = implemented.GetGenericArguments()[0];
+            var types = queryType.GetInterfaces()
+                .Single(i =>
+                    i.IsConstructedGenericType &&
+                    i.GetGenericTypeDefinition() == typeof(IRemoteQuery<,>))
+                .GenericTypeArguments;
 
-            return ExecQueryMethod.MakeGenericMethod(queryType, resultType);
+            var contextType = types[0];
+            var resultType = types[1];
+            if (contextType.GetConstructor(Type.EmptyTypes) == null)
+            {
+                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
+            }
+            return ExecQueryMethod.MakeGenericMethod(contextType, queryType, resultType);
         }
     }
 }

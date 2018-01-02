@@ -1,11 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using LeanCode.Cache;
+using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Cache
 {
-    public class CacheElement<TContext> : IPipelineElement<TContext, IQuery, object>
+    public class CacheElement<TContext>
+        : IPipelineElement<TContext, QueryExecutionPayload, object>
         where TContext : IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CacheElement<TContext>>();
@@ -19,35 +21,35 @@ namespace LeanCode.CQRS.Cache
 
         public async Task<object> ExecuteAsync(
             TContext ctx,
-            IQuery input,
-            Func<TContext, IQuery, Task<object>> next)
+            QueryExecutionPayload payload,
+            Func<TContext, QueryExecutionPayload, Task<object>> next)
         {
-            var duration = QueryCacheAttribute.GetDuration(input);
+            var duration = QueryCacheAttribute.GetDuration(payload.Query);
             if (duration.HasValue)
             {
-                var key = QueryCacheKeyProvider.GetKey(input);
+                var key = QueryCacheKeyProvider.GetKey(payload);
                 var res = await cacher
                     .GetOrCreate(key, duration.Value,
-                        () => Wrap(ctx, input, next)
+                        () => Wrap(ctx, payload, next)
                     ).ConfigureAwait(false);
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
-                    input, key);
+                    payload.Query, key);
 
                 return res.Item;
             }
             else
             {
-                return await next(ctx, input).ConfigureAwait(false);
+                return await next(ctx, payload).ConfigureAwait(false);
             }
         }
 
         private static async Task<CacheItemWrapper> Wrap(
             TContext ctx,
-            IQuery query,
-            Func<TContext, IQuery, Task<object>> next)
+            QueryExecutionPayload payload,
+            Func<TContext, QueryExecutionPayload, Task<object>> next)
         {
-            var result = await next(ctx, query).ConfigureAwait(false);
+            var result = await next(ctx, payload).ConfigureAwait(false);
             return new CacheItemWrapper() { Item = result };
         }
 
@@ -59,8 +61,8 @@ namespace LeanCode.CQRS.Cache
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TContext, IQuery, object> Cache<TContext>(
-            this PipelineBuilder<TContext, IQuery, object> builder)
+        public static PipelineBuilder<TContext, QueryExecutionPayload, object> Cache<TContext>(
+            this PipelineBuilder<TContext, QueryExecutionPayload, object> builder)
             where TContext : IPipelineContext
         {
             return builder.Use<CacheElement<TContext>>();

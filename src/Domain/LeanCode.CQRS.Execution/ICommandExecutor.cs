@@ -2,9 +2,21 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface ICommandExecutor<TContext>
+    public interface ICommandExecutor<TAppContext>
     {
-        Task<CommandResult> RunAsync<TCommand>(TContext context, TCommand command)
-            where TCommand : ICommand;
+        /// <summary>
+        /// Executes handler for the command.
+        /// </summary>
+        Task<CommandResult> RunAsync<TContext>(
+            TAppContext appContext,
+            TContext context,
+            ICommand<TContext> command);
+
+        /// <summary>
+        /// Executes handler for the command, creating context using <see cref="IObjectContextFromAppContextFactory{TAppContext, TContext}" />.
+        /// </summary>
+        Task<CommandResult> RunAsync<TContext>(
+            TAppContext appContext,
+            ICommand<TContext> command);
     }
 }

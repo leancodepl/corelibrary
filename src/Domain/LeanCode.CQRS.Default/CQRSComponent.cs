@@ -2,36 +2,48 @@ using System.Collections.Generic;
 using Autofac.Core;
 using AutoMapper;
 using LeanCode.Components;
+using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Security;
+using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;
+using LeanCode.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
     public class CQRSComponent : IAppComponent
     {
-        public IModule AutofacModule { get; }
+        private readonly CombinedCQRSModule module = new CombinedCQRSModule();
+
+        public IModule AutofacModule => module;
         public Profile MapperProfile => null;
 
-        internal CQRSComponent(
-            TypesCatalog catalog,
-            List<IModule> commandsQueriesModules)
+        public CQRSComponent()
         {
-            AutofacModule = new CQRSModule(catalog, commandsQueriesModules);
+            module.AddModule(new SharedCQRSModule());
         }
 
         public void ConfigureServices(IServiceCollection services)
         { }
 
-        public static CQRSComponentBuilder New()
-        {
-            return new CQRSComponentBuilder();
-        }
-
-        public static CQRSComponent WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
+        public CQRSComponent WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
             where TAppContext : ISecurityContext, IEventsContext
         {
-            return New().WithDefaultPipelines<TAppContext>(catalog).Build();
+            return WithCustomPipelines<TAppContext>(
+                catalog,
+                b => b.Secure().Validate().ExecuteEvents().InterceptEvents(),
+                b => b.Secure().Cache()
+            );
+        }
+
+        public CQRSComponent WithCustomPipelines<TAppContext>(
+            TypesCatalog catalog,
+            CommandBuilder<TAppContext> commandBuilder,
+            QueryBuilder<TAppContext> queryBuilder)
+            where TAppContext : IPipelineContext
+        {
+            module.AddModule(new CQRSModule<TAppContext>(catalog, commandBuilder, queryBuilder));
+            return this;
         }
     }
 }

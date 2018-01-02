@@ -7,7 +7,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacQueryHandlerResolver : IQueryHandlerResolver
+    class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
     {
         private static readonly Type HandlerBase = typeof(IQueryHandler<,,>);
         private static readonly Type HandlerWrapperBase = typeof(QueryHandlerWrapper<,,>);
@@ -20,9 +20,9 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public IQueryHandlerWrapper FindQueryHandler(Type contextType, Type queryType)
+        public IQueryHandlerWrapper FindQueryHandler(Type queryType)
         {
-            var cached = typesCache.Get(contextType, queryType);
+            var cached = typesCache.Get(queryType);
             if (componentContext.TryResolve(cached.HandlerType, out var handler))
             {
                 var wrapper = cached.Constructor.Invoke(new[] { handler });
@@ -34,16 +34,18 @@ namespace LeanCode.CQRS.Default.Autofac
             }
         }
 
-        private static Type[] GetTypes(Type contextType, Type queryType)
+        private static Type[] GetTypes(Type queryType)
         {
-            var resultType = queryType
+            var types = queryType
                 .GetInterfaces()
                 .Where(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IQuery<>))
+                    i.GetGenericTypeDefinition() == typeof(IQuery<,>))
                 .Single()
-                .GenericTypeArguments[0];
-            return new[] { contextType, queryType, resultType };
+                .GenericTypeArguments;
+            var contextType = types[0];
+            var resultType = types[1];
+            return new[] { contextType, queryType, queryType };
         }
     }
 }

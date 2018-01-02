@@ -47,7 +47,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             serializerSettings = settings;
         }
 
-        public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
+        public virtual async Task<CommandResult> RunAsync<TContext>(IRemoteCommand<TContext> command)
         {
             var stringified = JsonConvert.SerializeObject(command);
             using (var content = new StringContent(stringified, Encoding.UTF8, "application/json"))

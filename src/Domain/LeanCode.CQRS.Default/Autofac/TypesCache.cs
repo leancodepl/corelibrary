@@ -4,24 +4,19 @@ using System.Reflection;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    using GenericsProvider = Func<Type, Type, Type[]>;
-    using CacheDictionary = ConcurrentDictionary<(Type ContextType, Type ObjType), (Type HandlerType, ConstructorInfo Constructor)>;
+    using CacheDictionary = ConcurrentDictionary<Type, (Type HandlerType, ConstructorInfo Constructor)>;
 
     sealed class TypesCache
     {
         private readonly CacheDictionary cache = new CacheDictionary();
 
-        private readonly Func<(Type ContextType, Type ObjType), (Type HandlerType, ConstructorInfo Constructor)> make;
+        private readonly Func<Type, (Type HandlerType, ConstructorInfo Constructor)> make;
 
-        public TypesCache(Type handlerBase, Type wrapperBase)
-            : this(DefaultGetTypes, handlerBase, wrapperBase)
-        { }
-
-        public TypesCache(GenericsProvider provider, Type handlerBase, Type wrapperBase)
+        public TypesCache(Func<Type, Type[]> mkTypes, Type handlerBase, Type wrapperBase)
         {
             this.make = a =>
             {
-                var types = provider(a.ContextType, a.ObjType);
+                var types = mkTypes(a);
                 var handlerType = handlerBase.MakeGenericType(types);
                 var wrapperType = wrapperBase.MakeGenericType(types);
                 var ctor = wrapperType.GetConstructors()[0];
@@ -29,15 +24,20 @@ namespace LeanCode.CQRS.Default.Autofac
             };
         }
 
-        public (Type HandlerType, ConstructorInfo Constructor) Get(
-            Type contextType, Type objType)
+        public TypesCache(Func<Type, Type> handlerBaseMaker, Func<Type, Type> wrapperBaseMaker)
         {
-            return cache.GetOrAdd((contextType, objType), make);
+            this.make = a =>
+            {
+                var handlerType = handlerBaseMaker(a);
+                var wrapperType = wrapperBaseMaker(a);
+                var ctor = wrapperType.GetConstructors()[0];
+                return (handlerType, ctor);
+            };
         }
 
-        private static Type[] DefaultGetTypes(Type contextType, Type objType)
+        public (Type HandlerType, ConstructorInfo Constructor) Get(Type objType)
         {
-            return new[] { contextType, objType };
+            return cache.GetOrAdd(objType, make);
         }
     }
 }

@@ -8,9 +8,9 @@ using ValidationFailure = FluentValidation.Results.ValidationFailure;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class FluentValidationCommandValidatorAdapter<TAppContext, TCommand>
-        : ICommandValidator<TAppContext, TCommand>
-        where TCommand : ICommand
+    class FluentValidationCommandValidatorAdapter<TAppContext, TContext, TCommand>
+        : ICommandValidator<TAppContext, TContext, TCommand>
+        where TCommand : ICommand<TContext>
     {
         private readonly IValidator fluentValidator;
         private readonly IComponentContext componentContext;
@@ -21,9 +21,9 @@ namespace LeanCode.CQRS.Validation.Fluent
             this.componentContext = componentContext;
         }
 
-        public async Task<ValidationResult> ValidateAsync(TAppContext context, TCommand command)
+        public async Task<ValidationResult> ValidateAsync(TAppContext appContext, TContext context, TCommand command)
         {
-            var ctx = PrepareContext(context, command);
+            var ctx = PrepareContext(appContext, context, command);
 
             var fluentValidationResult = await fluentValidator
                 .ValidateAsync(ctx)
@@ -44,12 +44,13 @@ namespace LeanCode.CQRS.Validation.Fluent
             );
         }
 
-        private ValidationContext<TCommand> PrepareContext(TAppContext context, TCommand command)
+        private ValidationContext<TCommand> PrepareContext(TAppContext appContext, TContext context, TCommand command)
         {
             var ctx = new ValidationContext<TCommand>(command,
                 new PropertyChain(),
                 ValidatorOptions.ValidatorSelectors.DefaultValidatorSelectorFactory());
-            ctx.RootContextData[ValidationContextExtensions.AppContextKey] = context;
+            ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;
+            ctx.RootContextData[ValidationContextExtensions.ObjectContextKey] = context;
             ctx.RootContextData[ValidationContextExtensions.ComponentContextKey] = componentContext;
             return ctx;
         }

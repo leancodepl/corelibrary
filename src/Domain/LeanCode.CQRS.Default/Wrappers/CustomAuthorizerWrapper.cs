@@ -1,24 +1,43 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class CustomAuthorizerWrapper<TContext, TObject> : ICustomAuthorizerWrapper
+    class CustomQueryAuthorizerWrapper<TAppContext> : ICustomAuthorizerWrapper
     {
-        private readonly ICustomAuthorizer<TContext, TObject> authorizer;
+        private readonly ICustomAuthorizer<TAppContext> authorizer;
 
         public Type UnderlyingAuthorizer { get; }
 
-        public CustomAuthorizerWrapper(ICustomAuthorizer<TContext, TObject> authorizer)
+        public CustomQueryAuthorizerWrapper(ICustomAuthorizer<TAppContext> authorizer)
         {
             this.authorizer = authorizer;
             UnderlyingAuthorizer = authorizer.GetType();
         }
 
-        public Task<bool> CheckIfAuthorized(object context, object obj, object customData)
+        public Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object customData)
         {
-            return authorizer.CheckIfAuthorized((TContext)context, (TObject)obj, customData);
+            return authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, (QueryExecutionPayload)obj, customData);
+        }
+    }
+
+    class CustomCommandAuthorizerWrapper<TAppContext> : ICustomAuthorizerWrapper
+    {
+        private readonly ICustomAuthorizer<TAppContext> authorizer;
+
+        public Type UnderlyingAuthorizer { get; }
+
+        public CustomCommandAuthorizerWrapper(ICustomAuthorizer<TAppContext> authorizer)
+        {
+            this.authorizer = authorizer;
+            UnderlyingAuthorizer = authorizer.GetType();
+        }
+
+        public Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object customData)
+        {
+            return authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, (CommandExecutionPayload)obj, customData);
         }
     }
 }

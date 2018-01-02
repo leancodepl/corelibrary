@@ -2,17 +2,17 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface ICommandHandler<in TContext, TCommand>
-        where TCommand : ICommand
+    public interface ICommandHandler<in TContext, in TCommand>
+        where TCommand : ICommand<TContext>
     {
         Task ExecuteAsync(TContext context, TCommand command);
     }
 
-    public abstract class CommandHandler<TCommand>
-        : ICommandHandler<object, TCommand>
-        where TCommand : ICommand
+    public abstract class NoContextCommandHandler<TCommand>
+        : ICommandHandler<VoidContext, TCommand>
+        where TCommand : ICommand<VoidContext>
     {
-        Task ICommandHandler<object, TCommand>.ExecuteAsync(object context, TCommand command)
+        public Task ExecuteAsync(VoidContext context, TCommand command)
         {
             return ExecuteAsync(command);
         }

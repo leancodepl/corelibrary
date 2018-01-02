@@ -4,28 +4,30 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution
 {
-    public sealed class QueryFinalizer<TContext>
-        : IPipelineFinalizer<TContext, IQuery, object>
-        where TContext : IPipelineContext
+    public sealed class QueryFinalizer<TAppContext>
+        : IPipelineFinalizer<TAppContext, QueryExecutionPayload, object>
+        where TAppContext : IPipelineContext
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<QueryFinalizer<TContext>>();
-        private readonly IQueryHandlerResolver resolver;
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<QueryFinalizer<TAppContext>>();
+        private readonly IQueryHandlerResolver<TAppContext> resolver;
 
-        public QueryFinalizer(IQueryHandlerResolver resolver)
+        public QueryFinalizer(IQueryHandlerResolver<TAppContext> resolver)
         {
             this.resolver = resolver;
         }
 
         public async Task<object> ExecuteAsync(
-            TContext context, IQuery query)
+            TAppContext _, QueryExecutionPayload payload)
         {
-            var contextType = context.GetType();
+            var context = payload.Context;
+            var query = payload.Query;
+
             var queryType = query.GetType();
-            var handler = resolver.FindQueryHandler(contextType, queryType);
+            var handler = resolver.FindQueryHandler(queryType);
             if (handler == null)
             {
                 logger.Fatal("Cannot find a handler for query {@Query}", query);
-                throw new QueryHandlerNotFoundException(contextType, queryType);
+                throw new QueryHandlerNotFoundException(queryType);
             }
 
             object result;
