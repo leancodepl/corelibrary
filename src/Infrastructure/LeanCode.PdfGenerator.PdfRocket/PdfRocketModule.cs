@@ -1,23 +1,12 @@
 using Autofac;
-using LeanCode.Configuration;
-using Microsoft.Extensions.Configuration;
+using LeanCode.Components;
 
 namespace LeanCode.PdfGenerator.PdfRocket
 {
-    class PdfRocketModule : Module
+    public class PdfRocketModule : AppModule
     {
-        private readonly IConfiguration config;
-
-        public PdfRocketModule(IConfiguration config)
-        {
-            this.config = config;
-        }
         protected override void Load(ContainerBuilder builder)
         {
-            if (config != null)
-            {
-                builder.ConfigSection<PdfRocketConfiguration>(config);
-            }
             builder.RegisterType<PdfRocketGenerator>().As<IPdfGenerator>().SingleInstance();
         }
     }

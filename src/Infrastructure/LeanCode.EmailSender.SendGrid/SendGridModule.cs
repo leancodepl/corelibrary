@@ -1,25 +1,12 @@
 using Autofac;
-using LeanCode.Configuration;
-using Microsoft.Extensions.Configuration;
+using LeanCode.Components;
 
 namespace LeanCode.EmailSender.SendGrid
 {
-    class SendGridModule : Module
+    public class SendGridModule : AppModule
     {
-        private readonly IConfiguration configuration;
-
-        public SendGridModule(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
-
         protected override void Load(ContainerBuilder builder)
         {
-            if (configuration != null)
-            {
-                builder.ConfigSection<SendGridConfiguration>(configuration);
-            }
-
             builder.RegisterType<SendGridClient>().As<IEmailClient>().SingleInstance();
         }
     }

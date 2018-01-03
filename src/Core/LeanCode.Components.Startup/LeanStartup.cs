@@ -1,59 +1,61 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
-using LeanCode.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace LeanCode.Components.Startup
 {
     public abstract class LeanStartup : IStartup
     {
-        public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
-
         protected readonly IConfiguration Configuration;
+        protected readonly Serilog.ILogger Logger;
 
-        private readonly Serilog.ILogger logger;
-
-        private IWebApplication[] applications;
-        private IAppComponent[] components;
-
-        private IEnumerable<IAppComponent> AllComponents => components.Concat(applications);
+        protected abstract IAppModule[] Modules { get; }
 
         public LeanStartup(string appName, IConfiguration config)
+            : this(appName, config, (TypesCatalog)null)
+        { }
+
+        public LeanStartup(string appName, IConfiguration config, params Assembly[] assemblies)
+            : this(appName, config, new TypesCatalog(assemblies))
+        { }
+
+        public LeanStartup(string appName, IConfiguration config, params Type[] types)
+            : this(appName, config, new TypesCatalog(types))
+        { }
+
+        public LeanStartup(string appName, IConfiguration config, TypesCatalog destructurers)
         {
             Configuration = config;
 
-            Log.Logger = new LoggerConfiguration()
-                .DestructureCommonObjects(TypesCatalog.Assemblies)
+            var logCfg = new LoggerConfiguration()
                 .EnrichWithAppName(appName)
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
+                .ReadFrom.Configuration(Configuration);
+            if (destructurers != null)
+            {
+                logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
+            }
+            Log.Logger = logCfg.CreateLogger();
+            Logger = Log.ForContext(GetType());
 
-            logger = Log.ForContext<LeanStartup>();
-
-            logger.Information("Configuration loaded, starting app");
+            Logger.Information("Configuration loaded, starting app");
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            components = CreateComponents();
-            applications = CreateApplications();
-
-            logger.Debug("Loading common services");
+            Logger.Debug("Loading common services");
             services.AddOptions();
 
-            foreach (var component in AllComponents)
+            foreach (var component in Modules)
             {
-                logger.Debug("Loading services of {Component}", component.GetType());
+                Logger.Debug("Loading services of {Component}", component.GetType());
                 component.ConfigureServices(services);
             }
 
@@ -62,36 +64,23 @@ namespace LeanCode.Components.Startup
 
         public void Configure(IApplicationBuilder app)
         {
-            foreach (var leanApp in applications.OrderByDescending(a => a.BasePath.Length))
-            {
-                logger.Debug("Mapping app {App} to {BasePath}", leanApp.GetType(), leanApp.BasePath);
-                if (string.IsNullOrEmpty(leanApp.BasePath) || leanApp.BasePath == "/")
-                {
-                    leanApp.Configure(app);
-                }
-                else
-                {
-                    app.Map(leanApp.BasePath, leanApp.Configure);
-                }
-            }
+            ConfigureApp(app);
 
             var appLifetime = app.ApplicationServices
                 .GetRequiredService<IApplicationLifetime>();
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
 
+        protected abstract void ConfigureApp(IApplicationBuilder app);
+
         private IServiceProvider ConfigureContainer(IServiceCollection services)
         {
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
-
-            foreach (var component in AllComponents)
+            foreach (var component in Modules)
             {
-                if (component.AutofacModule != null)
-                {
-                    builder.RegisterModule(component.AutofacModule);
-                }
+                builder.RegisterModule(component);
             }
 
             ConfigureMapper(builder);
@@ -103,7 +92,7 @@ namespace LeanCode.Components.Startup
         {
             var mapperCfg = new MapperConfiguration(cfg =>
                 {
-                    foreach (var component in AllComponents)
+                    foreach (var component in Modules)
                     {
                         if (component.MapperProfile != null)
                         {
@@ -122,9 +111,5 @@ namespace LeanCode.Components.Startup
                 .As<IMapper>()
                 .InstancePerLifetimeScope();
         }
-
-        protected abstract IAppComponent[] CreateComponents();
-        protected abstract IWebApplication[] CreateApplications();
-        protected abstract TypesCatalog TypesCatalog { get; }
     }
 }

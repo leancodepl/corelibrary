@@ -1,8 +1,9 @@
 using Autofac;
+using LeanCode.Components;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class RazorViewRendererModule : Module
+    public class RazorViewRendererModule : AppModule
     {
         private readonly RazorViewRendererOptions opts;
 

@@ -8,6 +8,8 @@ namespace LeanCode.Components.Startup
 {
     public static class LeanProgram
     {
+        public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
+
         public static IWebHostBuilder BuildDefaultWebHost<TStartup>(
             bool requireEnvSettings = false,
             bool requireBaseSettings = true)
@@ -34,7 +36,7 @@ namespace LeanCode.Components.Startup
                 .ConfigureLogging((hostingContext, logging) =>
                 {
                     var config = hostingContext.Configuration
-                        .GetSection(LeanStartup.SystemLoggersEntryName);
+                        .GetSection(SystemLoggersEntryName);
                     logging.AddConfiguration(config);
                     logging.AddDebug();
                     logging.AddSerilog();

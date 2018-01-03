@@ -57,9 +57,9 @@ namespace LeanCode.IntegrationTestHelpers
 
             builder.RegisterInstance(CreateLoggerFactory()).AsImplementedInterfaces();
 
-            foreach (var component in CreateAppComponents())
+            foreach (var component in CreateAppModules())
             {
-                builder.RegisterModule(component.AutofacModule);
+                builder.RegisterModule(component);
             }
 
             ConfigureContainer(builder);
@@ -93,7 +93,7 @@ namespace LeanCode.IntegrationTestHelpers
                 .UseSqlServer(ConnectionString);
         }
 
-        protected abstract IEnumerable<IAppComponent> CreateAppComponents();
+        protected abstract IEnumerable<IAppModule> CreateAppModules();
         protected virtual void ConfigureContainer(ContainerBuilder builder)
         { }
     }

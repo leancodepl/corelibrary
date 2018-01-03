@@ -14,12 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Example
 {
-    public class MvcComponent : IAppComponent
+    public class ExampleAppModule : AppModule
     {
-        public IModule AutofacModule => null;
-        public Profile MapperProfile => null;
-
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<ExampleDbContext>(opts => opts.UseSqlite("Data Source=example.db"));
