@@ -78,7 +78,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var result = await Invoke(typeof(SampleRemoteQuery2).FullName);
 
-            Assert.Equal(result.statusCode, 200);
+            Assert.Equal(200, result.statusCode);
             Assert.IsType<SampleRemoteQuery2>(query.LastQuery);
             Assert.IsType<ObjContextWoCtor>(query.LastContext);
         }
