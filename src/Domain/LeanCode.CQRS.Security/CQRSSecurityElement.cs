@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.Security
             {
                 var authorizerType = customAuthorizerDefinition.Authorizer;
                 var customAuthorizer = authorizerResolver.FindAuthorizer(
-                    authorizerType, input.GetType());
+                    authorizerType, objectType);
 
                 if (customAuthorizer == null)
                 {
