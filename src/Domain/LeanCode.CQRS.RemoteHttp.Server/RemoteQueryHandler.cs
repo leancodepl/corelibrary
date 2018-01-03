@@ -85,10 +85,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             var contextType = types[0];
             var resultType = types[1];
-            if (contextType.GetConstructor(Type.EmptyTypes) == null)
-            {
-                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
-            }
             return ExecQueryMethod.MakeGenericMethod(contextType, queryType, resultType);
         }
     }

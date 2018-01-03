@@ -30,6 +30,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
                 var ctx = new ObjContextFromAppContextFactory().Create(appContext);
                 return GetAsync(appContext, ctx, (IQuery<ObjContext, TResult>)query);
             }
+            else if (typeof(TContext) == typeof(ObjContextWoCtor))
+            {
+                var ctx = new ObjContextWoCtorFromAppContextFactory().Create(appContext);
+                return GetAsync(appContext, ctx, (IQuery<ObjContextWoCtor, TResult>)query);
+            }
             else
             {
                 throw new NotSupportedException();

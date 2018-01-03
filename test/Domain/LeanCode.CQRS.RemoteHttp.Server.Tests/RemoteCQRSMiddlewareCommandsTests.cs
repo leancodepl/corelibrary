@@ -96,6 +96,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.NotNull(command.LastAppContext);
             Assert.Equal(user, command.LastAppContext.User);
         }
+
+        [Fact]
+        public async Task Calls_the_executor_even_if_the_context_does_not_have_public_default_constructor()
+        {
+            var result = await Invoke(typeof(SampleRemoteCommand2).FullName);
+
+            Assert.Equal(200, result.statusCode);
+            Assert.IsType<SampleRemoteCommand2>(command.LastCommand);
+            Assert.IsType<ObjContextWoCtor>(command.LastContext);
+        }
     }
 
     public class SampleCommand : ICommand<ObjContext>
@@ -104,5 +114,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     public class SampleRemoteCommand : IRemoteCommand<ObjContext>
     {
         public int Prop { get; set; }
+    }
+
+    public class SampleRemoteCommand2 : IRemoteCommand<ObjContextWoCtor>
+    {
     }
 }

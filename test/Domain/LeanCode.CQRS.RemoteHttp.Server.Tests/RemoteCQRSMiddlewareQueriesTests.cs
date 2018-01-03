@@ -72,12 +72,27 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.NotNull(query.LastAppContext);
             Assert.Equal(user, query.LastAppContext.User);
         }
+
+        [Fact]
+        public async Task Calls_the_executor_even_if_the_context_does_not_have_public_default_constructor()
+        {
+            var result = await Invoke(typeof(SampleRemoteQuery2).FullName);
+
+            Assert.Equal(result.statusCode, 200);
+            Assert.IsType<SampleRemoteQuery2>(query.LastQuery);
+            Assert.IsType<ObjContextWoCtor>(query.LastContext);
+        }
     }
 
     public class SampleQuery : IQuery<ObjContext, int>
     { }
 
     public class SampleRemoteQuery : IRemoteQuery<ObjContext, int>
+    {
+        public int Prop { get; set; }
+    }
+
+    public class SampleRemoteQuery2 : IRemoteQuery<ObjContextWoCtor, int>
     {
         public int Prop { get; set; }
     }

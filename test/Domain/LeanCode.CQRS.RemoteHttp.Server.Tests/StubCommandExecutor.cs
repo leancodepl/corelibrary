@@ -21,17 +21,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             LastAppContext = appContext;
             LastContext = context;
             LastCommand = command;
-            if (LastCommand is SampleRemoteCommand cmd)
+            if (LastCommand is SampleRemoteCommand cmd && cmd.Prop == 999)
             {
-                if (cmd.Prop == 999)
-                {
-                    return Task.FromResult(CommandResult.NotValid(
-                        new ValidationResult(new[]
-                        {
-                            SampleError
-                        })
-                    ));
-                }
+                return Task.FromResult(CommandResult.NotValid(
+                    new ValidationResult(new[] { SampleError })
+                ));
             }
             return Task.FromResult(CommandResult.Success());
         }
@@ -44,6 +38,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             {
                 var ctx = new ObjContextFromAppContextFactory().Create(appContext);
                 return RunAsync(appContext, ctx, (ICommand<ObjContext>)command);
+            }
+            else if (typeof(TContext) == typeof(ObjContextWoCtor))
+            {
+                var ctx = new ObjContextWoCtorFromAppContextFactory().Create(appContext);
+                return RunAsync(appContext, ctx, (ICommand<ObjContextWoCtor>)command);
             }
             else
             {

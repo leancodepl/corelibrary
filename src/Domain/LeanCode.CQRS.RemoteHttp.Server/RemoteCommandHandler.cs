@@ -80,10 +80,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     i.GetGenericTypeDefinition() == typeof(ICommand<>))
                 .GenericTypeArguments;
             var contextType = types[0];
-            if (contextType.GetConstructor(Type.EmptyTypes) == null)
-            {
-                throw new ArgumentException($"The context {contextType.Name} does not have public default constructor that is required by the RemoteCQRS module.");
-            }
             return ExecCommandMethod.MakeGenericMethod(contextType, commandType);
         }
     }
