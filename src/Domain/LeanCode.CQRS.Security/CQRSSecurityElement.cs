@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.Security
             {
                 var authorizerType = customAuthorizerDefinition.Authorizer;
                 var customAuthorizer = authorizerResolver.FindAuthorizer(
-                    authorizerType, objectType);
+                    authorizerType, input.GetType());
 
                 if (customAuthorizer == null)
                 {
@@ -50,7 +50,7 @@ namespace LeanCode.CQRS.Security
                 }
 
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData)
+                    .CheckIfAuthorizedAsync(appContext, input.Context, input.Object, customAuthorizerDefinition.CustomData)
                     .ConfigureAwait(false);
                 if (!authorized)
                 {

@@ -6,8 +6,7 @@ namespace LeanCode.CQRS.Security
 {
     public interface ICustomAuthorizer<in TAppContext>
     {
-        Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, QueryExecutionPayload payload, object customData);
-        Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, CommandExecutionPayload payload, object customData);
+        Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object objContext, object obj, object customData);
     }
 
     public abstract class CustomAuthorizer<TAppContext, TContext, TObject>
@@ -15,18 +14,11 @@ namespace LeanCode.CQRS.Security
     {
         public Task<bool> CheckIfAuthorizedAsync(
             TAppContext appContext,
-            QueryExecutionPayload payload,
+            object objContext,
+            object obj,
             object customData)
         {
-            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Object);
-        }
-
-        public Task<bool> CheckIfAuthorizedAsync(
-            TAppContext appContext,
-            CommandExecutionPayload payload,
-            object customData)
-        {
-            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Object);
+            return CheckIfAuthorizedAsync(appContext, (TContext)objContext, (TObject)obj, customData);
         }
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(
@@ -37,14 +29,9 @@ namespace LeanCode.CQRS.Security
         : ICustomAuthorizer<TAppContext>
         where TCustomData : class
     {
-        public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, QueryExecutionPayload payload, object customData)
+        public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object objContext, object obj, object customData)
         {
-            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Object, customData);
-        }
-
-        public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, CommandExecutionPayload payload, object customData)
-        {
-            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Object, customData);
+            return CheckIfAuthorizedInternal(appContext, (TContext)objContext, (TObject)obj, customData);
         }
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(

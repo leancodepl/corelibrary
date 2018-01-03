@@ -50,7 +50,7 @@ namespace LeanCode.CQRS.Tests
             var (handler, underlying) = FindSampleAuthorizer<SampleCommand>();
             underlying.Result = true;
 
-            var result = await handler.CheckIfAuthorizedAsync(appCtx, new CommandExecutionPayload(objCtx, cmd), data);
+            var result = await handler.CheckIfAuthorizedAsync(appCtx, objCtx, cmd, data);
 
             Assert.Same(appCtx, underlying.AppContext);
             Assert.Same(objCtx, underlying.Context);

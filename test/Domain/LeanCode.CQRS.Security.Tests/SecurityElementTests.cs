@@ -36,7 +36,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             firstAuthorizer = Substitute.For<IFirstAuthorizer>();
             firstAuthorizer.UnderlyingAuthorizer.Returns(firstAuthorizer.GetType());
-            firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(
                 typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
@@ -46,7 +46,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             secondAuthorizer = Substitute.For<ISecondAuthorizer>();
             secondAuthorizer.UnderlyingAuthorizer.Returns(secondAuthorizer.GetType());
-            secondAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            secondAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(typeof(ISecondAuthorizer), Arg.Any<Type>()).Returns(secondAuthorizer);
         }
@@ -55,7 +55,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             derivedAuthorizer = Substitute.For<IDerivedAuthorizer>();
             derivedAuthorizer.UnderlyingAuthorizer.Returns(derivedAuthorizer.GetType());
-            derivedAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            derivedAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(typeof(IDerivedAuthorizer), Arg.Any<Type>()).Returns(derivedAuthorizer);
         }
@@ -91,7 +91,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, Arg.Any<object>());
+            _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj.Context, obj.Object, Arg.Any<object>());
         }
 
         [Theory]
@@ -131,7 +131,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, DerivedAttributeParam);
+            _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj.Context, obj.Object, DerivedAttributeParam);
         }
 
         [Fact]
@@ -213,6 +213,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
             public TestExecutionPayload(object obj)
             {
+                Context = new object();
                 Object = obj;
             }
         }

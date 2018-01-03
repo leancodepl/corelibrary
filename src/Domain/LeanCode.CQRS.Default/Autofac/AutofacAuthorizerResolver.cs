@@ -20,14 +20,7 @@ namespace LeanCode.CQRS.Default.Autofac
             if (componentContext.TryResolve(authorizerType, out var handler))
             {
                 var typed = (ICustomAuthorizer<TAppContext>)handler;
-                if (objectType == typeof(CommandExecutionPayload))
-                {
-                    return new CustomCommandAuthorizerWrapper<TAppContext>(typed);
-                }
-                else
-                {
-                    return new CustomQueryAuthorizerWrapper<TAppContext>(typed);
-                }
+                return new CustomAuthorizerWrapper<TAppContext>(typed);
             }
             else
             {
