@@ -10,12 +10,12 @@ namespace LeanCode.CQRS.Cache
         public static string GetKey(QueryExecutionPayload payload)
         {
             var contextType = payload.Context.GetType();
-            var queryType = payload.Query.GetType();
+            var queryType = payload.Object.GetType();
             StringBuilder key = new StringBuilder();
             key.Append(queryType.Name);
             SerializeProperties(key, contextType, payload.Context);
             key.Append('-');
-            SerializeProperties(key, queryType, payload.Query);
+            SerializeProperties(key, queryType, payload.Object);
             return key.ToString();
         }
 

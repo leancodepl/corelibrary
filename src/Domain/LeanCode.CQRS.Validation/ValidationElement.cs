@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.Validation
             Func<TAppContext, CommandExecutionPayload, Task<CommandResult>> next)
         {
             var context = payload.Context;
-            var command = payload.Command;
+            var command = payload.Object;
 
             var commandType = command.GetType();
             var validator = resolver.FindCommandValidator(commandType);

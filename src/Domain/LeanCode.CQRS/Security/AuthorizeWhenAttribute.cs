@@ -19,15 +19,10 @@ namespace LeanCode.CQRS.Security
 
         public static List<AuthorizerDefinition> GetCustomAuthorizers(Type type)
         {
-            return type.GetTypeInfo()
+            return type
                 .GetCustomAttributes<AuthorizeWhenAttribute>()
                 .Select(AuthorizerDefinition.Create)
                 .ToList();
-        }
-
-        public static List<AuthorizerDefinition> GetAuthorizers(object obj)
-        {
-            return GetCustomAuthorizers(obj.GetType());
         }
 
         public sealed class AuthorizerDefinition

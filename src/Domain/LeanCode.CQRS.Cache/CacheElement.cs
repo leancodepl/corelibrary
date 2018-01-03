@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.Cache
             QueryExecutionPayload payload,
             Func<TContext, QueryExecutionPayload, Task<object>> next)
         {
-            var duration = QueryCacheAttribute.GetDuration(payload.Query);
+            var duration = QueryCacheAttribute.GetDuration(payload.Object);
             if (duration.HasValue)
             {
                 var key = QueryCacheKeyProvider.GetKey(payload);
@@ -34,7 +34,7 @@ namespace LeanCode.CQRS.Cache
                     ).ConfigureAwait(false);
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
-                    payload.Query, key);
+                    payload.Object, key);
 
                 return res.Item;
             }

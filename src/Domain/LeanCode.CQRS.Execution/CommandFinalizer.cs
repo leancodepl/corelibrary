@@ -21,7 +21,7 @@ namespace LeanCode.CQRS.Execution
             TAppContext _, CommandExecutionPayload payload)
         {
             var context = payload.Context;
-            var command = payload.Command;
+            var command = payload.Object;
 
             var commandType = command.GetType();
             var handler = resolver.FindCommandHandler(commandType);

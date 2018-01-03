@@ -20,7 +20,7 @@ namespace LeanCode.CQRS.Execution
             TAppContext _, QueryExecutionPayload payload)
         {
             var context = payload.Context;
-            var query = payload.Query;
+            var query = payload.Object;
 
             var queryType = query.GetType();
             var handler = resolver.FindQueryHandler(queryType);

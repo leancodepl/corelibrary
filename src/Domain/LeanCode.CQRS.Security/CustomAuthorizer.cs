@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.Security
             QueryExecutionPayload payload,
             object customData)
         {
-            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Query);
+            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Object);
         }
 
         public Task<bool> CheckIfAuthorizedAsync(
@@ -26,7 +26,7 @@ namespace LeanCode.CQRS.Security
             CommandExecutionPayload payload,
             object customData)
         {
-            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Command);
+            return CheckIfAuthorizedAsync(appContext, (TContext)payload.Context, (TObject)payload.Object);
         }
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(
@@ -39,12 +39,12 @@ namespace LeanCode.CQRS.Security
     {
         public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, QueryExecutionPayload payload, object customData)
         {
-            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Query, customData);
+            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Object, customData);
         }
 
         public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, CommandExecutionPayload payload, object customData)
         {
-            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Command, customData);
+            return CheckIfAuthorizedInternal(appContext, (TContext)payload.Context, (TObject)payload.Object, customData);
         }
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(

@@ -41,7 +41,7 @@ namespace LeanCode.CQRS.Tests
 
             Assert.Equal(appCtx, element.AppContext);
             Assert.Equal(objCtx, element.Data.Context);
-            Assert.Equal(cmd, element.Data.Command);
+            Assert.Equal(cmd, element.Data.Object);
         }
 
         [Fact]

@@ -9,6 +9,7 @@ namespace LeanCode.CQRS.Security
     public class CQRSSecurityElement<TAppContext, TInput, TOutput>
         : IPipelineElement<TAppContext, TInput, TOutput>
         where TAppContext : ISecurityContext
+        where TInput : IExecutionPayload
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSSecurityElement<TAppContext, TInput, TOutput>>();
 
@@ -24,7 +25,8 @@ namespace LeanCode.CQRS.Security
             TInput input,
             Func<TAppContext, TInput, Task<TOutput>> next)
         {
-            var customAuthorizers = AuthorizeWhenAttribute.GetAuthorizers(input);
+            var objectType = input.Object.GetType();
+            var customAuthorizers = AuthorizeWhenAttribute.GetCustomAuthorizers(objectType);
             var user = appContext.User;
 
             if (customAuthorizers.Count > 0)
@@ -36,7 +38,6 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            var objectType = input.GetType();
             foreach (var customAuthorizerDefinition in customAuthorizers)
             {
                 var authorizerType = customAuthorizerDefinition.Authorizer;

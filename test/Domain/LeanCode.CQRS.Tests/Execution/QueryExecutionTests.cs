@@ -43,7 +43,7 @@ namespace LeanCode.CQRS.Tests
 
             Assert.Equal(appCtx, element.AppContext);
             Assert.Equal(objCtx, element.Data.Context);
-            Assert.Equal(query, element.Data.Query);
+            Assert.Equal(query, element.Data.Object);
         }
 
         [Fact]
