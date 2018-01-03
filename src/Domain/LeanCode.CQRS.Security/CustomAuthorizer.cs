@@ -4,7 +4,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Security
 {
-    public interface ICustomAuthorizer<TAppContext>
+    public interface ICustomAuthorizer<in TAppContext>
     {
         Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, QueryExecutionPayload payload, object customData);
         Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, CommandExecutionPayload payload, object customData);
