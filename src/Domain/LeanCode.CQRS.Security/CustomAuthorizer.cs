@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.Security
             object obj,
             object customData)
         {
-            return CheckIfAuthorizedAsync(appContext, (TContext)objContext, (TObject)obj, customData);
+            return CheckIfAuthorizedAsync(appContext, (TContext)objContext, (TObject)obj);
         }
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(
