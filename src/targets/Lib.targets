@@ -8,6 +8,7 @@
     <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
 
     <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
     <DebugType>portable</DebugType>
 
     <!-- Generate the documentation but don't require it on all public members -->
