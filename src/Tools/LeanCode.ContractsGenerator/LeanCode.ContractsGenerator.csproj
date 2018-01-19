@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../targets/Version.targets" />
+  <PropertyGroup>
+    <PackageId>LeanCode.ContractsGenerator</PackageId>
+    <Authors>LeanCode</Authors>
+    <Description>Tool for generating .ts from project contracts</Description>
+    <IsPackable>true</IsPackable>
+
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageVersion>0.1.0</PackageVersion>
+
+    <AssemblyName>dotnet-generate</AssemblyName>
+    <PackageType>DotnetCliTool</PackageType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Glob" Version="0.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="2.6.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.0.0" />
+  </ItemGroup>
+</Project>
