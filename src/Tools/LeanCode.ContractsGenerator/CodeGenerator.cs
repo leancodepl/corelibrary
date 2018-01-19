@@ -90,7 +90,7 @@ namespace LeanCode.ContractsGenerator
         {
             var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
             var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
-            funcsBuilder.Append($"    {name} = this.cqrsClient.executeCommand.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {info.Name}) => Promise<CommandResult>;\n");
+            funcsBuilder.Append($"    {name} = this.cqrsClient.executeCommand.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {this.name}.{info.Name}) => Promise<CommandResult>;\n");
         }
 
         private void GenerateRemoteQuery(StringBuilder funcsBuilder, INamedTypeSymbol info)
@@ -99,7 +99,7 @@ namespace LeanCode.ContractsGenerator
             var result = info.AllInterfaces.Where(i => i.Name == "IRemoteQuery").Select(q => StringifyType(q.TypeArguments.Skip(1).First(), out _)).First();
             var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
 
-            funcsBuilder.Append($"    {name} = this.cqrsClient.executeQuery.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {info.Name}) => Promise<{result}>;\n");
+            funcsBuilder.Append($"    {name} = this.cqrsClient.executeQuery.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {this.name}.{info.Name}) => Promise<{this.name}.{result}>;\n");
         }
 
         private void GenerateInterface(StringBuilder dtosBuilder, INamedTypeSymbol info)
