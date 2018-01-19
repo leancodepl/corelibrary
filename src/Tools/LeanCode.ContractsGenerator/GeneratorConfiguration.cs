@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator
         private static readonly Dictionary<string, string> DefaultConfiguration = new Dictionary<string, string>
         {
             { nameof(RootPath), Directory.GetCurrentDirectory() },
-            { nameof(ContractsRegex), "*.cs$" },
+            { nameof(ContractsRegex), @".*\.cs$" },
             { nameof(OutPath), Directory.GetCurrentDirectory() },
             { nameof(Name), "contracts" },
             { nameof(AdditionalCode), DefaultAdditionalCode },
