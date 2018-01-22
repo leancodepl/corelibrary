@@ -33,7 +33,7 @@ namespace LeanCode.ContractsGenerator
 
         private static void SaveContracts(GeneratorConfiguration config, string contracts, string client)
         {
-            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + ".ts"), FileMode.Create)))
+            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + "Client.ts"), FileMode.Create)))
             {
                 fileWriter.Write(client);
             }
