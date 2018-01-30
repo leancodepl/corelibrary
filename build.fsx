@@ -32,17 +32,11 @@ let formatChangelog (changeLog: ChangeLog) =
     else desc + "\n\nChanges:\n" + changes
 
 let updateChangelog (changeLog: ChangeLog) =
-    let branch = Git.Information.getBranchName ""
-    if branch = "master" then changeLog
-    else
-        let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD --count")
-        let newVersion = { changeLog.LatestEntry.SemVer with Minor = changeLog.LatestEntry.SemVer.Minor + 1; Patch = 0 }
-        let newVerString = newVersion.ToString() + "-alpha." + commits
-        if Option.isSome changeLog.Unreleased
-        then changeLog.PromoteUnreleased newVerString
-        else
-            let newEntry = ChangeLogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
-            { changeLog with Entries = newEntry :: changeLog.Entries }
+    let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD --count") |> Int32.Parse
+    let newVersion = { changeLog.LatestEntry.SemVer with Patch = commits }
+    let newVerString = newVersion.ToString()
+    let newEntry = ChangeLogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
+    { changeLog with Entries = newEntry :: changeLog.Entries }
 
 let changeLog = LoadChangeLog "CHANGELOG.md" |> updateChangelog
 let version = changeLog.LatestEntry.NuGetVersion
