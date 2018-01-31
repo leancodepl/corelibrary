@@ -12,6 +12,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace LeanCode.ContractsGenerator
 {
+    class RemoteQueryCommandInfo
+    {
+        public string Name { get; set; }
+        public string Parameter { get; set; }
+        public string Result { get; set; }
+        public bool IsQuery { get; set; }
+        public string Path { get; set; }
+    }
+
     class CodeGenerator
     {
         private static readonly Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
@@ -45,6 +54,8 @@ namespace LeanCode.ContractsGenerator
         private readonly string clientPreamble;
         private readonly string name;
 
+        List<RemoteQueryCommandInfo> remoteQueryCommandsInfo;
+
         public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation, GeneratorConfiguration configuration)
         {
             this.trees = trees;
@@ -52,18 +63,30 @@ namespace LeanCode.ContractsGenerator
             contractsPreamble = configuration.ContractsPreamble;
             clientPreamble = configuration.ClientPreamble;
             name = configuration.Name;
+
+            this.remoteQueryCommandsInfo = new List<RemoteQueryCommandInfo>();
         }
 
         public void Generate(out string contracts, out string client)
         {
             StringBuilder dtosBuilder = new StringBuilder();
             StringBuilder funcsBuilder = new StringBuilder();
-            StringBuilder namespacesBuilder = new StringBuilder();
 
             dtosBuilder.Append(contractsPreamble);
             dtosBuilder.Append("\n\n");
 
             dtosBuilder.Append($"declare namespace {name} {{\n");
+
+            foreach (var tree in trees)
+            {
+                var model = compilation.GetSemanticModel(tree);
+
+                GenerateClassesAndInterfaces(dtosBuilder, model, tree);
+                GenerateEnums(dtosBuilder, model, tree);
+            }
+
+            dtosBuilder.Append("}\n");
+
 
             funcsBuilder.Append(clientPreamble);
             funcsBuilder.Append("\n");
@@ -71,40 +94,72 @@ namespace LeanCode.ContractsGenerator
             funcsBuilder.Append("    constructor(private cqrsClient: CQRS) { }\n");
             funcsBuilder.Append("\n");
 
-            foreach (var tree in trees)
-            {
-                var model = compilation.GetSemanticModel(tree);
-
-                GenerateClassesAndInterfaces(dtosBuilder, funcsBuilder, model, tree);
-                GenerateEnums(dtosBuilder, model, tree);
+            funcsBuilder.Append("export type ClientParams = {\n");
+            foreach (var info in remoteQueryCommandsInfo) {
+                funcsBuilder.Append($"    \"{info.Name}\": {info.Parameter});");
             }
+            funcsBuilder.Append("};\n\n");
 
-            funcsBuilder.Append("}\n");
-            dtosBuilder.Append("}\n");
+            funcsBuilder.Append("export type ClientResults = {\n");
+            foreach (var info in remoteQueryCommandsInfo) {
+                funcsBuilder.Append($"    \"{info.Name}\": {info.Result});");
+            }
+            funcsBuilder.Append("};\n\n");
+
+            funcsBuilder.Append("export default function (cqrsClient: CQRS): ClientType<ClientParams, ClientResults> {\n");
+            funcsBuilder.Append("    return {\n");
+
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info =>
+                    {
+                        var executeOption = info.IsQuery ? "executeQuery" : "executeCommand";
+
+                        return $"        {info.Name}: cqrsClient.{executeOption}.bind(cqrsClient, \"{info.Path}\")";
+                    })
+                )
+            );
+
+            funcsBuilder.Append("};\n");
 
             contracts = dtosBuilder.ToString();
-            client = funcsBuilder.ToString() + namespacesBuilder.ToString();
+            client = funcsBuilder.ToString();
         }
 
-        private void GenerateRemoteCommand(StringBuilder funcsBuilder, INamedTypeSymbol info)
+        private void GenerateRemoteCommand(INamedTypeSymbol info)
         {
             var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
             var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
-            funcsBuilder.Append($"    {name} = this.cqrsClient.executeCommand.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {this.name}.{info.Name}) => Promise<CommandResult>;\n");
+
+            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
+            {
+                Name = name,
+                Path = $"{namespaceName}.{info.Name}",
+                Parameter = $"{this.name}.{info.Name}",
+                Result = "CommandResult",
+                IsQuery = false
+            });
         }
 
-        private void GenerateRemoteQuery(StringBuilder funcsBuilder, INamedTypeSymbol info)
+        private void GenerateRemoteQuery(INamedTypeSymbol info)
         {
             var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
             var result = info.AllInterfaces.Where(i => i.Name == "IRemoteQuery").Select(q => StringifyType(q.TypeArguments.Skip(1).First(), out _)).First();
             var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
 
-            funcsBuilder.Append($"    {name} = this.cqrsClient.executeQuery.bind(this.cqrsClient, \"{namespaceName}.{info.Name}\") as (dto: {this.name}.{info.Name}) => Promise<{this.name}.{result}>;\n");
+            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
+            {
+                Name = name,
+                Path = $"{namespaceName}.{info.Name}",
+                Parameter = $"{this.name}.{info.Name}",
+                Result = $"{this.name}.{result}",
+                IsQuery = true
+            });
         }
 
         private void GenerateInterface(StringBuilder dtosBuilder, INamedTypeSymbol info)
         {
-            if(info.AllInterfaces.Any(a => a.Name == "_Attribute" || a.Name == "_Exception"))
+            if (info.AllInterfaces.Any(a => a.Name == "_Attribute" || a.Name == "_Exception"))
             {
                 return;
             }
@@ -190,7 +245,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private void GenerateClassesAndInterfaces(StringBuilder dtosBuilder, StringBuilder funcsBuilder, SemanticModel model, SyntaxTree tree)
+        private void GenerateClassesAndInterfaces(StringBuilder dtosBuilder, SemanticModel model, SyntaxTree tree)
         {
             var classesDeclarations = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
             var interfacesDeclarations = tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>();
@@ -203,27 +258,16 @@ namespace LeanCode.ContractsGenerator
             var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
 
             var nonStaticClasses = publicClasses.Where(i => !i.IsStatic).ToList();
-            var publicInfos = publicClasses.Concat(publicInterfaces).ToList();
             var publicNonAbstractClasses = publicClasses.Where(c => !c.IsAbstract).ToList();
-
-            foreach (var info in publicClasses.Concat(publicInterfaces))
-            {
-                //GenerateModule(dtosBuilder, info, infos);
-            }
-
-            foreach (var info in publicClasses.Where(IsCommandOrQuery))
-            {
-                // GenerateInterface(dtosBuilder, info);
-            }
 
             foreach (var info in publicNonAbstractClasses.Where(IsRemoteCommand))
             {
-                GenerateRemoteCommand(funcsBuilder, info);
+                GenerateRemoteCommand(info);
             }
 
             foreach (var info in publicNonAbstractClasses.Where(IsRemoteQuery))
             {
-                GenerateRemoteQuery(funcsBuilder, info);
+                GenerateRemoteQuery(info);
             }
 
             foreach (var info in nonStaticClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
@@ -234,7 +278,7 @@ namespace LeanCode.ContractsGenerator
 
         private void GenerateEnum(StringBuilder dtosBuilder, INamedTypeSymbol info)
         {
-            dtosBuilder.Append($"    enum {@info.Name} {{\n");
+            dtosBuilder.Append($"    export const enum {@info.Name} {{\n");
 
             var enumMembers = info.GetMembers().OfType<IFieldSymbol>();
             var enumBody = enumMembers.Select(e => $"        {e.Name}{(e.ConstantValue == null ? string.Empty : $" = {e.ConstantValue}")}");
@@ -268,7 +312,7 @@ namespace LeanCode.ContractsGenerator
         {
             isNullable = typeSymbol.Name == "Nullable";
 
-            switch(typeSymbol)
+            switch (typeSymbol)
             {
                 case INamedTypeSymbol type:
                     if (isNullable)
