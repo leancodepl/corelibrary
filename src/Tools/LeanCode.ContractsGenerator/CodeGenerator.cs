@@ -90,21 +90,22 @@ namespace LeanCode.ContractsGenerator
 
             funcsBuilder.Append(clientPreamble);
             funcsBuilder.Append("\n");
-            funcsBuilder.Append("export default class Client {\n");
-            funcsBuilder.Append("    constructor(private cqrsClient: CQRS) { }\n");
-            funcsBuilder.Append("\n");
 
             funcsBuilder.Append("export type ClientParams = {\n");
-            foreach (var info in remoteQueryCommandsInfo) {
-                funcsBuilder.Append($"    \"{info.Name}\": {info.Parameter});");
-            }
-            funcsBuilder.Append("};\n\n");
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info => $"    \"{info.Name}\": {info.Parameter}")
+                )
+            );
+            funcsBuilder.Append("\n};\n\n");
 
             funcsBuilder.Append("export type ClientResults = {\n");
-            foreach (var info in remoteQueryCommandsInfo) {
-                funcsBuilder.Append($"    \"{info.Name}\": {info.Result});");
-            }
-            funcsBuilder.Append("};\n\n");
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info => $"    \"{info.Name}\": {info.Result}")
+                )
+            );
+            funcsBuilder.Append("\n};\n\n");
 
             funcsBuilder.Append("export default function (cqrsClient: CQRS): ClientType<ClientParams, ClientResults> {\n");
             funcsBuilder.Append("    return {\n");
@@ -119,8 +120,8 @@ namespace LeanCode.ContractsGenerator
                     })
                 )
             );
-
-            funcsBuilder.Append("};\n");
+            funcsBuilder.Append("\n    };\n");
+            funcsBuilder.Append("}\n");
 
             contracts = dtosBuilder.ToString();
             client = funcsBuilder.ToString();

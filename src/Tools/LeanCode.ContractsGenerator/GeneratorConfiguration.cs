@@ -9,7 +9,7 @@ namespace LeanCode.ContractsGenerator
         private const string DefaultAdditionalCode = "";
 
         private const string DefaultContractsPreamble = "import { IRemoteQuery, IRemoteCommand } from \"@leancode/cqrs-client/CQRS\";\n\n";
-        private const string DefaultClientPreamble = "import { CommandResult, CQRS } from \"@leancode/cqrs-client/CQRS\";\n\n";
+        private const string DefaultClientPreamble = "import { CommandResult, CQRS } from \"@leancode/cqrs-client/CQRS\";\nimport { ClientType } from \"@leancode/cqrs-client/ClientType\";\n";
 
         public string RootPath { get; set; }
         public string ContractsRegex { get; set; }
