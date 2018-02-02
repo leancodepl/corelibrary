@@ -3,40 +3,36 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
+using LeanCode.TimeProvider;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public abstract class EFRepository<TEntity, TContext>
-        : EFRepository<TEntity, Guid, TContext>, IRepository<TEntity>
+    public abstract class EFRepository<TEntity, TContext, TUnitOfWork>
+        : EFRepository<TEntity, Guid, TContext, TUnitOfWork>, IRepository<TEntity>
         where TEntity : class, IAggregateRoot<Guid>
         where TContext : DbContext
+        where TUnitOfWork : EFUnitOfWorkBase<TContext>
     {
-        public EFRepository(TContext dbContext)
-            : base(dbContext)
+        public EFRepository(TContext dbContext, TUnitOfWork unitOfWork)
+            : base(dbContext, unitOfWork)
         { }
     }
 
-    public abstract class EFRepository<TEntity, TIdentity, TContext>
-        : IRepository<TEntity, TIdentity>
+    public abstract class EFRepository<TEntity, TIdentity, TContext, TUnitOfWork>
+        : EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
         where TEntity : class, IAggregateRoot<TIdentity>
         where TContext : DbContext
+        where TUnitOfWork : EFUnitOfWorkBase<TContext>
     {
-        protected readonly DbSet<TEntity> dbSet;
+        public EFRepository(TContext dbContext, TUnitOfWork unitOfWork)
+            : base(dbContext, unitOfWork)
+        { }
 
-        public EFRepository(TContext dbContext)
+        public override Task UpdateAsync(TEntity entity)
         {
-            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
-
-            dbSet = dbContext.Set<TEntity>();
+            entity.DateModified = Time.Now;
+            return base.UpdateAsync(entity);
         }
-
-        public void Add(TEntity entity) => dbSet.Add(entity);
-
-        public void Delete(TEntity entity) => dbSet.Remove(entity);
-
-        public void DeleteRange(IEnumerable<TEntity> entities) => dbSet.RemoveRange(entities);
-
-        public abstract Task<TEntity> FindAsync(TIdentity id);
     }
 }
