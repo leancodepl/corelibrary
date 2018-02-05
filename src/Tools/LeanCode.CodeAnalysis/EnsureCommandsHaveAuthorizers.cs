@@ -21,7 +21,7 @@ namespace LeanCode.CodeAnalysis
 
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
         private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
-        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowAnauthorizedAttribute";
+        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
 
         public override void Initialize(AnalysisContext context)
         {
@@ -40,15 +40,19 @@ namespace LeanCode.CodeAnalysis
 
         private static bool IsCommand(INamedTypeSymbol type)
         {
-            return type.ImplementsInterfaceOrBaseClass(CommandTypeName);
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName);
         }
 
         private static bool HasAuthorizationAttribute(INamedTypeSymbol type)
         {
             var attributes = type.GetAttributes();
-            return attributes.Any(attr =>
+            if (attributes.Any(attr =>
                 attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName) ||
-                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName));
+                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)))
+            {
+                return true;
+            }
+            return type.BaseType != null ? HasAuthorizationAttribute(type.BaseType) : false;
         }
     }
 }
