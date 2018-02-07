@@ -8,16 +8,16 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace LeanCode.CodeAnalysis
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class EnsureCommandsHaveAuthorizers : DiagnosticAnalyzer
+    public class EnsureQueriesHaveAuthorizers : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "LNCD0001"; // :)
 
         private const string Category = "Cqrs";
-        private const string Title = "Command should be authorized";
+        private const string Title = "Query should be authorized";
         private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization";
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
-        private const string CommandTypeName = "LeanCode.CQRS.ICommand";
+        private const string QueryTypeName = "LeanCode.CQRS.IQuery";
         private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
         private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
 
@@ -31,16 +31,16 @@ namespace LeanCode.CodeAnalysis
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             var type = (INamedTypeSymbol)context.Symbol;
-            if (IsCommand(type) && !HasAuthorizationAttribute(type))
+            if (IsQuery(type) && !HasAuthorizationAttribute(type))
             {
                 var diagnostic = Diagnostic.Create(Rule, type.Locations[0], type.Name);
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static bool IsCommand(INamedTypeSymbol type)
+        private static bool IsQuery(INamedTypeSymbol type)
         {
-            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName);
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName);
         }
 
         private static bool HasAuthorizationAttribute(INamedTypeSymbol type)

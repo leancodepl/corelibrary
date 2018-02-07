@@ -35,6 +35,5 @@ namespace LeanCode.CodeAnalysis
         {
             return $"{type.ContainingNamespace}.{type.MetadataName}";
         }
-
     }
 }
