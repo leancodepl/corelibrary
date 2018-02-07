@@ -19,30 +19,10 @@ namespace LeanCode.Components.Startup
 
         protected abstract IAppModule[] Modules { get; }
 
-        public LeanStartup(string appName, IConfiguration config)
-            : this(appName, config, (TypesCatalog)null)
-        { }
-
-        public LeanStartup(string appName, IConfiguration config, params Assembly[] assemblies)
-            : this(appName, config, new TypesCatalog(assemblies))
-        { }
-
-        public LeanStartup(string appName, IConfiguration config, params Type[] types)
-            : this(appName, config, new TypesCatalog(types))
-        { }
-
-        public LeanStartup(string appName, IConfiguration config, TypesCatalog destructurers)
+        public LeanStartup(IConfiguration config)
         {
             Configuration = config;
 
-            var logCfg = new LoggerConfiguration()
-                .EnrichWithAppName(appName)
-                .ReadFrom.Configuration(Configuration);
-            if (destructurers != null)
-            {
-                logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
-            }
-            Log.Logger = logCfg.CreateLogger();
             Logger = Log.ForContext(GetType());
 
             Logger.Information("Configuration loaded, starting app");

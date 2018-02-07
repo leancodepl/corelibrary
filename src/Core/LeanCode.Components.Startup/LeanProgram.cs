@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,8 +12,10 @@ namespace LeanCode.Components.Startup
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
 
         public static IWebHostBuilder BuildDefaultWebHost<TStartup>(
+            string appName,
             bool requireEnvSettings = false,
-            bool requireBaseSettings = true)
+            bool requireBaseSettings = true,
+            TypesCatalog destructurers = null)
             where TStartup : class
         {
             return new WebHostBuilder()
@@ -35,10 +38,51 @@ namespace LeanCode.Components.Startup
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
+                    var logCfg = new LoggerConfiguration()
+                        .EnrichWithAppName(appName)
+                        .ReadFrom.Configuration(hostingContext.Configuration);
+                    if (destructurers != null)
+                    {
+                        logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
+                    }
+                    Log.Logger = logCfg.CreateLogger();
+
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);
                     logging.AddConfiguration(config);
-                    logging.AddDebug();
+                    logging.AddSerilog();
+                })
+                .UseDefaultServiceProvider((context, options) =>
+                {
+                    options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
+                })
+                .UseStartup<TStartup>();
+        }
+
+        public static IWebHostBuilder BuildMinimalWebHost<TStartup>(
+            string appName,
+            Func<WebHostBuilderContext, LoggerConfiguration> configLogger,
+            TypesCatalog destructurers = null)
+            where TStartup : class
+        {
+            return new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddEnvironmentVariables();
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    var logCfg = configLogger(hostingContext)
+                        .EnrichWithAppName(appName);
+                    if (destructurers != null)
+                    {
+                        logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
+                    }
+
+                    var config = hostingContext.Configuration
+                        .GetSection(SystemLoggersEntryName);
+                    logging.AddConfiguration(config);
                     logging.AddSerilog();
                 })
                 .UseDefaultServiceProvider((context, options) =>

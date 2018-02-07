@@ -20,7 +20,7 @@ namespace LeanCode.Example
         private static readonly TypesCatalog searchAssemblies = new TypesCatalog(typeof(Startup));
 
         public Startup(IConfiguration config, IHostingEnvironment hostEnv)
-            : base("LeanCode.Example", config)
+            : base(config)
         {
             this.hostEnv = hostEnv;
         }

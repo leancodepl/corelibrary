@@ -8,7 +8,7 @@ namespace LeanCode.Example
     {
         public static void Main(string[] args)
         {
-            LeanProgram.BuildDefaultWebHost<Startup>()
+            LeanProgram.BuildDefaultWebHost<Startup>("LeanCode.Example")
                 .UseKestrel()
                 .Build()
                 .Run();
