@@ -79,6 +79,7 @@ namespace LeanCode.Components.Startup
                     {
                         logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
                     }
+                    Log.Logger = logCfg.CreateLogger();
 
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);
