@@ -14,8 +14,12 @@ namespace LeanCode.DomainModels.DataAccess
     {
         Task<TEntity> FindAsync(TIdentity id);
         void Add(TEntity entity);
-        Task UpdateAsync(TEntity entity);
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);
+
+        Task AddAsync(TEntity entity);
+        Task DeleteAsync(TEntity entity);
+        Task DeleteRangeAsync(IEnumerable<TEntity> entity);
+        Task UpdateAsync(TEntity entity);
     }
 }
