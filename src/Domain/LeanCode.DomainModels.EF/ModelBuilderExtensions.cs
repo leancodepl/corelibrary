@@ -25,6 +25,9 @@ namespace LeanCode.DomainModels.EF
                 .HasColumnName(nameof(IOptimisticConcurrency.RowVersion))
                 .ValueGeneratedOnAddOrUpdate()
                 .IsConcurrencyToken();
+
+            cfg.Property(e => e.DateModified)
+                .HasColumnName(nameof(IOptimisticConcurrency.DateModified));
         }
 
         public static void EnableOptimisticConcurrency<TEntity>(this ModelBuilder builder)
