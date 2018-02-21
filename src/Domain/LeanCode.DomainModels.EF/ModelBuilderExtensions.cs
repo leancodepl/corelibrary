@@ -1,5 +1,6 @@
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LeanCode.DomainModels.EF
 {
@@ -8,8 +9,27 @@ namespace LeanCode.DomainModels.EF
         public static void EnableSoftDeleteOf<TSoftDeletable>(this ModelBuilder builder)
             where TSoftDeletable : class, ISoftDeletable
         {
-            builder.Entity<TSoftDeletable>()
-                .HasQueryFilter(e => e.IsDeleted == false);
+            builder.Entity<TSoftDeletable>().IsSoftDeletable();
+        }
+
+        public static void IsSoftDeletable<TEntity>(this EntityTypeBuilder<TEntity> cfg)
+            where TEntity : class, ISoftDeletable
+        {
+            cfg.HasQueryFilter(e => e.IsDeleted == false);
+        }
+
+        public static void IsOptimisticConcurrent<TEntity>(this EntityTypeBuilder<TEntity> cfg)
+            where TEntity : class, IOptimisticConcurrency
+        {
+            cfg.Property(e => e.RowVersion)
+                .ValueGeneratedOnAddOrUpdate()
+                .IsConcurrencyToken();
+        }
+
+        public static void EnableOptimisticConcurrency<TEntity>(this ModelBuilder builder)
+            where TEntity : class, IOptimisticConcurrency
+        {
+            builder.Entity<TEntity>().IsOptimisticConcurrent();
         }
     }
 }
