@@ -22,6 +22,7 @@ namespace LeanCode.DomainModels.EF
             where TEntity : class, IOptimisticConcurrency
         {
             cfg.Property(e => e.RowVersion)
+                .HasColumnName(nameof(IOptimisticConcurrency.RowVersion))
                 .ValueGeneratedOnAddOrUpdate()
                 .IsConcurrencyToken();
         }
