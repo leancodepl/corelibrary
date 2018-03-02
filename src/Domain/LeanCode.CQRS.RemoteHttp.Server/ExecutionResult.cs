@@ -4,6 +4,30 @@ using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
+    struct ExecutionResult
+    {
+        public bool SkipExecution { get; private set; }
+        public int StatusCode { get; private set; }
+        public object Payload { get; private set; }
+
+        public static ExecutionResult Skip() => new ExecutionResult
+        {
+            SkipExecution = true
+        };
+
+        public static ExecutionResult Failed(int code) => new ExecutionResult
+        {
+            StatusCode = code,
+            Payload = null
+        };
+
+        public static ExecutionResult Success(object payload, int code = 200) => new ExecutionResult
+        {
+            StatusCode = code,
+            Payload = payload
+        };
+    }
+
     abstract class ActionResult
     {
         public abstract void Execute(HttpContext ctx);

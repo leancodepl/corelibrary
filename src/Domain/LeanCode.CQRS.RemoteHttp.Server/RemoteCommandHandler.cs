@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
@@ -16,28 +17,25 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             .GetMethod("ExecuteCommand", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
-        private readonly ICommandExecutor<TAppContext> commandExecutor;
+        private readonly IServiceProvider serviceProvider;
 
         public RemoteCommandHandler(
-            ICommandExecutor<TAppContext> commandExecutor,
+            IServiceProvider serviceProvider,
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
-            : base(
-                Serilog.Log.ForContext<RemoteCommandHandler<TAppContext>>(),
-                catalog,
-                contextTranslator)
+            : base(catalog, contextTranslator)
         {
-            this.commandExecutor = commandExecutor;
+            this.serviceProvider = serviceProvider;
         }
 
-        protected override async Task<ActionResult> ExecuteObjectAsync(
+        protected override async Task<ExecutionResult> ExecuteObjectAsync(
             TAppContext context, object obj)
         {
             var type = obj.GetType();
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
             {
                 Logger.Warning("The type {Type} is not an IRemoteCommand", type);
-                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
+                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
             }
 
             var method = methodCache.GetOrAdd(type, MakeExecutorMethod);
@@ -50,16 +48,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (CommandHandlerNotFoundException)
             {
-                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
+                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
             }
 
             if (cmdResult.WasSuccessful)
             {
-                return new ActionResult.Json(cmdResult);
+                return ExecutionResult.Success(cmdResult);
             }
             else
             {
-                return new ActionResult.Json(cmdResult, StatusCodes.Status422UnprocessableEntity);
+                return ExecutionResult.Success(cmdResult, StatusCodes.Status422UnprocessableEntity);
             }
         }
 
@@ -68,6 +66,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             object cmd)
             where TCommand : IRemoteCommand<TContext>
         {
+            var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>();
             return commandExecutor.RunAsync(appContext, (TCommand)cmd);
         }
 

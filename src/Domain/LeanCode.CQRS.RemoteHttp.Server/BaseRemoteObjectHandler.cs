@@ -18,22 +18,22 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         protected Serilog.ILogger Logger { get; }
 
         public BaseRemoteObjectHandler(
-            Serilog.ILogger logger, TypesCatalog catalog,
+            TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
         {
-            Logger = logger;
+            Logger = Serilog.Log.ForContext(GetType());
             Catalog = catalog;
             this.contextTranslator = contextTranslator;
         }
 
-        public async Task<ActionResult> ExecuteAsync(HttpContext context)
+        public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
         {
             var request = context.Request;
             var type = ExtractType(request);
             if (type == null)
             {
                 Logger.Verbose("Cannot retrieve type from path {Path}, type not found", request.Path);
-                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
+                return ExecutionResult.Skip();
             }
 
             object obj;
@@ -44,16 +44,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (Exception ex)
             {
                 Logger.Verbose(ex, "Cannot deserialize object body from the request stream");
-                return new ActionResult.StatusCode(StatusCodes.Status400BadRequest);
+                return ExecutionResult.Failed(StatusCodes.Status400BadRequest);
             }
 
             if (obj == null)
             {
                 Logger.Verbose("Client sent an empty object, ignoring");
-                return new ActionResult.StatusCode(StatusCodes.Status400BadRequest);
+                return ExecutionResult.Failed(StatusCodes.Status400BadRequest);
             }
 
-            ActionResult result;
+            ExecutionResult result;
             var appContext = contextTranslator(context);
             try
             {
@@ -61,30 +61,19 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (UnauthenticatedException)
             {
-                result = new ActionResult.StatusCode(StatusCodes.Status401Unauthorized);
+                result = ExecutionResult.Failed(StatusCodes.Status401Unauthorized);
             }
             catch (InsufficientPermissionException)
             {
-                result = new ActionResult.StatusCode(StatusCodes.Status403Forbidden);
+                result = ExecutionResult.Failed(StatusCodes.Status403Forbidden);
             }
             catch (Exception ex)
             {
                 Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
-                result = new ActionResult.StatusCode(StatusCodes.Status500InternalServerError);
+                result = ExecutionResult.Failed(StatusCodes.Status500InternalServerError);
             }
 
-            var isSuccess = true;
-            switch (result)
-            {
-                case ActionResult.StatusCode sc:
-                    isSuccess = sc.Code < 300;
-                    break;
-                case ActionResult.Json j:
-                    isSuccess = j.Code < 300;
-                    break;
-            }
-
-            if (isSuccess)
+            if (result.StatusCode >= 100 && result.StatusCode < 300)
             {
                 Logger.Debug("Remote object of type {Type} executed successfully", type);
             }
@@ -92,7 +81,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             return result;
         }
 
-        protected abstract Task<ActionResult> ExecuteObjectAsync(
+        protected abstract Task<ExecutionResult> ExecuteObjectAsync(
             TAppContext appContext, object obj);
 
         private Type ExtractType(HttpRequest request)

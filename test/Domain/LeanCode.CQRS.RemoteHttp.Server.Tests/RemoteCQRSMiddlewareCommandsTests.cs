@@ -13,10 +13,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         { }
 
         [Fact]
-        public async Task Returns_NotFound_if_command_cannot_be_found()
+        public async Task Passes_execution_further_if_cannot_find_command_type()
         {
             var (status, _) = await Invoke("non.Existing.Command");
-            Assert.Equal(StatusCodes.Status404NotFound, status);
+            Assert.Equal(PipelineContinued, status);
         }
 
         [Fact]

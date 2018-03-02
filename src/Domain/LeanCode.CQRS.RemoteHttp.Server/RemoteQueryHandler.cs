@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
@@ -17,21 +18,18 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             .GetMethod("ExecuteQuery", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
-        private readonly IQueryExecutor<TAppContext> queryExecutor;
+        private readonly IServiceProvider serviceProvider;
 
         public RemoteQueryHandler(
-            IQueryExecutor<TAppContext> queryExecutor,
+            IServiceProvider serviceProvider,
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
-            : base(
-                Serilog.Log.ForContext<RemoteQueryHandler<TAppContext>>(),
-                catalog,
-                contextTranslator)
+            : base(catalog, contextTranslator)
         {
-            this.queryExecutor = queryExecutor;
+            this.serviceProvider = serviceProvider;
         }
 
-        protected override async Task<ActionResult> ExecuteObjectAsync(
+        protected override async Task<ExecutionResult> ExecuteObjectAsync(
             TAppContext context, object obj)
         {
             MethodInfo method;
@@ -43,7 +41,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 Logger.Warning("The type {Type} is not an IRemoteQuery", obj.GetType());
                 // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
+                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
             }
 
             var type = obj.GetType();
@@ -51,16 +49,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 var result = (Task<object>)method.Invoke(this, new[] { context, obj });
                 var objResult = await result.ConfigureAwait(false);
-                return new ActionResult.Json(objResult);
+                return ExecutionResult.Success(objResult);
             }
             catch (TargetInvocationException ex)
             {
                 ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                return null;
+                return default;
             }
             catch (QueryHandlerNotFoundException)
             {
-                return new ActionResult.StatusCode(StatusCodes.Status404NotFound);
+                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
             }
         }
 
@@ -70,6 +68,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
+            var queryExecutor = serviceProvider.GetService<IQueryExecutor<TAppContext>>();
             return await queryExecutor
                 .GetAsync(appContext, (TQuery)query)
                 .ConfigureAwait(false);

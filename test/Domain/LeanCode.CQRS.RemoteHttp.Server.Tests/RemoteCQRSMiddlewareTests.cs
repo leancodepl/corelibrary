@@ -18,10 +18,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         [Fact]
-        public async Task Writes_NotFound_if_path_does_not_start_with_query_nor_command()
+        public async Task Passes_execution_further_if_path_cannot_be_matched()
         {
             var (status, _) = await Invoke("/non-query");
-            Assert.Equal(StatusCodes.Status404NotFound, status);
+            Assert.Equal(PipelineContinued, status);
         }
     }
 }

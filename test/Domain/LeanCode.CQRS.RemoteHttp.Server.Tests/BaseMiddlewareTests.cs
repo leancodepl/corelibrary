@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
 using NSubstitute;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     public abstract class BaseMiddlewareTests
     {
+        protected const int PipelineContinued = 100;
+
         private readonly TypesCatalog catalog = new TypesCatalog(typeof(BaseMiddlewareTests));
         private readonly IServiceProvider serviceProvider;
 
@@ -32,7 +35,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,
                 h => new AppContext(h.User),
-                null);
+                ctx =>
+                {
+                    ctx.Response.StatusCode = PipelineContinued;
+                    return Task.CompletedTask;
+                });
         }
 
         protected async Task<(int statusCode, string response)> Invoke(

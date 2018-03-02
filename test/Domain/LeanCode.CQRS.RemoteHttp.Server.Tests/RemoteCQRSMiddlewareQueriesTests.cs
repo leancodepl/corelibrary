@@ -12,10 +12,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         { }
 
         [Fact]
-        public async Task Writes_NotFound_if_query_cannot_be_found()
+        public async Task Passes_execution_further_if_query_type_cannot_be_found()
         {
             var (status, _) = await Invoke("non.Existing.Query");
-            Assert.Equal(StatusCodes.Status404NotFound, status);
+            Assert.Equal(PipelineContinued, status);
         }
 
         [Fact]

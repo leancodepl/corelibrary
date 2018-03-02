@@ -4,6 +4,7 @@
     <Authors>LeanCode</Authors>
     <Description>LeanCode Core library</Description>
     <IsPackable>true</IsPackable>
+    <LangVersion>latest</LangVersion>
 
     <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
 
