@@ -48,5 +48,7 @@
     <MicrosoftAzureKeyVaultVersion>2.3.2</MicrosoftAzureKeyVaultVersion>
     <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.17.2</MicrosoftIdentityModelClientsActiveDirectoryVersion>
     <IdentityModelVersion>2.16.0</IdentityModelVersion>
+
+    <DapperVersion>1.50.4</DapperVersion>
   </PropertyGroup>
 </Project>
