@@ -85,7 +85,7 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QuerySingleOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
-        public static Task<TResult> QuerFirstOrDefaultAsync<TResult>(
+        public static Task<TResult> QueryFirstOrDefaultAsync<TResult>(
             this DbContext context,
             string sql,
             object param = null,
