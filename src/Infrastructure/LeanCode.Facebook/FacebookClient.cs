@@ -10,7 +10,7 @@ namespace LeanCode.Facebook
 {
     public class FacebookClient : IDisposable
     {
-        private const string ApiBase = "https://graph.facebook.com/v3.0/";
+        private const string ApiBase = "https://graph.facebook.com/v2.12/";
         private const string FieldsStr = "id,email,first_name,last_name,locale";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
@@ -95,7 +95,7 @@ namespace LeanCode.Facebook
             var email = result["email"]?.Value<string>();
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
-            var languageCode = result["locale"].Value<string>();
+            var languageCode = result["locale"]?.Value<string>();
             var photoUrl = $"https://graph.facebook.com/v3.0/{id}/picture?width={photoSize}&height={photoSize}";
             return new FacebookUser(id, email, firstName, lastName, photoUrl, languageCode);
         }
