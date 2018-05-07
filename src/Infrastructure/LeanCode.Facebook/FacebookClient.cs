@@ -10,16 +10,19 @@ namespace LeanCode.Facebook
 {
     public class FacebookClient : IDisposable
     {
-        private const string ApiBase = "https://graph.facebook.com/v2.9/";
+        private const string ApiBase = "https://graph.facebook.com/v3.0/";
+        private const string FieldsStr = "id,email,first_name,last_name,locale";
+
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
-        private readonly string fieldsStr;
         private readonly HttpClient client;
         private readonly HMACSHA256 hmac;
 
+        private readonly int photoSize;
+
         public FacebookClient(FacebookConfiguration config)
         {
-            this.fieldsStr = GetFields(config.PhotoSize);
+            this.photoSize = config.PhotoSize;
             this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
 
             this.client = new HttpClient
@@ -32,7 +35,7 @@ namespace LeanCode.Facebook
             FacebookConfiguration config,
             HttpMessageHandler innerHandler)
         {
-            this.fieldsStr = GetFields(config.PhotoSize);
+            this.photoSize = config.PhotoSize;
             this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
 
             this.client = new HttpClient(innerHandler)
@@ -44,7 +47,7 @@ namespace LeanCode.Facebook
         public async Task<FacebookUser> GetUserInfo(string accessToken)
         {
             var proof = GenerateProof(accessToken);
-            var uri = $"me?fields={fieldsStr}&access_token={accessToken}{proof}";
+            var uri = $"me?fields={FieldsStr}&access_token={accessToken}{proof}";
             try
             {
                 using (var response = await client.GetAsync(uri))
@@ -71,7 +74,7 @@ namespace LeanCode.Facebook
                     }
                     else
                     {
-                        var info = NewMethod(result);
+                        var info = ConvertResponse(result);
                         logger.Information(
                             "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
                             info.Id, info.Email);
@@ -86,14 +89,14 @@ namespace LeanCode.Facebook
             }
         }
 
-        private FacebookUser NewMethod(JObject result)
+        private FacebookUser ConvertResponse(JObject result)
         {
             var id = result["id"].Value<string>();
             var email = result["email"]?.Value<string>();
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
-            var photoUrl = result["picture"]["data"]["url"]?.Value<string>();
             var languageCode = result["locale"].Value<string>();
+            var photoUrl = $"https://graph.facebook.com/v3.0/{id}/picture?width={photoSize}&height={photoSize}";
             return new FacebookUser(id, email, firstName, lastName, photoUrl, languageCode);
         }
 
@@ -111,9 +114,11 @@ namespace LeanCode.Facebook
                 var hash = hmac.ComputeHash(bytes);
                 return "&appsecret_proof=" + ToHexString(hash);
             }
-
-            logger.Debug("Signing facebook request is disabled. Proceeding.");
-            return string.Empty;
+            else
+            {
+                logger.Debug("Signing facebook request is disabled. Proceeding.");
+                return string.Empty;
+            }
         }
 
         private static byte[] ParseKey(string v)
@@ -124,11 +129,6 @@ namespace LeanCode.Facebook
         private static string ToHexString(byte[] data)
         {
             return BitConverter.ToString(data).Replace("-", string.Empty).ToLower();
-        }
-
-        private static string GetFields(int photoSize)
-        {
-            return $"id,email,first_name,last_name,picture.width({photoSize}).height({photoSize}),locale";
         }
     }
 }
