@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>LeanCode.AsyncTasks.Hangfire</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../../targets/Lib.targets" />
+
+  <ItemGroup>
+      <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+      <ProjectReference Include="../../Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+
+      <ProjectReference Include="../LeanCode.AsyncTasks/LeanCode.AsyncTasks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
+
+    <PackageReference Include="Hangfire.Autofac" Version="$(HangfireAutofacVersion)" />
+    <PackageReference Include="Hangfire.Core" Version="$(HangfireVersion)" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
+    <PackageReference Include="Hangfire.SqlServer" Version="$(HangfireVersion)" />
+  </ItemGroup>
+
+</Project>

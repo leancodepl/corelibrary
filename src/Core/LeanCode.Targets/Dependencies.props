@@ -48,5 +48,8 @@
     <IdentityModelVersion>3.6.1</IdentityModelVersion>
 
     <DapperVersion>1.50.4</DapperVersion>
+
+    <HangfireVersion>1.7.0-beta1</HangfireVersion>
+    <HangfireAutofacVersion>2.3.1</HangfireAutofacVersion>
   </PropertyGroup>
 </Project>
