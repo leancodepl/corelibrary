@@ -50,6 +50,7 @@ namespace LeanCode.ViewRenderer.Razor
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
             typeof(ViewCompiler).GetTypeInfo().Assembly,
             typeof(HtmlEncoder).GetTypeInfo().Assembly,
+            typeof(Microsoft.AspNetCore.Razor.Hosting.RazorCompiledItem).Assembly
         }
         .Distinct()
         .Select(a => MetadataReference.CreateFromFile(a.Location))
@@ -180,25 +181,28 @@ namespace LeanCode.ViewRenderer.Razor
 
         private static RazorTemplateEngine PrepareEngine(ViewLocator locator)
         {
-            var engine = RazorEngine.Create(builder =>
-            {
-                builder.SetBaseType(typeof(BaseView).FullName);
-                builder.ConfigureClass((doc, @class) =>
+            var engine = RazorProjectEngine.Create(
+                RazorConfiguration.Default,
+                RazorProjectFileSystem.Create(locator.GetRootPath()),
+                builder =>
                 {
-                    @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
-                    @class.Modifiers.Clear();
-                    @class.Modifiers.Add("public");
-                    @class.Modifiers.Add("sealed");
-                });
-                builder.AddDirective(Extensions.Layout.Directive);
-                builder.Features.Add(new Extensions.LayoutDirectivePass());
+                    builder.SetBaseType(typeof(BaseView).FullName);
+                    builder.ConfigureClass((doc, @class) =>
+                    {
+                        @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
+                        @class.Modifiers.Clear();
+                        @class.Modifiers.Add("public");
+                        @class.Modifiers.Add("sealed");
+                    });
+                    builder.AddDirective(Extensions.Layout.Directive);
+                    builder.Features.Add(new Extensions.LayoutDirectivePass());
 
-                builder.AddDirective(FunctionsDirective.Directive);
-                builder.Features.Add(new FunctionsDirectivePass());
-            });
-            var templateEngine = new RazorTemplateEngine(engine, locator);
+                    builder.AddDirective(FunctionsDirective.Directive);
+                    builder.Features.Add(new FunctionsDirectivePass());
+                });
+            var templateEngine = new RazorTemplateEngine(engine.Engine, locator);
             templateEngine.Options.DefaultImports
-                = RazorSourceDocument.Create(FilePreamble, null);
+                = RazorSourceDocument.Create(FilePreamble, (string)null);
 
             return templateEngine;
         }

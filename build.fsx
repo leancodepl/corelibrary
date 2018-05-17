@@ -78,7 +78,7 @@ Target.Create "Test" (fun _ ->
     !! (testDir @@ "**/*.csproj")
     |> Seq.map Path.getDirectory
     |> Seq.iter (fun p ->
-        Dotnet { DotnetOptions.Default with WorkingDirectory = p } "xunit" |> ignore)
+        Dotnet { DotnetOptions.Default with WorkingDirectory = p } "test" |> ignore)
 )
 
 Target.Create "UpdateVersion" (fun _ ->

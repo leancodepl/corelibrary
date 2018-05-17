@@ -25,7 +25,7 @@ namespace LeanCode.CQRS.Validation.Fluent
                 typeof(T));
 
             validator.AddRule(rule);
-            return new RuleBuilder<T, TValue>(rule);
+            return new RuleBuilder<T, TValue>(rule, validator);
         }
 
         public static IRuleBuilderInitial<T, TValue> RuleForAsync<T, TProperty, TValue>(
@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.Validation.Fluent
                 typeof(T));
 
             validator.AddRule(rule);
-            return new RuleBuilder<T, TValue>(rule);
+            return new RuleBuilder<T, TValue>(rule, validator);
         }
     }
 }

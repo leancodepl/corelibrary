@@ -14,6 +14,11 @@ namespace LeanCode.ViewRenderer.Razor
             this.options = options;
         }
 
+        public string GetRootPath()
+        {
+            return options.ViewLocations[0];
+        }
+
         public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath)
         {
             throw new NotSupportedException();

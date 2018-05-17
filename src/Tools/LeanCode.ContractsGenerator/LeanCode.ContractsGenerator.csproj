@@ -8,7 +8,7 @@
     <IsPackable>true</IsPackable>
 
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <AssemblyName>dotnet-generate</AssemblyName>
     <PackageType>DotnetCliTool</PackageType>

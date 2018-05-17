@@ -18,6 +18,7 @@
     <PackageReference Include="System.Runtime.Loader" Version="$(SystemRuntimeLoaderVersion)" />
     <PackageReference Include="System.Dynamic.Runtime" Version="$(SystemDynamicRuntimeVersion)" />
 
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(MicrosoftCodeAnalysisCSharpVersion)" />

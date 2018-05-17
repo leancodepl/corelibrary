@@ -1,24 +1,19 @@
 <Project>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.0-rc1</RuntimeFrameworkVersion>
   </PropertyGroup>
   <Import Project="../../src/Core/LeanCode.Targets/Dependencies.props" />
-
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />
     <PackageReference Include="NSubstitute" Version="$(NSubstituteVersion)" />
-
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XUnitVersion)" />
     <PackageReference Include="xunit.analyzers" Version="$(XUnitAnalyzersVersion)" />
     <PackageReference Include="xunit.runner.console" Version="$(XUnitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitVersion)" />
   </ItemGroup>
-
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-xunit" Version="$(XUnitVersion)" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="$(MicrosoftDotNetWatcherTools)" />
   </ItemGroup>
-
 </Project>
