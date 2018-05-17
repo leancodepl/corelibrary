@@ -30,6 +30,7 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
+
         public static Task<T> ExecuteScalarAsync<T>(
             this DbContext context,
             string sql,
@@ -40,6 +41,7 @@ namespace LeanCode.Dapper
         {
             return context.WithConnection(conn => conn.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType));
         }
+
 
         public static Task<IEnumerable<TResult>> QueryAsync<TResult>(
             this DbContext context,
@@ -63,6 +65,7 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QueryAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
+
         public static Task<TResult> QuerySingleOrDefaultAsync<TResult>(
             this DbContext context,
             string sql,
@@ -85,6 +88,30 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QuerySingleOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
+
+        public static Task<TResult> QuerySingleAsync<TResult>(
+            this DbContext context,
+            string sql,
+            object param = null,
+            IDbTransaction transaction = null,
+            int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            return context.WithConnection(conn => conn.QuerySingleAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+        }
+
+        public static Task<dynamic> QuerySingleAsync(
+            this DbContext context,
+            string sql,
+            object param = null,
+            IDbTransaction transaction = null,
+            int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            return context.WithConnection(conn => conn.QuerySingleAsync(sql, param, transaction, commandTimeout, commandType));
+        }
+
+
         public static Task<TResult> QueryFirstOrDefaultAsync<TResult>(
             this DbContext context,
             string sql,
@@ -106,6 +133,30 @@ namespace LeanCode.Dapper
         {
             return context.WithConnection(conn => conn.QueryFirstOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
         }
+
+
+        public static Task<TResult> QueryFirstAsync<TResult>(
+            this DbContext context,
+            string sql,
+            object param = null,
+            IDbTransaction transaction = null,
+            int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            return context.WithConnection(conn => conn.QueryFirstAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+        }
+
+        public static Task<dynamic> QueryFirstAsync(
+            this DbContext context,
+            string sql,
+            object param = null,
+            IDbTransaction transaction = null,
+            int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            return context.WithConnection(conn => conn.QueryFirstAsync(sql, param, transaction, commandTimeout, commandType));
+        }
+
 
         public static Task<SqlMapper.GridReader> QueryMultipleAsync(
             this DbContext context,
