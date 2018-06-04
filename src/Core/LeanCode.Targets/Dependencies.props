@@ -4,24 +4,24 @@
     <!-- Self version, generated automatically -->
     <CoreLibVersion>GENERATED_DURING_BUILD</CoreLibVersion>
 
-    <AspNetCoreVersion>2.1.0-rc1-final</AspNetCoreVersion>
+    <AspNetCoreVersion>2.1.0</AspNetCoreVersion>
     <!-- .NET Core/ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
-    <ExtensionsVersion>2.1.0-rc1-final</ExtensionsVersion>
+    <ExtensionsVersion>2.1.0</ExtensionsVersion>
     <JsonNetVersion>11.0.2</JsonNetVersion>
     <AutofacVersion>4.8.1</AutofacVersion>
     <AutoMapperVersion>6.2.2</AutoMapperVersion>
     <SerilogVersion>2.6.0</SerilogVersion>
 
-    <MicrosoftExtensionsConfigurationVersion>2.1.0-rc1-final</MicrosoftExtensionsConfigurationVersion>
-    <MicrosoftExtensionsConfigurationJsonVersion>2.1.0-rc1-final</MicrosoftExtensionsConfigurationJsonVersion>
+    <MicrosoftExtensionsConfigurationVersion>2.1.0</MicrosoftExtensionsConfigurationVersion>
+    <MicrosoftExtensionsConfigurationJsonVersion>2.1.0</MicrosoftExtensionsConfigurationJsonVersion>
 
     <!-- System.* libraries -->
     <NetCoreLibVersion>4.4.0</NetCoreLibVersion>
-    <EFCoreVersion>2.1.0-rc1-final</EFCoreVersion>
+    <EFCoreVersion>2.1.0</EFCoreVersion>
 
     <!-- Libs used in one place -->
     <AutofacExtensionsDependencyInjectionVersion>4.2.0</AutofacExtensionsDependencyInjectionVersion>
-    <FluentValidationVersion>7.5.2</FluentValidationVersion>
+    <FluentValidationVersion>7.6.0</FluentValidationVersion>
     <PollyVersion>6.0.1</PollyVersion>
 
     <SerilogExtensionsLoggingVersion>2.0.2</SerilogExtensionsLoggingVersion>
@@ -36,18 +36,18 @@
     <NSubstituteVersion>3.1.0</NSubstituteVersion>
 
     <!-- Razor -->
-    <MicrosoftCSharpVersion>4.4.1</MicrosoftCSharpVersion>
-    <MicrosoftCodeAnalysisCSharpVersion>2.8.0</MicrosoftCodeAnalysisCSharpVersion>
+    <MicrosoftCSharpVersion>4.5.0</MicrosoftCSharpVersion>
+    <MicrosoftCodeAnalysisCSharpVersion>2.8.2</MicrosoftCodeAnalysisCSharpVersion>
     <SystemRuntimeLoaderVersion>4.3.0</SystemRuntimeLoaderVersion>
     <SystemDynamicRuntimeVersion>4.3.0</SystemDynamicRuntimeVersion>
 
     <!-- IdentityServer & related -->
     <IdentityServer4Version>2.2.0</IdentityServer4Version>
     <MicrosoftAzureKeyVaultVersion>2.3.2</MicrosoftAzureKeyVaultVersion>
-    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.19.4</MicrosoftIdentityModelClientsActiveDirectoryVersion>
-    <IdentityModelVersion>3.6.1</IdentityModelVersion>
+    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.19.6</MicrosoftIdentityModelClientsActiveDirectoryVersion>
+    <IdentityModelVersion>3.7.0</IdentityModelVersion>
 
-    <DapperVersion>1.50.4</DapperVersion>
+    <DapperVersion>1.50.5</DapperVersion>
 
     <HangfireVersion>1.7.0-beta1</HangfireVersion>
     <HangfireAutofacVersion>2.3.1</HangfireAutofacVersion>
