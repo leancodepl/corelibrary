@@ -7,18 +7,16 @@ namespace LeanCode.Facebook
         public string FirstName { get; }
         public string LastName { get; }
         public string Photo { get; }
-        public string LanguageCode { get; }
 
         public FacebookUser(
             string id, string email,
-            string firstName, string lastName, string photo, string languageCode)
+            string firstName, string lastName, string photo)
         {
             Id = id;
             Email = email;
             FirstName = firstName;
             LastName = lastName;
             Photo = photo;
-            LanguageCode = languageCode;
         }
     }
 }

@@ -10,8 +10,8 @@ namespace LeanCode.Facebook
 {
     public class FacebookClient : IDisposable
     {
-        private const string ApiBase = "https://graph.facebook.com/v2.12/";
-        private const string FieldsStr = "id,email,first_name,last_name,locale";
+        private const string ApiBase = "https://graph.facebook.com/v3.0/";
+        private const string FieldsStr = "id,email,first_name,last_name";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
@@ -44,10 +44,10 @@ namespace LeanCode.Facebook
             };
         }
 
-        public async Task<FacebookUser> GetUserInfo(string accessToken)
+        public virtual async Task<JObject> CallAsync(string endpoint, string accessToken, bool handleError = true)
         {
             var proof = GenerateProof(accessToken);
-            var uri = $"me?fields={FieldsStr}&access_token={accessToken}{proof}";
+            var uri = AppendProof(endpoint, accessToken, proof);
             try
             {
                 using (var response = await client.GetAsync(uri))
@@ -63,7 +63,7 @@ namespace LeanCode.Facebook
                     var content = await response.Content.ReadAsStringAsync();
                     var result = JObject.Parse(content);
 
-                    if (result["error"] != null)
+                    if (handleError && result["error"] != null)
                     {
                         var code = result["error"]["code"].Value<int>();
                         var msg = result["error"]["message"];
@@ -74,11 +74,7 @@ namespace LeanCode.Facebook
                     }
                     else
                     {
-                        var info = ConvertResponse(result);
-                        logger.Information(
-                            "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
-                            info.Id, info.Email);
-                        return info;
+                        return result;
                     }
                 }
             }
@@ -89,15 +85,24 @@ namespace LeanCode.Facebook
             }
         }
 
+        public virtual async Task<FacebookUser> GetUserInfo(string accessToken)
+        {
+            var result = await CallAsync("me?fields=" + FieldsStr, accessToken);
+            var info = ConvertResponse(result);
+            logger.Information(
+                "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
+                info.Id, info.Email);
+            return info;
+        }
+
         private FacebookUser ConvertResponse(JObject result)
         {
             var id = result["id"].Value<string>();
             var email = result["email"]?.Value<string>();
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
-            var languageCode = result["locale"]?.Value<string>();
-            var photoUrl = $"https://graph.facebook.com/v3.0/{id}/picture?width={photoSize}&height={photoSize}";
-            return new FacebookUser(id, email, firstName, lastName, photoUrl, languageCode);
+            var photoUrl = $"{ApiBase}{id}/picture?width={photoSize}&height={photoSize}";
+            return new FacebookUser(id, email, firstName, lastName, photoUrl);
         }
 
         public void Dispose()
@@ -109,14 +114,14 @@ namespace LeanCode.Facebook
         {
             if (hmac != null)
             {
-                logger.Debug("Signing facebook request enabled - signing request.");
+                logger.Debug("Signing Facebook request enabled - signing request");
                 var bytes = Encoding.ASCII.GetBytes(accessToken);
                 var hash = hmac.ComputeHash(bytes);
                 return "&appsecret_proof=" + ToHexString(hash);
             }
             else
             {
-                logger.Debug("Signing facebook request is disabled. Proceeding.");
+                logger.Debug("Signing Facebook requests is disabled, skipping generating proof");
                 return string.Empty;
             }
         }
@@ -129,6 +134,18 @@ namespace LeanCode.Facebook
         private static string ToHexString(byte[] data)
         {
             return BitConverter.ToString(data).Replace("-", string.Empty).ToLower();
+        }
+
+        private static string AppendProof(string uri, string accessToken, string proof)
+        {
+            if (uri.Contains("?"))
+            {
+                return uri + "&access_token=" + accessToken + proof;
+            }
+            else
+            {
+                return uri + "?access_token=" + accessToken + proof;
+            }
         }
     }
 }
