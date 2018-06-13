@@ -54,6 +54,20 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QueryAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
+        public static Task<IEnumerable<TResult>> QueryAsync<TFirst,TSecond,TResult>(
+            this DbContext context,
+            string sql,
+            Func<TFirst,TSecond, TResult> map,
+            object param = null,
+            string splitOn = "Id",
+            IDbTransaction transaction = null,
+            bool buffered = true,
+            int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            return context.WithConnection(conn => conn.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+        }
+
         public static Task<IEnumerable<dynamic>> QueryAsync(
             this DbContext context,
             string sql,
