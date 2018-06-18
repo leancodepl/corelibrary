@@ -1,8 +1,0 @@
-<Project>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
-    <PackageReference Include="Autofac" Version="$(AutofacVersion)" />
-    <PackageReference Include="AutoMapper" Version="$(AutoMapperVersion)" />
-    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
-  </ItemGroup>
-</Project>

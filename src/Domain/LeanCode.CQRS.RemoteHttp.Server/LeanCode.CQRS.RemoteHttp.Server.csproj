@@ -5,7 +5,6 @@
     <AssemblyName>LeanCode.CQRS.RemoteHttp.Server</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
@@ -15,6 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(ExtensionsVersion)" />
   </ItemGroup>
 

@@ -5,7 +5,6 @@
     <AssemblyName>LeanCode.PushNotifications.EF</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />

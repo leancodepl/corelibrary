@@ -17,7 +17,6 @@ Or you can just modify the following project template (most of the projects use 
     <AssemblyName>LeanCode.(...)</AssemblyName>
   </PropertyGroup>
   <Import Project="src/targets/Lib.targets" />
-  <Import Project="src/targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="(...)" />
@@ -29,7 +28,5 @@ Or you can just modify the following project template (most of the projects use 
 
 </Project>
 ```
-
-It is not required to import `src/targets/Common.targets`, it just references common libraries (i.e. Autofac, AutoMapper, Serilog and Json.NET).
 
 Everything else will be handled by `build.fsx` automatically.

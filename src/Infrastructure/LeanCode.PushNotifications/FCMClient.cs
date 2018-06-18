@@ -11,7 +11,6 @@ namespace LeanCode.PushNotifications
 {
     public class FCMClient : IDisposable
     {
-        private const string Endpoint = "https://fcm.googleapis.com/fcm/send";
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore
@@ -19,14 +18,10 @@ namespace LeanCode.PushNotifications
 
         private readonly HttpClient client;
 
-        public FCMClient(FCMConfiguration configuration)
+        /// <param name="client">Preconfigured HttpClient.</param>
+        public FCMClient(HttpClient client)
         {
-            client = new HttpClient
-            {
-                BaseAddress = new Uri(Endpoint)
-            };
-
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + configuration.ApiKey);
+            this.client = client;
         }
 
         public virtual async Task<FCMResult> Send(FCMNotification notification)

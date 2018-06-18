@@ -8,9 +8,9 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.Facebook
 {
-    public class FacebookClient : IDisposable
+    public class FacebookClient
     {
-        private const string ApiBase = "https://graph.facebook.com/v3.0/";
+        public const string ApiBase = "https://graph.facebook.com/v3.0/";
         private const string FieldsStr = "id,email,first_name,last_name";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
@@ -20,34 +20,17 @@ namespace LeanCode.Facebook
 
         private readonly int photoSize;
 
-        public FacebookClient(FacebookConfiguration config)
+        public FacebookClient(FacebookConfiguration config, HttpClient client)
         {
             this.photoSize = config.PhotoSize;
+            this.client = client;
             this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
-
-            this.client = new HttpClient
-            {
-                BaseAddress = new Uri(ApiBase)
-            };
-        }
-
-        public FacebookClient(
-            FacebookConfiguration config,
-            HttpMessageHandler innerHandler)
-        {
-            this.photoSize = config.PhotoSize;
-            this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
-
-            this.client = new HttpClient(innerHandler)
-            {
-                BaseAddress = new Uri(ApiBase)
-            };
         }
 
         public virtual async Task<JObject> CallAsync(string endpoint, string accessToken, bool handleError = true)
         {
             var proof = GenerateProof(accessToken);
-            var uri = AppendProof(endpoint, accessToken, proof);
+            var uri = AppendProof(ApiBase + endpoint, accessToken, proof);
             try
             {
                 using (var response = await client.GetAsync(uri))
@@ -103,11 +86,6 @@ namespace LeanCode.Facebook
             var lastName = result["last_name"]?.Value<string>();
             var photoUrl = $"{ApiBase}{id}/picture?width={photoSize}&height={photoSize}";
             return new FacebookUser(id, email, firstName, lastName, photoUrl);
-        }
-
-        public void Dispose()
-        {
-            client.Dispose();
         }
 
         private string GenerateProof(string accessToken)

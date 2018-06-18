@@ -5,13 +5,11 @@
     <AssemblyName>LeanCode.Components</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
-    <ProjectReference Include="../../Helpers/LeanCode.Configuration/LeanCode.Configuration.csproj" />
-  </ItemGroup>
+    <PackageReference Include="Autofac" Version="$(AutofacVersion)" />
+    <PackageReference Include="AutoMapper" Version="$(AutoMapperVersion)" />
 
-  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(ExtensionsVersion)" />
   </ItemGroup>

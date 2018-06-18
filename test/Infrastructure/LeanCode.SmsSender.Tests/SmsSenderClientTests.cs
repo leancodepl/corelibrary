@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace LeanCode.SmsSender.Tests
 
         public SmsSenderClientTests()
         {
-            this.client = new SmsApiClient(Config);
+            this.client = new SmsApiClient(Config, new HttpClient());
         }
 
 #pragma warning disable xUnit1004
@@ -31,5 +32,4 @@ namespace LeanCode.SmsSender.Tests
         }
 #pragma warning restore xUnit1004
     }
-
 }

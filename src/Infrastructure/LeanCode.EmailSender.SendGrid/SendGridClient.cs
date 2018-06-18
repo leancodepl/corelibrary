@@ -13,7 +13,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace LeanCode.EmailSender.SendGrid
 {
-    public class SendGridClient : IEmailClient, IDisposable
+    public class SendGridClient : IEmailClient
     {
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
@@ -23,18 +23,14 @@ namespace LeanCode.EmailSender.SendGrid
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridClient>();
 
         private readonly IViewRenderer viewRenderer;
-        private readonly HttpClient client;
+        private readonly SendGridHttpClient client;
 
-        public SendGridClient(IViewRenderer viewRenderer, SendGridConfiguration config)
+        public SendGridClient(
+            IViewRenderer viewRenderer,
+            SendGridHttpClient client)
         {
             this.viewRenderer = viewRenderer;
-
-            client = new HttpClient
-            {
-                BaseAddress = new Uri("https://api.sendgrid.com/v3/")
-            };
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", config.ApiKey);
+            this.client = client;
         }
 
         public EmailBuilder New()
@@ -54,7 +50,7 @@ namespace LeanCode.EmailSender.SendGrid
             HttpResponseMessage response;
             using (var content = new StringContent(msgJson, Encoding.UTF8, "application/json"))
             {
-                response = await client.PostAsync("mail/send", content).ConfigureAwait(false);
+                response = await client.Client.PostAsync("mail/send", content).ConfigureAwait(false);
             }
 
             if (!response.IsSuccessStatusCode)
@@ -70,11 +66,6 @@ namespace LeanCode.EmailSender.SendGrid
             logger.Information(
                 "E-mail with subject {Subject} sent to {Emails}",
                 builder.Subject, builder.Recipients);
-        }
-
-        public void Dispose()
-        {
-            client.Dispose();
         }
 
         private async Task<SendGridMessage> BuildMessage(EmailBuilder builder)

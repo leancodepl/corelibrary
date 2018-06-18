@@ -5,13 +5,14 @@
     <AssemblyName>LeanCode.IdentityServer.KeyVault</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLibVersion)" />
     <PackageReference Include="IdentityServer4" Version="$(IdentityServer4Version)" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="$(MicrosoftAzureKeyVaultVersion)" />

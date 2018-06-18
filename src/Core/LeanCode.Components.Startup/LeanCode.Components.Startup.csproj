@@ -6,7 +6,6 @@
     <UserSecretsId>NOT_USED</UserSecretsId>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />

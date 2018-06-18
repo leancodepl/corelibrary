@@ -5,12 +5,18 @@
     <AssemblyName>LeanCode.EmailSender.SendGrid</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.EmailSender/LeanCode.EmailSender.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+
+    <PackageReference Include="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
   </ItemGroup>
 
 </Project>

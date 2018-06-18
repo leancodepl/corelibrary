@@ -10,38 +10,38 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.SmsSender
 {
-    public class SmsApiClient : ISmsSender, IDisposable
+    public class SmsApiClient : ISmsSender
     {
-        private const string smsSenderUrl = "https://api.smsapi.pl/sms.do";
+        private const string Endpoint = "https://api.smsapi.pl/sms.do";
+        private static readonly int[] clientErrors = {
+            101,  // Invalid or no authorization data
+            102,  // Invalid login or password
+            103,  // Shortage of points for this user
+            105,  // Invalid IP address
+            110,  // Service is not available on this account
+            1000, // Action is available only for main user
+            1001  // Invalid action
+        };
+        private static readonly int[] hostErrors = {
+            8,   // Error in request
+            666, // Internal system error
+            999, // Internal system error
+            201  // Internal system error
+        };
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
         private readonly HttpClient client;
         private readonly SmsApiConfiguration smsApiConfiguration;
-        private static int[] clientErrors = {
-                101,  // Invalid or no authorization data
-                102,  // Invalid login or password
-                103,  // Shortage of points for this user
-                105,  // Invalid IP address
-                110,  // Service is not available on this account
-                1000, // Action is available only for main user
-                1001  // Invalid action
-            };
-        private static int[] hostErrors = {
-                8,   // Error in request
-                666, // Internal system error
-                999, // Internal system error
-                201  // Internal system error
-            };
 
-        public SmsApiClient(SmsApiConfiguration smsApiConfiguration)
+        public SmsApiClient(SmsApiConfiguration smsApiConfiguration, HttpClient client)
         {
             this.smsApiConfiguration = smsApiConfiguration;
-            client = new HttpClient();
+            this.client = client;
         }
 
         public async Task Send(string message, string phoneNumber)
         {
-            logger.Verbose("Sending sms to {PhoneNumber} with content {Message}", phoneNumber, message);
+            logger.Verbose("Sending SMS using SMS Api");
 
             var parameters = new Dictionary<string, string>();
 
@@ -59,14 +59,9 @@ namespace LeanCode.SmsSender
                 parameters["fast"] = "1";
 
             var body = new FormUrlEncodedContent(parameters);
-            var response = await client.PostAsync(smsSenderUrl, body);
+            var response = await client.PostAsync(Endpoint, body);
             var content = await response.Content.ReadAsStringAsync();
             HandleResponse(content);
-        }
-
-        public void Dispose()
-        {
-            client.Dispose();
         }
 
         private static void HandleResponse(string response)
@@ -79,11 +74,11 @@ namespace LeanCode.SmsSender
                     var errorCode = parsedResponse.Value<int>("error");
                     var errorMessage = parsedResponse.Value<string>("message");
 
-                    if (isClientError(errorCode))
+                    if (IsClientError(errorCode))
                     {
                         throw new ClientException(errorCode, errorMessage);
                     }
-                    if (isHostError(errorCode))
+                    if (IsHostError(errorCode))
                     {
                         throw new HostException(errorCode, errorMessage);
                     }
@@ -96,14 +91,8 @@ namespace LeanCode.SmsSender
             }
         }
 
-        private static bool isClientError(int code)
-        {
-            return clientErrors.Contains(code);
-        }
+        private static bool IsClientError(int code) => clientErrors.Contains(code);
 
-        private static bool isHostError(int code)
-        {
-            return hostErrors.Contains(code);
-        }
+        private static bool IsHostError(int code) => hostErrors.Contains(code);
     }
 }

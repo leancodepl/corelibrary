@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,7 +18,7 @@ namespace LeanCode.Facebook.Tests
 
         public FacebookClientTests()
         {
-            this.client = new FacebookClient(Config);
+            this.client = new FacebookClient(Config, new HttpClient());
         }
 
 #pragma warning disable xUnit1004

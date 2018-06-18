@@ -8,20 +8,12 @@ using Newtonsoft.Json;
 
 namespace LeanCode.Mixpanel
 {
-    class MixpanelAnalytics : IMixpanelAnalytics, IDisposable
+    public class MixpanelAnalytics
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
 
         private readonly HttpClient client;
         private readonly MixpanelConfiguration configuration;
-        private bool shouldDisposeClient;
-
-        public MixpanelAnalytics(MixpanelConfiguration configuration)
-        {
-            client = new HttpClient();
-            shouldDisposeClient = true;
-            this.configuration = configuration;
-        }
 
         public MixpanelAnalytics(
             HttpClient client,
@@ -29,7 +21,6 @@ namespace LeanCode.Mixpanel
         {
             this.configuration = configuration;
             this.client = client;
-            this.shouldDisposeClient = false;
         }
 
         public Task Alias(string newId, string oldId)
@@ -135,7 +126,8 @@ namespace LeanCode.Mixpanel
         {
             string dataString = JsonConvert.SerializeObject(data);
             dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataString));
-            var jsonResponse = await client.GetStringAsync($"http://api.mixpanel.com/{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
+            var jsonResponse = await client.GetStringAsync(
+                $"https://api.mixpanel.com/{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
             var response = JsonConvert.DeserializeObject<MixpanelResponse>(jsonResponse);
 
             if (response.Status == MixpanelResponse.Success)
@@ -148,19 +140,12 @@ namespace LeanCode.Mixpanel
                 logger.Warning("Mixpanel returned error: {Error}", response.Error);
             }
         }
-
-        void IDisposable.Dispose()
-        {
-            if (shouldDisposeClient)
-                client.Dispose();
-        }
     }
 
     class MixpanelResponse
     {
         public const int Success = 1;
         public const int Failure = 0;
-
 
         public int Status { get; set; }
         public string Error { get; set; }

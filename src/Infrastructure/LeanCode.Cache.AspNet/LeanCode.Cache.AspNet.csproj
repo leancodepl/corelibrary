@@ -5,7 +5,6 @@
     <AssemblyName>LeanCode.Cache.AspNet</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Cache/LeanCode.Cache.csproj" />

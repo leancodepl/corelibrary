@@ -1,25 +1,19 @@
 using Autofac;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Mixpanel
 {
     public class MixpanelModule : AppModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public override void ConfigureServices(IServiceCollection services)
         {
-            builder.RegisterType<MixpanelAnalytics>()
-                .As<IMixpanelAnalytics>()
-                .SingleInstance();
+            services.AddHttpClient();
         }
-    }
 
-    public class MixpanelWithFactoryModule : AppModule
-    {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MixpanelAnalyticsFactory>()
-                .As<IMixpanelAnalyticsFactory>()
-                .SingleInstance();
+            builder.RegisterType<MixpanelAnalytics>() .AsSelf();
         }
     }
 }

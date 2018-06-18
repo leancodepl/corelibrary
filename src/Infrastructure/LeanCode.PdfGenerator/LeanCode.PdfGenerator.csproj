@@ -5,6 +5,5 @@
     <AssemblyName>LeanCode.PdfGenerator</AssemblyName>
   </PropertyGroup>
   <Import Project="../../targets/Lib.targets" />
-  <Import Project="../../targets/Common.targets" />
 
 </Project>
