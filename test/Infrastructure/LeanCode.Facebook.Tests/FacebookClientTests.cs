@@ -18,7 +18,7 @@ namespace LeanCode.Facebook.Tests
 
         public FacebookClientTests()
         {
-            this.client = new FacebookClient(Config, new HttpClient());
+            this.client = new FacebookClient(Config, new FacebookHttpClient(new HttpClient()));
         }
 
 #pragma warning disable xUnit1004

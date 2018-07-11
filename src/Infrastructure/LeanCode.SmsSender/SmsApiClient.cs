@@ -12,7 +12,6 @@ namespace LeanCode.SmsSender
 {
     public class SmsApiClient : ISmsSender
     {
-        private const string Endpoint = "https://api.smsapi.pl/sms.do";
         private static readonly int[] clientErrors = {
             101,  // Invalid or no authorization data
             102,  // Invalid login or password
@@ -30,10 +29,12 @@ namespace LeanCode.SmsSender
         };
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
-        private readonly HttpClient client;
+        private readonly SmsApiHttpClient client;
         private readonly SmsApiConfiguration smsApiConfiguration;
 
-        public SmsApiClient(SmsApiConfiguration smsApiConfiguration, HttpClient client)
+        public SmsApiClient(
+            SmsApiConfiguration smsApiConfiguration,
+            SmsApiHttpClient client)
         {
             this.smsApiConfiguration = smsApiConfiguration;
             this.client = client;
@@ -59,7 +60,7 @@ namespace LeanCode.SmsSender
                 parameters["fast"] = "1";
 
             var body = new FormUrlEncodedContent(parameters);
-            var response = await client.PostAsync(Endpoint, body);
+            var response = await client.Client.PostAsync("sms.do", body);
             var content = await response.Content.ReadAsStringAsync();
             HandleResponse(content);
         }

@@ -10,17 +10,19 @@ namespace LeanCode.Facebook
 {
     public class FacebookClient
     {
-        public const string ApiBase = "https://graph.facebook.com/v3.0/";
+        public const string ApiBase = "https://graph.facebook.com";
+        public const string ApiVersion = "v3.0";
+
         private const string FieldsStr = "id,email,first_name,last_name";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
-        private readonly HttpClient client;
+        private readonly FacebookHttpClient client;
         private readonly HMACSHA256 hmac;
 
         private readonly int photoSize;
 
-        public FacebookClient(FacebookConfiguration config, HttpClient client)
+        public FacebookClient(FacebookConfiguration config, FacebookHttpClient client)
         {
             this.photoSize = config.PhotoSize;
             this.client = client;
@@ -30,10 +32,10 @@ namespace LeanCode.Facebook
         public virtual async Task<JObject> CallAsync(string endpoint, string accessToken, bool handleError = true)
         {
             var proof = GenerateProof(accessToken);
-            var uri = AppendProof(ApiBase + endpoint, accessToken, proof);
+            var uri = AppendProof(endpoint, accessToken, proof);
             try
             {
-                using (var response = await client.GetAsync(uri))
+                using (var response = await client.Client.GetAsync(uri))
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -84,7 +86,7 @@ namespace LeanCode.Facebook
             var email = result["email"]?.Value<string>();
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
-            var photoUrl = $"{ApiBase}{id}/picture?width={photoSize}&height={photoSize}";
+            var photoUrl = $"{ApiBase}/{ApiVersion}/{id}/picture?width={photoSize}&height={photoSize}";
             return new FacebookUser(id, email, firstName, lastName, photoUrl);
         }
 
@@ -118,11 +120,11 @@ namespace LeanCode.Facebook
         {
             if (uri.Contains("?"))
             {
-                return uri + "&access_token=" + accessToken + proof;
+                return ApiVersion + "/" + uri + "&access_token=" + accessToken + proof;
             }
             else
             {
-                return uri + "?access_token=" + accessToken + proof;
+                return ApiVersion + "/" + uri + "?access_token=" + accessToken + proof;
             }
         }
     }

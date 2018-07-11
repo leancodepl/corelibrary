@@ -8,12 +8,13 @@ namespace LeanCode.Mixpanel
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpClient<MixpanelHttpClient>(c =>
+                c.BaseAddress = new System.Uri("https://api.mixpanel.com"));
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MixpanelAnalytics>() .AsSelf();
+            builder.RegisterType<MixpanelAnalytics>().AsSelf();
         }
     }
 }

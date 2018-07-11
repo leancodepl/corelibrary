@@ -9,7 +9,8 @@ namespace LeanCode.Facebook
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpClient<FacebookHttpClient>(c =>
+                c.BaseAddress = new Uri(FacebookClient.ApiBase));
         }
 
         protected override void Load(ContainerBuilder builder)

@@ -19,7 +19,7 @@ namespace LeanCode.SmsSender.Tests
 
         public SmsSenderClientTests()
         {
-            this.client = new SmsApiClient(Config, new HttpClient());
+            this.client = new SmsApiClient(Config, new SmsApiHttpClient(new HttpClient()));
         }
 
 #pragma warning disable xUnit1004

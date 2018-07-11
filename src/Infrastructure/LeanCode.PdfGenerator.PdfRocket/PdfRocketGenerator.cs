@@ -8,19 +8,16 @@ namespace LeanCode.PdfGenerator.PdfRocket
 {
     public class PdfRocketGenerator : IPdfGenerator
     {
-        private const string Endpoint = "https://api.html2pdfrocket.com/pdf";
-
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PdfRocketGenerator>();
 
         private readonly PdfRocketConfiguration config;
         private readonly IViewRenderer viewRenderer;
-
-        private readonly HttpClient client;
+        private readonly PdfRocketHttpClient client;
 
         public PdfRocketGenerator(
             PdfRocketConfiguration config,
             IViewRenderer viewRenderer,
-            HttpClient client)
+            PdfRocketHttpClient client)
         {
             this.config = config;
             this.viewRenderer = viewRenderer;
@@ -50,7 +47,7 @@ namespace LeanCode.PdfGenerator.PdfRocket
         {
             using (var content = GetContent(source))
             {
-                var response = await client.PostAsync(Endpoint, content);
+                var response = await client.Client.PostAsync("pdf", content);
                 var result = await response.Content.ReadAsStreamAsync();
 
                 logger.Information("PDF generated");

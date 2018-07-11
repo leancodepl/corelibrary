@@ -12,11 +12,11 @@ namespace LeanCode.Mixpanel
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
 
-        private readonly HttpClient client;
+        private readonly MixpanelHttpClient client;
         private readonly MixpanelConfiguration configuration;
 
         public MixpanelAnalytics(
-            HttpClient client,
+            MixpanelHttpClient client,
             MixpanelConfiguration configuration)
         {
             this.configuration = configuration;
@@ -126,8 +126,8 @@ namespace LeanCode.Mixpanel
         {
             string dataString = JsonConvert.SerializeObject(data);
             dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataString));
-            var jsonResponse = await client.GetStringAsync(
-                $"https://api.mixpanel.com/{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
+            var jsonResponse = await client.Client.GetStringAsync(
+                $"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
             var response = JsonConvert.DeserializeObject<MixpanelResponse>(jsonResponse);
 
             if (response.Status == MixpanelResponse.Success)

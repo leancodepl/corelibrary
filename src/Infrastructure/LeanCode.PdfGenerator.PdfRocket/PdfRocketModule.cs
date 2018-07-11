@@ -9,7 +9,8 @@ namespace LeanCode.PdfGenerator.PdfRocket
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpClient<PdfRocketHttpClient>(c =>
+                c.BaseAddress = new Uri("https://api.html2pdfrocket.com/"));
         }
 
         protected override void Load(ContainerBuilder builder)

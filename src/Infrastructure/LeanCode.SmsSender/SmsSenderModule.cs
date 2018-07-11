@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,8 @@ namespace LeanCode.SmsSender
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient();
+            services.AddHttpClient<SmsApiHttpClient>(c =>
+                c.BaseAddress = new Uri("https://api.smsapi.pl"));
         }
 
         protected override void Load(ContainerBuilder builder)
