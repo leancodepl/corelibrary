@@ -44,6 +44,12 @@ namespace LeanCode.DomainModels.EF
             dbSet.RemoveRange(entities);
         }
 
+        public virtual void Update(TEntity entity)
+        {
+            entity.DateModified = Time.Now;
+            dbSet.Update(entity);
+        }
+
         // NOTE: this may update more than just this one aggregate
         // if there are other objects tracked by EF change tracker
         public virtual Task AddAsync(TEntity entity)
