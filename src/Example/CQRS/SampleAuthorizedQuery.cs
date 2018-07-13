@@ -9,6 +9,7 @@ namespace LeanCode.Example.CQRS
     {
         public sealed class Result
         {
+            [CanBeNull]
             public string Name { get; }
 
             public Result(string name)

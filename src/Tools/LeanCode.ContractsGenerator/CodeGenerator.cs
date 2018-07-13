@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Configuration;
+using LeanCode.CQRS;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -194,11 +195,16 @@ namespace LeanCode.ContractsGenerator
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
                     var type = StringifyType(property.Type, out bool isNullable);
-                    var nullable = isNullable ? "?" : string.Empty;
+                    var nullable = (isNullable || HasCanBeNullAttribute(property)) ? "?" : string.Empty;
 
                     dtosBuilder.Append($"        {property.Name}{nullable}: {type};\n");
                 }
             }
+        }
+
+        private static bool HasCanBeNullAttribute(IPropertySymbol typeSymbol)
+        {
+            return typeSymbol.GetAttributes().Any(attr => attr.AttributeClass.Name == typeof(CanBeNullAttribute).Name);
         }
 
         private void GenerateFields(StringBuilder dtosBuilder, INamedTypeSymbol info)
