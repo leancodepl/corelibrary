@@ -3,6 +3,7 @@ CALL common.cmd
 CD %SCRIPT_PATH%\..
 
 docker build^
+    --pull^
     -t %IMAGE_NAME%^
     -f Dockerfile^
     ..
