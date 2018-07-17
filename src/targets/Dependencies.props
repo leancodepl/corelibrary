@@ -4,25 +4,29 @@
     <!-- Self version, generated automatically -->
     <CoreLibVersion>GENERATED_DURING_BUILD</CoreLibVersion>
 
-    <AspNetCoreVersion>2.1.0</AspNetCoreVersion>
+    <AspNetCoreVersion>2.1.1</AspNetCoreVersion>
     <!-- .NET Core/ASP.NET Core extensions, mostly Microsoft.AspNetCore.* (other than Mvc) and Microsoft.Extensions.* packages -->
-    <ExtensionsVersion>2.1.0</ExtensionsVersion>
+    <ExtensionsVersion>2.1.1</ExtensionsVersion>
     <JsonNetVersion>11.0.2</JsonNetVersion>
     <AutofacVersion>4.8.1</AutofacVersion>
-    <AutoMapperVersion>6.2.2</AutoMapperVersion>
-    <SerilogVersion>2.6.0</SerilogVersion>
+    <AutoMapperVersion>7.0.1</AutoMapperVersion>
+    <SerilogVersion>2.7.1</SerilogVersion>
 
-    <MicrosoftExtensionsConfigurationVersion>2.1.0</MicrosoftExtensionsConfigurationVersion>
-    <MicrosoftExtensionsConfigurationJsonVersion>2.1.0</MicrosoftExtensionsConfigurationJsonVersion>
+    <MicrosoftAspNetCoreServerKestrelVersion>2.1.2</MicrosoftAspNetCoreServerKestrelVersion>
+
+    <MicrosoftExtensionsConfigurationVersion>2.1.1</MicrosoftExtensionsConfigurationVersion>
+    <MicrosoftExtensionsConfigurationJsonVersion>2.1.1</MicrosoftExtensionsConfigurationJsonVersion>
 
     <!-- System.* libraries -->
+    <SystemThreadingTasksExtensionsVersion>4.5.1</SystemThreadingTasksExtensionsVersion>
+    <SystemValueTupleVersion>4.5.0</SystemValueTupleVersion>
     <NetCoreLibVersion>4.4.0</NetCoreLibVersion>
-    <EFCoreVersion>2.1.0</EFCoreVersion>
+    <EFCoreVersion>2.1.1</EFCoreVersion>
 
     <!-- Libs used in one place -->
-    <AutofacExtensionsDependencyInjectionVersion>4.2.0</AutofacExtensionsDependencyInjectionVersion>
-    <FluentValidationVersion>7.6.0</FluentValidationVersion>
-    <PollyVersion>6.0.1</PollyVersion>
+    <AutofacExtensionsDependencyInjectionVersion>4.2.2</AutofacExtensionsDependencyInjectionVersion>
+    <FluentValidationVersion>7.6.104</FluentValidationVersion>
+    <PollyVersion>6.1.0</PollyVersion>
 
     <SerilogExtensionsLoggingVersion>2.0.2</SerilogExtensionsLoggingVersion>
     <SerilogSettingsConfigurationVersion>2.6.1</SerilogSettingsConfigurationVersion>
@@ -30,9 +34,9 @@
     <SerilogSinksRollingFileVersion>3.3.0</SerilogSinksRollingFileVersion>
 
     <!-- Tests -->
-    <XUnitVersion>2.3.1</XUnitVersion>
-    <XUnitAnalyzersVersion>0.9.0</XUnitAnalyzersVersion>
-    <MicrosoftNETTestSdkVersion>15.7.2</MicrosoftNETTestSdkVersion>
+    <XUnitVersion>2.4.0</XUnitVersion>
+    <XUnitAnalyzersVersion>0.10.0</XUnitAnalyzersVersion>
+    <MicrosoftNETTestSdkVersion>15.8.0</MicrosoftNETTestSdkVersion>
     <NSubstituteVersion>3.1.0</NSubstituteVersion>
 
     <!-- Razor -->
@@ -43,9 +47,9 @@
 
     <!-- IdentityServer & related -->
     <IdentityServer4Version>2.2.0</IdentityServer4Version>
-    <MicrosoftAzureKeyVaultVersion>2.3.2</MicrosoftAzureKeyVaultVersion>
-    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.19.6</MicrosoftIdentityModelClientsActiveDirectoryVersion>
-    <IdentityModelVersion>3.7.0</IdentityModelVersion>
+    <MicrosoftAzureKeyVaultVersion>3.0.0</MicrosoftAzureKeyVaultVersion>
+    <MicrosoftIdentityModelClientsActiveDirectoryVersion>3.19.8</MicrosoftIdentityModelClientsActiveDirectoryVersion>
+    <IdentityModelVersion>3.8.0</IdentityModelVersion>
 
     <DapperVersion>1.50.5</DapperVersion>
 

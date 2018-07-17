@@ -2,10 +2,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-  <Import Project="../../targets/Tests.targets" />
+  <Import Project="../../../src/targets/Tests.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.ViewRenderer.Razor/LeanCode.ViewRenderer.Razor.csproj" />
+    <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

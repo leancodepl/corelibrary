@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-  <Import Project="../../targets/Tests.targets" />
+  <Import Project="../../../src/targets/Tests.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />

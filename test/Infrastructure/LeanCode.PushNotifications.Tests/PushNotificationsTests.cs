@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NSubstitute;
 using Xunit;
@@ -18,7 +19,7 @@ namespace LeanCode.PushNotifications.Tests
         public PushNotificationsTests()
         {
             store = Substitute.For<IPushNotificationTokenStore<Guid>>();
-            client = Substitute.For<FCMClient>(new FCMConfiguration { ApiKey = "" });
+            client = Substitute.For<FCMClient>(new HttpClient());
 
             store.GetForDevice(Guid.Empty, DeviceType.Android).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
             store.GetAll(Guid.Empty).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests
@@ -44,7 +45,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             Assert.Same(results[0].ViewType, results[1].ViewType);
         }
 
-        [Fact]
+        [LongRunningFact]
         public async Task Stress_test_the_multithreading_part()
         {
             for (int i = 0; i < 10; i++)

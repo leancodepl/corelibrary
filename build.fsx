@@ -1,29 +1,30 @@
-#r @"packages/FAKE/tools/FakeLib.dll"
+#r "paket:
+storage: none
+nuget Fake.DotNet.Cli
+nuget Fake.DotNet.Paket
+nuget Fake.IO.FileSystem
+nuget Fake.Core.Xml
+nuget Fake.Core.ReleaseNotes
+nuget Fake.Core.Target //"
+#load "./.fake/build.fsx/intellisense.fsx"
 
 open System
 open Fake.Core
 open Fake.Core.TargetOperators
-open Fake.Core.Globbing.Operators
 open Fake.IO
 open Fake.DotNet
-open Fake.DotNet.Cli
-open Fake.EnvironmentHelper
-open Fake.Tools
-open Fake.ChangeLogHelper
-open Fake.FileHelper
-open Fake.ProcessHelper
 
 let rootDir = Path.getFullName "."
 let srcDir = Path.combine rootDir "src"
-let testDir = Path.combine rootDir "test"
 let packDir = Path.combine rootDir "packed"
 
+let testProject = Path.combine rootDir "test/LeanCode.Tests.csproj"
 let libVersionFile = Path.combine srcDir "targets/Version.targets"
-let dependenciesFile = Path.combine srcDir "Core/LeanCode.Targets/Dependencies.props"
+let dependenciesFile = Path.combine srcDir "targets/Dependencies.props"
 
-let configuration = environVarOrDefault "DOTNET_CONFIGURATION" "Release" |> BuildConfiguration.Custom
+let configuration = Environment.environVarOrDefault "DOTNET_CONFIGURATION" "Release" |> DotNet.BuildConfiguration.Custom
 
-let formatChangelog (changeLog: ChangeLog) =
+let formatChangelog (changeLog: Changelog.Changelog) =
     let desc = defaultArg changeLog.LatestEntry.Description ""
     let changes = System.String.Join("\n", changeLog.LatestEntry.Changes)
     if String.IsNullOrWhiteSpace desc && String.IsNullOrWhiteSpace changes then ""
@@ -31,85 +32,63 @@ let formatChangelog (changeLog: ChangeLog) =
     else if String.IsNullOrWhiteSpace changes then desc
     else desc + "\n\nChanges:\n" + changes
 
-let updateChangelog (changeLog: ChangeLog) =
-    let commits = Git.CommandHelper.runSimpleGitCommand "" ("rev-list HEAD --count") |> Int32.Parse
-    let newVersion = { changeLog.LatestEntry.SemVer with Patch = commits }
+let updateChangelog (changeLog: Changelog.Changelog) =
+    let buildNumber = uint32 <| Environment.environVar "BUILD_NUMBER"
+    let newVersion = { changeLog.LatestEntry.SemVer with Patch = buildNumber }
     let newVerString = newVersion.ToString()
-    let newEntry = ChangeLogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
+    let newEntry = Changelog.ChangelogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
     { changeLog with Entries = newEntry :: changeLog.Entries }
 
-let changeLog = LoadChangeLog "CHANGELOG.md" |> updateChangelog
-let version = changeLog.LatestEntry.NuGetVersion
-
-DefaultDotnetCliDir <-
-    let name = "dotnet"
-    let fileName = if isUnix then name else name + ".exe"
-    Path.getDirectory <| defaultArg (tryFindFileOnPath fileName) name
-
-Target.Create "Clean" (fun _ ->
-    !! (srcDir @@ "*/bin")
-    ++ (srcDir @@ "*/obj")
-    ++ packDir
-    |> CleanDirs
-)
-
-Target.Create "CleanDeploy" (fun _ ->
-    CleanDirs [packDir]
-)
-
-Target.Create "Restore" (fun _ ->
+Target.create "Restore" (fun _ ->
     Trace.trace "Restoring packages"
-    DotnetRestore id ""
+    DotNet.restore id ""
+    DotNet.restore id testProject
 )
 
-Target.Create "Build" (fun _ ->
+Target.create "Build" (fun _ ->
     Trace.trace "Building packages"
-    DotnetCompile (fun c ->
-        { c with
+    DotNet.build (fun c ->
+        { c.WithCommon(DotNet.Options.withCustomParams (Some "--no-restore")) with
             Configuration = configuration
-            Common =
-                { DotnetOptions.Default with
-                   CustomParams = Some "--no-restore" }
         }) ""
 )
 
-Target.Create "Test" (fun _ ->
-    Trace.trace "Testing"
-    !! (testDir @@ "**/*.csproj")
-    |> Seq.map Path.getDirectory
-    |> Seq.iter (fun p ->
-        Dotnet { DotnetOptions.Default with WorkingDirectory = p } "test" |> ignore)
+Target.create "Test" (fun _ ->
+    let result = DotNet.exec id "msbuild" (testProject + " /t:RunTests")
+    if not result.OK then failwith "Tests failed"
 )
 
-Target.Create "UpdateVersion" (fun _ ->
-    Xml.PokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
-    Xml.PokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
-    Xml.PokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
+Target.create "UpdateVersion" (fun _ ->
+    let changeLog = Changelog.load "CHANGELOG.md" |> updateChangelog
+    let version = changeLog.LatestEntry.NuGetVersion
+
+    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
+    Xml.pokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
+    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
 )
 
-Target.Create "Pack" (fun _ ->
+Target.create "Pack" (fun _ ->
     Trace.trace "Packaging"
-    DotnetPack (fun c ->
+    DotNet.pack (fun c ->
         { c with
             Configuration = configuration
             OutputPath = Some packDir})
         rootDir
 )
 
-Target.Create "PublishToMyGet" (fun _ ->
+Target.create "PublishToMyGet" (fun _ ->
     Trace.trace "Publishing NuGets..."
-    Paket.Push (fun cfg ->
+    Paket.push (fun cfg ->
         { cfg with
+            ApiKey = Environment.environVar "NUGET_APIKEY"
             WorkingDir = packDir
             PublishUrl = "https://www.myget.org/F/leancode"
-            DegreeOfParallelism = 0
         })
 )
 
-Target.Create "Default" Target.DoNothing
+Target.create "Default" ignore
 
-"CleanDeploy"
-    ==> "Restore"
+"Restore"
     ==> "Build"
     ==> "Test"
     ==> "Default"
@@ -119,4 +98,6 @@ Target.Create "Default" Target.DoNothing
 "UpdateVersion" ?=> "Restore"
 "UpdateVersion" ==> "Pack"
 
-Target.RunOrDefault "Default"
+#if !BOOTSTRAP
+Target.runOrDefault "Default"
+#endif

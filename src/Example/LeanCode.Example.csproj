@@ -3,10 +3,9 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>LeanCode.Example</AssemblyName>
-    <OutputType>Exe</OutputType>
+    <OutputType>exe</OutputType>
     <PackageId>LeanCode.Example</PackageId>
     <UserSecretsId>LeanCode.Example</UserSecretsId>
-    <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -18,7 +17,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="../Core/LeanCode.Targets/Dependencies.props" />
+  <Import Project="../targets/Dependencies.props" />
 
   <ItemGroup>
     <ProjectReference Include="../Core/LeanCode.Components/LeanCode.Components.csproj" />
@@ -43,7 +42,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(MicrosoftAspNetCoreServerKestrelVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="$(ExtensionsVersion)" />
     <!-- Required, it generates UserSecretsIdAttribute on the assembly -->
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />

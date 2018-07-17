@@ -8,12 +8,12 @@ using Xunit;
 
 namespace LeanCode.DomainModels.EventsExecution.Tests
 {
-    public class EventsExecutorTests
+    public class EventsExecutorTests__Success
     {
         private static readonly RetryPolicies policies = new RetryPolicies();
         private static readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
 
-        public EventsExecutorTests()
+        public EventsExecutorTests__Success()
         {
             interceptor.Configure();
         }
@@ -158,63 +158,6 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
             _ = h2.Received(1).HandleAsync(e1);
             _ = h1.Received(1).HandleAsync(e2);
             _ = h2.Received(1).HandleAsync(e2);
-        }
-
-        [Fact]
-        public async Task If_handler_fails_the_call_succeedes()
-        {
-            var h = new FailingHandler<Event1>();
-
-            await Prepare(h).HandleEventsOf(Publish(new Event1()));
-        }
-
-        [Fact]
-        public async Task If_handler_fails_Other_handlers_are_still_executed()
-        {
-            var e = new Event1();
-
-            var h1 = Substitute.For<IDomainEventHandler<Event1>>();
-            var h2 = Substitute.For<IDomainEventHandler<Event1>>();
-            var fail = new FailingHandler<Event1>();
-
-            await Prepare(h1, fail, h2).HandleEventsOf(Publish(e));
-
-            _ = h1.Received(1).HandleAsync(e);
-            _ = h2.Received(1).HandleAsync(e);
-        }
-
-        [Fact]
-        public async Task If_handler_fails_its_events_are_ignored()
-        {
-            var h = Substitute.For<IDomainEventHandler<Event2>>();
-            var fail = new FailingHandler<Event1>(new Event2());
-
-            await Prepare(h, fail).HandleEventsOf(Publish(new Event1()));
-
-            _ = h.DidNotReceiveWithAnyArgs().HandleAsync(null);
-        }
-
-        [Fact]
-        public async Task If_command_fails_The_call_fails()
-        {
-            await Assert.ThrowsAsync<Exception>(() =>
-                Prepare().HandleEventsOf(() => { throw new Exception(); })
-            );
-        }
-
-        [Fact]
-        public async Task If_command_fails_Its_events_are_ignored()
-        {
-            var h = Substitute.For<IDomainEventHandler<Event1>>();
-            await Assert.ThrowsAsync<Exception>(() =>
-                Prepare(h).HandleEventsOf(() =>
-                {
-                    DomainEvents.Raise(new Event1());
-                    throw new Exception();
-                })
-            );
-
-            _ = h.DidNotReceiveWithAnyArgs().HandleAsync(null);
         }
 
         private static PipelineExecutor<Context, Func<int>, int> Prepare(params object[] handlers)

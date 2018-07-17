@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
+using LeanCode.Test.Helpers;
 using LeanCode.UnitTests.TestHelpers;
 using Xunit;
 
@@ -15,17 +16,17 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
             EventsInterceptor.Configure();
         }
 
-        [Fact]
+        [LongRunningFact]
         public Task Clash_Async_Test1() => RunTaskTest();
-        [Fact]
+        [LongRunningFact]
         public Task Clash_Async_Test2() => RunTaskTest();
-        [Fact]
+        [LongRunningFact]
         public Task Clash_Async_Test3() => RunTaskTest();
-        [Fact]
+        [LongRunningFact]
         public void Clash_Thread_Test1() => RunThreadTest();
-        [Fact]
+        [LongRunningFact]
         public void Clash_Thread_Test2() => RunThreadTest();
-        [Fact]
+        [LongRunningFact]
         public void Clash_Thread_Test3() => RunThreadTest();
 
         private static async Task RunTaskTest()

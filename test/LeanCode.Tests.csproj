@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="RunTests">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>LeanCode.Tests</AssemblyName>
+  </PropertyGroup>
+  <Import Project="../src/targets/Tests.targets" />
+
+  <ItemGroup>
+    <Compile Remove="**/*.cs" />
+    <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj" />
+
+    <ProjectReference Include="@(TestProjects)" />
+  </ItemGroup>
+
+  <Target Name="RunTests" DependsOnTargets="Build">
+    <ItemGroup>
+      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="'%(TargetFrameworks)' == 'netcoreapp2.1'" />
+    </ItemGroup>
+
+    <exec
+      Command="dotnet vstest @(TestProjectsAssemblies -> '%(FullPath)', ' ')"
+      WorkingDirectory="$(TargetDir)" />
+  </Target>
+
+</Project>

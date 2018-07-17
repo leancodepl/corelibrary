@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
 
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLibVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
     <PackageReference Include="IdentityServer4" Version="$(IdentityServer4Version)" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="$(MicrosoftAzureKeyVaultVersion)" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="$(MicrosoftIdentityModelClientsActiveDirectoryVersion)" />

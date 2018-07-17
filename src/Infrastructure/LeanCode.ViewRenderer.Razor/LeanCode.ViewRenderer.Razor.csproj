@@ -14,8 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
 
-    <PackageReference Include="System.ValueTuple" Version="$(NetCoreLibVersion)" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(NetCoreLibVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
     <PackageReference Include="System.Runtime.Loader" Version="$(SystemRuntimeLoaderVersion)" />
     <PackageReference Include="System.Dynamic.Runtime" Version="$(SystemDynamicRuntimeVersion)" />
 

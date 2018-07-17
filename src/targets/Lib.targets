@@ -6,8 +6,6 @@
     <IsPackable>true</IsPackable>
     <LangVersion>latest</LangVersion>
 
-    <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
-
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <DebugType>portable</DebugType>
@@ -22,5 +20,5 @@
   </ItemGroup>
 
   <Import Project="Version.targets" />
-  <Import Project="../Core/LeanCode.Targets/Dependencies.props" />
+  <Import Project="Dependencies.props" />
 </Project>

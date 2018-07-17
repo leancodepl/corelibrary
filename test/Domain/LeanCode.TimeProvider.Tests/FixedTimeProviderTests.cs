@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.TimeProvider.Tests
@@ -18,7 +19,7 @@ namespace LeanCode.TimeProvider.Tests
             this.expectedTime = expectedTime;
         }
 
-        [Fact]
+        [LongRunningFact]
         public void Check_the_value_sync()
         {
             var provider = FixedTimeProvider.SharedInstance;
@@ -32,7 +33,7 @@ namespace LeanCode.TimeProvider.Tests
             }
         }
 
-        [Fact]
+        [LongRunningFact]
         public async Task Check_the_value_async()
         {
             var provider = FixedTimeProvider.SharedInstance;
