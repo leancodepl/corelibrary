@@ -10,4 +10,4 @@ RUN fake run --fsiargs "--define:BOOTSTRAP" build.fsx
 
 COPY . .
 
-ENTRYPOINT fake run build.fsx -t PublishToMyGet
+ENTRYPOINT fake run -n build.fsx -t PublishToMyGet
