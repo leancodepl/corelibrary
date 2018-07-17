@@ -55,5 +55,11 @@
 
     <HangfireVersion>1.7.0-beta1</HangfireVersion>
     <HangfireAutofacVersion>2.3.1</HangfireAutofacVersion>
+
+    <!-- Tools version -->
+    <GlobVersion>0.4.0</GlobVersion>
+    <MicrosoftCodeAnalysisVersion>2.8.2</MicrosoftCodeAnalysisVersion>
+    <MicrosoftExtensionsConfigurationBinderVersion>2.1.1</MicrosoftExtensionsConfigurationBinderVersion>
+    <MicrosoftExtensionsConfigurationCommandLineVersion>2.1.1</MicrosoftExtensionsConfigurationCommandLineVersion>
   </PropertyGroup>
 </Project>
