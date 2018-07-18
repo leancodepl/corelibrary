@@ -40,9 +40,18 @@ let formatChangelog (changeLog: Changelog.Changelog) =
 let updateChangelog (changeLog: Changelog.Changelog) =
     let buildNumber = uint32 <| Environment.environVar "BUILD_NUMBER"
     let newVersion = { changeLog.LatestEntry.SemVer with Patch = buildNumber }
-    let newVerString = newVersion.ToString()
+    let newVerString = newVersion.Normalize()
     let newEntry = Changelog.ChangelogEntry.New(changeLog.LatestEntry.AssemblyVersion, newVerString, [])
     { changeLog with Entries = newEntry :: changeLog.Entries }
+
+Target.create "UpdateVersion" (fun _ ->
+    let changeLog = Changelog.load "CHANGELOG.md" |> updateChangelog
+    let version = changeLog.LatestEntry.NuGetVersion
+
+    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
+    Xml.pokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
+    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
+)
 
 Target.create "Restore" (fun _ ->
     Trace.trace "Restoring packages"
@@ -61,15 +70,6 @@ Target.create "Build" (fun _ ->
 Target.create "Test" (fun _ ->
     let result = DotNet.exec id "msbuild" (testProject + " /t:RunTests")
     if not result.OK then failwith "Tests failed"
-)
-
-Target.create "UpdateVersion" (fun _ ->
-    let changeLog = Changelog.load "CHANGELOG.md" |> updateChangelog
-    let version = changeLog.LatestEntry.NuGetVersion
-
-    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
-    Xml.pokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
-    Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
 )
 
 Target.create "Pack" (fun _ ->

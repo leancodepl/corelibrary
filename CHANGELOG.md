@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2
+Switch to dockerized build (and new FAKE)
+Cleanup shared target files and remove LeanCode.Dependencies
+
 ## 3.1
 Switch to .NET Core 2.1
 
