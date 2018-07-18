@@ -92,7 +92,7 @@ Target.create "PublishToMyGet" (fun _ ->
         let args = sprintf "\"%s\" -k %s -sk %s -s %s -ss %s" f apiKey apiKey MyGetAddress MyGetSymbolsAddress
         let res = DotNet.exec opts "nuget push" args
         if not res.OK then failwith (sprintf "Cannot upload %s" f)
-    Parallel.ForEach(files, pOpts, publish) |> ignore
+    Parallel.ForEach(files, publish) |> ignore
 )
 
 Target.create "Default" ignore
