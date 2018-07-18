@@ -1,0 +1,78 @@
+using Xunit;
+using static LeanCode.ContractsGenerator.Tests.ContractsGeneratorTestHelpers;
+
+namespace LeanCode.ContractsGenerator.Tests
+{
+    public partial class ContractsGeneratorTests
+    {
+        [Fact]
+        public void Commands_error_code_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { public static class ErrorCodes { public const int Invalid = 1; } }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export namespace TestClass {\n    export namespace ErrorCodes {\n        export const Invalid = 1;" ,client);
+        }
+
+        [Fact]
+        public void Const_string_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const string Constant = nameof(Constant); }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export const Constant = \"Constant\"", client);
+        }
+
+        [Fact]
+        public void Const_in_nested_static_class_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public static class Constants { public static class Constants2 { public const char Value = 'p'; } }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export namespace Constants {\n    export namespace Constants2 {\n        export const Value = \"p\";" ,client);
+        }
+
+        [Fact]
+        public void Multiple_command_error_codes_are_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { public static class ErrorCodes { public const int Invalid = 1; public const int Empty = 2; } }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export namespace TestClass {\n    export namespace ErrorCodes {\n        export const Invalid = 1;\n        export const Empty = 2;" ,client);
+        }
+
+        [Fact]
+        public void Const_double_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const double Constant = 1.55; }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export const Constant = 1.55", client);
+        }
+
+        [Fact]
+        public void Const_float_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const float Constant = 1.55E+1; }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export const Constant = 15.5", client);
+        }
+
+        [Fact]
+        public void Const_char_is_resolved_correctly()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const char Constant = 'a'; }");
+
+            generator.Generate(out var contracts, out var client);
+
+            Assert.Matches("export const Constant = \"a\"", client);
+        }
+    }
+}
