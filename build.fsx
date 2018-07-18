@@ -1,7 +1,6 @@
 #r "paket:
 storage: none
 nuget Fake.DotNet.Cli
-nuget Fake.DotNet.Paket
 nuget Fake.IO.FileSystem
 nuget Fake.Core.Xml
 nuget Fake.Core.ReleaseNotes
@@ -9,10 +8,16 @@ nuget Fake.Core.Target //"
 #load "./.fake/build.fsx/intellisense.fsx"
 
 open System
+open System.Threading.Tasks
 open Fake.Core
 open Fake.Core.TargetOperators
 open Fake.IO
+open Fake.IO.Globbing.Operators
 open Fake.DotNet
+
+let MyGetAddress = "https://www.myget.org/F/leancode/api/v2/package"
+let MyGetSymbolsAddress = "https://www.myget.org/F/leancode/symbols/api/v2/package"
+
 
 let rootDir = Path.getFullName "."
 let srcDir = Path.combine rootDir "src"
@@ -78,12 +83,18 @@ Target.create "Pack" (fun _ ->
 
 Target.create "PublishToMyGet" (fun _ ->
     Trace.trace "Publishing NuGets..."
-    Paket.push (fun cfg ->
-        { cfg with
-            ApiKey = Environment.environVar "NUGET_APIKEY"
-            WorkingDir = packDir
-            PublishUrl = "https://www.myget.org/F/leancode"
-        })
+    let apiKey = Environment.environVar "NUGET_APIKEY"
+    let files =
+        !! (packDir + "/*.nupkg")
+        -- (packDir + "/*.symbols.nupkg")
+    let publish f =
+        let opts = DotNet.Options.withRedirectOutput true
+        let args = sprintf "\"%s\" -k %s -sk %s -s %s -ss %s" f apiKey apiKey MyGetAddress MyGetSymbolsAddress
+        let res = DotNet.exec opts "nuget push" args
+        if not res.OK then failwith (sprintf "Cannot upload %s" f)
+    let pOpts = ParallelOptions()
+    pOpts.MaxDegreeOfParallelism <- 1
+    Parallel.ForEach(files, pOpts, publish) |> ignore
 )
 
 Target.create "Default" ignore
