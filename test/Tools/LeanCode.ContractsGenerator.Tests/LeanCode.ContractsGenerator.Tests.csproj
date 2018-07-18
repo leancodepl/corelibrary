@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <Import Project="../../../src/targets/Tests.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Tools/LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj" />
+  </ItemGroup>
+
+</Project>
