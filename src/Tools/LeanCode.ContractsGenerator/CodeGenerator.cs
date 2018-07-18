@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Configuration;
 using LeanCode.CQRS;
+using System.Globalization;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -22,7 +23,7 @@ namespace LeanCode.ContractsGenerator
         public string Path { get; set; }
     }
 
-    class CodeGenerator
+    public class CodeGenerator
     {
         private static readonly Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
         {
@@ -92,6 +93,13 @@ namespace LeanCode.ContractsGenerator
 
             funcsBuilder.Append(clientPreamble);
             funcsBuilder.Append("\n");
+
+            foreach (var tree in trees)
+            {
+                var model = compilation.GetSemanticModel(tree);
+
+                GenerateConstants(funcsBuilder, model, tree);
+            }
 
             funcsBuilder.Append("export type ClientParams = {\n");
             funcsBuilder.Append(
@@ -282,6 +290,79 @@ namespace LeanCode.ContractsGenerator
             {
                 GenerateInterface(dtosBuilder, info);
             }
+        }
+
+        private void GenerateConstants(StringBuilder dtosBuilder, SemanticModel model, SyntaxTree tree)
+        {
+            var classesDeclarations = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
+            var staticClasses = classesDeclarations
+                .Select(c => model.GetDeclaredSymbol(c))
+                .Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public) && i.IsStatic)
+                .ToList();
+
+            foreach (var info in staticClasses)
+            {
+                GenerateConstantsFromStaticClass(dtosBuilder, info);
+            }
+        }
+
+        private void GenerateConstantsFromStaticClass(StringBuilder dtosBuilder, INamedTypeSymbol info)
+        {
+            var constFields = info.GetMembers().OfType<IFieldSymbol>().Where(i => i.HasConstantValue).ToList();
+            if (constFields.Count == 0)
+            {
+                return;
+            }
+
+            var hasContainingType = info.ContainingType != null;
+            var outermostNamespace = hasContainingType ? info.ContainingType.Name : info.Name;
+            var fieldsDepth = hasContainingType ? 2 : 1;
+
+            dtosBuilder.Append($"export namespace {outermostNamespace} {{\n");
+            if (hasContainingType)
+            {
+                dtosBuilder.Append($"    export namespace {info.Name} {{\n");
+            }
+            foreach (var field in constFields)
+            {
+                dtosBuilder.Append($"{GetSpacesForDepth(fieldsDepth)}export const {field.Name} = {StringifyBuiltInTypeValue(field.ConstantValue)};\n");
+            }
+            if (hasContainingType)
+            {
+                dtosBuilder.Append($"    }}\n");
+            }
+            dtosBuilder.Append("}\n\n");
+        }
+
+        private string GetSpacesForDepth(int depth)
+        {
+            return string.Join("", Enumerable.Repeat(" ", 4 * depth));
+        }
+
+        private static string StringifyBuiltInTypeValue(object value)
+        {
+            switch (value)
+            {
+                case bool v:
+                    return v.ToString().ToLower();
+
+                case string v:
+                    return '"' + v + '"';
+
+                case char v:
+                    return '"' + v.ToString() + '"';
+
+                case float v:
+                    return v.ToString(CultureInfo.InvariantCulture);
+
+                case double v:
+                    return v.ToString(CultureInfo.InvariantCulture);
+
+                case decimal v:
+                    return v.ToString(CultureInfo.InvariantCulture);
+            }
+
+            return value.ToString();
         }
 
         private void GenerateEnum(StringBuilder dtosBuilder, INamedTypeSymbol info)

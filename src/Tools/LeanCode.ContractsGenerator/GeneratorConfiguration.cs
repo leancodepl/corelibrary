@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace LeanCode.ContractsGenerator
 {
-    class GeneratorConfiguration
+    public class GeneratorConfiguration
     {
         private const string DefaultAdditionalCode = "";
 
