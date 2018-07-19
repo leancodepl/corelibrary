@@ -31,7 +31,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var request = context.Request;
             ExecutionResult result;
-            if (request.Method != HttpMethods.Post)
+            if (!HttpMethods.IsPost(request.Method))
             {
                 result = ExecutionResult.Failed(StatusCodes.Status405MethodNotAllowed);
             }

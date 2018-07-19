@@ -38,6 +38,7 @@
     <XUnitAnalyzersVersion>0.10.0</XUnitAnalyzersVersion>
     <MicrosoftNETTestSdkVersion>15.8.0</MicrosoftNETTestSdkVersion>
     <NSubstituteVersion>3.1.0</NSubstituteVersion>
+    <BenchmarkDotNetVersion>0.10.14</BenchmarkDotNetVersion>
 
     <!-- Razor -->
     <MicrosoftCSharpVersion>4.5.0</MicrosoftCSharpVersion>
