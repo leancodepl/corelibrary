@@ -19,7 +19,7 @@ indent_size = 4
 [*.{json, yml}]
 indent_size = 2
 
-[*.{xml, targets, csproj}]
+[*.{xml, targets, csproj, props}]
 indent_size = 2
 
 [*.{cshtml, cstxt}]

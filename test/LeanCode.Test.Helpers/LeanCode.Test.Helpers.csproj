@@ -5,10 +5,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <Import Project="../../src/targets/Dependencies.props" />
-
   <ItemGroup>
-    <PackageReference Include="xunit" Version="$(XUnitVersion)" />
+    <PackageReference Include="xunit" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.AsyncTasks.Hangfire</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
       <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
@@ -14,12 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" />
 
-    <PackageReference Include="Hangfire.Autofac" Version="$(HangfireAutofacVersion)" />
-    <PackageReference Include="Hangfire.Core" Version="$(HangfireVersion)" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
-    <PackageReference Include="Hangfire.SqlServer" Version="$(HangfireVersion)" />
+    <PackageReference Include="Hangfire.Autofac" />
+    <PackageReference Include="Hangfire.Core" />
+    <PackageReference Include="Hangfire.AspNetCore" />
+    <PackageReference Include="Hangfire.SqlServer" />
   </ItemGroup>
 
 </Project>

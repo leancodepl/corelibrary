@@ -4,18 +4,17 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.Mixpanel</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="$(JsonNetVersion)" />
-    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Serilog" />
 
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
   </ItemGroup>
 
 </Project>

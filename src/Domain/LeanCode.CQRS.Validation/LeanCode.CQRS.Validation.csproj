@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.CQRS.Validation</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
@@ -12,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+    <PackageReference Include="Serilog" />
   </ItemGroup>
 
 </Project>

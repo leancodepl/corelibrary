@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>LeanCode.Tests</AssemblyName>
   </PropertyGroup>
-  <Import Project="../src/targets/Tests.targets" />
 
   <ItemGroup>
     <Compile Remove="**/*.cs" />

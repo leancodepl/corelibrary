@@ -5,10 +5,9 @@
     <AssemblyName>LeanCode.CodeAnalysis</AssemblyName>
     <BuildPackage>true</BuildPackage>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisCSharpVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,5 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.Pipelines</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
 </Project>

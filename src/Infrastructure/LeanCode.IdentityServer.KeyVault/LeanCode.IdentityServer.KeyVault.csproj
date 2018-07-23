@@ -4,19 +4,18 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.IdentityServer.KeyVault</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+    <PackageReference Include="Serilog" />
 
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
-    <PackageReference Include="IdentityServer4" Version="$(IdentityServer4Version)" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="$(MicrosoftAzureKeyVaultVersion)" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="$(MicrosoftIdentityModelClientsActiveDirectoryVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" />
+    <PackageReference Include="IdentityServer4" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" />
   </ItemGroup>
 
 </Project>
