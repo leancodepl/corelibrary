@@ -30,6 +30,7 @@ namespace LeanCode.Benchmarks
 
         private IServiceProvider serviceProvider;
         private RemoteCQRSMiddleware<SampleAppContext> middleware;
+        private InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
 
         private byte[] empty;
         private byte[] multipleFields;
@@ -57,6 +58,10 @@ namespace LeanCode.Benchmarks
                 F2 = 123
             });
         }
+
+        [Benchmark(Baseline = true)]
+        public Task SimpleMiddleware() =>
+            simpleMiddleware.Invoke(PrepareQuery(true));
 
         [Benchmark]
         public Task EmptyQuery() =>
