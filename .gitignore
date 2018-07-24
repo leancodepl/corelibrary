@@ -237,3 +237,4 @@ paket-files/
 packed
 .paket/Paket.Restore.targets
 
+**/BenchmarkDotNet.Artifacts

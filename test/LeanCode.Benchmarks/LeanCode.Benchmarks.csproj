@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>LeanCode.Benchmarks</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <Import Project="../../src/targets/Dependencies.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
+
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
+
+    <ProjectReference Include="../../src/Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
+    <PackageReference Include="Autofac" Version="$(AutofacVersion)" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="$(AutofacExtensionsDependencyInjectionVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
+
+</Project>
