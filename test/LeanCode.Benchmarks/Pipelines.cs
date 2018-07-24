@@ -4,8 +4,6 @@ using LeanCode.Benchmarks.Pipelines;
 using System.Threading.Tasks;
 using Autofac;
 using LeanCode.Pipelines.Autofac;
-using BenchmarkDotNet.Attributes.Jobs;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace LeanCode.Benchmarks
 {

@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Attributes.Jobs;
 using LeanCode.Components;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Default;
