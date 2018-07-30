@@ -6,7 +6,6 @@
     <AssemblyName>LeanCode.Benchmarks</AssemblyName>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <Import Project="../../src/targets/Dependencies.props" />
 
   <ItemGroup>
     <ProjectReference Include="../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
@@ -25,12 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
-    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
-    <PackageReference Include="Autofac" Version="$(AutofacVersion)" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="$(AutofacExtensionsDependencyInjectionVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="System.ValueTuple" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Autofac" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" />
   </ItemGroup>
 
 </Project>

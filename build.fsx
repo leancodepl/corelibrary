@@ -24,8 +24,7 @@ let srcDir = Path.combine rootDir "src"
 let packDir = Path.combine rootDir "packed"
 
 let testProject = Path.combine rootDir "test/LeanCode.Tests.csproj"
-let libVersionFile = Path.combine srcDir "targets/Version.targets"
-let dependenciesFile = Path.combine srcDir "targets/Dependencies.props"
+let libVersionFile = Path.combine srcDir "Version.props"
 
 let configuration = Environment.environVarOrDefault "DOTNET_CONFIGURATION" "Release" |> DotNet.BuildConfiguration.Custom
 
@@ -49,7 +48,6 @@ Target.create "UpdateVersion" (fun _ ->
     let version = changeLog.LatestEntry.NuGetVersion
 
     Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/Version" version
-    Xml.pokeInnerText dependenciesFile "/Project/PropertyGroup/CoreLibVersion" version
     Xml.pokeInnerText libVersionFile "/Project/PropertyGroup/PackageReleaseNotes" (formatChangelog changeLog)
 )
 

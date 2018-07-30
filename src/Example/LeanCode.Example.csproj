@@ -7,6 +7,7 @@
     <PackageId>LeanCode.Example</PackageId>
     <UserSecretsId>LeanCode.Example</UserSecretsId>
     <IsPackable>false</IsPackable>
+    <NoPackageDefaults>true</NoPackageDefaults>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="../targets/Dependencies.props" />
 
   <ItemGroup>
     <ProjectReference Include="../Core/LeanCode.Components/LeanCode.Components.csproj" />
@@ -40,18 +40,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="$(ExtensionsVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(MicrosoftAspNetCoreServerKestrelVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
     <!-- Required, it generates UserSecretsIdAttribute on the assembly -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCoreVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCoreVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
 
-    <PackageReference Include="Serilog.Sinks.RollingFile" Version="$(SerilogSinksRollingFileVersion)" />
-    <PackageReference Include="Serilog.Sinks.Literate" Version="$(SerilogSinksLiterateVersion)" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" />
+    <PackageReference Include="Serilog.Sinks.Literate" />
   </ItemGroup>
 
 </Project>

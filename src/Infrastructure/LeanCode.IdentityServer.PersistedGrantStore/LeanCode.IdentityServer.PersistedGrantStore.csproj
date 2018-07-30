@@ -4,16 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>LeanCode.IdentityServer.PersistedGrantStore</AssemblyName>
   </PropertyGroup>
-  <Import Project="../../targets/Lib.targets" />
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
-    <PackageReference Include="IdentityServer4" Version="$(IdentityServer4Version)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFCoreVersion)" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="IdentityServer4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
 </Project>
