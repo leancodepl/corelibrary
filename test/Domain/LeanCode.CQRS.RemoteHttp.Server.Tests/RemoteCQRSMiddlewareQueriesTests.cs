@@ -56,6 +56,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         [Fact]
+        public async Task Serializes_null_as_null_not_empty_response()
+        {
+            var (_, content) = await Invoke(typeof(NullReturningQuery).FullName);
+            Assert.Equal("null", content);
+        }
+
+        [Fact]
         public async Task Writes_result_when_query_has_been_executed()
         {
             var (_, content) = await Invoke();
@@ -96,4 +103,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     {
         public int Prop { get; set; }
     }
+
+    public class NullReturningQuery : IRemoteQuery<ObjContext, object>
+    { }
 }

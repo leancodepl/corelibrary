@@ -41,7 +41,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 Logger.Warning("The type {Type} is not an IRemoteQuery", obj.GetType());
                 // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
+                return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
             var type = obj.GetType();
@@ -58,7 +58,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (QueryHandlerNotFoundException)
             {
-                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
+                return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
         }
 

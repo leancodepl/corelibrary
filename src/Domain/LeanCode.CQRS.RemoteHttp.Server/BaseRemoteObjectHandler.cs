@@ -44,13 +44,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (Exception ex)
             {
                 Logger.Verbose(ex, "Cannot deserialize object body from the request stream");
-                return ExecutionResult.Failed(StatusCodes.Status400BadRequest);
+                return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj == null)
             {
                 Logger.Verbose("Client sent an empty object, ignoring");
-                return ExecutionResult.Failed(StatusCodes.Status400BadRequest);
+                return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             ExecutionResult result;
@@ -61,16 +61,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (UnauthenticatedException)
             {
-                result = ExecutionResult.Failed(StatusCodes.Status401Unauthorized);
+                result = ExecutionResult.Fail(StatusCodes.Status401Unauthorized);
             }
             catch (InsufficientPermissionException)
             {
-                result = ExecutionResult.Failed(StatusCodes.Status403Forbidden);
+                result = ExecutionResult.Fail(StatusCodes.Status403Forbidden);
             }
             catch (Exception ex)
             {
                 Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
-                result = ExecutionResult.Failed(StatusCodes.Status500InternalServerError);
+                result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }
 
             if (result.StatusCode >= 100 && result.StatusCode < 300)

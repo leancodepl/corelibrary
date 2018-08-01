@@ -33,7 +33,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             ExecutionResult result;
             if (!HttpMethods.IsPost(request.Method))
             {
-                result = ExecutionResult.Failed(StatusCodes.Status405MethodNotAllowed);
+                result = ExecutionResult.Fail(StatusCodes.Status405MethodNotAllowed);
             }
             else if (request.Path.StartsWithSegments("/query"))
             {
@@ -55,11 +55,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private Task ExecuteResult(ExecutionResult result, HttpContext context)
         {
-            if (result.SkipExecution)
+            if (result.Skipped)
             {
                 return next(context);
             }
-            else if (result.Payload != null)
+            else if (result.Succeeded)
             {
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = result.StatusCode;

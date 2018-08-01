@@ -6,72 +6,38 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 {
     struct ExecutionResult
     {
-        public bool SkipExecution { get; private set; }
+        public ExecutionStatus Status { get; private set; }
         public int StatusCode { get; private set; }
         public object Payload { get; private set; }
 
+        public bool Skipped => Status == ExecutionStatus.Skip;
+        public bool Failed => Status == ExecutionStatus.Failed;
+        public bool Succeeded => Status == ExecutionStatus.Succeeded;
+
         public static ExecutionResult Skip() => new ExecutionResult
         {
-            SkipExecution = true
+            Status = ExecutionStatus.Skip,
         };
 
-        public static ExecutionResult Failed(int code) => new ExecutionResult
+        public static ExecutionResult Fail(int code) => new ExecutionResult
         {
+            Status = ExecutionStatus.Failed,
             StatusCode = code,
             Payload = null
         };
 
         public static ExecutionResult Success(object payload, int code = 200) => new ExecutionResult
         {
+            Status = ExecutionStatus.Succeeded,
             StatusCode = code,
             Payload = payload
         };
-    }
 
-    abstract class ActionResult
-    {
-        public abstract void Execute(HttpContext ctx);
-
-        public sealed class StatusCode : ActionResult
+        public enum ExecutionStatus
         {
-            public int Code { get; }
-
-            public StatusCode(int statusCode)
-            {
-                Code = statusCode;
-            }
-
-            public override void Execute(HttpContext ctx)
-            {
-                ctx.Response.StatusCode = Code;
-            }
-        }
-
-        public sealed class Json : ActionResult
-        {
-            public object Payload { get; }
-            public int Code { get; }
-
-            public Json(object payload, int statusCode)
-            {
-                Code = statusCode;
-                Payload = payload;
-            }
-
-            public Json(object payload)
-                : this(payload, StatusCodes.Status200OK)
-            { }
-
-            public override void Execute(HttpContext ctx)
-            {
-                ctx.Response.ContentType = "application/json";
-                ctx.Response.StatusCode = Code;
-                using (var writer = new StreamWriter(ctx.Response.Body))
-                {
-                    new JsonSerializer().Serialize(writer, Payload);
-                }
-            }
+            Skip,
+            Failed,
+            Succeeded
         }
     }
-
 }

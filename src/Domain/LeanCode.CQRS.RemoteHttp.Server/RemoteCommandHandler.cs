@@ -35,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
             {
                 Logger.Warning("The type {Type} is not an IRemoteCommand", type);
-                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
+                return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
             var method = methodCache.GetOrAdd(type, MakeExecutorMethod);
@@ -48,7 +48,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (CommandHandlerNotFoundException)
             {
-                return ExecutionResult.Failed(StatusCodes.Status404NotFound);
+                return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
             if (cmdResult.WasSuccessful)
