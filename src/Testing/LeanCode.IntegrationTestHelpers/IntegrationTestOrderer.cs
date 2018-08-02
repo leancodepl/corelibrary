@@ -9,9 +9,6 @@ namespace LeanCode.IntegrationTestHelpers
     {
         private readonly Serilog.ILogger logger;
 
-        public const string ClassName = "LeanCode.IntegrationTestHelpers.IntegrationTestOrderer";
-        public const string AssemblyName = "LeanCode.IntegrationTestHelpers";
-
         public IntegrationTestOrderer()
         {
             IntegrationTestLogging.EnsureLoggerLoaded();

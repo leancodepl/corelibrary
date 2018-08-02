@@ -29,23 +29,23 @@ namespace LeanCode.CQRS.Default
             }
         }
 
-        public CQRSModule WithDefaultPipelines<TAppContext>(TypesCatalog catalog)
+        public CQRSModule WithDefaultPipelines<TAppContext>(TypesCatalog handlersCatalog)
             where TAppContext : ISecurityContext, IEventsContext
         {
             return WithCustomPipelines<TAppContext>(
-                catalog,
+                handlersCatalog,
                 b => b.Secure().Validate().ExecuteEvents().InterceptEvents(),
                 b => b.Secure().Cache()
             );
         }
 
         public CQRSModule WithCustomPipelines<TAppContext>(
-            TypesCatalog catalog,
+            TypesCatalog handlersCatalog,
             CommandBuilder<TAppContext> commandBuilder,
             QueryBuilder<TAppContext> queryBuilder)
             where TAppContext : IPipelineContext
         {
-            modules.Add(new TypedCQRSModule<TAppContext>(catalog, commandBuilder, queryBuilder));
+            modules.Add(new TypedCQRSModule<TAppContext>(handlersCatalog, commandBuilder, queryBuilder));
             return this;
         }
     }

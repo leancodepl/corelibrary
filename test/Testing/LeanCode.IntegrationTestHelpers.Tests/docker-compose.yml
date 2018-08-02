@@ -1,0 +1,23 @@
+version: "3.6"
+services:
+  #### Tests
+  test:
+    build:
+      context: ../../..
+      dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/Dockerfile
+    environment:
+      - ConnectionStrings__Database='Server=db,1433;User Id=sa;Password=Passw12#'
+    depends_on:
+      - db
+
+  #### Infrastructure
+  db:
+    image: microsoft/mssql-server-linux:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Passw12#
+    volumes:
+      - database:/var/opt/mssql
+
+volumes:
+  database:
