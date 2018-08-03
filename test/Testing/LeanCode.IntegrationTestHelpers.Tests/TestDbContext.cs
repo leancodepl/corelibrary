@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.Simple
+namespace LeanCode.IntegrationTestHelpers.Tests
 {
-    public class SimpleDbContext : DbContext
+    public class TestDbContext : DbContext
     {
         public DbSet<Entity> Entities => Set<Entity>();
 
-        public SimpleDbContext(DbContextOptions<SimpleDbContext> opts)
+        public TestDbContext(DbContextOptions<TestDbContext> opts)
             : base(opts)
         { }
 

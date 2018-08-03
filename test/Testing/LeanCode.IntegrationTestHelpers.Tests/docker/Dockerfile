@@ -9,4 +9,5 @@ RUN dotnet restore
 WORKDIR /app/test/Testing/LeanCode.IntegrationTestHelpers.Tests
 RUN dotnet build --no-restore
 
-ENTRYPOINT sleep 5 && dotnet test
+# Wait for SQL Server first
+ENTRYPOINT sleep 10 && dotnet test

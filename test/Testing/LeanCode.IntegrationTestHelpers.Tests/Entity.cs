@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.Simple
+namespace LeanCode.IntegrationTestHelpers.Tests
 {
     public class Entity
     {

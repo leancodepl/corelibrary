@@ -6,7 +6,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.Simple
     {
         protected override void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.AddTestDbContext<SimpleDbContext>(this);
+            builder.AddTestDbContext<TestDbContext>(this);
         }
     }
 }

@@ -20,7 +20,8 @@ namespace LeanCode.IntegrationTestHelpers
                 .As<DbContext>()
                 .WithParameter(
                     (pi, _) => pi.ParameterType == typeof(DbContextOptions<TContext>),
-                    (_, cc) => PrepareDbOptions<TContext>(cc, connStr));
+                    (_, cc) => PrepareDbOptions<TContext>(cc, connStr))
+                .InstancePerLifetimeScope();
         }
 
         private static DbContextOptions<TContext> PrepareDbOptions<TContext>(

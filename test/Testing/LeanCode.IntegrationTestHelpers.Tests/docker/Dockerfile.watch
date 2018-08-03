@@ -1,0 +1,7 @@
+FROM leancode.azurecr.io/dotnet:2.1-sdk-alpine
+
+COPY test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Docker.Directory.Build.props /app/Directory.Build.props
+
+# Wait for SQL Server first
+WORKDIR /app/code/test/Testing/LeanCode.IntegrationTestHelpers.Tests
+ENTRYPOINT sleep 10 && dotnet restore && dotnet watch test

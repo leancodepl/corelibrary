@@ -33,6 +33,117 @@ namespace LeanCode.IntegrationTestHelpers
             ConnectionString = $"Initial Catalog={DBName};" + ConnectionString;
         }
 
+        public ILifetimeScope BeginLifetimeScope() => Container.BeginLifetimeScope();
+        public T Resolve<T>() => Container.Resolve<T>();
+
+        public async Task Scoped(Func<ILifetimeScope, Task> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                await action(sc);
+            }
+        }
+
+        public async Task<TResult> Scoped<TResult>(Func<ILifetimeScope, Task<TResult>> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                return await action(sc);
+            }
+        }
+
+        public void Scoped(Action<ILifetimeScope> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                action(sc);
+            }
+        }
+
+        public TResult Scoped<TResult>(Func<ILifetimeScope, TResult> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                return action(sc);
+            }
+        }
+
+        public async Task With<T>(Func<T, Task> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                var resource = sc.Resolve<T>();
+                if (resource is IDisposable d)
+                {
+                    using (d)
+                    {
+                        await action(resource);
+                    }
+                }
+                else
+                {
+                    await action(resource);
+                }
+            }
+        }
+
+        public async Task<TResult> With<T, TResult>(Func<T, Task<TResult>> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                var resource = sc.Resolve<T>();
+                if (resource is IDisposable d)
+                {
+                    using (d)
+                    {
+                        return await action(resource);
+                    }
+                }
+                else
+                {
+                    return await action(resource);
+                }
+            }
+        }
+
+        public void With<T>(Action<T> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                var resource = sc.Resolve<T>();
+                if (resource is IDisposable d)
+                {
+                    using (d)
+                    {
+                        action(resource);
+                    }
+                }
+                else
+                {
+                    action(resource);
+                }
+            }
+        }
+
+        public TResult With<T, TResult>(Func<T, TResult> action)
+        {
+            using (var sc = BeginLifetimeScope())
+            {
+                var resource = sc.Resolve<T>();
+                if (resource is IDisposable d)
+                {
+                    using (d)
+                    {
+                        return action(resource);
+                    }
+                }
+                else
+                {
+                    return action(resource);
+                }
+            }
+        }
+
         public virtual async Task InitializeAsync()
         {
             Container = ConfigureContainerInternal();
