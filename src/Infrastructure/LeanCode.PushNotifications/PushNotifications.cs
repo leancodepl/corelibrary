@@ -11,13 +11,16 @@ namespace LeanCode.PushNotifications
 
         private readonly IPushNotificationTokenStore<TUserId> tokenStore;
         private readonly FCMClient fcmClient;
+        private readonly PushNotificationsConfiguration pushNotificationsConfiguration;
 
         public PushNotifications(
             IPushNotificationTokenStore<TUserId> tokenStore,
-            FCMClient fcmClient)
+            FCMClient fcmClient,
+            PushNotificationsConfiguration pushNotificationsConfiguration = null)
         {
             this.tokenStore = tokenStore;
             this.fcmClient = fcmClient;
+            this.pushNotificationsConfiguration = pushNotificationsConfiguration;
         }
 
         public async Task Send(TUserId to, DeviceType device, PushNotification notification)
@@ -62,7 +65,7 @@ namespace LeanCode.PushNotifications
 
         private async Task<FCMResult> Send(PushNotificationToken<TUserId> token, PushNotification notification)
         {
-            var converted = NotificationTransformer.Convert(token.DeviceType, notification);
+            var converted = NotificationTransformer.Convert(token.DeviceType, notification, pushNotificationsConfiguration);
             converted.To = token.Token;
             try
             {

@@ -10,7 +10,7 @@ namespace LeanCode.PushNotifications
         const int TTL = 28 * 24 * 60 * 60;
         const string TypeField = "Type";
 
-        public static FCMNotification Convert(DeviceType deviceType, PushNotification notification)
+        public static FCMNotification Convert(DeviceType deviceType, PushNotification notification, PushNotificationsConfiguration configuration = null)
         {
             switch (deviceType)
             {
@@ -19,7 +19,7 @@ namespace LeanCode.PushNotifications
                 case DeviceType.iOS:
                     return ConvertToiOS(notification);
                 case DeviceType.Chrome:
-                    return ConvertToChrome(notification);
+                    return ConvertToChrome(notification, configuration);
             }
             throw new ArgumentException("Unknown device type.", nameof(deviceType));
         }
@@ -66,6 +66,27 @@ namespace LeanCode.PushNotifications
 
         public static FCMNotification ConvertToChrome(PushNotification notification)
         {
+            return ConvertToChrome(notification, null);
+        }
+
+        public static FCMNotification ConvertToChrome(PushNotification notification, PushNotificationsConfiguration configuration)
+        {
+            if (configuration?.UseDataInsteadOfNotification == true)
+            {
+                var data = ConvertData(notification.Data);
+                data.Add("Title", notification.Title);
+                data.Add("Content", notification.Content);
+
+                return new FCMNotification
+                {
+                    To = null,
+                    ContentAvailable = true,
+                    Priority = "high",
+                    TimeToLive = TTL,
+                    Data = data
+                };
+            }
+
             return new FCMNotification
             {
                 To = null,
@@ -77,7 +98,7 @@ namespace LeanCode.PushNotifications
                     Title = notification.Title,
                     Body = notification.Content,
                     Sound = null,
-                    Icon = null,
+                    Icon = configuration?.Icon,
                     Badge = null
                 },
                 Data = ConvertData(notification.Data)
