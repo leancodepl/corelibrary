@@ -42,6 +42,7 @@ namespace LeanCode.ContractsGenerator
             { "boolean", "boolean" },
             { "datetime", "string" },
             { "timespan", "string" },
+            { "datetimeoffset", "string"},
             { "guid", "string" },
             { "string", "string" },
             { "jobject", "any" },
