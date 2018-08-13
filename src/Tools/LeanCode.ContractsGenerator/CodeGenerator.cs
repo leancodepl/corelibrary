@@ -25,37 +25,13 @@ namespace LeanCode.ContractsGenerator
 
     public class CodeGenerator
     {
-        private static readonly Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
-        {
-            { "int", "number" },
-            { "double", "number" },
-            { "float", "number" },
-            { "single", "number" },
-            { "int32", "number" },
-            { "uint32", "number" },
-            { "byte", "number" },
-            { "sbyte", "number" },
-            { "int64", "number" },
-            { "short", "number" },
-            { "long", "number" },
-            { "decimal", "number" },
-            { "bool", "boolean" },
-            { "boolean", "boolean" },
-            { "datetime", "string" },
-            { "timespan", "string" },
-            { "datetimeoffset", "string"},
-            { "guid", "string" },
-            { "string", "string" },
-            { "jobject", "any" },
-            { "dynamic", "any" },
-            { "object", "any" }
-        };
-
         private readonly List<SyntaxTree> trees;
         private readonly CSharpCompilation compilation;
+
         private readonly string contractsPreamble;
         private readonly string clientPreamble;
         private readonly string name;
+        private readonly Dictionary<string, string> typeTranslations;
 
         List<RemoteQueryCommandInfo> remoteQueryCommandsInfo;
 
@@ -63,9 +39,11 @@ namespace LeanCode.ContractsGenerator
         {
             this.trees = trees;
             this.compilation = compilation;
+
             contractsPreamble = configuration.ContractsPreamble;
             clientPreamble = configuration.ClientPreamble;
             name = configuration.Name;
+            typeTranslations = configuration.TypeTranslations;
 
             this.remoteQueryCommandsInfo = new List<RemoteQueryCommandInfo>();
         }
@@ -397,7 +375,7 @@ namespace LeanCode.ContractsGenerator
             return $"{info.Name}{constraints}";
         }
 
-        private static string StringifyType(ITypeSymbol typeSymbol, out bool isNullable)
+        private string StringifyType(ITypeSymbol typeSymbol, out bool isNullable)
         {
             isNullable = typeSymbol.Name == "Nullable";
 
@@ -420,7 +398,7 @@ namespace LeanCode.ContractsGenerator
                     {
                         return type.Name + "<" + string.Join(", ", type.TypeArguments.Select(t => StringifyType(t, out _))) + ">";
                     }
-                    if (TypeTranslations.TryGetValue(type.Name.ToLower(), out string name))
+                    if (typeTranslations.TryGetValue(type.Name.ToLower(), out string name))
                     {
                         return name;
                     }
