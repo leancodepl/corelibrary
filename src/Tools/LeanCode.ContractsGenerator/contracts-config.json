@@ -1,0 +1,9 @@
+[
+  {
+    "RootPath": "C:/Dev/OptiTruck/src/Core",
+    "OutPath": "C:/Dev/OptiTruck/web/Apps/Web/ts/Contracts",
+    "ContractsRegex": ".*OptiTruck.Core.Contracts.(Common|BusinessOwner).*\\.cs$",
+    "Name": "OptiTruck",
+    "ContractsPreamble": "interface IRemoteQuery<TContext, TOutput> {} interface IRemoteCommand<TContext> {} interface AuthorizeWhenAttribute {}"
+  }
+]
