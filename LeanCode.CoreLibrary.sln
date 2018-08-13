@@ -121,6 +121,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.TimeProvider.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CQRS.Tests", "test\Domain\LeanCode.CQRS.Tests\LeanCode.CQRS.Tests.csproj", "{B5B4FDF9-EC7D-4A2B-AA43-2D82A7C462E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools", "{24B5BFEB-A497-441B-A82B-5933C4C0D998}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ContractsGenerator", "src\Tools\LeanCode.ContractsGenerator\LeanCode.ContractsGenerator.csproj", "{0027D5CD-89B4-4EEA-B5F8-71F1272CF152}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CodeAnalysis", "src\Tools\LeanCode.CodeAnalysis\LeanCode.CodeAnalysis.csproj", "{8E7BD864-708E-40C8-9810-42AACE665CD3}"

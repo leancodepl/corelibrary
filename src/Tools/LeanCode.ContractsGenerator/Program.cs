@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -14,10 +15,10 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
-            GeneratorConfiguration config;
+            List<GeneratorConfiguration> configurations;
             try
             {
-                config = GeneratorConfiguration.CreateFromArgs(args);
+                configurations = GeneratorConfiguration.GetConfigurations(args);
             }
             catch (FormatException e)
             {
@@ -25,10 +26,13 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
-            var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
-            new CodeGenerator(trees, compilation, config).Generate(out var contracts, out var client);
+            foreach (var config in configurations)
+            {
+                var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
+                new CodeGenerator(trees, compilation, config).Generate(out var contracts, out var client);
 
-            SaveContracts(config, contracts, client);
+                SaveContracts(config, contracts, client);
+            }
         }
 
         private static void SaveContracts(GeneratorConfiguration config, string contracts, string client)
@@ -57,13 +61,7 @@ namespace LeanCode.ContractsGenerator
             Console.WriteLine("Usage: dotnet generate [options]");
             Console.WriteLine();
             Console.WriteLine("options:");
-            Console.WriteLine("  -r, --RootPath        root directory in which to seek for .cs contracts file");
-            Console.WriteLine("  -c, --ContractsRegex  regex expression matching .cs files for output");
-            Console.WriteLine("  -o, --OutPath         directory where to output files");
-            Console.WriteLine("  -n, --Name            name of files to output, output consist of two files [name].ts and [name].d.ts");
-            Console.WriteLine("  --AdditionalCode      default code to be included during compilation");
-            Console.WriteLine("  --ClientPreamble      .ts client preamble");
-            Console.WriteLine("  --ContractsPreamble   .d.ts contracts preamble");
+            Console.WriteLine("  -c, --configFile      path to configuration file");
             Console.WriteLine("  --help                prints this message");
         }
     }

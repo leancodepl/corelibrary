@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-  <Import Project="../../../src/targets/Tests.targets" />
+  <Import Project="../../CommonRefs.props" />
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Tools/LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj" />
