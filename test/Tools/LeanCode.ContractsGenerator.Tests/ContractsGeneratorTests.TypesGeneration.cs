@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("TestVar\\?: number;", contracts);
+            Assert.Contains("TestVar?: number | null;", contracts);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("TestVar\\?: number;", contracts);
+            Assert.Contains("TestVar?: number | null;", contracts);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace LeanCode.ContractsGenerator.Tests
             generator.Generate(out var contracts, out var client);
 
             Assert.Matches("TestArray: number\\[\\];", contracts);
-        } 
+        }
 
         [Fact]
         public void HashSet_is_resolved_to_array()

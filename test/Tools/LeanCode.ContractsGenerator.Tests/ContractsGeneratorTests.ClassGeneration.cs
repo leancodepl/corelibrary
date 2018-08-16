@@ -123,8 +123,8 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export const Invalid = 1;", client);
-            Assert.Matches("export namespace ErrorCodes {", client);
+            Assert.Contains("Invalid: 1", client);
+            Assert.Contains("ErrorCodes: {", client);
         }
     }
 }

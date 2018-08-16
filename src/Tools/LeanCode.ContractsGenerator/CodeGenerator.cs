@@ -33,8 +33,6 @@ namespace LeanCode.ContractsGenerator
         private readonly string name;
         private readonly Dictionary<string, string> typeTranslations;
 
-        List<RemoteQueryCommandInfo> remoteQueryCommandsInfo;
-
         public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation, GeneratorConfiguration configuration)
         {
             this.trees = trees;
@@ -44,19 +42,11 @@ namespace LeanCode.ContractsGenerator
             clientPreamble = configuration.ClientPreamble;
             name = configuration.Name;
             typeTranslations = configuration.TypeTranslations;
-
-            this.remoteQueryCommandsInfo = new List<RemoteQueryCommandInfo>();
         }
 
         public void Generate(out string contracts, out string client)
         {
-            StringBuilder dtosBuilder = new StringBuilder();
-            StringBuilder funcsBuilder = new StringBuilder();
-
-            dtosBuilder.Append(contractsPreamble);
-            dtosBuilder.Append("\n\n");
-
-            var namespaceStatement = new NamespaceStatement
+            var clientStatement = new ClientStatement
             {
                 Name = name
             };
@@ -65,80 +55,22 @@ namespace LeanCode.ContractsGenerator
             {
                 var model = compilation.GetSemanticModel(tree);
 
-                GenerateClassesAndInterfaces(model, tree, namespaceStatement);
-                GenerateEnums(model, tree, namespaceStatement);
+                var interfaces = GenerateClassesAndInterfaces(model, tree).ToList();
+                var enums = GenerateEnums(model, tree);
+
+                clientStatement.Children.AddRange(enums);
+                clientStatement.Children.AddRange(interfaces);
             }
 
-            namespaceStatement.Render(dtosBuilder, 0);
+            StringBuilder dtosBuilder = new StringBuilder().Append(contractsPreamble).Append("\n\n");
+            StringBuilder funcsBuilder = new StringBuilder().Append(clientPreamble);
 
-            funcsBuilder.Append(clientPreamble);
-
-            funcsBuilder.Append("export type ClientParams = {\n");
-            funcsBuilder.Append(
-                string.Join(",\n", remoteQueryCommandsInfo
-                    .Select(info => $"    \"{info.Name}\": {info.Parameter}")
-                )
-            );
-            funcsBuilder.Append("\n};\n\n");
-
-            funcsBuilder.Append("export type ClientResults = {\n");
-            funcsBuilder.Append(
-                string.Join(",\n", remoteQueryCommandsInfo
-                    .Select(info => $"    \"{info.Name}\": {info.Result}")
-                )
-            );
-            funcsBuilder.Append("\n};\n\n");
-
-            funcsBuilder.Append("export default function (cqrsClient: CQRS): ClientType<ClientParams, ClientResults> {\n");
-            funcsBuilder.Append("    return {\n");
-
-            funcsBuilder.Append(
-                string.Join(",\n", remoteQueryCommandsInfo
-                    .Select(info =>
-                    {
-                        var executeOption = info.IsQuery ? "executeQuery" : "executeCommand";
-
-                        return $"        {info.Name}: cqrsClient.{executeOption}.bind(cqrsClient, \"{info.Path}\")";
-                    })
-                )
-            );
-            funcsBuilder.Append("\n    };\n");
-            funcsBuilder.Append("}\n");
+            clientStatement.Render(dtosBuilder, funcsBuilder);
 
             contracts = dtosBuilder.ToString();
             client = funcsBuilder.ToString();
         }
 
-        private void GenerateRemoteCommand(INamedTypeSymbol info)
-        {
-            var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
-            var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
-
-            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
-            {
-                Name = name,
-                Path = $"{namespaceName}.{info.Name}",
-                Parameter = $"{this.name}.{info.Name}",
-                Result = "CommandResult",
-                IsQuery = false
-            });
-        }
-
-        private void GenerateRemoteQuery(INamedTypeSymbol info)
-        {
-            var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
-            var result = info.AllInterfaces.Where(i => i.Name == "IRemoteQuery").Select(q => StringifyType(q.TypeArguments.Skip(1).First(), out _)).First();
-            var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
-
-            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
-            {
-                Name = name,
-                Path = $"{namespaceName}.{info.Name}",
-                Parameter = $"{this.name}.{info.Name}",
-                Result = $"{this.name}.{result}",
-                IsQuery = true
-            });
-        }
 
         private InterfaceStatement GenerateInterface(INamedTypeSymbol info)
         {
@@ -169,7 +101,7 @@ namespace LeanCode.ContractsGenerator
 
             var children = info.GetMembers().OfType<INamedTypeSymbol>().Select(GenerateInterface);
 
-            return new InterfaceStatement
+            var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
                 IsStatic = info.IsStatic,
@@ -177,8 +109,28 @@ namespace LeanCode.ContractsGenerator
                 Extends = baseTypes,
                 Fields = GenerateProperties(info).ToList(),
                 Constants = consts,
-                Children = children.ToList()
-        };
+                Children = children.ToList(),
+            };
+
+            if (!info.IsAbstract)
+            {
+                if (IsRemoteCommand(info))
+                {
+                    return new CommandStatement(interfaceStatement)
+                    {
+                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
+                    };
+                }
+                else if (IsRemoteQuery(info))
+                {
+                    return new QueryStatement(interfaceStatement)
+                    {
+                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
+                    };
+                }
+            }
+
+            return interfaceStatement;
         }
 
         private IEnumerable<FieldStatement> GenerateProperties(INamedTypeSymbol info)
@@ -207,7 +159,7 @@ namespace LeanCode.ContractsGenerator
             return typeSymbol.GetAttributes().Any(attr => attr.AttributeClass.Name == typeof(CanBeNullAttribute).Name);
         }
 
-        private void GenerateClassesAndInterfaces(SemanticModel model, SyntaxTree tree, NamespaceStatement namespaceStatement)
+        private IEnumerable<InterfaceStatement> GenerateClassesAndInterfaces(SemanticModel model, SyntaxTree tree)
         {
             var classesDeclarations = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
             var interfacesDeclarations = tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>();
@@ -220,21 +172,10 @@ namespace LeanCode.ContractsGenerator
             var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
 
             var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null).ToList();
-            var publicNonAbstractClasses = publicClasses.Where(c => !c.IsAbstract).ToList();
-
-            foreach (var info in publicNonAbstractClasses.Where(IsRemoteCommand))
-            {
-                GenerateRemoteCommand(info);
-            }
-
-            foreach (var info in publicNonAbstractClasses.Where(IsRemoteQuery))
-            {
-                GenerateRemoteQuery(info);
-            }
 
             foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
             {
-                namespaceStatement.Children.Add(GenerateInterface(info));
+                yield return GenerateInterface(info);
             }
         }
 
@@ -285,13 +226,13 @@ namespace LeanCode.ContractsGenerator
             };
         }
 
-        private void GenerateEnums(SemanticModel model, SyntaxTree tree, NamespaceStatement namespaceStatement)
+        private IEnumerable<EnumStatement> GenerateEnums(SemanticModel model, SyntaxTree tree)
         {
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
 
             foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)))
             {
-                namespaceStatement.Children.Add(GenerateEnum(info));
+                yield return GenerateEnum(info);
             }
         }
 

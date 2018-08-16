@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 using static LeanCode.ContractsGenerator.Tests.ContractsGeneratorTestHelpers;
 
@@ -12,7 +13,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export namespace TestClass {\n    export namespace ErrorCodes {\n        export const Invalid = 1;" ,client);
+            Assert.Contains("Invalid: 1", client);
         }
 
         [Fact]
@@ -22,7 +23,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export const Constant = \"Constant\"", client);
+            Assert.Contains("Constant: \"Constant\"", client);
         }
 
         [Fact]
@@ -32,7 +33,9 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export namespace Constants {\n    export namespace Constants2 {\n        export const Value = \"p\";" ,client);
+            Assert.Contains("Constants: {", client);
+            Assert.Contains("Constants2: {", client);
+            Assert.Contains("Value: \"p\"", client);
         }
 
         [Fact]
@@ -42,7 +45,8 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export namespace TestClass {\n    export namespace ErrorCodes {\n        export const Invalid = 1;\n        export const Empty = 2;" ,client);
+            Assert.Contains("Invalid: 1", client);
+            Assert.Contains("Empty: 2", client);
         }
 
         [Fact]
@@ -52,7 +56,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export const Constant = 1.55", client);
+            Assert.Contains("Constant: 1.55", client);
         }
 
         [Fact]
@@ -62,7 +66,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export const Constant = 15.5", client);
+            Assert.Contains("Constant: 15.5", client);
         }
 
         [Fact]
@@ -72,7 +76,7 @@ namespace LeanCode.ContractsGenerator.Tests
 
             generator.Generate(out var contracts, out var client);
 
-            Assert.Matches("export const Constant = \"a\"", client);
+            Assert.Contains("Constant: \"a\"", client);
         }
     }
 }
