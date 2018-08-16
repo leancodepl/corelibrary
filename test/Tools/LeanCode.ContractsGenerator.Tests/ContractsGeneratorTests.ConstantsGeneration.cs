@@ -11,7 +11,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { public static class ErrorCodes { public const int Invalid = 1; } }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Invalid: 1", client);
         }
@@ -21,7 +21,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const string Constant = nameof(Constant); }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Constant: \"Constant\"", client);
         }
@@ -31,7 +31,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public static class Constants { public static class Constants2 { public const char Value = 'p'; } }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Constants: {", client);
             Assert.Contains("Constants2: {", client);
@@ -43,7 +43,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { public static class ErrorCodes { public const int Invalid = 1; public const int Empty = 2; } }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Invalid: 1", client);
             Assert.Contains("Empty: 2", client);
@@ -54,7 +54,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const double Constant = 1.55; }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Constant: 1.55", client);
         }
@@ -64,7 +64,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const float Constant = 1.55E+1; }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Constant: 15.5", client);
         }
@@ -74,7 +74,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public static class Constants { public const char Constant = 'a'; }");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Constant: \"a\"", client);
         }

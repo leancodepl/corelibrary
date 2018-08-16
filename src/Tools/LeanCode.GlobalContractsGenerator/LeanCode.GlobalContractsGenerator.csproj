@@ -1,17 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>dotnet-generate</AssemblyName>
-    <PackageId>LeanCode.ContractsGenerator</PackageId>
+    <AssemblyName>LeanCode.GlobalContractsGenerator</AssemblyName>
+    <ToolCommandName>generate</ToolCommandName>
+    <PackageId>LeanCode.GlobalContractsGenerator</PackageId>
     <Authors>LeanCode</Authors>
     <Description>Tool for generating .ts from project contracts</Description>
     <IsPackable>true</IsPackable>
 
+    <PackAsTool>True</PackAsTool>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
-    <PackageType>DotnetCliTool</PackageType>
-    <NoPackageDefaults>true</NoPackageDefaults>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,5 +24,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 </Project>

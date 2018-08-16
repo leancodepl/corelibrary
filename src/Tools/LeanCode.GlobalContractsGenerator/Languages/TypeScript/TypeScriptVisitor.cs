@@ -146,7 +146,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 VisitTypeStatement(statement.TypeArguments.Last());
 
-                definitionsBuilder.Append("}");
+                definitionsBuilder.Append(" }");
             }
             else if (statement.IsArrayLike)
             {

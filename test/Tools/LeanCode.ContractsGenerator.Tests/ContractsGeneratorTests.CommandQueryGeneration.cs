@@ -10,9 +10,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { }", "TsGenerator");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("testClass: cqrsClient\\.executeCommand\\.bind\\(cqrsClient, \"TsGenerator\\.TestClass\"\\)", client);
+            Assert.Contains("testClass: cqrsClient.executeCommand.bind(cqrsClient, \"TsGenerator.TestClass\")", client);
         }
 
         [Fact]
@@ -20,9 +20,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass : IRemoteCommand { }", "TsGenerator.TestNamespace1.TestNamespace2");
 
-            generator.Generate(out var contracts, out var client);
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("testClass: cqrsClient\\.executeCommand\\.bind\\(cqrsClient, \"TsGenerator\\.TestNamespace1\\.TestNamespace2\\.TestClass\"\\)", client);
+            Assert.Contains("testClass: cqrsClient.executeCommand.bind(cqrsClient, \"TsGenerator.TestNamespace1.TestNamespace2.TestClass\")", client);
         }
     }
 }

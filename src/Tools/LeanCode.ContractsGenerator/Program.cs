@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
-using LeanCode.ContractsGenerator.Languages;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -16,10 +14,10 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
-            List<GeneratorConfiguration> configurations;
+            GeneratorConfiguration config;
             try
             {
-                configurations = GeneratorConfiguration.GetConfigurations(args);
+                config = GeneratorConfiguration.CreateFromArgs(args);
             }
             catch (FormatException e)
             {
@@ -27,23 +25,22 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
-            foreach (var config in configurations)
-            {
-                var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
-                var generator = new CodeGenerator(trees, compilation);
+            var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
+            new CodeGenerator(trees, compilation, config).Generate(out var contracts, out var client);
 
-                SaveContracts(config, generator.Generate(config));
-            }
+            SaveContracts(config, contracts, client);
         }
 
-        private static void SaveContracts(GeneratorConfiguration config, IEnumerable<LanguageFileOutput> outputs)
+        private static void SaveContracts(GeneratorConfiguration config, string contracts, string client)
         {
-            foreach (var output in outputs)
+            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + "Client.ts"), FileMode.Create)))
             {
-                using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, output.Name), FileMode.Create)))
-                {
-                    fileWriter.Write(output.Content);
-                }
+                fileWriter.Write(client);
+            }
+
+            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + ".d.ts"), FileMode.Create)))
+            {
+                fileWriter.Write(contracts);
             }
         }
 
@@ -60,7 +57,13 @@ namespace LeanCode.ContractsGenerator
             Console.WriteLine("Usage: dotnet generate [options]");
             Console.WriteLine();
             Console.WriteLine("options:");
-            Console.WriteLine("  -c, --configFile      path to configuration file");
+            Console.WriteLine("  -r, --RootPath        root directory in which to seek for .cs contracts file");
+            Console.WriteLine("  -c, --ContractsRegex  regex expression matching .cs files for output");
+            Console.WriteLine("  -o, --OutPath         directory where to output files");
+            Console.WriteLine("  -n, --Name            name of files to output, output consist of two files [name].ts and [name].d.ts");
+            Console.WriteLine("  --AdditionalCode      default code to be included during compilation");
+            Console.WriteLine("  --ClientPreamble      .ts client preamble");
+            Console.WriteLine("  --ContractsPreamble   .d.ts contracts preamble");
             Console.WriteLine("  --help                prints this message");
         }
     }

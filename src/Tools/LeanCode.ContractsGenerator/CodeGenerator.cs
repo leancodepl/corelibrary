@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using Microsoft.Extensions.Configuration;
 using LeanCode.CQRS;
-using System.Globalization;
-using LeanCode.ContractsGenerator.Statements;
-using LeanCode.ContractsGenerator.Languages;
-using LeanCode.ContractsGenerator.Languages.TypeScript;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -21,108 +22,172 @@ namespace LeanCode.ContractsGenerator
         public string Path { get; set; }
     }
 
-    public class CodeGenerator
+    class CodeGenerator
     {
+        private static readonly Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
+        {
+            { "int", "number" },
+            { "double", "number" },
+            { "float", "number" },
+            { "single", "number" },
+            { "int32", "number" },
+            { "uint32", "number" },
+            { "byte", "number" },
+            { "sbyte", "number" },
+            { "int64", "number" },
+            { "short", "number" },
+            { "long", "number" },
+            { "decimal", "number" },
+            { "bool", "boolean" },
+            { "boolean", "boolean" },
+            { "datetime", "string" },
+            { "timespan", "string" },
+            { "datetimeoffset", "string"},
+            { "guid", "string" },
+            { "string", "string" },
+            { "jobject", "any" },
+            { "dynamic", "any" },
+            { "object", "any" }
+        };
+
         private readonly List<SyntaxTree> trees;
         private readonly CSharpCompilation compilation;
+        private readonly string contractsPreamble;
+        private readonly string clientPreamble;
+        private readonly string name;
 
-        public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation)
+        List<RemoteQueryCommandInfo> remoteQueryCommandsInfo;
+
+        public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation, GeneratorConfiguration configuration)
         {
             this.trees = trees;
             this.compilation = compilation;
+            contractsPreamble = configuration.ContractsPreamble;
+            clientPreamble = configuration.ClientPreamble;
+            name = configuration.Name;
+
+            this.remoteQueryCommandsInfo = new List<RemoteQueryCommandInfo>();
         }
 
-        public IEnumerable<LanguageFileOutput> Generate(GeneratorConfiguration configuration)
+        public void Generate(out string contracts, out string client)
         {
-            var clientStatement = new ClientStatement
-            {
-                Name = configuration.Name
-            };
+            StringBuilder dtosBuilder = new StringBuilder();
+            StringBuilder funcsBuilder = new StringBuilder();
+
+            dtosBuilder.Append(contractsPreamble);
+            dtosBuilder.Append("\n\n");
+
+            dtosBuilder.Append($"declare namespace {name} {{\n");
 
             foreach (var tree in trees)
             {
                 var model = compilation.GetSemanticModel(tree);
 
-                var interfaces = GenerateClassesAndInterfaces(model, tree).ToList();
-                var enums = GenerateEnums(model, tree);
-
-                clientStatement.Children.AddRange(enums);
-                clientStatement.Children.AddRange(interfaces);
+                GenerateClassesAndInterfaces(dtosBuilder, model, tree);
+                GenerateEnums(dtosBuilder, model, tree);
             }
 
-            if (configuration.TypeScript != null)
-            {
-                var visitor = new TypeScriptVisitor(configuration.TypeScript);
+            dtosBuilder.Append("}\n");
 
-                foreach (var outputFile in visitor.Visit(clientStatement))
-                {
-                    yield return outputFile;
-                }
-            }
+
+            funcsBuilder.Append(clientPreamble);
+            funcsBuilder.Append("\n");
+
+            funcsBuilder.Append("export type ClientParams = {\n");
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info => $"    \"{info.Name}\": {info.Parameter}")
+                )
+            );
+            funcsBuilder.Append("\n};\n\n");
+
+            funcsBuilder.Append("export type ClientResults = {\n");
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info => $"    \"{info.Name}\": {info.Result}")
+                )
+            );
+            funcsBuilder.Append("\n};\n\n");
+
+            funcsBuilder.Append("export default function (cqrsClient: CQRS): ClientType<ClientParams, ClientResults> {\n");
+            funcsBuilder.Append("    return {\n");
+
+            funcsBuilder.Append(
+                string.Join(",\n", remoteQueryCommandsInfo
+                    .Select(info =>
+                    {
+                        var executeOption = info.IsQuery ? "executeQuery" : "executeCommand";
+
+                        return $"        {info.Name}: cqrsClient.{executeOption}.bind(cqrsClient, \"{info.Path}\")";
+                    })
+                )
+            );
+            funcsBuilder.Append("\n    };\n");
+            funcsBuilder.Append("}\n");
+
+            contracts = dtosBuilder.ToString();
+            client = funcsBuilder.ToString();
         }
 
-        private InterfaceStatement GenerateInterface(INamedTypeSymbol info)
+        private void GenerateRemoteCommand(INamedTypeSymbol info)
+        {
+            var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
+            var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
+
+            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
+            {
+                Name = name,
+                Path = $"{namespaceName}.{info.Name}",
+                Parameter = $"{this.name}.{info.Name}",
+                Result = "CommandResult",
+                IsQuery = false
+            });
+        }
+
+        private void GenerateRemoteQuery(INamedTypeSymbol info)
+        {
+            var name = Char.ToLower(info.Name[0]) + info.Name.Substring(1);
+            var result = info.AllInterfaces.Where(i => i.Name == "IRemoteQuery").Select(q => StringifyType(q.TypeArguments.Skip(1).First(), out _)).First();
+            var namespaceName = GetFullNamespaceName(info.ContainingNamespace);
+
+            remoteQueryCommandsInfo.Add(new RemoteQueryCommandInfo
+            {
+                Name = name,
+                Path = $"{namespaceName}.{info.Name}",
+                Parameter = $"{this.name}.{info.Name}",
+                Result = $"{this.name}.{result}",
+                IsQuery = true
+            });
+        }
+
+        private void GenerateInterface(StringBuilder dtosBuilder, INamedTypeSymbol info)
         {
             if (info.AllInterfaces.Any(a => a.Name == "_Attribute" || a.Name == "_Exception"))
             {
-                return null;
+                return;
             }
 
-            var baseTypes = info.Interfaces.Select(ConvertType).Where(t => t.Name != "ValueType").ToList();
+            var baseTypes = info.Interfaces.Select(i => StringifyType(i, out _)).Where(t => t != "ValueType").ToList();
 
             if (info.BaseType != null && info.BaseType.Name != "Object")
             {
-                var baseType = ConvertType(info.BaseType);
-                if (baseType.Name != "ValueType")
+                var baseType = StringifyType(info.BaseType, out _);
+                if (baseType != "ValueType")
                 {
                     baseTypes.Add(baseType);
                 }
             }
+            var extensions = baseTypes.Any() ? $"extends {(string.Join(", ", baseTypes))} " : string.Empty;
+            var typeArguments = info.TypeParameters.Any() ? $"<{(string.Join(", ", info.TypeParameters.Select(ParseTypeArgument)))}>" : string.Empty;
 
-            var consts = info.GetMembers().OfType<IFieldSymbol>()
-                .Where(i => i.HasConstantValue)
-                .Select(c => new ConstStatement
-                {
-                    Name = c.Name,
-                    Value = StringifyBuiltInTypeValue(c.ConstantValue)
-                })
-                .ToList();
+            dtosBuilder.Append($"    interface {info.Name}{typeArguments} {extensions}{{\n");
 
-            var children = info.GetMembers().OfType<INamedTypeSymbol>().Select(GenerateInterface);
+            GenerateProperties(dtosBuilder, info);
 
-            var interfaceStatement = new InterfaceStatement
-            {
-                Name = info.Name,
-                IsStatic = info.IsStatic,
-                Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
-                Extends = baseTypes,
-                Fields = GenerateProperties(info).ToList(),
-                Constants = consts,
-                Children = children.ToList(),
-            };
-
-            if (!info.IsAbstract)
-            {
-                if (IsRemoteCommand(info))
-                {
-                    return new CommandStatement(interfaceStatement)
-                    {
-                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
-                    };
-                }
-                else if (IsRemoteQuery(info))
-                {
-                    return new QueryStatement(interfaceStatement)
-                    {
-                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
-                    };
-                }
-            }
-
-            return interfaceStatement;
+            dtosBuilder.Append("    }\n\n");
         }
 
-        private IEnumerable<FieldStatement> GenerateProperties(INamedTypeSymbol info)
+        private void GenerateProperties(StringBuilder dtosBuilder, INamedTypeSymbol info)
         {
             var properties = info.GetMembers().OfType<IPropertySymbol>();
 
@@ -130,17 +195,10 @@ namespace LeanCode.ContractsGenerator
             {
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
-                    var type = ConvertType(property.Type);
-                    if (HasCanBeNullAttribute(property))
-                    {
-                        type.IsNullable = true;
-                    }
+                    var type = StringifyType(property.Type, out bool isNullable);
+                    var nullable = (isNullable || HasCanBeNullAttribute(property)) ? "?" : string.Empty;
 
-                    yield return new FieldStatement
-                    {
-                        Name = property.Name,
-                        Type = type
-                    };
+                    dtosBuilder.Append($"        {property.Name}{nullable}: {type};\n");
                 }
             }
         }
@@ -150,7 +208,52 @@ namespace LeanCode.ContractsGenerator
             return typeSymbol.GetAttributes().Any(attr => attr.AttributeClass.Name == typeof(CanBeNullAttribute).Name);
         }
 
-        private IEnumerable<InterfaceStatement> GenerateClassesAndInterfaces(SemanticModel model, SyntaxTree tree)
+        private void GenerateFields(StringBuilder dtosBuilder, INamedTypeSymbol info)
+        {
+            var fields = info.GetMembers().OfType<IFieldSymbol>();
+
+            foreach (var field in fields)
+            {
+                if (!field.IsConst && field.DeclaredAccessibility.HasFlag(Accessibility.Public))
+                {
+                    var type = StringifyType(field.Type, out bool isNullable);
+                    var nullable = isNullable ? "?" : string.Empty;
+
+                    dtosBuilder.Append($"        {field.Name}{nullable}: {type};\n");
+                }
+            }
+        }
+
+        private void GenerateModule(StringBuilder dtosBuilder, INamedTypeSymbol info, List<INamedTypeSymbol> infos)
+        {
+            var fields = info.GetMembers().OfType<IFieldSymbol>().Where(f => f.DeclaredAccessibility.HasFlag(Accessibility.Public) && f.HasConstantValue).ToList();
+            var childInfos = infos.Where(i => i.ContainingSymbol == info).ToList();
+            var isStatic = info.IsStatic;
+
+            if (isStatic || fields.Any() || childInfos.Any())
+            {
+                dtosBuilder.Append($"export module {info.Name} {{\n");
+
+                foreach (var field in fields)
+                {
+                    dtosBuilder.Append($"    export const {field.Name} = {(field.ConstantValue is string ? '"' + field.ConstantValue.ToString() + '"' : field.ConstantValue)};\n");
+                }
+
+                foreach (var childInfo in childInfos)
+                {
+                    GenerateModule(dtosBuilder, childInfo, infos);
+                }
+
+                foreach (var childInfo in childInfos.Where(i => !i.IsStatic && !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
+                {
+                    GenerateInterface(dtosBuilder, childInfo);
+                }
+
+                dtosBuilder.Append("}\n");
+            }
+        }
+
+        private void GenerateClassesAndInterfaces(StringBuilder dtosBuilder, SemanticModel model, SyntaxTree tree)
         {
             var classesDeclarations = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
             var interfacesDeclarations = tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>();
@@ -162,143 +265,94 @@ namespace LeanCode.ContractsGenerator
             var publicClasses = classes.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
             var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
 
-            var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null).ToList();
+            var nonStaticClasses = publicClasses.Where(i => !i.IsStatic).ToList();
+            var publicNonAbstractClasses = publicClasses.Where(c => !c.IsAbstract).ToList();
 
-            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
+            foreach (var info in publicNonAbstractClasses.Where(IsRemoteCommand))
             {
-                yield return GenerateInterface(info);
+                GenerateRemoteCommand(info);
+            }
+
+            foreach (var info in publicNonAbstractClasses.Where(IsRemoteQuery))
+            {
+                GenerateRemoteQuery(info);
+            }
+
+            foreach (var info in nonStaticClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
+            {
+                GenerateInterface(dtosBuilder, info);
             }
         }
 
-        private static string StringifyBuiltInTypeValue(object value)
+        private void GenerateEnum(StringBuilder dtosBuilder, INamedTypeSymbol info)
         {
-            if (value == null)
-            {
-                return null;
-            }
+            dtosBuilder.Append($"    export const enum {@info.Name} {{\n");
 
-            switch (value)
-            {
-                case bool v:
-                    return v.ToString().ToLower();
-
-                case string v:
-                    return '"' + v + '"';
-
-                case char v:
-                    return '"' + v.ToString() + '"';
-
-                case float v:
-                    return v.ToString(CultureInfo.InvariantCulture);
-
-                case double v:
-                    return v.ToString(CultureInfo.InvariantCulture);
-
-                case decimal v:
-                    return v.ToString(CultureInfo.InvariantCulture);
-            }
-
-            return value.ToString();
-        }
-
-        private EnumStatement GenerateEnum(INamedTypeSymbol info)
-        {
             var enumMembers = info.GetMembers().OfType<IFieldSymbol>();
-            var enumValues = enumMembers.Select(e => new EnumValueStatement
-            {
-                Name = e.Name,
-                Value = StringifyBuiltInTypeValue(e.ConstantValue)
-            }).ToList();
+            var enumBody = enumMembers.Select(e => $"        {e.Name}{(e.ConstantValue == null ? string.Empty : $" = {e.ConstantValue}")}");
 
-            return new EnumStatement
-            {
-                Name = info.Name,
-                Values = enumValues
-            };
+            dtosBuilder.Append(string.Join(",\n", enumBody));
+            dtosBuilder.Append("\n    }\n\n");
         }
 
-        private IEnumerable<EnumStatement> GenerateEnums(SemanticModel model, SyntaxTree tree)
+        private void GenerateEnums(StringBuilder dtosBuilder, SemanticModel model, SyntaxTree tree)
         {
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
 
             foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)))
             {
-                yield return GenerateEnum(info);
+                GenerateEnum(dtosBuilder, info);
             }
         }
 
-        private TypeParameterStatement ParseTypeArgument(ITypeParameterSymbol info)
+        private string ParseTypeArgument(ITypeParameterSymbol info)
         {
-            return new TypeParameterStatement
+            var constraints = string.Empty;
+            if (info.ConstraintTypes.Any())
             {
-                Name = info.Name,
-                Constraints = info.ConstraintTypes.Select(ConvertType).Where(t => t.Name != "ValueType").ToList()
-            };
+                constraints = " extends ";
+                constraints += string.Join(" & ", info.ConstraintTypes.Select(t => StringifyType(t, out _)).Where(t => t != "ValueType"));
+            }
+            return $"{info.Name}{constraints}";
         }
 
-        private TypeStatement ConvertType(ITypeSymbol typeSymbol)
+        private static string StringifyType(ITypeSymbol typeSymbol, out bool isNullable)
         {
-            bool isNullable = typeSymbol.Name == "Nullable";
+            isNullable = typeSymbol.Name == "Nullable";
 
             switch (typeSymbol)
             {
                 case INamedTypeSymbol type:
                     if (isNullable)
                     {
-                        var t = ConvertType(type.TypeArguments.First());
-                        t.IsNullable = true;
-                        return t;
+                        return StringifyType(type.TypeArguments.First(), out _);
                     }
                     if (type.AllInterfaces.Any(i => i.Name == "IDictionary") && type.Arity >= 2)
                     {
-                        return new TypeStatement
-                        {
-                            Name = type.Name,
-                            IsDictionary = true,
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
-                        };
+                        return $"{{ [index: {(StringifyType(type.TypeArguments.First(), out _))}]: {(StringifyType(type.TypeArguments.Last(), out _))} }}";
                     }
                     if (type.AllInterfaces.Any(i => i.Name == "IEnumerable") && type.Arity >= 1)
                     {
-                        return new TypeStatement
-                        {
-                            Name = type.Name,
-                            IsArrayLike = true,
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
-                        };
+                        return $"{(StringifyType(type.TypeArguments.First(), out _))}[]";
                     }
                     if (type.Arity > 0)
                     {
-                        return new TypeStatement
-                        {
-                            Name = type.Name,
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
-                        };
+                        return type.Name + "<" + string.Join(", ", type.TypeArguments.Select(t => StringifyType(t, out _))) + ">";
                     }
-                    return new TypeStatement
+                    if (TypeTranslations.TryGetValue(type.Name.ToLower(), out string name))
                     {
-                        Name = type.Name
-                    };
+                        return name;
+                    }
+                    return type.Name;
 
                 case IArrayTypeSymbol type:
-                    return new TypeStatement
-                    {
-                        Name = type.Name,
-                        IsArrayLike = true,
-                        TypeArguments = new List<TypeStatement> { ConvertType(type.ElementType) }
-                    };
+                    return $"{(StringifyType(type.ElementType, out _))}[]";
 
                 case ITypeParameterSymbol type:
-                    return new TypeStatement
-                    {
-                        Name = type.Name
-                    };
+                    return type.Name;
 
                 case IDynamicTypeSymbol type:
-                    return new TypeStatement
-                    {
-                        Name = "dynamic"
-                    };
+                    return "any";
 
                 default: throw new Exception("Unknown type.");
             }

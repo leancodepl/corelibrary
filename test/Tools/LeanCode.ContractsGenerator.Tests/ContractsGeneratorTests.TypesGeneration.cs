@@ -10,9 +10,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public int TestVar { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("TestVar: number;", contracts);
+            Assert.Contains("TestVar: number;", contracts);
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public Nullable<int> TestVar { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: number | null;", contracts);
         }
@@ -30,7 +30,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public int? TestVar { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: number | null;", contracts);
         }
@@ -40,9 +40,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public int[] TestArray { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("TestArray: number\\[\\];", contracts);
+            Assert.Contains("TestArray: number[];", contracts);
         }
 
         [Fact]
@@ -50,9 +50,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public List<int> TestArray { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("TestArray: number\\[\\];", contracts);
+            Assert.Contains("TestArray: number[];", contracts);
         }
 
         [Fact]
@@ -60,9 +60,9 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public HashSet<int> TestArray { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Matches("TestArray: number\\[\\];", contracts);
+            Assert.Contains("TestArray: number[];", contracts);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var generator = CreateTsGeneratorFromClass("public Dictionary<string, int> TestDictionary { get; set; };");
 
-            generator.Generate(out var contracts, out var client);
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Matches("TestDictionary: { \\[[a-zA-Z]+: string\\]: number };", contracts);
         }
