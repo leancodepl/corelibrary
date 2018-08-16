@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LeanCode.ContractsGenerator.Languages;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -29,22 +30,20 @@ namespace LeanCode.ContractsGenerator
             foreach (var config in configurations)
             {
                 var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
-                new CodeGenerator(trees, compilation, config).Generate(out var contracts, out var client);
+                var generator = new CodeGenerator(trees, compilation);
 
-                SaveContracts(config, contracts, client);
+                SaveContracts(config, generator.Generate(config));
             }
         }
 
-        private static void SaveContracts(GeneratorConfiguration config, string contracts, string client)
+        private static void SaveContracts(GeneratorConfiguration config, IEnumerable<LanguageFileOutput> outputs)
         {
-            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + "Client.ts"), FileMode.Create)))
+            foreach (var output in outputs)
             {
-                fileWriter.Write(client);
-            }
-
-            using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, config.Name + ".d.ts"), FileMode.Create)))
-            {
-                fileWriter.Write(contracts);
+                using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, output.Name), FileMode.Create)))
+                {
+                    fileWriter.Write(output.Content);
+                }
             }
         }
 

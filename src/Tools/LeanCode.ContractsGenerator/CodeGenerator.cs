@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.Extensions.Configuration;
 using LeanCode.CQRS;
 using System.Globalization;
+using LeanCode.ContractsGenerator.Statements;
+using LeanCode.ContractsGenerator.Languages;
+using LeanCode.ContractsGenerator.Languages.TypeScript;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -28,27 +26,17 @@ namespace LeanCode.ContractsGenerator
         private readonly List<SyntaxTree> trees;
         private readonly CSharpCompilation compilation;
 
-        private readonly string contractsPreamble;
-        private readonly string clientPreamble;
-        private readonly string name;
-        private readonly Dictionary<string, string> typeTranslations;
-
-        public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation, GeneratorConfiguration configuration)
+        public CodeGenerator(List<SyntaxTree> trees, CSharpCompilation compilation)
         {
             this.trees = trees;
             this.compilation = compilation;
-
-            contractsPreamble = configuration.ContractsPreamble;
-            clientPreamble = configuration.ClientPreamble;
-            name = configuration.Name;
-            typeTranslations = configuration.TypeTranslations;
         }
 
-        public void Generate(out string contracts, out string client)
+        public IEnumerable<LanguageFileOutput> Generate(GeneratorConfiguration configuration)
         {
             var clientStatement = new ClientStatement
             {
-                Name = name
+                Name = configuration.Name
             };
 
             foreach (var tree in trees)
@@ -62,15 +50,16 @@ namespace LeanCode.ContractsGenerator
                 clientStatement.Children.AddRange(interfaces);
             }
 
-            StringBuilder dtosBuilder = new StringBuilder().Append(contractsPreamble).Append("\n\n");
-            StringBuilder funcsBuilder = new StringBuilder().Append(clientPreamble);
+            if (configuration.TypeScript != null)
+            {
+                var visitor = new TypeScriptVisitor(configuration.TypeScript);
 
-            clientStatement.Render(dtosBuilder, funcsBuilder);
-
-            contracts = dtosBuilder.ToString();
-            client = funcsBuilder.ToString();
+                foreach (var outputFile in visitor.Visit(clientStatement))
+                {
+                    yield return outputFile;
+                }
+            }
         }
-
 
         private InterfaceStatement GenerateInterface(INamedTypeSymbol info)
         {
@@ -79,12 +68,12 @@ namespace LeanCode.ContractsGenerator
                 return null;
             }
 
-            var baseTypes = info.Interfaces.Select(i => StringifyType(i, out _)).Where(t => t != "ValueType").ToList();
+            var baseTypes = info.Interfaces.Select(ConvertType).Where(t => t.Name != "ValueType").ToList();
 
             if (info.BaseType != null && info.BaseType.Name != "Object")
             {
-                var baseType = StringifyType(info.BaseType, out _);
-                if (baseType != "ValueType")
+                var baseType = ConvertType(info.BaseType);
+                if (baseType.Name != "ValueType")
                 {
                     baseTypes.Add(baseType);
                 }
@@ -105,7 +94,7 @@ namespace LeanCode.ContractsGenerator
             {
                 Name = info.Name,
                 IsStatic = info.IsStatic,
-                Arguments = info.TypeParameters.Select(ParseTypeArgument).ToList(),
+                Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
                 Extends = baseTypes,
                 Fields = GenerateProperties(info).ToList(),
                 Constants = consts,
@@ -141,13 +130,15 @@ namespace LeanCode.ContractsGenerator
             {
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
-                    var type = StringifyType(property.Type, out bool isNullable);
-                    var nullable = isNullable || HasCanBeNullAttribute(property);
+                    var type = ConvertType(property.Type);
+                    if (HasCanBeNullAttribute(property))
+                    {
+                        type.IsNullable = true;
+                    }
 
                     yield return new FieldStatement
                     {
                         Name = property.Name,
-                        IsOptional = nullable,
                         Type = type
                     };
                 }
@@ -236,54 +227,78 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private string ParseTypeArgument(ITypeParameterSymbol info)
+        private TypeParameterStatement ParseTypeArgument(ITypeParameterSymbol info)
         {
-            var constraints = string.Empty;
-            if (info.ConstraintTypes.Any())
+            return new TypeParameterStatement
             {
-                constraints = " extends ";
-                constraints += string.Join(" & ", info.ConstraintTypes.Select(t => StringifyType(t, out _)).Where(t => t != "ValueType"));
-            }
-            return $"{info.Name}{constraints}";
+                Name = info.Name,
+                Constraints = info.ConstraintTypes.Select(ConvertType).Where(t => t.Name != "ValueType").ToList()
+            };
         }
 
-        private string StringifyType(ITypeSymbol typeSymbol, out bool isNullable)
+        private TypeStatement ConvertType(ITypeSymbol typeSymbol)
         {
-            isNullable = typeSymbol.Name == "Nullable";
+            bool isNullable = typeSymbol.Name == "Nullable";
 
             switch (typeSymbol)
             {
                 case INamedTypeSymbol type:
                     if (isNullable)
                     {
-                        return StringifyType(type.TypeArguments.First(), out _);
+                        var t = ConvertType(type.TypeArguments.First());
+                        t.IsNullable = true;
+                        return t;
                     }
                     if (type.AllInterfaces.Any(i => i.Name == "IDictionary") && type.Arity >= 2)
                     {
-                        return $"{{ [index: {(StringifyType(type.TypeArguments.First(), out _))}]: {(StringifyType(type.TypeArguments.Last(), out _))} }}";
+                        return new TypeStatement
+                        {
+                            Name = type.Name,
+                            IsDictionary = true,
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                        };
                     }
                     if (type.AllInterfaces.Any(i => i.Name == "IEnumerable") && type.Arity >= 1)
                     {
-                        return $"{(StringifyType(type.TypeArguments.First(), out _))}[]";
+                        return new TypeStatement
+                        {
+                            Name = type.Name,
+                            IsArrayLike = true,
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                        };
                     }
                     if (type.Arity > 0)
                     {
-                        return type.Name + "<" + string.Join(", ", type.TypeArguments.Select(t => StringifyType(t, out _))) + ">";
+                        return new TypeStatement
+                        {
+                            Name = type.Name,
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                        };
                     }
-                    if (typeTranslations.TryGetValue(type.Name.ToLower(), out string name))
+                    return new TypeStatement
                     {
-                        return name;
-                    }
-                    return type.Name;
+                        Name = type.Name
+                    };
 
                 case IArrayTypeSymbol type:
-                    return $"{(StringifyType(type.ElementType, out _))}[]";
+                    return new TypeStatement
+                    {
+                        Name = type.Name,
+                        IsArrayLike = true,
+                        TypeArguments = new List<TypeStatement> { ConvertType(type.ElementType) }
+                    };
 
                 case ITypeParameterSymbol type:
-                    return type.Name;
+                    return new TypeStatement
+                    {
+                        Name = type.Name
+                    };
 
                 case IDynamicTypeSymbol type:
-                    return "any";
+                    return new TypeStatement
+                    {
+                        Name = "dynamic"
+                    };
 
                 default: throw new Exception("Unknown type.");
             }

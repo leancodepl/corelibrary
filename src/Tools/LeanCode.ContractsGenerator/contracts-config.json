@@ -4,6 +4,8 @@
     "OutPath": "C:/Dev/OptiTruck/web/Apps/Web/ts/Contracts",
     "ContractsRegex": ".*OptiTruck.Core.Contracts.(Common|BusinessOwner).*\\.cs$",
     "Name": "OptiTruck",
-    "ContractsPreamble": "interface IRemoteQuery<TContext, TOutput> {} interface IRemoteCommand<TContext> {} interface AuthorizeWhenAttribute {}"
+    "TypeScript": {
+      "ContractsPreamble": "type IRemoteCommand<TContext> = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand<TContext>\ntype IRemoteQuery<TContext, TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TContext, TOutput>\ninterface AuthorizeWhenAttribute { }\n"
+    }
   }
 ]
