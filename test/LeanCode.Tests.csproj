@@ -7,14 +7,14 @@
 
   <ItemGroup>
     <Compile Remove="**/*.cs" />
-    <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;LeanCode.Benchmarks/LeanCode.Benchmarks.csproj;Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj" />
+    <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;LeanCode.Benchmarks/LeanCode.Benchmarks.csproj;Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
 
     <ProjectReference Include="@(TestProjects)" />
   </ItemGroup>
 
   <Target Name="RunTests" DependsOnTargets="Build">
     <ItemGroup>
-      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="'%(TargetFrameworks)' == 'netcoreapp2.1'" />
+      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp2.1'" />
     </ItemGroup>
 
     <exec
