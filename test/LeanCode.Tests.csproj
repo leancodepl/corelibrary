@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '%(FullPath)', ' ')"
+      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')"
       WorkingDirectory="$(TargetDir)" />
   </Target>
 
