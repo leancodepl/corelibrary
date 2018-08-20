@@ -40,7 +40,7 @@ namespace LeanCode.CodeAnalysis
 
         private static bool IsQuery(INamedTypeSymbol type)
         {
-            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName);
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName) && !type.IsAbstract;
         }
 
         private static bool HasAuthorizationAttribute(INamedTypeSymbol type)

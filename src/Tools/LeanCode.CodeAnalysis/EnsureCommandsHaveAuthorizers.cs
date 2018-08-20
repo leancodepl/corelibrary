@@ -40,7 +40,7 @@ namespace LeanCode.CodeAnalysis
 
         private static bool IsCommand(INamedTypeSymbol type)
         {
-            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName);
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName) && !type.IsAbstract;
         }
 
         private static bool HasAuthorizationAttribute(INamedTypeSymbol type)
