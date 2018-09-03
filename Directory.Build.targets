@@ -58,6 +58,7 @@
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging" Version="2.1.1" />
