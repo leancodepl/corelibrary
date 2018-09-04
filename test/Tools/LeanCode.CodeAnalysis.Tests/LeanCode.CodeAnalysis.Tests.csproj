@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <Import Project="../../CommonRefs.props" />
+
+  <ItemGroup>
+    <Compile Update="TestSamples/*.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="../../../src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
+      <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" />
+  </ItemGroup>
+
+</Project>

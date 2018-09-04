@@ -18,8 +18,7 @@ namespace LeanCode.CodeAnalysis
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
-        private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
-        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
+
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
 
@@ -28,10 +27,10 @@ namespace LeanCode.CodeAnalysis
             context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
         }
 
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
+        public void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             var type = (INamedTypeSymbol)context.Symbol;
-            if (IsCommand(type) && !HasAuthorizationAttribute(type))
+            if (IsCommand(type) && !type.HasAuthorizationAttribute())
             {
                 var diagnostic = Diagnostic.Create(Rule, type.Locations[0], type.Name);
                 context.ReportDiagnostic(diagnostic);
@@ -41,18 +40,6 @@ namespace LeanCode.CodeAnalysis
         private static bool IsCommand(INamedTypeSymbol type)
         {
             return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName) && !type.IsAbstract;
-        }
-
-        private static bool HasAuthorizationAttribute(INamedTypeSymbol type)
-        {
-            var attributes = type.GetAttributes();
-            if (attributes.Any(attr =>
-                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName) ||
-                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)))
-            {
-                return true;
-            }
-            return type.BaseType != null ? HasAuthorizationAttribute(type.BaseType) : false;
         }
     }
 }
