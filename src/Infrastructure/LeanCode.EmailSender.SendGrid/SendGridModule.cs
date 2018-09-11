@@ -22,7 +22,9 @@ namespace LeanCode.EmailSender.SendGrid
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<SendGridClient>().As<IEmailClient>();
+            builder.RegisterType<SendGridClient>()
+                .AsSelf()
+                .As<IEmailClient>();
         }
     }
 }
