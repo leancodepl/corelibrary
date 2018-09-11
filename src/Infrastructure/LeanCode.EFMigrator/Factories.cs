@@ -9,11 +9,11 @@ namespace LeanCode.EFMigrator
     public abstract class BaseFactory<TContext> : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext
     {
-        protected static readonly string AssemblyName;
+        protected static string AssemblyName;
 
         static BaseFactory()
         {
-            AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+            AssemblyName = Assembly.GetEntryAssembly().GetName().Name;
         }
 
         public TContext CreateDbContext(string[] args)
