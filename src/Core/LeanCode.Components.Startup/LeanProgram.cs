@@ -62,6 +62,7 @@ namespace LeanCode.Components.Startup
         public static IWebHostBuilder BuildMinimalWebHost<TStartup>(
             string appName,
             Func<WebHostBuilderContext, LoggerConfiguration> configLogger,
+            Action<WebHostBuilderContext, IConfigurationBuilder> extendConfig = null,
             TypesCatalog destructurers = null)
             where TStartup : class
         {
@@ -70,6 +71,7 @@ namespace LeanCode.Components.Startup
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddEnvironmentVariables();
+                    extendConfig?.Invoke(hostingContext, config);
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
