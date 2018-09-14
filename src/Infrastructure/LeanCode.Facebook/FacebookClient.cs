@@ -11,7 +11,7 @@ namespace LeanCode.Facebook
     public class FacebookClient
     {
         public const string ApiBase = "https://graph.facebook.com";
-        public const string ApiVersion = "v3.0";
+        public const string ApiVersion = "v3.1";
 
         private const string FieldsStr = "id,email,first_name,last_name";
 
