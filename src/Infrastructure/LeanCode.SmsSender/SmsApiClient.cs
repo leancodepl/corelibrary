@@ -63,6 +63,8 @@ namespace LeanCode.SmsSender
             var response = await client.Client.PostAsync("sms.do", body);
             var content = await response.Content.ReadAsStringAsync();
             HandleResponse(content);
+
+            logger.Information("SMS to {PhoneNumber} sent successfully", phoneNumber);
         }
 
         private static void HandleResponse(string response)
