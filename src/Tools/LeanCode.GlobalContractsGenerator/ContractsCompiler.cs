@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Glob;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
