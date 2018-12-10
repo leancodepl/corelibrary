@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using LeanCode.ContractsGenerator.Languages.Dart;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -15,6 +16,7 @@ namespace LeanCode.ContractsGenerator
         public string AdditionalCode { get; set; } = "";
 
         public TypeScriptConfiguration TypeScript { get; set; }
+        public DartConfiguration Dart { get; set; }
 
         public GeneratorConfiguration()
         { }

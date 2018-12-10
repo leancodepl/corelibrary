@@ -9,6 +9,7 @@ using System.Globalization;
 using LeanCode.ContractsGenerator.Statements;
 using LeanCode.ContractsGenerator.Languages;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
+using LeanCode.ContractsGenerator.Languages.Dart;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -59,6 +60,16 @@ namespace LeanCode.ContractsGenerator
                     yield return outputFile;
                 }
             }
+
+            if (configuration.Dart != null)
+            {
+                var visitor = new DartVisitor(configuration.Dart);
+
+                foreach (var outputFile in visitor.Visit(clientStatement))
+                {
+                    yield return outputFile;
+                }
+            }
         }
 
         private InterfaceStatement GenerateInterface(INamedTypeSymbol info)
@@ -93,6 +104,7 @@ namespace LeanCode.ContractsGenerator
             var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
+                Namespace = info.ContainingNamespace.Name,
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
                 Extends = baseTypes,
@@ -213,6 +225,7 @@ namespace LeanCode.ContractsGenerator
             return new EnumStatement
             {
                 Name = info.Name,
+                Namespace = info.ContainingNamespace.Name,
                 Values = enumValues
             };
         }
