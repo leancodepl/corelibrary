@@ -104,7 +104,7 @@ namespace LeanCode.ContractsGenerator
             var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
-                Namespace = info.ContainingNamespace.Name,
+                Namespace = info.ContainingNamespace.ToString(),
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
                 Extends = baseTypes,
@@ -225,7 +225,7 @@ namespace LeanCode.ContractsGenerator
             return new EnumStatement
             {
                 Name = info.Name,
-                Namespace = info.ContainingNamespace.Name,
+                Namespace = info.ContainingNamespace.ToString(),
                 Values = enumValues
             };
         }
