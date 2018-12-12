@@ -16,7 +16,9 @@ podTemplate(label: label, containers: [
         }
 
         stage('Version') {
-            def baseVer = sh('cat CHANGELOG.md | awk \'$1$2 ~ /^##[0-9]\\.[0-9](\\.[0-9])?/ { print $2 }\' | head -n 1')
+            def baseVer = sh(
+                script: 'cat CHANGELOG.md | awk \'$1$2 ~ /^##[0-9]\\.[0-9](\\.[0-9])?/ { print $2 }\' | head -n 1',
+                returnStdout: true).trim()
 
             env.GIT_COMMIT = scmVars.GIT_COMMIT
             env.VERSION = BRANCH_NAME ==~ /v\d\.\d(\.\d)?/ ? "${baseVer}.${nextBuildNumber()}" : '0.0.0'
