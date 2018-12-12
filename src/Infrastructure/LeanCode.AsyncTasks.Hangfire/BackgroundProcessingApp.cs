@@ -86,7 +86,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             {
                 ServerName = name
             };
-            if (queue != DefaultQueue)
+            if (!(queue is DefaultQueue))
             {
                 cfg.Queues = new[] { DefaultQueue, queue };
             }

@@ -54,35 +54,31 @@ namespace LeanCode.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public Task<SampleDTO> QueryWithInlineObjContext() =>
-            simple.GetAsync(appContext, objContext, plainQuery);
-
-        [Benchmark]
         public Task<SampleDTO> QueryWithoutInlineObjContext() =>
             simple.GetAsync(appContext, plainQuery);
 
         [Benchmark]
         public Task<SampleDTO> PlainQueryWithCachedPipeline() =>
-            cached.GetAsync(appContext, objContext, cachedQuery);
+            cached.GetAsync(appContext, cachedQuery);
 
         [Benchmark]
         public Task<SampleDTO> CachedQueryWithCachedPipeline() =>
-            cached.GetAsync(appContext, objContext, cachedQuery);
+            cached.GetAsync(appContext, cachedQuery);
 
         [Benchmark]
         public Task<SampleDTO> PlainQueryWithSecuredPipeline() =>
-            secured.GetAsync(appContext, objContext, plainQuery);
+            secured.GetAsync(appContext, plainQuery);
 
         [Benchmark]
         public Task<SampleDTO> SecuredQueryWithSecuredPipeline() =>
-            secured.GetAsync(appContext, objContext, userQuery);
+            secured.GetAsync(appContext, userQuery);
 
         [Benchmark]
         public async Task<SampleDTO> SecuredQueryButFailingWithSecuredPipeline()
         {
             try
             {
-                return await secured.GetAsync(appContext, objContext, adminQuery);
+                return await secured.GetAsync(appContext, adminQuery);
             }
             catch
             {

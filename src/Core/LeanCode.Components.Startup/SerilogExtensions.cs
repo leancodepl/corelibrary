@@ -31,8 +31,8 @@ namespace LeanCode.Components.Startup
                 .SelectMany(a => a.ExportedTypes)
                 .Where(t =>
                     typeof(TType).IsAssignableFrom(t) &&
-                    t.GetTypeInfo().IsPublic &&
-                    t.GetTypeInfo().GetConstructor(Type.EmptyTypes) != null)
+                    t.IsPublic &&
+                    t.GetConstructor(Type.EmptyTypes) != null)
                 .Select(Activator.CreateInstance)
                 .Cast<TType>()
                 .ToList();

@@ -58,27 +58,23 @@ namespace LeanCode.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public Task<CommandResult> CommandWithInlineObjContext() =>
-            simple.RunAsync(appContext, objContext, plainCommand);
-
-        [Benchmark]
         public Task<CommandResult> CommandWithoutInlineObjContext() =>
             simple.RunAsync(appContext, plainCommand);
 
         [Benchmark]
         public Task<CommandResult> PlainCommandWithSecuredPipeline() =>
-            secured.RunAsync(appContext, objContext, plainCommand);
+            secured.RunAsync(appContext, plainCommand);
 
         [Benchmark]
         public Task<CommandResult> SecuredCommandWithSecuredPipeline() =>
-            secured.RunAsync(appContext, objContext, userCommand);
+            secured.RunAsync(appContext, userCommand);
 
         [Benchmark]
         public async Task<CommandResult> SecuredButFailingCommandWithSecuredPipeline()
         {
             try
             {
-                return await secured.RunAsync(appContext, objContext, userCommand); ;
+                return await secured.RunAsync(appContext, userCommand); ;
             }
             catch
             {
@@ -88,15 +84,15 @@ namespace LeanCode.Benchmarks
 
         [Benchmark]
         public Task<CommandResult> PlainCommandWithValidatedPipeline() =>
-            validated.RunAsync(appContext, objContext, plainCommand);
+            validated.RunAsync(appContext, plainCommand);
 
         [Benchmark]
         public Task<CommandResult> ValidCommandWithValidatedPipeline() =>
-            validated.RunAsync(appContext, objContext, validCommand);
+            validated.RunAsync(appContext, validCommand);
 
         [Benchmark]
         public Task<CommandResult> InvalidCommandWithValidatedPipeline() =>
-            validated.RunAsync(appContext, objContext, invalidCommand);
+            validated.RunAsync(appContext, invalidCommand);
 
         private static ICommandExecutor<SampleAppContext> PrepareExecutor(
             CommandBuilder<SampleAppContext> commandBuilder,

@@ -60,7 +60,7 @@ namespace LeanCode.PushNotifications.EF
         public async Task UpdateOrAddToken(Guid userId, DeviceType deviceType, string newToken)
         {
             var existing = await LoadExisting(userId, deviceType, newToken);
-            if (existing == null)
+            if (existing is null)
             {
                 dbSet.Add(new PushNotificationTokenEntity
                 {
@@ -79,7 +79,7 @@ namespace LeanCode.PushNotifications.EF
             catch (DbUpdateException exception)
             {
                 var sqlException = exception?.InnerException?.InnerException as SqlException;
-                if (sqlException != null)
+                if ((sqlException is null))
                 {
                     switch (sqlException.Number)
                     {

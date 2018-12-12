@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3
+### Changed
+* Upgrade to .NET Core 2.2 & Newtonsoft.Json 12
+* Switch most of the projects to netcoreapp2.2
+* Embed source in nupkgs and do not publish symbol packages
+* Switch to FluentValidation 8, which results in breaking change: `RuleForAsync` is now instance method of `ContextualValidator`
+* Build is now done on Jenkins
+
 ## 3.2
 Switch to dockerized build (and new FAKE)
 Cleanup shared target files and remove LeanCode.Dependencies

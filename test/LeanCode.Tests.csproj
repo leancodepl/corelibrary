@@ -1,8 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="RunTests">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>LeanCode.Tests</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LogFileName Condition="'$(LogFileName)' == ''">log.trx</LogFileName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +18,11 @@
 
   <Target Name="RunTests" DependsOnTargets="Build">
     <ItemGroup>
-      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp2.1'" />
+      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp2.2'" />
     </ItemGroup>
 
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')"
+      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot;"
       WorkingDirectory="$(TargetDir)" />
   </Target>
 

@@ -22,7 +22,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
         [TestStep]
         public async Task Step01_Run_query()
         {
-            var res = await GetAsync(new EmptyContext(), new TestQuery());
+            var res = await GetAsync(new TestQuery());
 
             Assert.Equal("abc", res.Value);
         }
@@ -30,7 +30,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
         [TestStep]
         public async Task Step02_Execute_command()
         {
-            await RunAsync(new EmptyContext(), new TestCommand { Name = "test" });
+            await RunAsync<EmptyContext, TestCommand>(new TestCommand { Name = "test" });
 
             var entity = await Context.With<TestDbContext, Entity>(
                 d => d.Entities.SingleOrDefaultAsync());

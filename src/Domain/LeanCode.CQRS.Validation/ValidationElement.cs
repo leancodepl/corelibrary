@@ -28,7 +28,7 @@ namespace LeanCode.CQRS.Validation
 
             var commandType = command.GetType();
             var validator = resolver.FindCommandValidator(commandType);
-            if (validator != null)
+            if (!(validator is null))
             {
                 var result = await validator
                     .ValidateAsync(appContext, context, command)

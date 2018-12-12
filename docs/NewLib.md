@@ -12,7 +12,7 @@ Or you can just modify the following project template (most of the projects use 
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>LeanCode.(...)</AssemblyName>
   </PropertyGroup>
 

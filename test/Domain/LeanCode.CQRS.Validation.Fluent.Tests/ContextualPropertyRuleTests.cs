@@ -99,7 +99,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             Assert.Equal(obj, dataPassed);
         }
 
-        class TestValidator : AbstractValidator<SampleData>
+        class TestValidator : ContextualValidator<SampleData>
         {
             public TestValidator(Func<ValidationContext, string, object> accessor, Func<object, bool> must = null)
             {

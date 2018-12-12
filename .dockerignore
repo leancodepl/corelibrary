@@ -1,9 +1,0 @@
-.git/
-**/bin
-**/obj
-**/deploy
-.vscode/
-.gitignore
-.gitattributes
-**/node_modules
-global.json

@@ -13,16 +13,15 @@ namespace LeanCode.CQRS.Tests
             Prepare();
 
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var query = new SingleInstanceQuery();
             var expResult = new object();
             var handler = Container.Resolve<SingleInstanceQueryHandler>();
             handler.Result = expResult;
 
-            var result = await QueryExecutor.GetAsync(appCtx, objCtx, query);
+            var result = await QueryExecutor.GetAsync(appCtx, query);
 
             Assert.Equal(expResult, result);
-            Assert.Equal(objCtx, handler.Context);
+            Assert.Equal(appCtx, handler.Context.SourceAppContext);
             Assert.Equal(query, handler.Query);
         }
 
@@ -34,15 +33,15 @@ namespace LeanCode.CQRS.Tests
             );
 
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var query = new SampleQuery();
 
             var element = Container.Resolve<SamplePipelineElement<QueryExecutionPayload, object>>();
 
-            await QueryExecutor.GetAsync(appCtx, objCtx, query);
+            await QueryExecutor.GetAsync(appCtx, query);
 
             Assert.Equal(appCtx, element.AppContext);
-            Assert.Equal(objCtx, element.Data.Context);
+            var objCtx = Assert.IsType<ObjContext>(element.Data.Context);
+            Assert.Equal(appCtx, objCtx.SourceAppContext);
             Assert.Equal(query, element.Data.Object);
         }
 

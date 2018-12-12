@@ -36,7 +36,7 @@ namespace LeanCode.DomainModels.EventsExecution
 
             void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
             {
-                if (storage.Value == null)
+                if (storage.Value is null)
                 {
                     throw new InvalidOperationException(
                         "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");

@@ -31,7 +31,7 @@ namespace LeanCode.CQRS.Security
 
             if (customAuthorizers.Count > 0)
             {
-                if (user == null || user.Identity == null || !user.Identity.IsAuthenticated)
+                if (user is null || user.Identity is null || !user.Identity.IsAuthenticated)
                 {
                     throw new UnauthenticatedException(
                         "The current user is not authenticated and the object requires authorization");
@@ -44,7 +44,7 @@ namespace LeanCode.CQRS.Security
                 var customAuthorizer = authorizerResolver.FindAuthorizer(
                     authorizerType, objectType);
 
-                if (customAuthorizer == null)
+                if (customAuthorizer is null)
                 {
                     throw new CustomAuthorizerNotFoundException(authorizerType);
                 }

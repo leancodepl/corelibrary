@@ -22,7 +22,7 @@ namespace LeanCode.CQRS.Cache
         private static void SerializeProperties(
             StringBuilder builder, Type type, object obj)
         {
-            foreach (var prop in type.GetTypeInfo().DeclaredProperties)
+            foreach (var prop in type.GetProperties())
             {
                 builder.Append('-');
                 var value = prop.GetValue(obj);

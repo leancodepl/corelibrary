@@ -62,8 +62,8 @@ namespace LeanCode.ContractsGenerator.Tests
 
             var compilation = CSharpCompilation.Create("TsGeneratorTests")
                 .AddReferences(new[] {
-                    MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
-                    MetadataReference.CreateFromFile(typeof(HashSet<>).GetTypeInfo().Assembly.Location)
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location)
                 })
                 .AddSyntaxTrees(trees.Concat(new[] { CSharpSyntaxTree.ParseText("namespace LeanCode.CQRS { public interface IQuery<T> { } public interface ICommand { } public interface IRemoteQuery<T> : IQuery<T> { } public interface IRemoteCommand : ICommand { }}") }));
 

@@ -30,7 +30,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var request = context.Request;
             var type = ExtractType(request);
-            if (type == null)
+            if (type is null)
             {
                 Logger.Verbose("Cannot retrieve type from path {Path}, type not found", request.Path);
                 return ExecutionResult.Skip();
@@ -43,13 +43,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (Exception ex)
             {
-                Logger.Verbose(ex, "Cannot deserialize object body from the request stream");
+                Logger.Information(ex, "Cannot deserialize object body from the request stream");
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj == null)
             {
-                Logger.Verbose("Client sent an empty object, ignoring");
+                Logger.Information("Client sent an empty object, ignoring");
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 

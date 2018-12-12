@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>LeanCode.Benchmarks</AssemblyName>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

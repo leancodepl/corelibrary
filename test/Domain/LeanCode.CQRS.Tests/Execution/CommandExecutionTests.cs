@@ -13,14 +13,13 @@ namespace LeanCode.CQRS.Tests
             Prepare();
 
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var cmd = new SingleInstanceCommand();
             var handler = Container.Resolve<SingleInstanceCommandHandler>();
 
-            var result = await CommandExecutor.RunAsync(appCtx, objCtx, cmd);
+            var result = await CommandExecutor.RunAsync(appCtx, cmd);
 
             Assert.True(result.WasSuccessful);
-            Assert.Equal(objCtx, handler.Context);
+            Assert.Equal(appCtx, handler.Context.SourceAppContext);
             Assert.Equal(cmd, handler.Command);
         }
 
@@ -32,15 +31,15 @@ namespace LeanCode.CQRS.Tests
             );
 
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var cmd = new SampleCommand();
 
             var element = Container.Resolve<SamplePipelineElement<CommandExecutionPayload, CommandResult>>();
 
-            await CommandExecutor.RunAsync(appCtx, objCtx, cmd);
+            await CommandExecutor.RunAsync(appCtx, cmd);
 
             Assert.Equal(appCtx, element.AppContext);
-            Assert.Equal(objCtx, element.Data.Context);
+            var objCtx = Assert.IsType<ObjContext>(element.Data.Context);
+            Assert.Equal(appCtx, objCtx.SourceAppContext);
             Assert.Equal(cmd, element.Data.Object);
         }
 

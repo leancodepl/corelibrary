@@ -77,7 +77,7 @@ namespace LeanCode.EmailSender
 
         public Task Send()
         {
-            if (FromEmail == null)
+            if (FromEmail is null)
             {
                 throw new InvalidOperationException("'From' e-mail has to be specified before sending.");
             }

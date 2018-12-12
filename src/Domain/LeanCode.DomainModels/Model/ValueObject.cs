@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LeanCode.DomainModels.Model
 {
-    public abstract class ValueObject<T> where T: ValueObject<T>
+    public abstract class ValueObject<T> where T : ValueObject<T>
     {
         protected abstract object[] GetAttributesToIncludeInEqualityCheck();
 
@@ -15,7 +15,7 @@ namespace LeanCode.DomainModels.Model
 
         public bool Equals(T other)
         {
-            if (other == null)
+            if (other is null)
                 return false;
 
             return GetAttributesToIncludeInEqualityCheck().SequenceEqual(other.GetAttributesToIncludeInEqualityCheck());
@@ -28,32 +28,18 @@ namespace LeanCode.DomainModels.Model
 
         public static bool operator !=(ValueObject<T> left, ValueObject<T> right)
         {
-           return !(left == right);
+            return !(left == right);
         }
 
         public override int GetHashCode()
         {
-            return GenerateELFHash(GetAttributesToIncludeInEqualityCheck());
-        }
-
-        private int GenerateELFHash(object[] key) 
-        {
-            int h = 0, g = 0;
-
-            unchecked 
+            var attrs = GetAttributesToIncludeInEqualityCheck();
+            var hc = new HashCode();
+            for (int i = 0; i < attrs.Length; i++)
             {
-                const int c = (int)0xf0000000;                
-                for (int i = 0, len = key.Length; i < len; i++) {
-                    h = (h << 4) + key[i].GetHashCode();
-
-                    if ((g = h & c) != 0)
-                        h ^= g >> 24;
-
-                    h &= ~g;
-                }
+                hc.Add(attrs[i]);
             }
-
-            return (int)h;
+            return hc.ToHashCode();
         }
     }
 }

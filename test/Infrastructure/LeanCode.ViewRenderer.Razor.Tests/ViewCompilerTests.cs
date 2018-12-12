@@ -47,7 +47,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         {
             var result = await Compile("Simple");
 
-            var realType = result.ViewType.GetTypeInfo();
+            var realType = result.ViewType;
             Assert.True(realType.BaseType == typeof(BaseView));
         }
 

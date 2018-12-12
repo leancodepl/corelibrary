@@ -39,7 +39,7 @@ namespace LeanCode.CQRS.Security
 
         private Task<bool> CheckIfAuthorizedInternal(TAppContext appContext, TContext objContext, TObject obj, object customData)
         {
-            if (customData != null && !(customData is TCustomData))
+            if (!(customData is null) && !(customData is TCustomData))
             {
                 throw new ArgumentException(
                     $"{GetType()} requires {typeof(TCustomData)} as custom data.",

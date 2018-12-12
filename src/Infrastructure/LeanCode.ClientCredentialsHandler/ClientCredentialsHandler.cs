@@ -15,9 +15,10 @@ namespace LeanCode.ClientCredentialsHandler
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ClientCredentialsHandler>();
 
+        private readonly string tokenEndpoint;
         private readonly ClientCredentialsConfiguration config;
         private readonly SemaphoreSlim tokenLock = new SemaphoreSlim(1, 1);
-        private readonly TokenClient tokenClient;
+        private readonly HttpClient httpClient;
 
         private string accessToken = null;
 
@@ -47,8 +48,9 @@ namespace LeanCode.ClientCredentialsHandler
             : base(new HttpClientHandler())
         {
             this.config = config;
-            var uri = BuildTokenUrl(config.ServerAddress);
-            this.tokenClient = new TokenClient(uri, config.ClientId, config.ClientSecret);
+            this.httpClient = new HttpClient();
+            this.tokenEndpoint = UrlHelper.Concat(config.ServerAddress, "connect/token");
+            // this.tokenClient = new TokenClient(uri, config.ClientId, config.ClientSecret);
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -84,7 +86,7 @@ namespace LeanCode.ClientCredentialsHandler
             if (disposing && !disposed)
             {
                 disposed = true;
-                tokenClient.Dispose();
+                httpClient.Dispose();
                 tokenLock.Dispose();
             }
 
@@ -98,9 +100,15 @@ namespace LeanCode.ClientCredentialsHandler
                 try
                 {
                     logger.Debug("Requesting access token");
-                    var response = await tokenClient
-                        .RequestClientCredentialsAsync(
-                            config.Scopes, cancellationToken: cancellationToken);
+                    var response = await httpClient.RequestClientCredentialsTokenAsync(
+                        new ClientCredentialsTokenRequest
+                        {
+                            Address = tokenEndpoint,
+
+                            ClientId = config.ClientId,
+                            ClientSecret = config.ClientSecret,
+                            Scope = config.Scopes,
+                        }, cancellationToken);
                     if (!response.IsError)
                     {
                         logger.Information("New access token retrieved");
@@ -125,18 +133,6 @@ namespace LeanCode.ClientCredentialsHandler
                 }
             }
             return false;
-        }
-
-        private static string BuildTokenUrl(string address)
-        {
-            if (address.EndsWith("/"))
-            {
-                return address + "connect/token";
-            }
-            else
-            {
-                return address + "/connect/token";
-            }
         }
     }
 }

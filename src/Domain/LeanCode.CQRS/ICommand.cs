@@ -8,7 +8,4 @@ namespace LeanCode.CQRS
 
     public interface ICommand<in TContext> : ICommand
     { }
-
-    public interface INoContextCommand : ICommand<VoidContext>
-    { }
 }

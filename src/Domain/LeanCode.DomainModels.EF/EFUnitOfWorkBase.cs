@@ -30,17 +30,8 @@ namespace LeanCode.DomainModels.EF
 
             foreach (var entry in softDeletables)
             {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.CurrentValues[nameof(ISoftDeletable.IsDeleted)] = false;
-                        break;
-
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.CurrentValues[nameof(ISoftDeletable.IsDeleted)] = true;
-                        break;
-                }
+                entry.State = EntityState.Modified;
+                entry.CurrentValues[nameof(ISoftDeletable.IsDeleted)] = true;
             }
         }
     }

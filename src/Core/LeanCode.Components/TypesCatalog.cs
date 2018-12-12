@@ -10,7 +10,7 @@ namespace LeanCode.Components
 
         public TypesCatalog(params Assembly[] assemblies)
         {
-            if (assemblies == null)
+            if (assemblies is null)
             {
                 throw new ArgumentNullException(nameof(assemblies));
             }
@@ -18,17 +18,20 @@ namespace LeanCode.Components
         }
 
         public TypesCatalog(params Type[] types)
-            : this(types.Select(t => t.GetTypeInfo().Assembly).ToArray())
         {
-            if (types == null)
+            if (types is null)
             {
                 throw new ArgumentNullException(nameof(types));
             }
             Assemblies = types
-                .Select(t=>t.GetTypeInfo().Assembly)
+                .Select(t => t.Assembly)
                 .Distinct()
                 .ToArray();
         }
+
+        public static TypesCatalog Of<T1>() => new TypesCatalog(typeof(T1));
+        public static TypesCatalog Of<T1, T2>() => new TypesCatalog(typeof(T1), typeof(T2));
+        public static TypesCatalog Of<T1, T2, T3>() => new TypesCatalog(typeof(T1), typeof(T2), typeof(T3));
 
         public Type GetType(string name)
         {
@@ -39,7 +42,7 @@ namespace LeanCode.Components
 
         public bool Equals(TypesCatalog other)
         {
-            if (other == null || Assemblies.Length != other.Assemblies.Length)
+            if (other is null || Assemblies.Length != other.Assemblies.Length)
             {
                 return false;
             }
@@ -57,7 +60,7 @@ namespace LeanCode.Components
 
         public override bool Equals(object obj)
         {
-            if (obj == null || typeof(TypesCatalog) != obj.GetType())
+            if (obj is null || typeof(TypesCatalog) != obj.GetType())
             {
                 return false;
             }
@@ -67,15 +70,12 @@ namespace LeanCode.Components
 
         public override int GetHashCode()
         {
-            unchecked
+            var hc = new HashCode();
+            for (int i = 0; i < Assemblies.Length; i++)
             {
-                int code = Assemblies[0].GetHashCode();
-                for (int i = 1; i < Assemblies.Length; i++)
-                {
-                    code = ((code << 5) + code) ^ Assemblies[i].GetHashCode();
-                }
-                return code;
+                hc.Add(Assemblies[i]);
             }
+            return hc.ToHashCode();
         }
 
         public TypesCatalog Merge(TypesCatalog other)

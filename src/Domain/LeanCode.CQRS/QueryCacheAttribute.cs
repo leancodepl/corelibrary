@@ -15,7 +15,7 @@ namespace LeanCode.CQRS
 
         public static TimeSpan? GetDuration(Type type)
         {
-            return type.GetTypeInfo()
+            return type
                 .GetCustomAttribute<QueryCacheAttribute>()
                 ?.Duration;
         }

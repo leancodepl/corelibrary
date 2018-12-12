@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LeanCode.EFMigrator
@@ -18,10 +19,12 @@ namespace LeanCode.EFMigrator
 
         public TContext CreateDbContext(string[] args)
         {
-            var factory = new LoggerFactory()
-                .AddConsole();
+            var services = new ServiceCollection();
+            services.AddLogging(cfg => cfg.AddConsole());
+            var provider = services.BuildServiceProvider();
+
             var opts = new DbContextOptionsBuilder<TContext>()
-                .UseLoggerFactory(factory)
+                .UseLoggerFactory(provider.GetRequiredService<ILoggerFactory>())
                 .UseSqlServer(
                     MigrationsConfig.GetConnectionString(),
                     cfg => cfg.MigrationsAssembly(AssemblyName))

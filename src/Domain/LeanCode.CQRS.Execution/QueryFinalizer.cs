@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.Execution
 
             var queryType = query.GetType();
             var handler = resolver.FindQueryHandler(queryType);
-            if (handler == null)
+            if (handler is null)
             {
                 logger.Fatal("Cannot find a handler for query {@Query}", query);
                 throw new QueryHandlerNotFoundException(queryType);
@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.Execution
                     query);
                 throw;
             }
-            logger.Debug("Query {@Query} executed successfuly", query);
+            logger.Information("Query {@Query} executed successfuly", query);
             return result;
         }
     }

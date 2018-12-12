@@ -48,8 +48,8 @@ namespace LeanCode.ViewRenderer.Razor
 
             Assembly.Load(new AssemblyName("Microsoft.CSharp")),
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
-            typeof(ViewCompiler).GetTypeInfo().Assembly,
-            typeof(HtmlEncoder).GetTypeInfo().Assembly,
+            typeof(ViewCompiler).Assembly,
+            typeof(HtmlEncoder).Assembly,
             typeof(Microsoft.AspNetCore.Razor.Hosting.RazorCompiledItem).Assembly
         }
         .Distinct()

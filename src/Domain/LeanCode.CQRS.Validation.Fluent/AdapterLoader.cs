@@ -21,7 +21,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
         public Task<ValidationResult> ValidateAsync(TAppContext appContext, TContext context, TCommand command)
         {
-            if (adapter != null)
+            if (!(adapter is null))
             {
                 return adapter.ValidateAsync(appContext, context, command);
             }

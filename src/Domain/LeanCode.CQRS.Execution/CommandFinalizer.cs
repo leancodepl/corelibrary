@@ -25,7 +25,7 @@ namespace LeanCode.CQRS.Execution
 
             var commandType = command.GetType();
             var handler = resolver.FindCommandHandler(commandType);
-            if (handler == null)
+            if (handler is null)
             {
                 logger.Fatal(
                     "Cannot find a handler for the command {@Command}",

@@ -54,32 +54,25 @@ namespace LeanCode.DomainModels.EF
         // if there are other objects tracked by EF change tracker
         public virtual Task AddAsync(TEntity entity)
         {
-            entity.DateModified = Time.Now;
-            dbSet.Add(entity);
+            this.Add(entity);
             return unitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteAsync(TEntity entity)
         {
-            entity.DateModified = Time.Now;
-            dbSet.Remove(entity);
+            this.Delete(entity);
             return unitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities)
         {
-            foreach (var e in entities)
-            {
-                e.DateModified = Time.Now;
-            }
-            dbSet.RemoveRange(entities);
+            this.DeleteRange(entities);
             return unitOfWork.CommitAsync();
         }
 
         public virtual Task UpdateAsync(TEntity entity)
         {
-            entity.DateModified = Time.Now;
-            dbSet.Update(entity);
+            this.Update(entity);
             return unitOfWork.CommitAsync();
         }
 

@@ -15,11 +15,11 @@ namespace LeanCode.ContractsGenerator
     {
         private static readonly List<MetadataReference> DefaultAssemblies = new List<MetadataReference>
         {
-            MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Attribute).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(IQuery<,>).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(HashSet<>).GetTypeInfo().Assembly.Location)
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(IQuery<,>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location)
         };
 
         private readonly string rootPath;

@@ -33,7 +33,7 @@ namespace LeanCode.DomainModels.EventsExecution
             Func<TContext, TInput, Task<TOutput>> next)
         {
             var result = await next(ctx, input).ConfigureAwait(false);
-            if (ctx.SavedEvents != null && ctx.SavedEvents.Count > 0)
+            if (!(ctx.SavedEvents is null) && ctx.SavedEvents.Count > 0)
             {
                 ctx.ExecutedHandlers = new List<(IDomainEvent, Type)>();
                 ctx.FailedHandlers = new List<(IDomainEvent, Type)>();
