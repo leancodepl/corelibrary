@@ -43,10 +43,11 @@
     <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.2" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="2.2.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="2.2.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="2.2.0" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
