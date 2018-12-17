@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 
@@ -9,7 +8,6 @@ namespace LeanCode.CQRS.Security
     public class CQRSSecurityElement<TAppContext, TInput, TOutput>
         : IPipelineElement<TAppContext, TInput, TOutput>
         where TAppContext : ISecurityContext
-        where TInput : IExecutionPayload
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSSecurityElement<TAppContext, TInput, TOutput>>();
 
@@ -25,7 +23,7 @@ namespace LeanCode.CQRS.Security
             TInput input,
             Func<TAppContext, TInput, Task<TOutput>> next)
         {
-            var objectType = input.Object.GetType();
+            var objectType = input.GetType();
             var customAuthorizers = AuthorizeWhenAttribute.GetCustomAuthorizers(objectType);
             var user = appContext.User;
 
@@ -50,7 +48,7 @@ namespace LeanCode.CQRS.Security
                 }
 
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorizedAsync(appContext, input.Context, input.Object, customAuthorizerDefinition.CustomData)
+                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData)
                     .ConfigureAwait(false);
                 if (!authorized)
                 {
@@ -67,18 +65,18 @@ namespace LeanCode.CQRS.Security
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> Secure<TContext>(
-            this PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> builder)
+        public static PipelineBuilder<TContext, ICommand, CommandResult> Secure<TContext>(
+            this PipelineBuilder<TContext, ICommand, CommandResult> builder)
             where TContext : ISecurityContext
         {
-            return builder.Use<CQRSSecurityElement<TContext, CommandExecutionPayload, CommandResult>>();
+            return builder.Use<CQRSSecurityElement<TContext, ICommand, CommandResult>>();
         }
 
-        public static PipelineBuilder<TContext, QueryExecutionPayload, object> Secure<TContext>(
-            this PipelineBuilder<TContext, QueryExecutionPayload, object> builder)
+        public static PipelineBuilder<TContext, IQuery, object> Secure<TContext>(
+            this PipelineBuilder<TContext, IQuery, object> builder)
             where TContext : ISecurityContext
         {
-            return builder.Use<CQRSSecurityElement<TContext, QueryExecutionPayload, object>>();
+            return builder.Use<CQRSSecurityElement<TContext, IQuery, object>>();
         }
     }
 }

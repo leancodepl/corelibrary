@@ -22,7 +22,7 @@ namespace LeanCode.Example.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var ctx = new AppContext { User = User };
+            var ctx = AppContext.FromHttp(HttpContext);
             var result = await queries.GetAsync(ctx, new CQRS.SampleQuery());
             return Content(result.Name);
         }
@@ -38,7 +38,7 @@ namespace LeanCode.Example.Controllers
         {
             try
             {
-                var ctx = new AppContext { User = User };
+                var ctx = AppContext.FromHttp(HttpContext);
                 await commands.RunAsync(ctx, new CQRS.SampleCommand("Name"));
                 return Content("Everything's OK");
             }

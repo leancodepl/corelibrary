@@ -8,8 +8,10 @@ namespace LeanCode.CQRS.Default.Autofac
 {
     class AutofacValidatorResolver<TAppContext> : ICommandValidatorResolver<TAppContext>
     {
-        private static readonly Type ValidatorBase = typeof(ICommandValidator<,,>);
-        private static readonly Type WrapperBase = typeof(CommandValidatorWrapper<,,>);
+        private static readonly Type AppContextType = typeof(TAppContext);
+
+        private static readonly Type ValidatorBase = typeof(ICommandValidator<,>);
+        private static readonly Type WrapperBase = typeof(CommandValidatorWrapper<,>);
 
         private static readonly TypesCache typesCache = new TypesCache(GetTypes, ValidatorBase, WrapperBase);
 
@@ -36,15 +38,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         private static Type[] GetTypes(Type commandType)
         {
-            var types = commandType
-                .GetInterfaces()
-                .Where(i =>
-                    i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(ICommand<>))
-                .Single()
-                .GenericTypeArguments;
-            var contextType = types[0];
-            return new[] { typeof(TAppContext), contextType, commandType };
+            return new[] { AppContextType, commandType };
         }
     }
 }

@@ -1,4 +1,4 @@
-FROM leancode.azurecr.io/dotnet:2.1-sdk-alpine
+FROM leancode.azurecr.io/dotnet:2.2-sdk-alpine
 
 WORKDIR /app
 

@@ -61,15 +61,15 @@ namespace LeanCode.CQRS.Tests
         [Fact]
         public async Task The_data_is_correctly_passed_to_underlying_CH()
         {
-            var objCtx = new ObjContext();
+            var ctx = new AppContext();
             var cmd = new SampleCommand();
 
             var (handler, underlying) = FindSampleCommandHandler();
 
-            await handler.ExecuteAsync(objCtx, cmd);
+            await handler.ExecuteAsync(ctx, cmd);
 
             Assert.Equal(cmd, underlying.Command);
-            Assert.Equal(objCtx, underlying.Context);
+            Assert.Equal(ctx, underlying.Context);
         }
     }
 }

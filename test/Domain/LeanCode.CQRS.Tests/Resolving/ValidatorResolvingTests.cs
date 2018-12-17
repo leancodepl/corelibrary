@@ -42,17 +42,15 @@ namespace LeanCode.CQRS.Tests
         public async Task Correctly_passes_data_to_underlying_validator()
         {
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var cmd = new SampleCommand();
             var expResult = new ValidationResult(new ValidationError[0]);
 
             var (handler, underlying) = FindSampleValidator();
             underlying.Result = expResult;
 
-            var result = await handler.ValidateAsync(appCtx, objCtx, cmd);
+            var result = await handler.ValidateAsync(appCtx, cmd);
 
             Assert.Equal(appCtx, underlying.AppContext);
-            Assert.Equal(objCtx, underlying.Context);
             Assert.Equal(cmd, underlying.Command);
             Assert.Equal(expResult, result);
         }

@@ -3,12 +3,12 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class QueryHandlerWrapper<TContext, TQuery, TResult> : IQueryHandlerWrapper
-        where TQuery : IQuery<TContext, TResult>
+    class QueryHandlerWrapper<TAppContext, TQuery, TResult> : IQueryHandlerWrapper
+        where TQuery : IQuery<TResult>
     {
-        private readonly IQueryHandler<TContext, TQuery, TResult> handler;
+        private readonly IQueryHandler<TAppContext, TQuery, TResult> handler;
 
-        public QueryHandlerWrapper(IQueryHandler<TContext, TQuery, TResult> handler)
+        public QueryHandlerWrapper(IQueryHandler<TAppContext, TQuery, TResult> handler)
         {
             this.handler = handler;
         }
@@ -16,7 +16,7 @@ namespace LeanCode.CQRS.Default.Wrappers
         public async Task<object> ExecuteAsync(object context, IQuery query)
         {
             return await handler
-                .ExecuteAsync((TContext)context, (TQuery)query)
+                .ExecuteAsync((TAppContext)context, (TQuery)query)
                 .ConfigureAwait(false);
         }
     }

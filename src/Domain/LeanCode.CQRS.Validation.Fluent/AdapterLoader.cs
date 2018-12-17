@@ -4,26 +4,26 @@ using FluentValidation;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class AdapterLoader<TAppContext, TContext, TCommand> : ICommandValidator<TAppContext, TContext, TCommand>
-        where TCommand : ICommand<TContext>
+    class AdapterLoader<TAppContext, TContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+        where TCommand : ICommand
     {
         private static readonly Task<ValidationResult> NoError =
             Task.FromResult(new ValidationResult(null));
 
-        private readonly FluentValidationCommandValidatorAdapter<TAppContext, TContext, TCommand> adapter;
+        private readonly FluentValidationCommandValidatorAdapter<TAppContext, TCommand> adapter;
 
         public AdapterLoader(IComponentContext ctx)
         {
             if (ctx.TryResolve<IValidator<TCommand>>(out var val))
             {
-                adapter = new FluentValidationCommandValidatorAdapter<TAppContext, TContext, TCommand>(val, ctx);
+                adapter = new FluentValidationCommandValidatorAdapter<TAppContext, TCommand>(val, ctx);
             }
         }
-        public Task<ValidationResult> ValidateAsync(TAppContext appContext, TContext context, TCommand command)
+        public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
         {
             if (!(adapter is null))
             {
-                return adapter.ValidateAsync(appContext, context, command);
+                return adapter.ValidateAsync(appContext, command);
             }
             else
             {

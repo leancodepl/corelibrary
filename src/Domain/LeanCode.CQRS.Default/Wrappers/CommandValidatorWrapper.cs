@@ -3,22 +3,22 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class CommandValidatorWrapper<TAppContext, TContext, TCommand> : ICommandValidatorWrapper
-        where TCommand : ICommand<TContext>
+    class CommandValidatorWrapper<TAppContext, TCommand> : ICommandValidatorWrapper
+        where TCommand : ICommand
     {
-        private readonly ICommandValidator<TAppContext, TContext, TCommand> validator;
+        private readonly ICommandValidator<TAppContext, TCommand> validator;
 
         public CommandValidatorWrapper(
-            ICommandValidator<TAppContext, TContext, TCommand> validator)
+            ICommandValidator<TAppContext, TCommand> validator)
         {
             this.validator = validator;
         }
 
         public Task<ValidationResult> ValidateAsync(
-            object appContext, object objContext, ICommand command)
+            object appContext, ICommand command)
         {
             return validator.ValidateAsync(
-                (TAppContext)appContext, (TContext)objContext, (TCommand)command);
+                (TAppContext)appContext, (TCommand)command);
         }
     }
 }

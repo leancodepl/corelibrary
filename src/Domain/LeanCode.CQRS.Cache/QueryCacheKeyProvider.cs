@@ -1,21 +1,20 @@
 using System;
 using System.Reflection;
 using System.Text;
-using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Cache
 {
     static class QueryCacheKeyProvider
     {
-        public static string GetKey(QueryExecutionPayload payload)
+        public static string GetKey<TAppContext>(TAppContext context, IQuery query)
         {
-            var contextType = payload.Context.GetType();
-            var queryType = payload.Object.GetType();
+            var contextType = typeof(TAppContext);
+            var queryType = query.GetType();
             StringBuilder key = new StringBuilder();
             key.Append(queryType.Name);
-            SerializeProperties(key, contextType, payload.Context);
+            SerializeProperties(key, contextType, context);
             key.Append('-');
-            SerializeProperties(key, queryType, payload.Object);
+            SerializeProperties(key, queryType, query);
             return key.ToString();
         }
 

@@ -17,7 +17,7 @@ namespace LeanCode.ContractsGenerator
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(IQuery<,>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(IQuery<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location)
         };

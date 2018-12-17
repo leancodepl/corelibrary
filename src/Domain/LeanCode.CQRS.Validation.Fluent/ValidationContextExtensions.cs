@@ -7,7 +7,6 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         public const string ComponentContextKey = "ComponentContext";
         public const string AppContextKey = "AppContext";
-        public const string ObjectContextKey = "ObjectContext";
 
         public static TAppContext AppContext<TAppContext>(this ValidationContext ctx)
         {
@@ -18,18 +17,6 @@ namespace LeanCode.CQRS.Validation.Fluent
             else
             {
                 return default(TAppContext);
-            }
-        }
-
-        public static TContext ObjectContext<TContext>(this ValidationContext ctx)
-        {
-            if (ctx.RootContextData.TryGetValue(ObjectContextKey, out var ac))
-            {
-                return (TContext)ac;
-            }
-            else
-            {
-                return default(TContext);
             }
         }
 

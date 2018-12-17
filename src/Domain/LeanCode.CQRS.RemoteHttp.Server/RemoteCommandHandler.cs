@@ -61,10 +61,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TContext, TCommand>(
+        private Task<CommandResult> ExecuteCommand<TCommand>(
             TAppContext appContext,
             object cmd)
-            where TCommand : IRemoteCommand<TContext>
+            where TCommand : IRemoteCommand
         {
             var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>();
             return commandExecutor.RunAsync(appContext, (TCommand)cmd);
@@ -72,14 +72,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private static MethodInfo MakeExecutorMethod(Type commandType)
         {
-            var types = commandType
-                .GetInterfaces()
-                .Single(i =>
-                    i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(ICommand<>))
-                .GenericTypeArguments;
-            var contextType = types[0];
-            return ExecCommandMethod.MakeGenericMethod(contextType, commandType);
+            return ExecCommandMethod.MakeGenericMethod(commandType);
         }
     }
 }

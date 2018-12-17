@@ -35,8 +35,8 @@ namespace LeanCode.CQRS.Tests
             builder.RegisterType<SampleValidator>().AsImplementedInterfaces();
             builder.RegisterType<SingleInstanceCommandHandler>().AsImplementedInterfaces().AsSelf().SingleInstance();
             builder.RegisterType<SingleInstanceQueryHandler>().AsImplementedInterfaces().AsSelf().SingleInstance();
-            builder.RegisterType<SamplePipelineElement<CommandExecutionPayload, CommandResult>>().AsSelf().SingleInstance();
-            builder.RegisterType<SamplePipelineElement<QueryExecutionPayload, object>>().AsSelf().SingleInstance();
+            builder.RegisterType<SamplePipelineElement<ICommand, CommandResult>>().AsSelf().SingleInstance();
+            builder.RegisterType<SamplePipelineElement<IQuery, object>>().AsSelf().SingleInstance();
             Container = builder.Build();
 
             CommandExecutor = Container.Resolve<ICommandExecutor<AppContext>>();
@@ -69,11 +69,11 @@ namespace LeanCode.CQRS.Tests
             ICustomAuthorizerWrapper wrapper;
             if (typeof(TData).IsAssignableTo<ICommand>())
             {
-                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(CommandExecutionPayload));
+                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(ICommand));
             }
             else
             {
-                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(QueryExecutionPayload));
+                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(IQuery));
             }
             var underlying = SampleAuthorizer.LastInstance.Value;
             return (wrapper, underlying);

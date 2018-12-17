@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Validation
 {
     public class ValidationElement<TAppContext>
-        : IPipelineElement<TAppContext, CommandExecutionPayload, CommandResult>
+        : IPipelineElement<TAppContext, ICommand, CommandResult>
         where TAppContext : IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement<TAppContext>>();
@@ -20,23 +19,20 @@ namespace LeanCode.CQRS.Validation
 
         public async Task<CommandResult> ExecuteAsync(
             TAppContext appContext,
-            CommandExecutionPayload payload,
-            Func<TAppContext, CommandExecutionPayload, Task<CommandResult>> next)
+            ICommand payload,
+            Func<TAppContext, ICommand, Task<CommandResult>> next)
         {
-            var context = payload.Context;
-            var command = payload.Object;
-
-            var commandType = command.GetType();
+            var commandType = payload.GetType();
             var validator = resolver.FindCommandValidator(commandType);
             if (!(validator is null))
             {
                 var result = await validator
-                    .ValidateAsync(appContext, context, command)
+                    .ValidateAsync(appContext, payload)
                     .ConfigureAwait(false);
                 if (!result.IsValid)
                 {
                     logger.Information("Command {@Command} is not valid with result {@Result}",
-                        command, result);
+                        payload, result);
                     return CommandResult.NotValid(result);
                 }
             }
@@ -46,8 +42,8 @@ namespace LeanCode.CQRS.Validation
 
     public static class PipelineBuilderExtensions
     {
-        public static PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> Validate<TAppContext>(
-            this PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> builder)
+        public static PipelineBuilder<TAppContext, ICommand, CommandResult> Validate<TAppContext>(
+            this PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
             where TAppContext : IPipelineContext
         {
             return builder.Use<ValidationElement<TAppContext>>();

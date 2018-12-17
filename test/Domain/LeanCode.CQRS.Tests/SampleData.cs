@@ -15,30 +15,17 @@ namespace LeanCode.CQRS.Tests
         IPipelineScope IPipelineContext.Scope { get; set; }
     }
 
-    public class ObjContext
-    {
-        public AppContext SourceAppContext { get; set; }
-    }
-
-    public class ObjContextFromAppContext : IObjectContextFromAppContextFactory<AppContext, ObjContext>
-    {
-        public ObjContext Create(AppContext appContext)
-        {
-            return new ObjContext { SourceAppContext = appContext };
-        }
-    }
-
-    public class SampleCommand : ICommand<ObjContext>, IAuthorizerData
+    public class SampleCommand : ICommand, IAuthorizerData
     { }
 
-    public class SampleQuery : IQuery<ObjContext, object>, IAuthorizerData
+    public class SampleQuery : IQuery<object>, IAuthorizerData
     { }
 
-    public class SampleCommandHandler : ICommandHandler<ObjContext, SampleCommand>
+    public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
     {
         public static readonly AsyncLocal<SampleCommandHandler> LastInstance = new AsyncLocal<SampleCommandHandler>();
 
-        public ObjContext Context { get; private set; }
+        public AppContext Context { get; private set; }
         public SampleCommand Command { get; private set; }
 
         public SampleCommandHandler()
@@ -47,7 +34,7 @@ namespace LeanCode.CQRS.Tests
             LastInstance.Value = this;
         }
 
-        public Task ExecuteAsync(ObjContext context, SampleCommand command)
+        public Task ExecuteAsync(AppContext context, SampleCommand command)
         {
             Context = context;
             Command = command;
@@ -56,11 +43,11 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class SampleQueryHandler : IQueryHandler<ObjContext, SampleQuery, object>
+    public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, object>
     {
         public static readonly AsyncLocal<SampleQueryHandler> LastInstance = new AsyncLocal<SampleQueryHandler>();
 
-        public ObjContext Context { get; private set; }
+        public AppContext Context { get; private set; }
         public SampleQuery Query { get; private set; }
         public object Result { get; set; }
 
@@ -69,7 +56,7 @@ namespace LeanCode.CQRS.Tests
             LastInstance.Value = this;
         }
 
-        public Task<object> ExecuteAsync(ObjContext context, SampleQuery query)
+        public Task<object> ExecuteAsync(AppContext context, SampleQuery query)
         {
             Context = context;
             Query = query;
@@ -78,20 +65,19 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class NoCHCommand : ICommand<ObjContext> { }
-    public class NoQHQuery : IQuery<ObjContext, object> { }
+    public class NoCHCommand : ICommand { }
+    public class NoQHQuery : IQuery<object> { }
 
     public interface HasSampleAuthorizer
     { }
 
     public interface IAuthorizerData { }
 
-    public class SampleAuthorizer : CustomAuthorizer<AppContext, ObjContext, IAuthorizerData, object>, HasSampleAuthorizer
+    public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, HasSampleAuthorizer
     {
         public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new AsyncLocal<SampleAuthorizer>();
 
         public AppContext AppContext { get; set; }
-        public ObjContext Context { get; private set; }
         public IAuthorizerData Object { get; private set; }
         public object Data { get; private set; }
         public bool Result { get; set; }
@@ -103,12 +89,10 @@ namespace LeanCode.CQRS.Tests
 
         protected override Task<bool> CheckIfAuthorizedAsync(
             AppContext appContext,
-            ObjContext objContext,
             IAuthorizerData obj,
             object additionalData)
         {
             AppContext = appContext;
-            Context = objContext;
             Object = obj;
             Data = additionalData;
             return Task.FromResult(Result);
@@ -145,12 +129,11 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class SampleValidator : ICommandValidator<AppContext, ObjContext, SampleCommand>
+    public class SampleValidator : ICommandValidator<AppContext, SampleCommand>
     {
         public static readonly AsyncLocal<SampleValidator> LastInstance = new AsyncLocal<SampleValidator>();
 
         public AppContext AppContext { get; private set; }
-        public ObjContext Context { get; private set; }
         public SampleCommand Command { get; private set; }
 
         public ValidationResult Result { get; set; } = new ValidationResult(new ValidationError[0]);
@@ -160,25 +143,24 @@ namespace LeanCode.CQRS.Tests
             LastInstance.Value = this;
         }
 
-        public Task<ValidationResult> ValidateAsync(AppContext appContext, ObjContext context, SampleCommand command)
+        public Task<ValidationResult> ValidateAsync(AppContext appContext, SampleCommand command)
         {
             AppContext = appContext;
-            Context = context;
             Command = command;
 
             return Task.FromResult(Result);
         }
     }
 
-    public class SingleInstanceCommand : ICommand<ObjContext>
+    public class SingleInstanceCommand : ICommand
     { }
 
-    public class SingleInstanceCommandHandler : ICommandHandler<ObjContext, SingleInstanceCommand>
+    public class SingleInstanceCommandHandler : ICommandHandler<AppContext, SingleInstanceCommand>
     {
-        public ObjContext Context { get; private set; }
+        public AppContext Context { get; private set; }
         public SingleInstanceCommand Command { get; private set; }
 
-        public Task ExecuteAsync(ObjContext context, SingleInstanceCommand command)
+        public Task ExecuteAsync(AppContext context, SingleInstanceCommand command)
         {
             Context = context;
             Command = command;
@@ -187,16 +169,16 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class SingleInstanceQuery : IQuery<ObjContext, object>
+    public class SingleInstanceQuery : IQuery<object>
     { }
 
-    public class SingleInstanceQueryHandler : IQueryHandler<ObjContext, SingleInstanceQuery, object>
+    public class SingleInstanceQueryHandler : IQueryHandler<AppContext, SingleInstanceQuery, object>
     {
-        public ObjContext Context { get; private set; }
+        public AppContext Context { get; private set; }
         public SingleInstanceQuery Query { get; private set; }
         public object Result { get; set; }
 
-        public Task<object> ExecuteAsync(ObjContext context, SingleInstanceQuery query)
+        public Task<object> ExecuteAsync(AppContext context, SingleInstanceQuery query)
         {
             Context = context;
             Query = query;

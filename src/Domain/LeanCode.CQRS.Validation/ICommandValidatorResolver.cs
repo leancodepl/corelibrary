@@ -13,6 +13,6 @@ namespace LeanCode.CQRS.Validation
     /// </summary>
     public interface ICommandValidatorWrapper
     {
-        Task<ValidationResult> ValidateAsync(object appContext, object context, ICommand command);
+        Task<ValidationResult> ValidateAsync(object appContext, ICommand command);
     }
 }

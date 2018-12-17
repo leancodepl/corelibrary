@@ -9,6 +9,8 @@ namespace LeanCode.CQRS.Default.Autofac
 {
     class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
     {
+        private static readonly Type AppContextType = typeof(TAppContext);
+
         private static readonly Type HandlerBase = typeof(IQueryHandler<,,>);
         private static readonly Type HandlerWrapperBase = typeof(QueryHandlerWrapper<,,>);
         private static readonly TypesCache typesCache = new TypesCache(GetTypes, HandlerBase, HandlerWrapperBase);
@@ -40,12 +42,11 @@ namespace LeanCode.CQRS.Default.Autofac
                 .GetInterfaces()
                 .Where(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IQuery<,>))
+                    i.GetGenericTypeDefinition() == typeof(IQuery<>))
                 .Single()
                 .GenericTypeArguments;
-            var contextType = types[0];
-            var resultType = types[1];
-            return new[] { contextType, queryType, resultType };
+            var resultType = types[0];
+            return new[] { AppContextType, queryType, resultType };
         }
     }
 }
