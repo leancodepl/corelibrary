@@ -105,6 +105,7 @@ namespace LeanCode.ContractsGenerator
             {
                 Name = info.Name,
                 Namespace = info.ContainingNamespace.ToString(),
+                IsClass = info.BaseType != null,
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
                 Extends = baseTypes,

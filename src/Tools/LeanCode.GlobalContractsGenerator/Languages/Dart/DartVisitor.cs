@@ -278,8 +278,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 {
                     int i = 0;
 
-                    // Assuming IInterface name convention
-                    if (!statement.Extends[0].Name.StartsWith("I"))
+                    if (statement.IsClass)
                     {
                         definitionsBuilder.Append(" extends ");
                         VisitTypeStatement(statement.Extends[0]);
