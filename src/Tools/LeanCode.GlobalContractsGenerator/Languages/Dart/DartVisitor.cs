@@ -10,8 +10,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     class DartVisitor : ILanguageVisitor
     {
-        private readonly StringBuilder definitionsBuilder;
-        private readonly StringBuilder paramsBuilder;
+        private readonly StringBuilder definitionsBuilder = new StringBuilder();
+        private readonly StringBuilder paramsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
         private readonly HashSet<string> usedSymbols = new HashSet<string>();
         private string namespaceName;
@@ -19,9 +19,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         public DartVisitor(DartConfiguration configuration)
         {
             this.configuration = configuration;
-
-            definitionsBuilder = new StringBuilder();
-            paramsBuilder = new StringBuilder();
         }
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
