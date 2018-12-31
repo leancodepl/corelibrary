@@ -104,7 +104,7 @@ namespace LeanCode.ContractsGenerator
             var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
-                Namespace = info.ContainingNamespace.ToString(),
+                Namespace = GetFullNamespaceName(info.ContainingNamespace),
                 IsClass = info.BaseType != null,
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),

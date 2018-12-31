@@ -83,26 +83,28 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             foreach (var value in statement.Values)
             {
-                VisitEnumValueStatement(value, level + 1);
+                VisitEnumValueStatement(value, name, level + 1);
             }
+
+            definitionsBuilder
+                .AppendSpaces(level + 1)
+                .AppendLine("final int value;")
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine("dynamic toJsonMap() => value;");
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
                 .AppendLine();
         }
 
-        private void VisitEnumValueStatement(EnumValueStatement statement, int level)
+        private void VisitEnumValueStatement(EnumValueStatement statement, string parentName, int level)
         {
             definitionsBuilder.AppendSpaces(level)
-                .Append("static const ")
-                .Append(statement.Name);
-
-            if (!string.IsNullOrWhiteSpace(statement.Value))
-            {
-                definitionsBuilder.Append(" = ").Append(statement.Value);
-            }
-
-            definitionsBuilder.AppendLine(";");
+                .Append("const ")
+                .Append($"{parentName}.{statement.Name.Uncapitalize()}")
+                .Append($"() : value = {statement.Value};")
+                .AppendLine();
         }
 
         private void VisitTypeStatement(TypeStatement statement)
@@ -201,9 +203,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
         {
-            VisitInterfaceStatement(statement, level, parentName);
+            VisitInterfaceStatement(statement, level, parentName, true);
 
-            var name = Char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
+            var name = statement.Name.Uncapitalize();
 
             paramsBuilder.AppendSpaces(1)
                 .Append("\"")
@@ -217,7 +219,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitQueryStatement(QueryStatement statement, int level, string parentName)
         {
-            VisitInterfaceStatement(statement, level, parentName);
+            VisitInterfaceStatement(statement, level, parentName, true, true);
 
             var name = Char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
 
@@ -231,7 +233,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine(",");
         }
 
-        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName)
+        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
             var name = Mangle(parentName, statement.Name);
 
@@ -311,6 +313,24 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     VisitFieldStatement(field, level + 1);
                 }
 
+                if (includeFullName)
+                {
+                    definitionsBuilder
+                        .AppendLine()
+                        .AppendSpaces(level + 1)
+                        .AppendLine("@override")
+                        .AppendSpaces(level + 1)
+                        .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';");
+                }
+
+                if (includeResultFactory)
+                {
+                    GenerateResultFactory(statement, level);
+                }
+
+                GenerateToJsonMethod(statement, level);
+                GenerateFromJsonMethod(name, statement.Fields, level);
+
                 definitionsBuilder.AppendSpaces(level);
                 definitionsBuilder.AppendLine("}");
                 definitionsBuilder.AppendLine();
@@ -323,6 +343,118 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     Visit(child, level, parentName + "." + statement.Name);
                 }
             }
+        }
+
+        private void GenerateResultFactory(InterfaceStatement statement, int level)
+        {
+            var result = statement.Extends
+                .Where(x => x.Name == "IRemoteQuery")
+                .First()
+                .TypeArguments.Last();
+
+            definitionsBuilder
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine("@override")
+                .AppendSpaces(level + 1);
+
+            VisitTypeStatement(result);
+
+            if (result.IsArrayLike)
+            {
+                definitionsBuilder
+                    .AppendLine("resultFactory(decodedJson) {");
+
+                definitionsBuilder
+                    .AppendSpaces(level + 2)
+                    .AppendLine("decodedJson")
+                    .AppendSpaces(level + 3)
+                    .Append(".map((x) => ");
+
+                VisitTypeStatement(result.TypeArguments.First());
+
+                definitionsBuilder
+                    .AppendLine(".fromJson(x))")
+                    .AppendSpaces(level + 3)
+                    .AppendLine(".toList(growable: false);");
+            }
+            else
+            {
+                definitionsBuilder
+                    .Append($"resultFactory(decodedJson) => ");
+
+                VisitTypeStatement(result);
+                definitionsBuilder
+                    .AppendLine(".fromJson(decodedJson);");
+            }
+
+            definitionsBuilder
+                .AppendSpaces(level + 1)
+                .AppendLine("}");
+        }
+
+        private void GenerateToJsonMethod(InterfaceStatement statement, int level)
+        {
+            definitionsBuilder
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine("Map<String, dynamic> toJsonMap() {");
+
+            definitionsBuilder
+                .AppendSpaces(level + 2)
+                .AppendLine("return <String, dynamic>{");
+
+            foreach (var field in statement.Fields)
+            {
+                var serializedField = field.Name.Uncapitalize();
+
+                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+                {
+                    serializedField += ".toJsonMap()";
+                }
+
+                definitionsBuilder
+                    .AppendSpaces(level + 3)
+                    .AppendLine($"'{field.Name.Capitalize()}': {serializedField},");
+            }
+
+            definitionsBuilder
+                .AppendSpaces(level + 2)
+                .AppendLine("};");
+
+            definitionsBuilder
+                .AppendSpaces(level + 1)
+                .AppendLine("}");
+        }
+
+        private void GenerateFromJsonMethod(string name, List<FieldStatement> fields, int level)
+        {
+            definitionsBuilder
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .Append($"static {name} fromJson(Map json) => {name}()");
+
+            foreach (var field in fields)
+            {
+                var value = $"json['{field.Name.Capitalize()}']";
+
+                if (field.Type.Name == "DateTime")
+                {
+                    value = $"DateTime.parse(normalizeDate({value}))";
+                }
+                else if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+                {
+                    value = $"{field.Type.Name.Capitalize()}.fromJson({value})";
+                }
+
+                definitionsBuilder
+                    .AppendLine()
+                    .AppendSpaces(level + 2)
+                    .Append($"..{field.Name.Uncapitalize()} = {value}");
+            }
+
+            definitionsBuilder
+                .AppendLine(";");
         }
 
         private string Mangle(string namespaceName, string identifier)
