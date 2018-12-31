@@ -7,12 +7,12 @@ namespace LeanCode.ContractsGenerator.Extensions
     {
         public static string Uncapitalize(this string str)
         {
-            return str.First().ToString().ToLowerInvariant() + string.Join("", str.Skip(1));
+            return char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
 
         public static string Capitalize(this string str)
         {
-            return str.First().ToString().ToUpperInvariant() + string.Join("", str.Skip(1));
+            return char.ToUpperInvariant(str[0]) + str.Substring(1);
         }
     }
 }
