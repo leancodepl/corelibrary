@@ -104,7 +104,7 @@ namespace LeanCode.ContractsGenerator
             var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
-                Namespace = GetFullNamespaceName(info.ContainingNamespace),
+                Namespace = GetFullNamespaceName(info.ContainingNamespace, info.ContainingType),
                 IsClass = info.BaseType != null,
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
@@ -268,6 +268,7 @@ namespace LeanCode.ContractsGenerator
                         return new TypeStatement
                         {
                             Name = type.Name,
+                            Namespace = GetFullNamespaceName(type.ContainingNamespace),
                             IsDictionary = true,
                             TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
                         };
@@ -277,6 +278,7 @@ namespace LeanCode.ContractsGenerator
                         return new TypeStatement
                         {
                             Name = type.Name,
+                            Namespace = GetFullNamespaceName(type.ContainingNamespace),
                             IsArrayLike = true,
                             TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
                         };
@@ -291,13 +293,15 @@ namespace LeanCode.ContractsGenerator
                     }
                     return new TypeStatement
                     {
-                        Name = type.Name
+                        Name = type.ContainingType != null ? type.ContainingType.Name + "." : "" + type.Name,
+                        Namespace = GetFullNamespaceName(type.ContainingNamespace),
                     };
 
                 case IArrayTypeSymbol type:
                     return new TypeStatement
                     {
                         Name = type.Name,
+                        Namespace = GetFullNamespaceName(type.ContainingNamespace),
                         IsArrayLike = true,
                         TypeArguments = new List<TypeStatement> { ConvertType(type.ElementType) }
                     };
@@ -305,26 +309,35 @@ namespace LeanCode.ContractsGenerator
                 case ITypeParameterSymbol type:
                     return new TypeStatement
                     {
-                        Name = type.Name
+                        Name = type.Name,
+                        Namespace = GetFullNamespaceName(type.ContainingNamespace),
                     };
 
                 case IDynamicTypeSymbol type:
                     return new TypeStatement
                     {
-                        Name = "dynamic"
+                        Name = "dynamic",
                     };
 
                 default: throw new Exception("Unknown type.");
             }
         }
 
-        private static string GetFullNamespaceName(INamespaceSymbol info)
+        private static string GetFullNamespaceName(INamespaceSymbol info, INamedTypeSymbol type = null)
         {
             if (info.ContainingNamespace.IsGlobalNamespace)
             {
                 return info.Name;
             }
-            return GetFullNamespaceName(info.ContainingNamespace) + "." + info.Name;
+
+            var name = info.Name;
+
+            if (type != null)
+            {
+                name = $"{name}.{type.Name}";
+            }
+
+            return GetFullNamespaceName(info.ContainingNamespace) + "." + name;
         }
 
         private static bool IsCommandOrQuery(INamedTypeSymbol info)

@@ -41,12 +41,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             foreach (var child in statement.Children)
             {
-                switch (child)
+                if (child is InterfaceStatement || child is EnumStatement)
                 {
-                    case EnumStatement s1:
-                    case InterfaceStatement s2:
-                        symbols.Add((child.Name, child as INamespacedStatement));
-                        break;
+                    symbols.Add((child.Name, child as INamespacedStatement));
+
+                    if (child is InterfaceStatement iStmt)
+                    {
+                        symbols.AddRange(iStmt.Children.Select(x => (x.Name, x as INamespacedStatement)));
+                    }
                 }
             }
 
@@ -54,7 +56,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .GroupBy(x => x.name)
                 .Select(MangleGroup)
                 .SelectMany(x => x)
-                .ToDictionary(x => $"{x.statement.Namespace}.{x.name}", x => x.name);
+                .ToDictionary(x => Mangle(x.statement.Namespace, x.statement.Name), x => x.name);
         }
 
         private void Visit(IStatement statement, int level, string parentName)
@@ -84,7 +86,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitEnumStatement(EnumStatement statement, int level)
         {
-            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
+            var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
 
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
@@ -119,8 +121,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitTypeStatement(TypeStatement statement)
         {
-            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
-
             if (statement.IsDictionary)
             {
                 definitionsBuilder.Append("Map<");
@@ -143,6 +143,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
             else if (statement.TypeArguments.Count > 0)
             {
+                var name = statement.Name;
+
+                if (!configuration.UnmangledTypes.Contains(statement.Name))
+                    name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+
                 definitionsBuilder.Append(name);
                 definitionsBuilder.Append("<");
 
@@ -164,6 +169,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
             else
             {
+                var name = statement.Name;
+
+                if (!configuration.UnmangledTypes.Contains(statement.Name))
+                    name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+
                 definitionsBuilder.Append(name);
             }
         }
@@ -225,7 +235,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
-            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
+            var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
 
             if (!statement.IsStatic)
             {
@@ -346,13 +356,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             if (result.IsArrayLike)
             {
                 definitionsBuilder
-                    .AppendLine("resultFactory(decodedJson) {");
+                    .AppendLine(" resultFactory(dynamic decodedJson) {");
 
                 definitionsBuilder
                     .AppendSpaces(level + 2)
                     .AppendLine("decodedJson")
                     .AppendSpaces(level + 3)
-                    .Append(".map((x) => ");
+                    .Append(".map((dynamic x) => ");
 
                 VisitTypeStatement(result.TypeArguments.First());
 
@@ -360,26 +370,25 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendLine(".fromJson(x))")
                     .AppendSpaces(level + 3)
                     .AppendLine(".toList(growable: false);");
+
+                definitionsBuilder
+                    .AppendSpaces(level + 1)
+                    .AppendLine("}");
             }
             else
             {
                 definitionsBuilder
-                    .Append($"resultFactory(decodedJson) => ");
+                    .Append($" resultFactory(dynamic decodedJson) => ");
 
                 VisitTypeStatement(result);
                 definitionsBuilder
                     .AppendLine(".fromJson(decodedJson);");
             }
-
-            definitionsBuilder
-                .AppendSpaces(level + 1)
-                .AppendLine("}");
         }
 
         private void GenerateToJsonMethod(InterfaceStatement statement, int level)
         {
             definitionsBuilder
-                .AppendLine()
                 .AppendSpaces(level + 1)
                 .AppendLine("Map<String, dynamic> toJsonMap() {");
 
@@ -427,7 +436,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 }
                 else if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
                 {
-                    value = $"{field.Type.Name.Capitalize()}.fromJson({value})";
+                    value = $"{mangledNames[Mangle(field.Type.Namespace, field.Type.Name)]}.fromJson({value})";
                 }
 
                 definitionsBuilder
@@ -445,12 +454,16 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             if (configuration.UnmangledTypes.Any(x => identifier == x))
                 return identifier;
 
-            return $"{namespaceName.Replace('.', '_')}_{identifier}";
+            return $"{namespaceName}.{identifier}".Replace('.', '_');
         }
 
         private IList<(string name, INamespacedStatement statement)> MangleGroup(IGrouping<string, (string name, INamespacedStatement statement)> group)
         {
-            return group.Select(x => ($"{x.statement.Namespace}.{x.name}", x.statement)).ToList();
+            var mangle = group.Count() > 1;
+
+            return group
+                .Select(x => (mangle ? Mangle(x.statement.Namespace, x.name) : x.name, x.statement))
+                .ToList();
         }
     }
 }
