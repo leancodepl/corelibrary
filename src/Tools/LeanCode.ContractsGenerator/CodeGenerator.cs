@@ -120,14 +120,14 @@ namespace LeanCode.ContractsGenerator
                 {
                     return new CommandStatement(interfaceStatement)
                     {
-                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
+                        Namespace = GetFullNamespaceName(info.ContainingNamespace)
                     };
                 }
                 else if (IsRemoteQuery(info))
                 {
                     return new QueryStatement(interfaceStatement)
                     {
-                        NamespaceName = GetFullNamespaceName(info.ContainingNamespace)
+                        Namespace = GetFullNamespaceName(info.ContainingNamespace)
                     };
                 }
             }

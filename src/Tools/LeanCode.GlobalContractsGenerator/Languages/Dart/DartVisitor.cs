@@ -11,9 +11,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
     class DartVisitor : ILanguageVisitor
     {
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
-        private readonly StringBuilder paramsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
-        private readonly HashSet<string> usedSymbols = new HashSet<string>();
+        private Dictionary<string, string> mangledNames;
         private string namespaceName;
 
         public DartVisitor(DartConfiguration configuration)
@@ -25,6 +24,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
 
+            GenerateTypeNames(statement);
+
             Visit(statement, 0, null);
 
             yield return new LanguageFileOutput
@@ -32,12 +33,28 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 Name = statement.Name + ".dart",
                 Content = definitionsBuilder.ToString()
             };
+        }
 
-            yield return new LanguageFileOutput
+        private void GenerateTypeNames(ClientStatement statement)
+        {
+            var symbols = new List<(string name, INamespacedStatement statement)>();
+
+            foreach (var child in statement.Children)
             {
-                Name = statement.Name + "_client.dart",
-                Content = ""
-            };
+                switch (child)
+                {
+                    case EnumStatement s1:
+                    case InterfaceStatement s2:
+                        symbols.Add((child.Name, child as INamespacedStatement));
+                        break;
+                }
+            }
+
+            mangledNames = symbols
+                .GroupBy(x => x.name)
+                .Select(MangleGroup)
+                .SelectMany(x => x)
+                .ToDictionary(x => $"{x.statement.Namespace}.{x.name}", x => x.name);
         }
 
         private void Visit(IStatement statement, int level, string parentName)
@@ -67,19 +84,12 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitEnumStatement(EnumStatement statement, int level)
         {
-            var name = Mangle(namespaceName, statement.Name);
-
-            if (usedSymbols.Contains(name))
-            {
-                name = Mangle(Mangle(namespaceName, statement.Namespace), name);
-            }
+            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
 
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
                 .Append(name)
                 .AppendLine(" {");
-
-            usedSymbols.Add(name);
 
             foreach (var value in statement.Values)
             {
@@ -109,6 +119,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitTypeStatement(TypeStatement statement)
         {
+            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
+
             if (statement.IsDictionary)
             {
                 definitionsBuilder.Append("Map<");
@@ -131,7 +143,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
             else if (statement.TypeArguments.Count > 0)
             {
-                definitionsBuilder.Append(Mangle(namespaceName, statement.Name));
+                definitionsBuilder.Append(name);
                 definitionsBuilder.Append("<");
 
                 for (int i = 0; i < statement.TypeArguments.Count; i++)
@@ -146,13 +158,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 definitionsBuilder.Append(">");
             }
-            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out string name))
+            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out string newName))
             {
-                definitionsBuilder.Append(name);
+                definitionsBuilder.Append(newName);
             }
             else
             {
-                definitionsBuilder.Append(Mangle(namespaceName, statement.Name));
+                definitionsBuilder.Append(name);
             }
         }
 
@@ -204,57 +216,28 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
         {
             VisitInterfaceStatement(statement, level, parentName, true);
-
-            var name = statement.Name.Uncapitalize();
-
-            paramsBuilder.AppendSpaces(1)
-                .Append("\"")
-                .Append(name)
-                .Append("\": ")
-                .Append(parentName)
-                .Append(".")
-                .Append(statement.Name)
-                .AppendLine(",");
         }
 
         private void VisitQueryStatement(QueryStatement statement, int level, string parentName)
         {
             VisitInterfaceStatement(statement, level, parentName, true, true);
-
-            var name = Char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
-
-            paramsBuilder.AppendSpaces(1)
-                .Append("\"")
-                .Append(name)
-                .Append("\": ")
-                .Append(parentName)
-                .Append(".")
-                .Append(statement.Name)
-                .AppendLine(",");
         }
 
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
-            var name = Mangle(parentName, statement.Name);
-
-            if (usedSymbols.Contains(name))
-            {
-                name = Mangle(Mangle(parentName, statement.Namespace), name);
-            }
+            var name = mangledNames[$"{statement.Namespace}.{statement.Name}"];
 
             if (!statement.IsStatic)
             {
                 if (statement.Extends.Any(x => x.Name == "Enum"))
                 {
-                    VisitEnumStatement(new EnumStatement { Name = Mangle(parentName, statement.Name) }, level);
+                    VisitEnumStatement(new EnumStatement { Name = name }, level);
                     return;
                 }
 
                 definitionsBuilder.AppendSpaces(level)
                     .Append("class ")
                     .Append(name);
-
-                usedSymbols.Add(name);
 
                 if (statement.Parameters.Any())
                 {
@@ -463,6 +446,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 return identifier;
 
             return $"{namespaceName.Replace('.', '_')}_{identifier}";
+        }
+
+        private IList<(string name, INamespacedStatement statement)> MangleGroup(IGrouping<string, (string name, INamespacedStatement statement)> group)
+        {
+            return group.Select(x => ($"{x.statement.Namespace}.{x.name}", x.statement)).ToList();
         }
     }
 }

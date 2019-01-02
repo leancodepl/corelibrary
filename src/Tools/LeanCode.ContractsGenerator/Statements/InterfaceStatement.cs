@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace LeanCode.ContractsGenerator.Statements
 {
-    class InterfaceStatement : IStatement
+    class InterfaceStatement : INamespacedStatement
     {
         public string Name { get; set; } = string.Empty;
         public bool IsStatic { get; set; } = false;
