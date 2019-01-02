@@ -1,7 +1,7 @@
 using Xunit;
-using static LeanCode.ContractsGenerator.Tests.ContractsGeneratorTestHelpers;
+using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTestHelpers;
 
-namespace LeanCode.ContractsGenerator.Tests
+namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
     public partial class ContractsGeneratorTests
     {

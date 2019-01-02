@@ -7,7 +7,7 @@ using LeanCode.ContractsGenerator;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
 using LeanCode.ContractsGenerator.Languages;
 
-namespace LeanCode.ContractsGenerator.Tests
+namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
     static class ContractsGeneratorTestHelpers
     {

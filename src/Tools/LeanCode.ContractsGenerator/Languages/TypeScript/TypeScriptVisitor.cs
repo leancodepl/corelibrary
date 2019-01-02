@@ -263,7 +263,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .Append(name)
                 .Append(": ")
                 .Append("cqrsClient.executeCommand.bind(cqrsClient, \"")
-                .Append(statement.NamespaceName)
+                .Append(statement.Namespace)
                 .Append(".")
                 .Append(statement.Name)
                 .AppendLine("\"),");
@@ -288,7 +288,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .Append(name)
                 .Append(": ")
                 .Append("cqrsClient.executeQuery.bind(cqrsClient, \"")
-                .Append(statement.NamespaceName)
+                .Append(statement.Namespace)
                 .Append(".")
                 .Append(statement.Name)
                 .AppendLine("\"),");
