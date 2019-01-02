@@ -67,7 +67,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 case ClientStatement stmt: VisitClientStatement(stmt, level); break;
                 case EnumStatement stmt: VisitEnumStatement(stmt, level); break;
-                case ConstStatement stmt: VisitConstStatement(stmt, level); break;
 
                 case CommandStatement stmt: VisitCommandStatement(stmt, level, parentName); break;
                 case QueryStatement stmt: VisitQueryStatement(stmt, level, parentName); break;
@@ -183,20 +182,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void VisitConstStatement(ConstStatement statement, int level)
-        {
-            definitionsBuilder.AppendSpaces(level)
-                .Append("const ")
-                .Append(statement.Name);
-
-            if (!string.IsNullOrWhiteSpace(statement.Value))
-            {
-                definitionsBuilder.Append(" = ").Append(statement.Value);
-            }
-
-            definitionsBuilder.AppendLine(";");
-        }
-
         private void VisitTypeParameterStatement(TypeParameterStatement statement)
         {
             definitionsBuilder.Append(statement.Name);
@@ -242,99 +227,105 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
 
-            if (!statement.IsStatic)
+            if (statement.Extends.Any(x => x.Name == "Enum"))
             {
-                if (statement.Extends.Any(x => x.Name == "Enum"))
-                {
-                    VisitEnumStatement(new EnumStatement { Name = name }, level);
-                    return;
-                }
-
-                definitionsBuilder.AppendSpaces(level)
-                    .Append("class ")
-                    .Append(name);
-
-                if (statement.Parameters.Any())
-                {
-                    definitionsBuilder.Append("<");
-
-                    for (int i = 0; i < statement.Parameters.Count; i++)
-                    {
-                        VisitTypeParameterStatement(statement.Parameters[i]);
-
-                        if (i < statement.Parameters.Count - 1)
-                        {
-                            definitionsBuilder.Append(", ");
-                        }
-                    }
-
-                    definitionsBuilder.Append(">");
-                }
-
-                if (statement.Extends.Any())
-                {
-                    int i = 0;
-
-                    if (statement.IsClass)
-                    {
-                        definitionsBuilder.Append(" extends ");
-                        VisitTypeStatement(statement.Extends[0]);
-
-                        if (statement.Extends.Count > 1)
-                        {
-                            definitionsBuilder.Append(" implements ");
-                        }
-
-                        i = 1;
-                    }
-                    else
-                    {
-                        definitionsBuilder.Append(" implements ");
-                        i = 0;
-                    }
-
-                    for (; i < statement.Extends.Count; i++)
-                    {
-                        VisitTypeStatement(statement.Extends[i]);
-
-                        if (i < statement.Extends.Count - 1)
-                        {
-                            definitionsBuilder.Append(", ");
-                        }
-                    }
-                }
-
-                definitionsBuilder.AppendLine(" {");
-
-                foreach (var field in statement.Fields)
-                {
-                    VisitFieldStatement(field, level + 1);
-                }
-
-                if (includeFullName)
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 1)
-                        .AppendLine("@override")
-                        .AppendSpaces(level + 1)
-                        .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';");
-                }
-
-                if (includeResultFactory)
-                {
-                    GenerateResultFactory(statement, level);
-                }
-
-                GenerateToJsonMethod(statement, level);
-                GenerateFromJsonMethod(name, statement.Fields, level);
-
-                definitionsBuilder.AppendSpaces(level);
-                definitionsBuilder.AppendLine("}");
-                definitionsBuilder.AppendLine();
+                VisitEnumStatement(new EnumStatement { Name = name }, level);
+                return;
             }
 
-            if (statement.Children.Any() || statement.Constants.Any())
+            definitionsBuilder.AppendSpaces(level)
+                .Append("class ")
+                .Append(name);
+
+            if (statement.Parameters.Any())
+            {
+                definitionsBuilder.Append("<");
+
+                for (int i = 0; i < statement.Parameters.Count; i++)
+                {
+                    VisitTypeParameterStatement(statement.Parameters[i]);
+
+                    if (i < statement.Parameters.Count - 1)
+                    {
+                        definitionsBuilder.Append(", ");
+                    }
+                }
+
+                definitionsBuilder.Append(">");
+            }
+
+            if (statement.Extends.Any())
+            {
+                int i = 0;
+
+                if (statement.IsClass)
+                {
+                    definitionsBuilder.Append(" extends ");
+                    VisitTypeStatement(statement.Extends[0]);
+
+                    if (statement.Extends.Count > 1)
+                    {
+                        definitionsBuilder.Append(" implements ");
+                    }
+
+                    i = 1;
+                }
+                else
+                {
+                    definitionsBuilder.Append(" implements ");
+                    i = 0;
+                }
+
+                for (; i < statement.Extends.Count; i++)
+                {
+                    VisitTypeStatement(statement.Extends[i]);
+
+                    if (i < statement.Extends.Count - 1)
+                    {
+                        definitionsBuilder.Append(", ");
+                    }
+                }
+            }
+
+            definitionsBuilder.AppendLine(" {");
+
+            foreach (var constant in statement.Constants)
+            {
+                definitionsBuilder
+                    .AppendSpaces(level + 1)
+                    .AppendLine($"static const int {constant.Name} = {constant.Value};");
+            }
+
+            definitionsBuilder.AppendLine();
+
+            foreach (var field in statement.Fields)
+            {
+                VisitFieldStatement(field, level + 1);
+            }
+
+            if (includeFullName)
+            {
+                definitionsBuilder
+                    .AppendLine()
+                    .AppendSpaces(level + 1)
+                    .AppendLine("@override")
+                    .AppendSpaces(level + 1)
+                    .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';");
+            }
+
+            if (includeResultFactory)
+            {
+                GenerateResultFactory(statement, level);
+            }
+
+            GenerateToJsonMethod(statement, level);
+            GenerateFromJsonMethod(name, statement.Fields, level);
+
+            definitionsBuilder.AppendSpaces(level);
+            definitionsBuilder.AppendLine("}");
+            definitionsBuilder.AppendLine();
+
+            if (statement.Children.Any())
             {
                 foreach (var child in statement.Children)
                 {
