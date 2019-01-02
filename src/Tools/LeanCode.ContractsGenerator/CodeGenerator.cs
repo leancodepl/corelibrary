@@ -325,7 +325,10 @@ namespace LeanCode.ContractsGenerator
 
         private static string GetFullNamespaceName(INamespaceSymbol info, INamedTypeSymbol type = null)
         {
-            if (info.ContainingNamespace.IsGlobalNamespace)
+            if (info == null)
+                return string.Empty;
+
+            if (info.ContainingNamespace == null || info.ContainingNamespace.IsGlobalNamespace)
             {
                 return info.Name;
             }
