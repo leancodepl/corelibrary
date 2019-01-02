@@ -103,7 +103,12 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine("final int value;")
                 .AppendLine()
                 .AppendSpaces(level + 1)
-                .AppendLine("dynamic toJsonMap() => value;");
+                .AppendLine($"{name}._(this.value);")
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine("dynamic toJsonMap() => value;")
+                .AppendSpaces(level + 1)
+                .AppendLine($"static {name} fromJson(dynamic json) => {name}._(json);");
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
