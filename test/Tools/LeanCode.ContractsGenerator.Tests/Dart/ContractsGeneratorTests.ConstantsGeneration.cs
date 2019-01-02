@@ -13,29 +13,19 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid: 1", contracts);
-        }
-
-        [Fact]
-        public void Const_string_is_resolved_correctly()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public const string Constant = nameof(Constant); }");
-
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("Constant: \"Constant\"", client);
+            Assert.Contains("Invalid = 1", contracts);
         }
 
         [Fact]
         public void Const_in_nested_static_class_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public static class Constants2 { public const char Value = 'p'; } }");
+            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public static class Constants2 { public const int Value = 1; } }");
 
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Constants: {", client);
-            Assert.Contains("Constants2: {", client);
-            Assert.Contains("Value: \"p\"", client);
+            Assert.Contains("Constants {", contracts);
+            Assert.Contains("Constants2 {", contracts);
+            Assert.Contains("Value = 1", contracts);
         }
 
         [Fact]
@@ -43,40 +33,10 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         {
             var generator = CreateDartGeneratorFromNamespace("public class TestClass : IRemoteCommand { public static class ErrorCodes { public const int Invalid = 1; public const int Empty = 2; } }");
 
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid: 1", client);
-            Assert.Contains("Empty: 2", client);
-        }
-
-        [Fact]
-        public void Const_double_is_resolved_correctly()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public const double Constant = 1.55; }");
-
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("Constant: 1.55", client);
-        }
-
-        [Fact]
-        public void Const_float_is_resolved_correctly()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public const float Constant = 1.55E+1; }");
-
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("Constant: 15.5", client);
-        }
-
-        [Fact]
-        public void Const_char_is_resolved_correctly()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public static class Constants { public const char Constant = 'a'; }");
-
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("Constant: \"a\"", client);
+            Assert.Contains("Invalid = 1", contracts);
+            Assert.Contains("Empty = 2", contracts);
         }
     }
 }

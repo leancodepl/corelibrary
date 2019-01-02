@@ -12,7 +12,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.DoesNotContain("interface TestClass", contracts);
+            Assert.DoesNotContain("TestClass", contracts);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.DoesNotContain("interface TestClass", contracts);
+            Assert.DoesNotContain("TestClass", contracts);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.DoesNotContain("interface TestClass", contracts);
+            Assert.DoesNotContain("TestClass", contracts);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass", contracts);
+            Assert.Contains("class TestClass", contracts);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass<T>", contracts);
+            Assert.Contains("class TestClass<T>", contracts);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass<T extends IInt[]>", contracts);
+            Assert.Contains("class TestClass<T implements List<IInt>", contracts);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass extends IInt", contracts);
+            Assert.Contains("class TestClass extends IInt", contracts);
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass<T> extends IInt<T>", contracts);
+            Assert.Contains("class TestClass<T> extends IInt<T>", contracts);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass extends IInt<number[]>", contracts);
+            Assert.Contains("class TestClass extends IInt<List<int>>", contracts);
         }
 
         [Fact]
@@ -102,18 +102,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("interface TestClass<T> extends IInt<T[]>", contracts);
-        }
-
-        [Fact]
-        public void Nested_class_is_resolved_correctly()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public class TestClass : List<Result> { public class Result {} }");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("interface TestClass extends Result[] {", contracts);
-            Assert.Contains("interface Result {", contracts);
+            Assert.Contains("class TestClass<T> extends IInt<List<T>>", contracts);
         }
 
         [Fact]
@@ -121,10 +110,10 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         {
             var generator = CreateDartGeneratorFromNamespace("public static class ErrorCodes { public const int Invalid = 1; }");
 
-            var client = GetClient(generator.Generate(DefaultDartConfiguration));
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid: 1", client);
-            Assert.Contains("ErrorCodes: {", client);
+            Assert.Contains("Invalid = 1", contracts);
+            Assert.Contains("ErrorCodes {", contracts);
         }
     }
 }

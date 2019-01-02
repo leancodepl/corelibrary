@@ -6,13 +6,13 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
     public partial class ContractsGeneratorTests
     {
         [Fact]
-        public void Int_is_resolved_to_number()
+        public void Int_is_resolved_to_int()
         {
             var generator = CreateDartGeneratorFromClass("public int TestVar { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestVar: number;", contracts);
+            Assert.Contains("int testVar;", contracts);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestVar?: number | null;", contracts);
+            Assert.Contains("int testVar", contracts);
         }
 
         [Fact]
@@ -32,47 +32,47 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestVar?: number | null;", contracts);
+            Assert.Contains("int testVar", contracts);
         }
 
         [Fact]
-        public void Array_is_resolved_to_array()
+        public void Array_is_resolved_to_list()
         {
             var generator = CreateDartGeneratorFromClass("public int[] TestArray { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestArray: number[];", contracts);
+            Assert.Contains("List<int> testArray", contracts);
         }
 
         [Fact]
-        public void List_is_resolved_to_array()
+        public void List_is_resolved_to_list()
         {
             var generator = CreateDartGeneratorFromClass("public List<int> TestArray { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestArray: number[];", contracts);
+            Assert.Contains("List<int> testArray", contracts);
         }
 
         [Fact]
-        public void HashSet_is_resolved_to_array()
+        public void HashSet_is_resolved_to_list()
         {
             var generator = CreateDartGeneratorFromClass("public HashSet<int> TestArray { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("TestArray: number[];", contracts);
+            Assert.Contains("List<int> testArray", contracts);
         }
 
         [Fact]
-        public void Dictionary_is_resolved_to_proper_object()
+        public void Dictionary_is_resolved_to_map()
         {
             var generator = CreateDartGeneratorFromClass("public Dictionary<string, int> TestDictionary { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Matches("TestDictionary: { \\[[a-zA-Z]+: string\\]: number };", contracts);
+            Assert.Contains("Map<String, int> testDictionary", contracts);
         }
     }
 }

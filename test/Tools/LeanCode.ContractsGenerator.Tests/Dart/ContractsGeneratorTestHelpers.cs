@@ -25,7 +25,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
         public static LeanCode.ContractsGenerator.CodeGenerator CreateDartGeneratorFromNamespace(string namespaceBody, string namespaceName = "DartGenerator.Tests")
         {
-            return CreateTsGenerator($@"
+            return CreateDartGenerator($@"
                 using LeanCode.CQRS;
                 using System.Collections.Generic;
 
@@ -50,11 +50,11 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             return output.Where(o => o.Name.EndsWith("dart")).First().Content;
         }
 
-        public static LeanCode.ContractsGenerator.CodeGenerator CreateTsGenerator(params string[] sources)
+        public static LeanCode.ContractsGenerator.CodeGenerator CreateDartGenerator(params string[] sources)
         {
             var trees = sources.Select(s => CSharpSyntaxTree.ParseText(s)).ToList();
 
-            var compilation = CSharpCompilation.Create("TsGeneratorTests")
+            var compilation = CSharpCompilation.Create("DartGeneratorTests")
                 .AddReferences(new[] {
                     MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(HashSet<>).GetTypeInfo().Assembly.Location)

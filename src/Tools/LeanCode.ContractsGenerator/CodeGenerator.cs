@@ -288,6 +288,7 @@ namespace LeanCode.ContractsGenerator
                         return new TypeStatement
                         {
                             Name = type.Name,
+                            Namespace = type is ITypeParameterSymbol ? "" : GetFullNamespaceName(type.ContainingNamespace),
                             TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
                         };
                     }

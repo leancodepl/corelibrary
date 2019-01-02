@@ -131,7 +131,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 VisitTypeStatement(statement.TypeArguments.First());
 
-                definitionsBuilder.Append(",");
+                definitionsBuilder.Append(", ");
 
                 VisitTypeStatement(statement.TypeArguments.Last());
 
@@ -176,7 +176,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var name = statement.Name;
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
-                    name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+                    if (!mangledNames.TryGetValue(Mangle(statement.Namespace, statement.Name), out name))
+                        name = statement.Name;
 
                 definitionsBuilder.Append(name);
             }
@@ -430,15 +431,35 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 {
                     value = $"DateTime.parse(normalizeDate({value}))";
                 }
-                else if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+
+                if (field.Type.IsArrayLike || field.Type.IsDictionary)
                 {
-                    value = $"{mangledNames[Mangle(field.Type.Namespace, field.Type.Name)]}.fromJson({value})";
+                    definitionsBuilder
+                        .AppendLine()
+                        .AppendSpaces(level + 2)
+                        .Append($"..{field.Name.Uncapitalize()} = json.decode({value})");
+
+                    return;
                 }
 
-                definitionsBuilder
-                    .AppendLine()
-                    .AppendSpaces(level + 2)
-                    .Append($"..{field.Name.Uncapitalize()} = {value}");
+                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+                {
+                    definitionsBuilder
+                        .AppendLine()
+                        .AppendSpaces(level + 2)
+                        .Append($"..{field.Name.Uncapitalize()} = ");
+
+                    VisitTypeStatement(field.Type);
+
+                    definitionsBuilder.Append($".fromJson({value})");
+                }
+                else
+                {
+                    definitionsBuilder
+                        .AppendLine()
+                        .AppendSpaces(level + 2)
+                        .Append($"..{field.Name.Uncapitalize()} = {value}");
+                }
             }
 
             definitionsBuilder
@@ -448,6 +469,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private string Mangle(string namespaceName, string identifier)
         {
             if (configuration.UnmangledTypes.Any(x => identifier == x))
+                return identifier;
+
+            if (string.IsNullOrEmpty(namespaceName))
                 return identifier;
 
             return $"{namespaceName}.{identifier}".Replace('.', '_');
