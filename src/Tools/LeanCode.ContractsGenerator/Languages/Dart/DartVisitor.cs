@@ -357,7 +357,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 definitionsBuilder
                     .AppendSpaces(level + 2)
-                    .AppendLine("decodedJson")
+                    .AppendLine("return decodedJson")
                     .AppendSpaces(level + 3)
                     .Append(".map((dynamic x) => ");
 
@@ -397,7 +397,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 var serializedField = field.Name.Uncapitalize();
 
-                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+                if (field.Type.IsArrayLike)
+                {
+                    serializedField = $"json.encode({serializedField})";
+                }
+                else if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
                 {
                     serializedField += ".toJsonMap()";
                 }
@@ -421,11 +425,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder
                 .AppendLine()
                 .AppendSpaces(level + 1)
-                .Append($"static {name} fromJson(Map json) => {name}()");
+                .Append($"static {name} fromJson(Map map) => {name}()");
 
             foreach (var field in fields)
             {
-                var value = $"json['{field.Name.Capitalize()}']";
+                var value = $"map['{field.Name.Capitalize()}']";
 
                 if (field.Type.Name == "DateTime")
                 {
@@ -439,7 +443,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         .AppendSpaces(level + 2)
                         .Append($"..{field.Name.Uncapitalize()} = json.decode({value})");
 
-                    return;
+                    continue;
                 }
 
                 if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
