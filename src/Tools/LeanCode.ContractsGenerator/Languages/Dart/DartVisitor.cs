@@ -366,7 +366,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 definitionsBuilder
                     .AppendLine(".fromJson(x))")
                     .AppendSpaces(level + 3)
-                    .AppendLine(".toList(growable: false);");
+                    .AppendLine(".toList(growable: false)")
+                    .AppendSpaces(level + 3)
+                    .Append(".cast<");
+
+                VisitTypeStatement(result.TypeArguments.First());
+
+                definitionsBuilder
+                    .AppendLine(">();");
 
                 definitionsBuilder
                     .AppendSpaces(level + 1)
@@ -441,7 +448,23 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     definitionsBuilder
                         .AppendLine()
                         .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = json.decode({value})");
+                        .AppendLine($"..{field.Name.Uncapitalize()} = {value}")
+                        .AppendSpaces(level + 3)
+                        .Append(".map((dynamic x) => ");
+
+                    VisitTypeStatement(field.Type.TypeArguments.First());
+
+                    definitionsBuilder
+                        .AppendLine(".fromJson(x))")
+                        .AppendSpaces(level + 3)
+                        .AppendLine(".toList(growable: false)")
+                        .AppendSpaces(level + 3)
+                        .Append(".cast<");
+
+                    VisitTypeStatement(field.Type.TypeArguments.First());
+
+                    definitionsBuilder
+                        .Append(">()");
 
                     continue;
                 }
