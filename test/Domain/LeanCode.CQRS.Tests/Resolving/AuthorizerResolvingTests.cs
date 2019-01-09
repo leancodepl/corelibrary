@@ -43,17 +43,15 @@ namespace LeanCode.CQRS.Tests
         public async Task Passes_correct_data_to_underlying_authorizer()
         {
             var appCtx = new AppContext();
-            var objCtx = new ObjContext();
             var cmd = new SampleCommand();
             var data = new object();
 
             var (handler, underlying) = FindSampleAuthorizer<SampleCommand>();
             underlying.Result = true;
 
-            var result = await handler.CheckIfAuthorizedAsync(appCtx, objCtx, cmd, data);
+            var result = await handler.CheckIfAuthorizedAsync(appCtx, cmd, data);
 
             Assert.Same(appCtx, underlying.AppContext);
-            Assert.Same(objCtx, underlying.Context);
             Assert.Same(cmd, underlying.Object);
             Assert.Same(data, underlying.Data);
             Assert.True(result);

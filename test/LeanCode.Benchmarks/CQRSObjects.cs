@@ -12,36 +12,35 @@ using LeanCode.Pipelines;
 namespace LeanCode.Benchmarks
 {
     public class SampleDTO { }
-    public class SampleObjContext { }
     public class MultipleFieldsDTO
     {
         public string F1 { get; set; }
         public int F2 { get; set; }
     }
 
-    public class PlainQuery : IRemoteQuery<SampleObjContext, SampleDTO> { }
+    public class PlainQuery : IRemoteQuery<SampleDTO> { }
     [QueryCache(3600)]
-    public class CachedQuery : IRemoteQuery<SampleObjContext, SampleDTO> { }
+    public class CachedQuery : IRemoteQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("user")]
-    public class UserQuery : IRemoteQuery<SampleObjContext, SampleDTO> { }
+    public class UserQuery : IRemoteQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("admin")]
-    public class AdminQuery : IRemoteQuery<SampleObjContext, SampleDTO> { }
+    public class AdminQuery : IRemoteQuery<SampleDTO> { }
 
-    public class PlainCommand : IRemoteCommand<SampleObjContext> { }
+    public class PlainCommand : IRemoteCommand { }
     [AuthorizeWhenHasAnyOf("user")]
-    public class UserCommand : IRemoteCommand<SampleObjContext> { }
+    public class UserCommand : IRemoteCommand { }
     [AuthorizeWhenHasAnyOf("admin")]
-    public class AdminCommand : IRemoteCommand<SampleObjContext> { }
-    public class ValidCommand : IRemoteCommand<SampleObjContext> { }
-    public class InvalidCommand : IRemoteCommand<SampleObjContext> { }
+    public class AdminCommand : IRemoteCommand { }
+    public class ValidCommand : IRemoteCommand { }
+    public class InvalidCommand : IRemoteCommand { }
 
-    public class MultipleFieldsQuery : IRemoteQuery<SampleObjContext, MultipleFieldsDTO>
+    public class MultipleFieldsQuery : IRemoteQuery<MultipleFieldsDTO>
     {
         public string F1 { get; set; }
         public int F2 { get; set; }
     }
 
-    public class MultipleFieldsCommand : IRemoteCommand<SampleObjContext>
+    public class MultipleFieldsCommand : IRemoteCommand
     {
         public string F1 { get; set; }
         public int F2 { get; set; }
@@ -54,29 +53,21 @@ namespace LeanCode.Benchmarks
         public ClaimsPrincipal User { get; set; }
     }
 
-    public class SampleContextFromAppContext : IObjectContextFromAppContextFactory<SampleAppContext, SampleObjContext>
-    {
-        public SampleObjContext Create(SampleAppContext appContext)
-        {
-            return new SampleObjContext();
-        }
-    }
-
     public class SampleQueryHandler
-        : IQueryHandler<SampleObjContext, PlainQuery, SampleDTO>,
-          IQueryHandler<SampleObjContext, CachedQuery, SampleDTO>,
-          IQueryHandler<SampleObjContext, UserQuery, SampleDTO>,
-          IQueryHandler<SampleObjContext, AdminQuery, SampleDTO>
+        : IQueryHandler<SampleAppContext, PlainQuery, SampleDTO>,
+          IQueryHandler<SampleAppContext, CachedQuery, SampleDTO>,
+          IQueryHandler<SampleAppContext, UserQuery, SampleDTO>,
+          IQueryHandler<SampleAppContext, AdminQuery, SampleDTO>
     {
         private static readonly Task<SampleDTO> Result = Task.FromResult(new SampleDTO());
-        public Task<SampleDTO> ExecuteAsync(SampleObjContext context, PlainQuery query) => Result;
-        public Task<SampleDTO> ExecuteAsync(SampleObjContext context, UserQuery query) => Result;
-        public Task<SampleDTO> ExecuteAsync(SampleObjContext context, AdminQuery query) => Result;
-        public Task<SampleDTO> ExecuteAsync(SampleObjContext context, CachedQuery query) => Result;
+        public Task<SampleDTO> ExecuteAsync(SampleAppContext context, PlainQuery query) => Result;
+        public Task<SampleDTO> ExecuteAsync(SampleAppContext context, UserQuery query) => Result;
+        public Task<SampleDTO> ExecuteAsync(SampleAppContext context, AdminQuery query) => Result;
+        public Task<SampleDTO> ExecuteAsync(SampleAppContext context, CachedQuery query) => Result;
     }
 
     public class MultipleFieldsQueryHandler
-        : IQueryHandler<SampleObjContext, MultipleFieldsQuery, MultipleFieldsDTO>
+        : IQueryHandler<SampleAppContext, MultipleFieldsQuery, MultipleFieldsDTO>
     {
         public static readonly Task<MultipleFieldsDTO> Result = Task.FromResult(
             new MultipleFieldsDTO
@@ -84,27 +75,27 @@ namespace LeanCode.Benchmarks
                 F1 = "test field",
                 F2 = 123
             });
-        public Task<MultipleFieldsDTO> ExecuteAsync(SampleObjContext context, MultipleFieldsQuery query) => Result;
+        public Task<MultipleFieldsDTO> ExecuteAsync(SampleAppContext context, MultipleFieldsQuery query) => Result;
     }
 
     public class SampleCommandHandler
-        : ICommandHandler<SampleObjContext, PlainCommand>,
-          ICommandHandler<SampleObjContext, UserCommand>,
-          ICommandHandler<SampleObjContext, AdminCommand>,
-          ICommandHandler<SampleObjContext, ValidCommand>,
-          ICommandHandler<SampleObjContext, InvalidCommand>
+        : ICommandHandler<SampleAppContext, PlainCommand>,
+          ICommandHandler<SampleAppContext, UserCommand>,
+          ICommandHandler<SampleAppContext, AdminCommand>,
+          ICommandHandler<SampleAppContext, ValidCommand>,
+          ICommandHandler<SampleAppContext, InvalidCommand>
     {
-        public Task ExecuteAsync(SampleObjContext context, PlainCommand command) => Task.CompletedTask;
-        public Task ExecuteAsync(SampleObjContext context, UserCommand command) => Task.CompletedTask;
-        public Task ExecuteAsync(SampleObjContext context, AdminCommand command) => Task.CompletedTask;
-        public Task ExecuteAsync(SampleObjContext context, ValidCommand command) => Task.CompletedTask;
-        public Task ExecuteAsync(SampleObjContext context, InvalidCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, PlainCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, UserCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, AdminCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, ValidCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, InvalidCommand command) => Task.CompletedTask;
     }
 
     public class MultipleFieldsCommandHandler
-        : ICommandHandler<SampleObjContext, MultipleFieldsCommand>
+        : ICommandHandler<SampleAppContext, MultipleFieldsCommand>
     {
-        public Task ExecuteAsync(SampleObjContext context, MultipleFieldsCommand command) => Task.CompletedTask;
+        public Task ExecuteAsync(SampleAppContext context, MultipleFieldsCommand command) => Task.CompletedTask;
     }
 
     public class ValidCommandValidator : AbstractValidator<ValidCommand> { }

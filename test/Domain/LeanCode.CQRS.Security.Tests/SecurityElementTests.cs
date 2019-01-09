@@ -1,7 +1,6 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Security.Exceptions;
 using NSubstitute;
@@ -14,7 +13,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         private const string DerivedAttributeParam = nameof(DerivedAttributeParam);
 
         private readonly IAuthorizerResolver<ISecurityContext> authorizerResolver;
-        private readonly CQRSSecurityElement<ISecurityContext, TestExecutionPayload, object> element;
+        private readonly CQRSSecurityElement<ISecurityContext, object, object> element;
         private IFirstAuthorizer firstAuthorizer;
         private ISecondAuthorizer secondAuthorizer;
         private IDerivedAuthorizer derivedAuthorizer;
@@ -25,7 +24,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             authorizerResolver = Substitute.For<IAuthorizerResolver<ISecurityContext>>();
 
-            element = new CQRSSecurityElement<ISecurityContext, TestExecutionPayload, object>(
+            element = new CQRSSecurityElement<ISecurityContext, object, object>(
                 authorizerResolver);
 
             context = Substitute.For<ISecurityContext>();
@@ -36,7 +35,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             firstAuthorizer = Substitute.For<IFirstAuthorizer>();
             firstAuthorizer.UnderlyingAuthorizer.Returns(firstAuthorizer.GetType());
-            firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(
                 typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
@@ -46,7 +45,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             secondAuthorizer = Substitute.For<ISecondAuthorizer>();
             secondAuthorizer.UnderlyingAuthorizer.Returns(secondAuthorizer.GetType());
-            secondAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            secondAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(typeof(ISecondAuthorizer), Arg.Any<Type>()).Returns(secondAuthorizer);
         }
@@ -55,12 +54,12 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             derivedAuthorizer = Substitute.For<IDerivedAuthorizer>();
             derivedAuthorizer.UnderlyingAuthorizer.Returns(derivedAuthorizer.GetType());
-            derivedAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
+            derivedAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
             authorizerResolver.FindAuthorizer(typeof(IDerivedAuthorizer), Arg.Any<Type>()).Returns(derivedAuthorizer);
         }
 
-        private Task Authorize(TestExecutionPayload payload)
+        private Task Authorize(object payload)
         {
             return element.ExecuteAsync(
                 context, payload,
@@ -70,7 +69,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [Fact]
         public async Task Object_with_no_auhorizers_authorizes()
         {
-            var obj = new TestExecutionPayload(new NoAuthorizers());
+            var obj = new NoAuthorizers();
 
             await Authorize(obj);
         }
@@ -80,7 +79,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [InlineData(false)]
         public async Task Object_with_single_authorizer_authorizes_accordingly(bool isPositive)
         {
-            var obj = new TestExecutionPayload(new SingleAuthorizer());
+            var obj = new SingleAuthorizer();
             SetUpFirstAuthorizer(isPositive);
 
             if (isPositive)
@@ -91,7 +90,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj.Context, obj.Object, Arg.Any<object>());
+            _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, Arg.Any<object>());
         }
 
         [Theory]
@@ -101,7 +100,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [InlineData(true, true)]
         public async Task Object_with_multiple_authorizers_authorizes_accordingly(bool isFirstAuthorizerPositive, bool isSecondAuthorizerPositive)
         {
-            var obj = new TestExecutionPayload(new MultipleAuthorizers());
+            var obj = new MultipleAuthorizers();
             SetUpFirstAuthorizer(isFirstAuthorizerPositive);
             SetUpSecondAuthorizer(isSecondAuthorizerPositive);
 
@@ -120,7 +119,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [InlineData(true)]
         public async Task Object_with_derived_authorize_when_attribute_authorizes_correctly(bool isPositive)
         {
-            var obj = new TestExecutionPayload(new DerivedAuthorizer());
+            var obj = new DerivedAuthorizer();
             SetUpDerivedAuthorizer(isPositive);
 
             if (isPositive)
@@ -131,13 +130,13 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
-            _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj.Context, obj.Object, DerivedAttributeParam);
+            _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, DerivedAttributeParam);
         }
 
         [Fact]
         public async Task Requires_user_if_command_has_authorizers()
         {
-            var obj = new TestExecutionPayload(new SingleAuthorizer());
+            var obj = new SingleAuthorizer();
 
             SetUpFirstAuthorizer(true);
             context.User.Returns((ClaimsPrincipal)null);
@@ -149,7 +148,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         public async Task Requires_user_authentication_if_command_has_authorizers()
         {
             context.User.Returns((ClaimsPrincipal)null);
-            var obj = new TestExecutionPayload(new SingleAuthorizer());
+            var obj = new SingleAuthorizer();
 
             SetUpFirstAuthorizer(true);
 
@@ -160,7 +159,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         public async Task Does_not_require_user_authentication_if_command_does_not_have_authorizers()
         {
             context.User.Returns((ClaimsPrincipal)null);
-            var obj = new TestExecutionPayload(new NoAuthorizers());
+            var obj = new NoAuthorizers();
 
             await Authorize(obj);
         }
@@ -169,7 +168,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         public async Task Does_not_require_user_if_command_does_not_have_authorizers()
         {
             context.User.Returns((ClaimsPrincipal)null);
-            var obj = new TestExecutionPayload(new NoAuthorizers());
+            var obj = new NoAuthorizers();
 
             await Authorize(obj);
         }
@@ -204,18 +203,6 @@ namespace LeanCode.CQRS.Default.Tests.Security
             public DerivedAuthorizeWhenAttribute(string param)
                 : base(typeof(IDerivedAuthorizer), param)
             { }
-        }
-
-        public class TestExecutionPayload : IExecutionPayload
-        {
-            public object Context { get; set; }
-            public object Object { get; set; }
-
-            public TestExecutionPayload(object obj)
-            {
-                Context = new object();
-                Object = obj;
-            }
         }
     }
 }

@@ -12,35 +12,4 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             User = user;
         }
     }
-
-    public sealed class ObjContext
-    {
-        public AppContext SourceContext { get; set; }
-    }
-
-    public sealed class ObjContextWoCtor
-    {
-        public AppContext SourceContext { get; }
-
-        public ObjContextWoCtor(AppContext sourceContext)
-        {
-            SourceContext = sourceContext;
-        }
-    }
-
-    public class ObjContextFromAppContextFactory : IObjectContextFromAppContextFactory<AppContext, ObjContext>
-    {
-        public ObjContext Create(AppContext appContext)
-        {
-            return new ObjContext { SourceContext = appContext };
-        }
-    }
-
-    public class ObjContextWoCtorFromAppContextFactory : IObjectContextFromAppContextFactory<AppContext, ObjContextWoCtor>
-    {
-        public ObjContextWoCtor Create(AppContext appContext)
-        {
-            return new ObjContextWoCtor(appContext);
-        }
-    }
 }

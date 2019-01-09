@@ -4,6 +4,6 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 {
     public interface IRemoteQueryExecutor
     {
-        Task<TOutput> GetAsync<TContext, TOutput>(IRemoteQuery<TContext, TOutput> query);
+        Task<TOutput> GetAsync<TOutput>(IRemoteQuery<TOutput> query);
     }
 }

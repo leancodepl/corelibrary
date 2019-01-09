@@ -19,7 +19,7 @@ namespace LeanCode.CQRS.Tests
             var result = await CommandExecutor.RunAsync(appCtx, cmd);
 
             Assert.True(result.WasSuccessful);
-            Assert.Equal(appCtx, handler.Context.SourceAppContext);
+            Assert.Equal(appCtx, handler.Context);
             Assert.Equal(cmd, handler.Command);
         }
 
@@ -27,20 +27,18 @@ namespace LeanCode.CQRS.Tests
         public async Task Correctly_routes_data_through_pipeline_elements()
         {
             Prepare(
-                c => c.Use<SamplePipelineElement<CommandExecutionPayload, CommandResult>>()
+                c => c.Use<SamplePipelineElement<ICommand, CommandResult>>()
             );
 
             var appCtx = new AppContext();
             var cmd = new SampleCommand();
 
-            var element = Container.Resolve<SamplePipelineElement<CommandExecutionPayload, CommandResult>>();
+            var element = Container.Resolve<SamplePipelineElement<ICommand, CommandResult>>();
 
             await CommandExecutor.RunAsync(appCtx, cmd);
 
             Assert.Equal(appCtx, element.AppContext);
-            var objCtx = Assert.IsType<ObjContext>(element.Data.Context);
-            Assert.Equal(appCtx, objCtx.SourceAppContext);
-            Assert.Equal(cmd, element.Data.Object);
+            Assert.Equal(cmd, element.Data);
         }
 
         [Fact]
@@ -55,7 +53,7 @@ namespace LeanCode.CQRS.Tests
 
             await CommandExecutor.RunAsync(appCtx, cmd);
 
-            Assert.Equal(appCtx, handler.Context.SourceAppContext);
+            Assert.Equal(appCtx, handler.Context);
             Assert.Equal(cmd, handler.Command);
         }
     }

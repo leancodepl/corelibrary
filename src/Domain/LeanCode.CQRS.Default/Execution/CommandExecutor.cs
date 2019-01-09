@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.Default.Execution
     class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
         where TAppContext : IPipelineContext
     {
-        private readonly PipelineExecutor<TAppContext, CommandExecutionPayload, CommandResult> executor;
+        private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
 
         private readonly ILifetimeScope lifetimeScope;
 
@@ -17,30 +17,19 @@ namespace LeanCode.CQRS.Default.Execution
             CommandBuilder<TAppContext> config,
             ILifetimeScope lifetimeScope)
         {
-            var cfg = Pipeline.Build<TAppContext, CommandExecutionPayload, CommandResult>()
-                .Configure(new ConfigPipeline<TAppContext, CommandExecutionPayload, CommandResult>(config))
+            var cfg = Pipeline.Build<TAppContext, ICommand, CommandResult>()
+                .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
                 .Finalize<CommandFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
             this.lifetimeScope = lifetimeScope;
         }
 
-        public Task<CommandResult> RunAsync<TContext>(
-            TAppContext appcontext,
-            TContext context,
-            ICommand<TContext> command)
-        {
-            var payload = new CommandExecutionPayload(context, command);
-            return executor.ExecuteAsync(appcontext, payload);
-        }
-
-        public Task<CommandResult> RunAsync<TContext>(
+        public Task<CommandResult> RunAsync(
             TAppContext appContext,
-            ICommand<TContext> command)
+            ICommand command)
         {
-            var factory = lifetimeScope.Resolve<IObjectContextFromAppContextFactory<TAppContext, TContext>>();
-            var context = factory.Create(appContext);
-            return RunAsync(appContext, context, command);
+            return executor.ExecuteAsync(appContext, command);
         }
     }
 }

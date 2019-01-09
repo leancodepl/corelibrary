@@ -31,7 +31,6 @@ namespace LeanCode.Benchmarks
         private UserQuery userQuery = new UserQuery();
         private AdminQuery adminQuery = new AdminQuery();
         private SampleDTO stubResult = new SampleDTO();
-        private SampleObjContext objContext = new SampleObjContext();
         private SampleAppContext appContext;
 
         [GlobalSetup]

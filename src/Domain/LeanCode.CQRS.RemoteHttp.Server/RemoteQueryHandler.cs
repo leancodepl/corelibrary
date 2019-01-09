@@ -62,9 +62,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private async Task<object> ExecuteQuery<TContext, TQuery, TResult>(
+        private async Task<object> ExecuteQuery<TQuery, TResult>(
             TAppContext appContext, object query)
-            where TQuery : IRemoteQuery<TContext, TResult>
+            where TQuery : IRemoteQuery<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
@@ -79,12 +79,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             var types = queryType.GetInterfaces()
                 .Single(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IRemoteQuery<,>))
+                    i.GetGenericTypeDefinition() == typeof(IRemoteQuery<>))
                 .GenericTypeArguments;
 
-            var contextType = types[0];
-            var resultType = types[1];
-            return ExecQueryMethod.MakeGenericMethod(contextType, queryType, resultType);
+            var resultType = types[0];
+            return ExecQueryMethod.MakeGenericMethod(queryType, resultType);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace LeanCode.CQRS.Security
     public interface ICustomAuthorizerWrapper
     {
         Type UnderlyingAuthorizer { get; }
-        Task<bool> CheckIfAuthorizedAsync(object appContext, object objContext, object obj, object customData);
+        Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object customData);
     }
 }

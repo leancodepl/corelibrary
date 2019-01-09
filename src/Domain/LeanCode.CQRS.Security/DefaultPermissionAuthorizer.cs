@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 namespace LeanCode.CQRS.Security
 {
     public class DefaultPermissionAuthorizer
-        : CustomAuthorizer<ISecurityContext, object, object, string[]>,
+        : CustomAuthorizer<ISecurityContext, object, string[]>,
           HasPermissions
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
@@ -17,7 +17,6 @@ namespace LeanCode.CQRS.Security
 
         protected override Task<bool> CheckIfAuthorizedAsync(
             ISecurityContext appContext,
-            object objContext,
             object obj,
             string[] permissions = null)
         {

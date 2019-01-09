@@ -17,30 +17,28 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
         public IPipelineScope Scope { get; set; }
     }
 
-    public class EmptyContext { }
-
     public class Result
     {
         public string Value { get; set; }
     }
 
-    public class TestQuery : IQuery<EmptyContext, Result>
+    public class TestQuery : IQuery<Result>
     { }
 
-    public class TestQueryHandler : IQueryHandler<EmptyContext, TestQuery, Result>
+    public class TestQueryHandler : IQueryHandler<AppContext, TestQuery, Result>
     {
-        public Task<Result> ExecuteAsync(EmptyContext context, TestQuery query)
+        public Task<Result> ExecuteAsync(AppContext context, TestQuery query)
         {
             return Task.FromResult(new Result { Value = "abc" });
         }
     }
 
-    public class TestCommand : ICommand<EmptyContext>
+    public class TestCommand : ICommand
     {
         public string Name { get; set; }
     }
 
-    public class TestCommandHandler : ICommandHandler<EmptyContext, TestCommand>
+    public class TestCommandHandler : ICommandHandler<AppContext, TestCommand>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<TestCommandHandler>();
 
@@ -51,7 +49,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
             this.dbContext = dbContext;
         }
 
-        public async Task ExecuteAsync(EmptyContext context, TestCommand command)
+        public async Task ExecuteAsync(AppContext context, TestCommand command)
         {
             dbContext.Entities.Add(new Entity { Id = Guid.NewGuid(), Value = command.Name });
             await dbContext.SaveChangesAsync();

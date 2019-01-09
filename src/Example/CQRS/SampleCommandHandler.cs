@@ -16,7 +16,7 @@ namespace LeanCode.Example.CQRS
         }
     }
 
-    public class SampleCommandHandler : ICommandHandler<LocalContext, SampleCommand>
+    public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SampleCommandHandler>();
 
@@ -27,7 +27,7 @@ namespace LeanCode.Example.CQRS
             this.scope = scope;
         }
 
-        public Task ExecuteAsync(LocalContext context, SampleCommand command)
+        public Task ExecuteAsync(AppContext context, SampleCommand command)
         {
             logger.Information("Sample command called with data:");
             logger.Information("\tUserId (context): {UserId}", context.UserId);

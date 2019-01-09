@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
-    public interface IQueryHandler<in TContext, in TQuery, TResult>
-        where TQuery : IQuery<TContext, TResult>
+    public interface IQueryHandler<in TAppContext, in TQuery, TResult>
+        where TQuery : IQuery<TResult>
     {
-        Task<TResult> ExecuteAsync(TContext context, TQuery query);
+        Task<TResult> ExecuteAsync(TAppContext context, TQuery query);
     }
 }

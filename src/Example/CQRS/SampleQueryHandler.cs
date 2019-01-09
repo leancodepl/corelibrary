@@ -5,9 +5,9 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.Example.CQRS
 {
-    public class SampleQueryHandler : IQueryHandler<LocalContext, SampleQuery, SampleQuery.Result>
+    public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, SampleQuery.Result>
     {
-        public Task<SampleQuery.Result> ExecuteAsync(LocalContext context, SampleQuery query)
+        public Task<SampleQuery.Result> ExecuteAsync(AppContext context, SampleQuery query)
         {
             var sb = new StringBuilder();
             sb.Append("UserId (context): ");

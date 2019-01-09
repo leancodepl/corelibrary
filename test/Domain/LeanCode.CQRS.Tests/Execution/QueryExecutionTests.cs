@@ -21,7 +21,7 @@ namespace LeanCode.CQRS.Tests
             var result = await QueryExecutor.GetAsync(appCtx, query);
 
             Assert.Equal(expResult, result);
-            Assert.Equal(appCtx, handler.Context.SourceAppContext);
+            Assert.Equal(appCtx, handler.Context);
             Assert.Equal(query, handler.Query);
         }
 
@@ -29,20 +29,18 @@ namespace LeanCode.CQRS.Tests
         public async Task Correctly_routes_data_through_pipeline_elements()
         {
             Prepare(
-                queryBuilder: c => c.Use<SamplePipelineElement<QueryExecutionPayload, object>>()
+                queryBuilder: c => c.Use<SamplePipelineElement<IQuery, object>>()
             );
 
             var appCtx = new AppContext();
             var query = new SampleQuery();
 
-            var element = Container.Resolve<SamplePipelineElement<QueryExecutionPayload, object>>();
+            var element = Container.Resolve<SamplePipelineElement<IQuery, object>>();
 
             await QueryExecutor.GetAsync(appCtx, query);
 
             Assert.Equal(appCtx, element.AppContext);
-            var objCtx = Assert.IsType<ObjContext>(element.Data.Context);
-            Assert.Equal(appCtx, objCtx.SourceAppContext);
-            Assert.Equal(query, element.Data.Object);
+            Assert.Equal(query, element.Data);
         }
 
         [Fact]
@@ -57,7 +55,7 @@ namespace LeanCode.CQRS.Tests
 
             await QueryExecutor.GetAsync(appCtx, query);
 
-            Assert.Equal(appCtx, handler.Context.SourceAppContext);
+            Assert.Equal(appCtx, handler.Context);
             Assert.Equal(query, handler.Query);
         }
     }

@@ -35,7 +35,6 @@ namespace LeanCode.Benchmarks
 
         private CommandResult stubResult = CommandResult.Success();
 
-        private SampleObjContext objContext = new SampleObjContext();
         private SampleAppContext appContext;
 
         [GlobalSetup]

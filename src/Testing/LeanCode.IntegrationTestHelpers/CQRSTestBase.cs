@@ -17,33 +17,33 @@ namespace LeanCode.IntegrationTestHelpers
             Context = context;
         }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TCommand>(
             TAppContext appContext,
             TCommand command)
-            where TCommand : ICommand<TContext>
+            where TCommand : ICommand
         {
             var executor = Context.Container.Resolve<ICommandExecutor<TAppContext>>();
             return executor.RunAsync(appContext, command);
         }
 
-        public Task<CommandResult> RunAsync<TContext, TCommand>(
+        public Task<CommandResult> RunAsync<TCommand>(
             TCommand command)
-            where TCommand : ICommand<TContext>
+            where TCommand : ICommand
         {
             var executor = Context.Container.Resolve<ICommandExecutor<TAppContext>>();
             return executor.RunAsync(GetDefaultContext(), command);
         }
 
-        public Task<TResult> GetAsync<TContext, TResult>(
+        public Task<TResult> GetAsync<TResult>(
             TAppContext appContext,
-            IQuery<TContext, TResult> query)
+            IQuery<TResult> query)
         {
             var executor = Context.Container.Resolve<IQueryExecutor<TAppContext>>();
             return executor.GetAsync(appContext, query);
         }
 
-        public Task<TResult> GetAsync<TContext, TResult>(
-            IQuery<TContext, TResult> query)
+        public Task<TResult> GetAsync<TResult>(
+            IQuery<TResult> query)
         {
             var executor = Context.Container.Resolve<IQueryExecutor<TAppContext>>();
             return executor.GetAsync(GetDefaultContext(), query);

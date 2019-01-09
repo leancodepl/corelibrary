@@ -17,9 +17,9 @@ namespace LeanCode.CQRS.Default.Wrappers
             UnderlyingAuthorizer = authorizer.GetType();
         }
 
-        public Task<bool> CheckIfAuthorizedAsync(object appContext, object objContext, object obj, object customData)
+        public Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object customData)
         {
-            return authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, objContext, obj, customData);
+            return authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, obj, customData);
         }
     }
 }

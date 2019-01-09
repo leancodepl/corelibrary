@@ -70,7 +70,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         [Fact]
-        public async Task Uses_the_translator_to_create_app_context()
+        public async Task Correctly_passes_the_app_context()
         {
             var user = new ClaimsPrincipal();
 
@@ -79,31 +79,21 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Assert.NotNull(query.LastAppContext);
             Assert.Equal(user, query.LastAppContext.User);
         }
-
-        [Fact]
-        public async Task Calls_the_executor_even_if_the_context_does_not_have_public_default_constructor()
-        {
-            var result = await Invoke(typeof(SampleRemoteQuery2).FullName);
-
-            Assert.Equal(200, result.statusCode);
-            Assert.IsType<SampleRemoteQuery2>(query.LastQuery);
-            Assert.IsType<ObjContextWoCtor>(query.LastContext);
-        }
     }
 
-    public class SampleQuery : IQuery<ObjContext, int>
+    public class SampleQuery : IQuery<int>
     { }
 
-    public class SampleRemoteQuery : IRemoteQuery<ObjContext, int>
+    public class SampleRemoteQuery : IRemoteQuery<int>
     {
         public int Prop { get; set; }
     }
 
-    public class SampleRemoteQuery2 : IRemoteQuery<ObjContextWoCtor, int>
+    public class SampleRemoteQuery2 : IRemoteQuery<int>
     {
         public int Prop { get; set; }
     }
 
-    public class NullReturningQuery : IRemoteQuery<ObjContext, object>
+    public class NullReturningQuery : IRemoteQuery<object>
     { }
 }

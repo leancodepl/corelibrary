@@ -5,7 +5,7 @@ using LeanCode.Pipelines;
 namespace LeanCode.CQRS.Execution
 {
     public sealed class CommandFinalizer<TAppContext>
-        : IPipelineFinalizer<TAppContext, CommandExecutionPayload, CommandResult>
+        : IPipelineFinalizer<TAppContext, ICommand, CommandResult>
         where TAppContext : IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CommandFinalizer<TAppContext>>();
@@ -18,11 +18,9 @@ namespace LeanCode.CQRS.Execution
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            TAppContext _, CommandExecutionPayload payload)
+            TAppContext appContext,
+            ICommand command)
         {
-            var context = payload.Context;
-            var command = payload.Object;
-
             var commandType = command.GetType();
             var handler = resolver.FindCommandHandler(commandType);
             if (handler is null)
@@ -35,7 +33,7 @@ namespace LeanCode.CQRS.Execution
 
             try
             {
-                await handler.ExecuteAsync(context, command).ConfigureAwait(false);
+                await handler.ExecuteAsync(appContext, command).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

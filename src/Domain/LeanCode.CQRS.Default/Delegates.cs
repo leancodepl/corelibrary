@@ -3,12 +3,12 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default
 {
-    public delegate PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult>
+    public delegate PipelineBuilder<TAppContext, ICommand, CommandResult>
         CommandBuilder<TAppContext>(
-            PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> builder)
+            PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
         where TAppContext : IPipelineContext;
-    public delegate PipelineBuilder<TAppContext, QueryExecutionPayload, object>
+    public delegate PipelineBuilder<TAppContext, IQuery, object>
         QueryBuilder<TAppContext>(
-            PipelineBuilder<TAppContext, QueryExecutionPayload, object> builder)
+            PipelineBuilder<TAppContext, IQuery, object> builder)
         where TAppContext : IPipelineContext;
 }
