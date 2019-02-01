@@ -6,8 +6,9 @@ leancode.builder('corelibrary')
 
     stage('Checkout') {
         scmVars = checkout scm
-        leancode.configureMyGet()
     }
+
+    leancode.configureRepositories()
 
     stage('Version') {
         def baseVer = sh(
