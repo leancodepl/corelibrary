@@ -87,7 +87,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
                 .Append(name)
-                .AppendLine(" {");
+                .AppendLine(" {")
+                .AppendSpaces(level + 1)
+                .AppendLine($"const {name}(this.value);");
 
             foreach (var value in statement.Values)
             {
@@ -99,12 +101,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine("final int value;")
                 .AppendLine()
                 .AppendSpaces(level + 1)
-                .AppendLine($"{name}._(this.value);")
+                .AppendLine("dynamic toJsonMap() => value;")
                 .AppendLine()
                 .AppendSpaces(level + 1)
-                .AppendLine("dynamic toJsonMap() => value;")
-                .AppendSpaces(level + 1)
-                .AppendLine($"static {name} fromJson(dynamic json) => {name}._(json);");
+                .AppendLine($"static {name} fromJson(dynamic json) => {name}(json);")
+                .AppendLine();
+
+            VisitEnumEqualityOperator(name, level + 1);
+
+            VisitEnumHashCode(name, level + 1);
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
@@ -118,6 +123,27 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .Append($"{parentName}.{statement.Name.Uncapitalize()}")
                 .Append($"() : value = {statement.Value};")
                 .AppendLine();
+        }
+
+        private void VisitEnumEqualityOperator(string parentName, int level)
+        {
+            definitionsBuilder
+                .AppendSpaces(level)
+                .AppendLine("@override")
+                .AppendSpaces(level)
+                .AppendLine("bool operator ==(Object other) =>")
+                .AppendSpaces(level + 1)
+                .AppendLine($"other is {parentName} && value == other.value;")
+                .AppendLine();
+        }
+
+        private void VisitEnumHashCode(string parentName, int level)
+        {
+            definitionsBuilder
+                .AppendSpaces(level)
+                .AppendLine("@override")
+                .AppendSpaces(level)
+                .AppendLine("int get hashCode => value.hashCode;");
         }
 
         private void VisitTypeStatement(TypeStatement statement)
