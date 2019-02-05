@@ -340,7 +340,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendSpaces(level + 1)
                     .AppendLine("@override")
                     .AppendSpaces(level + 1)
-                    .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';");
+                    .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';")
+                    .AppendLine();
             }
 
             if (includeResultFactory)
@@ -433,14 +434,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 var serializedField = field.Name.Uncapitalize();
 
-                if (field.Type.IsArrayLike)
-                {
-                    serializedField = $"json.encode({serializedField})";
-                }
-                else if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
-                {
-                    serializedField += ".toJsonMap()";
-                }
+                serializedField += GenerateTypeMapingForToJsonMethod(field.Type);
 
                 definitionsBuilder
                     .AppendSpaces(level + 3)
@@ -454,6 +448,31 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder
                 .AppendSpaces(level + 1)
                 .AppendLine("}");
+        }
+
+        private string GenerateTypeMapingForToJsonMethod(TypeStatement statement)
+        {
+            string map = "";
+
+            if (statement.IsArrayLike)
+            {
+                if (statement.TypeArguments.Any())
+                {
+                    var argumentType = statement.TypeArguments[0];
+
+                    if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLower()))
+                    {
+                        var internalMap = GenerateTypeMapingForToJsonMethod(argumentType);
+                        map = $".map((i) => i{internalMap}).toList()";
+                    }
+                }
+            }
+            else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLower()))
+            {
+                map += ".toJsonMap()";
+            }
+
+            return map;
         }
 
         private void GenerateFromJsonMethod(string name, List<FieldStatement> fields, int level)
