@@ -392,16 +392,16 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendSpaces(level + 2)
                     .AppendLine("return decodedJson")
                     .AppendSpaces(level + 3)
-                    .Append(".map((dynamic x) => ");
+                    .Append("?.map((dynamic x) => ");
 
                 VisitTypeStatement(result.TypeArguments.First());
 
                 definitionsBuilder
                     .AppendLine(".fromJson(x))")
                     .AppendSpaces(level + 3)
-                    .AppendLine(".toList(growable: false)")
+                    .AppendLine("?.toList(growable: false)")
                     .AppendSpaces(level + 3)
-                    .Append(".cast<");
+                    .Append("?.cast<");
 
                 VisitTypeStatement(result.TypeArguments.First());
 
@@ -446,7 +446,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendSpaces(level + 3)
                     .Append($"'{field.Name.Capitalize()}': {serializedField}");
 
-                GenerateTypeMapingForToJsonMethod(field.Type);
+                GenerateTypeMapingForToJsonMethod(field.Type, 0);
 
                 definitionsBuilder.AppendLine(",");
             }
@@ -469,7 +469,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine("}");
         }
 
-        private void GenerateTypeMapingForToJsonMethod(TypeStatement statement)
+        private void GenerateTypeMapingForToJsonMethod(TypeStatement statement, int depth)
         {
             if (statement.IsArrayLike)
             {
@@ -479,8 +479,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                     if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLower()))
                     {
-                        definitionsBuilder.Append(".map((i) => i");
-                        GenerateTypeMapingForToJsonMethod(argumentType);
+                        definitionsBuilder.Append($".map((x{depth}) => x{depth}");
+                        GenerateTypeMapingForToJsonMethod(argumentType, depth + 1);
                         definitionsBuilder.Append(").toList()");
                     }
                 }
@@ -518,16 +518,16 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         .AppendSpaces(level + 2)
                         .AppendLine($"..{field.Name.Uncapitalize()} = {value}")
                         .AppendSpaces(level + 3)
-                        .Append(".map((dynamic x) => ");
+                        .Append("?.map((dynamic x) => ");
 
                     VisitTypeStatement(field.Type.TypeArguments.First());
 
                     definitionsBuilder
                         .AppendLine(".fromJson(x))")
                         .AppendSpaces(level + 3)
-                        .AppendLine(".toList(growable: false)")
+                        .AppendLine("?.toList(growable: false)")
                         .AppendSpaces(level + 3)
-                        .Append(".cast<");
+                        .Append("?.cast<");
 
                     VisitTypeStatement(field.Type.TypeArguments.First());
 
