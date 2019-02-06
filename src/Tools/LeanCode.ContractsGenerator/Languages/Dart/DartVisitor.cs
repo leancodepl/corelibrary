@@ -349,7 +349,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 GenerateResultFactory(statement, level);
             }
 
-            GenerateToJsonMethod(statement, level);
+            var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
+            GenerateToJsonMethod(statement, level, includeOverrideAnnotation);
             GenerateFromJsonMethod(name, statement.Fields, level);
 
             definitionsBuilder.AppendSpaces(level);
@@ -420,9 +421,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateToJsonMethod(InterfaceStatement statement, int level)
+        private void GenerateToJsonMethod(InterfaceStatement statement, int level, bool includeOverrideAnnotation)
         {
+            var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
+
             definitionsBuilder
+                .AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine(annotation)
                 .AppendSpaces(level + 1)
                 .AppendLine("Map<String, dynamic> toJsonMap() {");
 
@@ -434,11 +440,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 var serializedField = field.Name.Uncapitalize();
 
-                serializedField += GenerateTypeMapingForToJsonMethod(field.Type);
-
                 definitionsBuilder
                     .AppendSpaces(level + 3)
-                    .AppendLine($"'{field.Name.Capitalize()}': {serializedField},");
+                    .Append($"'{field.Name.Capitalize()}': {serializedField}");
+
+                GenerateTypeMapingForToJsonMethod(field.Type);
+
+                definitionsBuilder.AppendLine(",");
             }
 
             definitionsBuilder
@@ -450,10 +458,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine("}");
         }
 
-        private string GenerateTypeMapingForToJsonMethod(TypeStatement statement)
+        private void GenerateTypeMapingForToJsonMethod(TypeStatement statement)
         {
-            string map = "";
-
             if (statement.IsArrayLike)
             {
                 if (statement.TypeArguments.Any())
@@ -462,17 +468,16 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                     if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLower()))
                     {
-                        var internalMap = GenerateTypeMapingForToJsonMethod(argumentType);
-                        map = $".map((i) => i{internalMap}).toList()";
+                        definitionsBuilder.Append(".map((i) => i");
+                        GenerateTypeMapingForToJsonMethod(argumentType);
+                        definitionsBuilder.Append(").toList()");
                     }
                 }
             }
             else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLower()))
             {
-                map += ".toJsonMap()";
+                definitionsBuilder.Append(".toJsonMap()");
             }
-
-            return map;
         }
 
         private void GenerateFromJsonMethod(string name, List<FieldStatement> fields, int level)
