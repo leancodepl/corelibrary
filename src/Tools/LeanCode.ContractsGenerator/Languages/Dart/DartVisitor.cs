@@ -256,6 +256,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
             var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+            var mapJsonIncludeSuper = false;
 
             if (statement.Extends.Any(x => x.Name == "Enum"))
             {
@@ -290,6 +291,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 if (statement.IsClass)
                 {
+                    mapJsonIncludeSuper = true;
                     definitionsBuilder.Append(" extends ");
                     VisitTypeStatement(statement.Extends[0]);
 
@@ -350,7 +352,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
-            GenerateToJsonMethod(statement, level, includeOverrideAnnotation);
+            GenerateToJsonMethod(statement, level, includeOverrideAnnotation, mapJsonIncludeSuper);
             GenerateFromJsonMethod(name, statement.Fields, level);
 
             definitionsBuilder.AppendSpaces(level);
@@ -421,7 +423,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateToJsonMethod(InterfaceStatement statement, int level, bool includeOverrideAnnotation)
+        private void GenerateToJsonMethod(InterfaceStatement statement, int level, bool includeOverrideAnnotation, bool includeSuper)
         {
             var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
 
@@ -434,7 +436,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder
                 .AppendSpaces(level + 2)
-                .AppendLine("return <String, dynamic>{");
+                .AppendLine("final map = <String, dynamic>{");
 
             foreach (var field in statement.Fields)
             {
@@ -453,7 +455,16 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendSpaces(level + 2)
                 .AppendLine("};");
 
+            if (includeSuper)
+            {
+                definitionsBuilder
+                    .AppendSpaces(level + 2)
+                    .AppendLine("map.addAll(super.toJsonMap());");
+            }
+
             definitionsBuilder
+                .AppendSpaces(level + 2)
+                .AppendLine("return map;")
                 .AppendSpaces(level + 1)
                 .AppendLine("}");
         }
@@ -473,6 +484,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         definitionsBuilder.Append(").toList()");
                     }
                 }
+            }
+            else if (statement.Name == "DateTime")
+            {
+                definitionsBuilder.Append(".toIso8601String()");
             }
             else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLower()))
             {
