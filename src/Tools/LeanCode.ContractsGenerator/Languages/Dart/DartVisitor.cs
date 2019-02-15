@@ -504,12 +504,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             foreach (var field in fields)
             {
-                var value = $"map['{field.Name.Capitalize()}']";
-
-                if (field.Type.Name == "DateTime")
-                {
-                    value = $"DateTime.parse(normalizeDate({value}))";
-                }
+                var map = $"map['{field.Name.Capitalize()}']";
+                var value = map;
 
                 if (field.Type.IsArrayLike || field.Type.IsDictionary)
                 {
@@ -542,18 +538,28 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     definitionsBuilder
                         .AppendLine()
                         .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = ");
+                        .Append($"..{field.Name.Uncapitalize()} = {map} != null ? ");
 
                     VisitTypeStatement(field.Type);
 
-                    definitionsBuilder.Append($".fromJson({value})");
+                    definitionsBuilder.Append($".fromJson({value}) : null");
                 }
                 else
                 {
                     definitionsBuilder
                         .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = {value}");
+                        .AppendSpaces(level + 2);
+
+                    if (field.Type.Name == "DateTime")
+                    {
+                        value = $"DateTime.parse(normalizeDate({value}))";
+                        definitionsBuilder.Append($"..{field.Name.Uncapitalize()} = {map} != null ? {value} : null");
+                    }
+                    else
+                    {
+                        definitionsBuilder
+                            .Append($"..{field.Name.Uncapitalize()} = {value}");
+                    }
                 }
             }
 
