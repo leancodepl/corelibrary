@@ -5,7 +5,7 @@ namespace LeanCode.TimeProvider
 {
     public sealed class FixedTimeProvider : ITimeProvider
     {
-        public static readonly FixedTimeProvider SharedInstance = new FixedTimeProvider();
+        private static readonly FixedTimeProvider SharedInstance = new FixedTimeProvider();
 
         private AsyncLocal<DateTimeOffset> savedTime = new AsyncLocal<DateTimeOffset>();
 
