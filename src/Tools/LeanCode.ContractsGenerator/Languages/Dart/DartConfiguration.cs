@@ -8,7 +8,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     public class DartConfiguration
     {
-        public string ContractsPreamble { get; set; } = "import 'dart:convert';\nimport 'package:dart_cqrs/dart_cqrs.dart';\nabstract class IRemoteQuery<T1, T2> extends Query<T2> {}\nabstract class IRemoteCommand<T1> extends Command {}\n";
+        public string ContractsPreamble { get; set; } = "import 'dart:convert';\nimport 'package:dart_cqrs/dart_cqrs.dart';\nabstract class IRemoteQuery<T1> extends Query<T1> {}\nabstract class IRemoteCommand extends Command {}\n";
         public string[] UnmangledTypes { get; set; } = new string[]
         {
             "IRemoteQuery",

@@ -8,7 +8,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 {
     public class TypeScriptConfiguration
     {
-        public string ContractsPreamble { get; set; } = "type IRemoteCommand<TContext> = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand<TContext>\ntype IRemoteQuery<TContext, TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TContext, TOutput>\n";
+        public string ContractsPreamble { get; set; } = "type IRemoteCommand = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand\ntype IRemoteQuery<TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TOutput>\n";
         public string ClientPreamble { get; set; } = "import { CQRS } from \"@leancode/cqrs-client/CQRS\";\nimport { ClientType } from \"@leancode/cqrs-client/ClientType\";\n";
         public Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
         {
