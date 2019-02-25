@@ -7,6 +7,7 @@ namespace LeanCode.TimeProvider
         private static ITimeProvider timeProvider = new UtcTimeProvider();
 
         public static DateTime Now => timeProvider.Now;
+        public static DateTimeOffset NowWithOffset => timeProvider.NowWithOffset;
 
         public static void UseTimeProvider(ITimeProvider newProvider)
         {

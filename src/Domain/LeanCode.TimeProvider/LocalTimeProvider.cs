@@ -6,5 +6,6 @@ namespace LeanCode.TimeProvider
     public sealed class LocalTimeProvider : ITimeProvider
     {
         public DateTime Now => DateTime.Now;
+        public DateTimeOffset NowWithOffset => DateTimeOffset.Now;
     }
 }
