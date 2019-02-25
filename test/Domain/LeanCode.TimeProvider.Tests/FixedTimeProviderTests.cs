@@ -22,30 +22,34 @@ namespace LeanCode.TimeProvider.Tests
         [LongRunningFact]
         public void Check_the_value_sync()
         {
-            var provider = FixedTimeProvider.SharedInstance;
-
-            Time.UseTimeProvider(provider);
-            provider.Now = expectedTime;
+            FixedTimeProvider.SetTo(expectedTime);
 
             for (int i = 0; i < Iterations; i++)
             {
-                Assert.Equal(Time.Now, expectedTime);
+                Assert.Equal(expectedTime, Time.Now);
             }
         }
 
         [LongRunningFact]
         public async Task Check_the_value_async()
         {
-            var provider = FixedTimeProvider.SharedInstance;
-
-            Time.UseTimeProvider(provider);
-            provider.Now = expectedTime;
+            FixedTimeProvider.SetTo(expectedTime);
 
             for (int i = 0; i < DelayIterations; i++)
             {
-                Assert.Equal(Time.Now, expectedTime);
+                Assert.Equal(expectedTime, Time.Now);
                 await Task.Delay(Delay);
             }
+        }
+
+        [Fact]
+        public void SetTo_overload_for_DateTime_correctly_alters_return_value_of_NowWithOffset()
+        {
+            FixedTimeProvider.SetTo(expectedTime);
+
+            var expectedTimeWithOffset = new DateTimeOffset(expectedTime, TimeSpan.Zero);
+
+            Assert.Equal(expectedTimeWithOffset, Time.NowWithOffset);
         }
     }
 
@@ -68,5 +72,19 @@ namespace LeanCode.TimeProvider.Tests
         public FixedTimeProviderTests3()
             : base(new DateTime(2015, 11, 30, 6, 0, 0))
         { }
+    }
+
+    public class FixedTimeProviderTests
+    {
+        [Fact]
+        public void Attempt_to_assign_local_date_time_throws()
+        {
+            var date = new DateTime(2019, 2, 25, 0, 0, 0, DateTimeKind.Local);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                FixedTimeProvider.SetTo(date);
+            });
+        }
     }
 }
