@@ -26,7 +26,7 @@ namespace LeanCode.TimeProvider.Tests
 
             for (int i = 0; i < Iterations; i++)
             {
-                Assert.Equal(Time.Now, expectedTime);
+                Assert.Equal(expectedTime, Time.NowWithOffset);
             }
         }
 
@@ -37,7 +37,7 @@ namespace LeanCode.TimeProvider.Tests
 
             for (int i = 0; i < DelayIterations; i++)
             {
-                Assert.Equal(Time.Now, expectedTime);
+                Assert.Equal(expectedTime, Time.NowWithOffset);
                 await Task.Delay(Delay);
             }
         }
