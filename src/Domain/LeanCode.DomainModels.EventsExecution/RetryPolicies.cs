@@ -16,7 +16,7 @@ namespace LeanCode.DomainModels.EventsExecution
             TimeSpan.FromSeconds(3.2)
         };
 
-        public Polly.Retry.RetryPolicy EventHandlerPolicy { get; }
+        public Polly.Retry.AsyncRetryPolicy EventHandlerPolicy { get; }
 
         public RetryPolicies()
         {
