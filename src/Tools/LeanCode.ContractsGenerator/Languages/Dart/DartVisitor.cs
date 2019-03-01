@@ -604,9 +604,40 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             var mangle = group.Count() > 1;
 
+            if (!mangle)
+            {
+                return group.Select(x => (x.name, x.statement)).ToList();
+            }
+
+            var limit = group.Select(s => s.statement.Namespace.Split('.').Count()).Max();
+            Console.WriteLine(limit);
+
+            int depth = 1;
+
+            while (depth <= limit)
+            {
+                var groups = group.Select(g => (name: MakeName(g.statement.Namespace, g.name, depth), g.statement))
+                            .GroupBy(g => g.name);
+
+                if (groups.Any(g => g.Count() > 1))
+                {
+                    ++depth;
+                }
+                else
+                {
+                    return groups.Select(x => (x.First().name, x.First().statement)).ToList();
+                }
+            }
+
             return group
                 .Select(x => (mangle ? Mangle(x.statement.Namespace, x.name) : x.name, x.statement))
                 .ToList();
+        }
+
+        private string MakeName(string namespaceName, string name, int depth)
+        {
+            var splited = namespaceName.Split('.').Reverse().Take(depth);
+            return string.Join("", splited) + name;
         }
     }
 }
