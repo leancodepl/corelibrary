@@ -513,13 +513,26 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         .AppendLine()
                         .AppendSpaces(level + 2)
                         .AppendLine($"..{field.Name.Uncapitalize()} = {value}")
-                        .AppendSpaces(level + 3)
-                        .Append("?.map((dynamic x) => ");
+                        .AppendSpaces(level + 3);
 
-                    VisitTypeStatement(field.Type.TypeArguments.First());
+                    var argType = field.Type.TypeArguments.First();
+
+                    if (!configuration.TypeTranslations.ContainsKey(argType.Name.ToLower()))
+                    {
+                        definitionsBuilder
+                           .Append("?.map((dynamic x) => ");
+
+                        VisitTypeStatement(field.Type.TypeArguments.First());
+
+                        definitionsBuilder
+                            .AppendLine(".fromJson(x))");
+                    }
+                    else
+                    {
+                        definitionsBuilder.Append("?.map((dynamic x) => x)");
+                    }
 
                     definitionsBuilder
-                        .AppendLine(".fromJson(x))")
                         .AppendSpaces(level + 3)
                         .AppendLine("?.toList(growable: false)")
                         .AppendSpaces(level + 3)
@@ -562,7 +575,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     }
                     else
                     {
-                        Console.WriteLine(field.Type.Name);
                         definitionsBuilder
                             .Append($"..{field.Name.Uncapitalize()} = {value}");
                     }
