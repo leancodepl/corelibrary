@@ -555,8 +555,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         value = $"DateTime.parse(normalizeDate({value}))";
                         definitionsBuilder.Append($"..{field.Name.Uncapitalize()} = {map} != null ? {value} : null");
                     }
+                    else if (field.Type.Name == "Double")
+                    {
+                        definitionsBuilder.AppendLine($"..{field.Name.Uncapitalize()} = {map} is String ?")
+                            .AppendLine($"double.parse({map}) : {map}");
+                    }
                     else
                     {
+                        Console.WriteLine(field.Type.Name);
                         definitionsBuilder
                             .Append($"..{field.Name.Uncapitalize()} = {value}");
                     }
