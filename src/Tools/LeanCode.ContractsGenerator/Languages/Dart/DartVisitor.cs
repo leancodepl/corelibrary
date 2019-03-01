@@ -610,7 +610,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             var limit = group.Select(s => s.statement.Namespace.Split('.').Count()).Max();
-            Console.WriteLine(limit);
 
             int depth = 1;
 
