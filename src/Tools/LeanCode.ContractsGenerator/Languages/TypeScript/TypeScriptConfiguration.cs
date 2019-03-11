@@ -1,15 +1,35 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace LeanCode.ContractsGenerator.Languages.TypeScript
 {
     public class TypeScriptConfiguration
     {
-        public string ContractsPreamble { get; set; } = "type IRemoteCommand = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand\ntype IRemoteQuery<TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TOutput>\n";
-        public string ClientPreamble { get; set; } = "import { CQRS } from \"@leancode/cqrs-client/CQRS\";\nimport { ClientType } from \"@leancode/cqrs-client/ClientType\";\n";
+        public string[] ContractsPreambleLines { get; set; } = new string[]
+        {
+            "type IRemoteCommand = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand",
+            "type IRemoteQuery<TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TOutput>",
+            "",
+        };
+
+        public string ContractsPreamble
+        {
+            get => ContractsPreambleLines is null ? null : string.Join('\n', ContractsPreambleLines);
+            set => ContractsPreambleLines = value?.Split('\n');
+        }
+
+        public string[] ClientPreambleLines { get; set; } = new string[]
+        {
+            "import { CQRS } from \"@leancode/cqrs-client/CQRS\";",
+            "import { ClientType } from \"@leancode/cqrs-client/ClientType\";",
+            "",
+        };
+
+        public string ClientPreamble
+        {
+            get => ClientPreambleLines is null ? null : string.Join('\n', ClientPreambleLines);
+            set => ClientPreambleLines = value?.Split('\n');
+        }
+
         public Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
         {
             { "int", "number" },

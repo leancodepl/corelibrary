@@ -25,13 +25,15 @@ namespace LeanCode.ContractsGenerator
         {
             var configFile = GetConfigFile(args);
 
-            string content;
             using (var reader = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), configFile)))
             {
-                content = reader.ReadToEnd();
+                return DeserializeConfigurationsFromString(reader.ReadToEnd());
             }
+        }
 
-            return JsonConvert.DeserializeObject<List<GeneratorConfiguration>>(content);
+        public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string configurations)
+        {
+            return JsonConvert.DeserializeObject<List<GeneratorConfiguration>>(configurations);
         }
 
         private static string GetConfigFile(string[] args)
