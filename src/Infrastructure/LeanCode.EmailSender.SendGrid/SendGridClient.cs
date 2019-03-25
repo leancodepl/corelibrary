@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
 using LeanCode.ViewRenderer;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -22,6 +23,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridClient>();
 
+        private readonly IStringLocalizer stringLocalizer;
         private readonly IViewRenderer viewRenderer;
         private readonly SendGridHttpClient client;
 
@@ -29,13 +31,32 @@ namespace LeanCode.EmailSender.SendGrid
             IViewRenderer viewRenderer,
             SendGridHttpClient client)
         {
+            this.stringLocalizer = null;
             this.viewRenderer = viewRenderer;
             this.client = client;
         }
 
-        public EmailBuilder New()
+        public SendGridClient(
+            IStringLocalizer stringLocalizer,
+            IViewRenderer viewRenderer,
+            SendGridHttpClient client)
         {
-            return new EmailBuilder(Send);
+            this.stringLocalizer = stringLocalizer;
+            this.viewRenderer = viewRenderer;
+            this.client = client;
+        }
+
+        public EmailBuilder New() => new EmailBuilder(Send, logger.Warning);
+
+        public LocalizedEmailBuilder NewLocalized(string cultureName)
+        {
+            if (stringLocalizer is null)
+            {
+                throw new InvalidOperationException(
+                    "Cannot build localized emails without IStringLocalizer.");
+            }
+
+            return new LocalizedEmailBuilder(cultureName, stringLocalizer, Send);
         }
 
         private async Task Send(EmailBuilder builder)

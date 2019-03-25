@@ -11,9 +11,6 @@ namespace LeanCode.EmailSender.Model
             Name = name;
         }
 
-        public override string ToString()
-        {
-            return Email;
-        }
+        public override string ToString() => Email;
     }
 }

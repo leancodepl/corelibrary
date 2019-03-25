@@ -6,7 +6,7 @@ namespace LeanCode.EmailSender.Model
         public object Model { get; }
         public string TemplateName { get; }
 
-        public EmailContent(object model, string mimeType, string templateName = null)
+        public EmailContent(object model, string mimeType, string templateName)
         {
             ContentType = mimeType;
             Model = model;
