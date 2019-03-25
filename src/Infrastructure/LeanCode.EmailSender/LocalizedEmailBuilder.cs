@@ -62,7 +62,7 @@ namespace LeanCode.EmailSender
             if (templateBaseName is null)
                 throw new ArgumentNullException(nameof(templateBaseName));
 
-            if (cultureName is "") // InvariantCulture
+            if (cultureName.Length is 0) // InvariantCulture
                 inner.WithHtmlContent(model, templateBaseName);
             else
                 inner.WithHtmlContent(model, $"{templateBaseName}.{cultureName}");
@@ -78,7 +78,7 @@ namespace LeanCode.EmailSender
             if (templateBaseName is null)
                 throw new ArgumentNullException(nameof(templateBaseName));
 
-            if (cultureName is "") // InvariantCulture
+            if (cultureName.Length is 0) // InvariantCulture
                 inner.WithTextContent(model, templateBaseName + ".txt");
             else
                 inner.WithTextContent(model, $"{templateBaseName}.{cultureName}.txt");
