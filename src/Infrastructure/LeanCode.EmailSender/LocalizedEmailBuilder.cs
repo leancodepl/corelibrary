@@ -45,8 +45,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public LocalizedEmailBuilder WithSubject(
-            string subjectTerm, params object[] args)
+        public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] args)
         {
             if (subjectTerm is null)
                 throw new ArgumentNullException(nameof(subjectTerm));
@@ -63,7 +62,11 @@ namespace LeanCode.EmailSender
             if (templateBaseName is null)
                 throw new ArgumentNullException(nameof(templateBaseName));
 
-            inner.WithHtmlContent(model, $"{templateBaseName}.{cultureName}");
+            if (cultureName is "") // InvariantCulture
+                inner.WithHtmlContent(model, templateBaseName);
+            else
+                inner.WithHtmlContent(model, $"{templateBaseName}.{cultureName}");
+
             return this;
         }
 
@@ -75,7 +78,11 @@ namespace LeanCode.EmailSender
             if (templateBaseName is null)
                 throw new ArgumentNullException(nameof(templateBaseName));
 
-            inner.WithTextContent(model, $"{templateBaseName}.{cultureName}.txt");
+            if (cultureName is "") // InvariantCulture
+                inner.WithTextContent(model, templateBaseName + ".txt");
+            else
+                inner.WithTextContent(model, $"{templateBaseName}.{cultureName}.txt");
+
             return this;
         }
 
@@ -95,8 +102,7 @@ namespace LeanCode.EmailSender
             return WithTextContent(model, model.GetType().Name);
         }
 
-        public LocalizedEmailBuilder Attach(
-            Stream attachment, string name, string contentType)
+        public LocalizedEmailBuilder Attach(Stream attachment, string name, string contentType)
         {
             inner.Attach(
                 attachment ?? throw new ArgumentNullException(nameof(attachment)),
