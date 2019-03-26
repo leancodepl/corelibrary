@@ -29,7 +29,10 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder From(string email, string name)
         {
-            FromEmail = new EmailAddress(email ?? throw new ArgumentNullException(email), name);
+            FromEmail = new EmailAddress(
+                email ?? throw new ArgumentNullException(email),
+                name);
+
             return this;
         }
 
@@ -39,7 +42,9 @@ namespace LeanCode.EmailSender
                 .Split(EmailSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var emailAddress in split)
+            {
                 recipients.Add(new EmailAddress(emailAddress, name));
+            }
 
             return this;
         }
@@ -52,32 +57,42 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder WithHtmlContent(object model, string templateName)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (templateName is null)
-                logWarning?.Invoke("Passing `null` as `templateName` is deprecated, use `WithHtmlContent(object)` overload instead.");
+            {
+                logWarning?.Invoke(
+                    "Passing `null` as `templateName` is deprecated, use `WithHtmlContent(object)` overload instead");
+            }
 
-            contents.Add(new EmailContent(model, "text/html", templateName));
+            contents.Add(new EmailContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                "text/html",
+                templateName));
+
             return this;
         }
 
         public EmailBuilder WithTextContent(object model, string templateName)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (templateName is null)
-                logWarning?.Invoke("Passing `null` as `templateName` is deprecated, use `WithTextContent(object)` overload instead.");
+            {
+                logWarning?.Invoke(
+                    "Passing `null` as `templateName` is deprecated, use `WithTextContent(object)` overload instead");
+            }
 
-            contents.Add(new EmailContent(model, "text/plain", templateName));
+            contents.Add(new EmailContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                "text/plain",
+                templateName));
+
             return this;
         }
 
         public EmailBuilder WithHtmlContent(object model)
         {
             if (model is null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             return WithHtmlContent(model, model.GetType().Name);
         }
@@ -85,7 +100,9 @@ namespace LeanCode.EmailSender
         public EmailBuilder WithTextContent(object model)
         {
             if (model is null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             return WithTextContent(model, model.GetType().Name + ".txt");
         }
@@ -103,10 +120,14 @@ namespace LeanCode.EmailSender
         public Task Send()
         {
             if (FromEmail is null)
+            {
                 throw new InvalidOperationException("'From' e-mail has to be specified before sending.");
+            }
 
-            if (recipients.Count is 0)
+            if (recipients.Count == 0)
+            {
                 throw new InvalidOperationException("At least one recipient has to be specified before sending.");
+            }
 
             return send(this);
         }

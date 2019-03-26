@@ -1,10 +1,11 @@
 using Autofac;
 using Autofac.Core;
+using LeanCode.Components;
 using Microsoft.Extensions.Localization;
 
 namespace LeanCode.Localization
 {
-    public class LocalizationModule : Module
+    public class LocalizationModule : AppModule
     {
         protected override void Load(ContainerBuilder builder)
         {

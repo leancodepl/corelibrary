@@ -48,7 +48,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         public EmailBuilder New() => new EmailBuilder(Send, logger.Warning);
 
-        public LocalizedEmailBuilder NewLocalized(string cultureName)
+        public LocalizedEmailBuilder Localized(string cultureName)
         {
             if (stringLocalizer is null)
             {

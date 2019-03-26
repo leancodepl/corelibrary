@@ -35,53 +35,63 @@ namespace LeanCode.EmailSender
 
         public LocalizedEmailBuilder From(string email, string name)
         {
-            inner.From(email ?? throw new ArgumentNullException(nameof(email)), name);
+            inner.From(
+                email ?? throw new ArgumentNullException(nameof(email)),
+                name);
+
             return this;
         }
 
         public LocalizedEmailBuilder To(string email, string name)
         {
-            inner.To(email ?? throw new ArgumentNullException(nameof(email)), name);
+            inner.To(
+                email ?? throw new ArgumentNullException(nameof(email)),
+                name);
+
             return this;
         }
 
         public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] args)
         {
-            if (subjectTerm is null)
-                throw new ArgumentNullException(nameof(subjectTerm));
+            inner.WithSubject(stringLocalizer[
+                subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm)),
+                args]);
 
-            inner.WithSubject(stringLocalizer[subjectTerm, args]);
             return this;
         }
 
         public LocalizedEmailBuilder WithHtmlContent(object model, string templateBaseName)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
-            if (templateBaseName is null)
-                throw new ArgumentNullException(nameof(templateBaseName));
-
-            if (cultureName.Length is 0) // InvariantCulture
-                inner.WithHtmlContent(model, templateBaseName);
+            if (cultureName.Length == 0) // InvariantCulture
+            {
+                inner.WithHtmlContent(
+                    model ?? throw new ArgumentNullException(nameof(model)),
+                    templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName)));
+            }
             else
-                inner.WithHtmlContent(model, $"{templateBaseName}.{cultureName}");
+            {
+                inner.WithHtmlContent(
+                    model ?? throw new ArgumentNullException(nameof(model)),
+                    $"{templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))}.{cultureName}");
+            }
 
             return this;
         }
 
         public LocalizedEmailBuilder WithTextContent(object model, string templateBaseName)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
-            if (templateBaseName is null)
-                throw new ArgumentNullException(nameof(templateBaseName));
-
-            if (cultureName.Length is 0) // InvariantCulture
-                inner.WithTextContent(model, templateBaseName + ".txt");
+            if (cultureName.Length == 0) // InvariantCulture
+            {
+                inner.WithTextContent(
+                    model ?? throw new ArgumentNullException(nameof(model)),
+                    (templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))) + ".txt");
+            }
             else
-                inner.WithTextContent(model, $"{templateBaseName}.{cultureName}.txt");
+            {
+                inner.WithTextContent(
+                    model ?? throw new ArgumentNullException(nameof(model)),
+                    $"{templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))}.{cultureName}.txt");
+            }
 
             return this;
         }
@@ -89,7 +99,9 @@ namespace LeanCode.EmailSender
         public LocalizedEmailBuilder WithHtmlContent(object model)
         {
             if (model is null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             return WithHtmlContent(model, model.GetType().Name);
         }
@@ -97,7 +109,9 @@ namespace LeanCode.EmailSender
         public LocalizedEmailBuilder WithTextContent(object model)
         {
             if (model is null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             return WithTextContent(model, model.GetType().Name);
         }
