@@ -12,18 +12,18 @@ namespace LeanCode.EmailSender
         private readonly List<EmailAddress> recipients = new List<EmailAddress>();
         private readonly List<EmailContent> contents = new List<EmailContent>();
         private readonly List<EmailAttachment> attachments = new List<EmailAttachment>();
-        private readonly Func<EmailBuilder, Task> send;
+        private readonly IEmailClient emailClient;
         private readonly Action<string> logWarning;
 
-        public string Subject { get; private set; }
-        public EmailAddress FromEmail { get; private set; }
-        public List<EmailAddress> Recipients => recipients;
-        public List<EmailContent> Contents => contents;
-        public List<EmailAttachment> Attachments => attachments;
+        public string Subject { get; private set; } = null;
+        public EmailAddress FromEmail { get; private set; } = null;
+        public IReadOnlyCollection<EmailAddress> Recipients => recipients.AsReadOnly();
+        public IReadOnlyCollection<EmailContent> Contents => contents.AsReadOnly();
+        public IReadOnlyCollection<EmailAttachment> Attachments => attachments.AsReadOnly();
 
-        public EmailBuilder(Func<EmailBuilder, Task> send, Action<string> logWarning)
+        public EmailBuilder(IEmailClient emailClient, Action<string> logWarning)
         {
-            this.send = send ?? throw new ArgumentNullException(nameof(send));
+            this.emailClient = emailClient ?? throw new ArgumentNullException(nameof(emailClient));
             this.logWarning = logWarning;
         }
 
@@ -52,6 +52,35 @@ namespace LeanCode.EmailSender
         public EmailBuilder WithSubject(string subject)
         {
             Subject = subject ?? throw new ArgumentNullException(nameof(subject));
+            return this;
+        }
+
+        public EmailBuilder WithSubject(string subject, params object[] args)
+        {
+            Subject = string.Format(
+                subject ?? throw new ArgumentNullException(nameof(subject)),
+                args);
+
+            return this;
+        }
+
+        internal EmailBuilder WithHtmlContent(object model, params string[] templateNames)
+        {
+            contents.Add(new EmailContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                "text/html",
+                templateNames));
+
+            return this;
+        }
+
+        internal EmailBuilder WithTextContent(object model, params string[] templateNames)
+        {
+            contents.Add(new EmailContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                "text/plain",
+                templateNames));
+
             return this;
         }
 
@@ -129,7 +158,8 @@ namespace LeanCode.EmailSender
                 throw new InvalidOperationException("At least one recipient has to be specified before sending.");
             }
 
-            return send(this);
+            return emailClient.Send(new EmailModel(
+                Subject, FromEmail, Recipients, Contents, Attachments));
         }
     }
 }

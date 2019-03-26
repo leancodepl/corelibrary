@@ -16,21 +16,23 @@ namespace LeanCode.EmailSender
 
         public string Subject => inner.Subject;
         public EmailAddress FromEmail => inner.FromEmail;
-        public List<EmailAddress> Recipients => inner.Recipients;
-        public List<EmailContent> Contents => inner.Contents;
-        public List<EmailAttachment> Attachments => inner.Attachments;
+        public IReadOnlyCollection<EmailAddress> Recipients => inner.Recipients;
+        public IReadOnlyCollection<EmailContent> Contents => inner.Contents;
+        public IReadOnlyCollection<EmailAttachment> Attachments => inner.Attachments;
 
         public LocalizedEmailBuilder(
             string cultureName,
             IStringLocalizer stringLocalizer,
-            Func<EmailBuilder, Task> send)
+            IEmailClient emailClient)
         {
             this.cultureName = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
 
             this.stringLocalizer = (stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer)))
                 .WithCulture(CultureInfo.GetCultureInfo(cultureName));
 
-            this.inner = new EmailBuilder(send ?? throw new ArgumentNullException(nameof(send)), null);
+            this.inner = new EmailBuilder(
+                emailClient ?? throw new ArgumentNullException(nameof(emailClient)),
+                null);
         }
 
         public LocalizedEmailBuilder From(string email, string name)
@@ -62,17 +64,23 @@ namespace LeanCode.EmailSender
 
         public LocalizedEmailBuilder WithHtmlContent(object model, string templateBaseName)
         {
+            if (templateBaseName is null)
+            {
+                throw new ArgumentNullException(nameof(templateBaseName));
+            }
+
             if (cultureName.Length == 0) // InvariantCulture
             {
                 inner.WithHtmlContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName)));
+                    templateBaseName);
             }
             else
             {
                 inner.WithHtmlContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))}.{cultureName}");
+                    $"{templateBaseName}.{cultureName}",
+                    templateBaseName);
             }
 
             return this;
@@ -80,17 +88,23 @@ namespace LeanCode.EmailSender
 
         public LocalizedEmailBuilder WithTextContent(object model, string templateBaseName)
         {
+            if (templateBaseName is null)
+            {
+                throw new ArgumentNullException(nameof(templateBaseName));
+            }
+
             if (cultureName.Length == 0) // InvariantCulture
             {
                 inner.WithTextContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    (templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))) + ".txt");
+                    templateBaseName + ".txt");
             }
             else
             {
                 inner.WithTextContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName))}.{cultureName}.txt");
+                    $"{templateBaseName}.{cultureName}.txt",
+                    templateBaseName + ".txt");
             }
 
             return this;

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace LeanCode.EmailSender.Model
@@ -10,9 +11,9 @@ namespace LeanCode.EmailSender.Model
 
         public EmailAttachment(Stream content, string name, string contentType)
         {
-            Content = content;
-            Name = name;
-            ContentType = contentType;
+            Content = content ?? throw new ArgumentNullException(nameof(content));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
         }
     }
 }

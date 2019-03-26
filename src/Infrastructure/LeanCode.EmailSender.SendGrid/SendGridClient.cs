@@ -46,7 +46,7 @@ namespace LeanCode.EmailSender.SendGrid
             this.client = client;
         }
 
-        public EmailBuilder New() => new EmailBuilder(Send, logger.Warning);
+        public EmailBuilder New() => new EmailBuilder(this, logger.Warning);
 
         public LocalizedEmailBuilder Localized(string cultureName)
         {
@@ -56,16 +56,16 @@ namespace LeanCode.EmailSender.SendGrid
                     "Cannot build localized emails without IStringLocalizer.");
             }
 
-            return new LocalizedEmailBuilder(cultureName, stringLocalizer, Send);
+            return new LocalizedEmailBuilder(cultureName, stringLocalizer, this);
         }
 
-        private async Task Send(EmailBuilder builder)
+        public async Task Send(EmailModel model)
         {
             logger.Verbose(
                 "Sending e-mail to {Emails} with subject {Subject}",
-                builder.Recipients, builder.Subject);
+                model.Recipients, model.Subject);
 
-            var message = await BuildMessage(builder);
+            var message = await BuildMessage(model);
             var msgJson = JsonConvert.SerializeObject(message, JsonSettings);
 
             HttpResponseMessage response;
@@ -78,7 +78,7 @@ namespace LeanCode.EmailSender.SendGrid
             {
                 logger.Warning(
                     "Cannot send e-mail with subject {Subject} to {Emails}",
-                    builder.Subject, builder.Recipients);
+                    model.Subject, model.Recipients);
 
                 var errorJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
@@ -86,13 +86,13 @@ namespace LeanCode.EmailSender.SendGrid
 
             logger.Information(
                 "E-mail with subject {Subject} sent to {Emails}",
-                builder.Subject, builder.Recipients);
+                model.Subject, model.Recipients);
         }
 
-        private async Task<SendGridMessage> BuildMessage(EmailBuilder builder)
+        private async Task<SendGridMessage> BuildMessage(EmailModel model)
         {
-            var attachmentsTask = Task.WhenAll(builder.Attachments.Select(Convert));
-            var contentsTask = Task.WhenAll(builder.Contents.Select(Convert));
+            var attachmentsTask = Task.WhenAll(model.Attachments.Select(Convert));
+            var contentsTask = Task.WhenAll(model.Contents.Select(Convert));
 
             await Task.WhenAll(attachmentsTask, contentsTask);
 
@@ -101,17 +101,17 @@ namespace LeanCode.EmailSender.SendGrid
 
             return new SendGridMessage()
             {
-                From = new SendGridEmail(builder.FromEmail),
+                From = new SendGridEmail(model.FromEmail),
                 Personalizations = new List<SendGridPersonalization>()
                 {
                     new SendGridPersonalization()
                     {
-                        To = builder.Recipients
+                        To = model.Recipients
                             .Select(recipient => new SendGridEmail(recipient))
                             .ToList()
                     }
                 },
-                Subject = builder.Subject,
+                Subject = model.Subject,
                 Content = contents,
                 Attachments = attachments
             };
@@ -119,13 +119,26 @@ namespace LeanCode.EmailSender.SendGrid
 
         private async Task<SendGridContent> Convert(EmailContent content)
         {
-            var viewName = GetViewNameFromContent(content);
-            var rendered = await viewRenderer.RenderToString(viewName, content.Model).ConfigureAwait(false);
-            return new SendGridContent
+            var viewNames = GetViewNamesFromContent(content);
+
+            foreach (string viewName in viewNames)
             {
-                Type = content.ContentType,
-                Value = rendered
-            };
+                try
+                {
+                    return new SendGridContent
+                    {
+                        Type = content.ContentType,
+                        Value = await viewRenderer
+                            .RenderToString(viewName, content.Model)
+                            .ConfigureAwait(false),
+                    };
+                }
+                catch (ViewNotFoundException) { }
+            }
+
+            throw new ViewNotFoundException(
+                null, // or string.Join(", ", viewNames)
+                "Cannot locate any of matching views.");
         }
 
         private static async Task<SendGridAttachment> Convert(EmailAttachment attachment)
@@ -150,11 +163,21 @@ namespace LeanCode.EmailSender.SendGrid
             }
         }
 
-        private static string GetViewNameFromContent(EmailContent content)
+        private static List<string> GetViewNamesFromContent(EmailContent content)
         {
-            if (!string.IsNullOrWhiteSpace(content.TemplateName))
-                return content.TemplateName;
-            return GetViewNameFromModel(content.Model.GetType(), content.ContentType);
+            if (content.TemplateNames.Any(n => !string.IsNullOrWhiteSpace(n)))
+            {
+                return content.TemplateNames
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .ToList();
+            }
+            else
+            {
+                return new List<string>
+                {
+                    GetViewNameFromModel(content.Model.GetType(), content.ContentType)
+                };
+            }
         }
 
         private static string GetViewNameFromModel(Type type, string mimeType)
