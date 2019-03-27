@@ -7,8 +7,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
+using LeanCode.Localization.StringLocalizers;
 using LeanCode.ViewRenderer;
-using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

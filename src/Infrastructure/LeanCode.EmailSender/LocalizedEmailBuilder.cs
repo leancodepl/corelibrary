@@ -4,13 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
-using Microsoft.Extensions.Localization;
+using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.EmailSender
 {
     public class LocalizedEmailBuilder
     {
-        private readonly string cultureName;
+        private readonly CultureInfo culture;
         private readonly IStringLocalizer stringLocalizer;
         private readonly EmailBuilder inner;
 
@@ -25,10 +25,10 @@ namespace LeanCode.EmailSender
             IStringLocalizer stringLocalizer,
             IEmailClient emailClient)
         {
-            this.cultureName = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
+            this.culture = CultureInfo.GetCultureInfo(cultureName
+                ?? throw new ArgumentNullException(nameof(cultureName)));
 
-            this.stringLocalizer = (stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer)))
-                .WithCulture(CultureInfo.GetCultureInfo(cultureName));
+            this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
 
             this.inner = new EmailBuilder(
                 emailClient ?? throw new ArgumentNullException(nameof(emailClient)),
@@ -56,6 +56,7 @@ namespace LeanCode.EmailSender
         public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] args)
         {
             inner.WithSubject(stringLocalizer[
+                culture,
                 subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm)),
                 args]);
 
@@ -69,7 +70,7 @@ namespace LeanCode.EmailSender
                 throw new ArgumentNullException(nameof(templateBaseName));
             }
 
-            if (cultureName.Length == 0) // InvariantCulture
+            if (culture.Name.Length == 0) // InvariantCulture
             {
                 inner.WithHtmlContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
@@ -79,7 +80,7 @@ namespace LeanCode.EmailSender
             {
                 inner.WithHtmlContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName}.{cultureName}",
+                    $"{templateBaseName}.{culture.Name}",
                     templateBaseName);
             }
 
@@ -93,7 +94,7 @@ namespace LeanCode.EmailSender
                 throw new ArgumentNullException(nameof(templateBaseName));
             }
 
-            if (cultureName.Length == 0) // InvariantCulture
+            if (culture.Name.Length == 0) // InvariantCulture
             {
                 inner.WithTextContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
@@ -103,7 +104,7 @@ namespace LeanCode.EmailSender
             {
                 inner.WithTextContent(
                     model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName}.{cultureName}.txt",
+                    $"{templateBaseName}.{culture.Name}.txt",
                     templateBaseName + ".txt");
             }
 
