@@ -1,7 +1,7 @@
 using Autofac;
 using Autofac.Core;
 using LeanCode.Components;
-using Microsoft.Extensions.Localization;
+using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.Localization
 {
@@ -9,13 +9,8 @@ namespace LeanCode.Localization
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ResourceManagerStringLocalizerFactory>()
-                .AsImplementedInterfaces()
+            builder.RegisterType<ResourceManagerStringLocalizer>()
                 .AsSelf()
-                .SingleInstance();
-
-            builder.Register(c => c.Resolve<IStringLocalizerFactory>()
-                .Create(c.Resolve<LocalizationConfiguration>().ResourceSource))
                 .AsImplementedInterfaces()
                 .OnlyIf(reg => reg.IsRegistered(
                     new TypedService(typeof(LocalizationConfiguration))));

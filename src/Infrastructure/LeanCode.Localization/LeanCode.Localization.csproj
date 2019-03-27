@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" />
-    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="Serilog" />
   </ItemGroup>
 
 </Project>
