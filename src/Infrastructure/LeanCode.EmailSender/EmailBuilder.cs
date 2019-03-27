@@ -30,7 +30,7 @@ namespace LeanCode.EmailSender
         public EmailBuilder From(string email, string name)
         {
             FromEmail = new EmailAddress(
-                email ?? throw new ArgumentNullException(email),
+                email ?? throw new ArgumentNullException(nameof(email)),
                 name);
 
             return this;
@@ -38,7 +38,7 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder To(string email, string name)
         {
-            var split = (email ?? throw new ArgumentNullException(email))
+            var split = (email ?? throw new ArgumentNullException(nameof(email)))
                 .Split(EmailSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var emailAddress in split)
