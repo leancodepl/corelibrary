@@ -26,7 +26,7 @@ namespace LeanCode.PushNotifications.Tests
 
             client.Send(null).ReturnsForAnyArgs(Task.FromResult<FCMResult>(new FCMResult.Success()));
 
-            sender = new PushNotifications<Guid>(store, client);
+            sender = new PushNotifications<Guid>(null, store, client);
         }
 
         [Theory]
