@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.PushNotifications
 {
@@ -9,15 +10,18 @@ namespace LeanCode.PushNotifications
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotifications<TUserId>>();
 
+        private readonly IStringLocalizer stringLocalizer;
         private readonly IPushNotificationTokenStore<TUserId> tokenStore;
         private readonly FCMClient fcmClient;
         private readonly PushNotificationsConfiguration pushNotificationsConfiguration;
 
         public PushNotifications(
+            IStringLocalizer stringLocalizer,
             IPushNotificationTokenStore<TUserId> tokenStore,
             FCMClient fcmClient,
             PushNotificationsConfiguration pushNotificationsConfiguration = null)
         {
+            this.stringLocalizer = stringLocalizer;
             this.tokenStore = tokenStore;
             this.fcmClient = fcmClient;
             this.pushNotificationsConfiguration = pushNotificationsConfiguration;
@@ -52,6 +56,12 @@ namespace LeanCode.PushNotifications
                 logger.Verbose("User {UserId} does not have any tokens", to);
             }
         }
+
+        public PushNotificationBuilder<TUserId> New(TUserId to) =>
+            new PushNotificationBuilder<TUserId>(this, stringLocalizer, to);
+
+        public PushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
+            new PushNotificationBuilder<TUserId>(this, stringLocalizer, cultureName, to);
 
         private async Task SendSingle(TUserId to, PushNotification notification, List<PushNotificationToken<TUserId>> tokens)
         {
