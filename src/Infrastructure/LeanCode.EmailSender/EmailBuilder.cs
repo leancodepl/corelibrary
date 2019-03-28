@@ -55,15 +55,6 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public EmailBuilder WithSubject(string subject, params object[] args)
-        {
-            Subject = string.Format(
-                subject ?? throw new ArgumentNullException(nameof(subject)),
-                args);
-
-            return this;
-        }
-
         internal EmailBuilder WithHtmlContent(object model, params string[] templateNames)
         {
             contents.Add(new EmailContent(
