@@ -12,8 +12,7 @@ namespace LeanCode.Localization
             builder.RegisterType<ResourceManagerStringLocalizer>()
                 .AsSelf()
                 .AsImplementedInterfaces()
-                .OnlyIf(reg => reg.IsRegistered(
-                    new TypedService(typeof(LocalizationConfiguration))));
+                .SingleInstance();
         }
     }
 }

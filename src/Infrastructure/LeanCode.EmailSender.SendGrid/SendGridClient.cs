@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
@@ -28,15 +27,6 @@ namespace LeanCode.EmailSender.SendGrid
         private readonly SendGridHttpClient client;
 
         public SendGridClient(
-            IViewRenderer viewRenderer,
-            SendGridHttpClient client)
-        {
-            this.stringLocalizer = null;
-            this.viewRenderer = viewRenderer;
-            this.client = client;
-        }
-
-        public SendGridClient(
             IStringLocalizer stringLocalizer,
             IViewRenderer viewRenderer,
             SendGridHttpClient client)
@@ -48,16 +38,8 @@ namespace LeanCode.EmailSender.SendGrid
 
         public EmailBuilder New() => new EmailBuilder(this, logger.Warning);
 
-        public LocalizedEmailBuilder Localized(string cultureName)
-        {
-            if (stringLocalizer is null)
-            {
-                throw new InvalidOperationException(
-                    "Cannot build localized emails without IStringLocalizer.");
-            }
-
-            return new LocalizedEmailBuilder(cultureName, stringLocalizer, this);
-        }
+        public LocalizedEmailBuilder Localized(string cultureName) =>
+            new LocalizedEmailBuilder(cultureName, stringLocalizer, this);
 
         public async Task Send(EmailModel model)
         {
