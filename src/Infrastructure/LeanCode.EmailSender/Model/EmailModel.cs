@@ -18,7 +18,12 @@ namespace LeanCode.EmailSender.Model
             IReadOnlyCollection<EmailContent> contents,
             IReadOnlyCollection<EmailAttachment> attachments)
         {
-            if ((recipients ?? throw new ArgumentNullException(nameof(recipients))).Count == 0)
+            if (recipients is null)
+            {
+                throw new ArgumentNullException(nameof(recipients));
+            }
+
+            if (recipients.Count == 0)
             {
                 throw new ArgumentException("At least one recipient must be specified.");
             }
