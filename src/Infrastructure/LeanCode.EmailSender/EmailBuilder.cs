@@ -55,7 +55,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        internal EmailBuilder WithHtmlContent(object model, params string[] templateNames)
+        internal EmailBuilder WithHtmlContent(object model, IEnumerable<string> templateNames)
         {
             contents.Add(new EmailContent(
                 model ?? throw new ArgumentNullException(nameof(model)),
@@ -65,7 +65,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        internal EmailBuilder WithTextContent(object model, params string[] templateNames)
+        internal EmailBuilder WithTextContent(object model, IEnumerable<string> templateNames)
         {
             contents.Add(new EmailContent(
                 model ?? throw new ArgumentNullException(nameof(model)),

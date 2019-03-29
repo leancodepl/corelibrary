@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace LeanCode.EmailSender.Model
@@ -17,11 +18,11 @@ namespace LeanCode.EmailSender.Model
             TemplateNames = ImmutableArray.Create(templateName);
         }
 
-        public EmailContent(object model, string mimeType, params string[] templateNames)
+        public EmailContent(object model, string mimeType, IEnumerable<string> templateNames)
         {
             Model = model ?? throw new ArgumentNullException(nameof(model));
             ContentType = mimeType ?? throw new ArgumentNullException(nameof(mimeType));
-            TemplateNames = ImmutableArray.Create(templateNames);
+            TemplateNames = templateNames.ToImmutableArray();
         }
     }
 }

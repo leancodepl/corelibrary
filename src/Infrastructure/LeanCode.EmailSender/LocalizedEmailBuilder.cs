@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
 using LeanCode.Localization.StringLocalizers;
+using static System.Globalization.CultureInfo;
 
 namespace LeanCode.EmailSender
 {
@@ -25,7 +27,7 @@ namespace LeanCode.EmailSender
             IStringLocalizer stringLocalizer,
             IEmailClient emailClient)
         {
-            this.culture = CultureInfo.GetCultureInfo(cultureName
+            this.culture = GetCultureInfo(cultureName
                 ?? throw new ArgumentNullException(nameof(cultureName)));
 
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
@@ -79,19 +81,9 @@ namespace LeanCode.EmailSender
                 throw new ArgumentNullException(nameof(templateBaseName));
             }
 
-            if (culture.Name.Length == 0) // InvariantCulture
-            {
-                inner.WithHtmlContent(
-                    model ?? throw new ArgumentNullException(nameof(model)),
-                    templateBaseName);
-            }
-            else
-            {
-                inner.WithHtmlContent(
-                    model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName}.{culture.Name}",
-                    templateBaseName);
-            }
+            inner.WithHtmlContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                GenerateTemplateNames(templateBaseName));
 
             return this;
         }
@@ -103,19 +95,9 @@ namespace LeanCode.EmailSender
                 throw new ArgumentNullException(nameof(templateBaseName));
             }
 
-            if (culture.Name.Length == 0) // InvariantCulture
-            {
-                inner.WithTextContent(
-                    model ?? throw new ArgumentNullException(nameof(model)),
-                    templateBaseName + ".txt");
-            }
-            else
-            {
-                inner.WithTextContent(
-                    model ?? throw new ArgumentNullException(nameof(model)),
-                    $"{templateBaseName}.{culture.Name}.txt",
-                    templateBaseName + ".txt");
-            }
+            inner.WithTextContent(
+                model ?? throw new ArgumentNullException(nameof(model)),
+                GenerateTemplateNames(templateBaseName, ".txt"));
 
             return this;
         }
@@ -151,5 +133,16 @@ namespace LeanCode.EmailSender
         }
 
         public Task Send() => inner.Send();
+
+        private IEnumerable<string> GenerateTemplateNames(
+            string templateBaseName, string suffix = "")
+        {
+            for (var c = culture; c != InvariantCulture; c = c.Parent)
+            {
+                yield return $"{templateBaseName}.{c.Name}{suffix}";
+            }
+
+            yield return $"{templateBaseName}{suffix}";
+        }
     }
 }
