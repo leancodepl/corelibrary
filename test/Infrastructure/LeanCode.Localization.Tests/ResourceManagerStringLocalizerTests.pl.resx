@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="order.simple" xml:space="preserve">
+    <value>Zamówienie</value>
+  </data>
+  <data name="order.format" xml:space="preserve">
+    <value>Zamówienie nr {0}</value>
+  </data>
+</root>

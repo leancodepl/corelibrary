@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>LeanCode.EmailSender</AssemblyName>
   </PropertyGroup>
+  <Import Project="../../CommonRefs.props" />
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.Localization/LeanCode.Localization.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Localization/LeanCode.Localization.csproj" />
   </ItemGroup>
 
 </Project>
