@@ -12,7 +12,7 @@ namespace LeanCode.PushNotifications
         Task SendToAll(TUserId to, PushNotification notification);
 
         PushNotificationBuilder<TUserId> New(TUserId to);
-        PushNotificationBuilder<TUserId> New(TUserId to, string cultureName);
+        LocalizedPushNotificationBuilder<TUserId> New(TUserId to, string cultureName);
         Task SendAsync(TUserId to, DeviceType device, PushNotification notification);
         Task SendToAllAsync(TUserId to, PushNotification notification);
     }

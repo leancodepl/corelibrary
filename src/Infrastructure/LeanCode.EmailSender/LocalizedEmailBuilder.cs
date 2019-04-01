@@ -53,20 +53,20 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public LocalizedEmailBuilder WithSubject(string subjectTerm)
+        public LocalizedEmailBuilder WithSubject(string subjectKey)
         {
-            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
+            _ = subjectKey ?? throw new ArgumentNullException(nameof(subjectKey));
 
-            inner.WithSubject(stringLocalizer[culture, subjectTerm]);
+            inner.WithSubject(stringLocalizer[culture, subjectKey]);
 
             return this;
         }
 
-        public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] arguments)
+        public LocalizedEmailBuilder WithSubject(string subjectFormatKey, params object[] arguments)
         {
-            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
+            _ = subjectFormatKey ?? throw new ArgumentNullException(nameof(subjectFormatKey));
 
-            string format = stringLocalizer[culture, subjectTerm];
+            string format = stringLocalizer[culture, subjectFormatKey];
             inner.WithSubject(string.Format(culture, format, arguments));
 
             return this;

@@ -8,8 +8,6 @@ namespace LeanCode.PushNotifications
 {
     public class PushNotificationBuilder<TUserId>
     {
-        private readonly CultureInfo culture;
-        private readonly IStringLocalizer stringLocalizer;
         private readonly IPushNotifications<TUserId> pushNotifications;
 
         public TUserId To { get; private set; }
@@ -22,79 +20,37 @@ namespace LeanCode.PushNotifications
             TUserId to)
         {
             this.pushNotifications = pushNotifications ?? throw new ArgumentNullException(nameof(pushNotifications));
-            this.stringLocalizer = null;
-            this.culture = null;
             To = to;
         }
 
-        internal PushNotificationBuilder(
-            string cultureName,
-            IStringLocalizer stringLocalizer,
-            IPushNotifications<TUserId> pushNotifications,
-            TUserId to)
+        public virtual PushNotificationBuilder<TUserId> WithTitle(string title)
         {
-            _ = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
-
-            this.pushNotifications = pushNotifications ?? throw new ArgumentNullException(nameof(pushNotifications));
-            this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
-            this.culture = GetCultureInfo(cultureName);
-            To = to;
-        }
-
-        public PushNotificationBuilder<TUserId> WithTitle(string title)
-        {
-            if (culture is null || title is null)
-            {
-                Title = title;
-            }
-            else
-            {
-                Title = stringLocalizer[culture, title];
-            }
-
+            Title = title;
             return this;
         }
 
-        public PushNotificationBuilder<TUserId> WithTitle(string title, params object[] arguments)
+        public virtual PushNotificationBuilder<TUserId> WithTitle(
+            string titleFormat, params object[] arguments)
         {
-            if (culture is null)
-            {
-                Title = string.Format(title, arguments);
-            }
-            else
-            {
-                string format = stringLocalizer[culture, title];
-                Title = string.Format(culture, format, arguments);
-            }
+            _ = titleFormat ?? throw new ArgumentNullException(nameof(titleFormat));
+
+            Title = string.Format(InvariantCulture, titleFormat, arguments);
 
             return this;
         }
 
         public PushNotificationBuilder<TUserId> WithContent(string content)
         {
-            if (culture is null || content is null)
-            {
-                Content = content;
-            }
-            else
-            {
-                Content = stringLocalizer[culture, content];
-            }
-
+            Content = content;
             return this;
         }
 
-        public PushNotificationBuilder<TUserId> WithContent(string content, params object[] arguments)
+        public PushNotificationBuilder<TUserId> WithContent(
+            string contentFormat, params object[] arguments)
         {
-            if (culture is null)
-            {
-                Content = string.Format(content, arguments);
-            }
-            else
-            {
-                string format = stringLocalizer[culture, content];
-                Content = string.Format(culture, format, arguments);
-            }
+            _ = contentFormat ?? throw new ArgumentNullException(nameof(contentFormat));
+
+            Content = string.Format(InvariantCulture, contentFormat, arguments);
 
             return this;
         }
