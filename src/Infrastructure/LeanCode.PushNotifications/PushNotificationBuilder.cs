@@ -105,10 +105,10 @@ namespace LeanCode.PushNotifications
             return this;
         }
 
-        public Task SendToDevice(DeviceType device) =>
-            pushNotifications.Send(To, device, new PushNotification(Title, Content, Data));
+        public Task SendToDeviceAsync(DeviceType device) =>
+            pushNotifications.SendAsync(To, device, new PushNotification(Title, Content, Data));
 
-        public Task SendToAllDevices() =>
-            pushNotifications.SendToAll(To, new PushNotification(Title, Content, Data));
+        public Task SendToAllDevicesAsync() =>
+            pushNotifications.SendToAllAsync(To, new PushNotification(Title, Content, Data));
     }
 }

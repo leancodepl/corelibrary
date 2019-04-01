@@ -17,7 +17,7 @@ namespace LeanCode.Example.CQRS
 
         public Task ExecuteAsync(AppContext _, SendNotification command)
         {
-            return pns.Send(
+            return pns.SendAsync(
                 command.UserId, DeviceType.Android,
                 new PushNotification("Notification", command.Content, null)
             );

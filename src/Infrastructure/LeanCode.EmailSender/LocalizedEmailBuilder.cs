@@ -117,7 +117,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public Task Send() => inner.Send();
+        public Task SendAsync() => inner.SendAsync();
 
         private IEnumerable<string> GenerateTemplateNames(
             string templateBaseName, string suffix = "")

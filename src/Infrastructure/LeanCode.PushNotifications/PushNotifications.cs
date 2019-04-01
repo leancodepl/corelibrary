@@ -27,7 +27,27 @@ namespace LeanCode.PushNotifications
             this.pushNotificationsConfiguration = pushNotificationsConfiguration;
         }
 
-        public async Task Send(TUserId to, DeviceType device, PushNotification notification)
+        [Obsolete("Use `SendAsync(TUserId, DeviceType, PushNotification)` instead.")]
+        public Task Send(TUserId to, DeviceType device, PushNotification notification)
+        {
+            logger.Warning("`IPushNotifications.Send(…)` is deprecated, use `SendAsync(…)` instead");
+            return SendAsync(to, device, notification);
+        }
+
+        [Obsolete("Use `SendToAllAsync(TUserId, PushNotification)` instead.")]
+        public Task SendToAll(TUserId to, PushNotification notification)
+        {
+            logger.Warning("`IPushNotifications.SendToAll(…)` is deprecated, use `SendToAllAsync(…)` instead");
+            return SendToAllAsync(to, notification);
+        }
+
+        public PushNotificationBuilder<TUserId> New(TUserId to) =>
+            new PushNotificationBuilder<TUserId>(this, to);
+
+        public PushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
+            new PushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this, to);
+
+        public async Task SendAsync(TUserId to, DeviceType device, PushNotification notification)
         {
             logger.Verbose("Sending notification to user {UserId} on device {Device}", to, device);
 
@@ -42,7 +62,7 @@ namespace LeanCode.PushNotifications
             }
         }
 
-        public async Task SendToAll(TUserId to, PushNotification notification)
+        public async Task SendToAllAsync(TUserId to, PushNotification notification)
         {
             logger.Verbose("Sending notification to user {UserId} on all devices", to);
 
@@ -56,12 +76,6 @@ namespace LeanCode.PushNotifications
                 logger.Verbose("User {UserId} does not have any tokens", to);
             }
         }
-
-        public PushNotificationBuilder<TUserId> New(TUserId to) =>
-            new PushNotificationBuilder<TUserId>(this, to);
-
-        public PushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
-            new PushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this, to);
 
         private async Task SendSingle(TUserId to, PushNotification notification, List<PushNotificationToken<TUserId>> tokens)
         {
