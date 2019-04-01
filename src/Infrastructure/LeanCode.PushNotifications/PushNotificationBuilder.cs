@@ -8,9 +8,9 @@ namespace LeanCode.PushNotifications
 {
     public class PushNotificationBuilder<TUserId>
     {
-        private readonly IPushNotifications<TUserId> pushNotifications;
-        private readonly IStringLocalizer stringLocalizer;
         private readonly CultureInfo culture;
+        private readonly IStringLocalizer stringLocalizer;
+        private readonly IPushNotifications<TUserId> pushNotifications;
 
         public TUserId To { get; private set; }
         public string Title { get; private set; } = null;
@@ -19,24 +19,25 @@ namespace LeanCode.PushNotifications
 
         internal PushNotificationBuilder(
             IPushNotifications<TUserId> pushNotifications,
-            IStringLocalizer stringLocalizer,
             TUserId to)
         {
             this.pushNotifications = pushNotifications ?? throw new ArgumentNullException(nameof(pushNotifications));
-            this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
+            this.stringLocalizer = null;
             this.culture = null;
             To = to;
         }
 
         internal PushNotificationBuilder(
-            IPushNotifications<TUserId> pushNotifications,
-            IStringLocalizer stringLocalizer,
             string cultureName,
+            IStringLocalizer stringLocalizer,
+            IPushNotifications<TUserId> pushNotifications,
             TUserId to)
         {
+            _ = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
+
             this.pushNotifications = pushNotifications ?? throw new ArgumentNullException(nameof(pushNotifications));
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
-            this.culture = GetCultureInfo(cultureName ?? throw new ArgumentNullException(nameof(cultureName)));
+            this.culture = GetCultureInfo(cultureName);
             To = to;
         }
 
@@ -62,7 +63,8 @@ namespace LeanCode.PushNotifications
             }
             else
             {
-                Title = stringLocalizer[culture, title, arguments];
+                string format = stringLocalizer[culture, title];
+                Title = string.Format(culture, format, arguments);
             }
 
             return this;
@@ -90,7 +92,8 @@ namespace LeanCode.PushNotifications
             }
             else
             {
-                Content = stringLocalizer[culture, content, arguments];
+                string format = stringLocalizer[culture, content];
+                Content = string.Format(culture, format, arguments);
             }
 
             return this;

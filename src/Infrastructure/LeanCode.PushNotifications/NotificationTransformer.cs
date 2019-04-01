@@ -30,7 +30,7 @@ namespace LeanCode.PushNotifications
             {
                 To = null,
                 ContentAvailable = true,
-                Priority = "high",
+                Priority = Priority,
                 TimeToLive = TTL,
                 Notification = new FCMNotificationPayload
                 {
@@ -50,7 +50,7 @@ namespace LeanCode.PushNotifications
             {
                 To = null,
                 ContentAvailable = true,
-                Priority = "high",
+                Priority = Priority,
                 TimeToLive = TTL,
                 Notification = new FCMNotificationPayload
                 {
@@ -81,7 +81,7 @@ namespace LeanCode.PushNotifications
                 {
                     To = null,
                     ContentAvailable = true,
-                    Priority = "high",
+                    Priority = Priority,
                     TimeToLive = TTL,
                     Data = data
                 };
@@ -91,7 +91,7 @@ namespace LeanCode.PushNotifications
             {
                 To = null,
                 ContentAvailable = true,
-                Priority = "high",
+                Priority = Priority,
                 TimeToLive = TTL,
                 Notification = new FCMNotificationPayload
                 {

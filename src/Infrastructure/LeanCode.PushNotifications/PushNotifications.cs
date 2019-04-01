@@ -58,10 +58,10 @@ namespace LeanCode.PushNotifications
         }
 
         public PushNotificationBuilder<TUserId> New(TUserId to) =>
-            new PushNotificationBuilder<TUserId>(this, stringLocalizer, to);
+            new PushNotificationBuilder<TUserId>(this, to);
 
         public PushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
-            new PushNotificationBuilder<TUserId>(this, stringLocalizer, cultureName, to);
+            new PushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this, to);
 
         private async Task SendSingle(TUserId to, PushNotification notification, List<PushNotificationToken<TUserId>> tokens)
         {
