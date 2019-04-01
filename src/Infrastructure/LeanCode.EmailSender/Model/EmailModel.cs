@@ -18,21 +18,20 @@ namespace LeanCode.EmailSender.Model
             IReadOnlyCollection<EmailContent> contents,
             IReadOnlyCollection<EmailAttachment> attachments)
         {
-            if (recipients is null)
-            {
-                throw new ArgumentNullException(nameof(recipients));
-            }
+            _ = recipients ?? throw new ArgumentNullException(nameof(recipients));
+            _ = contents ?? throw new ArgumentNullException(nameof(contents));
+            _ = attachments ?? throw new ArgumentNullException(nameof(attachments));
 
             if (recipients.Count == 0)
             {
                 throw new ArgumentException("At least one recipient must be specified.");
             }
 
-            Subject = subject;
             FromEmail = from ?? throw new ArgumentNullException(nameof(from));
+            Subject = subject;
             Recipients = recipients.ToImmutableArray();
-            Contents = (contents ?? throw new ArgumentNullException(nameof(contents))).ToImmutableArray();
-            Attachments = (attachments ?? throw new ArgumentNullException(nameof(attachments))).ToImmutableArray();
+            Contents = contents.ToImmutableArray();
+            Attachments = attachments.ToImmutableArray();
         }
     }
 }

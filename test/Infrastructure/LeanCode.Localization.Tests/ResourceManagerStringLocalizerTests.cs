@@ -59,30 +59,6 @@ namespace LeanCode.Localization.Tests
         }
 
         [Fact]
-        public void Correct_formatted_string_is_returned_for_InvariantCulture()
-        {
-            string value = stringLocalizer[InvariantCulture, "order.format", 42];
-
-            Assert.Equal("Order no. 42", value);
-        }
-
-        [Fact]
-        public void Correct_formatted_string_is_returned_for_specific_culture()
-        {
-            string value = stringLocalizer[GetCultureInfo("pl"), "order.format", 42];
-
-            Assert.Equal("Zamówienie nr 42", value);
-        }
-
-        [Fact]
-        public void Default_formatted_string_is_returned_for_missing_culture()
-        {
-            string value = stringLocalizer[GetCultureInfo("es"), "order.format", 42];
-
-            Assert.Equal("Order no. 42", value);
-        }
-
-        [Fact]
         public void Exception_is_thrown_when_one_of_arguments_is_null()
         {
             Assert.Throws<ArgumentNullException>(() =>

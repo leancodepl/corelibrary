@@ -27,107 +27,92 @@ namespace LeanCode.EmailSender
             IStringLocalizer stringLocalizer,
             IEmailClient emailClient)
         {
-            this.culture = GetCultureInfo(cultureName
-                ?? throw new ArgumentNullException(nameof(cultureName)));
+            _ = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
+            _ = emailClient ?? throw new ArgumentNullException(nameof(emailClient));
 
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
-
-            this.inner = new EmailBuilder(
-                emailClient ?? throw new ArgumentNullException(nameof(emailClient)),
-                null);
+            this.culture = GetCultureInfo(cultureName);
+            this.inner = new EmailBuilder(emailClient, null);
         }
 
         public LocalizedEmailBuilder From(string email, string name)
         {
-            inner.From(
-                email ?? throw new ArgumentNullException(nameof(email)),
-                name);
+            _ = email ?? throw new ArgumentNullException(nameof(email));
+
+            inner.From(email, name);
 
             return this;
         }
 
         public LocalizedEmailBuilder To(string email, string name)
         {
-            inner.To(
-                email ?? throw new ArgumentNullException(nameof(email)),
-                name);
+            _ = email ?? throw new ArgumentNullException(nameof(email));
+
+            inner.To(email, name);
 
             return this;
         }
 
         public LocalizedEmailBuilder WithSubject(string subjectTerm)
         {
-            inner.WithSubject(stringLocalizer[
-                culture,
-                subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm))]);
+            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
+
+            inner.WithSubject(stringLocalizer[culture, subjectTerm]);
 
             return this;
         }
 
         public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] arguments)
         {
-            inner.WithSubject(stringLocalizer[
-                culture,
-                subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm)),
-                arguments ?? throw new ArgumentNullException(nameof(arguments))]);
+            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
+
+            string format = stringLocalizer[culture, subjectTerm];
+            inner.WithSubject(string.Format(culture, format, arguments));
 
             return this;
         }
 
         public LocalizedEmailBuilder WithHtmlContent(object model, string templateBaseName)
         {
-            if (templateBaseName is null)
-            {
-                throw new ArgumentNullException(nameof(templateBaseName));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+            _ = templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName));
 
-            inner.WithHtmlContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                GenerateTemplateNames(templateBaseName));
+            inner.WithHtmlContent(model, GenerateTemplateNames(templateBaseName));
 
             return this;
         }
 
         public LocalizedEmailBuilder WithTextContent(object model, string templateBaseName)
         {
-            if (templateBaseName is null)
-            {
-                throw new ArgumentNullException(nameof(templateBaseName));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+            _ = templateBaseName ?? throw new ArgumentNullException(nameof(templateBaseName));
 
-            inner.WithTextContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                GenerateTemplateNames(templateBaseName, ".txt"));
+            inner.WithTextContent(model, GenerateTemplateNames(templateBaseName, ".txt"));
 
             return this;
         }
 
         public LocalizedEmailBuilder WithHtmlContent(object model)
         {
-            if (model is null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
 
             return WithHtmlContent(model, model.GetType().Name);
         }
 
         public LocalizedEmailBuilder WithTextContent(object model)
         {
-            if (model is null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
 
             return WithTextContent(model, model.GetType().Name);
         }
 
         public LocalizedEmailBuilder Attach(Stream attachment, string name, string contentType)
         {
-            inner.Attach(
-                attachment ?? throw new ArgumentNullException(nameof(attachment)),
-                name ?? throw new ArgumentNullException(nameof(name)),
-                contentType ?? throw new ArgumentNullException(nameof(contentType)));
+            _ = attachment ?? throw new ArgumentNullException(nameof(attachment));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+            _ = contentType ?? throw new ArgumentNullException(nameof(contentType));
+
+            inner.Attach(attachment, name, contentType);
 
             return this;
         }

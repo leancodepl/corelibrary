@@ -29,17 +29,18 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder From(string email, string name)
         {
-            FromEmail = new EmailAddress(
-                email ?? throw new ArgumentNullException(nameof(email)),
-                name);
+            _ = email ?? throw new ArgumentNullException(nameof(email));
+
+            FromEmail = new EmailAddress(email, name);
 
             return this;
         }
 
         public EmailBuilder To(string email, string name)
         {
-            var split = (email ?? throw new ArgumentNullException(nameof(email)))
-                .Split(EmailSeparators, StringSplitOptions.RemoveEmptyEntries);
+            _ = email ?? throw new ArgumentNullException(nameof(email));
+
+            var split = email.Split(EmailSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var emailAddress in split)
             {
@@ -57,92 +58,80 @@ namespace LeanCode.EmailSender
 
         internal EmailBuilder WithHtmlContent(object model, IEnumerable<string> templateNames)
         {
-            contents.Add(new EmailContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                "text/html",
-                templateNames));
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+
+            contents.Add(new EmailContent(model, "text/html", templateNames));
 
             return this;
         }
 
         internal EmailBuilder WithTextContent(object model, IEnumerable<string> templateNames)
         {
-            contents.Add(new EmailContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                "text/plain",
-                templateNames));
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+
+            contents.Add(new EmailContent(model, "text/plain", templateNames));
 
             return this;
         }
 
         public EmailBuilder WithHtmlContent(object model, string templateName)
         {
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+
             if (templateName is null)
             {
                 logWarning?.Invoke(
                     "Passing `null` as `templateName` is deprecated, use `WithHtmlContent(object)` overload instead");
             }
 
-            contents.Add(new EmailContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                "text/html",
-                templateName));
+            contents.Add(new EmailContent(model, "text/html", templateName));
 
             return this;
         }
 
         public EmailBuilder WithTextContent(object model, string templateName)
         {
+            _ = model ?? throw new ArgumentNullException(nameof(model));
+
             if (templateName is null)
             {
                 logWarning?.Invoke(
                     "Passing `null` as `templateName` is deprecated, use `WithTextContent(object)` overload instead");
             }
 
-            contents.Add(new EmailContent(
-                model ?? throw new ArgumentNullException(nameof(model)),
-                "text/plain",
-                templateName));
+            contents.Add(new EmailContent(model, "text/plain", templateName));
 
             return this;
         }
 
         public EmailBuilder WithHtmlContent(object model)
         {
-            if (model is null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
 
             return WithHtmlContent(model, model.GetType().Name);
         }
 
         public EmailBuilder WithTextContent(object model)
         {
-            if (model is null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
+            _ = model ?? throw new ArgumentNullException(nameof(model));
 
             return WithTextContent(model, model.GetType().Name + ".txt");
         }
 
         public EmailBuilder Attach(Stream attachment, string name, string contentType)
         {
-            attachments.Add(new EmailAttachment(
-                attachment ?? throw new ArgumentNullException(nameof(attachment)),
-                name ?? throw new ArgumentNullException(nameof(name)),
-                contentType ?? throw new ArgumentNullException(nameof(contentType))));
+            _ = attachment ?? throw new ArgumentNullException(nameof(attachment));
+            _ = name ?? throw new ArgumentNullException(nameof(name));
+            _ = contentType ?? throw new ArgumentNullException(nameof(contentType));
+
+            attachments.Add(new EmailAttachment(attachment, name, contentType));
 
             return this;
         }
 
         public Task Send()
         {
-            if (FromEmail is null)
-            {
-                throw new InvalidOperationException("'From' e-mail has to be specified before sending.");
-            }
+            _ = FromEmail ?? throw new InvalidOperationException("'From' e-mail has to be specified before sending.");
 
             if (recipients.Count == 0)
             {
