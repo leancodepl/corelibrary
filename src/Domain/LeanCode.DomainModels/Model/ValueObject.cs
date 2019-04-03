@@ -13,7 +13,7 @@ namespace LeanCode.DomainModels.Model
         {
             var hc = new HashCode();
 
-            foreach (var attr in GetAttributesToIncludeInEqualityCheck())
+            foreach (object attr in GetAttributesToIncludeInEqualityCheck())
             {
                 hc.Add(attr);
             }
@@ -21,7 +21,7 @@ namespace LeanCode.DomainModels.Model
             return hc.ToHashCode();
         }
 
-        public override bool Equals(object other) => Equals(other as T);
+        public override bool Equals(object other) => other is T obj && Equals(obj);
 
         public bool Equals(T other)
         {
