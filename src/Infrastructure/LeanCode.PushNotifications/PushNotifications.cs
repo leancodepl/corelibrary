@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.PushNotifications
 {
@@ -9,21 +10,44 @@ namespace LeanCode.PushNotifications
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotifications<TUserId>>();
 
+        private readonly IStringLocalizer stringLocalizer;
         private readonly IPushNotificationTokenStore<TUserId> tokenStore;
         private readonly FCMClient fcmClient;
         private readonly PushNotificationsConfiguration pushNotificationsConfiguration;
 
         public PushNotifications(
+            IStringLocalizer stringLocalizer,
             IPushNotificationTokenStore<TUserId> tokenStore,
             FCMClient fcmClient,
             PushNotificationsConfiguration pushNotificationsConfiguration = null)
         {
+            this.stringLocalizer = stringLocalizer;
             this.tokenStore = tokenStore;
             this.fcmClient = fcmClient;
             this.pushNotificationsConfiguration = pushNotificationsConfiguration;
         }
 
-        public async Task Send(TUserId to, DeviceType device, PushNotification notification)
+        [Obsolete("Use `SendAsync(TUserId, DeviceType, PushNotification)` instead.")]
+        public Task Send(TUserId to, DeviceType device, PushNotification notification)
+        {
+            logger.Warning("`IPushNotifications.Send(…)` is deprecated, use `SendAsync(…)` instead");
+            return SendAsync(to, device, notification);
+        }
+
+        [Obsolete("Use `SendToAllAsync(TUserId, PushNotification)` instead.")]
+        public Task SendToAll(TUserId to, PushNotification notification)
+        {
+            logger.Warning("`IPushNotifications.SendToAll(…)` is deprecated, use `SendToAllAsync(…)` instead");
+            return SendToAllAsync(to, notification);
+        }
+
+        public PushNotificationBuilder<TUserId> New(TUserId to) =>
+            new PushNotificationBuilder<TUserId>(this, to);
+
+        public LocalizedPushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
+            new LocalizedPushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this, to);
+
+        public async Task SendAsync(TUserId to, DeviceType device, PushNotification notification)
         {
             logger.Verbose("Sending notification to user {UserId} on device {Device}", to, device);
 
@@ -38,7 +62,7 @@ namespace LeanCode.PushNotifications
             }
         }
 
-        public async Task SendToAll(TUserId to, PushNotification notification)
+        public async Task SendToAllAsync(TUserId to, PushNotification notification)
         {
             logger.Verbose("Sending notification to user {UserId} on all devices", to);
 
