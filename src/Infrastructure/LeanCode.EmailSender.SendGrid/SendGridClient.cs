@@ -50,7 +50,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         public async Task SendAsync(EmailModel model)
         {
-            logger.Verbose(
+            logger.Debug(
                 "Sending e-mail to {Emails} with subject {Subject}",
                 model.Recipients, model.Subject);
 

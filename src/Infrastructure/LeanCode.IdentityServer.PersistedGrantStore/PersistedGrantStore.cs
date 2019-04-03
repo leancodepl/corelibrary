@@ -94,7 +94,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    logger.Information(ex, "Exception removing {PersistedGrantKey} persisted grant from database", key);
+                    logger.Warning(ex, "Exception removing {PersistedGrantKey} persisted grant from database", key);
                 }
             }
             else
@@ -120,7 +120,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                logger.Information(ex, "Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}", persistedGrants.Count, subjectId, clientId);
+                logger.Warning(ex, "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}", persistedGrants.Count, subjectId, clientId);
             }
         }
 
@@ -144,7 +144,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                logger.Information(ex, "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
+                logger.Warning(ex, "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
             }
         }
     }
