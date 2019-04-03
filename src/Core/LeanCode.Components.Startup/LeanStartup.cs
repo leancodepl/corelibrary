@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -63,33 +62,7 @@ namespace LeanCode.Components.Startup
                 builder.RegisterModule(component);
             }
 
-            ConfigureMapper(builder);
-
             return builder.Build().Resolve<IServiceProvider>();
-        }
-
-        private void ConfigureMapper(ContainerBuilder builder)
-        {
-            var mapperCfg = new MapperConfiguration(cfg =>
-                {
-                    foreach (var component in Modules)
-                    {
-                        if (component.MapperProfile != null)
-                        {
-                            cfg.AddProfile(component.MapperProfile);
-                        }
-                    }
-                });
-            mapperCfg.AssertConfigurationIsValid();
-
-            builder.RegisterInstance(mapperCfg)
-                .AsSelf()
-                .As<AutoMapper.IConfigurationProvider>();
-
-            builder.Register(ctx =>
-                ctx.Resolve<MapperConfiguration>().CreateMapper(ctx.Resolve))
-                .As<IMapper>()
-                .InstancePerLifetimeScope();
         }
     }
 }

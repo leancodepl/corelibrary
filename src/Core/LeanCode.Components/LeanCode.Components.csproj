@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" />
-    <PackageReference Include="AutoMapper" />
 
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />

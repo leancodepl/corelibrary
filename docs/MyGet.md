@@ -3,7 +3,6 @@
 Try not to reference too many NuGets in the core library projects, as this will make versioning harder. There are packages "common" to all infrastructure-related projects, that is:
 
  - Autofac
- - AutoMapper
  - Serilog
 
 They change frequently, and sometimes we really want them to be up-to-date, so they are in separate `.targets` file - if you want to reference any of them, reference all of them or discuss this with the whole team (i.e. `.targets` file split).
