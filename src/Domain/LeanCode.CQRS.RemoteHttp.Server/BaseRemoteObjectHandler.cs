@@ -32,7 +32,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             var type = ExtractType(request);
             if (type is null)
             {
-                Logger.Debug("Cannot retrieve type from path {Path}, type not found", request.Path);
+                Logger.Warning("Cannot retrieve type from path {Path}, type not found", request.Path);
                 return ExecutionResult.Skip();
             }
 

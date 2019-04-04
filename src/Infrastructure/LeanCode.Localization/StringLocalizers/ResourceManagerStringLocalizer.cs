@@ -24,7 +24,7 @@ namespace LeanCode.Localization.StringLocalizers
                 _ = culture ?? throw new ArgumentNullException(nameof(culture));
                 _ = name ?? throw new ArgumentNullException(nameof(name));
 
-                logger.Debug("Retrieving string {Name} for culture {Culture}",
+                logger.Verbose("Retrieving string {Name} for culture {Culture}",
                     name, culture.Name.Length == 0 ? "InvariantCulture" : culture.Name);
 
                 try

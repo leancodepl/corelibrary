@@ -50,9 +50,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         public async Task SendAsync(EmailModel model)
         {
-            logger.Debug(
-                "Sending e-mail to {Emails} with subject {Subject}",
-                model.Recipients, model.Subject);
+            logger.Verbose("Sending with subject {Subject}", model.Subject);
 
             var message = await BuildMessage(model);
             var msgJson = JsonConvert.SerializeObject(message, JsonSettings);
