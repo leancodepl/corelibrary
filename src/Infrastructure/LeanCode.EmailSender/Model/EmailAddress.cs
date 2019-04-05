@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.EmailSender.Model
 {
     public class EmailAddress
@@ -9,10 +7,13 @@ namespace LeanCode.EmailSender.Model
 
         public EmailAddress(string email, string name)
         {
-            Email = email ?? throw new ArgumentNullException(nameof(email));
+            Email = email;
             Name = name;
         }
 
-        public override string ToString() => Email;
+        public override string ToString()
+        {
+            return Email;
+        }
     }
 }

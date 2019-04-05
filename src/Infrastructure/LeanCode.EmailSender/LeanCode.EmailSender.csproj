@@ -5,8 +5,4 @@
     <AssemblyName>LeanCode.EmailSender</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../LeanCode.Localization/LeanCode.Localization.csproj" />
-  </ItemGroup>
-
 </Project>
