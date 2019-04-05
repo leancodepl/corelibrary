@@ -53,20 +53,20 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public LocalizedEmailBuilder WithSubject(string subjectKey)
+        public LocalizedEmailBuilder WithSubject(string subjectTerm)
         {
-            _ = subjectKey ?? throw new ArgumentNullException(nameof(subjectKey));
+            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
 
-            inner.WithSubject(stringLocalizer[culture, subjectKey]);
+            inner.WithSubject(stringLocalizer[culture, subjectTerm]);
 
             return this;
         }
 
-        public LocalizedEmailBuilder WithSubject(string subjectFormatKey, params object[] arguments)
+        public LocalizedEmailBuilder WithSubject(string subjectTerm, params object[] arguments)
         {
-            _ = subjectFormatKey ?? throw new ArgumentNullException(nameof(subjectFormatKey));
+            _ = subjectTerm ?? throw new ArgumentNullException(nameof(subjectTerm));
 
-            string format = stringLocalizer[culture, subjectFormatKey];
+            string format = stringLocalizer[culture, subjectTerm];
             inner.WithSubject(string.Format(culture, format, arguments));
 
             return this;
@@ -117,7 +117,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public Task SendAsync() => inner.SendAsync();
+        public Task Send() => inner.Send();
 
         private IEnumerable<string> GenerateTemplateNames(
             string templateBaseName, string suffix = "")

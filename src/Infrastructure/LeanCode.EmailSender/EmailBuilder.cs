@@ -129,7 +129,7 @@ namespace LeanCode.EmailSender
             return this;
         }
 
-        public Task SendAsync()
+        public Task Send()
         {
             _ = FromEmail ?? throw new InvalidOperationException("'From' e-mail has to be specified before sending.");
 
@@ -138,7 +138,7 @@ namespace LeanCode.EmailSender
                 throw new InvalidOperationException("At least one recipient has to be specified before sending.");
             }
 
-            return emailClient.SendAsync(new EmailModel(
+            return emailClient.Send(new EmailModel(
                 Subject, FromEmail, Recipients, Contents, Attachments));
         }
     }
