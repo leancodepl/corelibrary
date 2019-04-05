@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 3.4
+### Changed
+* All projects must be Localized now
+* AutoMapper is no longer supported
+
 ## 3.3
 ### Changed
 * Upgrade to .NET Core 2.2 & Newtonsoft.Json 12
