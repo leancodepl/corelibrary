@@ -124,7 +124,7 @@ namespace LeanCode.ClientCredentialsHandler
                 }
                 catch (Exception ex)
                 {
-                    logger.Fatal(ex, "Cannot connecto to auth server");
+                    logger.Fatal(ex, "Cannot connect to auth server");
                     throw;
                 }
                 finally

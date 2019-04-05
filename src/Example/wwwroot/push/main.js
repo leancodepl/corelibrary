@@ -32,7 +32,7 @@ const uid = 'a329159c-1600-4308-ad17-ca23f9690588';
             })
             .catch(function (err) {
                 console.log('Unable to retrieve refreshed token ', err);
-                aler('Unable to retrieve refreshed token');
+                alert('Unable to retrieve refreshed token');
             });
     });
 
@@ -47,12 +47,12 @@ const uid = 'a329159c-1600-4308-ad17-ca23f9690588';
                 "Token": token
             })
         }).then(function (r) {
-           if (r.ok) {
-               console.log("Token updated");
-           } else {
-               console.warn("Cannot update token ", r.statusText)
-               alert("Cannot update token")
-           }
+            if (r.ok) {
+                console.log("Token updated");
+            } else {
+                console.warn("Cannot update token ", r.statusText)
+                alert("Cannot update token")
+            }
         }).catch(function (err) {
             console.warn("Cannot update token ", err);
             alert("Cannot update token");
