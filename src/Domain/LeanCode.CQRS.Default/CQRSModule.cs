@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Core;
-using AutoMapper;
 using LeanCode.Components;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Security;

@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Update="Autofac" Version="4.9.0" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Update="AutoMapper" Version="8.0.0" />
     <PackageReference Update="Serilog" Version="2.8.0" />
 
     <PackageReference Update="Dapper" Version="1.50.7" />

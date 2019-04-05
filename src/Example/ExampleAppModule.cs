@@ -1,6 +1,4 @@
 using System;
-using Autofac.Core;
-using AutoMapper;
 using LeanCode.Components;
 using LeanCode.CQRS.Security;
 using LeanCode.Example.Security;
