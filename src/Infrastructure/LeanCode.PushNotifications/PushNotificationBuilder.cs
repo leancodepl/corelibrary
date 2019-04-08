@@ -6,30 +6,33 @@ using static System.Globalization.CultureInfo;
 
 namespace LeanCode.PushNotifications
 {
-    public class PushNotificationBuilder<TUserId>
+    public sealed class PushNotificationBuilder<TUserId>
     {
         private readonly IPushNotifications<TUserId> pushNotifications;
 
-        public TUserId To { get; private set; }
+        public TUserId ToUser { get; private set; }
         public string Title { get; private set; } = null;
         public string Content { get; private set; } = null;
         public object Data { get; private set; } = null;
 
-        internal PushNotificationBuilder(
-            IPushNotifications<TUserId> pushNotifications,
-            TUserId to)
+        internal PushNotificationBuilder(IPushNotifications<TUserId> pushNotifications)
         {
             this.pushNotifications = pushNotifications ?? throw new ArgumentNullException(nameof(pushNotifications));
-            To = to;
         }
 
-        public virtual PushNotificationBuilder<TUserId> WithTitle(string title)
+        public PushNotificationBuilder<TUserId> To(TUserId userId)
         {
-            Title = title;
+            ToUser = userId;
             return this;
         }
 
-        public virtual PushNotificationBuilder<TUserId> WithTitle(
+        public PushNotificationBuilder<TUserId> WithTitle(string title)
+        {
+            Title = title ?? throw new ArgumentNullException(nameof(title));
+            return this;
+        }
+
+        public PushNotificationBuilder<TUserId> WithTitle(
             string titleFormat, params object[] arguments)
         {
             _ = titleFormat ?? throw new ArgumentNullException(nameof(titleFormat));
@@ -62,9 +65,9 @@ namespace LeanCode.PushNotifications
         }
 
         public Task SendToDeviceAsync(DeviceType device) =>
-            pushNotifications.SendAsync(To, device, new PushNotification(Title, Content, Data));
+            pushNotifications.SendAsync(ToUser, device, new PushNotification(Title, Content, Data));
 
         public Task SendToAllDevicesAsync() =>
-            pushNotifications.SendToAllAsync(To, new PushNotification(Title, Content, Data));
+            pushNotifications.SendToAllAsync(ToUser, new PushNotification(Title, Content, Data));
     }
 }

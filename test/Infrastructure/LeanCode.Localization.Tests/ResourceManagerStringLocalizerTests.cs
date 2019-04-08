@@ -12,10 +12,8 @@ namespace LeanCode.Localization.Tests
         public ResourceManagerStringLocalizerTests()
         {
             this.stringLocalizer = new ResourceManagerStringLocalizer(
-                new LocalizationConfiguration()
-                {
-                    ResourceSource = typeof(ResourceManagerStringLocalizerTests)
-                });
+                new LocalizationConfiguration(
+                    resourceSource: typeof(ResourceManagerStringLocalizerTests)));
         }
 
         [Fact]

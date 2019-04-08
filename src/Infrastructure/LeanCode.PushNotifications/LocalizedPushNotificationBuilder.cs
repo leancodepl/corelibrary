@@ -6,13 +6,13 @@ using static System.Globalization.CultureInfo;
 
 namespace LeanCode.PushNotifications
 {
-    public class LocalizedPushNotificationBuilder<TUserId>
+    public sealed class LocalizedPushNotificationBuilder<TUserId>
     {
         private readonly CultureInfo culture;
         private readonly IStringLocalizer stringLocalizer;
         private readonly IPushNotifications<TUserId> pushNotifications;
 
-        public TUserId To { get; private set; }
+        public TUserId ToUser { get; private set; }
         public string Title { get; private set; } = null;
         public string Content { get; private set; } = null;
         public object Data { get; private set; } = null;
@@ -20,8 +20,7 @@ namespace LeanCode.PushNotifications
         internal LocalizedPushNotificationBuilder(
             string cultureName,
             IStringLocalizer stringLocalizer,
-            IPushNotifications<TUserId> pushNotifications,
-            TUserId to)
+            IPushNotifications<TUserId> pushNotifications)
         {
             _ = cultureName ?? throw new ArgumentNullException(nameof(cultureName));
 
@@ -30,16 +29,16 @@ namespace LeanCode.PushNotifications
             this.culture = GetCultureInfo(cultureName);
         }
 
+        public LocalizedPushNotificationBuilder<TUserId> To(TUserId userId)
+        {
+            ToUser = userId;
+            return this;
+        }
+
         public LocalizedPushNotificationBuilder<TUserId> WithTitle(string titleKey)
         {
-            if (titleKey is null)
-            {
-                Title = null;
-            }
-            else
-            {
-                Title = stringLocalizer[culture, titleKey];
-            }
+            _ = titleKey ?? throw new ArgumentNullException(nameof(titleKey));
+            Title = stringLocalizer[culture, titleKey];
 
             return this;
         }
@@ -87,9 +86,9 @@ namespace LeanCode.PushNotifications
         }
 
         public Task SendToDeviceAsync(DeviceType device) =>
-            pushNotifications.SendAsync(To, device, new PushNotification(Title, Content, Data));
+            pushNotifications.SendAsync(ToUser, device, new PushNotification(Title, Content, Data));
 
         public Task SendToAllDevicesAsync() =>
-            pushNotifications.SendToAllAsync(To, new PushNotification(Title, Content, Data));
+            pushNotifications.SendToAllAsync(ToUser, new PushNotification(Title, Content, Data));
     }
 }

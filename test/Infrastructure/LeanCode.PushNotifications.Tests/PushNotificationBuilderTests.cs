@@ -13,7 +13,7 @@ namespace LeanCode.PushNotifications.Tests
         public PushNotificationBuilderTests()
         {
             pushNotifications = Substitute.For<IPushNotifications<Guid>>();
-            builder = new PushNotificationBuilder<Guid>(pushNotifications, Guid.Empty);
+            builder = new PushNotificationBuilder<Guid>(pushNotifications);
         }
 
         [Fact]

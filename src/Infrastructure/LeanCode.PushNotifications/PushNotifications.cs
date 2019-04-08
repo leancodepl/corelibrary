@@ -27,11 +27,11 @@ namespace LeanCode.PushNotifications
             this.pushNotificationsConfiguration = pushNotificationsConfiguration;
         }
 
-        public PushNotificationBuilder<TUserId> New(TUserId to) =>
-            new PushNotificationBuilder<TUserId>(this, to);
+        public PushNotificationBuilder<TUserId> New() =>
+            new PushNotificationBuilder<TUserId>(this);
 
-        public LocalizedPushNotificationBuilder<TUserId> New(TUserId to, string cultureName) =>
-            new LocalizedPushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this, to);
+        public LocalizedPushNotificationBuilder<TUserId> Localized(string cultureName) =>
+            new LocalizedPushNotificationBuilder<TUserId>(cultureName, stringLocalizer, this);
 
         public async Task SendAsync(TUserId to, DeviceType device, PushNotification notification)
         {
