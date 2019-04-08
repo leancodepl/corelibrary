@@ -29,6 +29,12 @@ namespace LeanCode.PushNotifications
             this.culture = GetCultureInfo(cultureName);
         }
 
+        public LocalizedPushNotificationBuilder<TUserId> To(TUserId userId)
+        {
+            ToAddress = userId;
+            return this;
+        }
+
         public LocalizedPushNotificationBuilder<TUserId> WithTitle(string titleKey)
         {
             _ = titleKey ?? throw new ArgumentNullException(nameof(titleKey));
