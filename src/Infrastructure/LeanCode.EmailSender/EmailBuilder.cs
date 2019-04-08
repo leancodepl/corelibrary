@@ -13,7 +13,6 @@ namespace LeanCode.EmailSender
         private readonly List<EmailContent> contents = new List<EmailContent>();
         private readonly List<EmailAttachment> attachments = new List<EmailAttachment>();
         private readonly IEmailClient emailClient;
-        private readonly Action<string> logWarning;
 
         public string Subject { get; private set; } = null;
         public EmailAddress FromEmail { get; private set; } = null;
@@ -21,10 +20,9 @@ namespace LeanCode.EmailSender
         public IReadOnlyCollection<EmailContent> Contents => contents.AsReadOnly();
         public IReadOnlyCollection<EmailAttachment> Attachments => attachments.AsReadOnly();
 
-        public EmailBuilder(IEmailClient emailClient, Action<string> logWarning)
+        public EmailBuilder(IEmailClient emailClient)
         {
             this.emailClient = emailClient ?? throw new ArgumentNullException(nameof(emailClient));
-            this.logWarning = logWarning;
         }
 
         public EmailBuilder From(string email, string name)
@@ -77,12 +75,7 @@ namespace LeanCode.EmailSender
         public EmailBuilder WithHtmlContent(object model, string templateName)
         {
             _ = model ?? throw new ArgumentNullException(nameof(model));
-
-            if (templateName is null)
-            {
-                logWarning?.Invoke(
-                    "Passing `null` as `templateName` is deprecated, use `WithHtmlContent(object)` overload instead");
-            }
+            _ = templateName ?? throw new ArgumentNullException(nameof(templateName));
 
             contents.Add(new EmailContent(model, "text/html", templateName));
 
@@ -92,12 +85,7 @@ namespace LeanCode.EmailSender
         public EmailBuilder WithTextContent(object model, string templateName)
         {
             _ = model ?? throw new ArgumentNullException(nameof(model));
-
-            if (templateName is null)
-            {
-                logWarning?.Invoke(
-                    "Passing `null` as `templateName` is deprecated, use `WithTextContent(object)` overload instead");
-            }
+            _ = templateName ?? throw new ArgumentNullException(nameof(templateName));
 
             contents.Add(new EmailContent(model, "text/plain", templateName));
 

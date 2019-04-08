@@ -36,7 +36,7 @@ namespace LeanCode.EmailSender.SendGrid
             this.client = client;
         }
 
-        public EmailBuilder New() => new EmailBuilder(this, logger.Warning);
+        public EmailBuilder New() => new EmailBuilder(this);
 
         public LocalizedEmailBuilder Localized(string cultureName) =>
             new LocalizedEmailBuilder(cultureName, stringLocalizer, this);
