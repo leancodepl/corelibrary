@@ -10,7 +10,7 @@ namespace LeanCode.PushNotifications
     {
         private readonly IPushNotifications<TUserId> pushNotifications;
 
-        public TUserId ToAddress { get; private set; }
+        public TUserId ToUser { get; private set; }
         public string Title { get; private set; } = null;
         public string Content { get; private set; } = null;
         public object Data { get; private set; } = null;
@@ -22,7 +22,7 @@ namespace LeanCode.PushNotifications
 
         public PushNotificationBuilder<TUserId> To(TUserId userId)
         {
-            ToAddress = userId;
+            ToUser = userId;
             return this;
         }
 
@@ -65,9 +65,9 @@ namespace LeanCode.PushNotifications
         }
 
         public Task SendToDeviceAsync(DeviceType device) =>
-            pushNotifications.SendAsync(ToAddress, device, new PushNotification(Title, Content, Data));
+            pushNotifications.SendAsync(ToUser, device, new PushNotification(Title, Content, Data));
 
         public Task SendToAllDevicesAsync() =>
-            pushNotifications.SendToAllAsync(ToAddress, new PushNotification(Title, Content, Data));
+            pushNotifications.SendToAllAsync(ToUser, new PushNotification(Title, Content, Data));
     }
 }
