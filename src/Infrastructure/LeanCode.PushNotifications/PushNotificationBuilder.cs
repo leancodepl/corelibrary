@@ -28,7 +28,7 @@ namespace LeanCode.PushNotifications
 
         public PushNotificationBuilder<TUserId> WithTitle(string title)
         {
-            Title = title;
+            Title = title ?? throw new ArgumentNullException(nameof(title));
             return this;
         }
 
