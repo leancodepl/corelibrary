@@ -21,10 +21,8 @@ namespace LeanCode.PushNotifications.Tests
         protected LocalizedPushNotificationBuilderTests(string cultureName)
         {
             var stringLocalizer = new ResourceManagerStringLocalizer(
-                new LocalizationConfiguration()
-                {
-                    ResourceSource = typeof(LocalizedPushNotificationBuilderTests),
-                });
+                new LocalizationConfiguration(
+                    resourceSource: typeof(LocalizedPushNotificationBuilderTests)));
 
             pushNotifications = Substitute.For<IPushNotifications<Guid>>();
 

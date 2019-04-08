@@ -7,6 +7,7 @@ namespace LeanCode.Localization.StringLocalizers
     public class ResourceManagerStringLocalizer : IStringLocalizer
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ResourceManagerStringLocalizer>();
+
         private readonly ResourceManager resourceManager;
 
         public ResourceManagerStringLocalizer(LocalizationConfiguration cfg)
