@@ -5,8 +5,9 @@ namespace LeanCode.PushNotifications
 {
     public interface IPushNotifications<TUserId>
     {
-        PushNotificationBuilder<TUserId> New(TUserId to);
-        LocalizedPushNotificationBuilder<TUserId> New(TUserId to, string cultureName);
+        PushNotificationBuilder<TUserId> New();
+        LocalizedPushNotificationBuilder<TUserId> Localized(string cultureName);
+
         Task SendAsync(TUserId to, DeviceType device, PushNotification notification);
         Task SendToAllAsync(TUserId to, PushNotification notification);
     }

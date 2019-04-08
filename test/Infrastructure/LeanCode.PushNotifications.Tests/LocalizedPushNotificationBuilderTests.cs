@@ -27,7 +27,7 @@ namespace LeanCode.PushNotifications.Tests
             pushNotifications = Substitute.For<IPushNotifications<Guid>>();
 
             builder = new LocalizedPushNotificationBuilder<Guid>(
-                cultureName, stringLocalizer, pushNotifications, Guid.Empty);
+                cultureName, stringLocalizer, pushNotifications);
         }
 
         [Fact]
