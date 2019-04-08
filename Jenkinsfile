@@ -5,7 +5,7 @@ leancode.builder('corelibrary')
     def scmVars
 
     stage('Checkout') {
-        scmVars = checkout scm
+        scmVars = safeCheckout scm
     }
 
     leancode.configureRepositories()
@@ -27,12 +27,12 @@ leancode.builder('corelibrary')
         }
 
         stage('Test') {
-            dir('test') {
-                try {
+            try {
+                dir('test') {
                     sh 'dotnet msbuild /t:RunTests /p:Configuration=Release /p:LogFileName=$PWD/test-results/tests.trx'
-                } finally {
-                    step([$class: 'MSTestPublisher', testResultsFile:'test-results/*.trx', failOnError: true, keepLongStdio: true])
                 }
+            } finally {
+                step([$class: 'MSTestPublisher', testResultsFile:'*/test-results/*.trx', failOnError: true, keepLongStdio: true])
             }
         }
 

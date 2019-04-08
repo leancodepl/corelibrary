@@ -32,7 +32,7 @@ namespace LeanCode.EmailSender
 
             this.stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
             this.culture = GetCultureInfo(cultureName);
-            this.inner = new EmailBuilder(emailClient, null);
+            this.inner = new EmailBuilder(emailClient);
         }
 
         public LocalizedEmailBuilder From(string email, string name)

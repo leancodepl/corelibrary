@@ -27,20 +27,6 @@ namespace LeanCode.PushNotifications
             this.pushNotificationsConfiguration = pushNotificationsConfiguration;
         }
 
-        [Obsolete("Use `SendAsync(TUserId, DeviceType, PushNotification)` instead.")]
-        public Task Send(TUserId to, DeviceType device, PushNotification notification)
-        {
-            logger.Warning("`IPushNotifications.Send(…)` is deprecated, use `SendAsync(…)` instead");
-            return SendAsync(to, device, notification);
-        }
-
-        [Obsolete("Use `SendToAllAsync(TUserId, PushNotification)` instead.")]
-        public Task SendToAll(TUserId to, PushNotification notification)
-        {
-            logger.Warning("`IPushNotifications.SendToAll(…)` is deprecated, use `SendToAllAsync(…)` instead");
-            return SendToAllAsync(to, notification);
-        }
-
         public PushNotificationBuilder<TUserId> New(TUserId to) =>
             new PushNotificationBuilder<TUserId>(this, to);
 

@@ -36,14 +36,7 @@ namespace LeanCode.EmailSender.SendGrid
             this.client = client;
         }
 
-        [Obsolete("Use `SendAsync(EmailModel)` instead.")]
-        public Task Send(EmailModel model)
-        {
-            logger.Warning("`IEmailClient.Send(EmailModel)` is deprecated, use `SendAsync(EmailModel)` instead");
-            return SendAsync(model);
-        }
-
-        public EmailBuilder New() => new EmailBuilder(this, logger.Warning);
+        public EmailBuilder New() => new EmailBuilder(this);
 
         public LocalizedEmailBuilder Localized(string cultureName) =>
             new LocalizedEmailBuilder(cultureName, stringLocalizer, this);
