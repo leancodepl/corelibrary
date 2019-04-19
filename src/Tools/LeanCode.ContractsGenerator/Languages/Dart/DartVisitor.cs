@@ -12,7 +12,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
     {
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
-        private Dictionary<string, string> mangledNames;
+        private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
+        private string namespaceName;
 
         public DartVisitor(DartConfiguration configuration)
         {
@@ -51,11 +52,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 }
             }
 
-            mangledNames = symbols
+            mangledStatements = symbols
                 .GroupBy(x => x.name)
                 .Select(MangleGroup)
                 .SelectMany(x => x)
-                .ToDictionary(x => Mangle(x.statement.Namespace, x.statement.Name), x => x.name);
+                .ToDictionary(x => Mangle(x.statement.Namespace, x.statement.Name), x => (x.name, x.statement));
         }
 
         private void Visit(IStatement statement, int level, string parentName)
@@ -82,7 +83,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitEnumStatement(EnumStatement statement, int level)
         {
-            var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+            var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
 
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
@@ -173,9 +174,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var name = statement.Name;
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
-                {
-                    name = mangledNames[Mangle(statement.Namespace, statement.Name)];
-                }
+                    name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
 
                 definitionsBuilder.Append(name);
                 definitionsBuilder.Append("<");
@@ -202,9 +201,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
                 {
-                    if (!mangledNames.TryGetValue(Mangle(statement.Namespace, statement.Name), out name))
+                    if (mangledStatements.TryGetValue(Mangle(statement.Namespace, statement.Name), out var type))
                     {
-                        name = statement.Name;
+                        name = type.name;
                     }
                 }
 
@@ -255,7 +254,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
-            var name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+            var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
             var mapJsonIncludeSuper = false;
 
             if (statement.Extends.Any(x => x.Name == "Enum"))
@@ -353,7 +352,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
             GenerateToJsonMethod(statement, level, includeOverrideAnnotation, mapJsonIncludeSuper);
-            GenerateFromJsonMethod(name, statement.Fields, level);
+            GenerateFromJsonMethod(name, statement, level);
 
             definitionsBuilder.AppendSpaces(level);
             definitionsBuilder.AppendLine("}");
@@ -495,13 +494,33 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateFromJsonMethod(string name, List<FieldStatement> fields, int level)
+        private void GenerateFromJsonMethod(string name, InterfaceStatement statement, int level)
         {
             definitionsBuilder
                 .AppendLine()
                 .AppendSpaces(level + 1)
                 .Append($"static {name} fromJson(Map map) => {name}()");
 
+            GenerateFromJsonAssignments(statement.Fields, level + 1);
+
+            if (statement.Extends.Any() && statement.IsClass)
+            {
+                var baseClass = statement.Extends[0];
+                var type = mangledStatements[Mangle(baseClass.Namespace, baseClass.Name)];
+
+                if (type.statement is InterfaceStatement)
+                {
+                    var baseStatement = type.statement as InterfaceStatement;
+                    GenerateFromJsonAssignments(baseStatement.Fields, level + 1);
+                }
+            }
+
+            definitionsBuilder
+                .AppendLine(";");
+        }
+
+        private void GenerateFromJsonAssignments(List<FieldStatement> fields, int level)
+        {
             foreach (var field in fields)
             {
                 var map = $"map['{field.Name.Capitalize()}']";
@@ -580,9 +599,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     }
                 }
             }
-
-            definitionsBuilder
-                .AppendLine(";");
         }
 
         private string Mangle(string namespaceName, string identifier)
