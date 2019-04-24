@@ -177,7 +177,7 @@ namespace LeanCode.ContractsGenerator
 
             var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null).ToList();
 
-            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
+            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)).OrderBy(i => i.Name))
             {
                 yield return GenerateInterface(info);
             }
@@ -235,7 +235,7 @@ namespace LeanCode.ContractsGenerator
         {
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
 
-            foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)))
+            foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)).OrderBy(s => s.Name))
             {
                 yield return GenerateEnum(info);
             }

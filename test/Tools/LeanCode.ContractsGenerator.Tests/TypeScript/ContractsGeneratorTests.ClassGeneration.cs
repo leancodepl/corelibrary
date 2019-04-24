@@ -126,5 +126,21 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Assert.Contains("Invalid: 1", client);
             Assert.Contains("ErrorCodes: {", client);
         }
+
+        [Fact]
+        public void Order_of_classes_is_alphanumeric()
+        {
+            var generator = CreateTsGeneratorFromNamespace("public class TestClass2 { } public class TestClass1 { }");
+
+            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("interface TestClass1", contracts);
+            Assert.Contains("interface TestClass2", contracts);
+
+            var test1Index = contracts.IndexOf("interface TestClass1");
+            var test2Index = contracts.IndexOf("interface TestClass2");
+
+            Assert.True(test1Index < test2Index);
+        }
     }
 }
