@@ -115,5 +115,21 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             Assert.Contains("Invalid = 1", contracts);
             Assert.Contains("ErrorCodes {", contracts);
         }
+
+        [Fact]
+        public void Order_of_classes_is_alphanumeric()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public class TestClass2 { } public class TestClass1 { }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class TestClass1", contracts);
+            Assert.Contains("class TestClass2", contracts);
+
+            var test1Index = contracts.IndexOf("class TestClass1");
+            var test2Index = contracts.IndexOf("class TestClass2");
+
+            Assert.True(test1Index < test2Index);
+        }
     }
 }
