@@ -6,6 +6,9 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
     {
         public static void Map(PersistedGrantEntity from, PersistedGrant to)
         {
+            if (from is null)
+                return;
+
             to.ClientId = from.ClientId;
             to.CreationTime = from.CreationTime;
             to.Data = from.Data;
@@ -17,7 +20,10 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
         public static PersistedGrant MapToModel(PersistedGrantEntity entity)
         {
-            return new PersistedGrant()
+            if (entity is null)
+                return null;
+
+            return new PersistedGrant
             {
                 ClientId = entity.ClientId,
                 CreationTime = entity.CreationTime,
@@ -31,7 +37,10 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
         public static PersistedGrantEntity MapToEntity(PersistedGrant grant)
         {
-            return new PersistedGrantEntity()
+            if (grant is null)
+                return null;
+
+            return new PersistedGrantEntity
             {
                 ClientId = grant.ClientId,
                 CreationTime = grant.CreationTime,
