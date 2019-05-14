@@ -1,23 +1,19 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace LeanCode.EFMigrator
 {
     public static class MigrationsConfig
     {
-        public static string ConnectionStringKey = "ConnectionStrings:Database";
+        public static readonly string ConnectionStringKeyWindows = "ConnectionStrings:Database";
+        public static readonly string ConnectionStringKeyOther = "ConnectionStrings__Database";
 
-        public static string GetConnectionString()
-        {
-            var connStr = Environment.GetEnvironmentVariable(ConnectionStringKey);
-            if (string.IsNullOrEmpty(connStr))
-            {
-                var keyLinux = ConnectionStringKey.Replace(":", "__");
-                return Environment.GetEnvironmentVariable(keyLinux);
-            }
-            else
-            {
-                return connStr;
-            }
-        }
+        public static string ConnectionStringKey =>
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? ConnectionStringKeyWindows
+                : ConnectionStringKeyOther;
+
+        public static string GetConnectionString() =>
+            Environment.GetEnvironmentVariable(ConnectionStringKey);
     }
 }
