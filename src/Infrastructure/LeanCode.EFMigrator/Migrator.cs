@@ -61,8 +61,12 @@ namespace LeanCode.EFMigrator
 
             if (string.IsNullOrEmpty(connectionString))
             {
-                Error.WriteLine("Cannot load connection string");
-                Error.WriteLine($"Environment variable `{MigrationsConfig.ConnectionStringKey}` is unset or empty");
+                Error.WriteLine("Cannot load connection string\n");
+                Error.WriteLine("Environment variables");
+                Error.WriteLine($"  {MigrationsConfig.ConnectionStringKey}");
+                Error.WriteLine("and");
+                Error.WriteLine($"  {MigrationsConfig.ConnectionStringDenormalizedKey}");
+                Error.WriteLine("are unset or empty");
                 return 3;
             }
 
@@ -95,35 +99,37 @@ namespace LeanCode.EFMigrator
             where TFactory : IDesignTimeDbContextFactory<TContext>, new()
             where TContext : DbContext
         {
-            WriteLine($"Starting migration {typeof(TContext).Name}");
+            string contextName = typeof(TContext).Name;
+
+            WriteLine($"Starting migration of {contextName}");
 
             using (var ctx = new TFactory().CreateDbContext(Args))
             {
                 ctx.Database.Migrate();
             }
 
-            WriteLine("Migration completed");
+            WriteLine($"Migration of {contextName} completed");
         }
 
-        protected virtual int Seed(string connectionString, string seed)
+        protected virtual int Seed(string connectionString, string seedPath)
         {
             int rowsAffected;
 
-            using (var conn = new SqlConnection(connectionString ?? MigrationsConfig.GetConnectionString()))
+            using (var connection = new SqlConnection(connectionString ?? MigrationsConfig.GetConnectionString()))
             {
-                conn.Open();
+                connection.Open();
 
-                using (var cmd = conn.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
-                    cmd.CommandText = File.ReadAllText(seed ?? "Seed.sql");
+                    command.CommandText = File.ReadAllText(seedPath ?? "Seed.sql");
 
-                    rowsAffected = cmd.ExecuteNonQuery();
+                    rowsAffected = command.ExecuteNonQuery();
                 }
 
-                conn.Close();
+                connection.Close();
             }
 
-            WriteLine("Seed completed");
+            WriteLine($"Seed completed, rows affected: {rowsAffected}");
 
             return rowsAffected;
         }
