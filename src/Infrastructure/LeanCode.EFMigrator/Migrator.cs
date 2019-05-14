@@ -11,6 +11,7 @@ namespace LeanCode.EFMigrator
     public abstract class Migrator
     {
         protected virtual string[] Args { get; } = GetCommandLineArgs().Skip(1).ToArray();
+        protected virtual string SeedPath { get; } = "Seed.sql";
 
         public virtual void Run()
         {
@@ -77,7 +78,7 @@ namespace LeanCode.EFMigrator
 
             if (seed)
             {
-                Seed(connectionString, null);
+                Seed();
             }
 
             return 0;
@@ -111,17 +112,17 @@ namespace LeanCode.EFMigrator
             WriteLine($"Migration of {contextName} completed");
         }
 
-        protected virtual int Seed(string connectionString, string seedPath)
+        protected virtual int Seed()
         {
             int rowsAffected;
 
-            using (var connection = new SqlConnection(connectionString ?? MigrationsConfig.GetConnectionString()))
+            using (var connection = new SqlConnection(MigrationsConfig.GetConnectionString()))
             {
                 connection.Open();
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = File.ReadAllText(seedPath ?? "Seed.sql");
+                    command.CommandText = File.ReadAllText(SeedPath);
 
                     rowsAffected = command.ExecuteNonQuery();
                 }
