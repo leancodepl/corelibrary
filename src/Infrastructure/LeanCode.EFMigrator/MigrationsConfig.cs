@@ -5,18 +5,19 @@ namespace LeanCode.EFMigrator
     public static class MigrationsConfig
     {
         public static string ConnectionStringKey = "ConnectionStrings:Database";
+        public static string ConnectionStringDenormalizedKey => ConnectionStringKey.Replace(":", "__");
 
         public static string GetConnectionString()
         {
-            var connStr = Environment.GetEnvironmentVariable(ConnectionStringKey);
-            if (string.IsNullOrEmpty(connStr))
+            var connectionString = Environment.GetEnvironmentVariable(ConnectionStringKey);
+
+            if (string.IsNullOrEmpty(connectionString))
             {
-                var keyLinux = ConnectionStringKey.Replace(":", "__");
-                return Environment.GetEnvironmentVariable(keyLinux);
+                return Environment.GetEnvironmentVariable(ConnectionStringDenormalizedKey);
             }
             else
             {
-                return connStr;
+                return connectionString;
             }
         }
     }

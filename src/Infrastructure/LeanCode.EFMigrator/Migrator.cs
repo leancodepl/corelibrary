@@ -1,48 +1,97 @@
-using System;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using static System.Console;
+using static System.Environment;
 
 namespace LeanCode.EFMigrator
 {
     public abstract class Migrator
     {
-        protected virtual string[] Args { get; } = Environment.GetCommandLineArgs().Skip(1).ToArray();
+        protected virtual string[] Args { get; } = GetCommandLineArgs().Skip(1).ToArray();
+        protected virtual string SeedPath { get; } = "Seed.sql";
 
         public virtual void Run()
         {
-            var isSeed = Args.Length == 1 && Args[0] == "seed";
-            var isMigrate = Args.Length == 1 && Args[0] == "migrate";
-            if (!(isSeed ^ isMigrate))
+            int result = Run(Args);
+
+            if (result != 0)
             {
-                System.Console.WriteLine("Usage:");
-                System.Console.WriteLine(" dotnet run (seed|migrate)");
-                return;
+                Exit(result);
             }
-            else if (string.IsNullOrEmpty(MigrationsConfig.GetConnectionString()))
+        }
+
+        public virtual int Run(string[] args)
+        {
+            bool migrate = false;
+            bool seed = false;
+
+            foreach (string arg in args)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Cannot load connection string");
-                return;
-            }
-            if (isSeed)
-            {
-                using (var conn = new SqlConnection(MigrationsConfig.GetConnectionString()))
+                switch (arg)
                 {
-                    conn.Open();
-                    using (var cmd = conn.CreateCommand())
-                    {
-                        cmd.CommandText = File.ReadAllText("Seed.sql");
-                        cmd.ExecuteNonQuery();
-                    }
+                    case "migrate":
+                    case "--migrate":
+                        migrate = true;
+                        break;
+                    case "seed":
+                    case "--seed":
+                        seed = true;
+                        break;
+                    case "help":
+                    case "--help":
+                        Usage(Out);
+                        return 0;
+                    default:
+                        Error.WriteLine($"Unknown argument: {arg}\n");
+                        Usage(Error);
+                        return 1;
                 }
             }
-            else
+
+            if (!(migrate || seed))
+            {
+                Error.WriteLine("No operations provided\n");
+                Usage(Error);
+                return 2;
+            }
+
+            string connectionString = MigrationsConfig.GetConnectionString();
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                Error.WriteLine("Cannot load connection string\n");
+                Error.WriteLine("Environment variables");
+                Error.WriteLine($"  {MigrationsConfig.ConnectionStringKey}");
+                Error.WriteLine("and");
+                Error.WriteLine($"  {MigrationsConfig.ConnectionStringDenormalizedKey}");
+                Error.WriteLine("are unset or empty");
+                return 3;
+            }
+
+            if (migrate)
             {
                 MigrateAll();
             }
+
+            if (seed)
+            {
+                Seed();
+            }
+
+            return 0;
+        }
+
+        protected virtual void Usage(TextWriter writer)
+        {
+            writer.WriteLine("Usage:");
+            writer.WriteLine("  dotnet run migrate");
+            writer.WriteLine("-or-");
+            writer.WriteLine("  dotnet run seed");
+            writer.WriteLine("-or-");
+            writer.WriteLine("  dotnet run migrate seed");
         }
 
         protected abstract void MigrateAll();
@@ -51,13 +100,39 @@ namespace LeanCode.EFMigrator
             where TFactory : IDesignTimeDbContextFactory<TContext>, new()
             where TContext : DbContext
         {
-            Console.WriteLine("Starting migration {0}", typeof(TContext).Name);
-            var factory = new TFactory();
-            using (var ctx = factory.CreateDbContext(Args))
+            string contextName = typeof(TContext).Name;
+
+            WriteLine($"Starting migration of {contextName}");
+
+            using (var ctx = new TFactory().CreateDbContext(Args))
             {
                 ctx.Database.Migrate();
             }
-            Console.WriteLine("Migration completed");
+
+            WriteLine($"Migration of {contextName} completed");
+        }
+
+        protected virtual int Seed()
+        {
+            int rowsAffected;
+
+            using (var connection = new SqlConnection(MigrationsConfig.GetConnectionString()))
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = File.ReadAllText(SeedPath);
+
+                    rowsAffected = command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+
+            WriteLine($"Seed completed, rows affected: {rowsAffected}");
+
+            return rowsAffected;
         }
     }
 }
