@@ -24,6 +24,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
 
+            GenerateDartAnnotations();
+
             GenerateTypeNames(statement);
 
             Visit(statement, 0, null);
@@ -33,6 +35,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 Name = statement.Name + ".dart",
                 Content = definitionsBuilder.ToString(),
             };
+        }
+
+        private void GenerateDartAnnotations()
+        {
+            definitionsBuilder.AppendLine("class _Nullable { const _Nullable(); } const nullable = _Nullable();");
         }
 
         private void GenerateTypeNames(ClientStatement statement)
@@ -149,6 +156,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitTypeStatement(TypeStatement statement)
         {
+            if (statement.IsNullable)
+            {
+                definitionsBuilder.AppendLine("@nullable");
+            }
+
             if (statement.IsDictionary)
             {
                 definitionsBuilder.Append("Map<");
