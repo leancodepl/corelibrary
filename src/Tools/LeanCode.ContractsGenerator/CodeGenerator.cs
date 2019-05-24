@@ -40,16 +40,16 @@ namespace LeanCode.ContractsGenerator
                 Name = configuration.Name
             };
 
-            foreach (var tree in trees)
+            var contracts = trees.SelectMany(tree =>
             {
                 var model = compilation.GetSemanticModel(tree);
+                IEnumerable<IStatement> interfaces = GenerateClassesAndInterfaces(model, tree).ToList();
+                IEnumerable<IStatement> enums = GenerateEnums(model, tree);
 
-                var interfaces = GenerateClassesAndInterfaces(model, tree).ToList();
-                var enums = GenerateEnums(model, tree);
+                return interfaces.Concat(enums);
+            }).OrderBy(s => s.Name);
 
-                clientStatement.Children.AddRange(enums);
-                clientStatement.Children.AddRange(interfaces);
-            }
+            clientStatement.Children.AddRange(contracts);
 
             if (configuration.TypeScript != null)
             {
@@ -177,7 +177,7 @@ namespace LeanCode.ContractsGenerator
 
             var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null).ToList();
 
-            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)).OrderBy(i => i.Name))
+            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
             {
                 yield return GenerateInterface(info);
             }
@@ -235,7 +235,7 @@ namespace LeanCode.ContractsGenerator
         {
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
 
-            foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)).OrderBy(s => s.Name))
+            foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)))
             {
                 yield return GenerateEnum(info);
             }

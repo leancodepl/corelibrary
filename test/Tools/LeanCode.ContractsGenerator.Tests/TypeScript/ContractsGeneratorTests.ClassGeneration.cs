@@ -130,17 +130,38 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         [Fact]
         public void Order_of_classes_is_alphanumeric()
         {
-            var generator = CreateTsGeneratorFromNamespace("public class TestClass2 { } public class TestClass1 { }");
+            var file1 = @"
+            using LeanCode.CQRS;
+            namespace File2
+            {
+                public class TestClass4 { }
+                public class TestClass3 { }
+            }";
 
+            var file2 = @"
+            using LeanCode.CQRS;
+            namespace File1
+            {
+                public class TestClass2 { }
+                public class TestClass1 { }
+            }";
+
+            var generator = CreateTsGenerator(file1, file2);
             var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass1", contracts);
             Assert.Contains("interface TestClass2", contracts);
+            Assert.Contains("interface TestClass3", contracts);
+            Assert.Contains("interface TestClass4", contracts);
 
             var test1Index = contracts.IndexOf("interface TestClass1");
             var test2Index = contracts.IndexOf("interface TestClass2");
+            var test3Index = contracts.IndexOf("interface TestClass3");
+            var test4Index = contracts.IndexOf("interface TestClass4");
 
             Assert.True(test1Index < test2Index);
+            Assert.True(test2Index < test3Index);
+            Assert.True(test3Index < test4Index);
         }
     }
 }
