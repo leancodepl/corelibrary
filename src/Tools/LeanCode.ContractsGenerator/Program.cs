@@ -56,6 +56,7 @@ namespace LeanCode.ContractsGenerator
             }
 
             Console.WriteLine("LeanCode .ts/.dart contracts generator");
+            Console.WriteLine($"Version: {typeof(Program).Assembly.GetName().Version}");
             Console.WriteLine();
             Console.WriteLine("Usage: dotnet generate [options]");
             Console.WriteLine();
