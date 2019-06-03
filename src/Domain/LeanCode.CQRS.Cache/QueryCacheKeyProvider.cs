@@ -10,24 +10,32 @@ namespace LeanCode.CQRS.Cache
         {
             var contextType = typeof(TAppContext);
             var queryType = query.GetType();
-            StringBuilder key = new StringBuilder();
+
+            var key = new StringBuilder();
             key.Append(queryType.Name);
-            SerializeProperties(key, contextType, context);
+            key.SerializeObject(contextType, context);
             key.Append('-');
-            SerializeProperties(key, queryType, query);
+            key.SerializeObject(queryType, query);
             return key.ToString();
         }
 
-        private static void SerializeProperties(
-            StringBuilder builder, Type type, object obj)
+        private static void SerializeObject(
+            this StringBuilder builder, Type type, object obj)
         {
-            foreach (var prop in type.GetProperties())
+            if (obj is ICacheKeyProvider provider)
             {
-                builder.Append('-');
-                var value = prop.GetValue(obj);
-                if (value != null)
+                provider.ProvideKey(builder);
+            }
+            else
+            {
+                foreach (var prop in type.GetProperties())
                 {
-                    builder.Append(value.ToString());
+                    builder.Append('-');
+                    var value = prop.GetValue(obj);
+                    if (value != null)
+                    {
+                        builder.Append(value.ToString());
+                    }
                 }
             }
         }
