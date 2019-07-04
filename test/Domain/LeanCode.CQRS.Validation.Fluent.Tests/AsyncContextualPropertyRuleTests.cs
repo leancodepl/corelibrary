@@ -13,13 +13,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            Task<object> func(ValidationContext ctx, string str)
+            Task<object> accessor(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return Task.FromResult<object>(null);
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(accessor);
             await validator.ValidateAsync(new SampleData { Test = value });
 
             Assert.Equal(value, dataPassed);
@@ -29,13 +29,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task Passes_the_context_to_accessor()
         {
             ValidationContext dataPassed = null;
-            Task<object> func(ValidationContext ctx2, string str)
+            Task<object> accessor(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return Task.FromResult<object>(null);
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(accessor);
             var ctx = new ValidationContext<SampleData>(new SampleData());
             await validator.ValidateAsync(ctx);
 
@@ -55,68 +55,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         }
 
         [Fact]
-        public void Passes_the_property_data_to_value_sync()
-        {
-            const string value = "Value";
-            string dataPassed = null;
-            Task<object> func(ValidationContext ctx, string str)
-            {
-                dataPassed = str;
-                return Task.FromResult<object>(null);
-            }
-
-            var validator = new TestValidator(func);
-            validator.Validate(new SampleData { Test = value });
-
-            Assert.Equal(value, dataPassed);
-        }
-
-        [Fact]
-        public void Passes_the_context_to_accessor_sync()
-        {
-            ValidationContext dataPassed = null;
-            Task<object> func(ValidationContext ctx2, string str)
-            {
-                dataPassed = ctx2;
-                return Task.FromResult<object>(null);
-            }
-
-            var validator = new TestValidator(func);
-            var ctx = new ValidationContext<SampleData>(new SampleData());
-            validator.Validate(ctx);
-
-            Assert.Equal(ctx, dataPassed);
-        }
-
-        [Fact]
-        public void Passes_accessed_value_to_validators_sync()
-        {
-            var obj = new object();
-            object dataPassed = null;
-
-            var validator = new TestValidator((_, __) => Task.FromResult(obj), e => (dataPassed = e) != null);
-            validator.Validate(new SampleData());
-
-            Assert.Equal(obj, dataPassed);
-        }
-
-        [Fact]
-        public void The_accessor_is_called_only_once_for_multiple_validation_rules_sync_case()
-        {
-            int calledCount = 0;
-            Task<object> accessor(ValidationContext _, object data)
-            {
-                return Task.FromResult((object)Interlocked.Increment(ref calledCount));
-            }
-
-            var validator = new MultiValidator(accessor);
-            validator.Validate(new SampleData());
-
-            Assert.Equal(1, calledCount);
-        }
-
-        [Fact]
-        public async Task The_accessor_is_called_only_once_for_multiple_validation_rules_async_case()
+        public async Task The_accessor_is_called_only_once_for_multiple_validation_rules()
         {
             int calledCount = 0;
             Task<object> accessor(ValidationContext _, object data)
@@ -128,6 +67,16 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             await validator.ValidateAsync(new SampleData());
 
             Assert.Equal(1, calledCount);
+        }
+
+        [Fact]
+        public void Synchronous_validation_is_forbidden_for_async_rules()
+        {
+            var obj = new object();
+            object dataPassed = null;
+
+            var validator = new TestValidator((_, __) => Task.FromResult(obj), e => (dataPassed = e) != null);
+            Assert.Throws<NotSupportedException>(() => validator.Validate(new SampleData()));
         }
 
         class TestValidator : ContextualValidator<SampleData>

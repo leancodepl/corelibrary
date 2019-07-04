@@ -8,7 +8,7 @@ using ValidationFailure = FluentValidation.Results.ValidationFailure;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class FluentValidationCommandValidatorAdapter<TAppContext, TCommand>
+    public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand>
         : ICommandValidator<TAppContext, TCommand>
         where TCommand : ICommand
     {
