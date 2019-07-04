@@ -19,6 +19,7 @@ namespace LeanCode.CQRS.Validation.Fluent
                 adapter = new FluentValidationCommandValidatorAdapter<TAppContext, TCommand>(val, ctx);
             }
         }
+
         public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
         {
             if (!(adapter is null))
