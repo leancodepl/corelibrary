@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using Xunit;
@@ -99,11 +100,51 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             Assert.Equal(obj, dataPassed);
         }
 
+        [Fact]
+        public void The_accessor_is_called_only_once_for_multiple_validation_rules_sync_case()
+        {
+            int calledCount = 0;
+            Task<object> accessor(ValidationContext _, object data)
+            {
+                return Task.FromResult((object)Interlocked.Increment(ref calledCount));
+            }
+
+            var validator = new MultiValidator(accessor);
+            validator.Validate(new SampleData());
+
+            Assert.Equal(1, calledCount);
+        }
+
+        [Fact]
+        public async Task The_accessor_is_called_only_once_for_multiple_validation_rules_async_case()
+        {
+            int calledCount = 0;
+            Task<object> accessor(ValidationContext _, object data)
+            {
+                return Task.FromResult((object)Interlocked.Increment(ref calledCount));
+            }
+
+            var validator = new MultiValidator(accessor);
+            await validator.ValidateAsync(new SampleData());
+
+            Assert.Equal(1, calledCount);
+        }
+
         class TestValidator : ContextualValidator<SampleData>
         {
             public TestValidator(Func<ValidationContext, string, Task<object>> accessor, Func<object, bool> must = null)
             {
-                this.RuleForAsync(d => d.Test, accessor).Must(must ?? (e => true));
+                RuleForAsync(d => d.Test, accessor).Must(must ?? (e => true));
+            }
+        }
+
+        class MultiValidator : ContextualValidator<SampleData>
+        {
+            public MultiValidator(Func<ValidationContext, string, Task<object>> accessor)
+            {
+                RuleForAsync(d => d.Test, accessor)
+                    .Must(e => true)
+                    .Must(e => true);
             }
         }
 
