@@ -8,26 +8,26 @@
 
   <ItemGroup>
     <PackageReference Update="Autofac" Version="4.9.2" />
-    <PackageReference Update="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Update="Serilog" Version="2.8.0" />
 
     <PackageReference Update="Dapper" Version="1.60.6" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
-    <PackageReference Update="FluentValidation" Version="8.2.2" />
+    <PackageReference Update="FluentValidation" Version="8.4.0" />
     <PackageReference Update="Polly" Version="7.1.0" />
     <PackageReference Update="Hangfire.Autofac" Version="2.3.1" />
-    <PackageReference Update="Hangfire.AspNetCore" Version="1.7.0" />
-    <PackageReference Update="Hangfire.Core" Version="1.7.0" />
-    <PackageReference Update="Hangfire.SqlServer" Version="1.7.0" />
+    <PackageReference Update="Hangfire.AspNetCore" Version="1.7.4" />
+    <PackageReference Update="Hangfire.Core" Version="1.7.4" />
+    <PackageReference Update="Hangfire.SqlServer" Version="1.7.4" />
 
-    <PackageReference Update="Serilog.Extensions.Logging" Version="2.0.2" />
-    <PackageReference Update="Serilog.Settings.Configuration" Version="3.0.1" />
+    <PackageReference Update="Serilog.Extensions.Logging" Version="2.0.4" />
+    <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Update="Serilog.Sinks.Literate" Version="3.0.0" />
     <PackageReference Update="Serilog.Sinks.RollingFile" Version="3.3.0" />
 
-    <PackageReference Update="IdentityModel" Version="3.10.6" />
+    <PackageReference Update="IdentityModel" Version="3.10.10" />
     <PackageReference Update="IdentityServer4" Version="2.4.0" />
-    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
+    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.1.0" />
 
     <PackageReference Update="FirebaseAdmin" Version="1.7.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="1.0.0-beta22" />
@@ -46,16 +46,15 @@
     <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="2.2.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="2.2.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.3" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.4" />
     <PackageReference Update="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="2.2.0" />
@@ -83,8 +82,8 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.11.5" />
-    <PackageReference Update="NSubstitute" Version="4.0.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Update="NSubstitute" Version="4.2.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Update="xunit" Version="2.4.1" />

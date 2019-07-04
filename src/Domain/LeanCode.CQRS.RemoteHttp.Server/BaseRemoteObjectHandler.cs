@@ -43,13 +43,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (Exception ex)
             {
-                Logger.Information(ex, "Cannot deserialize object body from the request stream");
+                Logger.Information(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj == null)
             {
-                Logger.Information("Client sent an empty object, ignoring");
+                Logger.Information("Client sent an empty object for type {Type}, ignoring", type);
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
@@ -75,7 +75,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             if (result.StatusCode >= 100 && result.StatusCode < 300)
             {
-                Logger.Debug("Remote object of type {Type} executed successfully", type);
+                Logger.Information("Remote object of type {Type} executed successfully", type);
             }
 
             return result;
