@@ -71,7 +71,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
         public override bool HasFormContentType => throw new NotImplementedException();
         public override IFormCollection Form { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

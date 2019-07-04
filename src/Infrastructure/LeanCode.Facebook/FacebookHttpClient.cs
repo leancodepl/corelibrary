@@ -4,7 +4,7 @@ namespace LeanCode.Facebook
 {
     public class FacebookHttpClient
     {
-        public HttpClient Client{get;}
+        public HttpClient Client { get; }
 
         public FacebookHttpClient(HttpClient client)
         {

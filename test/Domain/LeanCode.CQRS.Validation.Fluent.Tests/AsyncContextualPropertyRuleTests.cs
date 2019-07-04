@@ -12,11 +12,11 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            Func<ValidationContext, string, Task<object>> func = (ctx, str) =>
+            Task<object> func(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return Task.FromResult<object>(null);
-            };
+            }
 
             var validator = new TestValidator(func);
             await validator.ValidateAsync(new SampleData { Test = value });
@@ -28,11 +28,11 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task Passes_the_context_to_accessor()
         {
             ValidationContext dataPassed = null;
-            Func<ValidationContext, string, Task<object>> func = (ctx2, str) =>
+            Task<object> func(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return Task.FromResult<object>(null);
-            };
+            }
 
             var validator = new TestValidator(func);
             var ctx = new ValidationContext<SampleData>(new SampleData());
@@ -58,11 +58,11 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            Func<ValidationContext, string, Task<object>> func = (ctx, str) =>
+            Task<object> func(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return Task.FromResult<object>(null);
-            };
+            }
 
             var validator = new TestValidator(func);
             validator.Validate(new SampleData { Test = value });
@@ -74,11 +74,11 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public void Passes_the_context_to_accessor_sync()
         {
             ValidationContext dataPassed = null;
-            Func<ValidationContext, string, Task<object>> func = (ctx2, str) =>
+            Task<object> func(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return Task.FromResult<object>(null);
-            };
+            }
 
             var validator = new TestValidator(func);
             var ctx = new ValidationContext<SampleData>(new SampleData());

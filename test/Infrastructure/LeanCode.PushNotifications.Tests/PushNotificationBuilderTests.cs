@@ -69,8 +69,6 @@ namespace LeanCode.PushNotifications.Tests
         [InlineData(DeviceType.Chrome)]
         public async Task SendToDevice_sends_PN_to_correct_device_type(DeviceType dt)
         {
-            object data = new object();
-
             await builder.SendToDeviceAsync(dt);
 
             _ = pushNotifications

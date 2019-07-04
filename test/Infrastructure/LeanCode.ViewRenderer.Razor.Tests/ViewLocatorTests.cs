@@ -5,12 +5,12 @@ namespace LeanCode.ViewRenderer.Razor.Tests
 {
     public class ViewLocatorTests
     {
-        private static RazorViewRendererOptions BothDefault = new RazorViewRendererOptions(
+        private static readonly RazorViewRendererOptions BothDefault = new RazorViewRendererOptions(
             "./Views/A",
             "./Views/B"
         );
 
-        private static RazorViewRendererOptions BothTXT = new RazorViewRendererOptions(
+        private static readonly RazorViewRendererOptions BothTXT = new RazorViewRendererOptions(
             ".cstxt",
             new[] {
                 "./Views/A",

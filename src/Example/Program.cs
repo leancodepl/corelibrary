@@ -6,7 +6,7 @@ namespace LeanCode.Example
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             LeanProgram.BuildDefaultWebHost<Startup>("LeanCode.Example")
                 .UseKestrel()

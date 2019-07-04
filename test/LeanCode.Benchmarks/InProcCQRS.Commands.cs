@@ -20,20 +20,18 @@ namespace LeanCode.Benchmarks
     [MemoryDiagnoser]
     public class InProcCQRS__Commands
     {
-        private static Assembly assembly = typeof(InProcCQRS__Commands).Assembly;
-        private static TypesCatalog catalog = new TypesCatalog(assembly);
+        private readonly static TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Commands>();
 
         private ICommandExecutor<SampleAppContext> simple;
         private ICommandExecutor<SampleAppContext> secured;
         private ICommandExecutor<SampleAppContext> validated;
 
-        private PlainCommand plainCommand = new PlainCommand();
-        private UserCommand userCommand = new UserCommand();
-        private AdminCommand adminCommand = new AdminCommand();
-        private ValidCommand validCommand = new ValidCommand();
-        private InvalidCommand invalidCommand = new InvalidCommand();
+        private readonly PlainCommand plainCommand = new PlainCommand();
+        private readonly UserCommand userCommand = new UserCommand();
+        private readonly ValidCommand validCommand = new ValidCommand();
+        private readonly InvalidCommand invalidCommand = new InvalidCommand();
 
-        private CommandResult stubResult = CommandResult.Success();
+        private readonly CommandResult stubResult = CommandResult.Success();
 
         private SampleAppContext appContext;
 
@@ -42,7 +40,7 @@ namespace LeanCode.Benchmarks
         {
             simple = PrepareExecutor(b => b);
             secured = PrepareExecutor(b => b.Secure());
-            validated = PrepareExecutor(b => b.Validate(), new FluentValidationModule(catalog));
+            validated = PrepareExecutor(b => b.Validate(), new FluentValidationModule(Catalog));
 
             appContext = new SampleAppContext
             {
@@ -102,7 +100,7 @@ namespace LeanCode.Benchmarks
 
             var benchModule = new BenchmarkModule();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(catalog, commandBuilder, b => b);
+                .WithCustomPipelines<SampleAppContext>(Catalog, commandBuilder, b => b);
 
             builder.RegisterModule(module);
             module.ConfigureServices(sc);

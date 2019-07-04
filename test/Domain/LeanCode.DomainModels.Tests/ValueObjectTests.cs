@@ -41,7 +41,7 @@ namespace LeanCode.DomainModels.Tests
             Assert.False(TenPLN().GetHashCode() == TenUSD().GetHashCode());
         }
 
-        private Money TenPLN() => 
+        private Money TenPLN() =>
             new Money()
             {
                 Amount = 10,
@@ -62,7 +62,7 @@ namespace LeanCode.DomainModels.Tests
                 Currency = "USD"
             };
 
-        class Money: ValueObject<Money>
+        class Money : ValueObject<Money>
         {
             protected override object[] GetAttributesToIncludeInEqualityCheck() => new object[] { Amount, Currency };
 

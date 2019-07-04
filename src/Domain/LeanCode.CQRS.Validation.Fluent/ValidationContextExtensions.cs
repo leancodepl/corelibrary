@@ -16,7 +16,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             }
             else
             {
-                return default(TAppContext);
+                return default;
             }
         }
 
@@ -28,7 +28,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             }
             else
             {
-                return default(T);
+                return default;
             }
         }
     }

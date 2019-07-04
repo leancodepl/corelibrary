@@ -13,7 +13,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
         private Dictionary<string, string> mangledNames;
-        private string namespaceName;
 
         public DartVisitor(DartConfiguration configuration)
         {
@@ -61,8 +60,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void Visit(IStatement statement, int level, string parentName)
         {
-            this.namespaceName = parentName;
-
             switch (statement)
             {
                 case ClientStatement stmt: VisitClientStatement(stmt, level); break;

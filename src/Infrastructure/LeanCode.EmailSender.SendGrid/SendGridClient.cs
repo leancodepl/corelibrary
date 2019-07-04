@@ -48,20 +48,18 @@ namespace LeanCode.EmailSender.SendGrid
             var message = await BuildMessage(model);
             var msgJson = JsonConvert.SerializeObject(message, JsonSettings);
 
-            HttpResponseMessage response;
             using (var content = new StringContent(msgJson, Encoding.UTF8, "application/json"))
+            using (var response = await client.Client.PostAsync("mail/send", content).ConfigureAwait(false))
             {
-                response = await client.Client.PostAsync("mail/send", content).ConfigureAwait(false);
-            }
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.Warning(
+                        "Cannot send e-mail with subject {Subject} to {Emails}",
+                        model.Subject, model.Recipients);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                logger.Warning(
-                    "Cannot send e-mail with subject {Subject} to {Emails}",
-                    model.Subject, model.Recipients);
-
-                var errorJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
+                    var errorJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
+                }
             }
 
             logger.Information(

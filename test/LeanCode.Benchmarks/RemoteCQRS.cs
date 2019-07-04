@@ -21,14 +21,13 @@ namespace LeanCode.Benchmarks
     [MemoryDiagnoser]
     public class RemoteCQRS
     {
-        private static Assembly assembly = typeof(InProcCQRS__Commands).Assembly;
-        private static TypesCatalog catalog = new TypesCatalog(assembly);
+        private static readonly TypesCatalog Catalog = TypesCatalog.Of<RemoteCQRS>();
 
-        private SampleAppContext appContext = new SampleAppContext();
+        private readonly SampleAppContext appContext = new SampleAppContext();
 
         private IServiceProvider serviceProvider;
         private RemoteCQRSMiddleware<SampleAppContext> middleware;
-        private InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
+        private readonly InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
 
         private byte[] empty;
         private byte[] multipleFields;
@@ -38,14 +37,14 @@ namespace LeanCode.Benchmarks
         {
             var builder = new ContainerBuilder();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(catalog, b => b, b => b);
+                .WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b);
             builder.RegisterModule(module);
 
             builder.Populate(new ServiceDescriptor[0]);
             var container = builder.Build();
 
             middleware = new RemoteCQRSMiddleware<SampleAppContext>(
-                catalog, _ => appContext,
+                Catalog, _ => appContext,
                 _ => Task.CompletedTask);
             serviceProvider = container.Resolve<IServiceProvider>();
 
@@ -85,10 +84,7 @@ namespace LeanCode.Benchmarks
 
         private HttpContext PrepareCommand(bool multi)
         {
-            var context = new DefaultHttpContext();
-            context.RequestServices = serviceProvider;
-            context.Request.Method = HttpMethods.Post;
-            context.Request.ContentType = "application/json";
+            var context = new DefaultHttpContext { RequestServices = serviceProvider };
             if (multi)
             {
                 context.Request.Path = "/command/LeanCode.Benchmarks.MultipleFieldsCommand";
@@ -106,8 +102,10 @@ namespace LeanCode.Benchmarks
 
         private HttpContext PrepareQuery(bool multi)
         {
-            var context = new DefaultHttpContext();
-            context.RequestServices = serviceProvider;
+            var context = new DefaultHttpContext
+            {
+                RequestServices = serviceProvider
+            };
             context.Request.Method = HttpMethods.Post;
             context.Request.ContentType = "application/json";
             if (multi)

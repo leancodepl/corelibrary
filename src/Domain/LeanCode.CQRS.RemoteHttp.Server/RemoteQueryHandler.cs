@@ -15,7 +15,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
-            .GetMethod("ExecuteQuery", BindingFlags.NonPublic | BindingFlags.Instance);
+            .GetMethod(nameof(ExecuteQuery), BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;

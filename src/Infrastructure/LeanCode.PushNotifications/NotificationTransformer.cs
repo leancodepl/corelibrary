@@ -114,8 +114,10 @@ namespace LeanCode.PushNotifications
 
             var type = data.GetType();
 
-            var result = new Dictionary<string, string>();
-            result.Add(TypeField, type.Name);
+            var result = new Dictionary<string, string>
+            {
+                [TypeField] = type.Name
+            };
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var prop in properties)

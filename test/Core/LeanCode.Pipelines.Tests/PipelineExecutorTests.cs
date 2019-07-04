@@ -30,7 +30,7 @@ namespace LeanCode.Pipelines.Tests
             var el = Pass(0);
             var fin = Finalizer(1, 2);
 
-            var result = await Prepare(fin, el).ExecuteAsync(new PipelineContext(), 0);
+            await Prepare(fin, el).ExecuteAsync(new PipelineContext(), 0);
 
             _ = el.Received().SubExecuteAsync(0);
         }
@@ -42,7 +42,7 @@ namespace LeanCode.Pipelines.Tests
             var el2 = Pass(0);
             var fin = Finalizer(0, 2);
 
-            var result = await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
+            await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
 
             _ = el1.Received().SubExecuteAsync(0);
             _ = el2.Received().SubExecuteAsync(0);
@@ -55,7 +55,7 @@ namespace LeanCode.Pipelines.Tests
             var el2 = Pass(0);
             var fin = Finalizer(0, 2);
 
-            var result = await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
+            await Prepare(fin, el1, el2).ExecuteAsync(new PipelineContext(), 0);
 
             _ = fin.Received().SubExecuteAsync(0);
         }
@@ -68,7 +68,7 @@ namespace LeanCode.Pipelines.Tests
             var el3 = Pass(10);
             var fin = Finalizer(10, 2);
 
-            var result = await Prepare(fin, el1, el2, el3).ExecuteAsync(new PipelineContext(), 0);
+            await Prepare(fin, el1, el2, el3).ExecuteAsync(new PipelineContext(), 0);
 
             _ = el1.Received().SubExecuteAsync(0);
             _ = el2.Received().SubExecuteAsync(0);

@@ -100,7 +100,7 @@ namespace LeanCode.PushNotifications
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, FCM error: {FCMError}", to, token.DeviceType, e.Error);
                     break;
 
-                case FCMResult.InvalidToken e:
+                case FCMResult.InvalidToken _:
                     logger.Warning("Cannot send notification to {UserId} to device {DeviceId}, token is invalid", to, token.DeviceType);
                     return tokenStore.RemoveToken(token);
 
@@ -108,7 +108,7 @@ namespace LeanCode.PushNotifications
                     logger.Information("Notification to {UserId} to device {DeviceId} sent, updating token with canonical value", to, token.DeviceType);
                     return tokenStore.UpdateToken(token, e.NewToken);
 
-                case FCMResult.Success e:
+                case FCMResult.Success _:
                     logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);
                     break;
             }

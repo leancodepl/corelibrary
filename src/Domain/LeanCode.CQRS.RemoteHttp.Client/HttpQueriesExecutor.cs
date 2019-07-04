@@ -19,6 +19,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
         public HttpQueriesExecutor(
@@ -30,6 +31,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 BaseAddress = baseAddress
             };
+            serializerSettings = settings;
         }
 
         public HttpQueriesExecutor(

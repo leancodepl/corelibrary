@@ -37,13 +37,13 @@ namespace LeanCode.IdentityServer.PersistedGrantStore.Tests
             };
             var model = PersistedGrantMapper.MapToModel(entity);
 
-            Assert.Equal(entity.ClientId, clientId);
-            Assert.Equal(entity.CreationTime, creationTime);
-            Assert.Equal(entity.Data, data);
-            Assert.Equal(entity.Expiration, expiration);
-            Assert.Equal(entity.Key, key);
-            Assert.Equal(entity.SubjectId, subjectId);
-            Assert.Equal(entity.Type, type);
+            Assert.Equal(model.ClientId, clientId);
+            Assert.Equal(model.CreationTime, creationTime);
+            Assert.Equal(model.Data, data);
+            Assert.Equal(model.Expiration, expiration);
+            Assert.Equal(model.Key, key);
+            Assert.Equal(model.SubjectId, subjectId);
+            Assert.Equal(model.Type, type);
         }
 
         [Fact]
@@ -61,13 +61,13 @@ namespace LeanCode.IdentityServer.PersistedGrantStore.Tests
             };
             var entity = PersistedGrantMapper.MapToEntity(model);
 
-            Assert.Equal(model.ClientId, clientId);
-            Assert.Equal(model.CreationTime, creationTime);
-            Assert.Equal(model.Data, data);
-            Assert.Equal(model.Expiration, expiration);
-            Assert.Equal(model.Key, key);
-            Assert.Equal(model.SubjectId, subjectId);
-            Assert.Equal(model.Type, type);
+            Assert.Equal(entity.ClientId, clientId);
+            Assert.Equal(entity.CreationTime, creationTime);
+            Assert.Equal(entity.Data, data);
+            Assert.Equal(entity.Expiration, expiration);
+            Assert.Equal(entity.Key, key);
+            Assert.Equal(entity.SubjectId, subjectId);
+            Assert.Equal(entity.Type, type);
         }
 
         [Fact]

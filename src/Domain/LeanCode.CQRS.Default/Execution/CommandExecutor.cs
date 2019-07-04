@@ -10,19 +10,15 @@ namespace LeanCode.CQRS.Default.Execution
     {
         private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
 
-        private readonly ILifetimeScope lifetimeScope;
-
         public CommandExecutor(
             IPipelineFactory factory,
-            CommandBuilder<TAppContext> config,
-            ILifetimeScope lifetimeScope)
+            CommandBuilder<TAppContext> config)
         {
             var cfg = Pipeline.Build<TAppContext, ICommand, CommandResult>()
                 .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
                 .Finalize<CommandFinalizer<TAppContext>>();
 
             executor = PipelineExecutor.Create(factory, cfg);
-            this.lifetimeScope = lifetimeScope;
         }
 
         public Task<CommandResult> RunAsync(

@@ -4,7 +4,7 @@ namespace LeanCode.Mixpanel
 {
     public class MixpanelHttpClient
     {
-        public HttpClient Client{get;}
+        public HttpClient Client { get; }
 
         public MixpanelHttpClient(HttpClient client)
         {

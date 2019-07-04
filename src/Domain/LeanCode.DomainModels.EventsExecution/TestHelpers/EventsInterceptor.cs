@@ -41,7 +41,7 @@ namespace LeanCode.UnitTests.TestHelpers
             where TEvent : IDomainEvent
         {
             public bool Raised { get; private set; } = false;
-            public TEvent Event { get; private set; } = default(TEvent);
+            public TEvent Event { get; private set; } = default;
 
             internal void Store(IDomainEvent @event)
             {

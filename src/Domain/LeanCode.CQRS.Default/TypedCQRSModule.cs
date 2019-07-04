@@ -52,15 +52,13 @@ namespace LeanCode.CQRS.Default
             builder.Register(c =>
                 new CommandExecutor<TAppContext>(
                     c.Resolve<IPipelineFactory>(),
-                    cmdBuilder,
-                    c.Resolve<ILifetimeScope>()))
+                    cmdBuilder))
                 .As<ICommandExecutor<TAppContext>>()
                 .SingleInstance();
             builder.Register(c =>
                 new QueryExecutor<TAppContext>(
                     c.Resolve<IPipelineFactory>(),
-                    queryBuilder,
-                    c.Resolve<ILifetimeScope>()))
+                    queryBuilder))
                 .As<IQueryExecutor<TAppContext>>()
                 .SingleInstance();
         }

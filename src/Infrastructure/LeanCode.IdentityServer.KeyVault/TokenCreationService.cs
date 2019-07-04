@@ -31,14 +31,14 @@ namespace LeanCode.IdentityServer.KeyVault
         {
             var credentials = await signing.GetSigningCredentialsAsync();
 
-            var header = CreateHeaderAsync(token, credentials);
+            var header = CreateHeaderAsync(credentials);
             var payload = CreatePayloadAsync(token);
             var jwt = new JwtSecurityToken(header, payload);
 
             return await signing.SignTokenAsync(jwt);
         }
 
-        private JwtHeader CreateHeaderAsync(Token token, SigningCredentials credentials)
+        private JwtHeader CreateHeaderAsync(SigningCredentials credentials)
         {
             var header = new JwtHeader(credentials);
 

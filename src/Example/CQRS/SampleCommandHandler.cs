@@ -20,13 +20,6 @@ namespace LeanCode.Example.CQRS
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SampleCommandHandler>();
 
-        private readonly ILifetimeScope scope;
-
-        public SampleCommandHandler(ILifetimeScope scope)
-        {
-            this.scope = scope;
-        }
-
         public Task ExecuteAsync(AppContext context, SampleCommand command)
         {
             logger.Information("Sample command called with data:");

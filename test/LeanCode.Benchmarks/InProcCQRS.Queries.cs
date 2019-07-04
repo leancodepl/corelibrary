@@ -19,18 +19,17 @@ namespace LeanCode.Benchmarks
     [MemoryDiagnoser]
     public class InProcCQRS__Queries
     {
-        private static Assembly assembly = typeof(InProcCQRS__Queries).Assembly;
-        private static TypesCatalog catalog = new TypesCatalog(assembly);
+        private static readonly TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Queries>();
 
         private IQueryExecutor<SampleAppContext> simple;
         private IQueryExecutor<SampleAppContext> cached;
         private IQueryExecutor<SampleAppContext> secured;
 
-        private PlainQuery plainQuery = new PlainQuery();
-        private CachedQuery cachedQuery = new CachedQuery();
-        private UserQuery userQuery = new UserQuery();
-        private AdminQuery adminQuery = new AdminQuery();
-        private SampleDTO stubResult = new SampleDTO();
+        private readonly PlainQuery plainQuery = new PlainQuery();
+        private readonly CachedQuery cachedQuery = new CachedQuery();
+        private readonly UserQuery userQuery = new UserQuery();
+        private readonly AdminQuery adminQuery = new AdminQuery();
+        private readonly SampleDTO stubResult = new SampleDTO();
         private SampleAppContext appContext;
 
         [GlobalSetup]
@@ -94,7 +93,7 @@ namespace LeanCode.Benchmarks
 
             var benchModule = new BenchmarkModule();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(catalog, b => b, queryBuilder);
+                .WithCustomPipelines<SampleAppContext>(Catalog, b => b, queryBuilder);
 
             builder.RegisterModule(module);
             module.ConfigureServices(sc);

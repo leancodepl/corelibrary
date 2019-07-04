@@ -68,8 +68,10 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
+#pragma warning disable IDE1006
     public interface HasSampleAuthorizer
     { }
+#pragma warning restore
 
     public interface IAuthorizerData { }
 

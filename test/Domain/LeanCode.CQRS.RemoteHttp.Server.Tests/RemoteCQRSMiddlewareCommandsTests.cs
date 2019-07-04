@@ -36,7 +36,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public async Task Does_not_call_CommandExecutor_when_executing_non_remote_query()
         {
-            var (status, _) = await Invoke(typeof(SampleCommand).FullName);
+            await Invoke(typeof(SampleCommand).FullName);
             Assert.Null(command.LastCommand);
         }
 

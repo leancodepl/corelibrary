@@ -65,11 +65,12 @@ namespace LeanCode.ClientCredentialsHandler
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            if (response.StatusCode != HttpStatusCode.Unauthorized)
+            using (var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false))
             {
-                return response;
+                if (response.StatusCode != HttpStatusCode.Unauthorized)
+                {
+                    return response;
+                }
             }
 
             if (!await GetNewAccessToken(cancellationToken))

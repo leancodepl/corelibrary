@@ -46,8 +46,8 @@ namespace LeanCode.PdfGenerator.PdfRocket
         private async Task<Stream> Generate(string source)
         {
             using (var content = GetContent(source))
+            using (var response = await client.Client.PostAsync("pdf", content))
             {
-                var response = await client.Client.PostAsync("pdf", content);
                 var result = await response.Content.ReadAsStreamAsync();
 
                 logger.Information("PDF generated");
@@ -58,9 +58,11 @@ namespace LeanCode.PdfGenerator.PdfRocket
 
         private HttpContent GetContent(string source)
         {
-            var content = new MultipartFormDataContent();
-            content.Add(new StringContent(config.ApiKey), "apiKey");
-            content.Add(new StringContent(source), "value");
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(config.ApiKey), "apiKey" },
+                { new StringContent(source), "value" }
+            };
             return content;
         }
     }

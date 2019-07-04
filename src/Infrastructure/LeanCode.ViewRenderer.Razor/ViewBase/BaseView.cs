@@ -72,8 +72,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
         {
             if (value != null)
             {
-                var helperResult = value as HelperResult;
-                if (helperResult != null)
+                if (value is HelperResult helperResult)
                 {
                     helperResult.WriteTo(writer);
                 }
@@ -101,6 +100,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             }
         }
 
+#pragma warning disable IDE0060
         protected void WriteAttributeValue(string thingy, int startPostion, object value, int endValue, int dealyo, bool yesno)
         {
             if (attributeValues == null)
@@ -118,6 +118,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             output.Write(begining);
             attributeEnding = ending;
         }
+#pragma warning restore IDE0060
 
         protected void EndWriteAttribute()
         {

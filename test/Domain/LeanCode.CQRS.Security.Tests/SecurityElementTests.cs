@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         private ISecondAuthorizer secondAuthorizer;
         private IDerivedAuthorizer derivedAuthorizer;
 
-        private ISecurityContext context;
+        private readonly ISecurityContext context;
 
         public DefaultAuthorizerTests()
         {

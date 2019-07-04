@@ -56,7 +56,7 @@ namespace LeanCode.ViewRenderer.Razor
         .Select(a => MetadataReference.CreateFromFile(a.Location))
         .ToList();
 
-        private static CSharpCompilationOptions Options
+        private static readonly CSharpCompilationOptions Options
             = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary);
 
         private readonly RazorTemplateEngine engine;

@@ -27,11 +27,10 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public IReadOnlyList<IDomainEventHandlerWrapper> FindEventHandlers(Type eventType)
         {
-            var cached = typesCache.Get(eventType);
-            object handlers;
-            componentContext.TryResolve(cached.Item1, out handlers);
+            var (handlerType, constructor) = typesCache.Get(eventType);
+            componentContext.TryResolve(handlerType, out var handlers);
             return ((IEnumerable<object>)handlers)
-                .Select(h => (IDomainEventHandlerWrapper)cached.Item2.Invoke(new[] { h }))
+                .Select(h => (IDomainEventHandlerWrapper)constructor.Invoke(new[] { h }))
                 .ToList();
         }
     }

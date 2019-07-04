@@ -33,7 +33,7 @@ namespace LeanCode.Logging.Tests
         [Fact]
         public void Calls_property_factory_when_sanitizing_object()
         {
-            var (res, result) = SanitizeRight(Payload.Workable);
+            SanitizeRight(Payload.Workable);
 
             factory.Received(1).CreatePropertyValue(RightSanitizer.Result, true);
         }

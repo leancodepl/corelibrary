@@ -24,10 +24,10 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public ICommandValidatorWrapper FindCommandValidator(Type commandType)
         {
-            var cached = typesCache.Get(commandType);
-            if (componentContext.TryResolve(cached.HandlerType, out var handler))
+            var (handlerType, constructor) = typesCache.Get(commandType);
+            if (componentContext.TryResolve(handlerType, out var handler))
             {
-                var cv = cached.Constructor.Invoke(new[] { handler });
+                var cv = constructor.Invoke(new[] { handler });
                 return (ICommandValidatorWrapper)cv;
             }
             else

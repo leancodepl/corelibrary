@@ -50,9 +50,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             type = type ?? defaultObject;
 
-            var ctx = new StubContext(method, $"/{endpoint}/" + type, content);
-            ctx.RequestServices = serviceProvider;
-            ctx.User = user;
+            var ctx = new StubContext(method, $"/{endpoint}/{type}", content)
+            {
+                RequestServices = serviceProvider,
+                User = user
+            };
             await middleware.Invoke(ctx);
 
             var statusCode = ctx.Response.StatusCode;

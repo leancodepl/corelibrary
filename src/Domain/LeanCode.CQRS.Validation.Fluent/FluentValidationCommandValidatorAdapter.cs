@@ -44,7 +44,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             );
         }
 
-        private ValidationContext<TCommand> PrepareContext(TAppContext appContext,  TCommand command)
+        private ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
         {
             var ctx = new ValidationContext<TCommand>(command,
                 new PropertyChain(),

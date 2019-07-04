@@ -26,14 +26,14 @@ namespace LeanCode.ViewRenderer.Razor
 
         public override RazorProjectItem GetItem(string path)
         {
-            var view = LocateFile(GetFileName(path));
-            if (view.FullPath == null)
+            var (basePath, fullPath, fileName) = LocateFile(GetFileName(path));
+            if (fullPath == null)
             {
                 return new Item(path);
             }
             else
             {
-                return new Item(view.BasePath, view.FileName, view.FullPath);
+                return new Item(basePath, fileName, fullPath);
             }
         }
 

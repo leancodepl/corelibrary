@@ -44,25 +44,32 @@ namespace LeanCode.SmsSender
         {
             logger.Verbose("Sending SMS using SMS Api");
 
-            var parameters = new Dictionary<string, string>();
-
-            parameters["username"] = smsApiConfiguration.Login;
-            parameters["password"] = smsApiConfiguration.Password;
-            parameters["from"] = smsApiConfiguration.From;
-            parameters["format"] = "json";
-            parameters["encoding"] = "UTF-8";
-            parameters["message"] = message;
-            parameters["to"] = phoneNumber;
+            var parameters = new Dictionary<string, string>
+            {
+                ["username"] = smsApiConfiguration.Login,
+                ["password"] = smsApiConfiguration.Password,
+                ["from"] = smsApiConfiguration.From,
+                ["format"] = "json",
+                ["encoding"] = "UTF-8",
+                ["message"] = message,
+                ["to"] = phoneNumber
+            };
 
             if (smsApiConfiguration.TestMode)
+            {
                 parameters["test"] = "1";
+            }
             if (smsApiConfiguration.FastMode)
+            {
                 parameters["fast"] = "1";
+            }
 
-            var body = new FormUrlEncodedContent(parameters);
-            var response = await client.Client.PostAsync("sms.do", body);
-            var content = await response.Content.ReadAsStringAsync();
-            HandleResponse(content);
+            using (var body = new FormUrlEncodedContent(parameters))
+            using (var response = await client.Client.PostAsync("sms.do", body))
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                HandleResponse(content);
+            }
 
             logger.Information("SMS to {PhoneNumber} sent successfully", phoneNumber);
         }
