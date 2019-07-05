@@ -99,7 +99,11 @@ namespace LeanCode.ContractsGenerator
                 })
                 .ToList();
 
-            var children = info.GetMembers().OfType<INamedTypeSymbol>().Select(GenerateInterface);
+            var children = info
+                .GetMembers()
+                .OfType<INamedTypeSymbol>()
+                .Where(s => !HasAttribute<ExcludeFromContractsGenerationAttribute>(s))
+                .Select(GenerateInterface);
 
             var interfaceStatement = new InterfaceStatement
             {
@@ -144,7 +148,7 @@ namespace LeanCode.ContractsGenerator
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
                     var type = ConvertType(property.Type);
-                    if (HasCanBeNullAttribute(property))
+                    if (HasAttribute<CanBeNullAttribute>(property))
                     {
                         type.IsNullable = true;
                     }
@@ -158,9 +162,12 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private static bool HasCanBeNullAttribute(IPropertySymbol typeSymbol)
+        private bool HasAttribute<TAttribute>(ISymbol symbol)
+            where TAttribute : Attribute
         {
-            return typeSymbol.GetAttributes().Any(attr => attr.AttributeClass.Name == typeof(CanBeNullAttribute).Name);
+            return symbol
+                .GetAttributes()
+                .Any(attr => attr.AttributeClass.Name == typeof(TAttribute).Name);
         }
 
         private IEnumerable<InterfaceStatement> GenerateClassesAndInterfaces(SemanticModel model, SyntaxTree tree)
@@ -169,18 +176,19 @@ namespace LeanCode.ContractsGenerator
             var interfacesDeclarations = tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>();
             var structsDeclarations = tree.GetRoot().DescendantNodes().OfType<StructDeclarationSyntax>();
 
-            var classes = classesDeclarations.Select(c => model.GetDeclaredSymbol(c)).Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s))).ToList();
-            var interfaces = interfacesDeclarations.Select(i => model.GetDeclaredSymbol(i)).ToList();
+            var classes = classesDeclarations.Select(c => model.GetDeclaredSymbol(c)).Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s)));
+            var interfaces = interfacesDeclarations.Select(i => model.GetDeclaredSymbol(i));
 
-            var publicClasses = classes.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
-            var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public)).ToList();
+            var publicClasses = classes.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public));
+            var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public));
 
-            var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null).ToList();
+            var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null);
 
-            foreach (var info in rootLevelClasses.Concat(publicInterfaces).Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i)))
-            {
-                yield return GenerateInterface(info);
-            }
+            return rootLevelClasses
+                .Concat(publicInterfaces)
+                .Where(i => !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
+                .Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i))
+                .Select(GenerateInterface);
         }
 
         private static string StringifyBuiltInTypeValue(object value)
@@ -234,11 +242,10 @@ namespace LeanCode.ContractsGenerator
         private IEnumerable<EnumStatement> GenerateEnums(SemanticModel model, SyntaxTree tree)
         {
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
-
-            foreach (var info in enums.Select(e => model.GetDeclaredSymbol(e)))
-            {
-                yield return GenerateEnum(info);
-            }
+            return enums
+                .Select(e => model.GetDeclaredSymbol(e))
+                .Where(i => !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
+                .Select(GenerateEnum);
         }
 
         private TypeParameterStatement ParseTypeArgument(ITypeParameterSymbol info)
