@@ -27,7 +27,7 @@
 
     <PackageReference Update="IdentityModel" Version="3.10.10" />
     <PackageReference Update="IdentityServer4" Version="2.4.0" />
-    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.1.0" />
+    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
 
     <PackageReference Update="FirebaseAdmin" Version="1.7.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="1.0.0-beta22" />
