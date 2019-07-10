@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using LeanCode.ContractsGenerator;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
 using LeanCode.ContractsGenerator.Languages;
+using LeanCode.CQRS;
+using System.Reflection;
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
@@ -56,18 +56,19 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             return output.Where(o => o.Name.EndsWith("Client.ts")).First().Content;
         }
 
-        public static LeanCode.ContractsGenerator.CodeGenerator CreateTsGenerator(params string[] sources)
+        public static CodeGenerator CreateTsGenerator(params string[] sources)
         {
             var trees = sources.Select(s => CSharpSyntaxTree.ParseText(s)).ToList();
 
             var compilation = CSharpCompilation.Create("TsGeneratorTests")
                 .AddReferences(new[] {
                     MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                    MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location)
+                    MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
                 })
-                .AddSyntaxTrees(trees.Concat(new[] { CSharpSyntaxTree.ParseText("namespace LeanCode.CQRS { public interface IQuery<T> { } public interface ICommand { } public interface IRemoteQuery<T> : IQuery<T> { } public interface IRemoteCommand : ICommand { }}") }));
+                .AddSyntaxTrees(trees);
 
-            return new LeanCode.ContractsGenerator.CodeGenerator(trees, compilation);
+            return new CodeGenerator(trees, compilation);
         }
     }
 }
