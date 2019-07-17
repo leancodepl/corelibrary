@@ -11,7 +11,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
     static class ContractsGeneratorTestHelpers
     {
-        public static LeanCode.ContractsGenerator.CodeGenerator CreateTsGeneratorFromClass(string classBody, string className = "TsGeneratorTest")
+        public static CodeGenerator CreateTsGeneratorFromClass(string classBody, string className = "TsGeneratorTest")
         {
             return CreateTsGeneratorFromNamespace(
             $@"
@@ -23,7 +23,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
         }
 
-        public static LeanCode.ContractsGenerator.CodeGenerator CreateTsGeneratorFromNamespace(string namespaceBody, string namespaceName = "TsGenerator.Tests")
+        public static CodeGenerator CreateTsGeneratorFromNamespace(string namespaceBody, string namespaceName = "TsGenerator.Tests")
         {
             return CreateTsGenerator($@"
                 using LeanCode.CQRS;

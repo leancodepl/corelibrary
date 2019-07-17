@@ -348,28 +348,42 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             if (statement.Children.Any() || statement.Constants.Any())
             {
+                var hasConsts = HasNestedConstStatements(statement);
+
                 definitionsBuilder.AppendSpaces(level);
 
                 definitionsBuilder.Append("namespace ");
                 definitionsBuilder.Append(statement.Name);
                 definitionsBuilder.AppendLine(" {");
 
-                constsBuilder.AppendSpaces(level);
-                constsBuilder.Append(statement.Name);
-                constsBuilder.AppendLine(": {");
+                if (hasConsts)
+                {
+                    constsBuilder.AppendSpaces(level);
+                    constsBuilder.Append(statement.Name);
+                    constsBuilder.AppendLine(": {");
+                }
 
                 foreach (var child in statement.Children.Concat<IStatement>(statement.Constants))
                 {
                     Visit(child, level + 1, parentName + "." + statement.Name);
                 }
 
-                constsBuilder.AppendSpaces(level);
-                constsBuilder.AppendLine("},");
+                if (hasConsts)
+                {
+                    constsBuilder.AppendSpaces(level);
+                    constsBuilder.AppendLine("},");
+                }
 
                 definitionsBuilder.AppendSpaces(level);
                 definitionsBuilder.AppendLine("}");
                 definitionsBuilder.AppendLine();
             }
+        }
+
+        private bool HasNestedConstStatements(InterfaceStatement stmt)
+        {
+            return stmt.Constants.Any() ||
+                stmt.Children.Any(HasNestedConstStatements);
         }
     }
 }
