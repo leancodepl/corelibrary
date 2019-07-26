@@ -29,7 +29,10 @@ leancode.builder('corelibrary')
         stage('Test') {
             try {
                 dir('test') {
-                    sh 'dotnet msbuild /t:RunTests /p:Configuration=Release /p:LogFileName=$PWD/test-results/tests.trx'
+                    sh '''
+                    export SolutionDir=$PWD/..
+                    dotnet msbuild /t:RunTests /p:Configuration=Release /p:LogFileName=$PWD/test-results/tests.trx
+                    '''
                 }
             } finally {
                 step([$class: 'MSTestPublisher', testResultsFile:'*/test-results/*.trx', failOnError: true, keepLongStdio: true])
