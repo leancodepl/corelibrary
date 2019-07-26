@@ -5,6 +5,10 @@
     <AssemblyName>LeanCode.Tests</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <LogFileName Condition="'$(LogFileName)' == ''">log.trx</LogFileName>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="**/*.cs" />
     <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;LeanCode.Benchmarks/LeanCode.Benchmarks.csproj;Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
@@ -18,7 +22,7 @@
     </ItemGroup>
 
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')"
+      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot;"
       WorkingDirectory="$(TargetDir)" />
   </Target>
 

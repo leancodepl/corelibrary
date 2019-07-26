@@ -13,9 +13,11 @@
     <!-- Generate the documentation but don't require it on all public members -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-  </PropertyGroup>
 
-  <Import Project="Version.props" />
+    <!-- Version is specified using external -->
+    <Version>$(VERSION)</Version>
+    <InformationalVersion>$(VERSION)-$(GIT_COMMIT)</InformationalVersion>
+  </PropertyGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
           Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"/>
