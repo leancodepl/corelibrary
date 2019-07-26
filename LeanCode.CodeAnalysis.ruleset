@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="OptiTruck RuleSets" ToolsVersion="15.0">
+<RuleSet Name="LeanCode RuleSets" ToolsVersion="15.0">
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
         <Rule Id="SA0001" Action="None"/>
         <!-- XmlCommentAnalysisDisabled -->

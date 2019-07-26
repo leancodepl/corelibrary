@@ -91,11 +91,15 @@
 
 
   <PropertyGroup>
-    <CodeAnalysisProjectRoot>$(SolutionDir)/src/Tools/LeanCode.CodeAnalysis</CodeAnalysisProjectRoot>
-    <CodeAnalysisRuleSet>$(CodeAnalysisProjectRoot)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(SolutionDir)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <StyleCopVersion>1.1.118</StyleCopVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
-    <AdditionalFiles Include="$(CodeAnalysisProjectRoot)/stylecop.json" />
+    <PackageReference Update="StyleCop.Analyzers" Version="$(StyleCopVersion)" />
+    <!--
+    uncomment and deal with ~600 warnings
+    <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopVersion)" PrivateAssets="All"/>
+    -->
+    <AdditionalFiles Include="$(SolutionDir)/stylecop.json" />
   </ItemGroup>
 </Project>

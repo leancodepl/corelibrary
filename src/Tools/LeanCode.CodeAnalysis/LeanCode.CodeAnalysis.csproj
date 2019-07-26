@@ -14,7 +14,7 @@
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build"/>
-    <None Include="LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath=""/>
-    <None Include="stylecop.json" Pack="true" PackagePath=""/>
+    <None Include="$(SolutionDir)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath=""/>
+    <None Include="$(SolutionDir)/stylecop.json" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
