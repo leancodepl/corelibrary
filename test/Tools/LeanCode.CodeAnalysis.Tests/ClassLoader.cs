@@ -16,15 +16,16 @@ namespace LeanCode.CodeAnalysis.Tests
             var content = File.ReadAllText(file);
             var tree = CSharpSyntaxTree.ParseText(content);
 
-            var compilation = CSharpCompilation.Create("LeanCode.CodeAnalysis.Tests",
-            new[] { tree },
-            new[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
-                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
-                MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location)
-            });
+            var compilation = CSharpCompilation.Create(
+                "LeanCode.CodeAnalysis.Tests",
+                new[] { tree },
+                new[]
+                {
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                    MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
+                    MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
+                    MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
+                });
 
             var model = compilation.GetSemanticModel(tree);
 
@@ -32,7 +33,7 @@ namespace LeanCode.CodeAnalysis.Tests
 
             return classes.Select(c => new object[]
             {
-                compilation, model.GetDeclaredSymbol(c)
+                compilation, model.GetDeclaredSymbol(c),
             });
         }
     }

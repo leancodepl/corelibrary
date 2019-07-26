@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using LeanCode.CodeAnalysis.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using NSubstitute;
