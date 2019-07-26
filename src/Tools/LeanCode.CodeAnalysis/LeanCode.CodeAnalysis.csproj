@@ -8,10 +8,22 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="StyleCop.Analyzers" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build"/>
+    <None Include="LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath=""/>
+    <None Include="stylecop.json" Pack="true" PackagePath=""/>
   </ItemGroup>
 
+
+  <!-- TODO: Remove it when rulesets are applied to the whole corelib -->
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
 </Project>
