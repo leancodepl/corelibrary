@@ -27,8 +27,8 @@
     <PackageReference Update="Serilog.Sinks.RollingFile" Version="3.3.0" />
 
     <PackageReference Update="IdentityModel" Version="3.10.2" />
-    <PackageReference Update="IdentityServer4" Version="2.3.1" />
-    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.4.1" />
+    <PackageReference Update="IdentityServer4" Version="2.2.0" />
+    <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +42,7 @@
     <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.3" />
     <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Update="Microsoft.AspNetCore.WebUtilities" Version="2.1.1" />
-    <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.2" />
+    <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.0" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="2.1.4" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
