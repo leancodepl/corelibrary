@@ -78,8 +78,7 @@ namespace LeanCode.PushNotifications.EF
             }
             catch (DbUpdateException exception)
             {
-                var sqlException = exception?.InnerException?.InnerException as SqlException;
-                if ((sqlException is null))
+                if (exception?.InnerException?.InnerException is SqlException sqlException)
                 {
                     switch (sqlException.Number)
                     {
