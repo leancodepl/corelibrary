@@ -66,7 +66,7 @@ namespace LeanCode.EFMigrator
                 Error.WriteLine("Environment variables");
                 Error.WriteLine($"  {MigrationsConfig.ConnectionStringKey}");
                 Error.WriteLine("and");
-                Error.WriteLine($"  {MigrationsConfig.ConnectionStringDenormalizedKey}");
+                Error.WriteLine($"  {MigrationsConfig.ConnectionStringKey.DenormalizeKey()}");
                 Error.WriteLine("are unset or empty");
                 return 3;
             }
