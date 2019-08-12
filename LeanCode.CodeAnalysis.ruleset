@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="LeanCode RuleSets" ToolsVersion="15.0">
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+
         <Rule Id="SA0001" Action="None"/>
         <!-- XmlCommentAnalysisDisabled -->
 
-        <!-- <Rule Id="SA1001" Action="None"/>
-        CommasMustBeSpacedCorrectly - consider enabling -->
+
         <Rule Id="SA1101" Action="None"/>
-        <!--PrefixLocalCallsWithThis -->
-        <Rule Id="SA1102" Action="None"/>
-        <!-- QueryClausesShouldNotBeSeparated -->
+        <!-- PrefixLocalCallsWithThis -->
+        <Rule Id="SX1101" Action="Warning"/>
+        <!-- PrefixLocalCallsWithThis -->
+        <Rule Id="SA1104" Action="None"/>
+        <!-- QueryClausesSpanningMultipleLines -->
         <Rule Id="SA1118" Action="None"/>
         <!-- ParameterMustNotSpanMultipleLines -->
-        <Rule Id="SA1122" Action="None"/>
-        <!-- UseStringEmptyForEmptyStrings -->
-        <Rule Id="SA1124" Action="None"/>
-        <!-- DoNotUseRegions -->
         <Rule Id="SA1129" Action="None"/>
         <!-- DoNotUseDefaultValueTypeConstructor -->
 
 
-        <Rule Id="SA1201" Action="None"/>
-        <!-- ElementsMustAppearInTheCorrectOrder - consider enabling  -->
         <Rule Id="SA1202" Action="None"/>
         <!-- ElementsMustBeOrderedByAccess -->
         <Rule Id="SA1204" Action="None"/>
         <!-- StaticElementsMustAppearBeforeInstanceElements -->
+
+
+        <Rule Id="SA1302" Action="Info"/>
+        <!-- InterfaceNamesMustBeginWithI -->
 
 
         <Rule Id="SA1402" Action="None"/>
@@ -33,8 +33,11 @@
         <Rule Id="SA1407" Action="None"/>
         <!-- ArithmeticExpressionsMustDeclarePrecedence  -->
 
+
         <Rule Id="SA1502" Action="None"/>
         <!-- ElementMustNotBeOnSingleLine -->
+        <Rule Id="SA1503" Action="Error"/>
+        <!-- BracesMustNotBeOmitted :) -->
         <Rule Id="SA1515" Action="None"/>
         <!-- SingleLineCommentMustBePrecededByBlankLine -->
         <Rule Id="SA1516" Action="None"/>

@@ -9,7 +9,9 @@
       "allowConsecutiveUsings": true
     },
     "namingRules": {
-      "tupleElementNameCasing": "PascalCase"
+      "tupleElementNameCasing": "PascalCase",
+      "includeInferredTupleElementNames": true,
+      "allowCommonHungarianPrefixes": false
     }
   }
 }
