@@ -8,10 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None"/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build"/>
+    <None Include="$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath=""/>
+    <None Include="$(CodeAnalysisSettingsLocation)/stylecop.json" Pack="true" PackagePath=""/>
   </ItemGroup>
-
 </Project>

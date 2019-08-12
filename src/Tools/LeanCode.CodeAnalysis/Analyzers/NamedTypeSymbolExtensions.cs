@@ -1,10 +1,13 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.CodeAnalysis
+namespace LeanCode.CodeAnalysis.Analyzers
 {
     public static class NamedTypeSymbolExtensions
     {
+        private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
+        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
+
         public static bool ImplementsInterfaceOrBaseClass(this INamedTypeSymbol typeSymbol, string type)
         {
             if (typeSymbol == null)
@@ -29,6 +32,7 @@ namespace LeanCode.CodeAnalysis
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -36,10 +40,6 @@ namespace LeanCode.CodeAnalysis
         {
             return $"{type.ContainingNamespace}.{type.MetadataName}";
         }
-
-
-        private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
-        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
 
         public static bool HasAuthorizationAttribute(this INamedTypeSymbol type)
         {
@@ -50,6 +50,7 @@ namespace LeanCode.CodeAnalysis
             {
                 return true;
             }
+
             return type.BaseType != null ? HasAuthorizationAttribute(type.BaseType) : false;
         }
     }

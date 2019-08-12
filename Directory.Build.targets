@@ -88,4 +88,16 @@
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
   </ItemGroup>
+
+
+  <PropertyGroup>
+    <CodeAnalysisSettingsLocation>$(MSBuildThisFileDirectory)</CodeAnalysisSettingsLocation>
+    <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- uncomment and deal with ~600 warnings -->
+    <!-- <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All"/> -->
+    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
+    <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)/stylecop.json" />
+  </ItemGroup>
 </Project>

@@ -3,7 +3,6 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.Data
 {
-
     public abstract class BaseCommand : ICommand
     { }
 
