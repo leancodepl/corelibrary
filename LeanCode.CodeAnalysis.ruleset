@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="LeanCode RuleSets" ToolsVersion="15.0">
-    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rules AnalyzerId="Microsoft.CodeAnalysis" RuleNamespace="Microsoft.CodeAnalysis.Diagnostics">
+        <Rule Id="IDE0063" Action="None"/>
+        <!-- UseSimpleUsingStatementDiagnostic -->
+    </Rules>
 
+    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
         <Rule Id="SA0001" Action="None"/>
         <!-- XmlCommentAnalysisDisabled -->
 
 
         <Rule Id="SA1101" Action="None"/>
-        <!-- PrefixLocalCallsWithThis -->
-        <Rule Id="SX1101" Action="Warning"/>
         <!-- PrefixLocalCallsWithThis -->
         <Rule Id="SA1104" Action="None"/>
         <!-- QueryClausesSpanningMultipleLines -->
