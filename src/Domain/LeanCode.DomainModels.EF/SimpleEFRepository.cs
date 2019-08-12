@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
+    /// <summary>Implementation of <see cref="EFRepository{TEntity, TIdentity, TContext, TUnitOfWork}"/>
+    /// for aggregates not having navigation properties, i.e. they do not need any <c>DbSet.Include</c> calls to fetch
+    /// the entire aggregate </summary>
     public sealed class SimpleEFRepository<TEntity, TIdentity, TContext, TUnitOfWork>
         : EFRepository<TEntity, TIdentity, TContext, TUnitOfWork>
         where TEntity : class, IAggregateRoot<TIdentity>
@@ -22,6 +25,8 @@ namespace LeanCode.DomainModels.EF
         }
     }
 
+    /// <summary>Utility overload of <see cref="SimpleEFRepository{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// for aggregates with <see cref="System.Guid" /> as Id type </summary>
     public sealed class SimpleEFRepository<TEntity, TContext, TUnitOfWork>
         : EFRepository<TEntity, TContext, TUnitOfWork>
         where TEntity : class, IAggregateRoot<Guid>

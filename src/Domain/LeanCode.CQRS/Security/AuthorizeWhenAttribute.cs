@@ -5,6 +5,13 @@ using System.Reflection;
 
 namespace LeanCode.CQRS.Security
 {
+    /// <summary>
+    /// Base attribute for defining command/query authorization rules
+    /// </summary>
+    /// <remarks>
+    /// If an object is decorated with multiple <c>AuthorizeWhen</c> attributes, all of them must succeed to
+    /// authorize a user (as in AND clause)
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
     public class AuthorizeWhenAttribute : Attribute
     {

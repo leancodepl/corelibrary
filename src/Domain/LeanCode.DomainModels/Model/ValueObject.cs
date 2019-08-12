@@ -4,8 +4,14 @@ using System.Linq;
 
 namespace LeanCode.DomainModels.Model
 {
-    public abstract class ValueObject<T> where T: ValueObject<T>
+    /// <summary>
+    /// Utility class for implementing <see href="https://martinfowler.com/bliki/ValueObject.html">Value Object</see> pattern.
+    /// <c>ValueObject</c> has structural equality semantics - two value objects are the same, when all of their properties are the same.
+    /// </summary>
+    /// <remarks>Is is expected of value objects to be immutable</remarks>
+    public abstract class ValueObject<T> where T : ValueObject<T>
     {
+        /// <returns>Should return all of the value objects properties</returns>
         protected abstract object[] GetAttributesToIncludeInEqualityCheck();
 
         public override bool Equals(object other)
@@ -28,7 +34,7 @@ namespace LeanCode.DomainModels.Model
 
         public static bool operator !=(ValueObject<T> left, ValueObject<T> right)
         {
-           return !(left == right);
+            return !(left == right);
         }
 
         public override int GetHashCode()
@@ -36,14 +42,15 @@ namespace LeanCode.DomainModels.Model
             return GenerateELFHash(GetAttributesToIncludeInEqualityCheck());
         }
 
-        private int GenerateELFHash(object[] key) 
+        private int GenerateELFHash(object[] key)
         {
             int h = 0, g = 0;
 
-            unchecked 
+            unchecked
             {
-                const int c = (int)0xf0000000;                
-                for (int i = 0, len = key.Length; i < len; i++) {
+                const int c = (int)0xf0000000;
+                for (int i = 0, len = key.Length; i < len; i++)
+                {
                     h = (h << 4) + key[i].GetHashCode();
 
                     if ((g = h & c) != 0)

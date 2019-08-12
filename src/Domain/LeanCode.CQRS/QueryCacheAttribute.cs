@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace LeanCode.CQRS
 {
+    /// <summary>
+    /// Specifes a maximum period during which a <see cref="IQuery{TContext, TResult}" /> may be cached
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class QueryCacheAttribute : Attribute
     {
