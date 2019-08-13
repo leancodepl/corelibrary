@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
@@ -68,10 +69,9 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
-#pragma warning disable IDE1006, SA1302
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1302:InterfaceNamesMustBeginWithI", Justification = "Authorizers are exempt.")]
     public interface HasSampleAuthorizer
     { }
-#pragma warning restore
 
     public interface IAuthorizerData { }
 

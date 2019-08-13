@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -21,7 +22,7 @@ namespace LeanCode.Facebook.Tests
             this.client = new FacebookClient(Config, new FacebookHttpClient(new HttpClient()));
         }
 
-#pragma warning disable xUnit1004
+        [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
         [Fact(Skip = "Facebook credentials required")]
         public async Task Downloads_user_info_correctly()
         {
@@ -34,6 +35,5 @@ namespace LeanCode.Facebook.Tests
             Assert.NotEmpty(user.LastName);
             Assert.NotEmpty(user.Photo);
         }
-#pragma warning restore xUnit1004
     }
 }

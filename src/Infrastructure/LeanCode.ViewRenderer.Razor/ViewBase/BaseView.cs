@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -102,7 +103,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             }
         }
 
-#pragma warning disable IDE0060
+        [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
         protected void WriteAttributeValue(string thingy, int startPostion, object value, int endValue, int dealyo, bool yesno)
         {
             if (attributeValues == null)
@@ -113,6 +114,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             attributeValues.Add(value.ToString());
         }
 
+        [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
         protected void BeginWriteAttribute(string name, string begining, int startPosition, string ending, int endPosition, int thingy)
         {
             Debug.Assert(string.IsNullOrEmpty(attributeEnding), $"{nameof(attributeEnding)} should be null nor empty");
@@ -120,7 +122,6 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             output.Write(begining);
             attributeEnding = ending;
         }
-#pragma warning restore IDE0060
 
         protected void EndWriteAttribute()
         {

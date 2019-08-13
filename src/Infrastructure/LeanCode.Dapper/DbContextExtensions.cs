@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.Dapper
 {
-#pragma warning disable SA1507
+    [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1507:CodeMustNotContainMultipleBlankLinesInARow", Justification = "Grouping of the methods improves readability.")]
     public static class DbContextDapperExtensions
     {
         public static async Task<TResult> WithConnection<TResult>(
@@ -184,5 +185,4 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
         }
     }
-#pragma warning restore SA1507
 }
