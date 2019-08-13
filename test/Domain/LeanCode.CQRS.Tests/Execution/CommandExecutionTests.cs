@@ -27,8 +27,7 @@ namespace LeanCode.CQRS.Tests
         public async Task Correctly_routes_data_through_pipeline_elements()
         {
             Prepare(
-                c => c.Use<SamplePipelineElement<ICommand, CommandResult>>()
-            );
+                c => c.Use<SamplePipelineElement<ICommand, CommandResult>>());
 
             var appCtx = new AppContext();
             var cmd = new SampleCommand();

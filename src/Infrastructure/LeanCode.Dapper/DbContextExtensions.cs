@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.Dapper
 {
+#pragma warning disable SA1507
     public static class DbContextDapperExtensions
     {
         public static async Task<TResult> WithConnection<TResult>(
@@ -183,4 +184,5 @@ namespace LeanCode.Dapper
             return context.WithConnection(conn => conn.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
         }
     }
+#pragma warning restore SA1507
 }

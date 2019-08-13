@@ -38,6 +38,7 @@ namespace LeanCode.IntegrationTestHelpers
                         "    {TestName} - CustomOrder: {Has}",
                         tc.DisplayName, attrib != null);
                 }
+
                 logger.Error("Ignoring and using name only");
                 ordered = ordered.Select(tc => (tc.TestCase, (int?)null)).ToList();
             }

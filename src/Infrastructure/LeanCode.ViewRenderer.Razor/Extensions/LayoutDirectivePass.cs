@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 
 namespace LeanCode.ViewRenderer.Razor.Extensions
 {
-    class LayoutDirectivePass : RazorEngineFeatureBase, IRazorDirectiveClassifierPass
+    internal class LayoutDirectivePass : RazorEngineFeatureBase, IRazorDirectiveClassifierPass
     {
         public int Order => 1001;
 

@@ -27,7 +27,7 @@ namespace LeanCode.CQRS
             {
                 throw new ArgumentNullException(nameof(validationResult));
             }
-            if (validationResult.Errors == null || validationResult.Errors.Count == 0)
+            else if (validationResult.Errors == null || validationResult.Errors.Count == 0)
             {
                 throw new ArgumentException(
                     "Cannot create NotValid command result if no validation errors have occurred.",

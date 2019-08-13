@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    abstract class BaseRemoteObjectHandler<TAppContext>
+    internal abstract class BaseRemoteObjectHandler<TAppContext>
     {
-        private readonly JsonSerializer Serializer = new JsonSerializer();
-
+        private readonly JsonSerializer serializer = new JsonSerializer();
         private readonly Func<HttpContext, TAppContext> contextTranslator;
+
         public TypesCatalog Catalog { get; }
 
         protected Serilog.ILogger Logger { get; }
@@ -95,7 +95,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             using (var reader = new JsonTextReader(new StreamReader(body)))
             {
-                return Serializer.Deserialize(reader, destType);
+                return serializer.Deserialize(reader, destType);
             }
         }
     }

@@ -6,7 +6,7 @@ using LeanCode.ViewRenderer.Razor.ViewBase;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class RazorViewRenderer : IViewRenderer
+    internal class RazorViewRenderer : IViewRenderer
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<RazorViewRenderer>();
 

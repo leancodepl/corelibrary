@@ -15,7 +15,6 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         private readonly ViewLocator locator;
         private readonly ViewCompiler compiler;
 
-
         public ViewCompilerTests()
         {
             locator = new ViewLocator(new RazorViewRendererOptions("./Views/Compiler/"));

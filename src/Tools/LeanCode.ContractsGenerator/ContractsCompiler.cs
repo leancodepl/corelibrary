@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace LeanCode.ContractsGenerator
 {
-    class ContractsCompiler
+    internal class ContractsCompiler
     {
         private static readonly List<MetadataReference> DefaultAssemblies = new List<MetadataReference>
         {
@@ -19,7 +19,7 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(IQuery<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location)
+            MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location),
         };
 
         private readonly string rootPath;

@@ -68,7 +68,7 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
-#pragma warning disable IDE1006
+#pragma warning disable IDE1006, SA1302
     public interface HasSampleAuthorizer
     { }
 #pragma warning restore
@@ -188,7 +188,7 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
+    internal class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
     {
         public AppContext AppContext { get; set; }
         public TObj Data { get; set; }

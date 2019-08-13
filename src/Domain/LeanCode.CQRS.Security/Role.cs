@@ -31,7 +31,7 @@ namespace LeanCode.CQRS.Security
                 throw new ArgumentNullException(
                     "Name must be specified.", nameof(name));
             }
-            if (permissions is null)
+            else if (permissions is null)
             {
                 throw new ArgumentNullException(
                     "Permissions must be non-null", nameof(permissions));

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class CompiledViewsCache
+    internal class CompiledViewsCache
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CompiledViewsCache>();
 
@@ -46,6 +46,7 @@ namespace LeanCode.ViewRenderer.Razor
                 }
             }
         }
+
         private async Task<CompiledView> WrappedCompile(string viewName, TaskCompletionSource<CompiledView> tcs)
         {
             try

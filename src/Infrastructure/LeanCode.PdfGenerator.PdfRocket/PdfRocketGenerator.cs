@@ -61,7 +61,7 @@ namespace LeanCode.PdfGenerator.PdfRocket
             var content = new MultipartFormDataContent
             {
                 { new StringContent(config.ApiKey), "apiKey" },
-                { new StringContent(source), "value" }
+                { new StringContent(source), "value" },
             };
             return content;
         }

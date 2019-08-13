@@ -94,10 +94,13 @@
     <CodeAnalysisSettingsLocation>$(MSBuildThisFileDirectory)</CodeAnalysisSettingsLocation>
     <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
   <ItemGroup>
-    <!-- uncomment and deal with ~600 warnings -->
-    <!-- <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All"/> -->
-    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)/stylecop.json" />
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="All" />
+
+    <PackageReference Update="StyleCop.Analyzers" Version="1.1.118" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Analyzers" Version="2.9.4" />
   </ItemGroup>
 </Project>

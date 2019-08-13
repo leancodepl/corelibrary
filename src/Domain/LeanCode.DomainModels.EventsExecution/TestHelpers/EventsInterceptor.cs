@@ -8,24 +8,25 @@ namespace LeanCode.UnitTests.TestHelpers
 {
     public static class EventsInterceptor
     {
-        private static readonly TestDomainEventInterceptor testInterceptor = new TestDomainEventInterceptor();
+        private static readonly TestDomainEventInterceptor TestInterceptor = new TestDomainEventInterceptor();
 
         public static void Configure()
         {
             var existing = DomainEvents.EventInterceptor;
             if (!(existing is null) &&
-                existing != testInterceptor)
+                existing != TestInterceptor)
             {
                 throw new InvalidOperationException("Cannot use EventInterceptor when other interceptor is already configured.");
             }
-            DomainEvents.SetInterceptor(testInterceptor);
+
+            DomainEvents.SetInterceptor(TestInterceptor);
         }
 
         public static SingleStorage<TEvent> Single<TEvent>()
             where TEvent : IDomainEvent
         {
             var eventStorage = new SingleStorage<TEvent>();
-            testInterceptor.AddHandler(eventStorage.Store);
+            TestInterceptor.AddHandler(eventStorage.Store);
             return eventStorage;
         }
 
@@ -33,7 +34,7 @@ namespace LeanCode.UnitTests.TestHelpers
             where TEvent : IDomainEvent
         {
             var eventStorage = new AllStorage<TEvent>();
-            testInterceptor.AddHandler(eventStorage.Store);
+            TestInterceptor.AddHandler(eventStorage.Store);
             return eventStorage;
         }
 

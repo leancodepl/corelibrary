@@ -7,7 +7,7 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.EventsExecution.Tests
 {
-    class HandlerResolver : IDomainEventHandlerResolver
+    internal class HandlerResolver : IDomainEventHandlerResolver
     {
         private readonly object[] handlers;
 
@@ -28,7 +28,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
                 .ToList();
         }
 
-        class Wrapper<TEvent> : IDomainEventHandlerWrapper
+        private class Wrapper<TEvent> : IDomainEventHandlerWrapper
             where TEvent : IDomainEvent
         {
             private readonly IDomainEventHandler<TEvent> handler;

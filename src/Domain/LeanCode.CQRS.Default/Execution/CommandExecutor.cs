@@ -5,7 +5,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
-    class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
+    internal class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
         where TAppContext : IPipelineContext
     {
         private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;

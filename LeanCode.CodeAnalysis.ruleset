@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="LeanCode RuleSets" ToolsVersion="15.0">
     <Rules AnalyzerId="Microsoft.CodeAnalysis" RuleNamespace="Microsoft.CodeAnalysis.Diagnostics">
+        <Rule Id="IDE0054" Action="None"/>
+        <!-- UseCompoundAssignmentDiagnostic - requires preview language  -->
         <Rule Id="IDE0063" Action="None"/>
         <!-- UseSimpleUsingStatementDiagnostic -->
+        <Rule Id="IDE0066" Action="None"/>
+        <!-- ConvertSwitchStatementToExpression -->
+        <Rule Id="IDE1006" Action="None"/>
+        <!-- NamingRule (interface with I) - we already have this rule in StyleCop -->
     </Rules>
 
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
@@ -14,12 +20,16 @@
         <!-- PrefixLocalCallsWithThis -->
         <Rule Id="SA1104" Action="None"/>
         <!-- QueryClausesSpanningMultipleLines -->
+        <Rule Id="SA1117" Action="None"/>
+        <!-- ParametersMustBeOnSameLineOrSeparateLines -->
         <Rule Id="SA1118" Action="None"/>
         <!-- ParameterMustNotSpanMultipleLines -->
         <Rule Id="SA1129" Action="None"/>
         <!-- DoNotUseDefaultValueTypeConstructor -->
 
 
+        <Rule Id="SA1201" Action="None"/>
+        <!-- ElementsMustAppearInTheCorrectOrder -->
         <Rule Id="SA1202" Action="None"/>
         <!-- ElementsMustBeOrderedByAccess -->
         <Rule Id="SA1204" Action="None"/>
@@ -40,6 +50,8 @@
         <!-- ElementMustNotBeOnSingleLine -->
         <Rule Id="SA1503" Action="Error"/>
         <!-- BracesMustNotBeOmitted :) -->
+        <Rule Id="SA1512" Action="None"/>
+        <!-- SingleLineCommentsMustNotBeFollowedByBlankLine -->
         <Rule Id="SA1515" Action="None"/>
         <!-- SingleLineCommentMustBePrecededByBlankLine -->
         <Rule Id="SA1516" Action="None"/>

@@ -6,14 +6,14 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacValidatorResolver<TAppContext> : ICommandValidatorResolver<TAppContext>
+    internal class AutofacValidatorResolver<TAppContext> : ICommandValidatorResolver<TAppContext>
     {
         private static readonly Type AppContextType = typeof(TAppContext);
 
         private static readonly Type ValidatorBase = typeof(ICommandValidator<,>);
         private static readonly Type WrapperBase = typeof(CommandValidatorWrapper<,>);
 
-        private static readonly TypesCache typesCache = new TypesCache(GetTypes, ValidatorBase, WrapperBase);
+        private static readonly TypesCache TypesCache = new TypesCache(GetTypes, ValidatorBase, WrapperBase);
 
         private readonly IComponentContext componentContext;
 
@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public ICommandValidatorWrapper FindCommandValidator(Type commandType)
         {
-            var (handlerType, constructor) = typesCache.Get(commandType);
+            var (handlerType, constructor) = TypesCache.Get(commandType);
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var cv = constructor.Invoke(new[] { handler });

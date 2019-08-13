@@ -34,8 +34,7 @@ namespace LeanCode.CQRS.Default
             return WithCustomPipelines<TAppContext>(
                 handlersCatalog,
                 b => b.Secure().Validate().ExecuteEvents().InterceptEvents(),
-                b => b.Secure().Cache()
-            );
+                b => b.Secure().Cache());
         }
 
         public CQRSModule WithCustomPipelines<TAppContext>(

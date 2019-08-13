@@ -67,6 +67,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 {
                     new JsonSerializer().Serialize(writer, result.Payload);
                 }
+
                 return Task.CompletedTask;
             }
             else

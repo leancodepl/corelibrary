@@ -14,7 +14,7 @@ namespace LeanCode.CQRS.Default.Autofac
         private static readonly Type EnumerableType = typeof(IEnumerable<>);
         private static readonly Type EventHandlerBase = typeof(IDomainEventHandler<>);
         private static readonly Type EventHandlerWrapperBase = typeof(EventHandlerWrapper<>);
-        private static readonly TypesCache typesCache = new TypesCache(
+        private static readonly TypesCache TypesCache = new TypesCache(
             a => EnumerableType.MakeGenericType(EventHandlerBase.MakeGenericType(a)),
             a => EventHandlerWrapperBase.MakeGenericType(a));
 
@@ -27,7 +27,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public IReadOnlyList<IDomainEventHandlerWrapper> FindEventHandlers(Type eventType)
         {
-            var (handlerType, constructor) = typesCache.Get(eventType);
+            var (handlerType, constructor) = TypesCache.Get(eventType);
             componentContext.TryResolve(handlerType, out var handlers);
             return ((IEnumerable<object>)handlers)
                 .Select(h => (IDomainEventHandlerWrapper)constructor.Invoke(new[] { h }))

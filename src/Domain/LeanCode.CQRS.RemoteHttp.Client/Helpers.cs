@@ -4,7 +4,7 @@ using System.Net.Http;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
-    static class Helpers
+    internal static class Helpers
     {
         public static void HandleCommonCQRSErrors<TNotFound, TBadRequest>(this HttpResponseMessage response)
             where TNotFound : Exception, new()
@@ -14,23 +14,23 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 throw new TNotFound();
             }
-            if (response.StatusCode == HttpStatusCode.BadRequest)
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
             {
                 throw new TBadRequest();
             }
-            if (response.StatusCode == HttpStatusCode.InternalServerError)
+            else if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
                 throw new InternalServerErrorException();
             }
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new UnauthorizedException();
             }
-            if (response.StatusCode == HttpStatusCode.Forbidden)
+            else if (response.StatusCode == HttpStatusCode.Forbidden)
             {
                 throw new ForbiddenException();
             }
-            if (!response.IsSuccessStatusCode)
+            else if (!response.IsSuccessStatusCode)
             {
                 throw new HttpCallErrorException(response.StatusCode);
             }

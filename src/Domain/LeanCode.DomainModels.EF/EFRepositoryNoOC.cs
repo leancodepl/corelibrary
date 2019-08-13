@@ -13,33 +13,33 @@ namespace LeanCode.DomainModels.EF
           where TContext : DbContext
           where TUnitOfWork : IUnitOfWork
     {
-        protected readonly DbSet<TEntity> dbSet;
-        protected readonly TUnitOfWork unitOfWork;
+        protected DbSet<TEntity> DbSet { get; }
+        protected TUnitOfWork UnitOfWork { get; }
 
         public EFRepositoryNoOC(TContext dbContext, TUnitOfWork unitOfWork)
         {
-            dbSet = dbContext.Set<TEntity>();
-            this.unitOfWork = unitOfWork;
+            DbSet = dbContext.Set<TEntity>();
+            this.UnitOfWork = unitOfWork;
         }
 
         public virtual void Add(TEntity entity)
         {
-            dbSet.Add(entity);
+            DbSet.Add(entity);
         }
 
         public virtual void Delete(TEntity entity)
         {
-            dbSet.Remove(entity);
+            DbSet.Remove(entity);
         }
 
         public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
-            dbSet.RemoveRange(entities);
+            DbSet.RemoveRange(entities);
         }
 
         public virtual void Update(TEntity entity)
         {
-            dbSet.Update(entity);
+            DbSet.Update(entity);
         }
 
         // NOTE: this may update more than just this one aggregate
@@ -47,25 +47,25 @@ namespace LeanCode.DomainModels.EF
         public virtual Task AddAsync(TEntity entity)
         {
             this.Add(entity);
-            return unitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteAsync(TEntity entity)
         {
             this.Delete(entity);
-            return unitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities)
         {
             this.DeleteRange(entities);
-            return unitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync();
         }
 
         public virtual Task UpdateAsync(TEntity entity)
         {
             this.Update(entity);
-            return unitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync();
         }
 
         public abstract Task<TEntity> FindAsync(TIdentity id);

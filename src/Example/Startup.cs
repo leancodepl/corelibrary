@@ -15,9 +15,9 @@ namespace LeanCode.Example
 {
     public class Startup : LeanStartup
     {
-        private readonly IHostingEnvironment hostEnv;
+        private static readonly TypesCatalog SearchAssemblies = new TypesCatalog(typeof(Startup));
 
-        private static readonly TypesCatalog searchAssemblies = new TypesCatalog(typeof(Startup));
+        private readonly IHostingEnvironment hostEnv;
 
         public Startup(IConfiguration config, IHostingEnvironment hostEnv)
             : base(config)
@@ -28,11 +28,11 @@ namespace LeanCode.Example
         protected override IAppModule[] Modules { get; } = new IAppModule[]
         {
             new InMemoryCacheModule(),
-            new FluentValidationModule(searchAssemblies),
-            new CQRSModule().WithDefaultPipelines<AppContext>(searchAssemblies),
+            new FluentValidationModule(SearchAssemblies),
+            new CQRSModule().WithDefaultPipelines<AppContext>(SearchAssemblies),
             new PushNotificationsModule<Guid>(),
 
-            new ExampleAppModule()
+            new ExampleAppModule(),
         };
 
         protected override void ConfigureApp(IApplicationBuilder app)

@@ -15,7 +15,7 @@ namespace LeanCode.Example.Migrations
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DeviceType = table.Column<int>(nullable: false),
                     Token = table.Column<string>(maxLength: 1024, nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<Guid>(nullable: false),
                 },
                 constraints: table =>
                 {

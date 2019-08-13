@@ -17,7 +17,7 @@ namespace LeanCode.Example
 
         public static AppContext FromHttp(HttpContext context)
         {
-            Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid); ;
+            Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
             var header = context.Request.Headers["X-Example"];
             return new AppContext(uid, header);
         }

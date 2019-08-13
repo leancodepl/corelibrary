@@ -17,7 +17,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         {
             client = new HttpClient
             {
-                BaseAddress = baseAddress
+                BaseAddress = baseAddress,
             };
             serializerSettings = settings;
         }
@@ -29,7 +29,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         {
             client = new HttpClient(handler)
             {
-                BaseAddress = baseAddress
+                BaseAddress = baseAddress,
             };
             serializerSettings = settings;
         }
@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         {
             client = new HttpClient(handler, disposeHandler)
             {
-                BaseAddress = baseAddress
+                BaseAddress = baseAddress,
             };
             serializerSettings = settings;
         }
@@ -61,6 +61,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                         return JsonConvert.DeserializeObject<CommandResult>(
                             responseContent, serializerSettings);
                     }
+
                     response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
 
                     return CommandResult.Success();

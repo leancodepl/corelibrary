@@ -39,6 +39,7 @@ namespace LeanCode.DomainModels.EventsExecution
                 ctx.FailedHandlers = new List<(IDomainEvent, Type)>();
                 await ExecuteEvents(ctx);
             }
+
             return result;
         }
 
@@ -49,12 +50,14 @@ namespace LeanCode.DomainModels.EventsExecution
                 var domainEvent = ctx.SavedEvents[i];
                 var eventType = domainEvent.GetType();
                 var handlers = resolver.FindEventHandlers(eventType);
-                logger.Debug("Executing event {Event} with {N} handlers",
+                logger.Debug(
+                    "Executing event {Event} with {N} handlers",
                     domainEvent, handlers.Count);
 
                 foreach (var h in handlers)
                 {
-                    logger.Verbose("Executing handler {Handler} with event {Event}",
+                    logger.Verbose(
+                        "Executing handler {Handler} with event {Event}",
                         h.UnderlyingHandler, domainEvent);
                     await ExecuteHandler(ctx, domainEvent, h);
                 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.Language.Intermediate;
 
 namespace LeanCode.ViewRenderer.Razor.Extensions
 {
-    class LayoutNode : ExtensionIntermediateNode
+    internal class LayoutNode : ExtensionIntermediateNode
     {
         public const string LayoutFieldName = "___Layout";
 

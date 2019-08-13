@@ -34,6 +34,7 @@ namespace LeanCode.Logging
                 {
                     throw new InvalidOperationException("The BaseSanitizer implementation must create new object.");
                 }
+
                 return newObj != null;
             }
             else

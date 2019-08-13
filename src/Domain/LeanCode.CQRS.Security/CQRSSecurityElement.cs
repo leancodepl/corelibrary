@@ -52,7 +52,8 @@ namespace LeanCode.CQRS.Security
                     .ConfigureAwait(false);
                 if (!authorized)
                 {
-                    logger.Warning("Authorizer {Authorizer} failed to authorize the user to run {@Object}",
+                    logger.Warning(
+                        "Authorizer {Authorizer} failed to authorize the user to run {@Object}",
                         customAuthorizer.UnderlyingAuthorizer.FullName, input);
                     throw new InsufficientPermissionException(
                         $"User is not authorized for {input.GetType()}.");

@@ -3,7 +3,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class CommandHandlerWrapper<TAppContext, TCommand> : ICommandHandlerWrapper
+    internal class CommandHandlerWrapper<TAppContext, TCommand> : ICommandHandlerWrapper
         where TCommand : ICommand
     {
         private readonly ICommandHandler<TAppContext, TCommand> handler;

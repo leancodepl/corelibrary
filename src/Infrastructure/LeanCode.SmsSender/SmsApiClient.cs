@@ -12,20 +12,22 @@ namespace LeanCode.SmsSender
 {
     public class SmsApiClient : ISmsSender
     {
-        private static readonly int[] clientErrors = {
+        private static readonly int[] ClientErrors =
+        {
             101,  // Invalid or no authorization data
             102,  // Invalid login or password
             103,  // Shortage of points for this user
             105,  // Invalid IP address
             110,  // Service is not available on this account
             1000, // Action is available only for main user
-            1001  // Invalid action
+            1001, // Invalid action
         };
-        private static readonly int[] hostErrors = {
+        private static readonly int[] HostErrors =
+        {
             8,   // Error in request
             666, // Internal system error
             999, // Internal system error
-            201  // Internal system error
+            201, // Internal system error
         };
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
@@ -52,13 +54,14 @@ namespace LeanCode.SmsSender
                 ["format"] = "json",
                 ["encoding"] = "UTF-8",
                 ["message"] = message,
-                ["to"] = phoneNumber
+                ["to"] = phoneNumber,
             };
 
             if (smsApiConfiguration.TestMode)
             {
                 parameters["test"] = "1";
             }
+
             if (smsApiConfiguration.FastMode)
             {
                 parameters["fast"] = "1";
@@ -88,11 +91,14 @@ namespace LeanCode.SmsSender
                     {
                         throw new ClientException(errorCode, errorMessage);
                     }
-                    if (IsHostError(errorCode))
+                    else if (IsHostError(errorCode))
                     {
                         throw new HostException(errorCode, errorMessage);
                     }
-                    throw new ActionException(errorCode, errorMessage);
+                    else
+                    {
+                        throw new ActionException(errorCode, errorMessage);
+                    }
                 }
                 catch (JsonSerializationException)
                 {
@@ -101,8 +107,8 @@ namespace LeanCode.SmsSender
             }
         }
 
-        private static bool IsClientError(int code) => clientErrors.Contains(code);
+        private static bool IsClientError(int code) => ClientErrors.Contains(code);
 
-        private static bool IsHostError(int code) => hostErrors.Contains(code);
+        private static bool IsHostError(int code) => HostErrors.Contains(code);
     }
 }

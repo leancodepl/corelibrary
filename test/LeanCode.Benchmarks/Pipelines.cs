@@ -1,14 +1,13 @@
-using BenchmarkDotNet.Attributes;
-using LeanCode.Pipelines;
-using LeanCode.Benchmarks.Pipelines;
 using System.Threading.Tasks;
 using Autofac;
+using BenchmarkDotNet.Attributes;
+using LeanCode.Benchmarks.Pipelines;
+using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
+using Executor = LeanCode.Pipelines.PipelineExecutor<LeanCode.Benchmarks.Pipelines.Context, LeanCode.Benchmarks.Pipelines.Input, LeanCode.Benchmarks.Pipelines.Output>;
 
 namespace LeanCode.Benchmarks
 {
-    using Executor = PipelineExecutor<Context, Input, Output>;
-
     [CoreJob]
     [MarkdownExporterAttribute.Atlassian]
     [MemoryDiagnoser]

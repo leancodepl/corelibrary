@@ -20,9 +20,9 @@ namespace LeanCode.AsyncTasks.Hangfire
 
         private readonly string connectionString;
         private readonly SqlServerStorageOptions storageOpts;
-        private BackgroundJobServer backgroundServer;
-
         private readonly Action<BackgroundJobServerOptions> serverConfig;
+
+        private BackgroundJobServer backgroundServer;
 
         public BackgroundProcessingApp(
             string name,
@@ -38,7 +38,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             this.storageOpts = new SqlServerStorageOptions
             {
                 PrepareSchemaIfNecessary = true,
-                SchemaName = schema
+                SchemaName = schema,
             };
             storageConfig(this.storageOpts);
 
@@ -84,12 +84,13 @@ namespace LeanCode.AsyncTasks.Hangfire
             logger.Information("Starting background server");
             var cfg = new BackgroundJobServerOptions
             {
-                ServerName = name
+                ServerName = name,
             };
-            if (!(queue is DefaultQueue))
+            if (!(queue == DefaultQueue))
             {
                 cfg.Queues = new[] { DefaultQueue, queue };
             }
+
             serverConfig(cfg);
             backgroundServer = new BackgroundJobServer(cfg);
         }

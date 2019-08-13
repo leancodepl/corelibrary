@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             "import 'package:dart_cqrs/dart_cqrs.dart';",
             "abstract class IRemoteQuery<T1> extends Query<T1> {}",
             "abstract class IRemoteCommand extends Command {}",
-            "",
+            string.Empty,
         };
 
         public string ContractsPreamble
@@ -22,10 +22,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         public string[] UnmangledTypes { get; set; } = new string[]
         {
             "IRemoteQuery",
-            "IRemoteCommand"
+            "IRemoteCommand",
         };
 
-        public Dictionary<string, string> TypeTranslations = new Dictionary<string, string>
+        public Dictionary<string, string> TypeTranslations { get; set; } = new Dictionary<string, string>
         {
             { "int", "int" },
             { "double", "double" },
@@ -43,13 +43,12 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             { "boolean", "bool" },
             { "datetime", "String" },
             { "timespan", "String" },
-            { "datetimeoffset", "String"},
+            { "datetimeoffset", "String" },
             { "guid", "String" },
             { "string", "String" },
             { "jobject", "dynamic" },
             { "dynamic", "dynamic" },
-            { "object", "Object" }
+            { "object", "Object" },
         };
     }
 }
-

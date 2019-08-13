@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace LeanCode.ContractsGenerator.Statements
 {
-    class TypeStatement : INamespacedStatement
+    internal class TypeStatement : INamespacedStatement
     {
         public string Name { get; set; } = string.Empty;
         public string Namespace { get; set; } = string.Empty;
@@ -12,4 +12,3 @@ namespace LeanCode.ContractsGenerator.Statements
         public List<TypeStatement> TypeArguments { get; set; } = new List<TypeStatement>();
     }
 }
-

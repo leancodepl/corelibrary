@@ -13,7 +13,7 @@ namespace LeanCode.ContractsGenerator
         public string ContractsRegex { get; set; } = @".*\.cs$";
         public string OutPath { get; set; } = Directory.GetCurrentDirectory();
         public string Name { get; set; } = "contracts";
-        public string AdditionalCode { get; set; } = "";
+        public string AdditionalCode { get; set; } = string.Empty;
 
         public TypeScriptConfiguration TypeScript { get; set; }
         public DartConfiguration Dart { get; set; }
@@ -43,7 +43,7 @@ namespace LeanCode.ContractsGenerator
 
             var commandLineMappings = new Dictionary<string, string>
             {
-                { "-c", configFileParameterName }
+                { "-c", configFileParameterName },
             };
 
             return new ConfigurationBuilder()

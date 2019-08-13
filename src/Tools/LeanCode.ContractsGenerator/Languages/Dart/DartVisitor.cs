@@ -8,7 +8,7 @@ using LeanCode.ContractsGenerator.Statements;
 
 namespace LeanCode.ContractsGenerator.Languages.Dart
 {
-    class DartVisitor : ILanguageVisitor
+    internal class DartVisitor : ILanguageVisitor
     {
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
@@ -30,7 +30,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             yield return new LanguageFileOutput
             {
                 Name = statement.Name + ".dart",
-                Content = definitionsBuilder.ToString()
+                Content = definitionsBuilder.ToString(),
             };
         }
 
@@ -147,7 +147,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var name = statement.Name;
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
+                {
                     name = mangledNames[Mangle(statement.Namespace, statement.Name)];
+                }
 
                 definitionsBuilder.Append(name);
                 definitionsBuilder.Append("<");
@@ -173,8 +175,12 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var name = statement.Name;
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
+                {
                     if (!mangledNames.TryGetValue(Mangle(statement.Namespace, statement.Name), out name))
+                    {
                         name = statement.Name;
+                    }
+                }
 
                 definitionsBuilder.Append(name);
             }
@@ -493,10 +499,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private string Mangle(string namespaceName, string identifier)
         {
             if (configuration.UnmangledTypes.Any(x => identifier == x))
+            {
                 return identifier;
+            }
 
             if (string.IsNullOrEmpty(namespaceName))
+            {
                 return identifier;
+            }
 
             return $"{namespaceName}.{identifier}".Replace('.', '_');
         }

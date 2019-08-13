@@ -3,7 +3,7 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
-    class CommandValidatorWrapper<TAppContext, TCommand> : ICommandValidatorWrapper
+    internal class CommandValidatorWrapper<TAppContext, TCommand> : ICommandValidatorWrapper
         where TCommand : ICommand
     {
         private readonly ICommandValidator<TAppContext, TCommand> validator;

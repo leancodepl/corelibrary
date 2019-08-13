@@ -112,6 +112,7 @@ namespace LeanCode.PushNotifications
                     logger.Information("Notification to {UserId} to device {DeviceId} sent", to, token.DeviceType);
                     break;
             }
+
             return Task.CompletedTask;
         }
     }

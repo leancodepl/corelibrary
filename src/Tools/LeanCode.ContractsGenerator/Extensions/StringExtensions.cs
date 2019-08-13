@@ -3,7 +3,7 @@ using System.Text;
 
 namespace LeanCode.ContractsGenerator.Extensions
 {
-    static class StringExtensions
+    internal static class StringExtensions
     {
         public static string Uncapitalize(this string str)
         {

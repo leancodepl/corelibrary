@@ -17,7 +17,7 @@ namespace LeanCode.EmailSender.SendGrid
     {
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridClient>();
@@ -86,12 +86,12 @@ namespace LeanCode.EmailSender.SendGrid
                     {
                         To = model.Recipients
                             .Select(recipient => new SendGridEmail(recipient))
-                            .ToList()
-                    }
+                            .ToList(),
+                    },
                 },
                 Subject = model.Subject,
                 Content = contents,
-                Attachments = attachments
+                Attachments = attachments,
             };
         }
 
@@ -111,7 +111,9 @@ namespace LeanCode.EmailSender.SendGrid
                             .ConfigureAwait(false),
                     };
                 }
-                catch (ViewNotFoundException) { }
+                catch (ViewNotFoundException)
+                {
+                }
             }
 
             throw new ViewNotFoundException(
@@ -136,7 +138,7 @@ namespace LeanCode.EmailSender.SendGrid
                 {
                     Content = attachmentContent,
                     Filename = attachment.Name,
-                    Type = attachment.ContentType
+                    Type = attachment.ContentType,
                 };
             }
         }
@@ -153,14 +155,14 @@ namespace LeanCode.EmailSender.SendGrid
             {
                 return new List<string>
                 {
-                    GetViewNameFromModel(content.Model.GetType(), content.ContentType)
+                    GetViewNameFromModel(content.Model.GetType(), content.ContentType),
                 };
             }
         }
 
         private static string GetViewNameFromModel(Type type, string mimeType)
         {
-            var ext = mimeType == "text/plain" ? ".txt" : "";
+            var ext = mimeType == "text/plain" ? ".txt" : string.Empty;
 
             var viewName = type.Name;
             if (viewName.EndsWith("VM"))

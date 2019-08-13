@@ -3,7 +3,7 @@ using LeanCode.DomainModels.EventsExecution.Simple;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
-    sealed class AsyncTaskRunner<TTask>
+    internal sealed class AsyncTaskRunner<TTask>
         where TTask : class, IAsyncTask
     {
         private readonly SimpleEventsExecutor executor;
@@ -21,7 +21,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         }
     }
 
-    sealed class AsyncTaskRunner<TTask, TParams>
+    internal sealed class AsyncTaskRunner<TTask, TParams>
         where TTask : class, IAsyncTask<TParams>
     {
         private readonly SimpleEventsExecutor executor;

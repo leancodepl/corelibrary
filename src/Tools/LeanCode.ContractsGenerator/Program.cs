@@ -6,9 +6,9 @@ using LeanCode.ContractsGenerator.Languages;
 
 namespace LeanCode.ContractsGenerator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Contains("--help"))
             {
@@ -47,7 +47,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        static void Usage(string errorMessage = null)
+        private static void Usage(string errorMessage = null)
         {
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {

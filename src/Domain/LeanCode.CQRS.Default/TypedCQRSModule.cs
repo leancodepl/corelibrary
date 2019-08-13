@@ -1,25 +1,19 @@
 using System.Collections.Generic;
-using System.Linq;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Variance;
 using LeanCode.Components;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default.Autofac;
 using LeanCode.CQRS.Default.Execution;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;
-using LeanCode.DomainModels.EventsExecution.Simple;
 using LeanCode.Pipelines;
-using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default
 {
-    using CommandsQueriesModules = IReadOnlyList<IModule>;
-
-    class TypedCQRSModule<TAppContext> : Module
+    internal class TypedCQRSModule<TAppContext> : Module
         where TAppContext : IPipelineContext
     {
         private readonly TypesCatalog catalog;

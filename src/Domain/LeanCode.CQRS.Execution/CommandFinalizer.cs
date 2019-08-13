@@ -42,6 +42,7 @@ namespace LeanCode.CQRS.Execution
                     command);
                 throw;
             }
+
             logger.Information(
                 "Command {@Command} executed successfully", command);
             return CommandResult.Success();

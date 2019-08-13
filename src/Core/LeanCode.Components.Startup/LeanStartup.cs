@@ -13,8 +13,8 @@ namespace LeanCode.Components.Startup
 {
     public abstract class LeanStartup : IStartup
     {
-        protected readonly IConfiguration Configuration;
-        protected readonly Serilog.ILogger Logger;
+        protected IConfiguration Configuration { get; }
+        protected Serilog.ILogger Logger { get; }
 
         protected abstract IAppModule[] Modules { get; }
 

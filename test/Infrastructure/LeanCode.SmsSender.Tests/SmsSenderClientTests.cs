@@ -8,9 +8,9 @@ namespace LeanCode.SmsSender.Tests
     {
         private static readonly SmsApiConfiguration Config = new SmsApiConfiguration
         {
-            Login = "",
-            Password = "",
-            From = "",
+            Login = string.Empty,
+            Password = string.Empty,
+            From = string.Empty,
             FastMode = false,
             TestMode = false,
         };
@@ -27,7 +27,7 @@ namespace LeanCode.SmsSender.Tests
         public async Task Sends_sms_correctly()
         {
             var message = "SmsSender works fine";
-            var phoneNumber = "";
+            var phoneNumber = string.Empty;
             await client.Send(message, phoneNumber);
         }
 #pragma warning restore xUnit1004

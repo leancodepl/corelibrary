@@ -1,8 +1,7 @@
 namespace LeanCode.ContractsGenerator.Statements
 {
-    interface IStatement
+    internal interface IStatement
     {
         string Name { get; }
     }
 }
-

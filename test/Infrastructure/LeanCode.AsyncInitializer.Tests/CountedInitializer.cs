@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace LeanCode.AsyncInitializer.Tests
 {
-    class Counter
+    internal class Counter
     {
         private int i = -1;
 
         public int Next() => Interlocked.Increment(ref i);
     }
 
-    class CountedInitializer : IAsyncInitializable
+    internal class CountedInitializer : IAsyncInitializable
     {
         private readonly int order;
         private readonly Counter counter;

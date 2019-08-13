@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Razor.Language;
 
 namespace LeanCode.ViewRenderer.Razor.Extensions
 {
-    class Layout
+    internal class Layout
     {
         public const string DirectiveName = "layout";
 

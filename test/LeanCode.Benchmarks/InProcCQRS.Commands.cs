@@ -20,18 +20,17 @@ namespace LeanCode.Benchmarks
     [MemoryDiagnoser]
     public class InProcCQRS__Commands
     {
-        private readonly static TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Commands>();
-
-        private ICommandExecutor<SampleAppContext> simple;
-        private ICommandExecutor<SampleAppContext> secured;
-        private ICommandExecutor<SampleAppContext> validated;
+        private static readonly TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Commands>();
 
         private readonly PlainCommand plainCommand = new PlainCommand();
         private readonly UserCommand userCommand = new UserCommand();
         private readonly ValidCommand validCommand = new ValidCommand();
         private readonly InvalidCommand invalidCommand = new InvalidCommand();
-
         private readonly CommandResult stubResult = CommandResult.Success();
+
+        private ICommandExecutor<SampleAppContext> simple;
+        private ICommandExecutor<SampleAppContext> secured;
+        private ICommandExecutor<SampleAppContext> validated;
 
         private SampleAppContext appContext;
 
@@ -46,11 +45,13 @@ namespace LeanCode.Benchmarks
             {
                 User = new ClaimsPrincipal(new[]
                 {
-                    new ClaimsIdentity(new []
-                    {
-                        new Claim("role", "user")
-                    }, "system", "sub", "role")
-                })
+                    new ClaimsIdentity(
+                        new[]
+                        {
+                            new Claim("role", "user"),
+                        },
+                        "system", "sub", "role"),
+                }),
             };
         }
 
@@ -71,7 +72,7 @@ namespace LeanCode.Benchmarks
         {
             try
             {
-                return await secured.RunAsync(appContext, userCommand); ;
+                return await secured.RunAsync(appContext, userCommand);
             }
             catch
             {

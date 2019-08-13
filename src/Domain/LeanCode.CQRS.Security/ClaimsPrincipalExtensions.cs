@@ -20,6 +20,7 @@ namespace LeanCode.CQRS.Security
                     }
                 }
             }
+
             return false;
         }
     }

@@ -21,9 +21,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             if (LastCommand is SampleRemoteCommand cmd && cmd.Prop == 999)
             {
                 return Task.FromResult(CommandResult.NotValid(
-                    new ValidationResult(new[] { SampleError })
-                ));
+                    new ValidationResult(new[] { SampleError })));
             }
+
             return Task.FromResult(CommandResult.Success());
         }
     }

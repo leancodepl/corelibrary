@@ -14,6 +14,7 @@ namespace LeanCode.Components
             {
                 throw new ArgumentNullException(nameof(assemblies));
             }
+
             Assemblies = assemblies;
         }
 
@@ -23,6 +24,7 @@ namespace LeanCode.Components
             {
                 throw new ArgumentNullException(nameof(types));
             }
+
             Assemblies = types
                 .Select(t => t.Assembly)
                 .Distinct()
@@ -75,6 +77,7 @@ namespace LeanCode.Components
             {
                 hc.Add(Assemblies[i]);
             }
+
             return hc.ToHashCode();
         }
 

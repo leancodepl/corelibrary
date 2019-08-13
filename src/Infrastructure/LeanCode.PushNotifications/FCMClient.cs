@@ -11,9 +11,9 @@ namespace LeanCode.PushNotifications
 {
     public class FCMClient : IDisposable
     {
-        private readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        private readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
         };
 
         private readonly HttpClient client;
@@ -26,10 +26,10 @@ namespace LeanCode.PushNotifications
 
         public virtual async Task<FCMResult> Send(FCMNotification notification)
         {
-            var stringified = JsonConvert.SerializeObject(notification, Settings);
+            var stringified = JsonConvert.SerializeObject(notification, settings);
             using (var content = new StringContent(stringified, Encoding.UTF8, "application/json"))
             {
-                using (var response = await client.PostAsync("", content).ConfigureAwait(false))
+                using (var response = await client.PostAsync(string.Empty, content).ConfigureAwait(false))
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

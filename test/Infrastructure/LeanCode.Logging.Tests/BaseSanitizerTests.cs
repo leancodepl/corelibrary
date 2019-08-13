@@ -65,7 +65,8 @@ namespace LeanCode.Logging.Tests
 
     public class RightSanitizer : BaseSanitizer<Payload>
     {
-        public static Payload Result = new Payload { Value = Placeholder };
+        public static readonly Payload Result = new Payload { Value = Placeholder };
+
         protected override Payload TrySanitize(Payload obj)
         {
             if (obj.Value != Placeholder)
@@ -97,8 +98,8 @@ namespace LeanCode.Logging.Tests
 
     public class Payload
     {
-        public static Payload Workable = new Payload { Value = "NOT PLACEHOLDER" };
-        public static Payload Sanitized = new Payload { Value = RightSanitizer.Placeholder };
+        public static readonly Payload Workable = new Payload { Value = "NOT PLACEHOLDER" };
+        public static readonly Payload Sanitized = new Payload { Value = RightSanitizer.Placeholder };
 
         public string Value { get; set; }
     }

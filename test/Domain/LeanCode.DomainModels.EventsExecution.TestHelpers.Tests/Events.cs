@@ -3,7 +3,7 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
-    sealed class SampleEvent1 : IDomainEvent
+    internal sealed class SampleEvent1 : IDomainEvent
     {
         public Guid Id { get; }
         public DateTime DateOccurred { get; }
@@ -14,7 +14,7 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
         }
     }
 
-    sealed class SampleEvent2 : IDomainEvent
+    internal sealed class SampleEvent2 : IDomainEvent
     {
         public Guid Id { get; }
         public DateTime DateOccurred { get; }

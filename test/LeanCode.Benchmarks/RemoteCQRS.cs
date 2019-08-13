@@ -24,10 +24,10 @@ namespace LeanCode.Benchmarks
         private static readonly TypesCatalog Catalog = TypesCatalog.Of<RemoteCQRS>();
 
         private readonly SampleAppContext appContext = new SampleAppContext();
+        private readonly InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
 
         private IServiceProvider serviceProvider;
         private RemoteCQRSMiddleware<SampleAppContext> middleware;
-        private readonly InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
 
         private byte[] empty;
         private byte[] multipleFields;
@@ -52,7 +52,7 @@ namespace LeanCode.Benchmarks
             multipleFields = GetContent(new MultipleFieldsCommand
             {
                 F1 = "test field",
-                F2 = 123
+                F2 = 123,
             });
         }
 
@@ -97,6 +97,7 @@ namespace LeanCode.Benchmarks
                 context.Request.Headers.ContentLength = empty.LongLength;
                 context.Request.Body = new MemoryStream(empty);
             }
+
             return context;
         }
 
@@ -104,7 +105,7 @@ namespace LeanCode.Benchmarks
         {
             var context = new DefaultHttpContext
             {
-                RequestServices = serviceProvider
+                RequestServices = serviceProvider,
             };
             context.Request.Method = HttpMethods.Post;
             context.Request.ContentType = "application/json";
@@ -120,6 +121,7 @@ namespace LeanCode.Benchmarks
                 context.Request.Headers.ContentLength = empty.LongLength;
                 context.Request.Body = new MemoryStream(empty);
             }
+
             return context;
         }
     }

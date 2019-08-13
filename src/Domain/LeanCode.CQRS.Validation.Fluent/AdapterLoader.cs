@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+    internal class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
         where TCommand : ICommand
     {
         private static readonly Task<ValidationResult> NoError =

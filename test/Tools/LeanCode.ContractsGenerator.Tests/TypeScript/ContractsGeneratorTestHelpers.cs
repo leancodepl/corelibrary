@@ -1,15 +1,14 @@
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using LeanCode.ContractsGenerator.Languages;
+using LeanCode.ContractsGenerator.Languages.TypeScript;
+using LeanCode.CQRS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using LeanCode.ContractsGenerator.Languages.TypeScript;
-using LeanCode.ContractsGenerator.Languages;
-using LeanCode.CQRS;
-using System.Reflection;
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    static class ContractsGeneratorTestHelpers
+    internal static class ContractsGeneratorTestHelpers
     {
         public static CodeGenerator CreateTsGeneratorFromClass(string classBody, string className = "TsGeneratorTest")
         {
@@ -20,7 +19,6 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
                     {classBody}
                 }}
             ");
-
         }
 
         public static CodeGenerator CreateTsGeneratorFromNamespace(string namespaceBody, string namespaceName = "TsGenerator.Tests")
@@ -36,14 +34,14 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             ");
         }
 
-        public static GeneratorConfiguration DefaultTypeScriptConfiguration = new GeneratorConfiguration()
+        public static readonly GeneratorConfiguration DefaultTypeScriptConfiguration = new GeneratorConfiguration()
         {
             Name = "Test",
             TypeScript = new TypeScriptConfiguration
             {
-                ContractsPreamble = "",
-                ClientPreamble = ""
-            }
+                ContractsPreamble = string.Empty,
+                ClientPreamble = string.Empty,
+            },
         };
 
         public static string GetContracts(IEnumerable<LanguageFileOutput> output)
@@ -61,7 +59,8 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             var trees = sources.Select(s => CSharpSyntaxTree.ParseText(s)).ToList();
 
             var compilation = CSharpCompilation.Create("TsGeneratorTests")
-                .AddReferences(new[] {
+                .AddReferences(new[]
+                {
                     MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location),
                     MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),

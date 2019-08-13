@@ -37,7 +37,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public async Task Does_not_call_CommandExecutor_when_executing_non_remote_query()
         {
             await Invoke(typeof(SampleCommand).FullName);
-            Assert.Null(command.LastCommand);
+            Assert.Null(Command.LastCommand);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             await Invoke(content: "{'Prop': 12}");
 
-            var q = Assert.IsType<SampleRemoteCommand>(command.LastCommand);
+            var q = Assert.IsType<SampleRemoteCommand>(Command.LastCommand);
             Assert.Equal(12, q.Prop);
         }
 
@@ -93,8 +93,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
             await Invoke(user: user);
 
-            Assert.NotNull(command.LastAppContext);
-            Assert.Equal(user, command.LastAppContext.User);
+            Assert.NotNull(Command.LastAppContext);
+            Assert.Equal(user, Command.LastAppContext.User);
         }
     }
 

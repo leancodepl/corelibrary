@@ -40,6 +40,7 @@ namespace LeanCode.CQRS.Execution
                     query);
                 throw;
             }
+
             logger.Information("Query {@Query} executed successfuly", query);
             return result;
         }

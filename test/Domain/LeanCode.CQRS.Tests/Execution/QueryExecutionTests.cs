@@ -29,8 +29,7 @@ namespace LeanCode.CQRS.Tests
         public async Task Correctly_routes_data_through_pipeline_elements()
         {
             Prepare(
-                queryBuilder: c => c.Use<SamplePipelineElement<IQuery, object>>()
-            );
+                queryBuilder: c => c.Use<SamplePipelineElement<IQuery, object>>());
 
             var appCtx = new AppContext();
             var query = new SampleQuery();

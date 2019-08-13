@@ -7,42 +7,41 @@ namespace LeanCode.DomainModels.EventsExecution
 {
     public sealed class AsyncEventsInterceptor
     {
-        private static readonly Interceptor interceptor = new Interceptor();
+        private static readonly EventInterceptor Interceptor = new EventInterceptor();
 
         public void Configure()
         {
-            DomainEvents.SetInterceptor(interceptor);
+            DomainEvents.SetInterceptor(Interceptor);
         }
 
         public void Prepare()
         {
-            interceptor.storage.Value = new ConcurrentQueue<IDomainEvent>();
+            Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
         }
 
         public ConcurrentQueue<IDomainEvent> CaptureQueue()
         {
-            var result = interceptor.storage.Value;
-            interceptor.storage.Value = null;
+            var result = Interceptor.Storage.Value;
+            Interceptor.Storage.Value = null;
             return result;
         }
 
-        public ConcurrentQueue<IDomainEvent> PeekQueue() => interceptor.storage.Value;
+        public ConcurrentQueue<IDomainEvent> PeekQueue() => Interceptor.Storage.Value;
 
-        private sealed class Interceptor
-            : IDomainEventInterceptor
+        private sealed class EventInterceptor : IDomainEventInterceptor
         {
-            public readonly AsyncLocal<ConcurrentQueue<IDomainEvent>> storage
+            public AsyncLocal<ConcurrentQueue<IDomainEvent>> Storage { get; }
                 = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();
 
             void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
             {
-                if (storage.Value is null)
+                if (Storage.Value is null)
                 {
                     throw new InvalidOperationException(
                         "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
                 }
 
-                storage.Value.Enqueue(domainEvent);
+                Storage.Value.Enqueue(domainEvent);
             }
         }
     }

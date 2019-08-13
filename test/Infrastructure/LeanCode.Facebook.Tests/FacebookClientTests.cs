@@ -10,7 +10,7 @@ namespace LeanCode.Facebook.Tests
         private static readonly FacebookConfiguration Config = new FacebookConfiguration
         {
             PhotoSize = 200,
-            AppSecret = string.Empty // Required for tests to work
+            AppSecret = string.Empty, // Required for tests to work
         };
         private static readonly string AccessToken = string.Empty;
 

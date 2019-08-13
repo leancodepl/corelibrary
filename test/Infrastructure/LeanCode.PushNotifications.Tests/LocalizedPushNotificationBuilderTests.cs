@@ -16,7 +16,7 @@ namespace LeanCode.PushNotifications.Tests
         protected virtual string Formatted(int n) => $"Order no. {n}";
 
         public LocalizedPushNotificationBuilderTests()
-            : this("") { }
+            : this(string.Empty) { }
 
         protected LocalizedPushNotificationBuilderTests(string cultureName)
         {
@@ -37,7 +37,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Title == Simple));
 
             _ = pushNotifications
@@ -55,7 +56,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Title == Formatted(n)));
 
             _ = pushNotifications
@@ -70,7 +72,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Content == Simple));
 
             _ = pushNotifications
@@ -88,7 +91,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Content == Formatted(n)));
 
             _ = pushNotifications
@@ -105,7 +109,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => Equals(pn.Data, data)));
 
             _ = pushNotifications

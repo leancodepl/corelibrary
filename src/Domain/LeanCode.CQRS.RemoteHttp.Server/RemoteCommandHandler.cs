@@ -10,13 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    sealed class RemoteCommandHandler<TAppContext>
+    internal sealed class RemoteCommandHandler<TAppContext>
         : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
             .GetMethod(nameof(ExecuteCommand), BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
 
         public RemoteCommandHandler(
@@ -38,7 +38,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
-            var method = methodCache.GetOrAdd(type, MakeExecutorMethod);
+            var method = MethodCache.GetOrAdd(type, MakeExecutorMethod);
             var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj });
 
             CommandResult cmdResult;

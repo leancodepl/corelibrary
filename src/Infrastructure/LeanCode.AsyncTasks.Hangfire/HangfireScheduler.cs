@@ -39,7 +39,7 @@ namespace LeanCode.AsyncTasks.Hangfire
                 new RecurringJobOptions
                 {
                     TimeZone = tz,
-                    QueueName = queue
+                    QueueName = queue,
                 });
 
             logger.Information(
@@ -71,6 +71,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             {
                 ScheduleAfterQueue<TTask, TParams>(@params, delay);
             }
+
             return Task.CompletedTask;
         }
 
@@ -85,6 +86,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             {
                 ScheduleAtQueue<TTask, TParams>(@params, at);
             }
+
             return Task.CompletedTask;
         }
 

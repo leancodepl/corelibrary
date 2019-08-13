@@ -9,7 +9,7 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
     public abstract class EventsInterceptorTests_RaceCondsBase
     {
-        const int Iterations = 1000;
+        private const int Iterations = 1000;
 
         public EventsInterceptorTests_RaceCondsBase()
         {

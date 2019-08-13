@@ -7,7 +7,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
 {
     public class CompiledViewsCacheTests
     {
-        const string View = "Simple";
+        private const string View = "Simple";
         private static readonly RazorViewRendererOptions Options = new RazorViewRendererOptions("./Views/Cache");
 
         private readonly CompiledViewsCache cache;

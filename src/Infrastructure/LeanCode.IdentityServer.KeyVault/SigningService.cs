@@ -11,9 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LeanCode.IdentityServer.KeyVault
 {
-    using JsonWebKey = Microsoft.Azure.KeyVault.WebKey.JsonWebKey;
-
-    class SigningService : IDisposable
+    internal class SigningService : IDisposable
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SigningService>();
 
@@ -37,6 +35,7 @@ namespace LeanCode.IdentityServer.KeyVault
             {
                 return new ValueTask<RsaSecurityKey>(key);
             }
+
             return new ValueTask<RsaSecurityKey>(DownloadKeyAsync());
         }
 

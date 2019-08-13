@@ -11,12 +11,12 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
 {
     public class EventsExecutorTests__Failure
     {
-        private static readonly RetryPolicies policies = new RetryPolicies();
-        private static readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
+        private static readonly RetryPolicies Policies = new RetryPolicies();
+        private static readonly AsyncEventsInterceptor Interceptor = new AsyncEventsInterceptor();
 
         public EventsExecutorTests__Failure()
         {
-            interceptor.Configure();
+            Interceptor.Configure();
         }
 
         [LongRunningFact]
@@ -57,8 +57,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         public async Task If_command_fails_The_call_fails()
         {
             await Assert.ThrowsAsync<Exception>(() =>
-                Prepare().HandleEventsOf(() => { throw new Exception(); })
-            );
+                Prepare().HandleEventsOf(() => { throw new Exception(); }));
         }
 
         [LongRunningFact]
@@ -70,8 +69,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
                 {
                     DomainEvents.Raise(new Event1());
                     throw new Exception();
-                })
-            );
+                }));
 
             _ = h.DidNotReceiveWithAnyArgs().HandleAsync(null);
         }
@@ -79,8 +77,8 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         private static PipelineExecutor<Context, Func<int>, int> Prepare(params object[] handlers)
         {
             var resolver = new HandlerResolver(handlers);
-            var interp = new EventsInterceptorElement<Context, Func<int>, int>(interceptor);
-            var exec = new EventsExecutorElement<Context, Func<int>, int>(policies, interceptor, resolver);
+            var interp = new EventsInterceptorElement<Context, Func<int>, int>(Interceptor);
+            var exec = new EventsExecutorElement<Context, Func<int>, int>(Policies, Interceptor, resolver);
 
             var scope = Substitute.For<IPipelineScope>();
             scope.ResolveElement<Context, Func<int>, int>(interp.GetType()).Returns(interp);
@@ -106,6 +104,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
                 {
                     DomainEvents.Raise(e);
                 }
+
                 return 1;
             };
         }

@@ -8,6 +8,8 @@
     "**/node_modules": true,
     "packages": true,
     "**/Logs": true,
-    "paket-files": true
+    "paket-files": true,
+    "**/obj/**/en": true,
+    "**/obj/**/pl": true
   }
 }

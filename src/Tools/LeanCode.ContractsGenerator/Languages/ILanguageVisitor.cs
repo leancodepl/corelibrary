@@ -9,9 +9,8 @@ namespace LeanCode.ContractsGenerator.Languages
         public string Content { get; set; }
     }
 
-    interface ILanguageVisitor
+    internal interface ILanguageVisitor
     {
         IEnumerable<LanguageFileOutput> Visit(ClientStatement statement);
     }
 }
-

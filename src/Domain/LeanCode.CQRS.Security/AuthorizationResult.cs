@@ -4,6 +4,6 @@ namespace LeanCode.CQRS.Security
     {
         Unauthenticated,
         InsufficientPermission,
-        Authorized
+        Authorized,
     }
 }

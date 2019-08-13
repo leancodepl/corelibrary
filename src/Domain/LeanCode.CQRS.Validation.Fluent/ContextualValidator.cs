@@ -15,7 +15,8 @@ namespace LeanCode.CQRS.Validation.Fluent
             var member = expression.GetMember();
             var compiled = member is null || ValidatorOptions.DisableAccessorCache ? expression.Compile() : AccessorCache<T>.GetCachedAccessor(member, expression);
 
-            var rule = new ContextualPropertyRule(member,
+            var rule = new ContextualPropertyRule(
+                member,
                 compiled.CoerceToNonGeneric(),
                 (ctx, arg) => realValueAccessor(ctx, (TProperty)arg),
                 expression,
@@ -34,7 +35,8 @@ namespace LeanCode.CQRS.Validation.Fluent
             var member = expression.GetMember();
             var compiled = member is null || ValidatorOptions.DisableAccessorCache ? expression.Compile() : AccessorCache<T>.GetCachedAccessor(member, expression);
 
-            var rule = new AsyncContextualPropertyRule(member,
+            var rule = new AsyncContextualPropertyRule(
+                member,
                 compiled.CoerceToNonGeneric(),
                 (ctx, arg) => realValueAccessor(ctx, (TProperty)arg).ContinueWith(t => (object)t.Result),
                 expression,

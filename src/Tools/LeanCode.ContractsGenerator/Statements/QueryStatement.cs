@@ -1,6 +1,6 @@
 namespace LeanCode.ContractsGenerator.Statements
 {
-    class QueryStatement : InterfaceStatement
+    internal class QueryStatement : InterfaceStatement
     {
         public QueryStatement() { }
         public QueryStatement(InterfaceStatement interfaceStatement)
@@ -16,4 +16,3 @@ namespace LeanCode.ContractsGenerator.Statements
         }
     }
 }
-

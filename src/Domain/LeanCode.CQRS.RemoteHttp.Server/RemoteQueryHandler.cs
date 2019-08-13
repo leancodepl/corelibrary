@@ -11,13 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    sealed class RemoteQueryHandler<TAppContext>
+    internal sealed class RemoteQueryHandler<TAppContext>
         : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
             .GetMethod(nameof(ExecuteQuery), BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static readonly ConcurrentDictionary<Type, MethodInfo> methodCache = new ConcurrentDictionary<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
 
         public RemoteQueryHandler(
@@ -35,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             MethodInfo method;
             try
             {
-                method = methodCache.GetOrAdd(obj.GetType(), GenerateMethod);
+                method = MethodCache.GetOrAdd(obj.GetType(), GenerateMethod);
             }
             catch
             {

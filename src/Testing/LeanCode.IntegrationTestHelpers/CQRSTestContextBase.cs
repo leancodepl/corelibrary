@@ -12,7 +12,7 @@ namespace LeanCode.IntegrationTestHelpers
         {
             return new IAppModule[]
             {
-                ConfigureCQRS(new CQRSModule())
+                ConfigureCQRS(new CQRSModule()),
             };
         }
 

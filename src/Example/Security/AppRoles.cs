@@ -22,11 +22,9 @@ namespace LeanCode.Example.Security
         public IEnumerable<Role> Roles { get; } = new Role[]
         {
             new Role(
-                Reg.User, Permissions.View
-            ),
+                Reg.User, Permissions.View),
             new Role(
-                Reg.Admin, Permissions.Write
-            )
+                Reg.Admin, Permissions.Write),
         };
     }
 }

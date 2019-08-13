@@ -47,6 +47,5 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Assert.DoesNotContain("MoreInner", contracts);
             Assert.Contains("Root", contracts);
         }
-
     }
 }

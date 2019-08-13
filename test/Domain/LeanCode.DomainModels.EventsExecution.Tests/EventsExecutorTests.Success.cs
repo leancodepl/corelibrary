@@ -10,12 +10,12 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
 {
     public class EventsExecutorTests__Success
     {
-        private static readonly RetryPolicies policies = new RetryPolicies();
-        private static readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
+        private static readonly RetryPolicies Policies = new RetryPolicies();
+        private static readonly AsyncEventsInterceptor Interceptor = new AsyncEventsInterceptor();
 
         public EventsExecutorTests__Success()
         {
-            interceptor.Configure();
+            Interceptor.Configure();
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
             ConcurrentQueue<IDomainEvent> queue = null;
             await Prepare().HandleEventsOf(() =>
             {
-                queue = interceptor.PeekQueue();
+                queue = Interceptor.PeekQueue();
                 return 0;
             });
             Assert.NotNull(queue);
@@ -50,7 +50,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         {
             await Prepare().HandleEventsOf(() => 0);
 
-            Assert.Null(interceptor.PeekQueue());
+            Assert.Null(Interceptor.PeekQueue());
         }
 
         [Fact]
@@ -163,8 +163,8 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         private static PipelineExecutor<Context, Func<int>, int> Prepare(params object[] handlers)
         {
             var resolver = new HandlerResolver(handlers);
-            var interp = new EventsInterceptorElement<Context, Func<int>, int>(interceptor);
-            var exec = new EventsExecutorElement<Context, Func<int>, int>(policies, interceptor, resolver);
+            var interp = new EventsInterceptorElement<Context, Func<int>, int>(Interceptor);
+            var exec = new EventsExecutorElement<Context, Func<int>, int>(Policies, Interceptor, resolver);
 
             var scope = Substitute.For<IPipelineScope>();
             scope.ResolveElement<Context, Func<int>, int>(interp.GetType()).Returns(interp);
@@ -190,6 +190,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
                 {
                     DomainEvents.Raise(e);
                 }
+
                 return 1;
             };
         }

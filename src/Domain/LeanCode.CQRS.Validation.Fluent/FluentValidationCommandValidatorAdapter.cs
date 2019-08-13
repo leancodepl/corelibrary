@@ -40,13 +40,13 @@ namespace LeanCode.CQRS.Validation.Fluent
             return new ValidationError(
                 failure.PropertyName,
                 failure.ErrorMessage,
-                state?.ErrorCode ?? 0
-            );
+                state?.ErrorCode ?? 0);
         }
 
         private ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
         {
-            var ctx = new ValidationContext<TCommand>(command,
+            var ctx = new ValidationContext<TCommand>(
+                command,
                 new PropertyChain(),
                 ValidatorOptions.ValidatorSelectors.DefaultValidatorSelectorFactory());
             ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;

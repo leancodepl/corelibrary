@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using LeanCode.ContractsGenerator.Languages;
+using LeanCode.ContractsGenerator.Languages.Dart;
+using LeanCode.ContractsGenerator.Languages.TypeScript;
+using LeanCode.ContractsGenerator.Statements;
+using LeanCode.CQRS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using LeanCode.CQRS;
-using System.Globalization;
-using LeanCode.ContractsGenerator.Statements;
-using LeanCode.ContractsGenerator.Languages;
-using LeanCode.ContractsGenerator.Languages.TypeScript;
-using LeanCode.ContractsGenerator.Languages.Dart;
 
 namespace LeanCode.ContractsGenerator
 {
-    class RemoteQueryCommandInfo
+    internal class RemoteQueryCommandInfo
     {
         public string Name { get; set; }
         public string Parameter { get; set; }
@@ -37,7 +37,7 @@ namespace LeanCode.ContractsGenerator
         {
             var clientStatement = new ClientStatement
             {
-                Name = configuration.Name
+                Name = configuration.Name,
             };
 
             var contracts = trees.SelectMany(tree =>
@@ -95,7 +95,7 @@ namespace LeanCode.ContractsGenerator
                 .Select(c => new ConstStatement
                 {
                     Name = c.Name,
-                    Value = StringifyBuiltInTypeValue(c.ConstantValue)
+                    Value = StringifyBuiltInTypeValue(c.ConstantValue),
                 })
                 .ToList();
 
@@ -124,14 +124,14 @@ namespace LeanCode.ContractsGenerator
                 {
                     return new CommandStatement(interfaceStatement)
                     {
-                        Namespace = GetFullNamespaceName(info.ContainingNamespace)
+                        Namespace = GetFullNamespaceName(info.ContainingNamespace),
                     };
                 }
                 else if (IsRemoteQuery(info))
                 {
                     return new QueryStatement(interfaceStatement)
                     {
-                        Namespace = GetFullNamespaceName(info.ContainingNamespace)
+                        Namespace = GetFullNamespaceName(info.ContainingNamespace),
                     };
                 }
             }
@@ -156,7 +156,7 @@ namespace LeanCode.ContractsGenerator
                     yield return new FieldStatement
                     {
                         Name = property.Name,
-                        Type = type
+                        Type = type,
                     };
                 }
             }
@@ -228,14 +228,14 @@ namespace LeanCode.ContractsGenerator
             var enumValues = enumMembers.Select(e => new EnumValueStatement
             {
                 Name = e.Name,
-                Value = StringifyBuiltInTypeValue(e.ConstantValue)
+                Value = StringifyBuiltInTypeValue(e.ConstantValue),
             }).ToList();
 
             return new EnumStatement
             {
                 Name = info.Name,
                 Namespace = info.ContainingNamespace.ToString(),
-                Values = enumValues
+                Values = enumValues,
             };
         }
 
@@ -253,7 +253,7 @@ namespace LeanCode.ContractsGenerator
             return new TypeParameterStatement
             {
                 Name = info.Name,
-                Constraints = info.ConstraintTypes.Select(ConvertType).Where(t => t.Name != "ValueType").ToList()
+                Constraints = info.ConstraintTypes.Select(ConvertType).Where(t => t.Name != "ValueType").ToList(),
             };
         }
 
@@ -270,40 +270,43 @@ namespace LeanCode.ContractsGenerator
                         t.IsNullable = true;
                         return t;
                     }
-                    if (type.AllInterfaces.Any(i => i.Name == "IDictionary") && type.Arity >= 2)
+                    else if (type.AllInterfaces.Any(i => i.Name == "IDictionary") && type.Arity >= 2)
                     {
                         return new TypeStatement
                         {
                             Name = type.Name,
                             Namespace = GetFullNamespaceName(type.ContainingNamespace),
                             IsDictionary = true,
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList(),
                         };
                     }
-                    if (type.AllInterfaces.Any(i => i.Name == "IEnumerable") && type.Arity >= 1)
+                    else if (type.AllInterfaces.Any(i => i.Name == "IEnumerable") && type.Arity >= 1)
                     {
                         return new TypeStatement
                         {
                             Name = type.Name,
                             Namespace = GetFullNamespaceName(type.ContainingNamespace),
                             IsArrayLike = true,
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList(),
                         };
                     }
-                    if (type.Arity > 0)
+                    else if (type.Arity > 0)
                     {
                         return new TypeStatement
                         {
                             Name = type.Name,
-                            Namespace = type is ITypeParameterSymbol ? "" : GetFullNamespaceName(type.ContainingNamespace),
-                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList()
+                            Namespace = type is ITypeParameterSymbol ? string.Empty : GetFullNamespaceName(type.ContainingNamespace),
+                            TypeArguments = type.TypeArguments.Select(ConvertType).ToList(),
                         };
                     }
-                    return new TypeStatement
+                    else
                     {
-                        Name = type.ContainingType != null ? type.ContainingType.Name + "." : "" + type.Name,
-                        Namespace = GetFullNamespaceName(type.ContainingNamespace),
-                    };
+                        return new TypeStatement
+                        {
+                            Name = type.ContainingType != null ? type.ContainingType.Name + "." : string.Empty + type.Name,
+                            Namespace = GetFullNamespaceName(type.ContainingNamespace),
+                        };
+                    }
 
                 case IArrayTypeSymbol type:
                     return new TypeStatement
@@ -311,7 +314,7 @@ namespace LeanCode.ContractsGenerator
                         Name = type.Name,
                         Namespace = GetFullNamespaceName(type.ContainingNamespace),
                         IsArrayLike = true,
-                        TypeArguments = new List<TypeStatement> { ConvertType(type.ElementType) }
+                        TypeArguments = new List<TypeStatement> { ConvertType(type.ElementType) },
                     };
 
                 case ITypeParameterSymbol type:
@@ -334,7 +337,9 @@ namespace LeanCode.ContractsGenerator
         private static string GetFullNamespaceName(INamespaceSymbol info, INamedTypeSymbol type = null)
         {
             if (info == null)
+            {
                 return string.Empty;
+            }
 
             if (info.ContainingNamespace == null || info.ContainingNamespace.IsGlobalNamespace)
             {

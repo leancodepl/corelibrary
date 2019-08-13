@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LeanCode.CQRS.Cache
 {
-    static class QueryCacheKeyProvider
+    internal static class QueryCacheKeyProvider
     {
         public static string GetKey<TAppContext>(TAppContext context, IQuery query)
         {

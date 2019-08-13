@@ -6,13 +6,13 @@ namespace LeanCode.ViewRenderer.Razor.Tests
 {
     public class RazorViewRendererTests
     {
-        private readonly RazorViewRendererOptions Options = new RazorViewRendererOptions("./Views/Renderer");
+        private readonly RazorViewRendererOptions options = new RazorViewRendererOptions("./Views/Renderer");
 
         private readonly RazorViewRenderer renderer;
 
         public RazorViewRendererTests()
         {
-            renderer = new RazorViewRenderer(Options);
+            renderer = new RazorViewRenderer(options);
         }
 
         [Fact]

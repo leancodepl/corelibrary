@@ -4,11 +4,11 @@ using System.Reflection;
 
 namespace LeanCode.PushNotifications
 {
-    static class NotificationTransformer
+    internal static class NotificationTransformer
     {
-        const string Priority = "high";
-        const int TTL = 28 * 24 * 60 * 60;
-        const string TypeField = "Type";
+        private const string Priority = "high";
+        private const int TTL = 28 * 24 * 60 * 60;
+        private const string TypeField = "Type";
 
         public static FCMNotification Convert(DeviceType deviceType, PushNotification notification, PushNotificationsConfiguration configuration = null)
         {
@@ -21,6 +21,7 @@ namespace LeanCode.PushNotifications
                 case DeviceType.Chrome:
                     return ConvertToChrome(notification, configuration);
             }
+
             throw new ArgumentException("Unknown device type.", nameof(deviceType));
         }
 
@@ -38,9 +39,9 @@ namespace LeanCode.PushNotifications
                     Body = notification.Content,
                     Sound = "default",
                     Icon = null,
-                    Badge = null
+                    Badge = null,
                 },
-                Data = ConvertData(notification.Data)
+                Data = ConvertData(notification.Data),
             };
         }
 
@@ -58,9 +59,9 @@ namespace LeanCode.PushNotifications
                     Body = notification.Content,
                     Sound = null,
                     Icon = null,
-                    Badge = "1"
+                    Badge = "1",
                 },
-                Data = ConvertData(notification.Data)
+                Data = ConvertData(notification.Data),
             };
         }
 
@@ -83,7 +84,7 @@ namespace LeanCode.PushNotifications
                     ContentAvailable = true,
                     Priority = Priority,
                     TimeToLive = TTL,
-                    Data = data
+                    Data = data,
                 };
             }
 
@@ -99,9 +100,9 @@ namespace LeanCode.PushNotifications
                     Body = notification.Content,
                     Sound = null,
                     Icon = configuration?.Icon,
-                    Badge = null
+                    Badge = null,
                 },
-                Data = ConvertData(notification.Data)
+                Data = ConvertData(notification.Data),
             };
         }
 
@@ -116,7 +117,7 @@ namespace LeanCode.PushNotifications
 
             var result = new Dictionary<string, string>
             {
-                [TypeField] = type.Name
+                [TypeField] = type.Name,
             };
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);

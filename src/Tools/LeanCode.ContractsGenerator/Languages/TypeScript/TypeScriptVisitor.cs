@@ -8,7 +8,7 @@ using LeanCode.ContractsGenerator.Statements;
 
 namespace LeanCode.ContractsGenerator.Languages.TypeScript
 {
-    class TypeScriptVisitor : ILanguageVisitor
+    internal class TypeScriptVisitor : ILanguageVisitor
     {
         private readonly StringBuilder definitionsBuilder;
         private readonly StringBuilder paramsBuilder;
@@ -36,13 +36,13 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             yield return new LanguageFileOutput
             {
                 Name = statement.Name + ".d.ts",
-                Content = definitionsBuilder.ToString()
+                Content = definitionsBuilder.ToString(),
             };
 
             yield return new LanguageFileOutput
             {
                 Name = statement.Name + "Client.ts",
-                Content = constsBuilder.Append(paramsBuilder).Append(creatorsBuilder).ToString()
+                Content = constsBuilder.Append(paramsBuilder).Append(creatorsBuilder).ToString(),
             };
         }
 
@@ -248,7 +248,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = Char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
+            var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
 
             paramsBuilder.AppendSpaces(1)
                 .Append("\"")
@@ -273,7 +273,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = Char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
+            var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
 
             paramsBuilder.AppendSpaces(1)
                 .Append("\"")
@@ -387,4 +387,3 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         }
     }
 }
-
