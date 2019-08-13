@@ -32,7 +32,7 @@ namespace LeanCode.CQRS.Cache
                         key,
                         duration.Value,
                         () => Wrap(ctx, query, next))
-                        .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
                     query, key);
