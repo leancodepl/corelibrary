@@ -99,7 +99,7 @@ namespace LeanCode.EmailSender.SendGrid
         {
             var viewNames = GetViewNamesFromContent(content);
 
-            foreach (string viewName in viewNames)
+            foreach (var viewName in viewNames)
             {
                 try
                 {
@@ -111,8 +111,11 @@ namespace LeanCode.EmailSender.SendGrid
                             .ConfigureAwait(false),
                     };
                 }
-                catch (ViewNotFoundException)
+                catch (ViewNotFoundException ex)
                 {
+                    logger.Debug(
+                        ex, "Cannot locate view {ViewName}, trying the next one",
+                        viewName);
                 }
             }
 
