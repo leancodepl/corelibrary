@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
 
+using CacheDictionary = System.Collections.Concurrent.ConcurrentDictionary<System.Type, (System.Type HandlerType, System.Reflection.ConstructorInfo Constructor)>;
+
 namespace LeanCode.CQRS.Default.Autofac
 {
-    using CacheDictionary = System.Collections.Concurrent.ConcurrentDictionary<System.Type, (System.Type HandlerType, System.Reflection.ConstructorInfo Constructor)>;
-
     internal sealed class TypesCache
     {
         private readonly CacheDictionary cache = new CacheDictionary();
