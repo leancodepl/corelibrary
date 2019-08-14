@@ -17,7 +17,7 @@ namespace LeanCode.CodeAnalysis.Tests
 {
     public class EnsureCommandsHaveAuthorizersTests
     {
-        private const string DiagnosticId = EnsureCommandsHaveAuthorizers.DiagnosticId;
+        private const string DiagnosticId = DiagnosticsIds.QueriesShouldHaveAuthorizers;
         private readonly EnsureCommandsHaveAuthorizers analyzer = new EnsureCommandsHaveAuthorizers();
         private readonly Action<Diagnostic> reportDiagnostic = Substitute.For<Action<Diagnostic>>();
 

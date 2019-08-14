@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None"/>
   </ItemGroup>
