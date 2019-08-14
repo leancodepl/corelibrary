@@ -37,6 +37,10 @@
     <ProjectReference Include="../Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
     <ProjectReference Include="../Infrastructure/LeanCode.PushNotifications/LeanCode.PushNotifications.csproj" />
     <ProjectReference Include="../Infrastructure/LeanCode.PushNotifications.EF/LeanCode.PushNotifications.EF.csproj" />
+    <ProjectReference Include="../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
