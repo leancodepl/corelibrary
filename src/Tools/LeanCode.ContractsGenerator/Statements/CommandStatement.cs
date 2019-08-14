@@ -1,6 +1,6 @@
 namespace LeanCode.ContractsGenerator.Statements
 {
-    class CommandStatement : InterfaceStatement
+    internal class CommandStatement : InterfaceStatement
     {
         public CommandStatement() { }
         public CommandStatement(InterfaceStatement interfaceStatement)
@@ -16,4 +16,3 @@ namespace LeanCode.ContractsGenerator.Statements
         }
     }
 }
-

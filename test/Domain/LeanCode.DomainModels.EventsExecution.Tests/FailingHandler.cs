@@ -20,6 +20,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
             {
                 DomainEvents.Raise(e);
             }
+
             throw new Exception("Failed!");
         }
     }

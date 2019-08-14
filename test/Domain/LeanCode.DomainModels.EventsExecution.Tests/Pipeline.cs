@@ -14,7 +14,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         public IPipelineScope Scope { get; set; }
     }
 
-    class ExecFinalizer : IPipelineFinalizer<Context, Func<int>, int>
+    internal class ExecFinalizer : IPipelineFinalizer<Context, Func<int>, int>
     {
         public Task<int> ExecuteAsync(Context ctx, Func<int> input)
         {
@@ -22,7 +22,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         }
     }
 
-    static class PipelineExtensions
+    internal static class PipelineExtensions
     {
         public static Task<int> HandleEventsOf(
             this PipelineExecutor<Context, Func<int>, int> exec,

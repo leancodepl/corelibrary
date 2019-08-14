@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
-    class StubContext : HttpContext
+    internal class StubContext : HttpContext
     {
         public override HttpRequest Request { get; }
         public override HttpResponse Response { get; }
@@ -38,7 +38,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override void Abort() => throw new NotImplementedException();
     }
 
-    class StubRequest : HttpRequest
+    internal class StubRequest : HttpRequest
     {
         public override HttpContext HttpContext { get; }
         public override string Method { get; set; }
@@ -77,7 +77,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    class StubResponse : HttpResponse
+    internal class StubResponse : HttpResponse
     {
         public override HttpContext HttpContext { get; }
         public override int StatusCode { get; set; }

@@ -37,9 +37,9 @@ namespace LeanCode.PushNotifications.Tests
         {
             var uid = Guid.NewGuid();
 
-            await sender.SendAsync(uid, deviceType, new PushNotification("", "", null));
+            await sender.SendAsync(uid, deviceType, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = store.Received().GetForDevice(uid, deviceType);
+            _ = store.Received().GetForDevice(uid, deviceType);
         }
 
         [Fact]
@@ -50,9 +50,9 @@ namespace LeanCode.PushNotifications.Tests
 
             SetToken(token, uid);
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == token));
+            _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == token));
         }
 
         [Fact]
@@ -62,16 +62,16 @@ namespace LeanCode.PushNotifications.Tests
             var tokens = new List<PushNotificationToken<Guid>>
             {
                 new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Android, "a"),
-                new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Android, "b")
+                new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Android, "b"),
             };
 
             store.GetForDevice(uid, DeviceType.Android).Returns(tokens);
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
             foreach (var t in tokens)
             {
-                var _ = client.Received().Send(Arg.Is<FCMNotification>(n => n.To == t.Token));
+                _ = client.Received().Send(Arg.Is<FCMNotification>(n => n.To == t.Token));
             }
         }
 
@@ -81,9 +81,9 @@ namespace LeanCode.PushNotifications.Tests
             var uid = Guid.NewGuid();
             SetToken("token", uid);
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Sound == "default"));
+            _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Sound == "default"));
         }
 
         [Fact]
@@ -92,9 +92,9 @@ namespace LeanCode.PushNotifications.Tests
             var uid = Guid.NewGuid();
             SetToken("token", uid, DeviceType.iOS);
 
-            await sender.SendAsync(uid, DeviceType.iOS, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.iOS, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Badge == "1"));
+            _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Badge == "1"));
         }
 
         [Fact]
@@ -103,9 +103,9 @@ namespace LeanCode.PushNotifications.Tests
             var uid = Guid.NewGuid();
             SetToken("token", uid, DeviceType.Chrome);
 
-            await sender.SendAsync(uid, DeviceType.Chrome, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Chrome, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Badge == null && n.Notification.Sound == null));
+            _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.Notification.Badge == null && n.Notification.Sound == null));
         }
 
         [Fact]
@@ -113,9 +113,9 @@ namespace LeanCode.PushNotifications.Tests
         {
             var uid = Guid.NewGuid();
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.DidNotReceiveWithAnyArgs().Send(null);
+            _ = client.DidNotReceiveWithAnyArgs().Send(null);
         }
 
         [Fact]
@@ -123,9 +123,9 @@ namespace LeanCode.PushNotifications.Tests
         {
             var uid = Guid.NewGuid();
 
-            await sender.SendToAllAsync(uid, new PushNotification("", "", null));
+            await sender.SendToAllAsync(uid, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = store.Received().GetAll(uid);
+            _ = store.Received().GetAll(uid);
         }
 
         [Fact]
@@ -140,9 +140,9 @@ namespace LeanCode.PushNotifications.Tests
                 new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Chrome, "c"),
             }));
 
-            await sender.SendToAllAsync(uid, new PushNotification("", "", null));
+            await sender.SendToAllAsync(uid, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == "a"));
+            _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == "a"));
             _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == "b"));
             _ = client.Received(1).Send(Arg.Is<FCMNotification>(n => n.To == "c"));
             Assert.Equal(3, client.ReceivedCalls().Count());
@@ -152,9 +152,9 @@ namespace LeanCode.PushNotifications.Tests
         public async Task SendToAll_does_nothing_if_there_are_no_tokens()
         {
             var uid = Guid.NewGuid();
-            await sender.SendToAllAsync(uid, new PushNotification("", "", null));
+            await sender.SendToAllAsync(uid, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = client.DidNotReceiveWithAnyArgs().Send(null);
+            _ = client.DidNotReceiveWithAnyArgs().Send(null);
         }
 
         [Fact]
@@ -166,9 +166,9 @@ namespace LeanCode.PushNotifications.Tests
             var token = SetToken("token", uid);
             client.Send(null).ReturnsForAnyArgs(Task.FromResult<FCMResult>(new FCMResult.TokenUpdated(newToken)));
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = store.Received().UpdateToken(token, newToken);
+            _ = store.Received().UpdateToken(token, newToken);
         }
 
         [Fact]
@@ -179,9 +179,9 @@ namespace LeanCode.PushNotifications.Tests
             var token = SetToken("token", uid);
             client.Send(null).ReturnsForAnyArgs(Task.FromResult<FCMResult>(new FCMResult.InvalidToken()));
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = store.Received().RemoveToken(token);
+            _ = store.Received().RemoveToken(token);
         }
 
         [Fact]
@@ -207,7 +207,7 @@ namespace LeanCode.PushNotifications.Tests
             var result = new PushNotificationToken<Guid>(Guid.NewGuid(), uid, deviceType, token);
             store.GetForDevice(uid, deviceType).Returns(new List<PushNotificationToken<Guid>>
             {
-                result
+                result,
             });
             return result;
         }
@@ -219,9 +219,9 @@ namespace LeanCode.PushNotifications.Tests
             SetToken("token", uid);
             client.Send(null).ReturnsForAnyArgs(Task.FromResult(result));
 
-            await sender.SendAsync(uid, DeviceType.Android, new PushNotification("", "", null));
+            await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            var _ = store.DidNotReceiveWithAnyArgs().UpdateToken(null, null);
+            _ = store.DidNotReceiveWithAnyArgs().UpdateToken(null, null);
             _ = store.DidNotReceiveWithAnyArgs().RemoveToken(null);
         }
     }

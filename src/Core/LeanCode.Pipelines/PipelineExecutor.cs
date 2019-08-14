@@ -9,7 +9,6 @@ namespace LeanCode.Pipelines
             IPipelineFactory factory,
             ConfiguredPipeline<TContext, TInput, TOutput> cfg)
             where TContext : IPipelineContext
-
         {
             return new PipelineExecutor<TContext, TInput, TOutput>(factory, cfg);
         }
@@ -47,6 +46,7 @@ namespace LeanCode.Pipelines
                 var pipelineType = config.Elements[i];
                 app = BuildNext(pipelineType, app);
             }
+
             return app;
         }
 

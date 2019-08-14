@@ -102,5 +102,4 @@ namespace LeanCode.AsyncInitializer.Tests
             return new CountedInitializer(order, globalCounter);
         }
     }
-
 }

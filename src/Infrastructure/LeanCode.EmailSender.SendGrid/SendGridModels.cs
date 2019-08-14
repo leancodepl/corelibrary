@@ -3,7 +3,7 @@ using LeanCode.EmailSender.Model;
 
 namespace LeanCode.EmailSender.SendGrid
 {
-    class SendGridEmail
+    internal class SendGridEmail
     {
         public string Email { get; set; }
         public string Name { get; set; }
@@ -15,18 +15,18 @@ namespace LeanCode.EmailSender.SendGrid
         }
     }
 
-    class SendGridPersonalization
+    internal class SendGridPersonalization
     {
         public List<SendGridEmail> To { get; set; }
     }
 
-    class SendGridContent
+    internal class SendGridContent
     {
         public string Type { get; set; }
         public string Value { get; set; }
     }
 
-    class SendGridMessage
+    internal class SendGridMessage
     {
         public List<SendGridPersonalization> Personalizations { get; set; }
         public SendGridEmail From { get; set; }
@@ -40,7 +40,7 @@ namespace LeanCode.EmailSender.SendGrid
         }
     }
 
-    class SendGridAttachment
+    internal class SendGridAttachment
     {
         public string Content { get; set; }
         public string Type { get; set; }

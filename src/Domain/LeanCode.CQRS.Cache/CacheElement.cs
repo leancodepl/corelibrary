@@ -28,9 +28,11 @@ namespace LeanCode.CQRS.Cache
             {
                 var key = QueryCacheKeyProvider.GetKey(ctx, query);
                 var res = await cacher
-                    .GetOrCreate(key, duration.Value,
-                        () => Wrap(ctx, query, next)
-                    ).ConfigureAwait(false);
+                    .GetOrCreate(
+                        key,
+                        duration.Value,
+                        () => Wrap(ctx, query, next))
+                    .ConfigureAwait(false);
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
                     query, key);

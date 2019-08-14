@@ -28,8 +28,10 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
                 {
                     DomainEvents.Raise(e);
                 }
+
                 times--;
             }
+
             return Task.CompletedTask;
         }
     }

@@ -6,13 +6,13 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacCommandHandlerResolver<TAppContext> : ICommandHandlerResolver<TAppContext>
+    internal class AutofacCommandHandlerResolver<TAppContext> : ICommandHandlerResolver<TAppContext>
     {
         private static readonly Type AppContextType = typeof(TAppContext);
 
         private static readonly Type HandlerBase = typeof(ICommandHandler<,>);
         private static readonly Type HandlerWrapperBase = typeof(CommandHandlerWrapper<,>);
-        private static readonly TypesCache typesCache = new TypesCache(GetTypes, HandlerBase, HandlerWrapperBase);
+        private static readonly TypesCache TypesCache = new TypesCache(GetTypes, HandlerBase, HandlerWrapperBase);
 
         private readonly IComponentContext componentContext;
 
@@ -23,7 +23,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public ICommandHandlerWrapper FindCommandHandler(Type commandType)
         {
-            var (handlerType, constructor) = typesCache.Get(commandType);
+            var (handlerType, constructor) = TypesCache.Get(commandType);
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var wrapper = constructor.Invoke(new[] { handler });

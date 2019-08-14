@@ -7,16 +7,15 @@ namespace LeanCode.ViewRenderer.Razor.Tests
     {
         private static readonly RazorViewRendererOptions BothDefault = new RazorViewRendererOptions(
             "./Views/A",
-            "./Views/B"
-        );
+            "./Views/B");
 
         private static readonly RazorViewRendererOptions BothTXT = new RazorViewRendererOptions(
             ".cstxt",
-            new[] {
+            new[]
+            {
                 "./Views/A",
-                "./Views/B"
-            }
-        );
+                "./Views/B",
+            });
 
         [Fact]
         public void Returns_non_existing_item_if_view_cannot_be_located()

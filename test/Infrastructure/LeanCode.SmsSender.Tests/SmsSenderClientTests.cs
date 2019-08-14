@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -8,9 +9,9 @@ namespace LeanCode.SmsSender.Tests
     {
         private static readonly SmsApiConfiguration Config = new SmsApiConfiguration
         {
-            Login = "",
-            Password = "",
-            From = "",
+            Login = string.Empty,
+            Password = string.Empty,
+            From = string.Empty,
             FastMode = false,
             TestMode = false,
         };
@@ -22,14 +23,13 @@ namespace LeanCode.SmsSender.Tests
             this.client = new SmsApiClient(Config, new SmsApiHttpClient(new HttpClient()));
         }
 
-#pragma warning disable xUnit1004
+        [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
         [Fact(Skip = "SmsApi credentials required")]
         public async Task Sends_sms_correctly()
         {
             var message = "SmsSender works fine";
-            var phoneNumber = "";
+            var phoneNumber = string.Empty;
             await client.Send(message, phoneNumber);
         }
-#pragma warning restore xUnit1004
     }
 }

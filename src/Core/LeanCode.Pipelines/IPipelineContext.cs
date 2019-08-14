@@ -5,7 +5,6 @@ namespace LeanCode.Pipelines
         /// <summary>
         /// Managed by <see cref="PipelineExecutor{TContext, TInput, TOutput}" />.
         /// </summary>
-        /// <returns></returns>
         IPipelineScope Scope { get; set; }
     }
 

@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace LeanCode.Cache
 {
+    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1127:GenericTypeConstraintsMustBeOnOwnLine", Justification = "It is more readable this way.")]
     public interface ICacher
     {
         void AddOrUpdate<T>(string key, T value) where T : class;

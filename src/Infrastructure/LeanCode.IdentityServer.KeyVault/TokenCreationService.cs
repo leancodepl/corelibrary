@@ -16,7 +16,7 @@ namespace LeanCode.IdentityServer.KeyVault
 {
     // Based on
     // https://github.com/IdentityServer/IdentityServer4/blob/75ac815/src/IdentityServer4/Services/DefaultTokenCreationService.cs
-    class TokenCreationService : ITokenCreationService
+    internal class TokenCreationService : ITokenCreationService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<TokenCreationService>();
 
@@ -109,7 +109,7 @@ namespace LeanCode.IdentityServer.KeyVault
             {
                 if (payload.ContainsKey(group.Key))
                 {
-                    throw new Exception(String.Format("Can't add two claims where one is a JSON object and the other is not a JSON object ({0})", group.Key));
+                    throw new Exception(string.Format("Can't add two claims where one is a JSON object and the other is not a JSON object ({0})", group.Key));
                 }
 
                 if (group.Skip(1).Any())
@@ -130,7 +130,7 @@ namespace LeanCode.IdentityServer.KeyVault
             {
                 if (payload.ContainsKey(group.Key))
                 {
-                    throw new Exception(String.Format("Can't add two claims where one is a JSON array and the other is not a JSON array ({0})", group.Key));
+                    throw new Exception(string.Format("Can't add two claims where one is a JSON array and the other is not a JSON array ({0})", group.Key));
                 }
 
                 List<JToken> newArr = new List<JToken>();
@@ -148,7 +148,7 @@ namespace LeanCode.IdentityServer.KeyVault
             var unsupportedJsonClaimTypes = unsupportedJsonTokens.Select(x => x.Type).Distinct();
             if (unsupportedJsonClaimTypes.Any())
             {
-                throw new Exception(String.Format("Unsupported JSON type for claim types: {0}", unsupportedJsonClaimTypes.Aggregate((x, y) => x + ", " + y)));
+                throw new Exception(string.Format("Unsupported JSON type for claim types: {0}", unsupportedJsonClaimTypes.Aggregate((x, y) => x + ", " + y)));
             }
 
             return payload;

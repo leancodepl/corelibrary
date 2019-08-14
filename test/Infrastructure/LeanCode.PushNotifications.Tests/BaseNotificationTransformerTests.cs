@@ -11,8 +11,8 @@ namespace LeanCode.PushNotifications.Tests
         public void Sets_basic_fields_to_corresponding_values()
         {
             var notification = new PushNotification(
-                title: "",
-                content: "",
+                title: string.Empty,
+                content: string.Empty,
                 data: null);
             var result = Convert(notification);
 
@@ -40,7 +40,7 @@ namespace LeanCode.PushNotifications.Tests
         public void Stores_the_data_payload_type_in_the_dictionary()
         {
             var data = new SampleData();
-            var notification = new PushNotification("", "", data);
+            var notification = new PushNotification(string.Empty, string.Empty, data);
 
             var result = Convert(notification);
 
@@ -52,7 +52,7 @@ namespace LeanCode.PushNotifications.Tests
         public void Stores_ToStrings_of_the_properties_in_the_data_payload()
         {
             var data = new SampleData { IntProp = 3, StringProp = "abc", InnerProp = new SampleData() };
-            var notification = new PushNotification("", "", data);
+            var notification = new PushNotification(string.Empty, string.Empty, data);
 
             var result = Convert(notification);
 
@@ -64,7 +64,7 @@ namespace LeanCode.PushNotifications.Tests
         [Fact]
         public void Sets_data_payload_to_null_if_null_was_used()
         {
-            var notification = new PushNotification("", "", null);
+            var notification = new PushNotification(string.Empty, string.Empty, null);
 
             var result = Convert(notification);
 
@@ -75,7 +75,7 @@ namespace LeanCode.PushNotifications.Tests
         public void Skips_null_properties_on_data_payload()
         {
             var data = new SampleData { StringProp = null };
-            var notification = new PushNotification("", "", data);
+            var notification = new PushNotification(string.Empty, string.Empty, data);
 
             var result = Convert(notification);
 
@@ -86,7 +86,7 @@ namespace LeanCode.PushNotifications.Tests
         public void Skips_fields_that_are_named_Type()
         {
             var data = new SampleDataType { Type = "some type" };
-            var notification = new PushNotification("", "", data);
+            var notification = new PushNotification(string.Empty, string.Empty, data);
 
             var result = Convert(notification);
 

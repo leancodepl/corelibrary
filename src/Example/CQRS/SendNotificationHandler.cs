@@ -15,12 +15,11 @@ namespace LeanCode.Example.CQRS
             this.pns = pns;
         }
 
-        public Task ExecuteAsync(AppContext _, SendNotification command)
+        public Task ExecuteAsync(AppContext ctx, SendNotification command)
         {
             return pns.SendAsync(
                 command.UserId, DeviceType.Android,
-                new PushNotification("Notification", command.Content, null)
-            );
+                new PushNotification("Notification", command.Content, null));
         }
     }
 }

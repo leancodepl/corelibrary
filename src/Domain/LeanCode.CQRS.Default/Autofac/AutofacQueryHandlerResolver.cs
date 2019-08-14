@@ -7,13 +7,13 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
+    internal class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
     {
         private static readonly Type AppContextType = typeof(TAppContext);
 
         private static readonly Type HandlerBase = typeof(IQueryHandler<,,>);
         private static readonly Type HandlerWrapperBase = typeof(QueryHandlerWrapper<,,>);
-        private static readonly TypesCache typesCache = new TypesCache(GetTypes, HandlerBase, HandlerWrapperBase);
+        private static readonly TypesCache TypesCache = new TypesCache(GetTypes, HandlerBase, HandlerWrapperBase);
 
         private readonly IComponentContext componentContext;
 
@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public IQueryHandlerWrapper FindQueryHandler(Type queryType)
         {
-            var (handlerType, constructor) = typesCache.Get(queryType);
+            var (handlerType, constructor) = TypesCache.Get(queryType);
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var wrapper = constructor.Invoke(new[] { handler });

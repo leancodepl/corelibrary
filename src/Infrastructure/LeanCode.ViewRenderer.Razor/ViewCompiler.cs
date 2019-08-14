@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    struct CompiledView
+    internal struct CompiledView
     {
         public string Layout { get; }
         public Type ViewType { get; }
@@ -30,7 +30,7 @@ namespace LeanCode.ViewRenderer.Razor
         }
     }
 
-    class ViewCompiler
+    internal class ViewCompiler
     {
         private const string FilePreamble = @"@using System";
 
@@ -50,7 +50,7 @@ namespace LeanCode.ViewRenderer.Razor
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
             typeof(ViewCompiler).Assembly,
             typeof(HtmlEncoder).Assembly,
-            typeof(Microsoft.AspNetCore.Razor.Hosting.RazorCompiledItem).Assembly
+            typeof(Microsoft.AspNetCore.Razor.Hosting.RazorCompiledItem).Assembly,
         }
         .Distinct()
         .Select(a => MetadataReference.CreateFromFile(a.Location))
@@ -99,6 +99,7 @@ namespace LeanCode.ViewRenderer.Razor
                 logger.Warning(ex, "Cannot parse syntax tree for view {ViewPath}", fullPath);
                 throw new CompilationFailedException(fullPath, new string[0], "Cannot parse syntax tree.", ex);
             }
+
             var assemblyName = typeof(ViewCompiler).FullName + ".GeneratedViews-" + Guid.NewGuid();
             var compilation = CSharpCompilation.Create(assemblyName, new[] { tree }, References, Options);
 
@@ -119,8 +120,7 @@ namespace LeanCode.ViewRenderer.Razor
 
                     throw new CompilationFailedException(
                         fullPath, errors,
-                        "Cannot compile the generated code."
-                        );
+                        "Cannot compile the generated code.");
                 }
 
                 assemblyStream.Seek(0, SeekOrigin.Begin);
@@ -134,8 +134,7 @@ namespace LeanCode.ViewRenderer.Razor
                     logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
                     throw new CompilationFailedException(
                         fullPath, new string[0],
-                        "Cannot load generated assembly.", ex
-                    );
+                        "Cannot load generated assembly.", ex);
                 }
             }
         }
@@ -159,8 +158,7 @@ namespace LeanCode.ViewRenderer.Razor
 
                 throw new CompilationFailedException(
                     item.PhysicalPath, errors,
-                    "Cannot compile view - Razor syntax errors"
-                );
+                    "Cannot compile view - Razor syntax errors");
             }
             else if (genResult.Diagnostics.Count > 0)
             {

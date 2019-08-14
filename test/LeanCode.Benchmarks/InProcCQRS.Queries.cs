@@ -1,16 +1,15 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
+using LeanCode.Cache.AspNet;
 using LeanCode.Components;
+using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Security;
-using LeanCode.Cache.AspNet;
 using Microsoft.Extensions.DependencyInjection;
-using Autofac.Extensions.DependencyInjection;
-using System.Security.Claims;
-using System.Reflection;
 
 namespace LeanCode.Benchmarks
 {
@@ -21,15 +20,16 @@ namespace LeanCode.Benchmarks
     {
         private static readonly TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Queries>();
 
-        private IQueryExecutor<SampleAppContext> simple;
-        private IQueryExecutor<SampleAppContext> cached;
-        private IQueryExecutor<SampleAppContext> secured;
-
         private readonly PlainQuery plainQuery = new PlainQuery();
         private readonly CachedQuery cachedQuery = new CachedQuery();
         private readonly UserQuery userQuery = new UserQuery();
         private readonly AdminQuery adminQuery = new AdminQuery();
         private readonly SampleDTO stubResult = new SampleDTO();
+
+        private IQueryExecutor<SampleAppContext> simple;
+        private IQueryExecutor<SampleAppContext> cached;
+        private IQueryExecutor<SampleAppContext> secured;
+
         private SampleAppContext appContext;
 
         [GlobalSetup]
@@ -41,13 +41,16 @@ namespace LeanCode.Benchmarks
 
             appContext = new SampleAppContext
             {
-                User = new ClaimsPrincipal(new[]
-                {
-                    new ClaimsIdentity(new []
+                User = new ClaimsPrincipal(
+                    new[]
                     {
-                        new Claim("role", "user")
-                    }, "system", "sub", "role")
-                })
+                        new ClaimsIdentity(
+                            new[]
+                            {
+                                new Claim("role", "user"),
+                            },
+                            "system", "sub", "role"),
+                    }),
             };
         }
 

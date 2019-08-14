@@ -75,6 +75,7 @@ namespace LeanCode.CQRS.Tests
             {
                 wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(IQuery));
             }
+
             var underlying = SampleAuthorizer.LastInstance.Value;
             return (wrapper, underlying);
         }

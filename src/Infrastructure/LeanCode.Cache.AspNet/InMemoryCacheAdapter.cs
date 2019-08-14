@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace LeanCode.Cache.AspNet
 {
-    class InMemoryCacheAdapter : ICacher
+    internal class InMemoryCacheAdapter : ICacher
     {
         private readonly IMemoryCache cache;
 
@@ -13,22 +13,26 @@ namespace LeanCode.Cache.AspNet
             this.cache = cache;
         }
 
-        public void AddOrUpdate<T>(string key, T value) where T : class
+        public void AddOrUpdate<T>(string key, T value)
+            where T : class
         {
             cache.Set(key, value);
         }
 
-        public T Get<T>(string key) where T : class
+        public T Get<T>(string key)
+            where T : class
         {
             return cache.Get<T>(key);
         }
 
-        public T GetOrCreate<T>(string key, Func<T> getValueToCache) where T : class
+        public T GetOrCreate<T>(string key, Func<T> getValueToCache)
+            where T : class
         {
             return cache.GetOrCreate(key, _ => getValueToCache());
         }
 
-        public T GetOrCreate<T>(string key, TimeSpan duration, Func<T> getValueToCache) where T : class
+        public T GetOrCreate<T>(string key, TimeSpan duration, Func<T> getValueToCache)
+            where T : class
         {
             return cache.GetOrCreate(key, e =>
             {
@@ -37,12 +41,14 @@ namespace LeanCode.Cache.AspNet
             });
         }
 
-        public Task<T> GetOrCreate<T>(string key, Func<Task<T>> getValueToCache) where T : class
+        public Task<T> GetOrCreate<T>(string key, Func<Task<T>> getValueToCache)
+            where T : class
         {
             return cache.GetOrCreate(key, _ => getValueToCache());
         }
 
-        public Task<T> GetOrCreate<T>(string key, TimeSpan duration, Func<Task<T>> getValueToCache) where T : class
+        public Task<T> GetOrCreate<T>(string key, TimeSpan duration, Func<Task<T>> getValueToCache)
+            where T : class
         {
             return cache.GetOrCreate(key, e =>
             {

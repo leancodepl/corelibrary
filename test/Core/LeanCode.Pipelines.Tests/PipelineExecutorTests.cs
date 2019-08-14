@@ -3,14 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using Xunit;
+using Element = LeanCode.Pipelines.IPipelineElement<LeanCode.Pipelines.PipelineContext, int, int>;
+using Executor = LeanCode.Pipelines.PipelineExecutor<LeanCode.Pipelines.PipelineContext, int, int>;
+using Finalizer = LeanCode.Pipelines.IPipelineFinalizer<LeanCode.Pipelines.PipelineContext, int, int>;
+using Next = System.Func<LeanCode.Pipelines.PipelineContext, int, System.Threading.Tasks.Task<int>>;
 
 namespace LeanCode.Pipelines.Tests
 {
-    using Element = IPipelineElement<PipelineContext, int, int>;
-    using Finalizer = IPipelineFinalizer<PipelineContext, int, int>;
-    using Executor = PipelineExecutor<PipelineContext, int, int>;
-    using Next = Func<PipelineContext, int, Task<int>>;
-
     public class PipelineExecutorTests
     {
         [Fact]
@@ -122,8 +121,7 @@ namespace LeanCode.Pipelines.Tests
 
         private static Executor Prepare(
             Finalizer fin,
-            params Element[] elements
-        )
+            params Element[] elements)
         {
             var scope = Substitute.For<IPipelineScope>();
             var factory = Substitute.For<IPipelineFactory>();
@@ -143,12 +141,12 @@ namespace LeanCode.Pipelines.Tests
                     elements
                     .Select(e => e.GetType())
                     .ToArray(),
-                fin.GetType());
+                    fin.GetType());
             return PipelineExecutor.Create(factory, cfg);
         }
     }
 
-    static class PipelineExtensions
+    internal static class PipelineExtensions
     {
         public static Task<int> SubExecuteAsync(
             this Element el,

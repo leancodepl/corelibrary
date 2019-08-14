@@ -10,7 +10,7 @@ namespace LeanCode.EFMigrator
     public abstract class BaseFactory<TContext> : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext
     {
-        protected static string AssemblyName;
+        protected static string AssemblyName { get; set; }
 
         static BaseFactory()
         {

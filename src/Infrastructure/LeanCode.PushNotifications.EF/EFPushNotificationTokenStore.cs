@@ -68,7 +68,7 @@ namespace LeanCode.PushNotifications.EF
                     UserId = userId,
                     DeviceType = deviceType,
                     Token = newToken,
-                    DateCreated = Time.Now
+                    DateCreated = Time.Now,
                 });
             }
 
@@ -85,7 +85,7 @@ namespace LeanCode.PushNotifications.EF
                         // Constraint violation exception
                         // case 2627:  // Unique constraint error (throws when primary key duplicates)
                         // case 547:   // Constraint check violation
-                        case 2601:  // Duplicated key row error
+                        case 2601: // Duplicated key row error
                             logger.Verbose("Duplicate token received for user {UserId} on device {DeviceType}", userId, deviceType.ToString());
                             break;
                     }

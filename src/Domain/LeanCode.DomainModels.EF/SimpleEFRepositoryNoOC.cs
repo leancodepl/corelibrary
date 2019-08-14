@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.EF
 
         public override Task<TEntity> FindAsync(TIdentity id)
         {
-            return dbSet.FindAsync(id);
+            return DbSet.FindAsync(id);
         }
     }
 
@@ -33,7 +33,7 @@ namespace LeanCode.DomainModels.EF
 
         public override Task<TEntity> FindAsync(Guid id)
         {
-            return dbSet.FindAsync(id);
+            return DbSet.FindAsync(id);
         }
     }
 }

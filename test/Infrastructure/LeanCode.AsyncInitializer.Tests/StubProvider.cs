@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AsyncInitializer.Tests
 {
-    class StubProvider : IServiceProvider, IServiceScopeFactory, IServiceScope
+    internal class StubProvider : IServiceProvider, IServiceScopeFactory, IServiceScope
     {
         private readonly InitProvider provider;
 
@@ -35,7 +35,7 @@ namespace LeanCode.AsyncInitializer.Tests
         void IDisposable.Dispose()
         { }
 
-        class InitProvider : IServiceProvider
+        private class InitProvider : IServiceProvider
         {
             private readonly IEnumerable<IAsyncInitializable> initializers;
 

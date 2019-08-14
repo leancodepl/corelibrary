@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -15,8 +16,9 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
     {
         private static readonly Encoding UTF8NoBOM = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
-        private StreamWriter output;
         private readonly HtmlEncoder htmlEncoder = HtmlEncoder.Default;
+
+        private StreamWriter output;
 
         private string attributeEnding;
         private List<string> attributeValues;
@@ -49,6 +51,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
                 ChildView.Model = Model;
                 await ChildView.ExecuteAsync(output).ConfigureAwait(false);
             }
+
             return null;
         }
 
@@ -100,7 +103,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             }
         }
 
-#pragma warning disable IDE0060
+        [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
         protected void WriteAttributeValue(string thingy, int startPostion, object value, int endValue, int dealyo, bool yesno)
         {
             if (attributeValues == null)
@@ -111,18 +114,18 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             attributeValues.Add(value.ToString());
         }
 
+        [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
         protected void BeginWriteAttribute(string name, string begining, int startPosition, string ending, int endPosition, int thingy)
         {
-            Debug.Assert(string.IsNullOrEmpty(attributeEnding));
+            Debug.Assert(string.IsNullOrEmpty(attributeEnding), $"{nameof(attributeEnding)} should be null nor empty");
 
             output.Write(begining);
             attributeEnding = ending;
         }
-#pragma warning restore IDE0060
 
         protected void EndWriteAttribute()
         {
-            Debug.Assert(!string.IsNullOrEmpty(attributeEnding));
+            Debug.Assert(!string.IsNullOrEmpty(attributeEnding), $"{nameof(attributeEnding)} should not be null nor empty");
 
             var attributes = string.Join(" ", attributeValues);
             output.Write(attributes);
@@ -143,15 +146,15 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             {
                 throw new ArgumentNullException(nameof(writer));
             }
-            if (name == null)
+            else if (name == null)
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            if (leader == null)
+            else if (leader == null)
             {
                 throw new ArgumentNullException(nameof(leader));
             }
-            if (trailer == null)
+            else if (trailer == null)
             {
                 throw new ArgumentNullException(nameof(trailer));
             }
@@ -195,6 +198,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
                     WriteTo(writer, value.Value);
                 }
             }
+
             WriteLiteralTo(writer, trailer);
         }
 

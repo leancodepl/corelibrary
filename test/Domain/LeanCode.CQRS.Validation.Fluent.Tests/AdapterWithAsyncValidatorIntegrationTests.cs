@@ -49,7 +49,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
         }
 
-        class Validator : ContextualValidator<Command>
+        private class Validator : ContextualValidator<Command>
         {
             public const int MinValue = 5;
             public const int ErrorCode = 1;
@@ -64,15 +64,15 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        class Context
+        private class Context
         { }
 
-        class Command : ICommand
+        private class Command : ICommand
         {
             public int Data { get; set; }
         }
 
-        class ComponentContext : IComponentContext
+        private class ComponentContext : IComponentContext
         {
             public IComponentRegistry ComponentRegistry => null;
             public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters) => null;

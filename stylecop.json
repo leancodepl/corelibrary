@@ -2,14 +2,16 @@
   "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
   "settings": {
     "orderingRules": {
-      "usingDirectivesPlacement": "preserve"
+      "usingDirectivesPlacement": "outsideNamespace"
     },
     "layoutRules": {
       "newlineAtEndOfFile": "require",
       "allowConsecutiveUsings": true
     },
     "namingRules": {
-      "tupleElementNameCasing": "PascalCase"
+      "tupleElementNameCasing": "PascalCase",
+      "includeInferredTupleElementNames": true,
+      "allowCommonHungarianPrefixes": false
     }
   }
 }

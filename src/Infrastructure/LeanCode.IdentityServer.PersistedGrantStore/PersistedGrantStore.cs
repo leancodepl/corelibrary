@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeanCode.IdentityServer.PersistedGrantStore
 {
     // Source: https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/dev/src/IdentityServer4.EntityFramework/Stores/PersistedGrantStore.cs
-    class PersistedGrantStore : IPersistedGrantStore
+    internal class PersistedGrantStore : IPersistedGrantStore
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PersistedGrantStore>();
         private readonly IPersistedGrantContext dbContext;

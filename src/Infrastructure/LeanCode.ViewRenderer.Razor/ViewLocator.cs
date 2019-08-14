@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Razor.Language;
 
 namespace LeanCode.ViewRenderer.Razor
 {
-    class ViewLocator : RazorProject
+    internal class ViewLocator : RazorProject
     {
         private readonly RazorViewRendererOptions options;
 
@@ -49,10 +49,11 @@ namespace LeanCode.ViewRenderer.Razor
                     return (path, fullPath, fileName);
                 }
             }
+
             return (null, null, null);
         }
 
-        class Item : RazorProjectItem
+        private class Item : RazorProjectItem
         {
             public override string BasePath { get; }
             public override string FilePath { get; }
@@ -81,6 +82,7 @@ namespace LeanCode.ViewRenderer.Razor
                 {
                     throw new InvalidOperationException("File does not exist.");
                 }
+
                 return File.OpenRead(PhysicalPath);
             }
         }

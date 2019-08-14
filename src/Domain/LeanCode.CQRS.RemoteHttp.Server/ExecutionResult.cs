@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    struct ExecutionResult
+    internal struct ExecutionResult
     {
         public ExecutionStatus Status { get; private set; }
         public int StatusCode { get; private set; }
@@ -23,21 +23,21 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             Status = ExecutionStatus.Failed,
             StatusCode = code,
-            Payload = null
+            Payload = null,
         };
 
         public static ExecutionResult Success(object payload, int code = 200) => new ExecutionResult
         {
             Status = ExecutionStatus.Succeeded,
             StatusCode = code,
-            Payload = payload
+            Payload = payload,
         };
 
         public enum ExecutionStatus
         {
             Skip,
             Failed,
-            Succeeded
+            Succeeded,
         }
     }
 }

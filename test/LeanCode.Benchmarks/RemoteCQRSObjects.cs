@@ -7,7 +7,7 @@ namespace LeanCode.Benchmarks
 {
     public class InputToOutputMiddleware
     {
-        private readonly JsonSerializer Serializer = new JsonSerializer();
+        private readonly JsonSerializer serializer = new JsonSerializer();
 
         public Task Invoke(HttpContext context)
         {
@@ -17,15 +17,16 @@ namespace LeanCode.Benchmarks
             object content;
             using (var reader = new JsonTextReader(new StreamReader(request.Body)))
             {
-                content = Serializer.Deserialize(reader);
+                content = serializer.Deserialize(reader);
             }
 
             response.ContentType = request.ContentType;
             response.StatusCode = 200;
             using (var writer = new JsonTextWriter(new StreamWriter(response.Body)))
             {
-                Serializer.Serialize(writer, content);
+                serializer.Serialize(writer, content);
             }
+
             return Task.CompletedTask;
         }
     }

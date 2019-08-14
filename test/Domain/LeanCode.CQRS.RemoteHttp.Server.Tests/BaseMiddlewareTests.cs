@@ -17,9 +17,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         private readonly TypesCatalog catalog = new TypesCatalog(typeof(BaseMiddlewareTests));
         private readonly IServiceProvider serviceProvider;
 
-        protected readonly StubQueryExecutor query = new StubQueryExecutor();
-        protected readonly StubCommandExecutor command = new StubCommandExecutor();
-        protected readonly RemoteCQRSMiddleware<AppContext> middleware;
+        protected StubQueryExecutor Query { get; } = new StubQueryExecutor();
+        protected StubCommandExecutor Command { get; } = new StubCommandExecutor();
+        protected RemoteCQRSMiddleware<AppContext> Middleware { get; }
 
         private readonly string endpoint;
         private readonly string defaultObject;
@@ -29,10 +29,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName;
             this.serviceProvider = Substitute.For<IServiceProvider>();
-            this.serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(query);
-            this.serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(command);
+            this.serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(Query);
+            this.serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(Command);
 
-            middleware = new RemoteCQRSMiddleware<AppContext>(
+            Middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,
                 h => new AppContext(h.User),
                 ctx =>
@@ -53,9 +53,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var ctx = new StubContext(method, $"/{endpoint}/{type}", content)
             {
                 RequestServices = serviceProvider,
-                User = user
+                User = user,
             };
-            await middleware.Invoke(ctx);
+            await Middleware.Invoke(ctx);
 
             var statusCode = ctx.Response.StatusCode;
             var body = (MemoryStream)ctx.Response.Body;

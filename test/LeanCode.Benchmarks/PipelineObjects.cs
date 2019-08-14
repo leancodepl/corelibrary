@@ -14,8 +14,8 @@ namespace LeanCode.Benchmarks.Pipelines
 
     public class Finalizer : IPipelineFinalizer<Context, Input, Output>
     {
-        private readonly Task<Output> Result = Task.FromResult(new Output());
-        public Task<Output> ExecuteAsync(Context ctx, Input input) => Result;
+        private readonly Task<Output> result = Task.FromResult(new Output());
+        public Task<Output> ExecuteAsync(Context ctx, Input input) => result;
     }
 
     public class PassthroughElement : IPipelineElement<Context, Input, Output>

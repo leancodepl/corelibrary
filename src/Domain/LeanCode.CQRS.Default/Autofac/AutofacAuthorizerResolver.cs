@@ -6,7 +6,7 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Autofac
 {
-    class AutofacAuthorizerResolver<TAppContext> : IAuthorizerResolver<TAppContext>
+    internal class AutofacAuthorizerResolver<TAppContext> : IAuthorizerResolver<TAppContext>
     {
         private readonly IComponentContext componentContext;
 

@@ -23,7 +23,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Title == "Title"));
 
             _ = pushNotifications
@@ -38,7 +39,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => pn.Content == "Content"));
 
             _ = pushNotifications
@@ -55,7 +57,8 @@ namespace LeanCode.PushNotifications.Tests
 
             _ = pushNotifications
                 .Received(1)
-                .SendToAllAsync(Guid.Empty,
+                .SendToAllAsync(
+                    Guid.Empty,
                     Arg.Is<PushNotification>(pn => Equals(pn.Data, data)));
 
             _ = pushNotifications

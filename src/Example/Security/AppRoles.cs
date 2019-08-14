@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using LeanCode.CQRS.Security;
+using Reg = LeanCode.Example.Security.Roles;
 
 namespace LeanCode.Example.Security
 {
-    using Reg = Roles;
-
     public static class Roles
     {
         public const string User = "leancode/user";
@@ -22,11 +21,9 @@ namespace LeanCode.Example.Security
         public IEnumerable<Role> Roles { get; } = new Role[]
         {
             new Role(
-                Reg.User, Permissions.View
-            ),
+                Reg.User, Permissions.View),
             new Role(
-                Reg.Admin, Permissions.Write
-            )
+                Reg.Admin, Permissions.Write),
         };
     }
 }

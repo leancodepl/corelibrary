@@ -14,11 +14,11 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
         private readonly IAuthorizerResolver<ISecurityContext> authorizerResolver;
         private readonly CQRSSecurityElement<ISecurityContext, object, object> element;
+        private readonly ISecurityContext context;
+
         private IFirstAuthorizer firstAuthorizer;
         private ISecondAuthorizer secondAuthorizer;
         private IDerivedAuthorizer derivedAuthorizer;
-
-        private readonly ISecurityContext context;
 
         public DefaultAuthorizerTests()
         {
@@ -90,6 +90,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
+
             _ = firstAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, Arg.Any<object>());
         }
 
@@ -130,6 +131,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             {
                 await Assert.ThrowsAsync<InsufficientPermissionException>(() => Authorize(obj));
             }
+
             _ = derivedAuthorizer.Received().CheckIfAuthorizedAsync(context, obj, DerivedAttributeParam);
         }
 

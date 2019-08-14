@@ -1,9 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LeanCode.CQRS.Security
 {
-#pragma warning disable IDE1006
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1302:InterfaceNamesMustBeginWithI", Justification = "Authorizer interfaces are exempt.")]
     public interface HasPermissions
     { }
-#pragma warning restore IDE1006
 
     public class AuthorizeWhenHasAnyOfAttribute : AuthorizeWhenAttribute
     {

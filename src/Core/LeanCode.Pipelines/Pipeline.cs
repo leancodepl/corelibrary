@@ -53,8 +53,7 @@ namespace LeanCode.Pipelines
         {
             return new ConfiguredPipeline<TContext, TInput, TOutput>(
                 components,
-                typeof(TPipeline)
-            );
+                typeof(TPipeline));
         }
     }
 }

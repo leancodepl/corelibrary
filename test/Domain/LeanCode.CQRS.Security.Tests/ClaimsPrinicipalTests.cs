@@ -27,11 +27,11 @@ namespace LeanCode.CQRS.Default.Tests.Security
             public const string Update = nameof(Update);
         }
 
-        private readonly RoleRegistry Registry;
+        private readonly RoleRegistry registry;
 
         public ClaimsPrincipalTests()
         {
-            Registry = new RoleRegistry(new[] { new RoleRegistration() });
+            registry = new RoleRegistry(new[] { new RoleRegistration() });
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.Admin);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create);
+            var hasPermission = user.HasPermission(registry, Permissions.Create);
 
             Assert.True(hasPermission);
         }
@@ -49,7 +49,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.User);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create);
+            var hasPermission = user.HasPermission(registry, Permissions.Create);
 
             Assert.False(hasPermission);
         }
@@ -59,7 +59,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.User);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create, Permissions.List, Permissions.Update);
+            var hasPermission = user.HasPermission(registry, Permissions.Create, Permissions.List, Permissions.Update);
 
             Assert.True(hasPermission);
         }
@@ -69,7 +69,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.User);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create, Permissions.Update);
+            var hasPermission = user.HasPermission(registry, Permissions.Create, Permissions.Update);
 
             Assert.False(hasPermission);
         }
@@ -79,7 +79,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser("NotExistingRole");
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create, Permissions.Update, Permissions.List, Permissions.Read);
+            var hasPermission = user.HasPermission(registry, Permissions.Create, Permissions.Update, Permissions.List, Permissions.Read);
 
             Assert.False(hasPermission);
         }
@@ -89,7 +89,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.User, Reg.Contributor);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Update);
+            var hasPermission = user.HasPermission(registry, Permissions.Update);
 
             Assert.True(hasPermission);
         }
@@ -99,7 +99,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
         {
             var user = CreateUser(Reg.User, Reg.Contributor);
 
-            var hasPermission = user.HasPermission(Registry, Permissions.Create);
+            var hasPermission = user.HasPermission(registry, Permissions.Create);
 
             Assert.False(hasPermission);
         }
@@ -116,14 +116,11 @@ namespace LeanCode.CQRS.Default.Tests.Security
             public IEnumerable<Role> Roles { get; } = new Role[]
             {
                 new Role(
-                    Reg.User, Permissions.List, Permissions.Read
-                ),
+                    Reg.User, Permissions.List, Permissions.Read),
                 new Role(
-                    Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update
-                ),
+                    Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update),
                 new Role(
-                    Reg.Contributor, Permissions.Update
-                )
+                    Reg.Contributor, Permissions.Update),
             };
         }
     }

@@ -31,11 +31,13 @@ namespace LeanCode.CQRS.Validation
                     .ConfigureAwait(false);
                 if (!result.IsValid)
                 {
-                    logger.Information("Command {@Command} is not valid with result {@Result}",
+                    logger.Information(
+                        "Command {@Command} is not valid with result {@Result}",
                         payload, result);
                     return CommandResult.NotValid(result);
                 }
             }
+
             return await next(appContext, payload).ConfigureAwait(false);
         }
     }

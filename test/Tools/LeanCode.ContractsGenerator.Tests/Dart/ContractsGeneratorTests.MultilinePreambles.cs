@@ -17,10 +17,12 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var defaultConfiguration = new DartConfiguration();
 
-            Assert.Equal(defaultConfiguration.ContractsPreambleLines,
+            Assert.Equal(
+                defaultConfiguration.ContractsPreambleLines,
                 configuration.ContractsPreambleLines);
 
-            Assert.Equal(defaultConfiguration.ContractsPreamble,
+            Assert.Equal(
+                defaultConfiguration.ContractsPreamble,
                 configuration.ContractsPreamble);
         }
 

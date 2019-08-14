@@ -73,7 +73,7 @@ namespace LeanCode.Benchmarks
             new MultipleFieldsDTO
             {
                 F1 = "test field",
-                F2 = 123
+                F2 = 123,
             });
         public Task<MultipleFieldsDTO> ExecuteAsync(SampleAppContext context, MultipleFieldsQuery query) => Result;
     }
@@ -108,7 +108,7 @@ namespace LeanCode.Benchmarks
     {
         public IEnumerable<Role> Roles => new[]
         {
-            new Role("user", "user")
+            new Role("user", "user"),
         };
     }
 

@@ -17,10 +17,12 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             var defaultConfiguration = new TypeScriptConfiguration();
 
-            Assert.Equal(defaultConfiguration.ContractsPreamble,
+            Assert.Equal(
+                defaultConfiguration.ContractsPreamble,
                 configuration.ContractsPreamble);
 
-            Assert.Equal(defaultConfiguration.ClientPreamble,
+            Assert.Equal(
+                defaultConfiguration.ClientPreamble,
                 configuration.ClientPreamble);
         }
 

@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using NSubstitute;
-using Xunit;
 using LeanCode.DomainModels.Model;
+using Xunit;
 
 namespace LeanCode.DomainModels.Tests
 {
@@ -45,24 +41,24 @@ namespace LeanCode.DomainModels.Tests
             new Money()
             {
                 Amount = 10,
-                Currency = "PLN"
+                Currency = "PLN",
             };
 
         private Money TwentyPLN() =>
             new Money()
             {
                 Amount = 20,
-                Currency = "PLN"
+                Currency = "PLN",
             };
 
         private Money TenUSD() =>
             new Money()
             {
                 Amount = 10,
-                Currency = "USD"
+                Currency = "USD",
             };
 
-        class Money : ValueObject<Money>
+        private class Money : ValueObject<Money>
         {
             protected override object[] GetAttributesToIncludeInEqualityCheck() => new object[] { Amount, Currency };
 

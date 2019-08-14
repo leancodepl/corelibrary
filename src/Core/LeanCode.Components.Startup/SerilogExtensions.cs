@@ -7,14 +7,21 @@ using Serilog.Core;
 
 namespace LeanCode.Components.Startup
 {
-    static class SerilogExtensions
+    internal static class SerilogExtensions
     {
         public static LoggerConfiguration DestructureCommonObjects(
             this LoggerConfiguration config,
             Assembly[] searchAssemblies)
         {
-            var policies = SelectTypes<IDestructuringPolicy>(searchAssemblies);
-            return policies.Aggregate(config, (a, s) => a.Destructure.With(s));
+            if (searchAssemblies != null)
+            {
+                var policies = SelectTypes<IDestructuringPolicy>(searchAssemblies);
+                return policies.Aggregate(config, (a, s) => a.Destructure.With(s));
+            }
+            else
+            {
+                return config;
+            }
         }
 
         public static LoggerConfiguration EnrichWithAppName(

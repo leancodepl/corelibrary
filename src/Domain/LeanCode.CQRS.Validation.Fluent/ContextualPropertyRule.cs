@@ -11,7 +11,7 @@ using FluentValidation.Validators;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
-    class ContextualPropertyRule : PropertyRule
+    internal class ContextualPropertyRule : PropertyRule
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 
@@ -66,7 +66,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
     }
 
-    class AsyncContextualPropertyRule : PropertyRule
+    internal class AsyncContextualPropertyRule : PropertyRule
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 

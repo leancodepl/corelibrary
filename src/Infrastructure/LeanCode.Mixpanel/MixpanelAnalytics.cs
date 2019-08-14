@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace LeanCode.Mixpanel
 {
+    [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1507:CodeMustNotContainMultipleBlankLinesInARow", Justification = "Reviewed.")]
     public class MixpanelAnalytics
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
@@ -28,7 +28,7 @@ namespace LeanCode.Mixpanel
             return Track(newId, "$create_alias", new Dictionary<string, object>()
             {
                 ["distinct_id"] = oldId,
-                ["alias"] = newId
+                ["alias"] = newId,
             });
         }
 
@@ -116,7 +116,7 @@ namespace LeanCode.Mixpanel
             {
                 ["$token"] = configuration.Token,
                 ["$distinct_id"] = userId,
-                [operation] = properties
+                [operation] = properties,
             };
 
             return MakeRequest(userId, "engage", operation, data);
@@ -142,7 +142,7 @@ namespace LeanCode.Mixpanel
         }
     }
 
-    class MixpanelResponse
+    internal class MixpanelResponse
     {
         public const int Success = 1;
         public const int Failure = 0;

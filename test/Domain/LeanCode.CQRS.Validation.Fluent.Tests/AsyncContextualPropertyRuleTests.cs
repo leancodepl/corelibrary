@@ -13,13 +13,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            Task<object> accessor(ValidationContext ctx, string str)
+            Task<object> Accessor(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return Task.FromResult<object>(null);
             }
 
-            var validator = new TestValidator(accessor);
+            var validator = new TestValidator(Accessor);
             await validator.ValidateAsync(new SampleData { Test = value });
 
             Assert.Equal(value, dataPassed);
@@ -29,13 +29,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task Passes_the_context_to_accessor()
         {
             ValidationContext dataPassed = null;
-            Task<object> accessor(ValidationContext ctx2, string str)
+            Task<object> Accessor(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return Task.FromResult<object>(null);
             }
 
-            var validator = new TestValidator(accessor);
+            var validator = new TestValidator(Accessor);
             var ctx = new ValidationContext<SampleData>(new SampleData());
             await validator.ValidateAsync(ctx);
 
@@ -58,12 +58,12 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task The_accessor_is_called_only_once_for_multiple_validation_rules()
         {
             int calledCount = 0;
-            Task<object> accessor(ValidationContext _, object data)
+            Task<object> Accessor(ValidationContext ctx, object data)
             {
                 return Task.FromResult((object)Interlocked.Increment(ref calledCount));
             }
 
-            var validator = new MultiValidator(accessor);
+            var validator = new MultiValidator(Accessor);
             await validator.ValidateAsync(new SampleData());
 
             Assert.Equal(1, calledCount);
@@ -79,7 +79,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             Assert.Throws<NotSupportedException>(() => validator.Validate(new SampleData()));
         }
 
-        class TestValidator : ContextualValidator<SampleData>
+        private class TestValidator : ContextualValidator<SampleData>
         {
             public TestValidator(Func<ValidationContext, string, Task<object>> accessor, Func<object, bool> must = null)
             {
@@ -87,7 +87,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        class MultiValidator : ContextualValidator<SampleData>
+        private class MultiValidator : ContextualValidator<SampleData>
         {
             public MultiValidator(Func<ValidationContext, string, Task<object>> accessor)
             {
@@ -97,7 +97,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        class SampleData
+        private class SampleData
         {
             public string Test { get; set; }
         }

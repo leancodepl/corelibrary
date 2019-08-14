@@ -13,13 +13,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            object func(ValidationContext ctx, string str)
+            object Func(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return null;
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(Func);
             validator.Validate(new SampleData { Test = value });
 
             Assert.Equal(value, dataPassed);
@@ -29,13 +29,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public void Passes_the_context_to_accessor()
         {
             ValidationContext dataPassed = null;
-            object func(ValidationContext ctx2, string str)
+            object Func(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return null;
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(Func);
             var ctx = new ValidationContext<SampleData>(new SampleData());
             validator.Validate(ctx);
 
@@ -59,13 +59,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            object func(ValidationContext ctx, string str)
+            object Func(ValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return null;
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(Func);
             await validator.ValidateAsync(new SampleData { Test = value });
 
             Assert.Equal(value, dataPassed);
@@ -75,13 +75,13 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task Passes_the_context_to_accessor_async()
         {
             ValidationContext dataPassed = null;
-            object func(ValidationContext ctx2, string str)
+            object Func(ValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return null;
             }
 
-            var validator = new TestValidator(func);
+            var validator = new TestValidator(Func);
             var ctx = new ValidationContext<SampleData>(new SampleData());
             await validator.ValidateAsync(ctx);
 
@@ -104,9 +104,12 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public void The_accessor_is_called_only_once_for_multiple_validation_rules_sync_case()
         {
             int calledCount = 0;
-            object accessor(ValidationContext _, object data) => Interlocked.Increment(ref calledCount);
+            object Accessor(ValidationContext ctx, object data)
+            {
+                return Interlocked.Increment(ref calledCount);
+            }
 
-            var validator = new MultiValidator(accessor);
+            var validator = new MultiValidator(Accessor);
             validator.Validate(new SampleData());
 
             Assert.Equal(1, calledCount);
@@ -116,15 +119,18 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task The_accessor_is_called_only_once_for_multiple_validation_rules_async_case()
         {
             int calledCount = 0;
-            object accessor(ValidationContext _, object data) => Interlocked.Increment(ref calledCount);
+            object Accessor(ValidationContext ctx, object data)
+            {
+                return Interlocked.Increment(ref calledCount);
+            }
 
-            var validator = new MultiValidator(accessor);
+            var validator = new MultiValidator(Accessor);
             await validator.ValidateAsync(new SampleData());
 
             Assert.Equal(1, calledCount);
         }
 
-        class TestValidator : ContextualValidator<SampleData>
+        private class TestValidator : ContextualValidator<SampleData>
         {
             public TestValidator(Func<ValidationContext, string, object> accessor, Func<object, bool> must = null)
             {
@@ -132,7 +138,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        class MultiValidator : ContextualValidator<SampleData>
+        private class MultiValidator : ContextualValidator<SampleData>
         {
             public MultiValidator(Func<ValidationContext, string, object> accessor)
             {
@@ -142,7 +148,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        class SampleData
+        private class SampleData
         {
             public string Test { get; set; }
         }

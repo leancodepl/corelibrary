@@ -38,14 +38,11 @@ namespace LeanCode.Components.Startup
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    var logCfg = new LoggerConfiguration()
+                    Log.Logger = new LoggerConfiguration()
                         .EnrichWithAppName(appName)
-                        .ReadFrom.Configuration(hostingContext.Configuration);
-                    if (destructurers != null)
-                    {
-                        logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
-                    }
-                    Log.Logger = logCfg.CreateLogger();
+                        .ReadFrom.Configuration(hostingContext.Configuration)
+                        .DestructureCommonObjects(destructurers.Assemblies)
+                        .CreateLogger();
 
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);
@@ -75,13 +72,10 @@ namespace LeanCode.Components.Startup
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    var logCfg = configLogger(hostingContext)
-                        .EnrichWithAppName(appName);
-                    if (destructurers != null)
-                    {
-                        logCfg = logCfg.DestructureCommonObjects(destructurers.Assemblies);
-                    }
-                    Log.Logger = logCfg.CreateLogger();
+                    Log.Logger = configLogger(hostingContext)
+                        .EnrichWithAppName(appName)
+                        .DestructureCommonObjects(destructurers.Assemblies)
+                        .CreateLogger();
 
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);

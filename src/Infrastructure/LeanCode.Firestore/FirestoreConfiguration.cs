@@ -13,7 +13,7 @@ namespace LeanCode.Firestore
                 return FirebaseApp.Create(new AppOptions
                 {
                     Credential = GoogleCredential.FromAccessToken("STUB"),
-                    ProjectId = "STUB"
+                    ProjectId = "STUB",
                 });
             }
             else
@@ -22,7 +22,7 @@ namespace LeanCode.Firestore
                 return FirebaseApp.Create(new AppOptions
                 {
                     Credential = GoogleCredential.FromJson(cfg),
-                    ProjectId = projectId
+                    ProjectId = projectId,
                 });
             }
         }

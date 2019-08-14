@@ -1,12 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using Autofac;
-using Autofac.Core;
-using Autofac.Features.Variance;
-using LeanCode.Components;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default.Autofac;
-using LeanCode.CQRS.Default.Execution;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
@@ -17,9 +11,7 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default
 {
-    using CommandsQueriesModules = IReadOnlyList<IModule>;
-
-    class SharedCQRSModule : Module
+    internal class SharedCQRSModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

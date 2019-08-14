@@ -121,6 +121,7 @@ namespace LeanCode.ClientCredentialsHandler
                         logger.Fatal(
                             "Cannot get access token - server rejected the request with error {Error}",
                             response.ErrorDescription);
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -133,7 +134,10 @@ namespace LeanCode.ClientCredentialsHandler
                     tokenLock.Release();
                 }
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
 }
