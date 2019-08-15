@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
@@ -38,15 +36,18 @@ namespace LeanCode.CodeAnalysis.CodeActions
         {
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var root = await document.GetSyntaxRootAsync(cancellationToken);
-            var model = await document.GetSemanticModelAsync(cancellationToken);
 
             var classDeclaration = root.FindNode(classSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
 
-            var attribute = SF.Attribute(SF.ParseName(StripAttributeSuffix(authorizationAttribute)));
-            var list = SF.AttributeList(SF.SingletonSeparatedList(attribute))
-                .WithCloseBracketToken(SF.Token(SF.TriviaList(), SyntaxKind.CloseBracketToken, SF.TriviaList(SF.LineFeed)));
+            var authorizer = SF.Attribute(SF.ParseName(StripAttributeSuffix(authorizationAttribute)));
+            var list = SF.AttributeList(SF.SingletonSeparatedList(authorizer)).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
 
             editor.AddAttribute(classDeclaration, list);
+
+            if (!AuthorizerIsResolvable(editor.SemanticModel, classDeclaration.Span.Start, authorizer))
+            {
+                Helpers.InsertNamespaceDirective(editor, root, authorizationAttributeNamespace);
+            }
 
             return editor.GetChangedDocument();
         }
@@ -55,6 +56,12 @@ namespace LeanCode.CodeAnalysis.CodeActions
             name.EndsWith("Attribute")
             ? name.Substring(0, name.Length - "Attribute".Length)
             : name;
+
+        private bool AuthorizerIsResolvable(SemanticModel model, int position, AttributeSyntax authorizer)
+        {
+            var info = model.GetSpeculativeTypeInfo(position, authorizer.Name, SpeculativeBindingOption.BindAsTypeOrNamespace);
+            return info.Type?.Kind != SymbolKind.ErrorType;
+        }
 
         public Task<Document> Test() => GetChangedDocumentAsync(CancellationToken.None);
     }

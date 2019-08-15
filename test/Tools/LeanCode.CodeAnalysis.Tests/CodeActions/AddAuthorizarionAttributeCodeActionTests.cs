@@ -57,6 +57,30 @@ public class Cmd : ICommand
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public async Task Adds_attribute_and_using_directive()
+        {
+            var source =
+@"
+using LeanCode.CQRS;
+
+public class Cmd : ICommand
+{}";
+
+            var expected =
+            @"
+using LeanCode.CQRS;
+using LeanCode.CQRS.Security;
+
+[AllowUnauthorized]
+public class Cmd : ICommand
+{}";
+
+            var actual = await ApplyFix(source);
+
+            Assert.Equal(expected, actual);
+        }
+
         private async Task<string> ApplyFix(string code)
         {
             var doc = AddDocument(code);
@@ -77,7 +101,7 @@ public class Cmd : ICommand
         {
             var docName = "A" + Guid.NewGuid().ToString("N") + ".cs";
             var sourceText = SourceText.From(code);
-            return workspace.AddDocument(project.Id, docName, sourceText);
+            return project.AddDocument(docName, sourceText);
         }
 
         public void Dispose()
