@@ -6,17 +6,17 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CodeAnalysis.Tests
+namespace LeanCode.CodeAnalysis.Tests.Analyzers
 {
-    public class EnsureQueriesHaveAuthorizersTests
+    public class EnsureCommandsHaveAuthorizersTests
     {
-        private const string DiagnosticId = DiagnosticsIds.QueriesShouldHaveAuthorizers;
-        private readonly EnsureQueriesHaveAuthorizers analyzer = new EnsureQueriesHaveAuthorizers();
+        private const string DiagnosticId = DiagnosticsIds.CommandsShouldHaveAuthorizers;
+        private readonly EnsureCommandsHaveAuthorizers analyzer = new EnsureCommandsHaveAuthorizers();
         private readonly Action<Diagnostic> reportDiagnostic = Substitute.For<Action<Diagnostic>>();
 
         [Theory]
-        [MemberData(nameof(ClassLoader.LoadTestContracts), "TestSamples/Accepted_queries.cs", MemberType = typeof(ClassLoader))]
-        public void Queries_with_authorization_attributes_are_accepted(Compilation compilation, ISymbol symbol)
+        [MemberData(nameof(ClassLoader.LoadTestContracts), "TestSamples/Accepted_commands.cs", MemberType = typeof(ClassLoader))]
+        public void Commands_with_authorization_attributes_are_accepted(Compilation compilation, ISymbol symbol)
         {
             var context = GetContext(compilation, symbol);
 
@@ -26,8 +26,8 @@ namespace LeanCode.CodeAnalysis.Tests
         }
 
         [Theory]
-        [MemberData(nameof(ClassLoader.LoadTestContracts), "TestSamples/Rejected_queries.cs", MemberType = typeof(ClassLoader))]
-        public void Queries_without_authorization_are_rejected(Compilation compilation, ISymbol symbol)
+        [MemberData(nameof(ClassLoader.LoadTestContracts), "TestSamples/Rejected_commands.cs", MemberType = typeof(ClassLoader))]
+        public void Commands_without_authorization_are_rejected(Compilation compilation, ISymbol symbol)
         {
             var context = GetContext(compilation, symbol);
 
