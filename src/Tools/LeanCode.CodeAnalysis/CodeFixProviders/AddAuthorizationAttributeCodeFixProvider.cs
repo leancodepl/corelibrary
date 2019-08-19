@@ -1,11 +1,14 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.CodeAnalysis.Analyzers;
 using LeanCode.CodeAnalysis.CodeActions;
 using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace LeanCode.CodeAnalysis.CodeFixProviders
 {
@@ -13,21 +16,32 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
     [Shared]
     public class AddAuthorizationAttributeCodeFixProvider : CodeFixProvider
     {
+        private const string AuthorizeWhenAttribute = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
+
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(
                 DiagnosticsIds.QueriesShouldHaveAuthorizers,
                 DiagnosticsIds.CommandsShouldHaveAuthorizers);
 
-        public override Task RegisterCodeFixesAsync(CodeFixContext context)
+        public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            foreach (var (type, ns) in StaticAuthorizers)
+            var model = await context.Document.GetSemanticModelAsync();
+            var solutionAuthorizers = await GetAvailableAuthorizers(context.Document.Project.Solution, model.Compilation);
+
+            foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers))
             {
                 context.RegisterCodeFix(
                     new AddAuthorizationAttributeCodeAction(context.Document, context.Span, type, ns),
                     context.Diagnostics);
             }
+        }
 
-            return Task.CompletedTask;
+        private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizers(Solution solution, Compilation compilation)
+        {
+            var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
+            var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);
+            return availableAttributes
+                .Select(attr => (attr.Name, attr.GetFullNamespaceName()));
         }
 
         public override FixAllProvider GetFixAllProvider() => null;
