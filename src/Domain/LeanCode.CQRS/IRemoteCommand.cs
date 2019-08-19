@@ -7,7 +7,7 @@ namespace LeanCode.CQRS
     { }
 
     /// <summary>
-    /// A command that is available to clients via RemoteCQRS
+    /// An <see cref="ICommand{TContext}"/> that is available to clients via RemoteCQRS
     /// </summary>
     public interface IRemoteCommand<in TContext> : IRemoteCommand, ICommand<TContext>
     { }

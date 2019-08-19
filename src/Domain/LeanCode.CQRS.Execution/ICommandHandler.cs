@@ -2,6 +2,9 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
+    /// <summary>Handler for <typeparamref name="TCommand"/></summary>
+    /// <typeparam name="TCommand">Command to be executed</typeparam>
+    /// <typeparam name="TContext">Object context</typeparam>
     public interface ICommandHandler<in TContext, in TCommand>
         where TCommand : ICommand<TContext>
     {

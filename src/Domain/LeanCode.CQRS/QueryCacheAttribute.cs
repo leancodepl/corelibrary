@@ -4,8 +4,11 @@ using System.Reflection;
 namespace LeanCode.CQRS
 {
     /// <summary>
-    /// Specifes a maximum period during which a <see cref="IQuery{TContext, TResult}" /> may be cached
+    /// Specifes that query result for <see cref="IQuery{TContext, TResult}" /> should be cached and maximum cache duration
     /// </summary>
+    /// <remarks>
+    /// Query results are cached with a key. A key is derived from all query and object context properties.
+    /// <remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class QueryCacheAttribute : Attribute
     {

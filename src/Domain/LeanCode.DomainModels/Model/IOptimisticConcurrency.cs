@@ -9,7 +9,7 @@ namespace LeanCode.DomainModels.Model
         /// <summary>Concurrency token managed by underlying database provider</summary>
         byte[] RowVersion { get; set; }
 
-        /// <summary>Set by data access layer when performing any update on entity</summary>
+        /// <remarks>Set by data access layer when performing any update on entity</remarks>
         DateTime DateModified { get; set; }
     }
 }

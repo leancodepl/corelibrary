@@ -46,6 +46,10 @@ namespace LeanCode.DomainModels.EventsExecution
 
     public static partial class PipelineBuilderExtensions
     {
+        /// <summary>
+        /// Registers <see cref="EventsInterceptorElement{TContext, TInput, TOutput}"/> pipeline element
+        /// which collects events raised during command execution.
+        /// </summary>
         public static PipelineBuilder<TContext, TInput, TOutput> InterceptEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
             where TContext : IEventsContext
