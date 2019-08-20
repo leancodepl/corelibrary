@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>LeanCode.DomainModels.MassTransitRelay</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Correlation/LeanCode.Correlation.csproj" />
+
+    <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="MassTransit.Autofac" />
+    <PackageReference Include="MassTransit.SerilogIntegration" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+</Project>

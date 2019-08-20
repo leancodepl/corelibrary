@@ -20,6 +20,7 @@ namespace LeanCode.Correlation
                     }
                 }
             }
+
             return Guid.Empty;
         }
 

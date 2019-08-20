@@ -18,6 +18,7 @@ namespace LeanCode.Correlation
             {
                 ctx.CorrelationId = Guid.NewGuid();
             }
+
             if (ctx.ExecutionId == default)
             {
                 ctx.ExecutionId = Guid.NewGuid();
