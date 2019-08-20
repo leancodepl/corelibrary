@@ -7,13 +7,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class EnsureCommandsHaveAuthorizers : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "LNCD0001"; // :)
-
         private const string Category = "Cqrs";
         private const string Title = "Command should be authorized";
         private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization";
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticsIds.CommandsShouldHaveAuthorizers, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
 

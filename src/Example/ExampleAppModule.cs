@@ -1,4 +1,6 @@
 using System;
+using Autofac;
+using Example.CQRS;
 using LeanCode.Components;
 using LeanCode.CQRS.Security;
 using LeanCode.Example.Security;
@@ -23,6 +25,12 @@ namespace LeanCode.Example
 
             services.AddSingleton<IPipelineFactory, AutofacPipelineFactory>();
             services.AddSingleton<IRoleRegistration, AppRoles>();
+        }
+
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterType<CustomAuthAuthorizer>()
+                .AsImplementedInterfaces();
         }
     }
 }

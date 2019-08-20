@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace LeanCode.CodeAnalysis.Tests
+namespace LeanCode.CodeAnalysis.Tests.Analyzers
 {
     public static class ClassLoader
     {
