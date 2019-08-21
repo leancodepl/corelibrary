@@ -27,7 +27,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
             var model = await context.Document.GetSemanticModelAsync();
             var solutionAuthorizers = await GetAvailableAuthorizers(context.Document.Project.Solution, model!.Compilation);
 
-            foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers))
+            foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers).Distinct())
             {
                 context.RegisterCodeFix(
                     new AddAuthorizationAttributeCodeAction(context.Document, context.Span, type, ns),
@@ -40,7 +40,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
             var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
             var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);
             return availableAttributes
-                .Select(attr => (attr.Name, attr.GetFullNamespaceName()));
+                .Select(attr => (attr.Name, attr.ContainingNamespace.ToString()));
         }
 
         public override FixAllProvider GetFixAllProvider() => null!;
