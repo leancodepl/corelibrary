@@ -17,7 +17,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 {
     public abstract class DiagnosticVerifier : IDisposable
     {
-        protected abstract DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer();
+        protected abstract DiagnosticAnalyzer GetDiagnosticAnalyzer();
         protected AdhocWorkspace Workspace { get; } = new AdhocWorkspace();
 
         protected Task VerifyDiagnostics(string source, params DiagnosticResult[] expected)
@@ -27,7 +27,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 
         protected async Task VerifyDiagnostics(string[] sources, params DiagnosticResult[] expected)
         {
-            var analyzer = GetCSharpDiagnosticAnalyzer();
+            var analyzer = GetDiagnosticAnalyzer();
             var diagnostics = await GetSortedDiagnostics(sources, analyzer);
             var actual = diagnostics.Select(d => new DiagnosticResult(d));
 

@@ -63,7 +63,5 @@ namespace LeanCode.CodeAnalysis.CodeActions
             var info = model.GetSpeculativeTypeInfo(position, authorizer.Name, SpeculativeBindingOption.BindAsTypeOrNamespace);
             return info.Type?.Kind != SymbolKind.ErrorType;
         }
-
-        public Task<Document> Test() => GetChangedDocumentAsync(CancellationToken.None);
     }
 }

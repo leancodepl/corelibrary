@@ -14,57 +14,43 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 {
     public abstract class CodeFixVerifier : DiagnosticVerifier
     {
-        protected abstract CodeFixProvider GetCSharpCodeFixProvider();
-        protected Task VerifyCSharpFix(string oldSource, string newSource, int? codeFixIndex = null, bool allowNewCompilerDiagnostics = false)
-        {
-            return VerifyFix(GetCSharpDiagnosticAnalyzer(), GetCSharpCodeFixProvider(), oldSource, newSource, codeFixIndex, allowNewCompilerDiagnostics);
-        }
+        protected abstract CodeFixProvider GetCodeFixProvider();
 
-        private async Task VerifyFix(DiagnosticAnalyzer analyzer, CodeFixProvider codeFixProvider, string oldSource, string newSource, int? codeFixIndex, bool allowNewCompilerDiagnostics)
+        protected async Task VerifyCodeFix(string oldSource, string newSource, string[] expectedFixes, int? fixToApply = null, bool allowNewCompilerDiagnostics = false)
         {
+            var analyzer = GetDiagnosticAnalyzer();
+            var codeFixProvider = GetCodeFixProvider();
+
             var document = CreateDocument(oldSource);
             var analyzerDiagnostics = await GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
             var compilerDiagnostics = await GetCompilerDiagnostics(document);
-            var attempts = analyzerDiagnostics.Count;
 
-            for (int i = 0; i < attempts; ++i)
+            var actions = new List<CodeAction>();
+            var context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
+            await codeFixProvider.RegisterCodeFixesAsync(context);
+
+            actions.Sort((a, b) => a.Title.CompareTo(b.Title));
+
+            var actualFixTitles = actions.Select(f => f.Title);
+            Assert.Equal(expectedFixes, actualFixTitles);
+
+            if (fixToApply != null)
             {
-                var actions = new List<CodeAction>();
-                var context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
-                await codeFixProvider.RegisterCodeFixesAsync(context);
+                document = await ApplyFix(document, actions[(int)fixToApply]);
+            }
 
-                if (!actions.Any())
-                {
-                    break;
-                }
+            var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
 
-                if (codeFixIndex != null)
-                {
-                    document = await ApplyFix(document, actions[(int)codeFixIndex]);
-                    break;
-                }
+            if (!allowNewCompilerDiagnostics && newCompilerDiagnostics.Any())
+            {
+                document = document.WithSyntaxRoot(Formatter.Format(await document.GetSyntaxRootAsync(), Formatter.Annotation, document.Project.Solution.Workspace));
+                newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
 
-                document = await ApplyFix(document, actions.ElementAt(0));
-                analyzerDiagnostics = await GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
-
-                var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
-
-                if (!allowNewCompilerDiagnostics && newCompilerDiagnostics.Any())
-                {
-                    document = document.WithSyntaxRoot(Formatter.Format(await document.GetSyntaxRootAsync(), Formatter.Annotation, document.Project.Solution.Workspace));
-                    newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
-
-                    throw new Xunit.Sdk.XunitException(
-                        string.Format(
-                            "Fix introduced new compiler diagnostics:\r\n{0}\r\n\r\nNew document:\r\n{1}\r\n",
-                            string.Join("\r\n", newCompilerDiagnostics.Select(d => d.ToString())),
-                            (await document.GetSyntaxRootAsync()).ToFullString()));
-                }
-
-                if (!analyzerDiagnostics.Any())
-                {
-                    break;
-                }
+                throw new Xunit.Sdk.XunitException(
+                    string.Format(
+                        "Fix introduced new compiler diagnostics:\r\n{0}\r\n\r\nNew document:\r\n{1}\r\n",
+                        string.Join("\r\n", newCompilerDiagnostics.Select(d => d.ToString())),
+                        (await document.GetSyntaxRootAsync()).ToFullString()));
             }
 
             var actual = await GetStringFromDocument(document);

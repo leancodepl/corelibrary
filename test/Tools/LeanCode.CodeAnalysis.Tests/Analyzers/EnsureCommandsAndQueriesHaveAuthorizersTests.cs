@@ -49,7 +49,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
             await VerifyDiagnostics(source, diags);
         }
 
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+        protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
         {
             return new EnsureCommandsAndQueriesHaveAuthorizers();
         }
