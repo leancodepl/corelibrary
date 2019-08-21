@@ -45,11 +45,6 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
                 .Select(attr => (attr.Name, attr.ContainingNamespace.ToString()));
         }
 
-<<<<<<< HEAD
-        public override FixAllProvider GetFixAllProvider() => null!;
-
-=======
->>>>>>> Add AddValidator code action
         private static readonly (string Type, string Namespace)[] StaticAuthorizers = new[]
         {
             ("AllowUnauthorizedAttribute", "LeanCode.CQRS.Security"),
