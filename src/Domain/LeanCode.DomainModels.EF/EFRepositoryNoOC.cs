@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
+    /// <summary> An equivalent of <see cref="EFRepository{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// for <see cref="IAggregateRootWithoutOptimisticConcurrency{TIdentity}"/> </summary>
     public abstract class EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
         : IRepository<TEntity, TIdentity>
           where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
@@ -71,6 +73,9 @@ namespace LeanCode.DomainModels.EF
         public abstract Task<TEntity> FindAsync(TIdentity id);
     }
 
+    /// <summary> Utility overload of <see cref="EFRepositoryNoOC{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// for aggregates with <see cref="System.Guid" /> as Id type
+    /// </summary>
     public abstract class EFRepositoryNoOC<TEntity, TContext, TUnitOfWork>
         : EFRepositoryNoOC<TEntity, Guid, TContext, TUnitOfWork>, IRepository<TEntity>
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Guid>

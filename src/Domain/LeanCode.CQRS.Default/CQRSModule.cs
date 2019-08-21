@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Core;
-using AutoMapper;
 using LeanCode.Components;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
@@ -29,6 +27,15 @@ namespace LeanCode.CQRS.Default
             }
         }
 
+        /// <summary>
+        /// Registers CQRS with <typeparamref name="TAppContext" /> application context and default
+        /// pipelines:
+        ///
+        /// Command: Secure->Cache->ExecuteEvents->InterceptEvents
+        ///
+        /// Query: Secure->Cache
+        /// </summary>
+        /// <param name="handlersCatalog">Assemblies to register query and command handlers from</param>
         public CQRSModule WithDefaultPipelines<TAppContext>(TypesCatalog handlersCatalog)
             where TAppContext : ISecurityContext, IEventsContext
         {
@@ -39,6 +46,12 @@ namespace LeanCode.CQRS.Default
             );
         }
 
+        /// <summary>
+        /// Registers CQRS with <typeparamref name="TAppContext" /> application context and custom pipelines
+        /// </summary>
+        /// <param name="handlersCatalog">Assemblies to register query and command handlers from</param>
+        /// <param name="commandBuilder">Commands pipeline builder</param>
+        /// <param name="queryBuilder">Queries pipeline builder</param>
         public CQRSModule WithCustomPipelines<TAppContext>(
             TypesCatalog handlersCatalog,
             CommandBuilder<TAppContext> commandBuilder,

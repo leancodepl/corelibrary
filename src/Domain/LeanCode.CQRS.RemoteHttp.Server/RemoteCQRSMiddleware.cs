@@ -79,6 +79,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
     public static class RemoteCQRSMiddlewareExtensions
     {
+        /// <summary>
+        /// Adds the <c>RemoteCQRSMiddleware&lt;TAppContext&gt;</c> middleware, which allows RemoteCQRS execution
+        /// </summary>
+        /// <param name="builder">Application builder</param>
+        /// <param name="catalog">
+        /// Asemblies containing <see cref="IRemoteCommand{TContext}"/> and <see cref="IRemoteQuery{TContext, TResult}"/>
+        /// to be exposed via remote CQRS
+        /// </param>
+        /// <param name="contextTranslator">
+        /// Mapper from <see cref="HttpContext" /> to <typeparamref name="TAppContext"/> application context
+        /// </param>
         public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
             this IApplicationBuilder builder,
             TypesCatalog catalog,

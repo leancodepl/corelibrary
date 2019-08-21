@@ -101,6 +101,10 @@ namespace LeanCode.DomainModels.EventsExecution
 
     public static partial class PipelineBuilderExtensions
     {
+        /// <summary>
+        /// Registers <see cref="EventsExecutorElement{TContext, TInput, TOutput}"/> pipeline element
+        /// which executes handlers for domain events raised during command execution.
+        /// </summary>
         public static PipelineBuilder<TContext, TInput, TOutput> ExecuteEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
             where TContext : IEventsContext

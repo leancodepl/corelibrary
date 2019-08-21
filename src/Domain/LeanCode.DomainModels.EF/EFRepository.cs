@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
+    /// <summary>Base implementation of <see cref="IRepository{TEntity, TIdentity}"/>.
+    /// <c>EFRepository</c> handles modification operations on <typeparamref name="TEntity" />
+    /// leaving the details of how to fetch enitties from database to deriving classes
+    /// </summary>
     public abstract class EFRepository<TEntity, TIdentity, TContext, TUnitOfWork>
         : IRepository<TEntity, TIdentity>
         where TEntity : class, IAggregateRoot<TIdentity>
@@ -86,6 +90,9 @@ namespace LeanCode.DomainModels.EF
         public abstract Task<TEntity> FindAsync(TIdentity id);
     }
 
+    /// <summary> Utility overload of <see cref="EFRepository{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// for aggregates with <see cref="System.Guid" /> as Id type
+    /// </summary>
     public abstract class EFRepository<TEntity, TContext, TUnitOfWork>
         : EFRepository<TEntity, Guid, TContext, TUnitOfWork>, IRepository<TEntity>
         where TEntity : class, IAggregateRoot<Guid>

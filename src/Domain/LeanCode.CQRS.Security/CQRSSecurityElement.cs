@@ -67,6 +67,10 @@ namespace LeanCode.CQRS.Security
 
     public static class PipelineBuilderExtensions
     {
+        /// <summary>
+        /// Registers <see cref="CQRSSecurityElement{TAppContext, TInput, TOutput}" /> pipeline element
+        /// which executes authorizers for commands attributed with <see cref="AuthorizeWhenAttribute"/>
+        /// </summary>
         public static PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> Secure<TContext>(
             this PipelineBuilder<TContext, CommandExecutionPayload, CommandResult> builder)
             where TContext : ISecurityContext
@@ -74,6 +78,10 @@ namespace LeanCode.CQRS.Security
             return builder.Use<CQRSSecurityElement<TContext, CommandExecutionPayload, CommandResult>>();
         }
 
+        /// <summary>
+        /// Registers <see cref="CQRSSecurityElement{TAppContext, TInput, TOutput}" /> pipeline element
+        /// which executes authorizers for queries attributed with <see cref="AuthorizeWhenAttribute"/>
+        /// </summary>
         public static PipelineBuilder<TContext, QueryExecutionPayload, object> Secure<TContext>(
             this PipelineBuilder<TContext, QueryExecutionPayload, object> builder)
             where TContext : ISecurityContext

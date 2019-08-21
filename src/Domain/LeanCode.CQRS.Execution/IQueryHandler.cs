@@ -2,6 +2,10 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Execution
 {
+    /// <summary>Handler for <typeparamref name="TQuery"/></summary>
+    /// <typeparam name="TQuery">Query to be executed</typeparam>
+    /// <typeparam name="TContext">Object context</typeparam>
+    /// <typeparam name="TResult">Query result</typeparam>
     public interface IQueryHandler<in TContext, in TQuery, TResult>
         where TQuery : IQuery<TContext, TResult>
     {

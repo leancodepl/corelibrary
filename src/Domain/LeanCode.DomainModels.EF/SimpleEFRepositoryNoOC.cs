@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
+    /// <summary>
+    /// Implementation of <see cref="EFRepositoryNoOC{TEntity, TIdentity, TContext, TUnitOfWork}"/>
+    /// for non optimistically concurrent aggregates (<see cref="IAggregateRootWithoutOptimisticConcurrency{TIdentity}" />)
+    /// without navigation properties, i.e.they do not need any<c>DbSet.Include</c> calls to fetch
+    /// the entire aggregate
+    /// </summary>
     public class SimpleEFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
         : EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
           where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
@@ -21,6 +27,8 @@ namespace LeanCode.DomainModels.EF
         }
     }
 
+    /// <summary>Utility overload of <see cref="SimpleEFRepositoryNoOC{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// for aggregates with <see cref="System.Guid" /> as Id type </summary>
     public class SimpleEFRepositoryNoOC<TEntity, TContext, TUnitOfWork>
         : EFRepositoryNoOC<TEntity, TContext, TUnitOfWork>
           where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Guid>

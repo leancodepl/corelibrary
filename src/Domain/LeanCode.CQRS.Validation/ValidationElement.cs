@@ -46,6 +46,10 @@ namespace LeanCode.CQRS.Validation
 
     public static class PipelineBuilderExtensions
     {
+        /// <summary>
+        /// Registers <see cref="ValidationElement{TAppContext}"/> pipeline element
+        /// which executes command validators
+        /// </summary>
         public static PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> Validate<TAppContext>(
             this PipelineBuilder<TAppContext, CommandExecutionPayload, CommandResult> builder)
             where TAppContext : IPipelineContext

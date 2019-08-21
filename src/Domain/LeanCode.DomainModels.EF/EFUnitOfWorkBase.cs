@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
+    /// <summary>Base unit of work which enforces soft deletable pattern on
+    /// <see cref="DomainModels.Model.ISoftDeletable" /> entities </summary>
     public abstract class EFUnitOfWorkBase<TContext> : IUnitOfWork
         where TContext : DbContext
     {
