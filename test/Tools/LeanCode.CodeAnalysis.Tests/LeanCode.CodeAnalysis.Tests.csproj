@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
   </ItemGroup>
 
   <ItemGroup>
