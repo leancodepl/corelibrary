@@ -9,6 +9,13 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
         public int Line { get; set; }
         public int Column { get; set; }
 
+        public DiagnosticResult(string id, int line, int column)
+        {
+            Id = id;
+            Line = line;
+            Column = column;
+        }
+
         public DiagnosticResult(Diagnostic d)
         {
             var pos = d.Location.GetLineSpan();

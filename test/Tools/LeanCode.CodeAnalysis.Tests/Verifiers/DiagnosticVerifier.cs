@@ -15,16 +15,17 @@ using Xunit;
 
 namespace LeanCode.CodeAnalysis.Tests.Verifiers
 {
-    public abstract class DiagnosticVerifier
+    public abstract class DiagnosticVerifier : IDisposable
     {
         protected abstract DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer();
+        protected AdhocWorkspace Workspace { get; } = new AdhocWorkspace();
 
-        protected Task VerifyDiagnostic(string source, params DiagnosticResult[] expected)
+        protected Task VerifyDiagnostics(string source, params DiagnosticResult[] expected)
         {
             return VerifyDiagnostics(new[] { source }, expected);
         }
 
-        private async Task VerifyDiagnostics(string[] sources, params DiagnosticResult[] expected)
+        protected async Task VerifyDiagnostics(string[] sources, params DiagnosticResult[] expected)
         {
             var analyzer = GetCSharpDiagnosticAnalyzer();
             var diagnostics = await GetSortedDiagnostics(sources, analyzer);
@@ -33,7 +34,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             Assert.Equal(expected, actual);
         }
 
-        private static readonly MetadataReference[] References = new[]
+        private static readonly MetadataReference[] CommonReferences = new[]
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
@@ -42,20 +43,15 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
         };
 
-        private static readonly string TestProjectName = "TestProject";
-
-        private static Task<List<Diagnostic>> GetSortedDiagnostics(string[] sources, DiagnosticAnalyzer analyzer)
+        private Task<List<Diagnostic>> GetSortedDiagnostics(string[] sources, DiagnosticAnalyzer analyzer)
         {
             return GetSortedDiagnosticsFromDocuments(analyzer, GetDocuments(sources));
         }
 
         protected static async Task<List<Diagnostic>> GetSortedDiagnosticsFromDocuments(DiagnosticAnalyzer analyzer, Document[] documents)
         {
-            var projects = new HashSet<Project>();
-            foreach (var document in documents)
-            {
-                projects.Add(document.Project);
-            }
+            var projects = documents.Select(d => d.Project).ToHashSet();
+            var trees = (await Task.WhenAll(documents.Select(d => d.GetSyntaxTreeAsync()))).ToHashSet();
 
             var diagnostics = new List<Diagnostic>();
             foreach (var project in projects)
@@ -69,17 +65,10 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
                     {
                         diagnostics.Add(diag);
                     }
-                    else
+                    else if (trees.Contains(diag.Location.SourceTree))
                     {
-                        for (int i = 0; i < documents.Length; i++)
-                        {
-                            var document = documents[i];
-                            var tree = await document.GetSyntaxTreeAsync();
-                            if (tree == diag.Location.SourceTree)
-                            {
-                                diagnostics.Add(diag);
-                            }
-                        }
+                        // Add diagnostics only for current project
+                        diagnostics.Add(diag);
                     }
                 }
             }
@@ -88,7 +77,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             return diagnostics;
         }
 
-        private static Document[] GetDocuments(string[] sources)
+        private Document[] GetDocuments(string[] sources)
         {
             var project = CreateProject(sources);
             var documents = project.Documents.ToArray();
@@ -101,19 +90,21 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             return documents;
         }
 
-        protected static Document CreateDocument(string source)
+        protected Document CreateDocument(string source)
         {
             return CreateProject(new[] { source }).Documents.First();
         }
 
-        private static Project CreateProject(string[] sources)
+        private Project CreateProject(string[] sources)
         {
+            const string TestProjectName = "TestProjectName";
+
             var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
-            var solution = new AdhocWorkspace()
+            var solution = Workspace
                 .CurrentSolution
                 .AddProject(projectId, TestProjectName, TestProjectName, LanguageNames.CSharp)
-                .AddMetadataReferences(projectId, References);
+                .AddMetadataReferences(projectId, CommonReferences);
 
             int count = 0;
             foreach (var source in sources)
@@ -125,6 +116,11 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             }
 
             return solution.GetProject(projectId);
+        }
+
+        public void Dispose()
+        {
+            Workspace.Dispose();
         }
     }
 }

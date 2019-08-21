@@ -40,7 +40,7 @@ public class Cmd : ICommand
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new EnsureCommandsHaveAuthorizers();
+            return new EnsureCommandsAndQueriesHaveAuthorizers();
         }
     }
 }
