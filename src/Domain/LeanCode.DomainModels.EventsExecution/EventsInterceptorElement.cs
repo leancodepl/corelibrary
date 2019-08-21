@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.EventsExecution
 {
     public class EventsInterceptorElement<TContext, TInput, TOutput>
         : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : notnull, IEventsContext
+        where TContext : notnull, IEventsInterceptorContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsInterceptorElement<TContext, TInput, TOutput>>();
 
@@ -54,7 +54,7 @@ namespace LeanCode.DomainModels.EventsExecution
     {
         public static PipelineBuilder<TContext, TInput, TOutput> InterceptEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : notnull, IEventsContext
+            where TContext : notnull, IEventsInterceptorContext
         {
             return builder.Use<EventsInterceptorElement<TContext, TInput, TOutput>>();
         }

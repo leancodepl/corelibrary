@@ -10,7 +10,7 @@ using MassTransit;
 namespace LeanCode.DomainModels.MassTransitRelay
 {
     public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
-    where TContext : ICorrelationContext, IEventsContext
+    where TContext : ICorrelationContext, IEventsInterceptorContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
         private readonly IBus bus;
@@ -67,7 +67,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
     {
         public static PipelineBuilder<TContext, TInput, TOutput> PublishEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : IEventsContext, ICorrelationContext
+            where TContext : IEventsInterceptorContext, ICorrelationContext
         {
             return builder.Use<EventsPublisherElement<TContext, TInput, TOutput>>();
         }

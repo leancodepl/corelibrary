@@ -15,9 +15,9 @@ namespace LeanCode.Example
         private IPipelineScope? scope;
         private ClaimsPrincipal? user;
 
-        List<IDomainEvent> IEventsContext.SavedEvents { get; set; } = new List<IDomainEvent>();
-        List<(IDomainEvent Event, Type Handler)> IEventsContext.ExecutedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
-        List<(IDomainEvent Event, Type Handler)> IEventsContext.FailedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
+        List<IDomainEvent> IEventsInterceptorContext.SavedEvents { get; set; } = new List<IDomainEvent>();
+        List<(IDomainEvent Event, Type Handler)> IEventsExecutorContext.ExecutedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
+        List<(IDomainEvent Event, Type Handler)> IEventsExecutorContext.FailedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
 
         IPipelineScope IPipelineContext.Scope
         {
