@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    /// <summary> An equivalent of <see cref="EFRepositoryNoOC{TEntity, TIdentity, TContext, TUnitOfWork}" />
+    /// <summary> An equivalent of <see cref="EFRepository{TEntity, TIdentity, TContext, TUnitOfWork}" />
     /// for <see cref="IAggregateRootWithoutOptimisticConcurrency{TIdentity}"/> </summary>
     public abstract class EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
         : IRepository<TEntity, TIdentity>

@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.Model
     /// Utility class for implementing <see href="https://martinfowler.com/bliki/ValueObject.html">Value Object</see> pattern.
     /// <c>ValueObject</c> has structural equality semantics - two value objects are the same, when all of their properties are the same.
     /// </summary>
-    /// <remarks>Is is expected of value objects to be immutable</remarks>
+    /// <remarks>Value objects must be immutable</remarks>
     public abstract class ValueObject<T> where T : ValueObject<T>
     {
         /// <returns>Should return all of the value objects properties</returns>

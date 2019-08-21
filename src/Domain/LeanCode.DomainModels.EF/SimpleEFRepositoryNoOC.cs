@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.EF
     /// <summary>
     /// Implementation of <see cref="EFRepositoryNoOC{TEntity, TIdentity, TContext, TUnitOfWork}"/>
     /// for non optimistically concurrent aggregates (<see cref="IAggregateRootWithoutOptimisticConcurrency{TIdentity}" />)
-    /// not having navigation properties, i.e.they do not need any<c> DbSet.Include</c> calls to fetch
+    /// without navigation properties, i.e.they do not need any<c>DbSet.Include</c> calls to fetch
     /// the entire aggregate
     /// </summary>
     public class SimpleEFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>

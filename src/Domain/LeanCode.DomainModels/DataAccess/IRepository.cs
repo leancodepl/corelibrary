@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.DataAccess
     /// Non-async version of these method should not apply changes. Instead changes should be persisted using <see cref="IUnitOfWork.CommitAsync"/> method.
     /// </summary>
     /// <remarks>In the only current implentation using Entity Framework Core, AddAsync, DeleteAsync, UpdateAsync, DeleteRangeAsync internally commits
-    /// all the changes from the underlying DbContext. If you indent to modify multiple objects within single transaction,
+    /// all the changes from the underlying DbContext. If you intend to modify multiple objects within single transaction,
     /// use non-async version of the method and commit changes via <see cref="IUnitOfWork.CommitAsync" /> method</remarks>
     public interface IRepository<TEntity, in TIdentity>
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>

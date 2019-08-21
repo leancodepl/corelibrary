@@ -62,7 +62,7 @@ namespace LeanCode.CQRS.Cache
     public static class PipelineBuilderExtensions
     {
         /// <summary>
-        /// Registers <see cref="QueryCacheAttribute"/> pipeline element
+        /// Registers <see cref="CacheElement{TContext}"/> pipeline element
         /// which caches results for queries attributed with <see cref="QueryCacheAttribute"/>
         /// </summary>
         public static PipelineBuilder<TContext, QueryExecutionPayload, object> Cache<TContext>(

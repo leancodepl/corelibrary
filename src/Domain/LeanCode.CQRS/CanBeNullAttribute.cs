@@ -4,8 +4,8 @@ using System.Reflection;
 namespace LeanCode.CQRS
 {
     /// <summary>
-    /// Specifies that a contract property with a reference type can is nullable.
-    /// Used to facilitate contracts generation for language with non-nullable refrence types, e.g TypeScript
+    /// Specifies that a contract property with a reference type is nullable.
+    /// Used to facilitate contracts generation for languages with non-nullable refrence types, e.g TypeScript
     /// </summary>
     /// <remarks>
     /// Do not use this attribute for value types. Instead use standard <see cref="Nullable{T}" /> type.
