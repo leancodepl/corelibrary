@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using FluentValidation;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -39,6 +40,8 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(ContextualValidator<>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(AbstractValidator<>).Assembly.Location),
             MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
             MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
         };
@@ -104,7 +107,8 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             var solution = Workspace
                 .CurrentSolution
                 .AddProject(projectId, TestProjectName, TestProjectName, LanguageNames.CSharp)
-                .AddMetadataReferences(projectId, CommonReferences);
+                .AddMetadataReferences(projectId, CommonReferences)
+                .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             int count = 0;
             foreach (var source in sources)
