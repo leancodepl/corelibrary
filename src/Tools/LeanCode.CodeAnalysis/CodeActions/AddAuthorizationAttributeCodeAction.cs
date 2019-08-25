@@ -45,7 +45,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
 
             editor.AddAttribute(classDeclaration, list);
 
-            if (!AuthorizerIsResolvable(editor.SemanticModel, classDeclaration.Span.Start, authorizer))
+            if (!Helpers.TypeIsResolvable(editor.SemanticModel, classDeclaration.Span.Start, authorizer.Name))
             {
                 Helpers.InsertNamespaceDirective(editor, root, authorizationAttributeNamespace);
             }
@@ -57,11 +57,5 @@ namespace LeanCode.CodeAnalysis.CodeActions
             name.EndsWith("Attribute")
             ? name.Substring(0, name.Length - "Attribute".Length)
             : name;
-
-        private bool AuthorizerIsResolvable(SemanticModel model, int position, AttributeSyntax authorizer)
-        {
-            var info = model.GetSpeculativeTypeInfo(position, authorizer.Name, SpeculativeBindingOption.BindAsTypeOrNamespace);
-            return info.Type?.Kind != SymbolKind.ErrorType;
-        }
     }
 }
