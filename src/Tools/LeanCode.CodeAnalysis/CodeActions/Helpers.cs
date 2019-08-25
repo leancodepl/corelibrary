@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,6 +10,8 @@ namespace LeanCode.CodeAnalysis.CodeActions
 {
     public class Helpers
     {
+        private static readonly NamespaceNameComparer NamespaceComparer = new NamespaceNameComparer();
+
         public static bool TypeIsResolvable(SemanticModel model, int position, SyntaxNode type)
         {
             var info = model.GetSpeculativeTypeInfo(position, type, SpeculativeBindingOption.BindAsTypeOrNamespace);
@@ -20,7 +23,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             var stmt = BuildUsing(namespaceName);
             var namespaces = root.DescendantNodes()
                 .OfType<UsingDirectiveSyntax>()
-                .OrderBy(n => n.Name.ToString())
+                .OrderBy(n => n.Name.ToString(), NamespaceComparer)
                 .ToArray();
 
             if (!namespaces.Any())
@@ -30,7 +33,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             }
 
             var toInsert = namespaces.SkipWhile(ns =>
-                    ns.Name.ToString().CompareTo(namespaceName) < 0)
+                    NamespaceComparer.Compare(ns.Name.ToString(), namespaceName) < 0)
                 .FirstOrDefault();
 
             if (toInsert != null)
@@ -49,6 +52,29 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 .WithLeadingTrivia(SF.ParseTrailingTrivia(" "));
             return SF.UsingDirective(name)
                 .WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
+        }
+
+        private class NamespaceNameComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                var xSystem = IsSystem(x);
+                var ySystem = IsSystem(y);
+
+                if (xSystem ^ ySystem)
+                {
+                    return xSystem ? -1 : 1;
+                }
+                else
+                {
+                    return x.CompareTo(y);
+                }
+            }
+
+            private static bool IsSystem(string name)
+            {
+                return name.StartsWith("System");
+            }
         }
     }
 }
