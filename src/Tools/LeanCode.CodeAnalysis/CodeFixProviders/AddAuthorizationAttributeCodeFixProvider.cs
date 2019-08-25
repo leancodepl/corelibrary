@@ -35,6 +35,8 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
             }
         }
 
+        public override FixAllProvider GetFixAllProvider() => null;
+
         private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizers(Solution solution, Compilation compilation)
         {
             var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
@@ -43,8 +45,11 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
                 .Select(attr => (attr.Name, attr.ContainingNamespace.ToString()));
         }
 
+<<<<<<< HEAD
         public override FixAllProvider GetFixAllProvider() => null!;
 
+=======
+>>>>>>> Add AddValidator code action
         private static readonly (string Type, string Namespace)[] StaticAuthorizers = new[]
         {
             ("AllowUnauthorizedAttribute", "LeanCode.CQRS.Security"),
