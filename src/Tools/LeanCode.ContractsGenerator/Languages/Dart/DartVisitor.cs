@@ -268,7 +268,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
             var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
-            var mapJsonIncludeSuper = false;
 
             if (statement.Extends.Any(x => x.Name == "Enum"))
             {
@@ -296,6 +295,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 definitionsBuilder.Append(">");
             }
+
+            var mapJsonIncludeSuper = false;
 
             if (statement.Extends.Any())
             {
@@ -485,10 +486,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             if (statement.IsArrayLike)
             {
-                if (statement.TypeArguments.Any())
+                if (statement.TypeArguments.FirstOrDefault() is TypeStatement argumentType)
                 {
-                    var argumentType = statement.TypeArguments[0];
-
                     if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLowerInvariant()))
                     {
                         definitionsBuilder.Append($".map((x{depth}) => x{depth}");
@@ -520,20 +519,17 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             GenerateFromJsonAssignments(statement.Fields, level + 1);
 
-            if (statement.Extends.Any() && statement.IsClass)
+            if (statement.Extends.FirstOrDefault() is TypeStatement baseClass && statement.IsClass)
             {
-                var baseClass = statement.Extends[0];
                 var type = mangledStatements[Mangle(baseClass.Namespace, baseClass.Name)];
 
-                if (type.statement is InterfaceStatement)
+                if (type.statement is InterfaceStatement baseStatement)
                 {
-                    var baseStatement = type.statement as InterfaceStatement;
                     GenerateFromJsonAssignments(baseStatement.Fields, level + 1);
                 }
             }
 
-            definitionsBuilder
-                .AppendLine(";");
+            definitionsBuilder.AppendLine(";");
         }
 
         private void GenerateFromJsonAssignments(List<FieldStatement> fields, int level)
@@ -668,8 +664,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private string MakeName(string namespaceName, string name, int depth)
         {
-            var splited = namespaceName.Split('.').Reverse().Take(depth);
-            return string.Join(string.Empty, splited) + name;
+            var split = namespaceName.Split('.').Reverse().Take(depth).Append(name);
+            return string.Join(string.Empty, split);
         }
     }
 }
