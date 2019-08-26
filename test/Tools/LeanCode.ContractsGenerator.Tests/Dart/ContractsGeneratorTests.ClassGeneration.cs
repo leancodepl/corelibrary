@@ -96,6 +96,60 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void Base_type_properties_are_mapped_correctly_to_and_from_json()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"public class BaseTestClass
+{
+    public int BaseField { get; set; }
+}
+public class TestClass : BaseTestClass
+{
+    public string Field { get; set; }
+}");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            var expectedBaseClassProjection =
+@"class BaseTestClass {
+
+    int baseField;
+
+    @virtual
+    Map<String, dynamic> toJsonMap() {
+        final map = <String, dynamic>{
+            'BaseField': baseField,
+        };
+        return map;
+    }
+
+    static BaseTestClass fromJson(Map map) => BaseTestClass()
+            ..baseField = map['BaseField'];
+}";
+            Assert.Contains(expectedBaseClassProjection, contracts);
+
+            var expectedClassProjection =
+@"class TestClass extends BaseTestClass {
+
+    String field;
+
+    @override
+    Map<String, dynamic> toJsonMap() {
+        final map = <String, dynamic>{
+            'Field': field,
+        };
+        map.addAll(super.toJsonMap());
+        return map;
+    }
+
+    static TestClass fromJson(Map map) => TestClass()
+            ..field = map['Field']
+            ..baseField = map['BaseField'];
+}";
+            Assert.Contains(expectedClassProjection, contracts);
+        }
+
+        [Fact]
         public void Deep_generic_inheritance_is_resolved_correctly()
         {
             var generator = CreateDartGeneratorFromNamespace("public interface IInt<T> { } public class TestClass<T> : IInt<List<T>> { }");
@@ -106,7 +160,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
-        public void Static_class_class_is_resolved_correctly()
+        public void Static_class_is_resolved_correctly()
         {
             var generator = CreateDartGeneratorFromNamespace("public static class ErrorCodes { public const int Invalid = 1; }");
 
