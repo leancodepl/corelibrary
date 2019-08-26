@@ -204,7 +204,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 definitionsBuilder.Append(">");
             }
-            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out string newName))
+            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLowerInvariant(), out string newName))
             {
                 definitionsBuilder.Append(newName);
             }
@@ -489,7 +489,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 {
                     var argumentType = statement.TypeArguments[0];
 
-                    if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLower()))
+                    if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLowerInvariant()))
                     {
                         definitionsBuilder.Append($".map((x{depth}) => x{depth}");
                         GenerateTypeMapingForToJsonMethod(argumentType, depth + 1);
@@ -505,7 +505,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 definitionsBuilder.Append("?.toIso8601String()");
             }
-            else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLower()))
+            else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLowerInvariant()))
             {
                 definitionsBuilder.Append(".toJsonMap()");
             }
@@ -553,7 +553,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                     var argType = field.Type.TypeArguments.First();
 
-                    if (!configuration.TypeTranslations.ContainsKey(argType.Name.ToLower()))
+                    if (!configuration.TypeTranslations.ContainsKey(argType.Name.ToLowerInvariant()))
                     {
                         definitionsBuilder
                            .Append("?.map((dynamic x) => ");
@@ -582,7 +582,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     continue;
                 }
 
-                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLower()))
+                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLowerInvariant()))
                 {
                     definitionsBuilder
                         .AppendLine()
