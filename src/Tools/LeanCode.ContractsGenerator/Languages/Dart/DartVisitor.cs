@@ -497,9 +497,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     }
                 }
             }
-            else if (statement.Name == "DateTime")
+            else if (statement.Name == "DateTime" && !statement.IsNullable)
             {
                 definitionsBuilder.Append(".toIso8601String()");
+            }
+            else if (statement.Name == "DateTime" && statement.IsNullable)
+            {
+                definitionsBuilder.Append("?.toIso8601String()");
             }
             else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLower()))
             {

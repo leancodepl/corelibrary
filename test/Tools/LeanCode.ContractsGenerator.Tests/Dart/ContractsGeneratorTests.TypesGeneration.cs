@@ -43,6 +43,20 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
             Assert.Contains("DateTime testVar;", contracts);
+            Assert.Contains("'TestVar': testVar.toIso8601String(),", contracts);
+            Assert.Contains("..testVar = map['TestVar'] != null ? DateTime.parse(normalizeDate(map['TestVar'])) : null;", contracts);
+        }
+
+        [Fact]
+        public void Nullable_DateTime_is_resolved_correctly()
+        {
+            var generator = CreateDartGeneratorFromClass("public DateTime? TestVar { get; set; };");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("DateTime testVar;", contracts);
+            Assert.Contains("'TestVar': testVar?.toIso8601String(),", contracts);
+            Assert.Contains("..testVar = map['TestVar'] != null ? DateTime.parse(normalizeDate(map['TestVar'])) : null;", contracts);
         }
 
         [Fact]
