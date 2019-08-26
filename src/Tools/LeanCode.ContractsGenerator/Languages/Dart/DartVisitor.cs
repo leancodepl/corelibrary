@@ -13,7 +13,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
         private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
-        private string namespaceName;
 
         public DartVisitor(DartConfiguration configuration)
         {
