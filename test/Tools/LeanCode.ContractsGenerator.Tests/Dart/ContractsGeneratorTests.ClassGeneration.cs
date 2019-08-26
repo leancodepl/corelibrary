@@ -185,5 +185,53 @@ public class TestClass : BaseTestClass
 
             Assert.True(test1Index < test2Index);
         }
+
+        [Fact]
+        public void Classes_having_the_same_names_are_supplied_with_minimal_namespace_name()
+        {
+            var generator = CreateDartGenerator(
+@"namespace Aa.Bb.Cc
+{
+    public class Class
+    { }
+}
+namespace Aaa.Bbb.Cc
+{
+    public class Class
+    { }
+}");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            var firstClass =
+@"class CcBbClass {
+
+
+    @virtual
+    Map<String, dynamic> toJsonMap() {
+        final map = <String, dynamic>{
+        };
+        return map;
+    }
+
+    static CcBbClass fromJson(Map map) => CcBbClass();
+}";
+            Assert.Contains(firstClass, contracts);
+
+            var secondClass =
+@"class CcBbbClass {
+
+
+    @virtual
+    Map<String, dynamic> toJsonMap() {
+        final map = <String, dynamic>{
+        };
+        return map;
+    }
+
+    static CcBbbClass fromJson(Map map) => CcBbbClass();
+}";
+            Assert.Contains(secondClass, contracts);
+        }
     }
 }
