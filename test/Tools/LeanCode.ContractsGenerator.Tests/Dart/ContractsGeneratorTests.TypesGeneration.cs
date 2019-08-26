@@ -6,6 +6,16 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
     public partial class ContractsGeneratorTests
     {
         [Fact]
+        public void Nullable_annotation_is_generated()
+        {
+            var generator = CreateDartGeneratorFromClass(string.Empty);
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class _Nullable { const _Nullable(); } const nullable = _Nullable();", contracts);
+        }
+
+        [Fact]
         public void Int_is_resolved_to_int()
         {
             var generator = CreateDartGeneratorFromClass("public int TestVar { get; set; };");
@@ -16,13 +26,23 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void DateTime_is_resolved_to_DateTime()
+        {
+            var generator = CreateDartGeneratorFromClass("public DateTime TestVar { get; set; };");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("DateTime testVar;", contracts);
+        }
+
+        [Fact]
         public void Nullable_property_is_resolved_correctly()
         {
             var generator = CreateDartGeneratorFromClass("public Nullable<int> TestVar { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("int testVar", contracts);
+            Assert.Contains("@nullable\nint testVar", contracts);
         }
 
         [Fact]
@@ -32,7 +52,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("int testVar", contracts);
+            Assert.Contains("@nullable\nint testVar", contracts);
         }
 
         [Fact]
