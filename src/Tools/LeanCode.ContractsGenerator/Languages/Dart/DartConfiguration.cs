@@ -41,7 +41,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             { "decimal", "double" },
             { "bool", "bool" },
             { "boolean", "bool" },
-            { "datetime", "String" },
+            { "datetime", "DateTime" },
             { "timespan", "String" },
             { "datetimeoffset", "String" },
             { "guid", "String" },
