@@ -554,7 +554,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                         definitionsBuilder
                            .Append("?.map((dynamic x) => ");
 
-                        VisitTypeStatement(field.Type.TypeArguments.First());
+                        VisitTypeStatement(argType);
 
                         definitionsBuilder
                             .AppendLine(".fromJson(x))");
