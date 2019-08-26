@@ -186,7 +186,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var name = statement.Name;
 
                 if (!configuration.UnmangledTypes.Contains(statement.Name))
+                {
                     name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
+                }
 
                 definitionsBuilder.Append(name);
                 definitionsBuilder.Append("<");
@@ -664,7 +666,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private string MakeName(string namespaceName, string name, int depth)
         {
             var splited = namespaceName.Split('.').Reverse().Take(depth);
-            return string.Join("", splited) + name;
+            return string.Join(string.Empty, splited) + name;
         }
     }
 }
