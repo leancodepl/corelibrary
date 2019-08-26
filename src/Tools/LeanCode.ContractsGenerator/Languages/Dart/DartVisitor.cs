@@ -114,9 +114,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine($"static {name} fromJson(dynamic json) => {name}(json);")
                 .AppendLine();
 
-            VisitEnumEqualityOperator(name, level + 1);
+            AppendEnumEqualityOperator(name, level + 1);
 
-            VisitEnumHashCode(name, level + 1);
+            AppendEnumHashCode(name, level + 1);
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
@@ -132,7 +132,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine();
         }
 
-        private void VisitEnumEqualityOperator(string parentName, int level)
+        private void AppendEnumEqualityOperator(string parentName, int level)
         {
             definitionsBuilder
                 .AppendSpaces(level)
@@ -144,7 +144,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine();
         }
 
-        private void VisitEnumHashCode(string parentName, int level)
+        private void AppendEnumHashCode(string parentName, int level)
         {
             definitionsBuilder
                 .AppendSpaces(level)
