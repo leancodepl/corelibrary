@@ -104,5 +104,25 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("Map<String, int> testDictionary", contracts);
         }
+
+        [Fact]
+        public void List_containing_list_is_resolved_correctly()
+        {
+            var generator = CreateDartGeneratorFromClass("public List<List<int>> TestListOfLists { get; set; };");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("List<List<int>> testListOfLists", contracts);
+        }
+
+        [Fact]
+        public void List_containing_custom_type_is_resolved_correctly()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public class TestClass { public List<DTO> CustomElementList { get; set; } }\npublic class DTO { public int Field { get; set; } } ");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("List<DTO> customElementList", contracts);
+        }
     }
 }
