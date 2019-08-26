@@ -26,6 +26,16 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void Double_is_resolved_as_string_for_nan_or_infinity()
+        {
+            var generator = CreateDartGeneratorFromClass("public double Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("..field = map['Field'] is String ?\ndouble.parse(map['Field']) : map['Field']", contracts);
+        }
+
+        [Fact]
         public void DateTime_is_resolved_to_DateTime()
         {
             var generator = CreateDartGeneratorFromClass("public DateTime TestVar { get; set; };");

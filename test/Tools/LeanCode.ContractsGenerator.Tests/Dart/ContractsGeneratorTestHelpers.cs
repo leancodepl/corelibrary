@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 {
     internal static class ContractsGeneratorTestHelpers
     {
-        public static LeanCode.ContractsGenerator.CodeGenerator CreateDartGeneratorFromClass(string classBody, string className = "TsGeneratorTest")
+        public static LeanCode.ContractsGenerator.CodeGenerator CreateDartGeneratorFromClass(string classBody, string className = "DartGeneratorTest")
         {
             return CreateDartGeneratorFromNamespace(
             $@"
