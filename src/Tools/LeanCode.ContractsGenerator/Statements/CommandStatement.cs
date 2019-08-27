@@ -7,6 +7,8 @@ namespace LeanCode.ContractsGenerator.Statements
         {
             Name = interfaceStatement.Name;
             Namespace = interfaceStatement.Namespace;
+            IsClass = interfaceStatement.IsClass;
+            BaseClass = interfaceStatement.BaseClass;
             IsStatic = interfaceStatement.IsStatic;
             Parameters = interfaceStatement.Parameters;
             Extends = interfaceStatement.Extends;

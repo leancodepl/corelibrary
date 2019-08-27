@@ -319,34 +319,26 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             var mapJsonIncludeSuper = false;
 
-            if (statement.Extends.Any())
+            if (statement.IsClass && statement.BaseClass != null)
             {
-                int i = 0;
+                mapJsonIncludeSuper = true;
+                definitionsBuilder.Append(" extends ");
+                VisitTypeStatement(statement.BaseClass);
+            }
 
-                if (statement.IsClass)
+            var mappedInterfaces = statement.Extends
+                .Where(e => e.Name.StartsWith("IRemoteQuery") || e.Name.StartsWith("IRemoteCommand"))
+                .ToList();
+
+            if (mappedInterfaces.Any())
+            {
+                definitionsBuilder.Append(" implements ");
+
+                for (var i = 0; i < mappedInterfaces.Count; i++)
                 {
-                    mapJsonIncludeSuper = true;
-                    definitionsBuilder.Append(" extends ");
-                    VisitTypeStatement(statement.Extends[0]);
+                    VisitTypeStatement(mappedInterfaces[i]);
 
-                    if (statement.Extends.Count > 1)
-                    {
-                        definitionsBuilder.Append(" implements ");
-                    }
-
-                    i = 1;
-                }
-                else
-                {
-                    definitionsBuilder.Append(" implements ");
-                    i = 0;
-                }
-
-                for (; i < statement.Extends.Count; i++)
-                {
-                    VisitTypeStatement(statement.Extends[i]);
-
-                    if (i < statement.Extends.Count - 1)
+                    if (i < mappedInterfaces.Count - 1)
                     {
                         definitionsBuilder.Append(", ");
                     }
@@ -549,9 +541,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             GenerateFromJsonAssignments(statement.Fields, level + 1);
 
-            if (statement.Extends.FirstOrDefault() is TypeStatement baseClass && statement.IsClass)
+            if (statement.BaseClass != null && statement.IsClass)
             {
-                var type = mangledStatements[Mangle(baseClass.Namespace, baseClass.Name)];
+                var type = mangledStatements[Mangle(statement.BaseClass.Namespace, statement.BaseClass.Name)];
 
                 if (type.statement is InterfaceStatement baseStatement)
                 {

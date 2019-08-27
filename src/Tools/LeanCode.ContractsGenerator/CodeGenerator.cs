@@ -81,12 +81,14 @@ namespace LeanCode.ContractsGenerator
 
             var baseTypes = info.Interfaces.Select(ConvertType).Where(t => t.Name != "ValueType").ToList();
 
+            var baseClass = null as TypeStatement;
+
             if (info.BaseType != null && info.BaseType.Name != "Object")
             {
                 var baseType = ConvertType(info.BaseType);
                 if (baseType.Name != "ValueType")
                 {
-                    baseTypes.Add(baseType);
+                    baseClass = baseType;
                 }
             }
 
@@ -110,6 +112,7 @@ namespace LeanCode.ContractsGenerator
                 Name = info.Name,
                 Namespace = GetFullNamespaceName(info.ContainingNamespace, info.ContainingType),
                 IsClass = info.BaseType != null,
+                BaseClass = baseClass,
                 IsStatic = info.IsStatic,
                 Parameters = info.TypeParameters.Select(ParseTypeArgument).ToList(),
                 Extends = baseTypes,
