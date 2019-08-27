@@ -46,16 +46,6 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
-        public void Remote_query_contains_cast_to_type_for_datetime()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public class Query : IRemoteQuery<DateTime> { }");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("DateTime resultFactory(dynamic decodedJson) => decodedJson as DateTime;", contracts);
-        }
-
-        [Fact]
         public void Remote_query_contains_cast_to_type_for_guid()
         {
             var generator = CreateDartGeneratorFromNamespace("public class Query : IRemoteQuery<Guid> { }");
@@ -83,26 +73,6 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
             Assert.Contains("double resultFactory(dynamic decodedJson) => decodedJson as double;", contracts);
-        }
-
-        [Fact]
-        public void Remote_query_contains_cast_to_type_for_dynamic()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public class Query : IRemoteQuery<dynamic> { }");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("dynamic resultFactory(dynamic decodedJson) => decodedJson as dynamic;", contracts);
-        }
-
-        [Fact]
-        public void Remote_query_contains_cast_to_type_for_object()
-        {
-            var generator = CreateDartGeneratorFromNamespace("public class Query : IRemoteQuery<object> { }");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Contains("Object resultFactory(dynamic decodedJson) => decodedJson as Object;", contracts);
         }
     }
 }

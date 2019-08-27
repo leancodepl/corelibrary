@@ -18,9 +18,25 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         public DartVisitor(DartConfiguration configuration)
         {
             this.configuration = configuration;
-            primitiveTypes = configuration.TypeTranslations.Keys
-                .Select(name => name.ToLowerInvariant())
-                .ToList();
+            primitiveTypes = new List<string>
+            {
+                "int",
+                "double",
+                "float",
+                "single",
+                "int32",
+                "uint32",
+                "byte",
+                "sbyte",
+                "int64",
+                "short",
+                "long",
+                "decimal",
+                "bool",
+                "boolean",
+                "guid",
+                "string",
+            };
         }
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
