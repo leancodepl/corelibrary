@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     internal class DartVisitor : ILanguageVisitor
     {
-        private static readonly HashSet<string> PrimitiveTypes = new HashSet<string>
+        private static readonly HashSet<string> BuiltinTypes = new HashSet<string>
             {
                 "int",
                 "double",
@@ -449,7 +449,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 definitionsBuilder
                     .Append($" resultFactory(dynamic decodedJson) => ");
 
-                if (!PrimitiveTypes.Contains(result.Name.ToLowerInvariant()))
+                if (!BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
                 {
                     VisitTypeStatement(result);
                     definitionsBuilder
