@@ -12,11 +12,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
     {
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
+        private readonly List<string> primitiveTypes;
         private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
 
         public DartVisitor(DartConfiguration configuration)
         {
             this.configuration = configuration;
+            primitiveTypes = configuration.TypeTranslations.Keys
+                .Select(name => name.ToLowerInvariant())
+                .ToList();
         }
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
@@ -430,9 +434,18 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 definitionsBuilder
                     .Append($" resultFactory(dynamic decodedJson) => ");
 
-                VisitTypeStatement(result);
-                definitionsBuilder
-                    .AppendLine(".fromJson(decodedJson);");
+                if (!primitiveTypes.Contains(result.Name.ToLowerInvariant()))
+                {
+                    VisitTypeStatement(result);
+                    definitionsBuilder
+                        .AppendLine(".fromJson(decodedJson);");
+                }
+                else
+                {
+                    definitionsBuilder.Append("decodedJson as ");
+                    VisitTypeStatement(result);
+                    definitionsBuilder.AppendLine(";");
+                }
             }
         }
 
