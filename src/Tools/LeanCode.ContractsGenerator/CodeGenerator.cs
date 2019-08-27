@@ -88,6 +88,7 @@ namespace LeanCode.ContractsGenerator
                 var baseType = ConvertType(info.BaseType);
                 if (baseType.Name != "ValueType")
                 {
+                    baseTypes.Add(baseType);
                     baseClass = baseType;
                 }
             }

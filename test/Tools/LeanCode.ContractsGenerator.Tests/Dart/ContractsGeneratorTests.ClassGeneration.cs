@@ -58,41 +58,41 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Generic_class_with_constraints_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IInt { } public class TestClass<T> where T: IList<IInt> { }");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteCommand { } public class TestClass<T> where T: IList<IRemoteCommand> { }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass<T implements List<IInt>", contracts);
+            Assert.Contains("class TestClass<T implements List<IRemoteCommand>", contracts);
         }
 
         [Fact]
-        public void Class_inheritance_is_resolved_correctly()
+        public void Class_inheritance_from_interface_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IInt { } public class TestClass : IInt {}");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteCommand { } public class TestClass : IRemoteCommand {}");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass extends IInt", contracts);
+            Assert.Contains("class TestClass implements IRemoteCommand", contracts);
         }
 
         [Fact]
-        public void Generic_class_inheritance_is_resolved_correctly()
+        public void Generic_class_inheritance_from_interface_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IInt<T> { } public class TestClass<T> : IInt<T> {}");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteCommand<T> { } public class TestClass<T> : IRemoteCommand<T> {}");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass<T> extends IInt<T>", contracts);
+            Assert.Contains("class TestClass<T> implements IRemoteCommand<T>", contracts);
         }
 
         [Fact]
-        public void Deep_inheritance_is_resolved_correctly()
+        public void Deep_inheritance_from_interface_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IInt<T> { } public class TestClass : IInt<List<int>> {}");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteQuery<T> { } public class TestClass : IRemoteQuery<List<int>> {}");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass extends IInt<List<int>>", contracts);
+            Assert.Contains("class TestClass implements IRemoteQuery<List<int>>", contracts);
         }
 
         [Fact]
@@ -150,13 +150,13 @@ public class TestClass : BaseTestClass
         }
 
         [Fact]
-        public void Deep_generic_inheritance_is_resolved_correctly()
+        public void Deep_generic_inheritance_from_interface_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IInt<T> { } public class TestClass<T> : IInt<List<T>> { }");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteQuery<T> { } public class TestClass<T> : IRemoteQuery<List<T>> { }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass<T> extends IInt<List<T>>", contracts);
+            Assert.Contains("class TestClass<T> implements IRemoteQuery<List<T>>", contracts);
         }
 
         [Fact]
