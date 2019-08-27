@@ -10,8 +10,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     internal class DartVisitor : ILanguageVisitor
     {
-        private readonly StringBuilder definitionsBuilder = new StringBuilder();
-        private readonly DartConfiguration configuration;
         private static readonly HashSet<string> PrimitiveTypes = new HashSet<string>
             {
                 "int",
@@ -31,6 +29,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 "guid",
                 "string",
             };
+        private readonly StringBuilder definitionsBuilder = new StringBuilder();
+        private readonly DartConfiguration configuration;
         private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
 
         public DartVisitor(DartConfiguration configuration)
