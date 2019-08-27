@@ -80,6 +80,27 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void Nullable_property_does_not_produce_attribute_inside_to_json()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"public class SomeDTO
+{
+    public CurrencyDTO? Currency { get; set; }
+}
+
+public enum CurrencyDTO
+{
+    PLN = 0,
+    EUR = 1,
+}");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Matches("@nullable\n\\s*CurrencyDTO currency", contracts);
+            Assert.Contains("..currency = map['Currency'] != null ? CurrencyDTO.fromJson(map['Currency']) : null;", contracts);
+        }
+
+        [Fact]
         public void Array_is_resolved_to_list()
         {
             var generator = CreateDartGeneratorFromClass("public int[] TestArray { get; set; };");
