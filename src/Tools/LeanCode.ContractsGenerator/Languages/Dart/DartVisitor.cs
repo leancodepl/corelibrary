@@ -11,24 +11,24 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
     internal class DartVisitor : ILanguageVisitor
     {
         private static readonly HashSet<string> BuiltinTypes = new HashSet<string>
-            {
-                "int",
-                "double",
-                "float",
-                "single",
-                "int32",
-                "uint32",
-                "byte",
-                "sbyte",
-                "int64",
-                "short",
-                "long",
-                "decimal",
-                "bool",
-                "boolean",
-                "guid",
-                "string",
-            };
+        {
+            "int",
+            "double",
+            "float",
+            "single",
+            "int32",
+            "uint32",
+            "byte",
+            "sbyte",
+            "int64",
+            "short",
+            "long",
+            "decimal",
+            "bool",
+            "boolean",
+            "guid",
+            "string",
+        };
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
         private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
