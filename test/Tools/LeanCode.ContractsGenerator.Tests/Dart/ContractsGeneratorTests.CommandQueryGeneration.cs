@@ -74,5 +74,37 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("double resultFactory(dynamic decodedJson) => decodedJson as double;", contracts);
         }
+
+        [Fact]
+        public void Remote_query_has_base_class_resolved_correctly()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"public class BaseClass
+{
+    public int Field { get; set; }
+}
+
+[AuthorizeWhenHasAnyOf(KnownRoles.Admin)]
+public class FirestoreAdminToken : BaseClass, IRemoteQuery<string>
+{ }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class FirestoreAdminToken extends BaseClass implements IRemoteQuery<String>", contracts);
+        }
+
+        [Fact]
+        public void Remote_query_has_ignored_interface()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"[AuthorizeWhenHasAnyOf(KnownRoles.Admin)]
+public class GetOfferData : IRemoteQuery<string>, IMyOffer
+{ }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class GetOfferData implements IRemoteQuery<String>", contracts);
+            Assert.DoesNotContain("IMyOffer", contracts);
+        }
     }
 }
