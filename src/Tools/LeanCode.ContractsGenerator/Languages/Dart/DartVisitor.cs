@@ -174,11 +174,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitTypeStatement(TypeStatement statement)
         {
-            if (statement.IsNullable)
-            {
-                definitionsBuilder.AppendLine("@nullable");
-            }
-
             if (statement.IsDictionary)
             {
                 definitionsBuilder.Append("Map<");
@@ -266,6 +261,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void VisitFieldStatement(FieldStatement statement, int level)
         {
             definitionsBuilder.AppendSpaces(level);
+
+            if (statement.Type.IsNullable)
+            {
+                definitionsBuilder
+                    .AppendLine("@nullable")
+                    .AppendSpaces(level);
+            }
 
             VisitTypeStatement(statement.Type);
 
