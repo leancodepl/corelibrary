@@ -265,8 +265,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             if (statement.Type.IsNullable)
             {
                 definitionsBuilder
-                .AppendLine("@nullable")
-                .AppendSpaces(level);
+                    .AppendLine("@nullable")
+                    .AppendSpaces(level);
             }
 
             VisitTypeStatement(statement.Type);
