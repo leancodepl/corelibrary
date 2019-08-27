@@ -106,5 +106,37 @@ public class GetOfferData : IRemoteQuery<string>, IMyOffer
             Assert.Contains("class GetOfferData implements IRemoteQuery<String>", contracts);
             Assert.DoesNotContain("IMyOffer", contracts);
         }
+
+        [Fact]
+        public void To_json_map_method_doesnt_append_toJsonMap_to_dictionaries()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"public class AzureTokenDTO
+    {
+        public string BlobUri { get; set; }
+        public string Token { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
+    }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("'Headers': headers,", contracts);
+        }
+
+        [Fact]
+        public void From_json_map_method_doesnt_treat_dictionaries_like_arrays()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"public class AzureTokenDTO
+    {
+        public string BlobUri { get; set; }
+        public string Token { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
+    }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("..headers = map['Headers'];", contracts);
+        }
     }
 }
