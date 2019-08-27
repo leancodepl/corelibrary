@@ -49,5 +49,17 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("int get hashCode => value.hashCode;", contracts);
         }
+
+        [Fact]
+        public void Enums_have_correct_values()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public enum TestEnum1 { New, NotNew }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class TestEnum1", contracts);
+            Assert.Contains("TestEnum1.new_()", contracts);
+            Assert.Contains("TestEnum1.notNew()", contracts);
+        }
     }
 }
