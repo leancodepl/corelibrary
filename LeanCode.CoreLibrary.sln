@@ -184,6 +184,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.EmailSender.SendGr
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DomainModels.MassTransitRelay", "src\Domain\LeanCode.DomainModels.MassTransitRelay\LeanCode.DomainModels.MassTransitRelay.csproj", "{4E6FB2E6-FC2C-4814-BA80-0C917516896F}"
 >>>>>>> Minimal mass transit integration
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.DomainModels.MassTransitRelay.Tests", "test\Domain\LeanCode.DomainModels.MassTransitRelay.Tests\LeanCode.DomainModels.MassTransitRelay.Tests.csproj", "{80A33FE3-868B-49DE-9C78-E353204C3B2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1121,6 +1123,18 @@ Global
 		{4E6FB2E6-FC2C-4814-BA80-0C917516896F}.Release|x64.Build.0 = Release|Any CPU
 		{4E6FB2E6-FC2C-4814-BA80-0C917516896F}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E6FB2E6-FC2C-4814-BA80-0C917516896F}.Release|x86.Build.0 = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|x64.Build.0 = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Debug|x86.Build.0 = Debug|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|x64.ActiveCfg = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|x64.Build.0 = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|x86.ActiveCfg = Release|Any CPU
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AFA22EA-B093-4457-ABA2-CFF96DF41350} = {7324BABF-C1F7-430D-BF76-CF9BFA559DC6}
@@ -1210,5 +1224,6 @@ Global
 		{5F50673F-8F21-49FE-8C5B-70048FE9F088} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
 		{65573151-B1E2-4932-B315-B8672AB37FBB} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{4E6FB2E6-FC2C-4814-BA80-0C917516896F} = {CEFCB733-AF22-46A6-8CAA-A620D9E90DB4}
+		{80A33FE3-868B-49DE-9C78-E353204C3B2F} = {4931D6C0-FA5C-4CCD-ABB3-06BEF131C4FB}
 	EndGlobalSection
 EndGlobal

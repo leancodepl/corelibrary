@@ -48,7 +48,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             {
                 logger.Debug("Publishing event of type {DomainEvent}", evt);
 
-                await bus.Publish(evt, ctx =>
+                // The cast is important. Otherwise event will be published
+                // as IDomainEvent interface instead of concrete object and handlers
+                // won't be called.
+                await bus.Publish((object)evt, ctx =>
                 {
                     ctx.MessageId = evt.Id;
                     ctx.ConversationId = correlationId;

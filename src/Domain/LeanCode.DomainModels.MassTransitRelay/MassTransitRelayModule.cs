@@ -34,40 +34,45 @@ namespace LeanCode.DomainModels.MassTransitRelay
         }
 
         protected abstract IBusControl CreateBus(IComponentContext context);
+
+        protected void ConfigureCommonFilters(IBusFactoryConfigurator bus, IComponentContext context)
+        {
+            var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
+
+            bus.UseSerilog();
+            bus.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
+            bus.UseLifetimeScopeInjection(scopeFactory);
+            bus.UseDomainEventsPublishing();
+        }
+
+        public static void DefaultReceiveEndpointConfig(IInMemoryReceiveEndpointConfigurator config, IComponentContext context)
+        {
+            config.ConfigureConsumers(context);
+        }
     }
 
     public class MassTransitInMemoryRelayModule : MassTransitRelayModuleBase
     {
         private readonly string queueName;
-        private readonly Action<IReceiveEndpointConfigurator, IComponentContext> receiveConfig;
+        private readonly Action<IInMemoryReceiveEndpointConfigurator, IComponentContext> receiveConfig;
 
         public MassTransitInMemoryRelayModule(
             string queueName,
-            Action<IReceiveEndpointConfigurator, IComponentContext> receiveConfig,
-            TypesCatalog consumersAssemblies)
+            TypesCatalog consumersAssemblies,
+            Action<IInMemoryReceiveEndpointConfigurator, IComponentContext> receiveConfig = null)
         : base(consumersAssemblies)
         {
             this.queueName = queueName;
-            this.receiveConfig = receiveConfig;
+            this.receiveConfig = receiveConfig ?? DefaultReceiveEndpointConfig;
         }
 
         protected override IBusControl CreateBus(IComponentContext context)
         {
-            var bus = Bus.Factory.CreateUsingInMemory(cfg =>
+            return Bus.Factory.CreateUsingInMemory(cfg =>
             {
-                cfg.UseSerilog();
-                cfg.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
-
+                ConfigureCommonFilters(cfg, context);
                 cfg.ReceiveEndpoint(queueName, rcv => receiveConfig(rcv, context));
             });
-
-            return bus;
-        }
-
-        public static void DefaultReceiveEndpointConfig(IReceiveEndpointConfigurator config, IComponentContext context)
-        {
-            config.UseInMemoryOutbox();
-            config.ConfigureConsumers(context);
         }
     }
 }
