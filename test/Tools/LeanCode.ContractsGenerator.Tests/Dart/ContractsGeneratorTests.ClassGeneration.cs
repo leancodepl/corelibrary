@@ -233,5 +233,15 @@ namespace Aaa.Bbb.Cc
 }";
             Assert.Contains(secondClass, contracts);
         }
+
+        [Fact]
+        public void Class_inheritance_from_interface_other_than_cqrs_is_ignored()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public interface ISomething { } public interface IRemoteCommand {} public class TestClass : IRemoteCommand, ISomething {}");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("class TestClass implements IRemoteCommand", contracts);
+        }
     }
 }
