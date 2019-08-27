@@ -66,7 +66,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("@nullable\nint testVar", contracts);
+            Assert.Matches("@nullable\n\\s*int testVar", contracts);
         }
 
         [Fact]
@@ -76,7 +76,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("@nullable\nint testVar", contracts);
+            Assert.Matches("@nullable\n\\s*int testVar", contracts);
         }
 
         [Fact]
