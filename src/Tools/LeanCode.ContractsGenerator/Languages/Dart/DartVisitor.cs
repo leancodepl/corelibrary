@@ -526,7 +526,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 definitionsBuilder.Append("?.toIso8601String()");
             }
-            else if (!configuration.TypeTranslations.ContainsKey(statement.Name.ToLowerInvariant()))
+            else if (configuration.TypeTranslations.ContainsKey(statement.Name.ToLowerInvariant()))
+            {
+                return;
+            }
+            else if (statement.IsDictionary)
+            {
+                return;
+            }
+            else
             {
                 definitionsBuilder.Append(".toJsonMap()");
             }
@@ -561,7 +569,17 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 var map = $"map['{field.Name.Capitalize()}']";
                 var value = map;
 
-                if (field.Type.IsArrayLike || field.Type.IsDictionary)
+                if (field.Type.IsDictionary)
+                {
+                    definitionsBuilder
+                        .AppendLine()
+                        .AppendSpaces(level + 2)
+                        .Append($"..{field.Name.Uncapitalize()} = {value}");
+
+                    continue;
+                }
+
+                if (field.Type.IsArrayLike)
                 {
                     definitionsBuilder
                         .AppendLine()
