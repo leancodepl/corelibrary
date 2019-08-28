@@ -9,11 +9,15 @@ namespace LeanCode.DomainModels.MassTransitRelay
 {
     public abstract class MassTransitRelayModuleBase : AppModule
     {
-        protected TypesCatalog Consumers { get; }
+        private readonly string queueName;
+        private readonly TypesCatalog consumers;
 
-        public MassTransitRelayModuleBase(TypesCatalog consumers)
+        protected abstract IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator);
+
+        public MassTransitRelayModuleBase(string queueName, TypesCatalog consumers)
         {
-            Consumers = consumers;
+            this.queueName = queueName;
+            this.consumers = consumers;
         }
 
         public override void ConfigureServices(IServiceCollection services)
@@ -28,51 +32,40 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             builder.AddMassTransit(cfg =>
             {
-                cfg.AddConsumers(Consumers.Assemblies);
+                cfg.AddConsumers(consumers.Assemblies);
                 cfg.AddBus(CreateBus);
             });
         }
 
-        protected abstract IBusControl CreateBus(IComponentContext context);
-
-        protected void ConfigureCommonFilters(IBusFactoryConfigurator bus, IComponentContext context)
+        private IBusControl CreateBus(IComponentContext context)
         {
-            var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
+            return CreateBus(cfg =>
+            {
+                var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
-            bus.UseSerilog();
-            bus.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
-            bus.UseLifetimeScopeInjection(scopeFactory);
-            bus.UseDomainEventsPublishing();
-        }
+                cfg.UseSerilog();
+                cfg.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
+                cfg.UseLifetimeScopeInjection(scopeFactory);
+                cfg.UseDomainEventsPublishing();
 
-        public static void DefaultReceiveEndpointConfig(IInMemoryReceiveEndpointConfigurator config, IComponentContext context)
-        {
-            config.ConfigureConsumers(context);
+                cfg.ReceiveEndpoint(queueName, rcv =>
+                {
+                    rcv.ConfigureConsumers(context);
+                });
+            });
         }
     }
 
     public class MassTransitInMemoryRelayModule : MassTransitRelayModuleBase
     {
-        private readonly string queueName;
-        private readonly Action<IInMemoryReceiveEndpointConfigurator, IComponentContext> receiveConfig;
-
-        public MassTransitInMemoryRelayModule(
-            string queueName,
-            TypesCatalog consumersAssemblies,
-            Action<IInMemoryReceiveEndpointConfigurator, IComponentContext> receiveConfig = null)
-        : base(consumersAssemblies)
+        public MassTransitInMemoryRelayModule(string queueName, TypesCatalog consumersAssemblies)
+            : base(queueName, consumersAssemblies)
         {
-            this.queueName = queueName;
-            this.receiveConfig = receiveConfig ?? DefaultReceiveEndpointConfig;
         }
 
-        protected override IBusControl CreateBus(IComponentContext context)
+        protected override IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator)
         {
-            return Bus.Factory.CreateUsingInMemory(cfg =>
-            {
-                ConfigureCommonFilters(cfg, context);
-                cfg.ReceiveEndpoint(queueName, rcv => receiveConfig(rcv, context));
-            });
+            return Bus.Factory.CreateUsingInMemory(configurator);
         }
     }
 }
