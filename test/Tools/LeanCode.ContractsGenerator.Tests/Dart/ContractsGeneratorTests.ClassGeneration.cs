@@ -243,5 +243,25 @@ namespace Aaa.Bbb.Cc
 
             Assert.Contains("class TestClass implements IRemoteCommand", contracts);
         }
+
+        [Fact]
+        public void Class_translates_keyword_field_names_by_adding_underscore()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public class TestClass { public int New { get; set; } }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("int new_;", contracts);
+        }
+
+        [Fact]
+        public void Class_translates_normal_field_names_to_lower_case()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public class TestClass { public int NotNew { get; set; } }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("int notNew;", contracts);
+        }
     }
 }

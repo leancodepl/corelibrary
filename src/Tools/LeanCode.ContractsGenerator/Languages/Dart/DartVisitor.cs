@@ -146,7 +146,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.AppendSpaces(level)
                 .Append("const ")
-                .Append($"{parentName}.{statement.Name.Uncapitalize()}")
+                .Append($"{parentName}.{TranslateIdentifier(statement.Name)}")
                 .Append($"() : value = {statement.Value};")
                 .AppendLine();
         }
@@ -272,7 +272,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             VisitTypeStatement(statement.Type);
 
             definitionsBuilder.Append(" ");
-            definitionsBuilder.Append(statement.Name.Uncapitalize());
+            definitionsBuilder.Append(TranslateIdentifier(statement.Name));
             definitionsBuilder.AppendLine(";");
         }
 
@@ -475,7 +475,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             foreach (var field in statement.Fields)
             {
-                var serializedField = field.Name.Uncapitalize();
+                var serializedField = TranslateIdentifier(field.Name);
 
                 definitionsBuilder
                     .AppendSpaces(level + 3)
@@ -566,6 +566,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             foreach (var field in fields)
             {
+                var identifier = TranslateIdentifier(field.Name);
                 var map = $"map['{field.Name.Capitalize()}']";
                 var value = map;
 
@@ -584,7 +585,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     definitionsBuilder
                         .AppendLine()
                         .AppendSpaces(level + 2)
-                        .AppendLine($"..{field.Name.Uncapitalize()} = {value}")
+                        .AppendLine($"..{identifier} = {value}")
                         .AppendSpaces(level + 3);
 
                     var argType = field.Type.TypeArguments.First();
@@ -623,7 +624,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     definitionsBuilder
                         .AppendLine()
                         .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = {map} != null ? ");
+                        .Append($"..{identifier} = {map} != null ? ");
 
                     VisitTypeStatement(field.Type);
 
@@ -638,17 +639,17 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     if (field.Type.Name == "DateTime")
                     {
                         value = $"DateTime.parse(normalizeDate({value}))";
-                        definitionsBuilder.Append($"..{field.Name.Uncapitalize()} = {map} != null ? {value} : null");
+                        definitionsBuilder.Append($"..{identifier} = {map} != null ? {value} : null");
                     }
                     else if (field.Type.Name == "Double")
                     {
-                        definitionsBuilder.AppendLine($"..{field.Name.Uncapitalize()} = {map} is String ?")
+                        definitionsBuilder.AppendLine($"..{identifier} = {map} is String ?")
                             .AppendLine($"double.parse({map}) : {map}");
                     }
                     else
                     {
                         definitionsBuilder
-                            .Append($"..{field.Name.Uncapitalize()} = {value}");
+                            .Append($"..{identifier} = {value}");
                     }
                 }
             }
@@ -706,6 +707,18 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             var split = namespaceName.Split('.').Reverse().Take(depth).Append(name);
             return string.Join(string.Empty, split);
+        }
+
+        private string TranslateIdentifier(string identifier)
+        {
+            var translated = identifier.Uncapitalize();
+
+            if (translated == "new")
+            {
+                translated += '_';
+            }
+
+            return translated;
         }
     }
 }

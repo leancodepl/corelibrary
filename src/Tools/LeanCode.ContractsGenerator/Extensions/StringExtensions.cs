@@ -7,6 +7,11 @@ namespace LeanCode.ContractsGenerator.Extensions
     {
         public static string Uncapitalize(this string str)
         {
+            if (str == str.ToUpperInvariant()) 
+            {
+                return str;
+            }
+
             return char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
 
