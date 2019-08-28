@@ -10,7 +10,7 @@ using MassTransit;
 namespace LeanCode.DomainModels.MassTransitRelay
 {
     public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
-    where TContext : ICorrelationContext, IEventsInterceptorContext
+        where TContext : ICorrelationContext, IEventsInterceptorContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
         private readonly IBus bus;
@@ -25,24 +25,24 @@ namespace LeanCode.DomainModels.MassTransitRelay
             var result = await next(ctx, input);
             if (ctx.SavedEvents?.Count > 0)
             {
-                await PublishEvents(ctx);
+                await PublishEventsAsync(ctx);
             }
 
             return result;
         }
 
-        private Task PublishEvents(TContext ctx)
+        private Task PublishEventsAsync(TContext ctx)
         {
             var events = ctx.SavedEvents;
             logger.Debug("Publishing {Count} raised events", events.Count);
 
             var publishTasks = events
-                .Select(evt => PublishEvent(evt, ctx.CorrelationId));
+                .Select(evt => PublishEventAsync(evt, ctx.CorrelationId));
 
             return Task.WhenAll(publishTasks);
         }
 
-        private async Task PublishEvent(IDomainEvent evt, Guid correlationId)
+        private async Task PublishEventAsync(IDomainEvent evt, Guid correlationId)
         {
             try
             {
