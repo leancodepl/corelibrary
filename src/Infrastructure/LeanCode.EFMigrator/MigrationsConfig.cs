@@ -12,7 +12,7 @@ namespace LeanCode.EFMigrator
         public static string KeyVaultClientIdKey { get; set; } = "Secrets:KeyVault:ClientId";
         public static string KeyVaultClientSecretKey { get; set; } = "Secrets:KeyVault:ClientSecret";
 
-        private static string AzureKeyVaultConnectionString;
+        private static string azureKeyVaultConnectionString;
 
         private static async Task<string> GetAzureKeyVaultAccessTokenAsync(
             string authority, string resource, string scope)
@@ -39,12 +39,12 @@ namespace LeanCode.EFMigrator
                 var secret = await client.GetSecretAsync(keyVaultUrl, connectionStringKey)
                     .ConfigureAwait(false);
 
-                AzureKeyVaultConnectionString = secret.Value;
+                azureKeyVaultConnectionString = secret.Value;
             }
         }
 
         public static string GetConnectionString() =>
-            AzureKeyVaultConnectionString ?? GetEnvironmentVariable(ConnectionStringKey);
+            azureKeyVaultConnectionString ?? GetEnvironmentVariable(ConnectionStringKey);
 
         public static string DenormalizeKey(this string @this) => @this.Replace(":", "__");
 

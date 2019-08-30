@@ -19,7 +19,8 @@ namespace LeanCode.EFMigrator
 
         public TContext CreateDbContext(string[] args)
         {
-            return (TContext)Activator.CreateInstance(typeof(TContext),
+            return (TContext)Activator.CreateInstance(
+                typeof(TContext),
                 new DbContextOptionsBuilder<TContext>()
                     .UseLoggerFactory(new ServiceCollection()
                         .AddLogging(cfg => cfg.AddConsole())
