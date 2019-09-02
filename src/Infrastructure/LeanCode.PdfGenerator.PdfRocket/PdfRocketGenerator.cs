@@ -48,10 +48,11 @@ namespace LeanCode.PdfGenerator.PdfRocket
             using (var content = GetContent(source))
             using (var response = await client.Client.PostAsync("pdf", content))
             {
-                var result = await response.Content.ReadAsStreamAsync();
+                var result = new MemoryStream();
+                await response.Content.CopyToAsync(result);
+                result.Position = 0;
 
                 logger.Information("PDF generated");
-
                 return result;
             }
         }
