@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 4.0
+* Upgrade to .NET Core 3.0 (preview)
+
 ## 3.5
 * Rewrite of EFMigrator
 
@@ -15,7 +18,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 ## 3.3
 ### Changed
 * Upgrade to .NET Core 2.2 & Newtonsoft.Json 12
-* Switch most of the projects to netcoreapp2.2
+* Switch most of the projects to netcoreapp3.0
 * Embed source in nupkgs and do not publish symbol packages
 * Switch to FluentValidation 8, which results in breaking change: `RuleForAsync` is now instance method of `ContextualValidator`
 * Build is now done on Jenkins
