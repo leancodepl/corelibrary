@@ -22,7 +22,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         {
             var locator = new ViewLocator(BothDefault);
 
-            Assert.False(locator.GetItem("NonExistingView").Exists);
+            Assert.False(locator.GetItem("NonExistingView", null).Exists);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             opts = opts ?? BothDefault;
 
             var expected = Path.GetFullPath(relativeLocation);
-            var real = new ViewLocator(opts).GetItem(viewName);
+            var real = new ViewLocator(opts).GetItem(viewName, null);
             Assert.Equal(expected, real.PhysicalPath);
         }
     }

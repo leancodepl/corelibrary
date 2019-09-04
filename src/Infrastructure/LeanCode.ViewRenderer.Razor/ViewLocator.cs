@@ -7,6 +7,8 @@ namespace LeanCode.ViewRenderer.Razor
 {
     internal class ViewLocator : RazorProject
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ViewLocator>();
+
         private readonly RazorViewRendererOptions options;
 
         public ViewLocator(RazorViewRendererOptions options)
@@ -24,9 +26,18 @@ namespace LeanCode.ViewRenderer.Razor
             throw new NotSupportedException();
         }
 
-        public override RazorProjectItem GetItem(string path)
+        [Obsolete]
+        public override RazorProjectItem GetItem(string path) => GetItem(path, null);
+
+        public override RazorProjectItem GetItem(string path, string fileKind)
         {
+            if (fileKind != null)
+            {
+                logger.Warning("GetItem: `fileKind` parameter ignored: {fileKind}", fileKind);
+            }
+
             var (basePath, fullPath, fileName) = LocateFile(GetFileName(path));
+
             if (fullPath == null)
             {
                 return new Item(path);

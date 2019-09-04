@@ -7,7 +7,7 @@ using System.Runtime.Loader;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
-using Microsoft.AspNetCore.Razor;
+using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Microsoft.CodeAnalysis;
@@ -50,7 +50,7 @@ namespace LeanCode.ViewRenderer.Razor
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
             typeof(ViewCompiler).Assembly,
             typeof(HtmlEncoder).Assembly,
-            typeof(Microsoft.AspNetCore.Razor.Hosting.RazorCompiledItem).Assembly,
+            typeof(RazorCompiledItem).Assembly,
         }
         .Distinct()
         .Select(a => MetadataReference.CreateFromFile(a.Location))
@@ -59,7 +59,7 @@ namespace LeanCode.ViewRenderer.Razor
         private static readonly CSharpCompilationOptions Options
             = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary);
 
-        private readonly RazorTemplateEngine engine;
+        private readonly RazorProjectEngine engine;
 
         public ViewCompiler(ViewLocator locator)
         {
@@ -141,7 +141,7 @@ namespace LeanCode.ViewRenderer.Razor
 
         private async Task<string> GenerateCode(RazorProjectItem item)
         {
-            var genResult = await Task.Run(() => engine.GenerateCode(item));
+            var genResult = await Task.Run(() => engine.Process(item).GetCSharpDocument());
 
             if (genResult.Diagnostics.Any(d => d.Severity == RazorDiagnosticSeverity.Error))
             {
@@ -177,9 +177,9 @@ namespace LeanCode.ViewRenderer.Razor
             return genResult.GeneratedCode;
         }
 
-        private static RazorTemplateEngine PrepareEngine(ViewLocator locator)
+        private static RazorProjectEngine PrepareEngine(ViewLocator locator)
         {
-            var engine = RazorProjectEngine.Create(
+            return RazorProjectEngine.Create(
                 RazorConfiguration.Default,
                 RazorProjectFileSystem.Create(locator.GetRootPath()),
                 builder =>
@@ -197,12 +197,9 @@ namespace LeanCode.ViewRenderer.Razor
 
                     builder.AddDirective(FunctionsDirective.Directive);
                     builder.Features.Add(new FunctionsDirectivePass());
-                });
-            var templateEngine = new RazorTemplateEngine(engine.Engine, locator);
-            templateEngine.Options.DefaultImports
-                = RazorSourceDocument.Create(FilePreamble, (string)null);
 
-            return templateEngine;
+                    builder.AddDefaultImports(FilePreamble);
+                });
         }
     }
 }
