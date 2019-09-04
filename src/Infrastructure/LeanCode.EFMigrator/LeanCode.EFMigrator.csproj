@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.EFMigrator</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" />
+
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 

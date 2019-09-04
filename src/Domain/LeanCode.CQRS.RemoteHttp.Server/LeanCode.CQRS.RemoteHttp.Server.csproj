@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.CQRS.RemoteHttp.Server</AssemblyName>
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

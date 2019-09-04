@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.ViewRenderer.Razor</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +22,6 @@
     <PackageReference Include="System.Runtime.Loader" />
     <PackageReference Include="System.Dynamic.Runtime" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Language" />
     <PackageReference Include="Microsoft.Extensions.WebEncoders" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />

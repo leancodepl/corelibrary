@@ -1,15 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.Components</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" />
-
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
