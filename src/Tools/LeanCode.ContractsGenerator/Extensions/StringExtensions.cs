@@ -1,13 +1,10 @@
-using System.Linq;
-using System.Text;
-
 namespace LeanCode.ContractsGenerator.Extensions
 {
     internal static class StringExtensions
     {
         public static string Uncapitalize(this string str)
         {
-            if (str == str.ToUpperInvariant()) 
+            if (str == str.ToUpperInvariant())
             {
                 return str;
             }
