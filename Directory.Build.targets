@@ -97,7 +97,7 @@
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
-    <PropertyGroup>
+  <PropertyGroup>
     <CodeAnalysisSettingsLocation>$(MSBuildThisFileDirectory)</CodeAnalysisSettingsLocation>
     <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
