@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.AspNetCore.Razor.Language.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -92,7 +91,9 @@ namespace LeanCode.ViewRenderer.Razor
             try
             {
                 var sourceCode = SourceText.From(code);
-                tree = CSharpSyntaxTree.ParseText(sourceCode);
+                tree = CSharpSyntaxTree.ParseText(
+                    sourceCode,
+                    CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Preview));
             }
             catch (Exception ex)
             {
@@ -194,9 +195,6 @@ namespace LeanCode.ViewRenderer.Razor
                     });
                     builder.AddDirective(Extensions.Layout.Directive);
                     builder.Features.Add(new Extensions.LayoutDirectivePass());
-
-                    builder.AddDirective(FunctionsDirective.Directive);
-                    builder.Features.Add(new FunctionsDirectivePass());
 
                     builder.AddDefaultImports(FilePreamble);
                 });

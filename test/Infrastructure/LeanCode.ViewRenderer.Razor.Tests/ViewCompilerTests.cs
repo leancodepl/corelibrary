@@ -1,11 +1,8 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
-using Microsoft.AspNetCore.Razor.Language;
-using Serilog;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests
