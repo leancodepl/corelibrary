@@ -93,7 +93,7 @@ namespace LeanCode.ViewRenderer.Razor
                 var sourceCode = SourceText.From(code);
                 tree = CSharpSyntaxTree.ParseText(
                     sourceCode,
-                    CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Preview));
+                    CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8));
             }
             catch (Exception ex)
             {
