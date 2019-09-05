@@ -6,9 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" />
+
+    <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Dapper" />
   </ItemGroup>
 
 </Project>
