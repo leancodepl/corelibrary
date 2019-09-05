@@ -1,6 +1,5 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
 

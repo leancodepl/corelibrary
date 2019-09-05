@@ -169,6 +169,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Firestore", "src\I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.AsyncInitializer.Tests", "test\Infrastructure\LeanCode.AsyncInitializer.Tests\LeanCode.AsyncInitializer.Tests.csproj", "{BC359D2E-6B28-4F8C-BEC1-12D2FA63F7AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Localization.Tests", "test\Infrastructure\LeanCode.Localization.Tests\LeanCode.Localization.Tests.csproj", "{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1022,6 +1024,18 @@ Global
 		{BC359D2E-6B28-4F8C-BEC1-12D2FA63F7AB}.Release|x64.Build.0 = Release|Any CPU
 		{BC359D2E-6B28-4F8C-BEC1-12D2FA63F7AB}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC359D2E-6B28-4F8C-BEC1-12D2FA63F7AB}.Release|x86.Build.0 = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|x64.Build.0 = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Debug|x86.Build.0 = Debug|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|x64.ActiveCfg = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|x64.Build.0 = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|x86.ActiveCfg = Release|Any CPU
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AFA22EA-B093-4457-ABA2-CFF96DF41350} = {7324BABF-C1F7-430D-BF76-CF9BFA559DC6}
@@ -1104,5 +1118,6 @@ Global
 		{88140184-49FD-40D0-8B0F-ADD19DFAE4A1} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{3302D3B4-9F3B-44B5-83CA-FAC782BF5E05} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{BC359D2E-6B28-4F8C-BEC1-12D2FA63F7AB} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
+		{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
 	EndGlobalSection
 EndGlobal

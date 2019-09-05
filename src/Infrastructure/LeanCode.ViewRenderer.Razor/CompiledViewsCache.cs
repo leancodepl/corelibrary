@@ -73,7 +73,7 @@ namespace LeanCode.ViewRenderer.Razor
 
         private async Task<CompiledView> Compile(string viewName)
         {
-            var item = locator.GetItem(viewName);
+            var item = locator.GetItem(viewName, null);
             if (!item.Exists)
             {
                 logger.Warning("Cannot locate view {ViewName}", viewName);

@@ -77,7 +77,7 @@ namespace LeanCode.DomainModels.EF
             return UnitOfWork.CommitAsync();
         }
 
-        public abstract Task<TEntity> FindAsync(TIdentity id);
+        public abstract ValueTask<TEntity> FindAsync(TIdentity id);
     }
 
     public abstract class EFRepository<TEntity, TContext, TUnitOfWork>

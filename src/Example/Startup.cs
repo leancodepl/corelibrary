@@ -9,7 +9,7 @@ using LeanCode.PushNotifications;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.Example
 {
@@ -17,9 +17,9 @@ namespace LeanCode.Example
     {
         private static readonly TypesCatalog SearchAssemblies = new TypesCatalog(typeof(Startup));
 
-        private readonly IHostingEnvironment hostEnv;
+        private readonly IWebHostEnvironment hostEnv;
 
-        public Startup(IConfiguration config, IHostingEnvironment hostEnv)
+        public Startup(IConfiguration config, IWebHostEnvironment hostEnv)
             : base(config)
         {
             this.hostEnv = hostEnv;
