@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="System.Data.SqlClient" Version="4.7.0-preview9.19421.4" />
     <PackageReference Update="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Update="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Update="System.Threading.Tasks.Extensions" Version="4.6.0-preview.18571.3" />
@@ -37,6 +36,7 @@
     <PackageReference Update="Google.Cloud.Firestore" Version="1.0.0" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.4" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="1.0.19239.1" />
 
     <PackageReference Update="Dapper" Version="1.60.6" />
     <PackageReference Update="FluentValidation" Version="8.5.0-preview5" />
