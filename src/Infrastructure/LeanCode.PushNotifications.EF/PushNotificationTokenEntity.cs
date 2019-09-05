@@ -15,8 +15,8 @@ namespace LeanCode.PushNotifications.EF
         {
             builder.Entity<PushNotificationTokenEntity>(c =>
             {
-                c.HasKey(e => e.Id).ForSqlServerIsClustered(false);
-                c.HasIndex(e => new { e.UserId, e.DeviceType }).ForSqlServerIsClustered(true);
+                c.HasKey(e => e.Id).IsClustered(false);
+                c.HasIndex(e => new { e.UserId, e.DeviceType }).IsClustered(true);
                 c.HasIndex(e => new { e.UserId, e.DeviceType, e.Token }).IsUnique(true);
 
                 c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);

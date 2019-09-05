@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.Mixpanel</AssemblyName>
   </PropertyGroup>
 
@@ -10,10 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog" />
 
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="Microsoft.Extensions.Http" />
   </ItemGroup>
 

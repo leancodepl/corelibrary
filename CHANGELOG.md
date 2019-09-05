@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 4.0
+* Upgrade to .NET Core 3.0 (preview)
+
 ## 3.5
 * Rewrite of EFMigrator
 

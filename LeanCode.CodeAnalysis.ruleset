@@ -38,12 +38,16 @@
 
         <Rule Id="SA1302" Action="Info"/>
         <!-- InterfaceNamesMustBeginWithI -->
+        <Rule Id="SA1316" Action="None"/>
+        <!-- TupleElementNamesShouldUseCorrectCasing -->
 
 
         <Rule Id="SA1402" Action="None"/>
         <!-- FileMayOnlyContainASingleType -->
         <Rule Id="SA1407" Action="None"/>
         <!-- ArithmeticExpressionsMustDeclarePrecedence  -->
+        <Rule Id="SA1414" Action="None"/>
+        <!-- TupleTypesInSignaturesShouldHaveElementNames  -->
 
 
         <Rule Id="SA1502" Action="None"/>

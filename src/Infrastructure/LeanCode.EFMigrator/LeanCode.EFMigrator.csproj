@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.EFMigrator</AssemblyName>
   </PropertyGroup>
 
@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
 
     <PackageReference Include="Microsoft.Azure.KeyVault" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" />
   </ItemGroup>
 

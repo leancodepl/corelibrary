@@ -15,7 +15,7 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext, unitOfWork)
         { }
 
-        public override Task<TEntity> FindAsync(TIdentity id)
+        public override ValueTask<TEntity> FindAsync(TIdentity id)
         {
             return DbSet.FindAsync(id);
         }
@@ -31,7 +31,7 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext, unitOfWork)
         { }
 
-        public override Task<TEntity> FindAsync(Guid id)
+        public override ValueTask<TEntity> FindAsync(Guid id)
         {
             return DbSet.FindAsync(id);
         }

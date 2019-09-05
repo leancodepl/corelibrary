@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
+
   <Import Project="../../CommonRefs.props" />
 
   <ItemGroup>
@@ -12,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-      <ProjectReference Include="../../../src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
-      <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../../src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
   </ItemGroup>
 
   <ItemGroup>

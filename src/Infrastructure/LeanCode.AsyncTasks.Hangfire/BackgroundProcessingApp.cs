@@ -4,8 +4,8 @@ using Hangfire;
 using Hangfire.SqlServer;
 using LeanCode.Components;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
@@ -52,7 +52,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         public void ConfigureApp(IApplicationBuilder app)
         {
             var scope = app.ApplicationServices.GetRequiredService<ILifetimeScope>();
-            var appLifetime = app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
+            var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
 
             GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString, storageOpts);
             GlobalConfiguration.Configuration.UseAutofacActivator(scope);

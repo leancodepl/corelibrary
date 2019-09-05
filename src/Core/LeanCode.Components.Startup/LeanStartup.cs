@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace LeanCode.Components.Startup
@@ -14,7 +13,7 @@ namespace LeanCode.Components.Startup
     public abstract class LeanStartup : IStartup
     {
         protected IConfiguration Configuration { get; }
-        protected Serilog.ILogger Logger { get; }
+        protected ILogger Logger { get; }
 
         protected abstract IAppModule[] Modules { get; }
 
@@ -46,7 +45,7 @@ namespace LeanCode.Components.Startup
             ConfigureApp(app);
 
             var appLifetime = app.ApplicationServices
-                .GetRequiredService<IApplicationLifetime>();
+                .GetRequiredService<IHostApplicationLifetime>();
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
 
