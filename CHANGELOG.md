@@ -18,7 +18,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 ## 3.3
 ### Changed
 * Upgrade to .NET Core 2.2 & Newtonsoft.Json 12
-* Switch most of the projects to netcoreapp3.0
+* Switch most of the projects to netcoreapp2.2
 * Embed source in nupkgs and do not publish symbol packages
 * Switch to FluentValidation 8, which results in breaking change: `RuleForAsync` is now instance method of `ContextualValidator`
 * Build is now done on Jenkins
