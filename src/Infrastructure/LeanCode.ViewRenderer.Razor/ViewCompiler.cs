@@ -42,7 +42,6 @@ namespace LeanCode.ViewRenderer.Razor
             Assembly.Load(new AssemblyName("System.Runtime")),
             Assembly.Load(new AssemblyName("System.Private.CoreLib")),
             Assembly.Load(new AssemblyName("System.Threading.Tasks")),
-            Assembly.Load(new AssemblyName("System.ValueTuple")),
             Assembly.Load(new AssemblyName("System.Linq.Expressions")),
 
             Assembly.Load(new AssemblyName("Microsoft.CSharp")),
