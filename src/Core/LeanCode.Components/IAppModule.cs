@@ -11,7 +11,6 @@ namespace LeanCode.Components
 
     public class AppModule : Module, IAppModule
     {
-        public virtual void ConfigureServices(IServiceCollection services)
-        { }
+        public virtual void ConfigureServices(IServiceCollection services) { }
     }
 }

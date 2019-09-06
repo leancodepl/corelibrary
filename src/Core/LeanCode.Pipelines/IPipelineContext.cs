@@ -1,3 +1,5 @@
+using System;
+
 namespace LeanCode.Pipelines
 {
     public interface IPipelineContext
@@ -10,6 +12,12 @@ namespace LeanCode.Pipelines
 
     public class PipelineContext : IPipelineContext
     {
-        public IPipelineScope Scope { get; set; }
+        private IPipelineScope? scope;
+
+        public IPipelineScope Scope
+        {
+            get => scope ?? throw new NullReferenceException(nameof(Scope));
+            set => scope = value;
+        }
     }
 }

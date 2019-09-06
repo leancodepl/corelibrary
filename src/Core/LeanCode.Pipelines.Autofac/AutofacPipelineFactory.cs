@@ -12,10 +12,7 @@ namespace LeanCode.Pipelines.Autofac
             this.scope = scope;
         }
 
-        public IPipelineScope BeginScope()
-        {
-            return new PipelineScope(scope.BeginLifetimeScope());
-        }
+        public IPipelineScope BeginScope() => new PipelineScope(scope.BeginLifetimeScope());
 
         private sealed class PipelineScope : IPipelineScope
         {
@@ -26,24 +23,19 @@ namespace LeanCode.Pipelines.Autofac
                 this.scope = scope;
             }
 
-            public IPipelineElement<TContext, TInput, TOutput>
-                ResolveElement<TContext, TInput, TOutput>(Type type)
+            public IPipelineElement<TContext, TInput, TOutput> ResolveElement<TContext, TInput, TOutput>(Type type)
                 where TContext : IPipelineContext
             {
                 return (IPipelineElement<TContext, TInput, TOutput>)scope.Resolve(type);
             }
 
-            public IPipelineFinalizer<TContext, TInput, TOutput>
-                ResolveFinalizer<TContext, TInput, TOutput>(Type type)
+            public IPipelineFinalizer<TContext, TInput, TOutput> ResolveFinalizer<TContext, TInput, TOutput>(Type type)
                 where TContext : IPipelineContext
             {
                 return (IPipelineFinalizer<TContext, TInput, TOutput>)scope.Resolve(type);
             }
 
-            public void Dispose()
-            {
-                scope.Dispose();
-            }
+            public void Dispose() => scope.Dispose();
         }
     }
 }

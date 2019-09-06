@@ -11,12 +11,12 @@ namespace LeanCode.Components.Startup
     {
         public static LoggerConfiguration DestructureCommonObjects(
             this LoggerConfiguration config,
-            Assembly[] searchAssemblies)
+            Assembly[]? searchAssemblies)
         {
             if (searchAssemblies != null)
             {
-                var policies = SelectTypes<IDestructuringPolicy>(searchAssemblies);
-                return policies.Aggregate(config, (a, s) => a.Destructure.With(s));
+                return SelectTypes<IDestructuringPolicy>(searchAssemblies)
+                    .Aggregate(config, (a, s) => a.Destructure.With(s));
             }
             else
             {
@@ -33,8 +33,7 @@ namespace LeanCode.Components.Startup
 
         private static List<TType> SelectTypes<TType>(Assembly[] searchAssemblies)
         {
-            return
-                searchAssemblies
+            return searchAssemblies
                 .SelectMany(a => a.ExportedTypes)
                 .Where(t =>
                     typeof(TType).IsAssignableFrom(t) &&
