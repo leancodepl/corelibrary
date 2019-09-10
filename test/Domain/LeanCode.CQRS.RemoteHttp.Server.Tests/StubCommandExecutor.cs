@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
                     new ValidationResult(new[] { SampleError })));
             }
 
-            return Task.FromResult(CommandResult.Success());
+            return Task.FromResult(CommandResult.Success);
         }
     }
 }

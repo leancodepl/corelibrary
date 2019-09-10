@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using LeanCode.ContractsGenerator.Languages;
 using LeanCode.ContractsGenerator.Languages.Dart;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
@@ -152,7 +153,11 @@ namespace LeanCode.ContractsGenerator
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
                     var type = ConvertType(property.Type);
-                    if (HasAttribute<CanBeNullAttribute>(property))
+
+                    if (property.NullableAnnotation == NullableAnnotation.Annotated ||
+#pragma warning disable CS0618
+                        HasAttribute<CanBeNullAttribute>(property))
+#pragma warning restore CS0618
                     {
                         type.IsNullable = true;
                     }

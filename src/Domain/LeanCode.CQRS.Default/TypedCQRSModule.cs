@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Autofac;
-using Autofac.Core;
 using Autofac.Features.Variance;
 using LeanCode.Components;
 using LeanCode.CQRS.Default.Autofac;
@@ -49,6 +47,7 @@ namespace LeanCode.CQRS.Default
                     cmdBuilder))
                 .As<ICommandExecutor<TAppContext>>()
                 .SingleInstance();
+
             builder.Register(c =>
                 new QueryExecutor<TAppContext>(
                     c.Resolve<IPipelineFactory>(),

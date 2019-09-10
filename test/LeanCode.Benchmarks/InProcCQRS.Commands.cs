@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
@@ -26,7 +25,7 @@ namespace LeanCode.Benchmarks
         private readonly UserCommand userCommand = new UserCommand();
         private readonly ValidCommand validCommand = new ValidCommand();
         private readonly InvalidCommand invalidCommand = new InvalidCommand();
-        private readonly CommandResult stubResult = CommandResult.Success();
+        private readonly CommandResult stubResult = CommandResult.Success;
 
         private ICommandExecutor<SampleAppContext> simple;
         private ICommandExecutor<SampleAppContext> secured;

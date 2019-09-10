@@ -10,7 +10,7 @@ namespace LeanCode.IdentityProvider
 
         public static void UseIdentityProvider(IIdentityProvider newProvider)
         {
-            provider = newProvider ?? throw new ArgumentNullException(nameof(newProvider));
+            provider = newProvider;
         }
     }
 }

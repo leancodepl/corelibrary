@@ -1,33 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS
 {
     public class CommandResult
     {
-        private static readonly ValidationError[] EmptyErrors = new ValidationError[0];
-
-        public IReadOnlyList<ValidationError> ValidationErrors { get; }
+        public ImmutableList<ValidationError> ValidationErrors { get; }
         public bool WasSuccessful => ValidationErrors.Count == 0;
 
-        public CommandResult(IReadOnlyList<ValidationError> validationErrors)
+        public CommandResult(IReadOnlyList<ValidationError>? validationErrors)
         {
-            this.ValidationErrors = validationErrors ?? EmptyErrors;
+            ValidationErrors = validationErrors is null
+                ? ImmutableList.Create<ValidationError>()
+                : validationErrors.ToImmutableList();
         }
 
-        public static CommandResult Success()
-        {
-            return new CommandResult(null);
-        }
+        public static CommandResult Success { get; } = new CommandResult(null);
 
         public static CommandResult NotValid(ValidationResult validationResult)
         {
-            if (validationResult == null)
-            {
-                throw new ArgumentNullException(nameof(validationResult));
-            }
-            else if (validationResult.Errors == null || validationResult.Errors.Count == 0)
+            if (validationResult.IsValid)
             {
                 throw new ArgumentException(
                     "Cannot create NotValid command result if no validation errors have occurred.",

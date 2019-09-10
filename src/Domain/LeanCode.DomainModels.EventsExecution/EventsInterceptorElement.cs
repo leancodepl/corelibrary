@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.EventsExecution
 {
     public class EventsInterceptorElement<TContext, TInput, TOutput>
         : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : IEventsContext
+        where TContext : notnull, IEventsContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsInterceptorElement<TContext, TInput, TOutput>>();
 
@@ -25,13 +25,18 @@ namespace LeanCode.DomainModels.EventsExecution
             Func<TContext, TInput, Task<TOutput>> next)
         {
             logger.Debug("Preparing async events interceptor for the request");
+
             interceptor.Prepare();
+
             try
             {
                 var result = await next(ctx, input).ConfigureAwait(false);
 
-                var queue = interceptor.CaptureQueue();
+                var queue = interceptor.CaptureQueue()
+                    ?? throw new NullReferenceException("Failed to capture prepared interceptor event queue.");
+
                 logger.Debug("{EventCount} events captured, saving", queue.Count);
+
                 ctx.SavedEvents = new List<IDomainEvent>(queue);
 
                 return result;
@@ -39,6 +44,7 @@ namespace LeanCode.DomainModels.EventsExecution
             catch
             {
                 logger.Debug("Cannot execute the rest of the pipeline, skipping events capture");
+
                 throw;
             }
         }
@@ -48,7 +54,7 @@ namespace LeanCode.DomainModels.EventsExecution
     {
         public static PipelineBuilder<TContext, TInput, TOutput> InterceptEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : IEventsContext
+            where TContext : notnull, IEventsContext
         {
             return builder.Use<EventsInterceptorElement<TContext, TInput, TOutput>>();
         }

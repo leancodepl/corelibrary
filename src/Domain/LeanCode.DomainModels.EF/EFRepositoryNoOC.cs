@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public abstract class EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
-        : IRepository<TEntity, TIdentity>
-          where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
-          where TContext : DbContext
-          where TUnitOfWork : IUnitOfWork
+    public abstract class EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork> : IRepository<TEntity, TIdentity>
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
+        where TIdentity : notnull
+        where TContext : notnull, DbContext
+        where TUnitOfWork : notnull, IUnitOfWork
     {
         protected DbSet<TEntity> DbSet { get; }
         protected TUnitOfWork UnitOfWork { get; }
@@ -19,7 +19,7 @@ namespace LeanCode.DomainModels.EF
         public EFRepositoryNoOC(TContext dbContext, TUnitOfWork unitOfWork)
         {
             DbSet = dbContext.Set<TEntity>();
-            this.UnitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork;
         }
 
         public virtual void Add(TEntity entity)
@@ -46,36 +46,36 @@ namespace LeanCode.DomainModels.EF
         // if there are other objects tracked by EF change tracker
         public virtual Task AddAsync(TEntity entity)
         {
-            this.Add(entity);
+            Add(entity);
             return UnitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteAsync(TEntity entity)
         {
-            this.Delete(entity);
+            Delete(entity);
             return UnitOfWork.CommitAsync();
         }
 
         public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities)
         {
-            this.DeleteRange(entities);
+            DeleteRange(entities);
             return UnitOfWork.CommitAsync();
         }
 
         public virtual Task UpdateAsync(TEntity entity)
         {
-            this.Update(entity);
+            Update(entity);
             return UnitOfWork.CommitAsync();
         }
 
-        public abstract ValueTask<TEntity> FindAsync(TIdentity id);
+        public abstract ValueTask<TEntity?> FindAsync(TIdentity id);
     }
 
     public abstract class EFRepositoryNoOC<TEntity, TContext, TUnitOfWork>
         : EFRepositoryNoOC<TEntity, Guid, TContext, TUnitOfWork>, IRepository<TEntity>
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Guid>
-        where TContext : DbContext
-        where TUnitOfWork : IUnitOfWork
+        where TContext : notnull, DbContext
+        where TUnitOfWork : notnull, IUnitOfWork
     {
         public EFRepositoryNoOC(TContext dbContext, TUnitOfWork unitOfWork)
             : base(dbContext, unitOfWork)

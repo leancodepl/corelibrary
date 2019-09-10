@@ -4,14 +4,13 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.EventsExecution.Simple
 {
-    public sealed class SimpleFinalizer
-        : IPipelineFinalizer<SimplePipelineContext, Func<Task>, Unit>
+    public sealed class SimpleFinalizer : IPipelineFinalizer<SimplePipelineContext, Func<Task>, object?>
     {
-        public async Task<Unit> ExecuteAsync(
-            SimplePipelineContext ctx, Func<Task> input)
+        public async Task<object?> ExecuteAsync(SimplePipelineContext ctx, Func<Task> input)
         {
             await input();
-            return Unit.Instance;
+
+            return null;
         }
     }
 }

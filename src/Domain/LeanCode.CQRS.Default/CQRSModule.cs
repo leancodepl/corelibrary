@@ -7,7 +7,6 @@ using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Default
 {
@@ -44,6 +43,7 @@ namespace LeanCode.CQRS.Default
             where TAppContext : IPipelineContext
         {
             modules.Add(new TypedCQRSModule<TAppContext>(handlersCatalog, commandBuilder, queryBuilder));
+
             return this;
         }
     }

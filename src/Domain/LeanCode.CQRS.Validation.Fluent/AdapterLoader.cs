@@ -5,12 +5,12 @@ using FluentValidation;
 namespace LeanCode.CQRS.Validation.Fluent
 {
     internal class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+        where TAppContext : notnull
         where TCommand : ICommand
     {
-        private static readonly Task<ValidationResult> NoError =
-            Task.FromResult(new ValidationResult(null));
+        private static readonly Task<ValidationResult> NoError = Task.FromResult(new ValidationResult(null));
 
-        private readonly FluentValidationCommandValidatorAdapter<TAppContext, TCommand> adapter;
+        private readonly FluentValidationCommandValidatorAdapter<TAppContext, TCommand>? adapter;
 
         public AdapterLoader(IComponentContext ctx)
         {
@@ -22,14 +22,9 @@ namespace LeanCode.CQRS.Validation.Fluent
 
         public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
         {
-            if (!(adapter is null))
-            {
-                return adapter.ValidateAsync(appContext, command);
-            }
-            else
-            {
-                return NoError;
-            }
+            return adapter is null
+                ? NoError
+                : adapter.ValidateAsync(appContext, command);
         }
     }
 }

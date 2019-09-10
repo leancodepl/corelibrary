@@ -17,9 +17,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         protected Serilog.ILogger Logger { get; }
 
-        public BaseRemoteObjectHandler(
-            TypesCatalog catalog,
-            Func<HttpContext, TAppContext> contextTranslator)
+        public BaseRemoteObjectHandler(TypesCatalog catalog, Func<HttpContext, TAppContext> contextTranslator)
         {
             Logger = Serilog.Log.ForContext(GetType());
             Catalog = catalog;
@@ -30,13 +28,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var request = context.Request;
             var type = ExtractType(request);
+
             if (type is null)
             {
                 Logger.Warning("Cannot retrieve type from path {Path}, type not found", request.Path);
-                return ExecutionResult.Skip();
+
+                return ExecutionResult.Skip;
             }
 
-            object obj;
+            object? obj;
+
             try
             {
                 obj = DeserializeObject(type, request.Body);
@@ -44,17 +45,20 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (Exception ex)
             {
                 Logger.Information(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
+
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
-            if (obj == null)
+            if (obj is null)
             {
                 Logger.Information("Client sent an empty object for type {Type}, ignoring", type);
+
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
-            ExecutionResult result;
             var appContext = contextTranslator(context);
+            ExecutionResult result;
+
             try
             {
                 result = await ExecuteObjectAsync(appContext, obj);
@@ -70,6 +74,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (Exception ex)
             {
                 Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
+
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }
 
@@ -81,22 +86,24 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             return result;
         }
 
-        protected abstract Task<ExecutionResult> ExecuteObjectAsync(
-            TAppContext appContext, object obj);
+        protected abstract Task<ExecutionResult> ExecuteObjectAsync(TAppContext appContext, object obj);
 
-        private Type ExtractType(HttpRequest request)
+        private Type? ExtractType(HttpRequest request)
         {
             var idx = request.Path.Value.LastIndexOf('/');
-            var name = idx != -1 ? request.Path.Value.Substring(idx + 1) : request.Path.Value;
+
+            var name = idx != -1
+                ? request.Path.Value.Substring(idx + 1)
+                : request.Path.Value;
+
             return Catalog.GetType(name);
         }
 
-        private object DeserializeObject(Type destType, Stream body)
+        private object? DeserializeObject(Type destType, Stream body)
         {
-            using (var reader = new JsonTextReader(new StreamReader(body)))
-            {
-                return serializer.Deserialize(reader, destType);
-            }
+            using var reader = new JsonTextReader(new StreamReader(body));
+
+            return serializer.Deserialize(reader, destType);
         }
     }
 }

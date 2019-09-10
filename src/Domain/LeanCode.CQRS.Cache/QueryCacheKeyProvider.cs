@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Text;
 
 namespace LeanCode.CQRS.Cache
@@ -7,19 +6,19 @@ namespace LeanCode.CQRS.Cache
     internal static class QueryCacheKeyProvider
     {
         public static string GetKey<TAppContext>(TAppContext context, IQuery query)
+            where TAppContext : notnull
         {
-            var contextType = typeof(TAppContext);
             var queryType = query.GetType();
 
-            var key = new StringBuilder();
-            key.Append(queryType.Name);
-            key.SerializeObject(contextType, context);
-            key.Append('-');
-            key.SerializeObject(queryType, query);
-            return key.ToString();
+            return new StringBuilder()
+                .Append(queryType.Name)
+                .SerializeObject(typeof(TAppContext), context)
+                .Append('-')
+                .SerializeObject(queryType, query)
+                .ToString();
         }
 
-        private static void SerializeObject(
+        private static StringBuilder SerializeObject(
             this StringBuilder builder, Type type, object obj)
         {
             if (obj is ICacheKeyProvider provider)
@@ -38,6 +37,8 @@ namespace LeanCode.CQRS.Cache
                     }
                 }
             }
+
+            return builder;
         }
     }
 }

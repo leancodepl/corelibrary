@@ -1,40 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace LeanCode.CQRS.Security
 {
     public class Role
     {
         public string Name { get; }
-        public HashSet<string> Permissions { get; }
+        public ImmutableHashSet<string> Permissions { get; }
 
         public Role(string name, params string[] permissions)
         {
-            Validate(name, permissions);
+            Validate(name);
 
-            this.Name = name;
-            this.Permissions = new HashSet<string>(permissions);
+            Name = name;
+            Permissions = ImmutableHashSet.Create(permissions);
         }
 
         public Role(string name, IEnumerable<string> permissions)
         {
-            Validate(name, permissions);
+            Validate(name);
 
-            this.Name = name;
-            this.Permissions = new HashSet<string>(permissions);
+            Name = name;
+            Permissions = permissions.ToImmutableHashSet();
         }
 
-        private static void Validate(string name, IEnumerable<string> permissions)
+        private static void Validate(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(
-                    "Name must be specified.", nameof(name));
-            }
-            else if (permissions is null)
-            {
-                throw new ArgumentNullException(
-                    "Permissions must be non-null", nameof(permissions));
+                throw new ArgumentNullException(nameof(name), "Name must be specified.");
             }
         }
     }

@@ -15,12 +15,16 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 
-        private readonly Func<ValidationContext, object, object> realValueFunc;
+        private readonly Func<ValidationContext, object, object?> realValueFunc;
 
-        public ContextualPropertyRule(MemberInfo member, Func<object, object> propertyFunc,
-            Func<ValidationContext, object, object> realValueFunc,
-            LambdaExpression expression, Func<CascadeMode> cascadeModeThunk,
-            Type typeToValidate, Type containerType)
+        public ContextualPropertyRule(
+            MemberInfo? member,
+            Func<object, object>? propertyFunc,
+            Func<ValidationContext, object, object?> realValueFunc,
+            LambdaExpression? expression,
+            Func<CascadeMode>? cascadeModeThunk,
+            Type? typeToValidate,
+            Type? containerType)
             : base(member, propertyFunc, expression, cascadeModeThunk, typeToValidate, containerType)
         {
             this.realValueFunc = realValueFunc;
@@ -29,6 +33,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         public override IEnumerable<ValidationFailure> Validate(ValidationContext context)
         {
             context.RootContextData[InstanceUnderValidationKey] = GetRealValue(context);
+
             return base.Validate(context);
         }
 
@@ -37,18 +42,28 @@ namespace LeanCode.CQRS.Validation.Fluent
             CancellationToken cancellation)
         {
             context.RootContextData[InstanceUnderValidationKey] = GetRealValue(context);
+
             return base.ValidateAsync(context, cancellation);
         }
 
-        protected override IEnumerable<ValidationFailure> InvokePropertyValidator(ValidationContext context, IPropertyValidator validator, string propertyName)
+        protected override IEnumerable<ValidationFailure> InvokePropertyValidator(
+            ValidationContext context,
+            IPropertyValidator validator,
+            string propertyName)
         {
             var propContext = CreatePropertyContext(context, propertyName);
+
             return validator.Validate(propContext);
         }
 
-        protected override Task<IEnumerable<ValidationFailure>> InvokePropertyValidatorAsync(ValidationContext context, IPropertyValidator validator, string propertyName, CancellationToken cancellation)
+        protected override Task<IEnumerable<ValidationFailure>> InvokePropertyValidatorAsync(
+            ValidationContext context,
+            IPropertyValidator validator,
+            string propertyName,
+            CancellationToken cancellation)
         {
             var propContext = CreatePropertyContext(context, propertyName);
+
             return validator.ValidateAsync(propContext, cancellation);
         }
 
@@ -56,12 +71,14 @@ namespace LeanCode.CQRS.Validation.Fluent
         {
             var realValue = context.RootContextData[InstanceUnderValidationKey];
             var propContext = new PropertyValidatorContext(context, this, propertyName, realValue);
+
             return propContext;
         }
 
-        private object GetRealValue(ValidationContext context)
+        private object? GetRealValue(ValidationContext context)
         {
             var propValue = PropertyFunc(context.InstanceToValidate);
+
             return realValueFunc(context, propValue);
         }
     }
@@ -70,12 +87,16 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 
-        private readonly Func<ValidationContext, object, Task<object>> realValueFunc;
+        private readonly Func<ValidationContext, object, Task<object?>> realValueFunc;
 
-        public AsyncContextualPropertyRule(MemberInfo member, Func<object, object> propertyFunc,
-            Func<ValidationContext, object, Task<object>> realValueFunc,
-            LambdaExpression expression, Func<CascadeMode> cascadeModeThunk,
-            Type typeToValidate, Type containerType)
+        public AsyncContextualPropertyRule(
+            MemberInfo? member,
+            Func<object, object>? propertyFunc,
+            Func<ValidationContext, object, Task<object?>> realValueFunc,
+            LambdaExpression? expression,
+            Func<CascadeMode>? cascadeModeThunk,
+            Type? typeToValidate,
+            Type? containerType)
             : base(member, propertyFunc, expression, cascadeModeThunk, typeToValidate, containerType)
         {
             this.realValueFunc = realValueFunc;
@@ -91,6 +112,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             CancellationToken cancellation)
         {
             context.RootContextData[InstanceUnderValidationKey] = await GetRealValueAsync(context);
+
             return await base.ValidateAsync(context, cancellation);
         }
 
@@ -100,6 +122,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             string propertyName)
         {
             var propContext = CreatePropertyContext(context, propertyName);
+
             return validator.Validate(propContext);
         }
 
@@ -110,6 +133,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             CancellationToken cancellation)
         {
             var propContext = CreatePropertyContext(context, propertyName);
+
             return await validator.ValidateAsync(propContext, cancellation).ConfigureAwait(false);
         }
 
@@ -117,12 +141,14 @@ namespace LeanCode.CQRS.Validation.Fluent
         {
             var realValue = context.RootContextData[InstanceUnderValidationKey];
             var propContext = new PropertyValidatorContext(context, this, propertyName, realValue);
+
             return propContext;
         }
 
-        private async Task<object> GetRealValueAsync(ValidationContext context)
+        private async Task<object?> GetRealValueAsync(ValidationContext context)
         {
             var propValue = PropertyFunc(context.InstanceToValidate);
+
             return await realValueFunc(context, propValue).ConfigureAwait(false);
         }
     }

@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using Autofac;
 using FluentValidation;
 using FluentValidation.Internal;
-
-using ValidationFailure = FluentValidation.Results.ValidationFailure;
+using FluentValidation.Results;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
     public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand>
         : ICommandValidator<TAppContext, TCommand>
         where TCommand : ICommand
+        where TAppContext : notnull
     {
         private readonly IValidator fluentValidator;
         private readonly IComponentContext componentContext;
@@ -28,15 +28,18 @@ namespace LeanCode.CQRS.Validation.Fluent
             var fluentValidationResult = await fluentValidator
                 .ValidateAsync(ctx)
                 .ConfigureAwait(false);
+
             var mappedResult = fluentValidationResult.Errors
                 .Select(MapFluentError)
                 .ToList();
+
             return new ValidationResult(mappedResult);
         }
 
         private ValidationError MapFluentError(ValidationFailure failure)
         {
             var state = failure.CustomState as FluentValidatorErrorState;
+
             return new ValidationError(
                 failure.PropertyName,
                 failure.ErrorMessage,
@@ -49,8 +52,10 @@ namespace LeanCode.CQRS.Validation.Fluent
                 command,
                 new PropertyChain(),
                 ValidatorOptions.ValidatorSelectors.DefaultValidatorSelectorFactory());
+
             ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;
             ctx.RootContextData[ValidationContextExtensions.ComponentContextKey] = componentContext;
+
             return ctx;
         }
     }

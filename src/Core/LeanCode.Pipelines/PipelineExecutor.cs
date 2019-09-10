@@ -8,14 +8,14 @@ namespace LeanCode.Pipelines
         public static PipelineExecutor<TContext, TInput, TOutput> Create<TContext, TInput, TOutput>(
             IPipelineFactory factory,
             ConfiguredPipeline<TContext, TInput, TOutput> cfg)
-            where TContext : IPipelineContext
+            where TContext : notnull, IPipelineContext
         {
             return new PipelineExecutor<TContext, TInput, TOutput>(factory, cfg);
         }
     }
 
     public class PipelineExecutor<TContext, TInput, TOutput>
-        where TContext : IPipelineContext
+        where TContext : notnull, IPipelineContext
     {
         private readonly IPipelineFactory factory;
         private readonly Func<TContext, TInput, Task<TOutput>> exec;
@@ -25,7 +25,7 @@ namespace LeanCode.Pipelines
             ConfiguredPipeline<TContext, TInput, TOutput> config)
         {
             this.factory = factory;
-            this.exec = BuildPipeline(config);
+            exec = BuildPipeline(config);
         }
 
         public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input)
@@ -42,9 +42,9 @@ namespace LeanCode.Pipelines
         {
             var app = BuildNext(config.Finalizer);
 
-            for (int i = config.Elements.Count - 1; i >= 0; i--)
+            for (int i = 1; i <= config.Elements.Count; ++i)
             {
-                app = BuildNext(config.Elements[i], app);
+                app = BuildNext(config.Elements[^i], app);
             }
 
             return app;

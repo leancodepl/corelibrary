@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Wrappers
 {
     internal class CustomAuthorizerWrapper<TAppContext> : ICustomAuthorizerWrapper
+        where TAppContext : notnull
     {
         private readonly ICustomAuthorizer<TAppContext> authorizer;
 
@@ -14,12 +14,11 @@ namespace LeanCode.CQRS.Default.Wrappers
         public CustomAuthorizerWrapper(ICustomAuthorizer<TAppContext> authorizer)
         {
             this.authorizer = authorizer;
+
             UnderlyingAuthorizer = authorizer.GetType();
         }
 
-        public Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object customData)
-        {
-            return authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, obj, customData);
-        }
+        public Task<bool> CheckIfAuthorizedAsync(object appContext, object obj, object? customData) =>
+            authorizer.CheckIfAuthorizedAsync((TAppContext)appContext, obj, customData);
     }
 }

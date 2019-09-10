@@ -6,14 +6,14 @@ namespace LeanCode.Pipelines
     public static class Pipeline
     {
         public static PipelineBuilder<TContext, TInput, TOutput> Build<TContext, TInput, TOutput>()
-            where TContext : IPipelineContext
+            where TContext : notnull, IPipelineContext
         {
             return new PipelineBuilder<TContext, TInput, TOutput>();
         }
     }
 
     public class ConfiguredPipeline<TContext, TInput, TOutput>
-        where TContext : IPipelineContext
+        where TContext : notnull, IPipelineContext
     {
         public IReadOnlyList<Type> Elements { get; }
         public Type Finalizer { get; }
@@ -27,10 +27,10 @@ namespace LeanCode.Pipelines
 
     public delegate PipelineBuilder<TContext, TInput, TOutput> ConfigPipeline<TContext, TInput, TOutput>(
         PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : IPipelineContext;
+            where TContext : notnull, IPipelineContext;
 
     public class PipelineBuilder<TContext, TInput, TOutput>
-        where TContext : IPipelineContext
+        where TContext : notnull, IPipelineContext
     {
         private readonly List<Type> components = new List<Type>();
 

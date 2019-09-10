@@ -5,7 +5,7 @@ namespace LeanCode.CQRS.Execution
 {
     public interface ICommandHandlerResolver<TAppContext>
     {
-        ICommandHandlerWrapper FindCommandHandler(Type commandType);
+        ICommandHandlerWrapper? FindCommandHandler(Type commandType);
     }
 
     /// <summary>

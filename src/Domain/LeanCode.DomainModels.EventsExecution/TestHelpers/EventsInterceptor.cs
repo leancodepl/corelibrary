@@ -13,36 +13,43 @@ namespace LeanCode.UnitTests.TestHelpers
         public static void Configure()
         {
             var existing = DomainEvents.EventInterceptor;
-            if (!(existing is null) &&
-                existing != TestInterceptor)
-            {
-                throw new InvalidOperationException("Cannot use EventInterceptor when other interceptor is already configured.");
-            }
 
-            DomainEvents.SetInterceptor(TestInterceptor);
+            if (existing is null || existing == TestInterceptor)
+            {
+                DomainEvents.SetInterceptor(TestInterceptor);
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    "Cannot use EventInterceptor when other interceptor is already configured.");
+            }
         }
 
         public static SingleStorage<TEvent> Single<TEvent>()
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
             var eventStorage = new SingleStorage<TEvent>();
+
             TestInterceptor.AddHandler(eventStorage.Store);
+
             return eventStorage;
         }
 
         public static AllStorage<TEvent> All<TEvent>()
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
             var eventStorage = new AllStorage<TEvent>();
+
             TestInterceptor.AddHandler(eventStorage.Store);
+
             return eventStorage;
         }
 
         public sealed class SingleStorage<TEvent>
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
             public bool Raised { get; private set; } = false;
-            public TEvent Event { get; private set; } = default;
+            public TEvent? Event { get; private set; } = default;
 
             internal void Store(IDomainEvent @event)
             {
@@ -55,7 +62,7 @@ namespace LeanCode.UnitTests.TestHelpers
         }
 
         public sealed class AllStorage<TEvent>
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
             private readonly List<TEvent> events = new List<TEvent>();
 
@@ -74,25 +81,17 @@ namespace LeanCode.UnitTests.TestHelpers
 
         private sealed class TestDomainEventInterceptor : IDomainEventInterceptor
         {
-            private static readonly Action<IDomainEvent>[] EmptyHandlers = new Action<IDomainEvent>[0];
-            private readonly AsyncLocal<ConcurrentBag<Action<IDomainEvent>>> handlers = new AsyncLocal<ConcurrentBag<Action<IDomainEvent>>>();
+            private readonly AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?> handlers
+                = new AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?>();
 
-            public void AddHandler(Action<IDomainEvent> func)
-            {
-                if (handlers.Value == null)
-                {
-                    handlers.Value = new ConcurrentBag<Action<IDomainEvent>>();
-                }
-
-                handlers.Value.Add(func);
-            }
+            public void AddHandler(Action<IDomainEvent> func) =>
+                (handlers.Value ??= new ConcurrentBag<Action<IDomainEvent>>()).Add(func);
 
             public void Intercept(IDomainEvent domainEvent)
             {
-                var b = handlers.Value?.ToArray() ?? EmptyHandlers;
-                foreach (var h in b)
+                foreach (var handler in handlers.Value?.ToArray() ?? Array.Empty<Action<IDomainEvent>>())
                 {
-                    h.Invoke(domainEvent);
+                    handler.Invoke(domainEvent);
                 }
             }
         }

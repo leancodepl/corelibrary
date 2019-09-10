@@ -13,30 +13,30 @@ namespace LeanCode.CQRS.Default.Autofac
 
         public TypesCache(Func<Type, Type[]> mkTypes, Type handlerBase, Type wrapperBase)
         {
-            this.make = a =>
+            make = a =>
             {
                 var types = mkTypes(a);
                 var handlerType = handlerBase.MakeGenericType(types);
                 var wrapperType = wrapperBase.MakeGenericType(types);
                 var ctor = wrapperType.GetConstructors()[0];
+
                 return (handlerType, ctor);
             };
         }
 
         public TypesCache(Func<Type, Type> handlerBaseMaker, Func<Type, Type> wrapperBaseMaker)
         {
-            this.make = a =>
+            make = a =>
             {
                 var handlerType = handlerBaseMaker(a);
                 var wrapperType = wrapperBaseMaker(a);
                 var ctor = wrapperType.GetConstructors()[0];
+
                 return (handlerType, ctor);
             };
         }
 
-        public (Type HandlerType, ConstructorInfo Constructor) Get(Type objType)
-        {
-            return cache.GetOrAdd(objType, make);
-        }
+        public (Type HandlerType, ConstructorInfo Constructor) Get(Type objType) =>
+            cache.GetOrAdd(objType, make);
     }
 }

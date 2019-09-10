@@ -2,9 +2,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
-    public class DefaultPermissionAuthorizer
-        : CustomAuthorizer<ISecurityContext, object, string[]>,
-          HasPermissions
+    public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, HasPermissions
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
 
@@ -18,15 +16,14 @@ namespace LeanCode.CQRS.Security
         protected override Task<bool> CheckIfAuthorizedAsync(
             ISecurityContext appContext,
             object obj,
-            string[] permissions = null)
+            string[]? permissions = null)
         {
-            var user = appContext.User;
-
-            if (!user.HasPermission(registry, permissions))
+            if (!appContext.User.HasPermission(registry, permissions ?? System.Array.Empty<string>()))
             {
                 logger.Warning(
                     "User does not have sufficient permissions ({Permissions}) to run {@Object}",
                     permissions, obj);
+
                 return Task.FromResult(false);
             }
             else

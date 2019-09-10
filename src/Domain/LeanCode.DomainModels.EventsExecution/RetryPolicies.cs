@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Polly;
 
 namespace LeanCode.DomainModels.EventsExecution
@@ -7,14 +8,14 @@ namespace LeanCode.DomainModels.EventsExecution
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<RetryPolicies>();
 
-        private static readonly TimeSpan[] EventRetryWaitTimes = new[]
+        private static IEnumerable<TimeSpan> GetEventRetryWaitTimes()
         {
-            TimeSpan.FromSeconds(0.2),
-            TimeSpan.FromSeconds(0.4),
-            TimeSpan.FromSeconds(0.8),
-            TimeSpan.FromSeconds(1.6),
-            TimeSpan.FromSeconds(3.2),
-        };
+            yield return TimeSpan.FromSeconds(0.2);
+            yield return TimeSpan.FromSeconds(0.4);
+            yield return TimeSpan.FromSeconds(0.8);
+            yield return TimeSpan.FromSeconds(1.6);
+            yield return TimeSpan.FromSeconds(3.2);
+        }
 
         public Polly.Retry.AsyncRetryPolicy EventHandlerPolicy { get; }
 
@@ -23,7 +24,7 @@ namespace LeanCode.DomainModels.EventsExecution
             EventHandlerPolicy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(
-                    EventRetryWaitTimes,
+                    GetEventRetryWaitTimes(),
                     (e, _) => logger.Error(e, "Cannot execute handler for the event, retrying"));
         }
     }

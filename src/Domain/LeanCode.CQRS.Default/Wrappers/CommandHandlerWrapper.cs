@@ -13,9 +13,7 @@ namespace LeanCode.CQRS.Default.Wrappers
             this.handler = handler;
         }
 
-        public Task ExecuteAsync(object context, ICommand command)
-        {
-            return handler.ExecuteAsync((TAppContext)context, (TCommand)command);
-        }
+        public Task ExecuteAsync(object context, ICommand command) =>
+            handler.ExecuteAsync((TAppContext)context, (TCommand)command);
     }
 }

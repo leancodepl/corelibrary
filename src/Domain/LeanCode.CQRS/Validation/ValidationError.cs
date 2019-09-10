@@ -6,10 +6,7 @@ namespace LeanCode.CQRS.Validation
         public string ErrorMessage { get; }
         public int ErrorCode { get; }
 
-        public ValidationError(
-            string propertyName,
-            string errorMessage,
-            int errorCode)
+        public ValidationError(string propertyName, string errorMessage, int errorCode)
         {
             PropertyName = propertyName;
             ErrorMessage = errorMessage;

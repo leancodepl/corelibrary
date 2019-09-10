@@ -1,6 +1,6 @@
 using System;
-using System.Net;
 using System.Net.Http;
+using static System.Net.HttpStatusCode;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
@@ -10,27 +10,21 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             where TNotFound : Exception, new()
             where TBadRequest : Exception, new()
         {
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            switch (response.StatusCode)
             {
-                throw new TNotFound();
+                case NotFound:
+                    throw new TNotFound();
+                case BadRequest:
+                    throw new TBadRequest();
+                case InternalServerError:
+                    throw new InternalServerErrorException();
+                case Unauthorized:
+                    throw new UnauthorizedException();
+                case Forbidden:
+                    throw new ForbiddenException();
             }
-            else if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                throw new TBadRequest();
-            }
-            else if (response.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                throw new InternalServerErrorException();
-            }
-            else if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedException();
-            }
-            else if (response.StatusCode == HttpStatusCode.Forbidden)
-            {
-                throw new ForbiddenException();
-            }
-            else if (!response.IsSuccessStatusCode)
+
+            if (!response.IsSuccessStatusCode)
             {
                 throw new HttpCallErrorException(response.StatusCode);
             }

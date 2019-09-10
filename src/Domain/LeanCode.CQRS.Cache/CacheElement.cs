@@ -23,16 +23,14 @@ namespace LeanCode.CQRS.Cache
             IQuery query,
             Func<TAppContext, IQuery, Task<object>> next)
         {
-            var duration = QueryCacheAttribute.GetDuration(query);
-            if (duration.HasValue)
+            if (QueryCacheAttribute.GetDuration(query) is TimeSpan duration)
             {
                 var key = QueryCacheKeyProvider.GetKey(ctx, query);
+
                 var res = await cacher
-                    .GetOrCreate(
-                        key,
-                        duration.Value,
-                        () => Wrap(ctx, query, next))
+                    .GetOrCreate(key, duration, () => Wrap(ctx, query, next))
                     .ConfigureAwait(false);
+
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
                     query, key);
@@ -51,12 +49,18 @@ namespace LeanCode.CQRS.Cache
             Func<TAppContext, IQuery, Task<object>> next)
         {
             var result = await next(ctx, payload).ConfigureAwait(false);
-            return new CacheItemWrapper() { Item = result };
+
+            return new CacheItemWrapper(result);
         }
 
         public sealed class CacheItemWrapper
         {
             public object Item { get; set; }
+
+            public CacheItemWrapper(object item)
+            {
+                Item = item;
+            }
         }
     }
 

@@ -13,18 +13,22 @@ namespace LeanCode.CQRS.Validation.Fluent
             Func<ValidationContext, TProperty, TValue> realValueAccessor)
         {
             var member = expression.GetMember();
-            var compiled = member is null || ValidatorOptions.DisableAccessorCache ? expression.Compile() : AccessorCache<T>.GetCachedAccessor(member, expression);
+
+            var compiled = member is null || ValidatorOptions.DisableAccessorCache
+                ? expression.Compile()
+                : AccessorCache<T>.GetCachedAccessor(member, expression);
 
             var rule = new ContextualPropertyRule(
                 member,
                 compiled.CoerceToNonGeneric(),
                 (ctx, arg) => realValueAccessor(ctx, (TProperty)arg),
                 expression,
-                () => this.CascadeMode,
+                () => CascadeMode,
                 typeof(TValue),
                 typeof(T));
 
-            this.AddRule(rule);
+            AddRule(rule);
+
             return new RuleBuilder<T, TValue>(rule, this);
         }
 
@@ -33,18 +37,22 @@ namespace LeanCode.CQRS.Validation.Fluent
             Func<ValidationContext, TProperty, Task<TValue>> realValueAccessor)
         {
             var member = expression.GetMember();
-            var compiled = member is null || ValidatorOptions.DisableAccessorCache ? expression.Compile() : AccessorCache<T>.GetCachedAccessor(member, expression);
+
+            var compiled = member is null || ValidatorOptions.DisableAccessorCache
+                ? expression.Compile()
+                : AccessorCache<T>.GetCachedAccessor(member, expression);
 
             var rule = new AsyncContextualPropertyRule(
                 member,
                 compiled.CoerceToNonGeneric(),
-                (ctx, arg) => realValueAccessor(ctx, (TProperty)arg).ContinueWith(t => (object)t.Result),
+                async (ctx, arg) => await realValueAccessor(ctx, (TProperty)arg).ConfigureAwait(false),
                 expression,
-                () => this.CascadeMode,
+                () => CascadeMode,
                 typeof(TValue),
                 typeof(T));
 
-            this.AddRule(rule);
+            AddRule(rule);
+
             return new RuleBuilder<T, TValue>(rule, this);
         }
     }

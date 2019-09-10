@@ -1,3 +1,5 @@
+#nullable disable
+// TODO: reenable when properties have been dealt with
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;

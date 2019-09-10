@@ -5,7 +5,7 @@ namespace LeanCode.CQRS.Validation
 {
     public interface ICommandValidatorResolver<TAppContext>
     {
-        ICommandValidatorWrapper FindCommandValidator(Type commandType);
+        ICommandValidatorWrapper? FindCommandValidator(Type commandType);
     }
 
     /// <summary>
