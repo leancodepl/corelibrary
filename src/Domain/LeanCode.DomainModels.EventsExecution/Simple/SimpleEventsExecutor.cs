@@ -6,14 +6,14 @@ namespace LeanCode.DomainModels.EventsExecution.Simple
 {
     public sealed class SimpleEventsExecutor
     {
-        private readonly PipelineExecutor<SimplePipelineContext, Func<Task>, object?> exec;
+        private readonly PipelineExecutor<SimplePipelineContext, Func<Task>, ValueTuple> exec;
 
         public SimpleEventsExecutor(IPipelineFactory factory)
         {
             exec = PipelineExecutor.Create(factory, Pipeline
-                .Build<SimplePipelineContext, Func<Task>, object?>()
-                .Use<EventsExecutorElement<SimplePipelineContext, Func<Task>, object?>>()
-                .Use<EventsInterceptorElement<SimplePipelineContext, Func<Task>, object?>>()
+                .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
+                .Use<EventsExecutorElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
+                .Use<EventsInterceptorElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
                 .Finalize<SimpleFinalizer>());
         }
 
