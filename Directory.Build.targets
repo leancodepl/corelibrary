@@ -97,7 +97,7 @@
 
   <PropertyGroup>
     <CodeAnalysisRuleSetDirectories>$(MSBuildThisFileDirectory)</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleSet>LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(CodeAnalysisRuleSetDirectories)LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
