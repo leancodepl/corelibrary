@@ -44,7 +44,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
                 cfg.UseSerilog();
-                cfg.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
+                cfg.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+                cfg.UseInMemoryOutbox();
                 cfg.UseLifetimeScopeInjection(scopeFactory);
                 cfg.UseDomainEventsPublishing();
 

@@ -28,4 +28,16 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             DateOccurred = Time.Now;
         }
     }
+
+    public class Event3 : IDomainEvent
+    {
+        public DateTime DateOccurred { get; }
+        public Guid Id { get; }
+
+        public Event3()
+        {
+            Id = Identity.NewId();
+            DateOccurred = Time.Now;
+        }
+    }
 }
