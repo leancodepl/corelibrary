@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -41,7 +42,9 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName);
 
             var commandName = handlerInteface.TypeArguments[1].Name;
-            var (validator, baseValidatorName) = BuildValidator(commandName);
+            var indentation = handlerSyntax.GetLeadingTrivia();
+
+            var (validator, baseValidatorName) = BuildValidator(commandName, indentation);
 
             editor.InsertBefore(handlerSyntax, validator);
 
@@ -53,7 +56,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             return editor.GetChangedDocument();
         }
 
-        protected static (ClassDeclarationSyntax, NameSyntax) BuildValidator(string commandName)
+        protected static (ClassDeclarationSyntax, NameSyntax) BuildValidator(string commandName, SyntaxTriviaList indentation)
         {
             var name = commandName + "CV";
 
@@ -65,6 +68,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             // Don't do it alone
             // https://roslynquoter.azurewebsites.net/
             var validator = SF.ClassDeclaration(name)
+                .WithAdditionalAnnotations(Formatter.Annotation)
                 .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
                 .WithBaseList(
                     SF.BaseList(
@@ -76,6 +80,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
                             .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
                             .WithBody(SF.Block())))
                 .NormalizeWhitespace(eol: "\n")
+                // .WithLeadingTrivia(indentation)
                 .WithTrailingTrivia(SF.ParseTrailingTrivia("\n\n"));
 
             return (validator, baseValidatorName);
