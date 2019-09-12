@@ -1,5 +1,3 @@
-#nullable disable
-// TODO: reenable when properties have been dealt with
 using System;
 using System.Collections.Generic;
 using LeanCode.DomainModels.Model;
@@ -9,9 +7,16 @@ namespace LeanCode.DomainModels.EventsExecution.Simple
 {
     public sealed class SimplePipelineContext : IEventsContext
     {
-        public List<IDomainEvent> SavedEvents { get; set; }
-        public List<(IDomainEvent Event, Type Handler)> ExecutedHandlers { get; set; }
-        public List<(IDomainEvent Event, Type Handler)> FailedHandlers { get; set; }
-        public IPipelineScope Scope { get; set; }
+        private IPipelineScope? scope;
+
+        public List<IDomainEvent> SavedEvents { get; set; } = new List<IDomainEvent>();
+        public List<(IDomainEvent Event, Type Handler)> ExecutedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
+        public List<(IDomainEvent Event, Type Handler)> FailedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
+
+        public IPipelineScope Scope
+        {
+            get => scope ?? throw new ArgumentNullException();
+            set => scope = value;
+        }
     }
 }

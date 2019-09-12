@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,13 +6,13 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
     // Source: https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/dev/src/IdentityServer4.EntityFramework/Entities/PersistedGrant.cs
     public class PersistedGrantEntity
     {
-        public string Key { get; set; }
-        public string Type { get; set; }
-        public string SubjectId { get; set; }
-        public string ClientId { get; set; }
+        public string Key { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string? SubjectId { get; set; }
+        public string ClientId { get; set; } = string.Empty;
         public DateTime CreationTime { get; set; }
         public DateTime? Expiration { get; set; }
-        public string Data { get; set; }
+        public string Data { get; set; } = string.Empty;
 
         public static void Configure(ModelBuilder builder)
         {
