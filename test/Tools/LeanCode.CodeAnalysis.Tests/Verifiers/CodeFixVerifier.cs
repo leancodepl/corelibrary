@@ -18,6 +18,9 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 
         protected async Task VerifyCodeFix(string oldSource, string newSource, string[] expectedFixes, int? fixToApply = null, bool allowNewCompilerDiagnostics = false)
         {
+            oldSource = oldSource.Trim();
+            newSource = newSource.Trim();
+
             var analyzer = GetDiagnosticAnalyzer();
             var codeFixProvider = GetCodeFixProvider();
 
@@ -96,7 +99,10 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
         {
             var simplifiedDoc = await Simplifier.ReduceAsync(document, Simplifier.Annotation);
             var root = await simplifiedDoc.GetSyntaxRootAsync();
-            root = Formatter.Format(root, Formatter.Annotation, simplifiedDoc.Project.Solution.Workspace);
+            root = Formatter.Format(
+                root.NormalizeWhitespace(eol: "\n"),
+                Formatter.Annotation,
+                simplifiedDoc.Project.Solution.Workspace);
             return root.GetText().ToString();
         }
     }

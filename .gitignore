@@ -7,6 +7,8 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+.devcontainer
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

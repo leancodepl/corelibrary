@@ -48,7 +48,8 @@ public class Cmd : ICommand
 using LeanCode.CQRS;
 
 public class Cmd : ICommand
-{}";
+{
+}";
 
             var expected =
             @"
@@ -57,7 +58,8 @@ using LeanCode.CQRS.Security;
 
 [AllowUnauthorized]
 public class Cmd : ICommand
-{}";
+{
+}";
 
             await VerifyCodeFix(source, expected, StaticFixes, 0);
         }
@@ -73,11 +75,13 @@ using LeanCode.CQRS.Security;
 public class CustomAuthorizeAttribute : AuthorizeWhenAttribute
 {
     public CustomAuthorizeAttribute() : base(typeof(object))
-    {}
+    {
+    }
 }
 
 public class Cmd : ICommand
-{}";
+{
+}";
 
             var expected =
             @"
@@ -87,12 +91,14 @@ using LeanCode.CQRS.Security;
 public class CustomAuthorizeAttribute : AuthorizeWhenAttribute
 {
     public CustomAuthorizeAttribute() : base(typeof(object))
-    {}
+    {
+    }
 }
 
 [CustomAuthorize]
 public class Cmd : ICommand
-{}";
+{
+}";
 
             var fixes = new[]
             {
