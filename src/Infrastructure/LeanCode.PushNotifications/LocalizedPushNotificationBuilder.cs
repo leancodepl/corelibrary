@@ -84,7 +84,7 @@ namespace LeanCode.PushNotifications
         {
             if (ToUser == default)
             {
-                throw new ArgumentNullException("Recipient was not specified.");
+                throw new ArgumentException("Recipient was not specified.");
             }
 
             return pushNotifications.SendAsync(ToUser, device, new PushNotification(
@@ -95,7 +95,7 @@ namespace LeanCode.PushNotifications
         {
             if (ToUser == default)
             {
-                throw new ArgumentNullException("Recipient was not specified.");
+                throw new ArgumentException("Recipient was not specified.");
             }
 
             return pushNotifications.SendToAllAsync(ToUser, new PushNotification(

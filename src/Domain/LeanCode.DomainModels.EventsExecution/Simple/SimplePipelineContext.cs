@@ -15,7 +15,7 @@ namespace LeanCode.DomainModels.EventsExecution.Simple
 
         public IPipelineScope Scope
         {
-            get => scope ?? throw new ArgumentNullException();
+            get => scope ?? throw new NullReferenceException();
             set => scope = value;
         }
     }

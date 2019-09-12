@@ -19,13 +19,13 @@ namespace LeanCode.CQRS.Default.Execution
 
         IPipelineScope IPipelineContext.Scope
         {
-            get => scope ?? throw new ArgumentNullException();
+            get => scope ?? throw new NullReferenceException();
             set => scope = value;
         }
 
         public ClaimsPrincipal User
         {
-            get => user ?? throw new ArgumentNullException();
+            get => user ?? throw new NullReferenceException();
             set => user = value;
         }
     }
