@@ -16,7 +16,7 @@ namespace LeanCode.Pipelines
 
         public IPipelineScope Scope
         {
-            get => scope ?? throw new NullReferenceException(nameof(Scope));
+            get => scope ?? throw new NullReferenceException();
             set => scope = value;
         }
     }
