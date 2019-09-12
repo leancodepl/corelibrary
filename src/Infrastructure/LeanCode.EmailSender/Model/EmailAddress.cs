@@ -1,15 +1,13 @@
-using System;
-
 namespace LeanCode.EmailSender.Model
 {
     public class EmailAddress
     {
         public string Email { get; }
-        public string Name { get; }
+        public string? Name { get; }
 
-        public EmailAddress(string email, string name)
+        public EmailAddress(string email, string? name)
         {
-            Email = email ?? throw new ArgumentNullException(nameof(email));
+            Email = email;
             Name = name;
         }
 

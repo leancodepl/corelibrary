@@ -69,7 +69,10 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
-    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1302:InterfaceNamesMustBeginWithI", Justification = "Authorizers are exempt.")]
+    [SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1302:InterfaceNamesMustBeginWithI",
+        Justification = "Authorizers are exempt.")]
     public interface HasSampleAuthorizer
     { }
 

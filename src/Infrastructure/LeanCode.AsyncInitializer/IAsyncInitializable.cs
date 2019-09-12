@@ -1,11 +1,11 @@
+using System;
 using System.Threading.Tasks;
 
 namespace LeanCode.AsyncInitializer
 {
-    public interface IAsyncInitializable
+    public interface IAsyncInitializable : IAsyncDisposable
     {
         int Order { get; }
-        Task InitializeAsync();
-        Task DisposeAsync();
+        ValueTask InitializeAsync();
     }
 }

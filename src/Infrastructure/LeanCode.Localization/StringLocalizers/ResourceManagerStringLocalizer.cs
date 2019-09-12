@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Resources;
+using static System.Globalization.CultureInfo;
 
 namespace LeanCode.Localization.StringLocalizers
 {
@@ -12,9 +13,7 @@ namespace LeanCode.Localization.StringLocalizers
 
         public ResourceManagerStringLocalizer(LocalizationConfiguration cfg)
         {
-            _ = cfg ?? throw new ArgumentNullException(nameof(cfg));
-
-            this.resourceManager = new ResourceManager(cfg.ResourceSource);
+            resourceManager = new ResourceManager(cfg.ResourceSource);
         }
 
         /// <inheritdoc />
@@ -22,16 +21,13 @@ namespace LeanCode.Localization.StringLocalizers
         {
             get
             {
-                _ = culture ?? throw new ArgumentNullException(nameof(culture));
-                _ = name ?? throw new ArgumentNullException(nameof(name));
-
                 logger.Verbose(
                     "Retrieving string {Name} for culture {Culture}",
-                    name, culture.Name.Length == 0 ? "InvariantCulture" : culture.Name);
+                    name, culture.Name.Length == 0 ? nameof(InvariantCulture) : culture.Name);
 
                 try
                 {
-                    string value = resourceManager.GetString(name, culture);
+                    string? value = resourceManager.GetString(name, culture);
 
                     return value ?? throw new InvalidOperationException(
                         "Name cannot be found in a resource set.");
@@ -42,6 +38,7 @@ namespace LeanCode.Localization.StringLocalizers
                     e is MissingSatelliteAssemblyException)
                 {
                     logger.Error(e, e.Message.TrimEnd('.'));
+
                     throw new LocalizedResourceNotFoundException(e);
                 }
             }

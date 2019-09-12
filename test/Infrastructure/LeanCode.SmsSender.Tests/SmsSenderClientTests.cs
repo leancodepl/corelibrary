@@ -29,7 +29,7 @@ namespace LeanCode.SmsSender.Tests
         {
             var message = "SmsSender works fine";
             var phoneNumber = string.Empty;
-            await client.Send(message, phoneNumber);
+            await client.SendAsync(message, phoneNumber);
         }
     }
 }

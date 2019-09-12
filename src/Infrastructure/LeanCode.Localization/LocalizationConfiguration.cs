@@ -11,9 +11,7 @@ namespace LeanCode.Localization
             ResourceSource = resourceSource;
         }
 
-        public static LocalizationConfiguration For<T>()
-        {
-            return new LocalizationConfiguration(typeof(T));
-        }
+        public static LocalizationConfiguration For<T>() =>
+            new LocalizationConfiguration(typeof(T));
     }
 }

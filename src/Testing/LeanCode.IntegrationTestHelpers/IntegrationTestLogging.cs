@@ -11,8 +11,5 @@ namespace LeanCode.IntegrationTestHelpers
                 .WriteTo.LiterateConsole()
                 .CreateLogger();
         }
-
-        public static void EnsureLoggerLoaded()
-        { }
     }
 }

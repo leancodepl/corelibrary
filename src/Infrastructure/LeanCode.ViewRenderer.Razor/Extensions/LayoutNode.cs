@@ -8,22 +8,17 @@ namespace LeanCode.ViewRenderer.Razor.Extensions
     {
         public const string LayoutFieldName = "___Layout";
 
-        public override IntermediateNodeCollection Children
-            => IntermediateNodeCollection.ReadOnly;
+        public override IntermediateNodeCollection Children => IntermediateNodeCollection.ReadOnly;
 
-        public string LayoutName { get; }
+        public string? LayoutName { get; }
 
-        public LayoutNode(string layoutName)
+        public LayoutNode(string? layoutName)
         {
             LayoutName = layoutName;
         }
 
-        public override void Accept(IntermediateNodeVisitor visitor)
-        {
-            visitor = visitor ?? throw new ArgumentNullException(nameof(visitor));
-
+        public override void Accept(IntermediateNodeVisitor visitor) =>
             AcceptExtensionNode(this, visitor);
-        }
 
         public override void WriteNode(CodeTarget target, CodeRenderingContext context)
         {

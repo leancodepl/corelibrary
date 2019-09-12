@@ -24,12 +24,11 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
                 .SingleOrDefaultAsync(x => x.Key == token.Key)
                 .ConfigureAwait(false);
 
-            if (existing == null)
+            if (existing is null)
             {
                 logger.Debug("{PersistedGrantKey} not found in database", token.Key);
 
-                var persistedGrant = PersistedGrantMapper.MapToEntity(token);
-                dbContext.PersistedGrants.Add(persistedGrant);
+                dbContext.PersistedGrants.Add(PersistedGrantMapper.MapToEntity(token));
             }
             else
             {
@@ -48,7 +47,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             }
         }
 
-        public async Task<PersistedGrant> GetAsync(string key)
+        public async Task<PersistedGrant?> GetAsync(string key)
         {
             var persistedGrant = await dbContext.PersistedGrants
                 .FirstOrDefaultAsync(x => x.Key == key)
@@ -56,7 +55,9 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
             var model = PersistedGrantMapper.MapToModel(persistedGrant);
 
-            logger.Debug("{PersistedGrantKey} found in database: {PersistedGrantKeyFound}", key, model != null);
+            logger.Debug(
+                "{PersistedGrantKey} found in database: {PersistedGrantKeyFound}",
+                key, model != null);
 
             return model;
         }
@@ -67,9 +68,12 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
                 .Where(x => x.SubjectId == subjectId)
                 .ToListAsync()
                 .ConfigureAwait(false);
+
             var model = persistedGrants.Select(x => PersistedGrantMapper.MapToModel(x)).ToList();
 
-            logger.Debug("{PersistedGrantCount} persisted grants found for {SubjectId}", persistedGrants.Count, subjectId);
+            logger.Debug(
+                "{PersistedGrantCount} persisted grants found for {SubjectId}",
+                persistedGrants.Count, subjectId);
 
             return model;
         }
@@ -79,7 +83,12 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             var persistedGrant = await dbContext.PersistedGrants
                 .FirstOrDefaultAsync(x => x.Key == key)
                 .ConfigureAwait(false);
-            if (persistedGrant != null)
+
+            if (persistedGrant is null)
+            {
+                logger.Debug("No {PersistedGrantKey} persisted grant found in database", key);
+            }
+            else
             {
                 logger.Debug("Removing {PersistedGrantKey} persisted grant from database", key);
 
@@ -94,10 +103,6 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
                     logger.Warning(ex, "Exception removing {PersistedGrantKey} persisted grant from database", key);
                 }
             }
-            else
-            {
-                logger.Debug("No {PersistedGrantKey} persisted grant found in database", key);
-            }
         }
 
         public async Task RemoveAllAsync(string subjectId, string clientId)
@@ -107,7 +112,9 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            logger.Debug("Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}", persistedGrants.Count, subjectId, clientId);
+            logger.Debug(
+                "Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}",
+                persistedGrants.Count, subjectId, clientId);
 
             dbContext.PersistedGrants.RemoveRange(persistedGrants);
 
@@ -117,21 +124,23 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                logger.Warning(ex, "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}", persistedGrants.Count, subjectId, clientId);
+                logger.Warning(
+                    ex,
+                    "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}",
+                    persistedGrants.Count, subjectId, clientId);
             }
         }
 
         public async Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
             var persistedGrants = await dbContext.PersistedGrants
-                .Where(x =>
-                    x.SubjectId == subjectId &&
-                    x.ClientId == clientId &&
-                    x.Type == type)
+                .Where(x => x.SubjectId == subjectId && x.ClientId == clientId && x.Type == type)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            logger.Debug("Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
+            logger.Debug(
+                "Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}",
+                persistedGrants.Count, subjectId, clientId, type);
 
             dbContext.PersistedGrants.RemoveRange(persistedGrants);
 
@@ -141,7 +150,10 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                logger.Warning(ex, "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
+                logger.Warning(
+                    ex,
+                    "Exception removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}",
+                    persistedGrants.Count, subjectId, clientId, type);
             }
         }
     }

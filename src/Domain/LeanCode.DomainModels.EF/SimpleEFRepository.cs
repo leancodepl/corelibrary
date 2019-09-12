@@ -14,8 +14,7 @@ namespace LeanCode.DomainModels.EF
         where TUnitOfWork : notnull, IUnitOfWork
     {
         public SimpleEFRepository(TContext dbContext, TUnitOfWork unitOfWork)
-            : base(dbContext, unitOfWork)
-        { }
+            : base(dbContext, unitOfWork) { }
 
         public override ValueTask<TEntity?> FindAsync(TIdentity id) =>
             DbSet.FindAsync(id)!; // TODO: remove ! when EF Core adds support for NRT
@@ -28,8 +27,7 @@ namespace LeanCode.DomainModels.EF
         where TUnitOfWork : notnull, IUnitOfWork
     {
         public SimpleEFRepository(TContext dbContext, TUnitOfWork unitOfWork)
-            : base(dbContext, unitOfWork)
-        { }
+            : base(dbContext, unitOfWork) { }
 
         public override ValueTask<TEntity?> FindAsync(Guid id) =>
             DbSet.FindAsync(id)!; // TODO: remove ! when EF Core adds support for NRT

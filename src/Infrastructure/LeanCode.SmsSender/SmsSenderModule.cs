@@ -7,15 +7,10 @@ namespace LeanCode.SmsSender
 {
     public class SmsSenderModule : AppModule
     {
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHttpClient<SmsApiHttpClient>(c =>
-                c.BaseAddress = new Uri("https://api.smsapi.pl"));
-        }
+        public override void ConfigureServices(IServiceCollection services) =>
+            services.AddHttpClient<SmsApiHttpClient>(c => c.BaseAddress = new Uri("https://api.smsapi.pl"));
 
-        protected override void Load(ContainerBuilder builder)
-        {
+        protected override void Load(ContainerBuilder builder) =>
             builder.RegisterType<SmsApiClient>().As<ISmsSender>();
-        }
     }
 }

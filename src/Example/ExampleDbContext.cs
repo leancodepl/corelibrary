@@ -9,8 +9,7 @@ namespace LeanCode.Example
         public DbSet<PushNotificationTokenEntity> Tokens { get; set; }
 
         public ExampleDbContext(DbContextOptions<ExampleDbContext> options)
-            : base(options)
-        { }
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

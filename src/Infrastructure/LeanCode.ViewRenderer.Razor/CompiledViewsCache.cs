@@ -23,28 +23,29 @@ namespace LeanCode.ViewRenderer.Razor
             compiler = new ViewCompiler(locator);
         }
 
-        public ValueTask<CompiledView> GetOrCompile(string viewName)
+        public ValueTask<CompiledView> GetOrCompileAsync(string viewName)
         {
             if (cache.TryGetValue(viewName, out var compiled))
             {
                 logger.Verbose("View type for {ViewName} retrieved from cache", viewName);
+
                 return new ValueTask<CompiledView>(compiled);
             }
-            else
+
+            logger.Verbose("View type for {ViewName} is not in cache, compiling", viewName);
+
+            var tcs = new TaskCompletionSource<CompiledView>();
+
+            var newTcs = buildCache.GetOrAdd(viewName, tcs);
+
+            if (tcs == newTcs)
             {
-                logger.Verbose("View type for {ViewName} is not in cache, compiling", viewName);
-                var tcs = new TaskCompletionSource<CompiledView>();
-                var newTcs = buildCache.GetOrAdd(viewName, tcs);
-                if (tcs == newTcs)
-                {
-                    return new ValueTask<CompiledView>(WrappedCompile(viewName, tcs));
-                }
-                else
-                {
-                    logger.Verbose("View type for {ViewName} is being compiled, waiting", viewName);
-                    return new ValueTask<CompiledView>(newTcs.Task);
-                }
+                return new ValueTask<CompiledView>(WrappedCompile(viewName, tcs));
             }
+
+            logger.Verbose("View type for {ViewName} is being compiled, waiting", viewName);
+
+            return new ValueTask<CompiledView>(newTcs.Task);
         }
 
         private async Task<CompiledView> WrappedCompile(string viewName, TaskCompletionSource<CompiledView> tcs)
@@ -65,8 +66,10 @@ namespace LeanCode.ViewRenderer.Razor
             catch (Exception ex)
             {
                 tcs.SetException(ex);
+
                 // Removing the TCS from cache will allow to fix & recompile views without app restart.
                 buildCache.TryRemove(viewName, out var _);
+
                 throw;
             }
         }
@@ -81,7 +84,7 @@ namespace LeanCode.ViewRenderer.Razor
             }
 
             logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item.PhysicalPath);
-            return await compiler.Compile(item).ConfigureAwait(false);
+            return await compiler.CompileAsync(item).ConfigureAwait(false);
         }
     }
 }

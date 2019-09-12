@@ -8,7 +8,8 @@ namespace LeanCode.Firestore
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<FirestoreDatabase>()
-                .AsSelf().AsImplementedInterfaces()
+                .AsSelf()
+                .AsImplementedInterfaces()
                 .SingleInstance();
         }
     }

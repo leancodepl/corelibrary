@@ -20,7 +20,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         [Fact]
         public async Task Loads_the_view_if_not_in_cache()
         {
-            var result = await cache.GetOrCompile(View);
+            var result = await cache.GetOrCompileAsync(View);
 
             Assert.NotNull(result.ViewType);
         }
@@ -28,8 +28,8 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         [Fact]
         public async Task Loads_the_view_from_cache_if_already_loaded()
         {
-            var result = await cache.GetOrCompile(View);
-            var result2 = await cache.GetOrCompile(View);
+            var result = await cache.GetOrCompileAsync(View);
+            var result2 = await cache.GetOrCompileAsync(View);
 
             Assert.Same(result.ViewType, result2.ViewType);
         }
@@ -37,8 +37,8 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         [Fact]
         public async Task Correctly_compiles_the_views_when_there_are_multiple_symultaneous_calls()
         {
-            var t1 = cache.GetOrCompile(View);
-            var t2 = cache.GetOrCompile(View);
+            var t1 = cache.GetOrCompileAsync(View);
+            var t2 = cache.GetOrCompileAsync(View);
 
             var results = await Task.WhenAll(t1.AsTask(), t2.AsTask());
 
@@ -50,7 +50,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         {
             for (int i = 0; i < 10; i++)
             {
-                var tasks = Enumerable.Range(0, 1000).Select(_ => cache.GetOrCompile(View).AsTask());
+                var tasks = Enumerable.Range(0, 1000).Select(_ => cache.GetOrCompileAsync(View).AsTask());
                 var results = await Task.WhenAll(tasks);
 
                 var expected = results[0].ViewType;

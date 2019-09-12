@@ -1,10 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using IdentityServer4.Models;
 
 namespace LeanCode.IdentityServer.PersistedGrantStore
 {
     public static class PersistedGrantMapper
     {
-        public static void Map(PersistedGrantEntity from, PersistedGrant to)
+        public static void Map(PersistedGrantEntity? from, PersistedGrant to)
         {
             if (from is null)
             {
@@ -20,7 +21,8 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             to.Type = from.Type;
         }
 
-        public static PersistedGrant MapToModel(PersistedGrantEntity entity)
+        [return: NotNullIfNotNull("entity")]
+        public static PersistedGrant? MapToModel(PersistedGrantEntity? entity)
         {
             if (entity is null)
             {
@@ -39,7 +41,8 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
             };
         }
 
-        public static PersistedGrantEntity MapToEntity(PersistedGrant grant)
+        [return: NotNullIfNotNull("grant")]
+        public static PersistedGrantEntity? MapToEntity(PersistedGrant? grant)
         {
             if (grant is null)
             {

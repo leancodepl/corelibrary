@@ -11,9 +11,8 @@ namespace LeanCode.Localization.Tests
 
         public ResourceManagerStringLocalizerTests()
         {
-            this.stringLocalizer = new ResourceManagerStringLocalizer(
-                new LocalizationConfiguration(
-                    resourceSource: typeof(ResourceManagerStringLocalizerTests)));
+            stringLocalizer = new ResourceManagerStringLocalizer(new LocalizationConfiguration(
+                resourceSource: typeof(ResourceManagerStringLocalizerTests)));
         }
 
         [Fact]
@@ -54,20 +53,6 @@ namespace LeanCode.Localization.Tests
             string value = stringLocalizer[GetCultureInfo("es"), "order.simple"];
 
             Assert.Equal("Order", value);
-        }
-
-        [Fact]
-        public void Exception_is_thrown_when_one_of_arguments_is_null()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                _ = stringLocalizer[null, "order"];
-            });
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                _ = stringLocalizer[InvariantCulture, null];
-            });
         }
 
         [Fact]

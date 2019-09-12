@@ -87,7 +87,6 @@ namespace LeanCode.DomainModels.EF
         where TUnitOfWork : notnull, IUnitOfWork
     {
         public EFRepository(TContext dbContext, TUnitOfWork unitOfWork)
-            : base(dbContext, unitOfWork)
-        { }
+            : base(dbContext, unitOfWork) { }
     }
 }

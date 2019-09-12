@@ -7,7 +7,10 @@ using Newtonsoft.Json;
 
 namespace LeanCode.Mixpanel
 {
-    [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1507:CodeMustNotContainMultipleBlankLinesInARow", Justification = "Reviewed.")]
+    [SuppressMessage(
+        "StyleCop.CSharp.LayoutRules",
+        "SA1507:CodeMustNotContainMultipleBlankLinesInARow",
+        Justification = "Reviewed.")]
     public class MixpanelAnalytics
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
@@ -15,9 +18,7 @@ namespace LeanCode.Mixpanel
         private readonly MixpanelHttpClient client;
         private readonly MixpanelConfiguration configuration;
 
-        public MixpanelAnalytics(
-            MixpanelHttpClient client,
-            MixpanelConfiguration configuration)
+        public MixpanelAnalytics(MixpanelHttpClient client, MixpanelConfiguration configuration)
         {
             this.configuration = configuration;
             this.client = client;
@@ -88,31 +89,32 @@ namespace LeanCode.Mixpanel
             => Engage(userId, "$delete");
 
 
-        private Task TrackEvent(string userId, string name, Dictionary<string, object> properties, bool isImport)
+        private Task TrackEvent(string userId, string name, Dictionary<string, object>? properties, bool isImport)
         {
-            var data = new Dictionary<string, object>();
-            if (properties == null)
-            {
-                properties = new Dictionary<string, object>();
-            }
+            properties ??= new Dictionary<string, object>();
 
             properties["token"] = configuration.Token;
+
             if (!properties.ContainsKey("distinct_id"))
             {
                 properties["distinct_id"] = userId;
             }
 
-            data["event"] = name;
-            data["properties"] = properties;
+            var data = new Dictionary<string, object?>()
+            {
+                ["event"] = name,
+                ["properties"] = properties,
+            };
 
             logger.Verbose("Sending Mixpanel event {eventName} for user {userId}", name, userId);
+
             return MakeRequest(userId, isImport ? "import" : "track", name, data);
         }
 
-        private Task Engage(string userId, string operation, object properties = null)
+        private Task Engage(string userId, string operation, object? properties = null)
         {
             logger.Verbose("Engaging Mixpanel operation {name} for user {userId}", operation, userId);
-            Dictionary<string, object> data = new Dictionary<string, object>
+            var data = new Dictionary<string, object?>()
             {
                 ["$token"] = configuration.Token,
                 ["$distinct_id"] = userId,
@@ -122,22 +124,31 @@ namespace LeanCode.Mixpanel
             return MakeRequest(userId, "engage", operation, data);
         }
 
-        private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object> data)
+        private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object?> data)
         {
-            string dataString = JsonConvert.SerializeObject(data);
-            dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataString));
-            var jsonResponse = await client.Client.GetStringAsync(
-                $"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}");
+            string dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+
+            var jsonResponse = await client.Client
+                .GetStringAsync($"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}")
+                .ConfigureAwait(false);
+
             var response = JsonConvert.DeserializeObject<MixpanelResponse>(jsonResponse);
 
             if (response.Status == MixpanelResponse.Success)
             {
-                logger.Information("Mixpanel request {requestName} for user {userId} sent successfully", requestName, userId);
+                logger.Information(
+                    "Mixpanel request {requestName} for user {userId} sent successfully",
+                    requestName, userId);
             }
             else
             {
-                logger.Warning("Error sending mixpanel request {requestName} for user {userId} with data: {@EventData}", requestName, userId, data);
-                logger.Warning("Mixpanel returned error: {Error}", response.Error);
+                logger.Warning(
+                    "Error sending mixpanel request {requestName} for user {userId} with data: {@EventData}",
+                    requestName, userId, data);
+
+                logger.Warning(
+                    "Mixpanel returned error: {Error}",
+                    response.Error);
             }
         }
     }
@@ -148,6 +159,6 @@ namespace LeanCode.Mixpanel
         public const int Failure = 0;
 
         public int Status { get; set; }
-        public string Error { get; set; }
+        public string? Error { get; set; }
     }
 }

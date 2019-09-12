@@ -17,11 +17,11 @@ namespace LeanCode.ViewRenderer.Razor
 {
     internal struct CompiledView
     {
-        public string Layout { get; }
+        public string? Layout { get; }
         public Type ViewType { get; }
         public int ProjectedSize { get; }
 
-        public CompiledView(string layout, Type viewType, int projectedSize)
+        public CompiledView(string? layout, Type viewType, int projectedSize)
         {
             Layout = layout;
             ViewType = viewType;
@@ -46,6 +46,7 @@ namespace LeanCode.ViewRenderer.Razor
 
             Assembly.Load(new AssemblyName("Microsoft.CSharp")),
             Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
+
             typeof(ViewCompiler).Assembly,
             typeof(HtmlEncoder).Assembly,
             typeof(RazorCompiledItem).Assembly,
@@ -64,23 +65,28 @@ namespace LeanCode.ViewRenderer.Razor
             engine = PrepareEngine(locator);
         }
 
-        public async Task<CompiledView> Compile(RazorProjectItem item)
+        public async Task<CompiledView> CompileAsync(RazorProjectItem item)
         {
             logger.Debug("Compiling view {ViewPath}", item.PhysicalPath);
 
-            var code = await GenerateCode(item);
+            var code = await GenerateCodeAsync(item);
+
             logger.Debug("Code for view {ViewPath} generated", item.PhysicalPath);
 
             var assembly = await Task.Run(() => GenerateAssembly(item.PhysicalPath, code));
+
             var type = assembly.GetExportedTypes()[0];
+
             logger.Information(
                 "View {ViewPath} compiled to assembly {Assembly} to type {Type}",
                 item.PhysicalPath, assembly, type);
 
             var field = type.GetField(Extensions.LayoutNode.LayoutFieldName);
-            var layout = (string)field.GetValue(null);
+
+            var layout = (string?)field?.GetValue(null);
 
             var size = new FileInfo(item.PhysicalPath).Length;
+
             return new CompiledView(layout, type, (int)size);
         }
 
@@ -89,18 +95,19 @@ namespace LeanCode.ViewRenderer.Razor
             SyntaxTree tree;
             try
             {
-                var sourceCode = SourceText.From(code);
                 tree = CSharpSyntaxTree.ParseText(
-                    sourceCode,
+                    SourceText.From(code),
                     CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8));
             }
             catch (Exception ex)
             {
                 logger.Warning(ex, "Cannot parse syntax tree for view {ViewPath}", fullPath);
-                throw new CompilationFailedException(fullPath, new string[0], "Cannot parse syntax tree.", ex);
+
+                throw new CompilationFailedException(fullPath, "Cannot parse syntax tree.", ex);
             }
 
             var assemblyName = typeof(ViewCompiler).FullName + ".GeneratedViews-" + Guid.NewGuid();
+
             var compilation = CSharpCompilation.Create(assemblyName, new[] { tree }, References, Options);
 
             using (var assemblyStream = new MemoryStream())
@@ -109,10 +116,14 @@ namespace LeanCode.ViewRenderer.Razor
 
                 if (!compilationResult.Success)
                 {
-                    var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
+                    var errors = compilationResult.Diagnostics
+                        .Select(d => d.GetMessage())
+                        .ToList();
+
                     logger.Warning(
                         "Cannot emit IL to in-memory stream for view {ViewPath}, errors:",
                         fullPath);
+
                     foreach (var err in errors)
                     {
                         logger.Warning("\t {Error}", err);
@@ -132,14 +143,14 @@ namespace LeanCode.ViewRenderer.Razor
                 catch (Exception ex)
                 {
                     logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
+
                     throw new CompilationFailedException(
-                        fullPath, new string[0],
-                        "Cannot load generated assembly.", ex);
+                        fullPath, "Cannot load generated assembly.", ex);
                 }
             }
         }
 
-        private async Task<string> GenerateCode(RazorProjectItem item)
+        private async Task<string> GenerateCodeAsync(RazorProjectItem item)
         {
             var genResult = await Task.Run(() => engine.Process(item).GetCSharpDocument());
 
@@ -148,9 +159,11 @@ namespace LeanCode.ViewRenderer.Razor
                 var errors = genResult.Diagnostics
                     .Select(d => d.ToString())
                     .ToList();
+
                 logger.Warning(
                     "Cannot generate code for the view {ViewPath}, errors:",
                     item.PhysicalPath);
+
                 foreach (var err in errors)
                 {
                     logger.Warning("\t {Error}", err);
@@ -165,9 +178,11 @@ namespace LeanCode.ViewRenderer.Razor
                 var diags = genResult.Diagnostics
                     .Select(d => d.ToString())
                     .ToList();
+
                 logger.Information(
                     "Diagnostics for {ViewPath} compilation:",
                     item.PhysicalPath);
+
                 foreach (var diag in diags)
                 {
                     logger.Warning("\t {Diagnostic}", diag);

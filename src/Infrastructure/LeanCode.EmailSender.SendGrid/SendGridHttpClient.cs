@@ -8,7 +8,7 @@ namespace LeanCode.EmailSender.SendGrid
 
         public SendGridHttpClient(HttpClient client)
         {
-            this.Client = client;
+            Client = client;
         }
     }
 }

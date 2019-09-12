@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +16,7 @@ namespace LeanCode.EmailSender.SendGrid
 {
     public class SendGridClient : IEmailClient
     {
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
@@ -46,20 +47,26 @@ namespace LeanCode.EmailSender.SendGrid
             logger.Verbose("Sending with subject {Subject}", model.Subject);
 
             var message = await BuildMessage(model);
+
             var msgJson = JsonConvert.SerializeObject(message, JsonSettings);
 
-            using (var content = new StringContent(msgJson, Encoding.UTF8, "application/json"))
-            using (var response = await client.Client.PostAsync("mail/send", content).ConfigureAwait(false))
-            {
-                if (!response.IsSuccessStatusCode)
-                {
-                    logger.Warning(
-                        "Cannot send e-mail with subject {Subject} to {Emails}",
-                        model.Subject, model.Recipients);
+            using var content = new StringContent(msgJson, Encoding.UTF8, "application/json");
 
-                    var errorJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
-                }
+            using var response = await client.Client
+                .PostAsync("mail/send", content)
+                .ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.Warning(
+                    "Cannot send e-mail with subject {Subject} to {Emails}",
+                    model.Subject, model.Recipients);
+
+                var errorJson = await response.Content
+                    .ReadAsStringAsync()
+                    .ConfigureAwait(false);
+
+                throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
             }
 
             logger.Information(
@@ -77,21 +84,15 @@ namespace LeanCode.EmailSender.SendGrid
             var attachments = await attachmentsTask;
             var contents = await contentsTask;
 
-            return new SendGridMessage()
+            return new SendGridMessage(new SendGridEmail(model.FromEmail), ImmutableList.Create(
+                new SendGridPersonalization(model.Recipients
+                    .Select(recipient => new SendGridEmail(recipient))
+                    .ToImmutableList())))
             {
-                From = new SendGridEmail(model.FromEmail),
-                Personalizations = new List<SendGridPersonalization>()
-                {
-                    new SendGridPersonalization()
-                    {
-                        To = model.Recipients
-                            .Select(recipient => new SendGridEmail(recipient))
-                            .ToList(),
-                    },
-                },
+                Content = contents.ToImmutableArray(),
+                Attachments = attachments.ToImmutableArray(),
+
                 Subject = model.Subject,
-                Content = contents,
-                Attachments = attachments,
             };
         }
 
@@ -103,13 +104,11 @@ namespace LeanCode.EmailSender.SendGrid
             {
                 try
                 {
-                    return new SendGridContent
-                    {
-                        Type = content.ContentType,
-                        Value = await viewRenderer
-                            .RenderToString(viewName, content.Model)
-                            .ConfigureAwait(false),
-                    };
+                    return new SendGridContent(
+                        content.ContentType,
+                        await viewRenderer
+                            .RenderToStringAsync(viewName, content.Model)
+                            .ConfigureAwait(false));
                 }
                 catch (ViewNotFoundException ex)
                 {
@@ -126,56 +125,24 @@ namespace LeanCode.EmailSender.SendGrid
 
         private static async Task<SendGridAttachment> Convert(EmailAttachment attachment)
         {
-            var cnt = attachment.Content;
-            if (cnt.CanSeek)
+            var content = attachment.Content;
+
+            if (content.CanSeek)
             {
-                cnt.Seek(0, SeekOrigin.Begin);
+                content.Seek(0, SeekOrigin.Begin);
             }
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                await cnt.CopyToAsync(ms).ConfigureAwait(false);
-                var attachmentBytes = ms.ToArray();
-                var attachmentContent = System.Convert.ToBase64String(attachmentBytes);
-                return new SendGridAttachment
-                {
-                    Content = attachmentContent,
-                    Filename = attachment.Name,
-                    Type = attachment.ContentType,
-                };
-            }
+            using var stream = new MemoryStream();
+
+            await content.CopyToAsync(stream).ConfigureAwait(false);
+
+            var attachmentBytes = stream.ToArray();
+            var attachmentContent = System.Convert.ToBase64String(attachmentBytes);
+
+            return new SendGridAttachment(attachmentContent, attachment.ContentType, attachment.Name);
         }
 
-        private static List<string> GetViewNamesFromContent(EmailContent content)
-        {
-            if (content.TemplateNames.Any(n => !string.IsNullOrWhiteSpace(n)))
-            {
-                return content.TemplateNames
-                    .Where(n => !string.IsNullOrWhiteSpace(n))
-                    .ToList();
-            }
-            else
-            {
-                return new List<string>
-                {
-                    GetViewNameFromModel(content.Model.GetType(), content.ContentType),
-                };
-            }
-        }
-
-        private static string GetViewNameFromModel(Type type, string mimeType)
-        {
-            var ext = mimeType == "text/plain" ? ".txt" : string.Empty;
-
-            var viewName = type.Name;
-            if (viewName.EndsWith("VM"))
-            {
-                return viewName.Substring(0, viewName.Length - 2) + ext;
-            }
-            else
-            {
-                return viewName + ext;
-            }
-        }
+        private static List<string> GetViewNamesFromContent(EmailContent content) =>
+            content.TemplateNames.Where(n => !string.IsNullOrWhiteSpace(n)).ToList();
     }
 }

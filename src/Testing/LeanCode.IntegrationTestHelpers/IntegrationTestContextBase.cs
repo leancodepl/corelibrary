@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -9,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Logging;
 using Xunit;
 
 namespace LeanCode.IntegrationTestHelpers
@@ -20,11 +23,19 @@ namespace LeanCode.IntegrationTestHelpers
         public string ConnectionString { get; }
 
         public bool IsInitialized { get; private set; }
-        public IContainer Container { get; private set; }
+
+        private IContainer? container;
+
+        [AllowNull]
+        public IContainer Container
+        {
+            get => container ?? throw new NullReferenceException();
+            private set => container = value;
+        }
 
         public IntegrationTestContextBase()
         {
-            IntegrationTestLogging.EnsureLoggerLoaded();
+            RuntimeHelpers.RunClassConstructor(typeof(IntegrationTestLogging).TypeHandle);
 
             Configuration = LoadConfiguration();
 
@@ -34,113 +45,124 @@ namespace LeanCode.IntegrationTestHelpers
         }
 
         public ILifetimeScope BeginLifetimeScope() => Container.BeginLifetimeScope();
+
         public T Resolve<T>() => Container.Resolve<T>();
 
         public async Task Scoped(Func<ILifetimeScope, Task> action)
         {
-            using (var sc = BeginLifetimeScope())
-            {
-                await action(sc);
-            }
+            using var sc = BeginLifetimeScope();
+
+            await action(sc);
         }
 
         public async Task<TResult> Scoped<TResult>(Func<ILifetimeScope, Task<TResult>> action)
         {
-            using (var sc = BeginLifetimeScope())
-            {
-                return await action(sc);
-            }
+            using var sc = BeginLifetimeScope();
+
+            return await action(sc);
         }
 
         public void Scoped(Action<ILifetimeScope> action)
         {
-            using (var sc = BeginLifetimeScope())
-            {
-                action(sc);
-            }
+            using var sc = BeginLifetimeScope();
+
+            action(sc);
         }
 
         public TResult Scoped<TResult>(Func<ILifetimeScope, TResult> action)
         {
-            using (var sc = BeginLifetimeScope())
-            {
-                return action(sc);
-            }
+            using var sc = BeginLifetimeScope();
+
+            return action(sc);
         }
 
         public async Task With<T>(Func<T, Task> action)
         {
-            using (var sc = BeginLifetimeScope())
+            using var sc = BeginLifetimeScope();
+
+            var resource = sc.Resolve<T>();
+
+            if (resource is IAsyncDisposable ad)
             {
-                var resource = sc.Resolve<T>();
-                if (resource is IDisposable d)
-                {
-                    using (d)
-                    {
-                        await action(resource);
-                    }
-                }
-                else
+                await using (ad)
                 {
                     await action(resource);
                 }
+            }
+            else if (resource is IDisposable d)
+            {
+                using (d)
+                {
+                    await action(resource);
+                }
+            }
+            else
+            {
+                await action(resource);
             }
         }
 
         public async Task<TResult> With<T, TResult>(Func<T, Task<TResult>> action)
         {
-            using (var sc = BeginLifetimeScope())
+            using var sc = BeginLifetimeScope();
+
+            var resource = sc.Resolve<T>();
+
+            if (resource is IAsyncDisposable ad)
             {
-                var resource = sc.Resolve<T>();
-                if (resource is IDisposable d)
-                {
-                    using (d)
-                    {
-                        return await action(resource);
-                    }
-                }
-                else
+                await using (ad)
                 {
                     return await action(resource);
                 }
+            }
+            else if (resource is IDisposable d)
+            {
+                using (d)
+                {
+                    return await action(resource);
+                }
+            }
+            else
+            {
+                return await action(resource);
             }
         }
 
         public void With<T>(Action<T> action)
         {
-            using (var sc = BeginLifetimeScope())
+            using var sc = BeginLifetimeScope();
+
+            var resource = sc.Resolve<T>();
+
+            if (resource is IDisposable d)
             {
-                var resource = sc.Resolve<T>();
-                if (resource is IDisposable d)
-                {
-                    using (d)
-                    {
-                        action(resource);
-                    }
-                }
-                else
+                using (d)
                 {
                     action(resource);
                 }
+            }
+            else
+            {
+                action(resource);
             }
         }
 
         public TResult With<T, TResult>(Func<T, TResult> action)
         {
-            using (var sc = BeginLifetimeScope())
+            using var sc = BeginLifetimeScope();
+
+            var resource = sc.Resolve<T>();
+
+            if (resource is IDisposable d)
             {
-                var resource = sc.Resolve<T>();
-                if (resource is IDisposable d)
-                {
-                    using (d)
-                    {
-                        return action(resource);
-                    }
-                }
-                else
+                using (d)
                 {
                     return action(resource);
                 }
+            }
+            else
+            {
+                return action(resource);
             }
         }
 
@@ -148,8 +170,7 @@ namespace LeanCode.IntegrationTestHelpers
         {
             Container = ConfigureContainerInternal();
 
-            var contexts = Container.Resolve<IEnumerable<DbContext>>();
-            foreach (var ctx in contexts)
+            foreach (var ctx in Container.Resolve<IEnumerable<DbContext>>())
             {
                 await ctx.Database.EnsureCreatedAsync();
             }
@@ -159,13 +180,13 @@ namespace LeanCode.IntegrationTestHelpers
 
         public virtual async Task DisposeAsync()
         {
-            var contexts = Container.Resolve<IEnumerable<DbContext>>();
-            foreach (var ctx in contexts)
+            foreach (var ctx in Container.Resolve<IEnumerable<DbContext>>())
             {
                 await ctx.Database.EnsureDeletedAsync();
             }
 
             Container.Dispose();
+            Container = null;
 
             IsInitialized = false;
         }
@@ -192,6 +213,7 @@ namespace LeanCode.IntegrationTestHelpers
         }
 
         protected virtual IEnumerable<IAppModule> CreateAppModules() => Enumerable.Empty<IAppModule>();
+
         protected virtual void ConfigureContainer(ContainerBuilder builder) { }
 
         private static IConfiguration LoadConfiguration()
@@ -203,9 +225,10 @@ namespace LeanCode.IntegrationTestHelpers
 
         private static LoggerFactory CreateLoggerFactory()
         {
-            var logginProvider = new Serilog.Extensions.Logging.SerilogLoggerProvider();
             var factory = new LoggerFactory();
-            factory.AddProvider(logginProvider);
+
+            factory.AddProvider(new SerilogLoggerProvider());
+
             return factory;
         }
     }

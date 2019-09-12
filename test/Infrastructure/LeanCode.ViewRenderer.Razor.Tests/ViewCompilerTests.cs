@@ -129,7 +129,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
 
         private Task<CompiledView> Compile(string viewName)
         {
-            return compiler.Compile(locator.GetItem(viewName, null));
+            return compiler.CompileAsync(locator.GetItem(viewName, null));
         }
 
         private int GetSize(string name)

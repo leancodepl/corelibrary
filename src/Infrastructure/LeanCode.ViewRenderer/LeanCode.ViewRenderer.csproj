@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.ViewRenderer</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

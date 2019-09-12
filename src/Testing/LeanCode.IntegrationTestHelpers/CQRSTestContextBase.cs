@@ -10,18 +10,14 @@ namespace LeanCode.IntegrationTestHelpers
     {
         protected override IEnumerable<IAppModule> CreateAppModules()
         {
-            return new IAppModule[]
-            {
-                ConfigureCQRS(new CQRSModule()),
-            };
+            yield return ConfigureCQRS(new CQRSModule());
         }
 
         protected abstract CQRSModule ConfigureCQRS(CQRSModule module);
     }
 
-    public class CQRSTestContextBase<TAppContext>
-        : CQRSTestContextBase
-        where TAppContext : IEventsContext
+    public class CQRSTestContextBase<TAppContext> : CQRSTestContextBase
+        where TAppContext : notnull, IEventsContext
     {
         protected override CQRSModule ConfigureCQRS(CQRSModule module) =>
             module.WithTestPipelines<TAppContext>();
@@ -29,9 +25,7 @@ namespace LeanCode.IntegrationTestHelpers
 
     public static class CQRSTestExtensions
     {
-        public static CQRSModule WithTestPipelines<TAppContext>(
-            this CQRSModule mod,
-            TypesCatalog handlersCatalog)
+        public static CQRSModule WithTestPipelines<TAppContext>(this CQRSModule mod, TypesCatalog handlersCatalog)
             where TAppContext : IEventsContext
         {
             return mod.WithCustomPipelines<TAppContext>(
@@ -40,12 +34,10 @@ namespace LeanCode.IntegrationTestHelpers
                 b => b);
         }
 
-        public static CQRSModule WithTestPipelines<TAppContext>(
-            this CQRSModule mod)
+        public static CQRSModule WithTestPipelines<TAppContext>(this CQRSModule mod)
             where TAppContext : IEventsContext
         {
-            var catalog = new TypesCatalog(typeof(TAppContext));
-            return mod.WithTestPipelines<TAppContext>(catalog);
+            return mod.WithTestPipelines<TAppContext>(new TypesCatalog(typeof(TAppContext)));
         }
     }
 }

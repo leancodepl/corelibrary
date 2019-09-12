@@ -58,7 +58,7 @@ namespace LeanCode.EFMigrator
                 return 2;
             }
 
-            string connectionString = MigrationsConfig.GetConnectionString();
+            string? connectionString = MigrationsConfig.GetConnectionString();
 
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -120,14 +120,9 @@ namespace LeanCode.EFMigrator
             {
                 connection.Open();
 
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = File.ReadAllText(SeedPath);
+                using var command = new SqlCommand(File.ReadAllText(SeedPath), connection);
 
-                    rowsAffected = command.ExecuteNonQuery();
-                }
-
-                connection.Close();
+                rowsAffected = command.ExecuteNonQuery();
             }
 
             WriteLine($"Seed completed, rows affected: {rowsAffected}");

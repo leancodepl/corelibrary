@@ -5,10 +5,7 @@ namespace LeanCode.AsyncTasks
 {
     public interface ITaskScheduler
     {
-        Task ScheduleRecurring<TTask>(
-            string cronExpression,
-            TimeZoneInfo tz = null,
-            string customId = null)
+        Task ScheduleRecurring<TTask>(string cronExpression, TimeZoneInfo? tz = null, string? customId = null)
             where TTask : class, IAsyncTask;
 
         Task ScheduleNow<TTask, TParams>(TParams @params)

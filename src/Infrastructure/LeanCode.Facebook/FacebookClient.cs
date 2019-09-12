@@ -1,6 +1,5 @@
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace LeanCode.Facebook
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
         private readonly FacebookHttpClient client;
-        private readonly HMACSHA256 hmac;
+        private readonly HMACSHA256? hmac;
 
         private readonly int photoSize;
 
@@ -26,46 +25,56 @@ namespace LeanCode.Facebook
         {
             this.photoSize = config.PhotoSize;
             this.client = client;
-            this.hmac = config.AppSecret == null ? null : new HMACSHA256(ParseKey(config.AppSecret));
+            this.hmac = config.AppSecret is null
+                ? null
+                : new HMACSHA256(ParseKey(config.AppSecret));
         }
 
         public virtual async Task<JObject> CallAsync(string endpoint, string accessToken, bool handleError = true)
         {
             var proof = GenerateProof(accessToken);
             var uri = AppendProof(endpoint, accessToken, proof);
+
             try
             {
-                using (var response = await client.Client.GetAsync(uri))
+                using var response = await client.Client
+                    .GetAsync(uri)
+                    .ConfigureAwait(false);
+
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        logger.Warning(
-                            "Facebook Graph API returned {StatusCode} {reasonPhrase} for access token {FBAccessToken}",
-                            response.StatusCode, response.ReasonPhrase, accessToken);
-                        throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
-                    }
+                    logger.Warning(
+                        "Facebook Graph API returned {StatusCode} {reasonPhrase} for access token {FBAccessToken}",
+                        response.StatusCode, response.ReasonPhrase, accessToken);
 
-                    var content = await response.Content.ReadAsStringAsync();
-                    var result = JObject.Parse(content);
-
-                    if (handleError && result["error"] != null)
-                    {
-                        var code = result["error"]["code"].Value<int>();
-                        var msg = result["error"]["message"];
-                        logger.Warning(
-                            "User tried to use invalid access token {FBAccessToken}, Facebook returned {Code} error code with message {Message}",
-                            accessToken, code, msg);
-                        throw new FacebookException($"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}.");
-                    }
-                    else
-                    {
-                        return result;
-                    }
+                    throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
                 }
+
+                var content = await response.Content
+                    .ReadAsStringAsync()
+                    .ConfigureAwait(false);
+
+                var result = JObject.Parse(content);
+
+                if (handleError && result["error"] != null)
+                {
+                    var code = result["error"]["code"].Value<int>();
+                    var msg = result["error"]["message"];
+
+                    logger.Warning(
+                        "User tried to use invalid access token {FBAccessToken}, Facebook returned {Code} error code with message {Message}",
+                        accessToken, code, msg);
+
+                    throw new FacebookException(
+                        $"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}.");
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
                 logger.Warning(ex, "Cannot call Facebook Graph API");
+
                 throw new FacebookException("Cannot call Facebook Graph API.", ex);
             }
         }
@@ -73,10 +82,13 @@ namespace LeanCode.Facebook
         public virtual async Task<FacebookUser> GetUserInfo(string accessToken)
         {
             var result = await CallAsync("me?fields=" + FieldsStr, accessToken);
+
             var info = ConvertResponse(result);
+
             logger.Information(
                 "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
                 info.Id, info.Email);
+
             return info;
         }
 
@@ -87,45 +99,40 @@ namespace LeanCode.Facebook
             var firstName = result["first_name"]?.Value<string>();
             var lastName = result["last_name"]?.Value<string>();
             var photoUrl = $"{ApiBase}/{ApiVersion}/{id}/picture?width={photoSize}&height={photoSize}";
+
             return new FacebookUser(id, email, firstName, lastName, photoUrl);
         }
 
         private string GenerateProof(string accessToken)
         {
-            if (hmac != null)
+            if (hmac is null)
             {
-                logger.Debug("Signing Facebook request enabled - signing request");
-                var bytes = Encoding.ASCII.GetBytes(accessToken);
-                var hash = hmac.ComputeHash(bytes);
-                return "&appsecret_proof=" + ToHexString(hash);
+                logger.Debug("Signing Facebook requests is disabled, skipping generating proof");
+
+                return string.Empty;
             }
             else
             {
-                logger.Debug("Signing Facebook requests is disabled, skipping generating proof");
-                return string.Empty;
+                logger.Debug("Signing Facebook request enabled - signing request");
+
+                var bytes = ParseKey(accessToken);
+                var hash = hmac.ComputeHash(bytes);
+
+                return "&appsecret_proof=" + ToHexString(hash);
             }
         }
 
-        private static byte[] ParseKey(string v)
-        {
-            return Encoding.ASCII.GetBytes(v);
-        }
+        private static byte[] ParseKey(string v) =>
+            Encoding.ASCII.GetBytes(v);
 
-        private static string ToHexString(byte[] data)
-        {
-            return BitConverter.ToString(data).Replace("-", string.Empty).ToLower();
-        }
+        private static string ToHexString(byte[] data) =>
+            BitConverter.ToString(data).Replace("-", string.Empty).ToLower();
 
         private static string AppendProof(string uri, string accessToken, string proof)
         {
-            if (uri.Contains("?"))
-            {
-                return ApiVersion + "/" + uri + "&access_token=" + accessToken + proof;
-            }
-            else
-            {
-                return ApiVersion + "/" + uri + "?access_token=" + accessToken + proof;
-            }
+            return uri.Contains("?")
+                ? $"{ApiVersion}/{uri}&access_token={accessToken}{proof}"
+                : $"{ApiVersion}/{uri}?access_token={accessToken}{proof}";
         }
     }
 }

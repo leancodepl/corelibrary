@@ -22,7 +22,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private readonly SqlServerStorageOptions storageOpts;
         private readonly Action<BackgroundJobServerOptions> serverConfig;
 
-        private BackgroundJobServer backgroundServer;
+        private BackgroundJobServer? backgroundServer;
 
         public BackgroundProcessingApp(
             string name,
@@ -40,14 +40,14 @@ namespace LeanCode.AsyncTasks.Hangfire
                 PrepareSchemaIfNecessary = true,
                 SchemaName = schema,
             };
+
             storageConfig(this.storageOpts);
 
             this.serverConfig = serverConfig;
         }
 
         public BackgroundProcessingApp(string name, string connectionString, string schema)
-            : this(name, DefaultQueue, connectionString, schema, _ => { }, _ => { })
-        { }
+            : this(name, DefaultQueue, connectionString, schema, _ => { }, _ => { }) { }
 
         public void ConfigureApp(IApplicationBuilder app)
         {
@@ -61,11 +61,8 @@ namespace LeanCode.AsyncTasks.Hangfire
             appLifetime.ApplicationStopping.Register(StopProcessing);
         }
 
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHangfire(cfg =>
-               cfg.UseSqlServerStorage(connectionString, storageOpts));
-        }
+        public override void ConfigureServices(IServiceCollection services) =>
+            services.AddHangfire(cfg => cfg.UseSqlServerStorage(connectionString, storageOpts));
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -82,23 +79,28 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void StartProcessing()
         {
             logger.Information("Starting background server");
+
             var cfg = new BackgroundJobServerOptions
             {
                 ServerName = name,
             };
+
             if (!(queue == DefaultQueue))
             {
                 cfg.Queues = new[] { DefaultQueue, queue };
             }
 
             serverConfig(cfg);
+
             backgroundServer = new BackgroundJobServer(cfg);
         }
 
         private void StopProcessing()
         {
             logger.Information("App is stopping, disposing background server");
-            backgroundServer.Dispose();
+
+            backgroundServer?.Dispose();
+            backgroundServer = null;
         }
     }
 }

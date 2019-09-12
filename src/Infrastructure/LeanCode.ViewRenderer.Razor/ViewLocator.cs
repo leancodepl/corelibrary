@@ -16,52 +16,44 @@ namespace LeanCode.ViewRenderer.Razor
             this.options = options;
         }
 
-        public string GetRootPath()
-        {
-            return options.ViewLocations[0];
-        }
+        public string GetRootPath() => options.ViewLocations[0];
 
-        public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath)
-        {
+        public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) =>
             throw new NotSupportedException();
-        }
 
-        [Obsolete]
+        [Obsolete("Use GetItem(string path, string fileKind) instead.")]
         public override RazorProjectItem GetItem(string path) => GetItem(path, null);
 
-        public override RazorProjectItem GetItem(string path, string fileKind)
+        public override RazorProjectItem GetItem(string path, string? fileKind)
         {
             if (fileKind != null)
             {
                 logger.Warning("GetItem: `fileKind` parameter ignored: {fileKind}", fileKind);
             }
 
-            var (basePath, fullPath, fileName) = LocateFile(GetFileName(path));
-
-            if (fullPath == null)
-            {
-                return new Item(path);
-            }
-            else
+            if (LocateFile(GetFileName(path)) is var (basePath, fullPath, fileName))
             {
                 return new Item(basePath, fileName, fullPath);
             }
+
+            return new Item(path);
         }
 
         private string GetFileName(string viewName) => viewName + options.Extension;
 
-        private (string BasePath, string FullPath, string FileName) LocateFile(string fileName)
+        private (string BasePath, string FullPath, string FileName)? LocateFile(string fileName)
         {
             foreach (var path in options.ViewLocations)
             {
                 var fullPath = Path.GetFullPath(Path.Combine(path, fileName));
+
                 if (File.Exists(fullPath))
                 {
                     return (path, fullPath, fileName);
                 }
             }
 
-            return (null, null, null);
+            return null;
         }
 
         private class Item : RazorProjectItem
