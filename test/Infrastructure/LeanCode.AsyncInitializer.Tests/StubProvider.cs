@@ -32,8 +32,7 @@ namespace LeanCode.AsyncInitializer.Tests
         IServiceScope IServiceScopeFactory.CreateScope() => this;
         IServiceProvider IServiceScope.ServiceProvider => provider;
 
-        void IDisposable.Dispose()
-        { }
+        void IDisposable.Dispose() { }
 
         private class InitProvider : IServiceProvider
         {

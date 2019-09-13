@@ -57,9 +57,7 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
         }
     }
 
-    public class EventsInterceptorTests_RaceConds1 : EventsInterceptorTests_RaceCondsBase
-    { }
+    public class EventsInterceptorTests_RaceConds1 : EventsInterceptorTests_RaceCondsBase { }
 
-    public class EventsInterceptorTests_RaceConds2 : EventsInterceptorTests_RaceCondsBase
-    { }
+    public class EventsInterceptorTests_RaceConds2 : EventsInterceptorTests_RaceCondsBase { }
 }

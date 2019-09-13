@@ -175,36 +175,28 @@ namespace LeanCode.CQRS.Default.Tests.Security
             await Authorize(obj);
         }
 
-        private class NoAuthorizers
-        { }
+        private class NoAuthorizers { }
 
         [AuthorizeWhen(typeof(IFirstAuthorizer))]
-        private class SingleAuthorizer
-        { }
+        private class SingleAuthorizer { }
 
         [AuthorizeWhen(typeof(IFirstAuthorizer))]
         [AuthorizeWhen(typeof(ISecondAuthorizer))]
-        private class MultipleAuthorizers
-        { }
+        private class MultipleAuthorizers { }
 
         [DerivedAuthorizeWhen(DerivedAttributeParam)]
-        private class DerivedAuthorizer
-        { }
+        private class DerivedAuthorizer { }
 
-        public interface IFirstAuthorizer : ICustomAuthorizerWrapper
-        { }
+        public interface IFirstAuthorizer : ICustomAuthorizerWrapper { }
 
-        public interface ISecondAuthorizer : ICustomAuthorizerWrapper
-        { }
+        public interface ISecondAuthorizer : ICustomAuthorizerWrapper { }
 
-        public interface IDerivedAuthorizer : ICustomAuthorizerWrapper
-        { }
+        public interface IDerivedAuthorizer : ICustomAuthorizerWrapper { }
 
         public class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
         {
             public DerivedAuthorizeWhenAttribute(string param)
-                : base(typeof(IDerivedAuthorizer), param)
-            { }
+                : base(typeof(IDerivedAuthorizer), param) { }
         }
     }
 }

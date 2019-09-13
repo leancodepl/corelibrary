@@ -16,8 +16,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
     public class CQRSTests : CQRSTestBase<CQRSTestsContext, AppContext>
     {
         public CQRSTests(CQRSTestsContext context)
-            : base(context)
-        { }
+            : base(context) { }
 
         [TestStep]
         public async Task Step01_Run_query()

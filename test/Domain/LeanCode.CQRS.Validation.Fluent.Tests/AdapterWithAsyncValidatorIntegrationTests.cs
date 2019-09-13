@@ -64,8 +64,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
         }
 
-        private class Context
-        { }
+        private class Context { }
 
         private class Command : ICommand
         {

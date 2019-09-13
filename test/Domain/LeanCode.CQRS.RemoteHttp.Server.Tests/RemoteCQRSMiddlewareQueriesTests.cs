@@ -8,8 +8,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     public class RemoteCQRSMiddlewareQueriesTests : BaseMiddlewareTests
     {
         public RemoteCQRSMiddlewareQueriesTests()
-            : base("query", typeof(SampleRemoteQuery))
-        { }
+            : base("query", typeof(SampleRemoteQuery)) { }
 
         [Fact]
         public async Task Passes_execution_further_if_query_type_cannot_be_found()
@@ -81,8 +80,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleQuery : IQuery<int>
-    { }
+    public class SampleQuery : IQuery<int> { }
 
     public class SampleRemoteQuery : IRemoteQuery<int>
     {
@@ -94,6 +92,5 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public int Prop { get; set; }
     }
 
-    public class NullReturningQuery : IRemoteQuery<object>
-    { }
+    public class NullReturningQuery : IRemoteQuery<object> { }
 }

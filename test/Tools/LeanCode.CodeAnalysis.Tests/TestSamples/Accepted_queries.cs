@@ -3,21 +3,16 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.TestSamples
 {
-    public abstract class BaseQuery : IQuery
-    { }
+    public abstract class BaseQuery : IQuery { }
 
     [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class FirstQuery : BaseQuery
-    { }
+    public class FirstQuery : BaseQuery { }
 
-    public class SecondQuery : FirstQuery
-    { }
+    public class SecondQuery : FirstQuery { }
 
     [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class ThirdQuery : IQuery
-    { }
+    public class ThirdQuery : IQuery { }
 
     [AllowUnauthorized]
-    public class UnauthorizedQuery : IQuery
-    { }
+    public class UnauthorizedQuery : IQuery { }
 }

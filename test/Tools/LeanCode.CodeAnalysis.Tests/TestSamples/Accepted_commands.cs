@@ -3,21 +3,16 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.Data
 {
-    public abstract class BaseCommand : ICommand
-    { }
+    public abstract class BaseCommand : ICommand { }
 
     [AuthorizeWhenHasAnyOf("Some_permission")]
-    public class FirstCommand : BaseCommand
-    { }
+    public class FirstCommand : BaseCommand { }
 
-    public class SecondCommand : FirstCommand
-    { }
+    public class SecondCommand : FirstCommand { }
 
     [AuthorizeWhen(typeof(object))]
-    public class ThirdCommand : ICommand
-    { }
+    public class ThirdCommand : ICommand { }
 
     [AllowUnauthorized]
-    public class UnauthorizedCommand : ICommand
-    { }
+    public class UnauthorizedCommand : ICommand { }
 }

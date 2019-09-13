@@ -16,11 +16,9 @@ namespace LeanCode.CQRS.Tests
         IPipelineScope IPipelineContext.Scope { get; set; }
     }
 
-    public class SampleCommand : ICommand, IAuthorizerData
-    { }
+    public class SampleCommand : ICommand, IAuthorizerData { }
 
-    public class SampleQuery : IQuery<object>, IAuthorizerData
-    { }
+    public class SampleQuery : IQuery<object>, IAuthorizerData { }
 
     public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
     {
@@ -73,8 +71,7 @@ namespace LeanCode.CQRS.Tests
         "StyleCop.CSharp.NamingRules",
         "SA1302:InterfaceNamesMustBeginWithI",
         Justification = "Authorizers are exempt.")]
-    public interface HasSampleAuthorizer
-    { }
+    public interface HasSampleAuthorizer { }
 
     public interface IAuthorizerData { }
 
@@ -157,8 +154,7 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class SingleInstanceCommand : ICommand
-    { }
+    public class SingleInstanceCommand : ICommand { }
 
     public class SingleInstanceCommandHandler : ICommandHandler<AppContext, SingleInstanceCommand>
     {
@@ -174,8 +170,7 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
-    public class SingleInstanceQuery : IQuery<object>
-    { }
+    public class SingleInstanceQuery : IQuery<object> { }
 
     public class SingleInstanceQueryHandler : IQueryHandler<AppContext, SingleInstanceQuery, object>
     {

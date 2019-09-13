@@ -18,8 +18,7 @@ namespace LeanCode.ContractsGenerator
         public TypeScriptConfiguration TypeScript { get; set; }
         public DartConfiguration Dart { get; set; }
 
-        public GeneratorConfiguration()
-        { }
+        public GeneratorConfiguration() { }
 
         public static List<GeneratorConfiguration> GetConfigurations(string[] args)
         {
