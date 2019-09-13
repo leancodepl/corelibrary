@@ -11,8 +11,10 @@ namespace LeanCode.DomainModels.DataAccess
 
     public interface IRepository<TEntity, in TIdentity>
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
+        where TIdentity : notnull
     {
-        ValueTask<TEntity> FindAsync(TIdentity id);
+        ValueTask<TEntity?> FindAsync(TIdentity id);
+
         void Add(TEntity entity);
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);

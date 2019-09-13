@@ -10,18 +10,9 @@ namespace LeanCode.CQRS.Security
             RoleRegistry registry,
             params string[] permissions)
         {
-            foreach (var role in registry.All)
-            {
-                if (claimsPrincipal.IsInRole(role.Name))
-                {
-                    if (permissions.Any(role.Permissions.Contains))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return registry.All.Any(role =>
+                claimsPrincipal.IsInRole(role.Name) &&
+                permissions.Any(role.Permissions.Contains));
         }
     }
 }

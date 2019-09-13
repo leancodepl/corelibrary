@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,16 +27,16 @@ namespace LeanCode.AsyncInitializer.Tests
 
         int IAsyncInitializable.Order => order;
 
-        Task IAsyncInitializable.DisposeAsync()
-        {
-            DisposeOrder = counter.Next();
-            return Task.CompletedTask;
-        }
-
-        Task IAsyncInitializable.InitializeAsync()
+        ValueTask IAsyncInitializable.InitializeAsync()
         {
             InitOrder = counter.Next();
-            return Task.CompletedTask;
+            return default;
+        }
+
+        ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            DisposeOrder = counter.Next();
+            return default;
         }
     }
 }

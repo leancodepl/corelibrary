@@ -9,29 +9,24 @@ namespace LeanCode.DomainModels.EventsExecution
     {
         private static readonly EventInterceptor Interceptor = new EventInterceptor();
 
-        public void Configure()
-        {
-            DomainEvents.SetInterceptor(Interceptor);
-        }
+        public void Configure() => DomainEvents.SetInterceptor(Interceptor);
 
-        public void Prepare()
-        {
+        public void Prepare() =>
             Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
-        }
 
-        public ConcurrentQueue<IDomainEvent> CaptureQueue()
+        public ConcurrentQueue<IDomainEvent>? CaptureQueue()
         {
             var result = Interceptor.Storage.Value;
             Interceptor.Storage.Value = null;
             return result;
         }
 
-        public ConcurrentQueue<IDomainEvent> PeekQueue() => Interceptor.Storage.Value;
+        public ConcurrentQueue<IDomainEvent>? PeekQueue() => Interceptor.Storage.Value;
 
         private sealed class EventInterceptor : IDomainEventInterceptor
         {
-            public AsyncLocal<ConcurrentQueue<IDomainEvent>> Storage { get; }
-                = new AsyncLocal<ConcurrentQueue<IDomainEvent>>();
+            public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; }
+                = new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
 
             void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
             {

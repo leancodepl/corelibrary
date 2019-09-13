@@ -2,18 +2,17 @@ namespace LeanCode.DomainModels.Model
 {
     public static class DomainEvents
     {
-        private static IDomainEventInterceptor eventInterceptor;
-        public static IDomainEventInterceptor EventInterceptor => eventInterceptor;
+        public static IDomainEventInterceptor? EventInterceptor { get; private set; }
 
         public static void SetInterceptor(IDomainEventInterceptor interceptor)
         {
-            eventInterceptor = interceptor;
+            EventInterceptor = interceptor;
         }
 
         public static void Raise<TEvent>(TEvent domainEvent)
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
-            eventInterceptor?.Intercept(domainEvent);
+            EventInterceptor?.Intercept(domainEvent);
         }
     }
 }

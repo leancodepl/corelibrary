@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FirebaseAdmin;
 using Google.Cloud.Firestore;
@@ -18,17 +19,21 @@ namespace LeanCode.Firestore
         public FirestoreDatabase(FirebaseApp firebaseApp)
         {
             var credentials = firebaseApp.Options.Credential;
+
             channel = new Channel(
                FirestoreClient.DefaultEndpoint.Host,
                FirestoreClient.DefaultEndpoint.Port,
                credentials.ToChannelCredentials());
+
             client = FirestoreClient.Create(channel);
 
             Database = FirestoreDb.Create(firebaseApp.Options.ProjectId, client);
         }
 
         int IAsyncInitializable.Order => 0;
-        Task IAsyncInitializable.DisposeAsync() => channel.ShutdownAsync();
-        Task IAsyncInitializable.InitializeAsync() => Task.CompletedTask;
+
+        ValueTask IAsyncInitializable.InitializeAsync() => default;
+
+        ValueTask IAsyncDisposable.DisposeAsync() => new ValueTask(channel.ShutdownAsync());
     }
 }

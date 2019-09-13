@@ -7,31 +7,24 @@ namespace LeanCode.IntegrationTestHelpers
 {
     public static class ContainerBuilderExtensions
     {
-        public static IRegistrationBuilder<TContext, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            AddTestDbContext<TContext>(
-                this ContainerBuilder builder,
-                IntegrationTestContextBase testBase)
-            where TContext : DbContext
+        public static IRegistrationBuilder<TContext, ConcreteReflectionActivatorData, SingleRegistrationStyle> AddTestDbContext<TContext>(
+            this ContainerBuilder builder, IntegrationTestContextBase testBase)
+            where TContext : notnull, DbContext
         {
-            var connStr = testBase.ConnectionString;
-
             return builder.RegisterType<TContext>()
                 .AsSelf()
                 .As<DbContext>()
                 .WithParameter(
                     (pi, _) => pi.ParameterType == typeof(DbContextOptions<TContext>),
-                    (_, cc) => PrepareDbOptions<TContext>(cc, connStr))
+                    (_, cc) => PrepareDbOptions<TContext>(cc, testBase.ConnectionString))
                 .InstancePerLifetimeScope();
         }
 
-        private static DbContextOptions<TContext> PrepareDbOptions<TContext>(
-            IComponentContext context,
-            string connStr)
-            where TContext : DbContext
+        private static DbContextOptions<TContext> PrepareDbOptions<TContext>(IComponentContext context, string connStr)
+            where TContext : notnull, DbContext
         {
-            var factory = context.Resolve<ILoggerFactory>();
             return new DbContextOptionsBuilder<TContext>()
-                .UseLoggerFactory(factory)
+                .UseLoggerFactory(context.Resolve<ILoggerFactory>())
                 .UseSqlServer(connStr)
                 .Options;
         }

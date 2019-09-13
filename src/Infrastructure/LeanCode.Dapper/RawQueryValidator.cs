@@ -19,30 +19,28 @@ namespace LeanCode.Dapper
                 .Where(f => f.IsDefined(typeof(RawSqlQueryAttribute), false))
                 .Where(f => f.IsStatic && f.FieldType == typeof(string));
 
-            using (var connection = new SqlConnection(connectionString))
+            using var connection = new SqlConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            foreach (var sql in dapperSqls)
             {
-                await connection.OpenAsync();
-
-                foreach (var sql in dapperSqls)
+                try
                 {
-                    using (var command = new SqlCommand())
-                    {
-                        try
-                        {
-                            var sqlText = (string)sql.GetValue(null);
-                            sqlText = Regex.Replace(sqlText, "IN @[a-zA-Z]{0,}", "IN (1)", RegexOptions.Compiled);
-                            sqlText = Regex.Replace(sqlText, "(?i)(?<!DECLARE\\s+)@[a-zA-Z0-9]{0,}", "''", RegexOptions.Compiled);
-                            // https://xkcd.com/208/
+                    var sqlText = (string?)sql.GetValue(null) ?? string.Empty;
 
-                            command.Connection = connection;
-                            command.CommandText = $"SET FMTONLY ON; {sqlText}";
-                            await command.ExecuteNonQueryAsync();
-                        }
-                        catch (SqlException e)
-                        {
-                            throw new Exception($"Sql server could not process sql query from `{sql.Name}` in {sql.DeclaringType.FullName}\n{e.Message}", e);
-                        }
-                    }
+                    // https://xkcd.com/208/
+                    sqlText = Regex.Replace(sqlText, "IN @[a-zA-Z]{0,}", "IN (1)", RegexOptions.Compiled);
+                    sqlText = Regex.Replace(sqlText, "(?i)(?<!DECLARE\\s+)@[a-zA-Z0-9]{0,}", "''", RegexOptions.Compiled);
+
+                    using var command = new SqlCommand($"SET FMTONLY ON; {sqlText}", connection);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (SqlException e)
+                {
+                    throw new Exception(
+                        $"Sql server could not process sql query from `{sql.Name}` in {sql.DeclaringType?.FullName}\n{e.Message}", e);
                 }
             }
         }

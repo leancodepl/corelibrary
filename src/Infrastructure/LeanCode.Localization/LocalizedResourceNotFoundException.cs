@@ -9,9 +9,7 @@ namespace LeanCode.Localization
         public LocalizedResourceNotFoundException(Exception inner)
             : base(inner.Message, inner) { }
 
-        protected LocalizedResourceNotFoundException(
-            SerializationInfo info,
-            StreamingContext context)
+        protected LocalizedResourceNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

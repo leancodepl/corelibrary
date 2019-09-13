@@ -56,22 +56,19 @@ namespace LeanCode.TimeProvider.Tests
     public class FixedTimeProviderTests1 : FixedTimeProviderTestsBase
     {
         public FixedTimeProviderTests1()
-            : base(new DateTime(2017, 11, 30, 15, 45, 0))
-        { }
+            : base(new DateTime(2017, 11, 30, 15, 45, 0)) { }
     }
 
     public class FixedTimeProviderTests2 : FixedTimeProviderTestsBase
     {
         public FixedTimeProviderTests2()
-            : base(new DateTime(2016, 11, 30, 0, 0, 0))
-        { }
+            : base(new DateTime(2016, 11, 30, 0, 0, 0)) { }
     }
 
     public class FixedTimeProviderTests3 : FixedTimeProviderTestsBase
     {
         public FixedTimeProviderTests3()
-            : base(new DateTime(2015, 11, 30, 6, 0, 0))
-        { }
+            : base(new DateTime(2015, 11, 30, 6, 0, 0)) { }
     }
 
     public class FixedTimeProviderTests

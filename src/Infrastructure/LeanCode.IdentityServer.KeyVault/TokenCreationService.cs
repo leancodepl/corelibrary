@@ -29,16 +29,21 @@ namespace LeanCode.IdentityServer.KeyVault
 
         public async Task<string> CreateTokenAsync(Token token)
         {
-            var credentials = await signing.GetSigningCredentialsAsync();
+            var credentials = await signing
+                .GetSigningCredentialsAsync()
+                .ConfigureAwait(false);
 
-            var header = CreateHeaderAsync(credentials);
-            var payload = CreatePayloadAsync(token);
+            var header = CreateHeader(credentials);
+            var payload = CreatePayload(token);
+
             var jwt = new JwtSecurityToken(header, payload);
 
-            return await signing.SignTokenAsync(jwt);
+            return await signing
+                .SignTokenAsync(jwt)
+                .ConfigureAwait(false);
         }
 
-        private JwtHeader CreateHeaderAsync(SigningCredentials credentials)
+        private JwtHeader CreateHeader(SigningCredentials credentials)
         {
             var header = new JwtHeader(credentials);
 
@@ -46,6 +51,7 @@ namespace LeanCode.IdentityServer.KeyVault
             if (credentials.Key is X509SecurityKey x509key)
             {
                 var cert = x509key.Certificate;
+
                 if (DateTime.UtcNow > cert.NotAfter)
                 {
                     logger.Warning(
@@ -59,7 +65,7 @@ namespace LeanCode.IdentityServer.KeyVault
             return header;
         }
 
-        private JwtPayload CreatePayloadAsync(Token token)
+        private JwtPayload CreatePayload(Token token)
         {
             var payload = new JwtPayload(
                 token.Issuer,
@@ -87,29 +93,33 @@ namespace LeanCode.IdentityServer.KeyVault
             // scope claims
             if (!scopeClaims.IsNullOrEmpty())
             {
-                var scopeValues = scopeClaims.Select(x => x.Value).ToArray();
-                payload.Add(JwtClaimTypes.Scope, scopeValues);
+                payload.Add(JwtClaimTypes.Scope, scopeClaims
+                    .Select(x => x.Value)
+                    .ToArray());
             }
 
             // amr claims
             if (!amrClaims.IsNullOrEmpty())
             {
-                var amrValues = amrClaims.Select(x => x.Value).Distinct().ToArray();
-                payload.Add(JwtClaimTypes.AuthenticationMethod, amrValues);
+                payload.Add(JwtClaimTypes.AuthenticationMethod, amrClaims
+                    .Select(x => x.Value)
+                    .Distinct()
+                    .ToArray());
             }
 
             // deal with json types
             // calling ToArray() to trigger JSON parsing once and so later
             // collection identity comparisons work for the anonymous type
             var jsonTokens = jsonClaims.Select(x => new { x.Type, JsonValue = JRaw.Parse(x.Value) }).ToArray();
-
             var jsonObjects = jsonTokens.Where(x => x.JsonValue.Type == JTokenType.Object).ToArray();
             var jsonObjectGroups = jsonObjects.GroupBy(x => x.Type).ToArray();
+
             foreach (var group in jsonObjectGroups)
             {
                 if (payload.ContainsKey(group.Key))
                 {
-                    throw new Exception(string.Format("Can't add two claims where one is a JSON object and the other is not a JSON object ({0})", group.Key));
+                    throw new Exception(
+                        $"Can't add two claims where one is a JSON object and the other is not ({group.Key})");
                 }
 
                 if (group.Skip(1).Any())
@@ -126,29 +136,38 @@ namespace LeanCode.IdentityServer.KeyVault
 
             var jsonArrays = jsonTokens.Where(x => x.JsonValue.Type == JTokenType.Array).ToArray();
             var jsonArrayGroups = jsonArrays.GroupBy(x => x.Type).ToArray();
+
             foreach (var group in jsonArrayGroups)
             {
                 if (payload.ContainsKey(group.Key))
                 {
-                    throw new Exception(string.Format("Can't add two claims where one is a JSON array and the other is not a JSON array ({0})", group.Key));
+                    throw new Exception(
+                        $"Can't add two claims where one is a JSON array and the other is not ({group.Key})");
                 }
 
-                List<JToken> newArr = new List<JToken>();
+                var newArr = new List<JToken>();
+
                 foreach (var arrays in group)
                 {
-                    var arr = (JArray)arrays.JsonValue;
-                    newArr.AddRange(arr);
+                    newArr.AddRange((JArray)arrays.JsonValue);
                 }
 
                 // add just one array for the group/key/claim type
                 payload.Add(group.Key, newArr.ToArray());
             }
 
-            var unsupportedJsonTokens = jsonTokens.Except(jsonObjects).Except(jsonArrays);
-            var unsupportedJsonClaimTypes = unsupportedJsonTokens.Select(x => x.Type).Distinct();
-            if (unsupportedJsonClaimTypes.Any())
+            var unsupportedJsonClaimTypes = jsonTokens
+                .Except(jsonObjects)
+                .Except(jsonArrays)
+                .Select(x => x.Type)
+                .Distinct()
+                .ToArray();
+
+            if (unsupportedJsonClaimTypes.Length > 0)
             {
-                throw new Exception(string.Format("Unsupported JSON type for claim types: {0}", unsupportedJsonClaimTypes.Aggregate((x, y) => x + ", " + y)));
+                string types = string.Join(", ", unsupportedJsonClaimTypes);
+
+                throw new Exception($"Unsupported JSON type for claim types: {types}");
             }
 
             return payload;

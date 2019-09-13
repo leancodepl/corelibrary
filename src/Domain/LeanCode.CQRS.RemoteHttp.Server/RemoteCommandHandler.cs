@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using LeanCode.Components;
@@ -10,11 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    internal sealed class RemoteCommandHandler<TAppContext>
-        : BaseRemoteObjectHandler<TAppContext>
+    internal sealed class RemoteCommandHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
-            .GetMethod(nameof(ExecuteCommand), BindingFlags.NonPublic | BindingFlags.Instance);
+            .GetMethod(nameof(ExecuteCommand), BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteCommand)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
@@ -28,20 +27,23 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serviceProvider = serviceProvider;
         }
 
-        protected override async Task<ExecutionResult> ExecuteObjectAsync(
-            TAppContext context, object obj)
+        protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
             var type = obj.GetType();
+
             if (!typeof(IRemoteCommand).IsAssignableFrom(type))
             {
                 Logger.Warning("The type {Type} is not an IRemoteCommand", type);
+
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
             var method = MethodCache.GetOrAdd(type, MakeExecutorMethod);
-            var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj });
+
+            var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
 
             CommandResult cmdResult;
+
             try
             {
                 cmdResult = await result.ConfigureAwait(false);
@@ -61,12 +63,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TCommand>(
-            TAppContext appContext,
-            object cmd)
+        private Task<CommandResult> ExecuteCommand<TCommand>(TAppContext appContext, object cmd)
             where TCommand : IRemoteCommand
         {
             var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>();
+
             return commandExecutor.RunAsync(appContext, (TCommand)cmd);
         }
 

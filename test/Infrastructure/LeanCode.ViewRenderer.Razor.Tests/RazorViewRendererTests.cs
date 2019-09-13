@@ -68,7 +68,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
             Assert.Equal("Hello", result);
         }
 
-        private Task<string> Render(string viewName, TestModel model = null) => renderer.RenderToString(viewName, model);
+        private Task<string> Render(string viewName, TestModel model = null) => renderer.RenderToStringAsync(viewName, model);
     }
 
     public class TestModel

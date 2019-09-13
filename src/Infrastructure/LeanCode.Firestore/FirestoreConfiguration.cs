@@ -6,11 +6,11 @@ namespace LeanCode.Firestore
 {
     public class FirestoreConfiguration
     {
-        public static FirebaseApp Prepare(string cfg)
+        public static FirebaseApp Prepare(string? cfg)
         {
             if (string.IsNullOrEmpty(cfg))
             {
-                return FirebaseApp.Create(new AppOptions
+                return FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromAccessToken("STUB"),
                     ProjectId = "STUB",
@@ -18,11 +18,10 @@ namespace LeanCode.Firestore
             }
             else
             {
-                var projectId = JObject.Parse(cfg)["project_id"].Value<string>();
-                return FirebaseApp.Create(new AppOptions
+                return FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromJson(cfg),
-                    ProjectId = projectId,
+                    ProjectId = JObject.Parse(cfg)["project_id"].Value<string>(),
                 });
             }
         }

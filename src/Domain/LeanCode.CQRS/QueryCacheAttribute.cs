@@ -13,16 +13,10 @@ namespace LeanCode.CQRS
             Duration = TimeSpan.FromSeconds(durationInSeconds);
         }
 
-        public static TimeSpan? GetDuration(Type type)
-        {
-            return type
-                .GetCustomAttribute<QueryCacheAttribute>()
-                ?.Duration;
-        }
+        public static TimeSpan? GetDuration(Type type) =>
+            type.GetCustomAttribute<QueryCacheAttribute>()?.Duration;
 
-        public static TimeSpan? GetDuration(object obj)
-        {
-            return GetDuration(obj.GetType());
-        }
+        public static TimeSpan? GetDuration(object obj) =>
+            GetDuration(obj.GetType());
     }
 }

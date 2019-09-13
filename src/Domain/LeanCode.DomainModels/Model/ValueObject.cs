@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace LeanCode.DomainModels.Model
 {
     public abstract class ValueObject<T> : IEquatable<T>
-        where T : ValueObject<T>
+        where T : notnull, ValueObject<T>
     {
         protected abstract object[] GetAttributesToIncludeInEqualityCheck();
 
@@ -21,9 +21,9 @@ namespace LeanCode.DomainModels.Model
             return hc.ToHashCode();
         }
 
-        public override bool Equals(object other) => other is T obj && Equals(obj);
+        public override bool Equals(object? other) => Equals(other as T);
 
-        public bool Equals(T other)
+        public bool Equals([AllowNull] T other)
         {
             if (other is null)
             {

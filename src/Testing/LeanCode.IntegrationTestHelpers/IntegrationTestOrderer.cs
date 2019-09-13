@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -14,24 +15,25 @@ namespace LeanCode.IntegrationTestHelpers
 
         public IntegrationTestOrderer()
         {
-            IntegrationTestLogging.EnsureLoggerLoaded();
+            RuntimeHelpers.RunClassConstructor(typeof(IntegrationTestLogging).TypeHandle);
 
             logger = Serilog.Log.ForContext<IntegrationTestOrderer>();
         }
 
-        public IEnumerable<TTestCase> OrderTestCases<TTestCase>(
-            IEnumerable<TTestCase> testCases)
+        public IEnumerable<TTestCase> OrderTestCases<TTestCase>(IEnumerable<TTestCase> testCases)
             where TTestCase : ITestCase
         {
-            var ordered =
-                testCases
-                    .Select(tc => (TestCase: tc, Attribute: IntegrationFactAttribute.GetCustomOrder(tc.TestMethod.Method)))
-                    .ToList();
+            var ordered = testCases
+                .Select(tc => (TestCase: tc, Attribute: IntegrationFactAttribute.GetCustomOrder(tc.TestMethod.Method)))
+                .ToList();
+
             var all = ordered.All(s => s.Attribute != null);
             var any = ordered.Any(s => s.Attribute != null);
+
             if (!all && any)
             {
                 logger.Error("CustomOrder is specified on some tests in the collection, but not all tests have it. This is all-or-nothing configuration. Tests in collection: ");
+
                 foreach (var (tc, attrib) in ordered)
                 {
                     logger.Error(
@@ -40,6 +42,7 @@ namespace LeanCode.IntegrationTestHelpers
                 }
 
                 logger.Error("Ignoring and using name only");
+
                 ordered = ordered.Select(tc => (tc.TestCase, (int?)null)).ToList();
             }
 

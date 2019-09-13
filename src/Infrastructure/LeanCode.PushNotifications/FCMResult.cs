@@ -1,12 +1,10 @@
 using System.Net;
-using System.Threading.Tasks;
 
 namespace LeanCode.PushNotifications
 {
     public abstract class FCMResult
     {
-        private FCMResult()
-        { }
+        private FCMResult() { }
 
         public sealed class HttpError : FCMResult
         {
@@ -14,7 +12,7 @@ namespace LeanCode.PushNotifications
 
             public HttpError(HttpStatusCode statusCode)
             {
-                this.StatusCode = statusCode;
+                StatusCode = statusCode;
             }
         }
 
@@ -24,15 +22,13 @@ namespace LeanCode.PushNotifications
 
             public OtherError(string error)
             {
-                this.Error = error;
+                Error = error;
             }
         }
 
-        public sealed class InvalidToken : FCMResult
-        { }
+        public sealed class InvalidToken : FCMResult { }
 
-        public sealed class Success : FCMResult
-        { }
+        public sealed class Success : FCMResult { }
 
         public sealed class TokenUpdated : FCMResult
         {
@@ -40,7 +36,7 @@ namespace LeanCode.PushNotifications
 
             public TokenUpdated(string newToken)
             {
-                this.NewToken = newToken;
+                NewToken = newToken;
             }
         }
     }

@@ -12,13 +12,16 @@ namespace LeanCode.EFMigrator
         public static string KeyVaultClientIdKey { get; set; } = "Secrets:KeyVault:ClientId";
         public static string KeyVaultClientSecretKey { get; set; } = "Secrets:KeyVault:ClientSecret";
 
-        private static string azureKeyVaultConnectionString;
+        private static string? azureKeyVaultConnectionString;
 
         private static async Task<string> GetAzureKeyVaultAccessTokenAsync(
             string authority, string resource, string scope)
         {
-            string clientId = GetEnvironmentVariable(KeyVaultClientIdKey);
-            string clientSecret = GetEnvironmentVariable(KeyVaultClientSecretKey);
+            string clientId = GetEnvironmentVariable(KeyVaultClientIdKey)
+                ?? throw new ArgumentNullException(KeyVaultClientIdKey);
+
+            string clientSecret = GetEnvironmentVariable(KeyVaultClientSecretKey)
+                ?? throw new ArgumentNullException(KeyVaultClientSecretKey);
 
             var context = new AuthenticationContext(authority);
             var credential = new ClientCredential(clientId, clientSecret);
@@ -31,7 +34,9 @@ namespace LeanCode.EFMigrator
 
         public static async Task UseConnectionStringFromAzureKeyVaultAsync()
         {
-            string keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey);
+            string keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey)
+                ?? throw new ArgumentNullException(KeyVaultUrlKey);
+
             string connectionStringKey = ConnectionStringKey.Replace(":", "--");
 
             using (var client = new KeyVaultClient(GetAzureKeyVaultAccessTokenAsync))
@@ -43,12 +48,12 @@ namespace LeanCode.EFMigrator
             }
         }
 
-        public static string GetConnectionString() =>
+        public static string? GetConnectionString() =>
             azureKeyVaultConnectionString ?? GetEnvironmentVariable(ConnectionStringKey);
 
         public static string DenormalizeKey(this string @this) => @this.Replace(":", "__");
 
-        private static string GetEnvironmentVariable(string key)
+        private static string? GetEnvironmentVariable(string key)
         {
             var variable = Environment.GetEnvironmentVariable(key);
 

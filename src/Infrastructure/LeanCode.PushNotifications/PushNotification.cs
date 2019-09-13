@@ -4,9 +4,9 @@ namespace LeanCode.PushNotifications
     {
         public string Title { get; }
         public string Content { get; }
-        public object Data { get; }
+        public object? Data { get; }
 
-        public PushNotification(string title, string content, object data)
+        public PushNotification(string title, string content, object? data)
         {
             Title = title;
             Content = content;

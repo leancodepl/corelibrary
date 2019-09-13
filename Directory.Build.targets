@@ -97,11 +97,12 @@
 
   <PropertyGroup>
     <CodeAnalysisSettingsLocation>$(MSBuildThisFileDirectory)</CodeAnalysisSettingsLocation>
-    <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)/stylecop.json" />
+    <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
+
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="All" />
 

@@ -7,8 +7,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
         public DbSet<Entity> Entities => Set<Entity>();
 
         public TestDbContext(DbContextOptions<TestDbContext> opts)
-            : base(opts)
-        { }
+            : base(opts) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

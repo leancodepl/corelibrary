@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Autofac;
 using LeanCode.CQRS.Default.Wrappers;
 using LeanCode.CQRS.Validation;
@@ -22,12 +21,14 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICommandValidatorWrapper FindCommandValidator(Type commandType)
+        public ICommandValidatorWrapper? FindCommandValidator(Type commandType)
         {
             var (handlerType, constructor) = TypesCache.Get(commandType);
+
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var cv = constructor.Invoke(new[] { handler });
+
                 return (ICommandValidatorWrapper)cv;
             }
             else
@@ -36,9 +37,7 @@ namespace LeanCode.CQRS.Default.Autofac
             }
         }
 
-        private static Type[] GetTypes(Type commandType)
-        {
-            return new[] { AppContextType, commandType };
-        }
+        private static Type[] GetTypes(Type commandType) =>
+            new[] { AppContextType, commandType };
     }
 }

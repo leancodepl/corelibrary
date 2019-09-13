@@ -6,9 +6,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 {
     public class PersistedGrantStoreModule : AppModule
     {
-        protected override void Load(ContainerBuilder builder)
-        {
+        protected override void Load(ContainerBuilder builder) =>
             builder.RegisterType<PersistedGrantStore>().As<IPersistedGrantStore>();
-        }
     }
 }

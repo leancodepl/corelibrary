@@ -38,56 +38,59 @@ namespace LeanCode.AsyncInitializer
             await DisposeAsync(cancellationToken);
         }
 
-        public void Dispose()
-        {
-            innerServer.Dispose();
-        }
+        public void Dispose() => innerServer.Dispose();
 
-        private async Task InitializeAsync(CancellationToken token)
+        private async ValueTask InitializeAsync(CancellationToken token)
         {
             logger.Information("Initializing async modules");
+
             var scopeFactory = provider.GetService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
+
+            using var scope = scopeFactory.CreateScope();
+
+            var inits = scope.ServiceProvider
+                .GetService<IEnumerable<IAsyncInitializable>>()
+                .OrderBy(i => i.Order);
+
+            foreach (var i in inits)
             {
-                var inits = scope.ServiceProvider
-                    .GetService<IEnumerable<IAsyncInitializable>>()
-                    .OrderBy(i => i.Order);
-
-                foreach (var i in inits)
+                if (token.IsCancellationRequested)
                 {
-                    if (token.IsCancellationRequested)
-                    {
-                        logger.Information("Cancellation requested, skipping initialization");
-                        break;
-                    }
+                    logger.Information("Cancellation requested, skipping initialization");
 
-                    logger.Debug("Initializing {Type}", i.GetType());
-                    await i.InitializeAsync();
+                    break;
                 }
+
+                logger.Debug("Initializing {Type}", i.GetType());
+
+                await i.InitializeAsync();
             }
         }
 
-        private async Task DisposeAsync(CancellationToken token)
+        private async ValueTask DisposeAsync(CancellationToken token)
         {
             logger.Information("Disposing async modules");
+
             var scopeFactory = provider.GetService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
+
+            using var scope = scopeFactory.CreateScope();
+
+            var inits = scope.ServiceProvider
+                .GetService<IEnumerable<IAsyncInitializable>>()
+                .OrderByDescending(i => i.Order);
+
+            foreach (var i in inits)
             {
-                var inits = scope.ServiceProvider
-                    .GetService<IEnumerable<IAsyncInitializable>>()
-                    .OrderByDescending(i => i.Order);
-
-                foreach (var i in inits)
+                if (token.IsCancellationRequested)
                 {
-                    if (token.IsCancellationRequested)
-                    {
-                        logger.Warning("Cancellation required, skipping rest of the disposals");
-                        break;
-                    }
+                    logger.Warning("Cancellation required, skipping rest of the disposals");
 
-                    logger.Debug("Disposing {Type}", i.GetType());
-                    await i.DisposeAsync();
+                    break;
                 }
+
+                logger.Debug("Disposing {Type}", i.GetType());
+
+                await i.DisposeAsync();
             }
         }
     }

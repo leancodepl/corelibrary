@@ -13,7 +13,7 @@ namespace LeanCode.CQRS.Default.Wrappers
             this.handler = handler;
         }
 
-        public async Task<object> ExecuteAsync(object context, IQuery query)
+        public async Task<object?> ExecuteAsync(object context, IQuery query)
         {
             return await handler
                 .ExecuteAsync((TAppContext)context, (TQuery)query)

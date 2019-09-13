@@ -9,8 +9,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     public class RemoteCQRSMiddlewareCommandsTests : BaseMiddlewareTests
     {
         public RemoteCQRSMiddlewareCommandsTests()
-            : base("command", typeof(SampleRemoteCommand))
-        { }
+            : base("command", typeof(SampleRemoteCommand)) { }
 
         [Fact]
         public async Task Passes_execution_further_if_cannot_find_command_type()
@@ -98,15 +97,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleCommand : ICommand
-    { }
+    public class SampleCommand : ICommand { }
 
     public class SampleRemoteCommand : IRemoteCommand
     {
         public int Prop { get; set; }
     }
 
-    public class SampleRemoteCommand2 : IRemoteCommand
-    {
-    }
+    public class SampleRemoteCommand2 : IRemoteCommand { }
 }

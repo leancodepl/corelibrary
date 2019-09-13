@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using LeanCode.EmailSender.Model;
 
 namespace LeanCode.EmailSender.SendGrid
@@ -6,7 +7,7 @@ namespace LeanCode.EmailSender.SendGrid
     internal class SendGridEmail
     {
         public string Email { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public SendGridEmail(EmailAddress emailAddress)
         {
@@ -17,26 +18,38 @@ namespace LeanCode.EmailSender.SendGrid
 
     internal class SendGridPersonalization
     {
-        public List<SendGridEmail> To { get; set; }
+        public ImmutableList<SendGridEmail> To { get; set; }
+
+        public SendGridPersonalization(IEnumerable<SendGridEmail> to)
+        {
+            To = to.ToImmutableList();
+        }
     }
 
     internal class SendGridContent
     {
         public string Type { get; set; }
         public string Value { get; set; }
+
+        public SendGridContent(string type, string value)
+        {
+            Type = type;
+            Value = value;
+        }
     }
 
     internal class SendGridMessage
     {
-        public List<SendGridPersonalization> Personalizations { get; set; }
         public SendGridEmail From { get; set; }
-        public SendGridContent[] Content { get; set; }
-        public SendGridAttachment[] Attachments { get; set; }
-        public string Subject { get; set; }
+        public ImmutableList<SendGridPersonalization> Personalizations { get; set; }
+        public ImmutableArray<SendGridContent> Content { get; set; }
+        public ImmutableArray<SendGridAttachment> Attachments { get; set; }
+        public string? Subject { get; set; }
 
-        public bool ShouldSerializeAttachments()
+        public SendGridMessage(SendGridEmail from, IEnumerable<SendGridPersonalization> personalizations)
         {
-            return Attachments != null && Attachments.Length > 0;
+            From = from;
+            Personalizations = personalizations.ToImmutableList();
         }
     }
 
@@ -45,5 +58,12 @@ namespace LeanCode.EmailSender.SendGrid
         public string Content { get; set; }
         public string Type { get; set; }
         public string Filename { get; set; }
+
+        public SendGridAttachment(string content, string type, string filename)
+        {
+            Content = content;
+            Type = type;
+            Filename = filename;
+        }
     }
 }

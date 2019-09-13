@@ -4,6 +4,6 @@ namespace LeanCode.SmsSender
 {
     public interface ISmsSender
     {
-        Task Send(string message, string phoneNumber);
+        Task SendAsync(string message, string phoneNumber);
     }
 }

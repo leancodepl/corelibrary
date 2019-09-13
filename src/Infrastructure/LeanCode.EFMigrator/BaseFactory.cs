@@ -11,15 +11,14 @@ namespace LeanCode.EFMigrator
         where TContext : DbContext
         where TFactory : BaseFactory<TContext, TFactory>
     {
-        protected virtual string AssemblyName => typeof(TFactory).Assembly.GetName().Name;
+        protected virtual string AssemblyName => typeof(TFactory).Assembly.GetName().Name
+            ?? throw new NullReferenceException();
 
-        protected virtual void UseAdditionalSqlServerDbContextOptions(
-            SqlServerDbContextOptionsBuilder builder)
-        { }
+        protected virtual void UseAdditionalSqlServerDbContextOptions(SqlServerDbContextOptionsBuilder builder) { }
 
         public TContext CreateDbContext(string[] args)
         {
-            return (TContext)Activator.CreateInstance(
+            return (TContext?)Activator.CreateInstance(
                 typeof(TContext),
                 new DbContextOptionsBuilder<TContext>()
                     .UseLoggerFactory(new ServiceCollection()
@@ -30,7 +29,7 @@ namespace LeanCode.EFMigrator
                         MigrationsConfig.GetConnectionString(),
                         cfg => UseAdditionalSqlServerDbContextOptions(
                             cfg.MigrationsAssembly(AssemblyName)))
-                    .Options);
+                    .Options) ?? throw new NullReferenceException("Failed to create DbContext instance.");
         }
     }
 }

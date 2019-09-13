@@ -4,8 +4,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Validation
 {
-    public class ValidationElement<TAppContext>
-        : IPipelineElement<TAppContext, ICommand, CommandResult>
+    public class ValidationElement<TAppContext> : IPipelineElement<TAppContext, ICommand, CommandResult>
         where TAppContext : IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ValidationElement<TAppContext>>();
@@ -24,18 +23,21 @@ namespace LeanCode.CQRS.Validation
         {
             var commandType = payload.GetType();
             var validator = resolver.FindCommandValidator(commandType);
-            if (!(validator is null))
+
+            if (validator is null)
             {
-                var result = await validator
-                    .ValidateAsync(appContext, payload)
-                    .ConfigureAwait(false);
-                if (!result.IsValid)
-                {
-                    logger.Information(
-                        "Command {@Command} is not valid with result {@Result}",
-                        payload, result);
-                    return CommandResult.NotValid(result);
-                }
+                return await next(appContext, payload).ConfigureAwait(false);
+            }
+
+            var result = await validator
+                .ValidateAsync(appContext, payload)
+                .ConfigureAwait(false);
+
+            if (!result.IsValid)
+            {
+                logger.Information("Command {@Command} is not valid with result {@Result}", payload, result);
+
+                return CommandResult.NotValid(result);
             }
 
             return await next(appContext, payload).ConfigureAwait(false);

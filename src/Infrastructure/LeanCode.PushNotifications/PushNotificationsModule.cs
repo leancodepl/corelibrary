@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LeanCode.PushNotifications
 {
     public class PushNotificationsModule<TUserId> : AppModule
+        where TUserId : notnull
     {
         public override void ConfigureServices(IServiceCollection services)
         {

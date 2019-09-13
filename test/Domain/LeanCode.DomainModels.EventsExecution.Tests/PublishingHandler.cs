@@ -4,7 +4,7 @@ using LeanCode.DomainModels.Model;
 namespace LeanCode.DomainModels.EventsExecution.Tests
 {
     public class PublishingHandler<TEvent> : IDomainEventHandler<TEvent>
-        where TEvent : IDomainEvent
+        where TEvent : class, IDomainEvent
     {
         private readonly IDomainEvent[] events;
         private int times = 1;

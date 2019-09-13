@@ -192,13 +192,11 @@ public class TestClass : BaseTestClass
             var generator = CreateDartGenerator(
 @"namespace Aa.Bb.Cc
 {
-    public class Class
-    { }
+    public class Class { }
 }
 namespace Aaa.Bbb.Cc
 {
-    public class Class
-    { }
+    public class Class { }
 }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));

@@ -9,9 +9,9 @@ namespace LeanCode.CQRS.Security
     public class AuthorizeWhenAttribute : Attribute
     {
         private readonly Type authorizerType;
-        private readonly object customData;
+        private readonly object? customData;
 
-        public AuthorizeWhenAttribute(Type authorizerType, object customData = null)
+        public AuthorizeWhenAttribute(Type authorizerType, object? customData = null)
         {
             this.authorizerType = authorizerType;
             this.customData = customData;
@@ -28,19 +28,16 @@ namespace LeanCode.CQRS.Security
         public sealed class AuthorizerDefinition
         {
             public Type Authorizer { get; }
-            public object CustomData { get; }
+            public object? CustomData { get; }
 
             private AuthorizerDefinition(AuthorizeWhenAttribute attr)
             {
-                this.Authorizer = attr.authorizerType;
-                this.CustomData = attr.customData;
+                Authorizer = attr.authorizerType;
+                CustomData = attr.customData;
             }
 
-            internal static AuthorizerDefinition Create(
-                AuthorizeWhenAttribute attr)
-            {
-                return new AuthorizerDefinition(attr);
-            }
+            internal static AuthorizerDefinition Create(AuthorizeWhenAttribute attr) =>
+                new AuthorizerDefinition(attr);
         }
     }
 }

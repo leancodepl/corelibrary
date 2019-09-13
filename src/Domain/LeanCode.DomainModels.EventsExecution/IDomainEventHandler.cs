@@ -4,7 +4,7 @@ using LeanCode.DomainModels.Model;
 namespace LeanCode.DomainModels.EventsExecution
 {
     public interface IDomainEventHandler<in TEvent>
-        where TEvent : IDomainEvent
+        where TEvent : class, IDomainEvent
     {
         Task HandleAsync(TEvent domainEvent);
     }

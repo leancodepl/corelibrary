@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Serilog.Core;
 using Serilog.Events;
 
@@ -11,7 +12,7 @@ namespace LeanCode.Logging
         public bool TryDestructure(
             object value,
             ILogEventPropertyValueFactory propertyValueFactory,
-            out LogEventPropertyValue result)
+            [NotNullWhen(true)] out LogEventPropertyValue? result)
         {
             if (TrySanitizeInternal(value, out var newValue))
             {
@@ -25,12 +26,13 @@ namespace LeanCode.Logging
             }
         }
 
-        private bool TrySanitizeInternal(object obj, out object newObj)
+        private bool TrySanitizeInternal(object obj, [NotNullWhen(true)] out object? newObj)
         {
             if (obj is T u)
             {
                 newObj = TrySanitize(u);
-                if (object.ReferenceEquals(newObj, obj))
+
+                if (ReferenceEquals(newObj, obj))
                 {
                     throw new InvalidOperationException("The BaseSanitizer implementation must create new object.");
                 }
@@ -40,6 +42,7 @@ namespace LeanCode.Logging
             else
             {
                 newObj = null;
+
                 return false;
             }
         }

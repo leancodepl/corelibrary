@@ -21,8 +21,8 @@ namespace LeanCode.PushNotifications.Tests
             store = Substitute.For<IPushNotificationTokenStore<Guid>>();
             client = Substitute.For<FCMClient>(new HttpClient());
 
-            store.GetForDevice(Guid.Empty, DeviceType.Android).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
-            store.GetAll(Guid.Empty).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
+            store.GetForDeviceAsync(Guid.Empty, DeviceType.Android).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
+            store.GetAllAsync(Guid.Empty).ReturnsForAnyArgs(Task.FromResult(new List<PushNotificationToken<Guid>>()));
 
             client.Send(null).ReturnsForAnyArgs(Task.FromResult<FCMResult>(new FCMResult.Success()));
 
@@ -39,7 +39,7 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.SendAsync(uid, deviceType, new PushNotification(string.Empty, string.Empty, null));
 
-            _ = store.Received().GetForDevice(uid, deviceType);
+            _ = store.Received().GetForDeviceAsync(uid, deviceType);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace LeanCode.PushNotifications.Tests
                 new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Android, "b"),
             };
 
-            store.GetForDevice(uid, DeviceType.Android).Returns(tokens);
+            store.GetForDeviceAsync(uid, DeviceType.Android).Returns(tokens);
 
             await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
@@ -125,7 +125,7 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.SendToAllAsync(uid, new PushNotification(string.Empty, string.Empty, null));
 
-            _ = store.Received().GetAll(uid);
+            _ = store.Received().GetAllAsync(uid);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace LeanCode.PushNotifications.Tests
         {
             var uid = Guid.NewGuid();
 
-            store.GetAll(uid).Returns(Task.FromResult(new List<PushNotificationToken<Guid>>
+            store.GetAllAsync(uid).Returns(Task.FromResult(new List<PushNotificationToken<Guid>>
             {
                 new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.Android, "a"),
                 new PushNotificationToken<Guid>(Guid.NewGuid(), uid, DeviceType.iOS, "b"),
@@ -168,7 +168,7 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            _ = store.Received().UpdateToken(token, newToken);
+            _ = store.Received().UpdateTokenAsync(token, newToken);
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            _ = store.Received().RemoveToken(token);
+            _ = store.Received().RemoveTokenAsync(token);
         }
 
         [Fact]
@@ -205,7 +205,7 @@ namespace LeanCode.PushNotifications.Tests
         private PushNotificationToken<Guid> SetToken(string token, Guid uid, DeviceType deviceType = DeviceType.Android)
         {
             var result = new PushNotificationToken<Guid>(Guid.NewGuid(), uid, deviceType, token);
-            store.GetForDevice(uid, deviceType).Returns(new List<PushNotificationToken<Guid>>
+            store.GetForDeviceAsync(uid, deviceType).Returns(new List<PushNotificationToken<Guid>>
             {
                 result,
             });
@@ -221,8 +221,8 @@ namespace LeanCode.PushNotifications.Tests
 
             await sender.SendAsync(uid, DeviceType.Android, new PushNotification(string.Empty, string.Empty, null));
 
-            _ = store.DidNotReceiveWithAnyArgs().UpdateToken(null, null);
-            _ = store.DidNotReceiveWithAnyArgs().RemoveToken(null);
+            _ = store.DidNotReceiveWithAnyArgs().UpdateTokenAsync(null, null);
+            _ = store.DidNotReceiveWithAnyArgs().RemoveTokenAsync(null);
         }
     }
 }

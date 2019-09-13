@@ -19,7 +19,7 @@ namespace LeanCode.DomainModels.EF
         public static void IsSoftDeletable<TEntity>(this EntityTypeBuilder<TEntity> cfg)
             where TEntity : class, ISoftDeletable
         {
-            cfg.HasQueryFilter(e => e.IsDeleted == false);
+            cfg.HasQueryFilter(e => !e.IsDeleted);
         }
 
         public static void IsOptimisticConcurrent<TEntity>(
@@ -55,23 +55,19 @@ namespace LeanCode.DomainModels.EF
 
         private static string GetBackingFieldFor<TEntity>(string fieldName)
         {
-            return
-                GetBackingFieldWhenAvailable<TEntity>($"<{IOptimisticConcurrencyType.FullName}.{fieldName}>k__BackingField") ??
-                GetBackingFieldWhenAvailable<TEntity>($"<{fieldName}>k__BackingField") ??
-                throw new InvalidOperationException($"Cannot find explicitly named backing field for IOptimisticConcurrency on type {typeof(TEntity).Name}.");
+            return TryGetBackingField<TEntity>($"<{IOptimisticConcurrencyType.FullName}.{fieldName}>k__BackingField")
+                ?? TryGetBackingField<TEntity>($"<{fieldName}>k__BackingField")
+                ?? throw new InvalidOperationException(
+                    $"Cannot find explicitly named backing field for IOptimisticConcurrency on type {typeof(TEntity).Name}.");
         }
 
-        private static string GetBackingFieldWhenAvailable<TEntity>(string fieldName)
+        private static string? TryGetBackingField<TEntity>(string fieldName)
         {
             var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
-            if (typeof(TEntity).GetField(fieldName, flags) is FieldInfo fi)
-            {
-                return fi.Name;
-            }
-            else
-            {
-                return null;
-            }
+
+            return typeof(TEntity).GetField(fieldName, flags) is FieldInfo fi
+                ? fi.Name
+                : null;
         }
     }
 }

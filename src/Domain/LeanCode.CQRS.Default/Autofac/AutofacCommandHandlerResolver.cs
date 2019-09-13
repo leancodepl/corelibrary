@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Autofac;
 using LeanCode.CQRS.Default.Wrappers;
 using LeanCode.CQRS.Execution;
@@ -21,12 +20,14 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public ICommandHandlerWrapper FindCommandHandler(Type commandType)
+        public ICommandHandlerWrapper? FindCommandHandler(Type commandType)
         {
             var (handlerType, constructor) = TypesCache.Get(commandType);
+
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var wrapper = constructor.Invoke(new[] { handler });
+
                 return (ICommandHandlerWrapper)wrapper;
             }
             else
@@ -35,9 +36,7 @@ namespace LeanCode.CQRS.Default.Autofac
             }
         }
 
-        private static Type[] GetTypes(Type commandType)
-        {
-            return new[] { AppContextType, commandType };
-        }
+        private static Type[] GetTypes(Type commandType) =>
+            new[] { AppContextType, commandType };
     }
 }

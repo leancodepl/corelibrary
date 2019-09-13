@@ -1,3 +1,4 @@
+#nullable enable
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
 using LeanCode.Example.Security;
@@ -9,10 +10,9 @@ namespace LeanCode.Example.CQRS
     {
         public sealed class Result
         {
-            [CanBeNull]
-            public string Name { get; }
+            public string? Name { get; }
 
-            public Result(string name)
+            public Result(string? name)
             {
                 Name = name;
             }

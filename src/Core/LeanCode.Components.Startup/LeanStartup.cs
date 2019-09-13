@@ -46,6 +46,7 @@ namespace LeanCode.Components.Startup
 
             var appLifetime = app.ApplicationServices
                 .GetRequiredService<IHostApplicationLifetime>();
+
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
 
@@ -56,6 +57,7 @@ namespace LeanCode.Components.Startup
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
+
             foreach (var component in Modules)
             {
                 builder.RegisterModule(component);

@@ -14,9 +14,10 @@ namespace LeanCode.EmailSender.SendGrid
                 .ConfigureHttpClient((sp, c) =>
                 {
                     var cfg = sp.GetService<SendGridConfiguration>();
+
                     c.BaseAddress = new Uri("https://api.sendgrid.com/v3/");
-                    c.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
+
+                    c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", cfg.ApiKey);
                 });
         }
 

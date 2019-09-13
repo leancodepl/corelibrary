@@ -20,11 +20,11 @@ namespace LeanCode.ClientCredentialsHandler
         private readonly SemaphoreSlim tokenLock = new SemaphoreSlim(1, 1);
         private readonly HttpClient httpClient;
 
-        private string accessToken = null;
+        private string? accessToken = null;
 
         private bool disposed = false;
 
-        private string AccessToken
+        private string? AccessToken
         {
             get
             {
@@ -50,13 +50,12 @@ namespace LeanCode.ClientCredentialsHandler
             this.config = config;
             this.httpClient = new HttpClient();
             this.tokenEndpoint = UrlHelper.Concat(config.ServerAddress, "connect/token");
-            // this.tokenClient = new TokenClient(uri, config.ClientId, config.ClientSecret);
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var token = AccessToken;
-            if (token == null)
+            if (AccessToken is null)
             {
                 if (!await GetNewAccessToken(cancellationToken))
                 {
@@ -65,11 +64,23 @@ namespace LeanCode.ClientCredentialsHandler
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            using (var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false))
+
+            HttpResponseMessage? response = null;
+
+            try
             {
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
                 if (response.StatusCode != HttpStatusCode.Unauthorized)
                 {
                     return response;
+                }
+            }
+            finally
+            {
+                if (response?.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    response.Dispose();
                 }
             }
 
@@ -79,6 +90,7 @@ namespace LeanCode.ClientCredentialsHandler
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
@@ -87,6 +99,7 @@ namespace LeanCode.ClientCredentialsHandler
             if (disposing && !disposed)
             {
                 disposed = true;
+
                 httpClient.Dispose();
                 tokenLock.Dispose();
             }
@@ -101,19 +114,22 @@ namespace LeanCode.ClientCredentialsHandler
                 try
                 {
                     logger.Debug("Requesting access token");
+
                     var response = await httpClient.RequestClientCredentialsTokenAsync(
                         new ClientCredentialsTokenRequest
                         {
                             Address = tokenEndpoint,
-
                             ClientId = config.ClientId,
                             ClientSecret = config.ClientSecret,
                             Scope = config.Scopes,
                         }, cancellationToken);
+
                     if (!response.IsError)
                     {
                         logger.Information("New access token retrieved");
+
                         accessToken = response.AccessToken;
+
                         return true;
                     }
                     else
@@ -121,12 +137,14 @@ namespace LeanCode.ClientCredentialsHandler
                         logger.Fatal(
                             "Cannot get access token - server rejected the request with error {Error}",
                             response.ErrorDescription);
+
                         return false;
                     }
                 }
                 catch (Exception ex)
                 {
                     logger.Fatal(ex, "Cannot connect to auth server");
+
                     throw;
                 }
                 finally

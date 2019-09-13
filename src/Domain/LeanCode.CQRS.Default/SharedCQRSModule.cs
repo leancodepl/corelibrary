@@ -15,7 +15,8 @@ namespace LeanCode.CQRS.Default
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AutofacPipelineFactory>().As<IPipelineFactory>()
+            builder.RegisterType<AutofacPipelineFactory>()
+                .As<IPipelineFactory>()
                 .SingleInstance();
 
             builder.RegisterGeneric(typeof(CQRSSecurityElement<,,>)).AsSelf();
@@ -33,12 +34,15 @@ namespace LeanCode.CQRS.Default
                 .AsSelf()
                 .OnActivated(a => a.Instance.Configure())
                 .SingleInstance();
+
             builder.RegisterType<RetryPolicies>()
                 .AsSelf()
                 .SingleInstance();
+
             builder.RegisterType<SimpleEventsExecutor>()
                 .AsSelf()
                 .SingleInstance();
+
             builder.RegisterType<SimpleFinalizer>().AsSelf();
 
             builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();

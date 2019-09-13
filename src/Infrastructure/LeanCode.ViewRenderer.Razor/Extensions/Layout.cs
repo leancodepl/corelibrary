@@ -6,9 +6,7 @@ namespace LeanCode.ViewRenderer.Razor.Extensions
     {
         public const string DirectiveName = "layout";
 
-        public static readonly DirectiveDescriptor Directive =
-            DirectiveDescriptor.CreateSingleLineDirective(
-                DirectiveName,
-                b => b.AddMemberToken());
+        public static readonly DirectiveDescriptor Directive = DirectiveDescriptor.CreateSingleLineDirective(
+            DirectiveName, b => b.AddMemberToken());
     }
 }

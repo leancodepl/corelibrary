@@ -16,7 +16,7 @@ namespace LeanCode.Components.Startup
             string appName,
             bool requireEnvSettings = false,
             bool requireBaseSettings = true,
-            TypesCatalog destructurers = null)
+            TypesCatalog? destructurers = null)
             where TStartup : class
         {
             return new WebHostBuilder()
@@ -42,11 +42,12 @@ namespace LeanCode.Components.Startup
                     Log.Logger = new LoggerConfiguration()
                         .EnrichWithAppName(appName)
                         .ReadFrom.Configuration(hostingContext.Configuration)
-                        .DestructureCommonObjects(destructurers.Assemblies)
+                        .DestructureCommonObjects(destructurers?.Assemblies)
                         .CreateLogger();
 
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);
+
                     logging.AddConfiguration(config);
                     logging.AddSerilog();
                 })
@@ -60,8 +61,8 @@ namespace LeanCode.Components.Startup
         public static IWebHostBuilder BuildMinimalWebHost<TStartup>(
             string appName,
             Func<WebHostBuilderContext, LoggerConfiguration> configLogger,
-            Action<WebHostBuilderContext, IConfigurationBuilder> extendConfig = null,
-            TypesCatalog destructurers = null)
+            Action<WebHostBuilderContext, IConfigurationBuilder>? extendConfig = null,
+            TypesCatalog? destructurers = null)
             where TStartup : class
         {
             return new WebHostBuilder()
@@ -75,11 +76,12 @@ namespace LeanCode.Components.Startup
                 {
                     Log.Logger = configLogger(hostingContext)
                         .EnrichWithAppName(appName)
-                        .DestructureCommonObjects(destructurers.Assemblies)
+                        .DestructureCommonObjects(destructurers?.Assemblies)
                         .CreateLogger();
 
                     var config = hostingContext.Configuration
                         .GetSection(SystemLoggersEntryName);
+
                     logging.AddConfiguration(config);
                     logging.AddSerilog();
                 })

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeanCode.DomainModels.EF
 {
     public abstract class EFUnitOfWorkBase<TContext> : IUnitOfWork
-        where TContext : DbContext
+        where TContext : notnull, DbContext
     {
         private readonly TContext dbContext;
 

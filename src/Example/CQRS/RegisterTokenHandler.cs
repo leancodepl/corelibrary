@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.PushNotifications;
 
@@ -15,9 +14,7 @@ namespace LeanCode.Example.CQRS
             this.store = store;
         }
 
-        public Task ExecuteAsync(AppContext ctx, RegisterToken command)
-        {
-            return store.UpdateOrAddToken(command.UserId, DeviceType.Android, command.Token);
-        }
+        public Task ExecuteAsync(AppContext ctx, RegisterToken command) =>
+            store.UpdateOrAddTokenAsync(command.UserId, DeviceType.Android, command.Token);
     }
 }

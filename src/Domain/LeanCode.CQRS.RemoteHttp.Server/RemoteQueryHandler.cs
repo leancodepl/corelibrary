@@ -11,11 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    internal sealed class RemoteQueryHandler<TAppContext>
-        : BaseRemoteObjectHandler<TAppContext>
+    internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
-            .GetMethod(nameof(ExecuteQuery), BindingFlags.NonPublic | BindingFlags.Instance);
+            .GetMethod(nameof(ExecuteQuery), BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteQuery)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
@@ -29,32 +29,39 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serviceProvider = serviceProvider;
         }
 
-        protected override async Task<ExecutionResult> ExecuteObjectAsync(
-            TAppContext context, object obj)
+        protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
+            var type = obj.GetType();
+
             MethodInfo method;
+
             try
             {
-                method = MethodCache.GetOrAdd(obj.GetType(), GenerateMethod);
+                method = MethodCache.GetOrAdd(type, GenerateMethod);
             }
             catch
             {
-                Logger.Warning("The type {Type} is not an IRemoteQuery", obj.GetType());
                 // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
+                Logger.Warning("The type {Type} is not an IRemoteQuery", type);
+
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
-            var type = obj.GetType();
             try
             {
-                var result = (Task<object>)method.Invoke(this, new[] { context, obj });
+                var result = (Task<object?>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
+
                 var objResult = await result.ConfigureAwait(false);
+
                 return ExecutionResult.Success(objResult);
             }
-            catch (TargetInvocationException ex)
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
             {
-                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                return default;
+                ExceptionDispatchInfo
+                    .Capture(ex.InnerException)
+                    .Throw();
+
+                throw; // the `Throw` method above `DoesNotReturn` anyway
             }
             catch (QueryHandlerNotFoundException)
             {
@@ -68,22 +75,20 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
-            var queryExecutor = serviceProvider.GetService<IQueryExecutor<TAppContext>>();
-            return await queryExecutor
+            return await serviceProvider
+                .GetService<IQueryExecutor<TAppContext>>()
                 .GetAsync(appContext, (TQuery)query)
                 .ConfigureAwait(false);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)
         {
-            var types = queryType.GetInterfaces()
+            return ExecQueryMethod.MakeGenericMethod(queryType, queryType
+                .GetInterfaces()
                 .Single(i =>
                     i.IsConstructedGenericType &&
                     i.GetGenericTypeDefinition() == typeof(IRemoteQuery<>))
-                .GenericTypeArguments;
-
-            var resultType = types[0];
-            return ExecQueryMethod.MakeGenericMethod(queryType, resultType);
+                .GenericTypeArguments[0]);
         }
     }
 }

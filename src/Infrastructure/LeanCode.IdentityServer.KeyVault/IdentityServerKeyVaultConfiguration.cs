@@ -2,8 +2,8 @@ namespace LeanCode.IdentityServer.KeyVault
 {
     public class IdentityServerKeyVaultConfiguration
     {
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public string KeyId { get; set; }
+        public string ClientId { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
+        public string KeyId { get; set; } = string.Empty;
     }
 }

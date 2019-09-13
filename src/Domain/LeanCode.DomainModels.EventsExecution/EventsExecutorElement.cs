@@ -9,7 +9,7 @@ namespace LeanCode.DomainModels.EventsExecution
 {
     public class EventsExecutorElement<TContext, TInput, TOutput>
         : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : IEventsContext
+        where TContext : notnull, IEventsContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsExecutorElement<TContext, TInput, TOutput>>();
 
@@ -33,10 +33,12 @@ namespace LeanCode.DomainModels.EventsExecution
             Func<TContext, TInput, Task<TOutput>> next)
         {
             var result = await next(ctx, input).ConfigureAwait(false);
-            if (!(ctx.SavedEvents is null) && ctx.SavedEvents.Count > 0)
+
+            if ((ctx.SavedEvents?.Count ?? 0) > 0)
             {
                 ctx.ExecutedHandlers = new List<(IDomainEvent, Type)>();
                 ctx.FailedHandlers = new List<(IDomainEvent, Type)>();
+
                 await ExecuteEvents(ctx);
             }
 
@@ -50,30 +52,29 @@ namespace LeanCode.DomainModels.EventsExecution
                 var domainEvent = ctx.SavedEvents[i];
                 var eventType = domainEvent.GetType();
                 var handlers = resolver.FindEventHandlers(eventType);
-                logger.Debug(
-                    "Executing event {Event} with {N} handlers",
-                    domainEvent, handlers.Count);
 
-                foreach (var h in handlers)
+                logger.Debug("Executing event {Event} with {N} handlers", domainEvent, handlers.Count);
+
+                foreach (var handler in handlers)
                 {
                     logger.Verbose(
                         "Executing handler {Handler} with event {Event}",
-                        h.UnderlyingHandler, domainEvent);
-                    await ExecuteHandler(ctx, domainEvent, h);
+                        handler.UnderlyingHandler, domainEvent);
+
+                    await ExecuteHandler(ctx, domainEvent, handler);
                 }
             }
         }
 
-        private async Task ExecuteHandler(
-            TContext ctx,
-            IDomainEvent domainEvent,
-            IDomainEventHandlerWrapper handler)
+        private async Task ExecuteHandler(TContext ctx, IDomainEvent domainEvent, IDomainEventHandlerWrapper handler)
         {
             var result = await policies.EventHandlerPolicy
                 .ExecuteAndCaptureAsync(async () =>
                 {
                     interceptor.Prepare();
+
                     await handler.HandleAsync(domainEvent).ConfigureAwait(false);
+
                     return interceptor.CaptureQueue();
                 })
                 .ConfigureAwait(false);
@@ -95,6 +96,7 @@ namespace LeanCode.DomainModels.EventsExecution
                 }
 
                 ctx.ExecutedHandlers.Add((domainEvent, handler.UnderlyingHandler));
+
                 logger.Information(
                     "Handler {Handler} with event {Event} executed successfully",
                     handler.UnderlyingHandler, domainEvent);
@@ -106,7 +108,7 @@ namespace LeanCode.DomainModels.EventsExecution
     {
         public static PipelineBuilder<TContext, TInput, TOutput> ExecuteEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : IEventsContext
+            where TContext : notnull, IEventsContext
         {
             return builder.Use<EventsExecutorElement<TContext, TInput, TOutput>>();
         }

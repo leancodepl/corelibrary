@@ -14,8 +14,7 @@ namespace LeanCode.Test.Helpers
             Skip = "Long running test";
         }
 #else
-        public LongRunningFact()
-        { }
+        public LongRunningFact() { }
 #endif
     }
 }

@@ -6,7 +6,7 @@ namespace LeanCode.CQRS.Validation.Fluent
 
         public FluentValidatorErrorState(int code)
         {
-            this.ErrorCode = code;
+            ErrorCode = code;
         }
     }
 }

@@ -1,34 +1,31 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Autofac;
 using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Execution
 {
     public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
-        where TAppContext : IPipelineContext
+        where TAppContext : notnull, IPipelineContext
     {
-        private readonly PipelineExecutor<TAppContext, IQuery, object> executor;
+        private readonly PipelineExecutor<TAppContext, IQuery, object?> executor;
 
-        public QueryExecutor(
-            IPipelineFactory factory,
-            QueryBuilder<TAppContext> config)
+        public QueryExecutor(IPipelineFactory factory, QueryBuilder<TAppContext> config)
         {
-            var cfg = Pipeline.Build<TAppContext, IQuery, object>()
-                .Configure(new ConfigPipeline<TAppContext, IQuery, object>(config))
-                .Finalize<QueryFinalizer<TAppContext>>();
-
-            executor = PipelineExecutor.Create(factory, cfg);
+            executor = PipelineExecutor.Create(factory, Pipeline
+                .Build<TAppContext, IQuery, object?>()
+                .Configure(new ConfigPipeline<TAppContext, IQuery, object?>(config))
+                .Finalize<QueryFinalizer<TAppContext>>());
         }
 
-        public async Task<TResult> GetAsync<TResult>(
-            TAppContext appContext,
-            IQuery<TResult> query)
+        [return: MaybeNull]
+        public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)
         {
             var res = await executor
                 .ExecuteAsync(appContext, query)
                 .ConfigureAwait(false);
-            return (TResult)res;
+
+            return (TResult)res!;
         }
     }
 }

@@ -1,11 +1,14 @@
 namespace LeanCode.DomainModels.Model
 {
-    public interface IAggregateRoot<TIdentity> : IAggregateRootWithoutOptimisticConcurrency<TIdentity>, IOptimisticConcurrency
+    public interface IAggregateRoot<TIdentity>
+        : IAggregateRootWithoutOptimisticConcurrency<TIdentity>, IOptimisticConcurrency
+        where TIdentity : notnull
     { }
 
-    public interface IAggregateRootWithoutOptimisticConcurrency<TIdentity> : IIdentifiable<TIdentity>, IAggregateRootWithoutOptimisticConcurrency
+    public interface IAggregateRootWithoutOptimisticConcurrency<TIdentity>
+        : IIdentifiable<TIdentity>, IAggregateRootWithoutOptimisticConcurrency
+        where TIdentity : notnull
     { }
 
-    public interface IAggregateRootWithoutOptimisticConcurrency
-    { }
+    public interface IAggregateRootWithoutOptimisticConcurrency { }
 }

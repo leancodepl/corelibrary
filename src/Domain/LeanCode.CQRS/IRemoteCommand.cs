@@ -1,5 +1,4 @@
 namespace LeanCode.CQRS
 {
-    public interface IRemoteCommand : ICommand
-    { }
+    public interface IRemoteCommand : ICommand { }
 }

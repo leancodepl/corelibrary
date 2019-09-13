@@ -22,8 +22,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.CQRS
         public string Value { get; set; }
     }
 
-    public class TestQuery : IQuery<Result>
-    { }
+    public class TestQuery : IQuery<Result> { }
 
     public class TestQueryHandler : IQueryHandler<AppContext, TestQuery, Result>
     {

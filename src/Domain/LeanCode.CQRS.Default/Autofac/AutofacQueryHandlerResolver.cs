@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using Autofac;
 using LeanCode.CQRS.Default.Wrappers;
 using LeanCode.CQRS.Execution;
@@ -22,12 +21,14 @@ namespace LeanCode.CQRS.Default.Autofac
             this.componentContext = componentContext;
         }
 
-        public IQueryHandlerWrapper FindQueryHandler(Type queryType)
+        public IQueryHandlerWrapper? FindQueryHandler(Type queryType)
         {
             var (handlerType, constructor) = TypesCache.Get(queryType);
+
             if (componentContext.TryResolve(handlerType, out var handler))
             {
                 var wrapper = constructor.Invoke(new[] { handler });
+
                 return (IQueryHandlerWrapper)wrapper;
             }
             else
@@ -45,7 +46,9 @@ namespace LeanCode.CQRS.Default.Autofac
                     i.GetGenericTypeDefinition() == typeof(IQuery<>))
                 .Single()
                 .GenericTypeArguments;
+
             var resultType = types[0];
+
             return new[] { AppContextType, queryType, resultType };
         }
     }

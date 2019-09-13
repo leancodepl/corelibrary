@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace LeanCode.PushNotifications
@@ -10,30 +11,30 @@ namespace LeanCode.PushNotifications
         private const int TTL = 28 * 24 * 60 * 60;
         private const string TypeField = "Type";
 
-        public static FCMNotification Convert(DeviceType deviceType, PushNotification notification, PushNotificationsConfiguration configuration = null)
+        public static FCMNotification Convert(
+            DeviceType deviceType,
+            PushNotification notification,
+            PushNotificationsConfiguration? configuration = null)
         {
-            switch (deviceType)
+            return deviceType switch
             {
-                case DeviceType.Android:
-                    return ConvertToAndroid(notification);
-                case DeviceType.iOS:
-                    return ConvertToiOS(notification);
-                case DeviceType.Chrome:
-                    return ConvertToChrome(notification, configuration);
-            }
+                DeviceType.Android => ConvertToAndroid(notification),
+                DeviceType.iOS => ConvertToiOS(notification),
+                DeviceType.Chrome => ConvertToChrome(notification, configuration),
 
-            throw new ArgumentException("Unknown device type.", nameof(deviceType));
+                _ => throw new ArgumentException("Unknown device type.", nameof(deviceType)),
+            };
         }
 
         public static FCMNotification ConvertToAndroid(PushNotification notification)
         {
-            return new FCMNotification
+            return new FCMNotification()
             {
                 To = null,
                 ContentAvailable = true,
                 Priority = Priority,
                 TimeToLive = TTL,
-                Notification = new FCMNotificationPayload
+                Notification = new FCMNotificationPayload()
                 {
                     Title = notification.Title,
                     Body = notification.Content,
@@ -47,13 +48,13 @@ namespace LeanCode.PushNotifications
 
         public static FCMNotification ConvertToiOS(PushNotification notification)
         {
-            return new FCMNotification
+            return new FCMNotification()
             {
                 To = null,
                 ContentAvailable = true,
                 Priority = Priority,
                 TimeToLive = TTL,
-                Notification = new FCMNotificationPayload
+                Notification = new FCMNotificationPayload()
                 {
                     Title = notification.Title,
                     Body = notification.Content,
@@ -65,20 +66,22 @@ namespace LeanCode.PushNotifications
             };
         }
 
-        public static FCMNotification ConvertToChrome(PushNotification notification)
-        {
-            return ConvertToChrome(notification, null);
-        }
+        public static FCMNotification ConvertToChrome(PushNotification notification) =>
+            ConvertToChrome(notification, null);
 
-        public static FCMNotification ConvertToChrome(PushNotification notification, PushNotificationsConfiguration configuration)
+        public static FCMNotification ConvertToChrome(
+            PushNotification notification,
+            PushNotificationsConfiguration? configuration)
         {
-            if (configuration?.UseDataInsteadOfNotification == true)
+            if (configuration?.UseDataInsteadOfNotification ?? false)
             {
-                var data = ConvertData(notification.Data);
+                var data = ConvertData(notification.Data)
+                    ?? throw new ArgumentNullException(nameof(notification.Data));
+
                 data.Add("Title", notification.Title);
                 data.Add("Content", notification.Content);
 
-                return new FCMNotification
+                return new FCMNotification()
                 {
                     To = null,
                     ContentAvailable = true,
@@ -88,13 +91,13 @@ namespace LeanCode.PushNotifications
                 };
             }
 
-            return new FCMNotification
+            return new FCMNotification()
             {
                 To = null,
                 ContentAvailable = true,
                 Priority = Priority,
                 TimeToLive = TTL,
-                Notification = new FCMNotificationPayload
+                Notification = new FCMNotificationPayload()
                 {
                     Title = notification.Title,
                     Body = notification.Content,
@@ -106,26 +109,27 @@ namespace LeanCode.PushNotifications
             };
         }
 
-        private static Dictionary<string, string> ConvertData(object data)
+        [return: NotNullIfNotNull("data")]
+        private static Dictionary<string, string?>? ConvertData(object? data)
         {
-            if (data == null)
+            if (data is null)
             {
                 return null;
             }
 
             var type = data.GetType();
 
-            var result = new Dictionary<string, string>
+            var result = new Dictionary<string, string?>()
             {
                 [TypeField] = type.Name,
             };
 
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var prop in properties)
+            foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (prop.Name != TypeField)
                 {
                     var value = prop.GetValue(data);
+
                     if (value != null)
                     {
                         result.Add(prop.Name, value.ToString());

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 
@@ -29,7 +28,7 @@ namespace LeanCode.DomainModels.EventsExecution.Tests
         }
 
         private class Wrapper<TEvent> : IDomainEventHandlerWrapper
-            where TEvent : IDomainEvent
+            where TEvent : class, IDomainEvent
         {
             private readonly IDomainEventHandler<TEvent> handler;
 

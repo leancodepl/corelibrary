@@ -33,13 +33,14 @@ namespace LeanCode.TimeProvider
         /// </exception>
         public static void SetTo(DateTime time)
         {
-            if (time.Kind is DateTimeKind.Local)
+            if (time.Kind == DateTimeKind.Local)
             {
                 throw new InvalidOperationException(
                     "Cannot assign local DateTime, use SetTo(DateTimeOffset) overload with correct offset instead.");
             }
 
             Time.UseTimeProvider(SharedInstance);
+
             SharedInstance.savedTime.Value = new DateTimeOffset(time, TimeSpan.Zero);
         }
 
@@ -49,6 +50,7 @@ namespace LeanCode.TimeProvider
         public static void SetTo(DateTimeOffset time)
         {
             Time.UseTimeProvider(SharedInstance);
+
             SharedInstance.savedTime.Value = time;
         }
     }

@@ -7,8 +7,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     public class RemoteCQRSMiddlewareTests : BaseMiddlewareTests
     {
         public RemoteCQRSMiddlewareTests()
-            : base("query", typeof(RemoteCQRSMiddlewareTests))
-        { }
+            : base("query", typeof(RemoteCQRSMiddlewareTests)) { }
 
         [Fact]
         public async Task Writes_MethodNotAllowed_if_using_PUT()

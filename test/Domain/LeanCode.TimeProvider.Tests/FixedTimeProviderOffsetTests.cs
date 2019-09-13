@@ -54,21 +54,18 @@ namespace LeanCode.TimeProvider.Tests
     public class FixedTimeProviderOffsetTests1 : FixedTimeProviderOffsetTestsBase
     {
         public FixedTimeProviderOffsetTests1()
-            : base(new DateTimeOffset(new DateTime(2017, 11, 30, 15, 45, 0, DateTimeKind.Utc)))
-        { }
+            : base(new DateTimeOffset(new DateTime(2017, 11, 30, 15, 45, 0, DateTimeKind.Utc))) { }
     }
 
     public class FixedTimeProviderOffsetTests2 : FixedTimeProviderOffsetTestsBase
     {
         public FixedTimeProviderOffsetTests2()
-            : base(new DateTimeOffset(new DateTime(2016, 11, 30, 0, 0, 0, DateTimeKind.Utc)))
-        { }
+            : base(new DateTimeOffset(new DateTime(2016, 11, 30, 0, 0, 0, DateTimeKind.Utc))) { }
     }
 
     public class FixedTimeProviderOffsetTests3 : FixedTimeProviderOffsetTestsBase
     {
         public FixedTimeProviderOffsetTests3()
-            : base(new DateTimeOffset(new DateTime(2015, 11, 30, 6, 0, 0, DateTimeKind.Local)))
-        { }
+            : base(new DateTimeOffset(new DateTime(2015, 11, 30, 6, 0, 0, DateTimeKind.Local))) { }
     }
 }

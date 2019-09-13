@@ -14,30 +14,26 @@ namespace LeanCode.EmailSender
         private readonly List<EmailAttachment> attachments = new List<EmailAttachment>();
         private readonly IEmailClient emailClient;
 
-        public string Subject { get; private set; } = null;
-        public EmailAddress FromEmail { get; private set; } = null;
+        public string? Subject { get; private set; } = null;
+        public EmailAddress? FromEmail { get; private set; } = null;
         public IReadOnlyCollection<EmailAddress> Recipients => recipients.AsReadOnly();
         public IReadOnlyCollection<EmailContent> Contents => contents.AsReadOnly();
         public IReadOnlyCollection<EmailAttachment> Attachments => attachments.AsReadOnly();
 
         public EmailBuilder(IEmailClient emailClient)
         {
-            this.emailClient = emailClient ?? throw new ArgumentNullException(nameof(emailClient));
+            this.emailClient = emailClient;
         }
 
-        public EmailBuilder From(string email, string name)
+        public EmailBuilder From(string email, string? name)
         {
-            _ = email ?? throw new ArgumentNullException(nameof(email));
-
             FromEmail = new EmailAddress(email, name);
 
             return this;
         }
 
-        public EmailBuilder To(string email, string name)
+        public EmailBuilder To(string email, string? name)
         {
-            _ = email ?? throw new ArgumentNullException(nameof(email));
-
             var split = email.Split(EmailSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var emailAddress in split)
@@ -50,14 +46,13 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder WithSubject(string subject)
         {
-            Subject = subject ?? throw new ArgumentNullException(nameof(subject));
+            Subject = subject;
+
             return this;
         }
 
         internal EmailBuilder WithHtmlContent(object model, IEnumerable<string> templateNames)
         {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
-
             contents.Add(new EmailContent(model, "text/html", templateNames));
 
             return this;
@@ -65,8 +60,6 @@ namespace LeanCode.EmailSender
 
         internal EmailBuilder WithTextContent(object model, IEnumerable<string> templateNames)
         {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
-
             contents.Add(new EmailContent(model, "text/plain", templateNames));
 
             return this;
@@ -74,9 +67,6 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder WithHtmlContent(object model, string templateName)
         {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
-            _ = templateName ?? throw new ArgumentNullException(nameof(templateName));
-
             contents.Add(new EmailContent(model, "text/html", templateName));
 
             return this;
@@ -84,34 +74,19 @@ namespace LeanCode.EmailSender
 
         public EmailBuilder WithTextContent(object model, string templateName)
         {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
-            _ = templateName ?? throw new ArgumentNullException(nameof(templateName));
-
             contents.Add(new EmailContent(model, "text/plain", templateName));
 
             return this;
         }
 
-        public EmailBuilder WithHtmlContent(object model)
-        {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
+        public EmailBuilder WithHtmlContent(object model) =>
+            WithHtmlContent(model, model.GetType().Name);
 
-            return WithHtmlContent(model, model.GetType().Name);
-        }
-
-        public EmailBuilder WithTextContent(object model)
-        {
-            _ = model ?? throw new ArgumentNullException(nameof(model));
-
-            return WithTextContent(model, model.GetType().Name + ".txt");
-        }
+        public EmailBuilder WithTextContent(object model) =>
+            WithTextContent(model, model.GetType().Name + ".txt");
 
         public EmailBuilder Attach(Stream attachment, string name, string contentType)
         {
-            _ = attachment ?? throw new ArgumentNullException(nameof(attachment));
-            _ = name ?? throw new ArgumentNullException(nameof(name));
-            _ = contentType ?? throw new ArgumentNullException(nameof(contentType));
-
             attachments.Add(new EmailAttachment(attachment, name, contentType));
 
             return this;
