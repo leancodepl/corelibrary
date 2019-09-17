@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
 ## 4.0
-* Upgrade to .NET Core 3.0 (preview)
+* Upgrade to .NET Core 3.0 (preview9)
+* Bump C# language version to 8.0
+* Add support for Nullable Reference Types
+* Multiple breaking changes related to Razor, events, async methods and more
 
 ## 3.5
 * Rewrite of EFMigrator
