@@ -23,7 +23,8 @@ First, you need to add new feed to your global Nuget configuration:
 3. Run the code below in the command line:
 
 ```
-nuget.exe source add -Name "LeanCode Package Repository" -Source "https://www.myget.org/F/leancode/api/v3/index.json" -UserName "{your_myget_username}" -Password "{your_myget_password}" -StorePasswordInClearText
+nuget.exe source add -Name LeanCode -Source "https://www.myget.org/F/leancode/api/v3/index.json" -UserName "{your_myget_username}" -Password "{your_myget_password}" -StorePasswordInClearText
+nuget.exe setapikey "{your_myget_feed_apikey}" -Source "https://www.myget.org/F/leancode/api/v3/index.json"
 ```
 
 The last switch (`-StorePasswordInClearText`) is required only for non-windows operating systems.
@@ -32,7 +33,7 @@ The last switch (`-StorePasswordInClearText`) is required only for non-windows o
 To use LeanCode packages in your project you have to add company's nuget feed to your solution:
 
 1. Make sure that you have `nuget.config` file in your solution directory (or create a new one if you don't)
-2. Add new package source (with key 'LeanCode Package Source') to your config.
+2. Add new package source (with key 'LeanCode') to your config.
 
 The complete nuget.config file should look like this:
 
@@ -40,7 +41,7 @@ The complete nuget.config file should look like this:
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
-    <add key="LeanCode Package Source" value="https://www.myget.org/F/leancode/api/v3/index.json" protocolVersion="3" />
+    <add key="LeanCode" value="https://www.myget.org/F/leancode/api/v3/index.json" protocolVersion="3" />
   </packageSources>
 </configuration>
 ```
