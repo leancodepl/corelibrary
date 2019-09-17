@@ -29,7 +29,7 @@ namespace LeanCode.CQRS.Security
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(name), "Name must be specified.");
+                throw new ArgumentException("Name must be specified.", nameof(name));
             }
         }
     }
