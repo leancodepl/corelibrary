@@ -7,13 +7,13 @@ namespace LeanCode.DomainModels.Model
     public abstract class ValueObject<T> : IEquatable<T>
         where T : notnull, ValueObject<T>
     {
-        protected abstract object[] GetAttributesToIncludeInEqualityCheck();
+        protected abstract object?[] GetAttributesToIncludeInEqualityCheck();
 
         public override int GetHashCode()
         {
             var hc = new HashCode();
 
-            foreach (object attr in GetAttributesToIncludeInEqualityCheck())
+            foreach (object? attr in GetAttributesToIncludeInEqualityCheck())
             {
                 hc.Add(attr);
             }
