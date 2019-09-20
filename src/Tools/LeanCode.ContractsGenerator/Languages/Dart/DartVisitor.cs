@@ -112,66 +112,42 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
 
             definitionsBuilder.AppendSpaces(level)
-                .Append("class ")
+                .Append("enum ")
                 .Append(name)
                 .AppendLine(" {")
-                .AppendSpaces(level + 1)
-                .AppendLine($"const {name}(this.value);");
+                .AppendSpaces(level + 1);
 
             foreach (var value in statement.Values)
             {
-                VisitEnumValueStatement(value, name, level + 1);
+                VisitEnumValueStatement(value, level + 1);
             }
-
-            definitionsBuilder
-                .AppendSpaces(level + 1)
-                .AppendLine("final int value;")
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine("dynamic toJsonMap() => value;")
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine($"static {name} fromJson(dynamic json) => {name}(json);")
-                .AppendLine();
-
-            AppendEnumEqualityOperator(name, level + 1);
-
-            AppendEnumHashCode(name, level + 1);
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
                 .AppendLine();
+
+            return;
         }
 
-        private void VisitEnumValueStatement(EnumValueStatement statement, string parentName, int level)
+        private void VisitEnumValueStatement(EnumValueStatement statement, int level)
         {
             definitionsBuilder.AppendSpaces(level)
-                .Append("const ")
-                .Append($"{parentName}.{TranslateIdentifier(statement.Name)}")
-                .Append($"() : value = {statement.Value};")
-                .AppendLine();
-        }
+                .Append("@JsonValue(");
 
-        private void AppendEnumEqualityOperator(string parentName, int level)
-        {
-            definitionsBuilder
-                .AppendSpaces(level)
-                .AppendLine("@override")
-                .AppendSpaces(level)
-                .AppendLine("bool operator ==(Object other) =>")
-                .AppendSpaces(level + 1)
-                .AppendLine($"other is {parentName} && value == other.value;")
-                .AppendLine();
-        }
+            if (int.TryParse(statement.Value, out int value))
+            {
+                definitionsBuilder.Append(value);
+            }
+            else
+            {
+                definitionsBuilder.Append($"\"{statement.Value}\"");
+            }
 
-        [SuppressMessage("?", "IDE0060", Justification = "Keep `parentName` for the sake of consistency.")]
-        private void AppendEnumHashCode(string parentName, int level)
-        {
-            definitionsBuilder
-                .AppendSpaces(level)
-                .AppendLine("@override")
-                .AppendSpaces(level)
-                .AppendLine("int get hashCode => value.hashCode;");
+            definitionsBuilder.AppendLine(")");
+
+            definitionsBuilder.AppendSpaces(level)
+                .Append(TranslateIdentifier(statement.Name))
+                .AppendLine(",");
         }
 
         private void VisitTypeStatement(TypeStatement statement)
