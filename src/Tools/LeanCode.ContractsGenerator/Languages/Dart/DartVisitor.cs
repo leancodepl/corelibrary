@@ -356,7 +356,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
-            GenerateToJsonMethod(statement, level, includeOverrideAnnotation, mapJsonIncludeSuper);
+            GenerateToJsonMethod(statement, name, level, includeOverrideAnnotation, mapJsonIncludeSuper);
             GenerateFromJsonMethod(name, statement, level);
 
             definitionsBuilder.AppendSpaces(level);
@@ -436,7 +436,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateToJsonMethod(InterfaceStatement statement, int level, bool includeOverrideAnnotation, bool includeSuper)
+        private void GenerateToJsonMethod(InterfaceStatement statement, string fullName, int level, bool includeOverrideAnnotation, bool includeSuper)
         {
             var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
 
@@ -445,41 +445,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendSpaces(level + 1)
                 .AppendLine(annotation)
                 .AppendSpaces(level + 1)
-                .AppendLine("Map<String, dynamic> toJsonMap() {");
-
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("final map = <String, dynamic>{");
-
-            foreach (var field in statement.Fields)
-            {
-                var serializedField = TranslateIdentifier(field.Name);
-
-                definitionsBuilder
-                    .AppendSpaces(level + 3)
-                    .Append($"'{field.Name.Capitalize()}': {serializedField}");
-
-                GenerateTypeMapingForToJsonMethod(field.Type, 0);
-
-                definitionsBuilder.AppendLine(",");
-            }
-
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("};");
-
-            if (includeSuper)
-            {
-                definitionsBuilder
-                    .AppendSpaces(level + 2)
-                    .AppendLine("map.addAll(super.toJsonMap());");
-            }
-
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("return map;")
-                .AppendSpaces(level + 1)
-                .AppendLine("}");
+                .AppendLine("Map<String, dynamic> toJsonMap()")
+                .Append("=>")
+                .AppendLine($"_${fullName}ToJson(this);");
         }
 
         private void GenerateTypeMapingForToJsonMethod(TypeStatement statement, int depth)
