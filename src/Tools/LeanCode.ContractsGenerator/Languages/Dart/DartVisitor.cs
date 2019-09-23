@@ -465,50 +465,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .Append("=>")
                 .AppendLine($"_${fullName}ToJson(this);");
         }
-
-        private void GenerateTypeMapingForToJsonMethod(TypeStatement statement, int depth)
-        {
-            if (statement.IsArrayLike)
-            {
-                if (statement.TypeArguments.FirstOrDefault() is TypeStatement argumentType)
-                {
-                    if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLowerInvariant()))
-                    {
-                        definitionsBuilder.Append($".map((x{depth}) => x{depth}");
-                        GenerateTypeMapingForToJsonMethod(argumentType, depth + 1);
-                        definitionsBuilder.Append(").toList()");
-                    }
-                }
-            }
-            else if (statement.Name == "DateTime" && !statement.IsNullable)
-            {
-                definitionsBuilder.Append(".toIso8601String()");
-            }
-            else if (statement.Name == "DateTime" && statement.IsNullable)
-            {
-                definitionsBuilder.Append("?.toIso8601String()");
-            }
-            else if (configuration.TypeTranslations.ContainsKey(statement.Name.ToLowerInvariant()))
-            {
-                return;
-            }
-            else if (statement.IsDictionary)
-            {
-                return;
-            }
-            else
-            {
-                definitionsBuilder.Append(".toJsonMap()");
-            }
-        }
-
+        
         private void GenerateFromJsonConstructor(string name, InterfaceStatement statement, int level)
         {
             definitionsBuilder.AppendLine()
                 .AppendSpaces(level + 1)
                 .Append($"factory {name}.fromJson(Map<String, dynamic> json) =>")
                 .AppendLine($"_${name}FromJson(json);");
-            return;
         }
 
         private string Mangle(string namespaceName, string identifier)
