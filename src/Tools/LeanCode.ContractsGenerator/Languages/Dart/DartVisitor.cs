@@ -41,9 +41,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
         {
-            definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
-
-            GenerateDartAnnotations(statement);
+            GenerateDartImportsAndHelpers(statement);
 
             GenerateTypeNames(statement);
 
@@ -56,15 +54,30 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             };
         }
 
-        private void GenerateDartAnnotations(ClientStatement statement)
+        private void GenerateDartImportsAndHelpers(ClientStatement statement)
         {
+            definitionsBuilder
+                .AppendLine("import 'package:meta/meta.dart';")
+                .AppendLine("import 'package:json_annotation/json_annotation.dart';")
+                .AppendLine("import 'package:dart_cqrs/dart_cqrs.dart';");
+
             definitionsBuilder.AppendLine($"part '{statement.Name}.g.dart';");
 
-            definitionsBuilder.AppendLine("List<T> _listFromJson<T>(");
-            definitionsBuilder.AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {");
-            definitionsBuilder.AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
+            definitionsBuilder
+                .AppendLine("abstract class IRemoteQuery<T> extends Query<T> {}")
+                .AppendLine("abstract class IRemoteCommand extends Command {}");
 
-            definitionsBuilder.AppendLine("class _Nullable { const _Nullable(); } const nullable = _Nullable();");
+            definitionsBuilder
+                .AppendLine("List<T> _listFromJson<T>(")
+                .AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
+                .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
+
+            definitionsBuilder
+                .AppendLine("DateTime _normalizeDate(String dateString) {")
+                .AppendLine("return dateString == null")
+                .AppendLine("? null")
+                .AppendLine(": DateTime.parse(dateString.substring(0, 19) + ' Z');")
+                .AppendLine("}");
         }
 
         private void GenerateTypeNames(ClientStatement statement)
@@ -244,20 +257,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitFieldStatement(FieldStatement statement, int level)
         {
-            definitionsBuilder.AppendSpaces(level);
-
-            if (statement.Type.IsNullable)
-            {
-                definitionsBuilder
-                    .AppendLine("@nullable")
-                    .AppendSpaces(level);
-            }
+            GenerateJsonKey(statement, level + 1);
 
             VisitTypeStatement(statement.Type);
 
-            definitionsBuilder.Append(" ");
-            definitionsBuilder.Append(TranslateIdentifier(statement.Name));
-            definitionsBuilder.AppendLine(";");
+            definitionsBuilder.Append(" ")
+                .Append(TranslateIdentifier(statement.Name))
+                .AppendLine(";");
         }
 
         private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
@@ -282,7 +288,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder.AppendLine()
                 .AppendSpaces(level + 1)
-                .AppendLine("@JsonSerializable(fieldRename: FieldRename.pascal)");
+                .AppendLine("@JsonSerializable()");
 
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
@@ -449,6 +455,28 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder
                 .AppendSpaces(level + 1)
                 .AppendLine("}");
+        }
+
+        private void GenerateJsonKey(FieldStatement statement, int level)
+        {
+            var type = statement.Type;
+
+            definitionsBuilder
+                .AppendSpaces(level)
+                .Append("@JsonKey(")
+                .Append($"name: '{statement.Name}'");
+
+            if (type.IsNullable)
+            {
+                definitionsBuilder.Append(", nullable: true");
+            }
+
+            if (type.Name == "DateTime")
+            {
+                definitionsBuilder.Append($", fromJson: _normalizeDate");
+            }
+
+            definitionsBuilder.AppendLine(")");
         }
 
         private void GenerateDefaultConstructor(string name, int level)
