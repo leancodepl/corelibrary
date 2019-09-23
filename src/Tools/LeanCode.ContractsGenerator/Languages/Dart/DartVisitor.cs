@@ -60,6 +60,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.AppendLine($"part '{statement.Name}.g.dart';");
 
+            definitionsBuilder.AppendLine("List<T> _listFromJson<T>(");
+            definitionsBuilder.AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {");
+            definitionsBuilder.AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
+
             definitionsBuilder.AppendLine("class _Nullable { const _Nullable(); } const nullable = _Nullable();");
         }
 
@@ -395,53 +399,56 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             VisitTypeStatement(result);
 
+            definitionsBuilder
+                .AppendLine(" resultFactory(dynamic decodedJson) {");
+
             if (result.IsArrayLike)
             {
-                definitionsBuilder
-                    .AppendLine(" resultFactory(dynamic decodedJson) {");
+                definitionsBuilder.AppendLine()
+                    .AppendSpaces(level + 1);
 
-                definitionsBuilder
-                    .AppendSpaces(level + 2)
-                    .AppendLine("return decodedJson")
-                    .AppendSpaces(level + 3)
-                    .Append("?.map((dynamic x) => ");
+                result = result.TypeArguments.First();
 
-                VisitTypeStatement(result.TypeArguments.First());
-
-                definitionsBuilder
-                    .AppendLine(".fromJson(x))")
-                    .AppendSpaces(level + 3)
-                    .AppendLine("?.toList(growable: false)")
-                    .AppendSpaces(level + 3)
-                    .Append("?.cast<");
-
-                VisitTypeStatement(result.TypeArguments.First());
-
-                definitionsBuilder
-                    .AppendLine(">();");
-
-                definitionsBuilder
-                    .AppendSpaces(level + 1)
-                    .AppendLine("}");
-            }
-            else
-            {
-                definitionsBuilder
-                    .Append($" resultFactory(dynamic decodedJson) => ");
-
-                if (!BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
+                if (BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
                 {
-                    VisitTypeStatement(result);
                     definitionsBuilder
-                        .AppendLine(".fromJson(decodedJson);");
+                        .AppendSpaces(level + 1)
+                        .AppendLine("return decodedJson.cast<");
+
+                    VisitTypeStatement(result);
+
+                    definitionsBuilder
+                        .AppendLine(">();");
                 }
                 else
                 {
-                    definitionsBuilder.Append("decodedJson as ");
+                    var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
+
+                    definitionsBuilder
+                        .AppendSpaces(level + 1)
+                        .AppendLine($"return _listFromJson(decodedJson,_${name}FromJson);");
+                }
+            }
+            else
+            {
+                if (!BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
+                {
+                    var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
+
+                    definitionsBuilder
+                        .AppendLine($"return _${name}FromJson(decodedJson);");
+                }
+                else
+                {
+                    definitionsBuilder.Append("return decodedJson as ");
                     VisitTypeStatement(result);
                     definitionsBuilder.AppendLine(";");
                 }
             }
+
+            definitionsBuilder
+                .AppendSpaces(level + 1)
+                .AppendLine("}");
         }
 
         private void GenerateDefaultConstructor(string name, int level)
@@ -465,7 +472,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .Append("=>")
                 .AppendLine($"_${fullName}ToJson(this);");
         }
-        
+
         private void GenerateFromJsonConstructor(string name, InterfaceStatement statement, int level)
         {
             definitionsBuilder.AppendLine()
