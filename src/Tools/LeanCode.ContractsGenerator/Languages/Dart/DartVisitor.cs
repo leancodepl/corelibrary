@@ -43,7 +43,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
 
-            GenerateDartAnnotations();
+            GenerateDartAnnotations(statement);
 
             GenerateTypeNames(statement);
 
@@ -56,8 +56,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             };
         }
 
-        private void GenerateDartAnnotations()
+        private void GenerateDartAnnotations(ClientStatement statement)
         {
+            definitionsBuilder.AppendLine($"part '{statement.Name}.g.dart';");
+
             definitionsBuilder.AppendLine("class _Nullable { const _Nullable(); } const nullable = _Nullable();");
         }
 
@@ -274,6 +276,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 return;
             }
 
+            definitionsBuilder.AppendLine()
+                .AppendSpaces(level + 1)
+                .AppendLine("@JsonSerializable(fieldRename: FieldRename.pascal)");
+
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
                 .Append(name);
@@ -325,6 +331,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder.AppendLine(" {");
 
+            GenerateDefaultConstructor(name, level);
+
             foreach (var constant in statement.Constants)
             {
                 definitionsBuilder
@@ -357,7 +365,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
             GenerateToJsonMethod(statement, name, level, includeOverrideAnnotation, mapJsonIncludeSuper);
-            GenerateFromJsonMethod(name, statement, level);
+            GenerateFromJsonConstructor(name, statement, level);
 
             definitionsBuilder.AppendSpaces(level);
             definitionsBuilder.AppendLine("}");
@@ -436,6 +444,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
+        private void GenerateDefaultConstructor(string name, int level)
+        {
+            definitionsBuilder
+                .AppendLine()
+                .AppendSpaces(level)
+                .AppendLine($"{name}();");
+        }
+
         private void GenerateToJsonMethod(InterfaceStatement statement, string fullName, int level, bool includeOverrideAnnotation, bool includeSuper)
         {
             var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
@@ -486,119 +502,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateFromJsonMethod(string name, InterfaceStatement statement, int level)
+        private void GenerateFromJsonConstructor(string name, InterfaceStatement statement, int level)
         {
-            definitionsBuilder
-                .AppendLine()
+            definitionsBuilder.AppendLine()
                 .AppendSpaces(level + 1)
-                .Append($"static {name} fromJson(Map map) => {name}()");
-
-            GenerateFromJsonAssignments(statement.Fields, level + 1);
-
-            if (statement.BaseClass != null && statement.IsClass)
-            {
-                var type = mangledStatements[Mangle(statement.BaseClass.Namespace, statement.BaseClass.Name)];
-
-                if (type.statement is InterfaceStatement baseStatement)
-                {
-                    GenerateFromJsonAssignments(baseStatement.Fields, level + 1);
-                }
-            }
-
-            definitionsBuilder.AppendLine(";");
-        }
-
-        private void GenerateFromJsonAssignments(List<FieldStatement> fields, int level)
-        {
-            foreach (var field in fields)
-            {
-                var identifier = TranslateIdentifier(field.Name);
-                var map = $"map['{field.Name.Capitalize()}']";
-                var value = map;
-
-                if (field.Type.IsDictionary)
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = {value}");
-
-                    continue;
-                }
-
-                if (field.Type.IsArrayLike)
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .AppendLine($"..{identifier} = {value}")
-                        .AppendSpaces(level + 3);
-
-                    var argType = field.Type.TypeArguments.First();
-
-                    if (!configuration.TypeTranslations.ContainsKey(argType.Name.ToLowerInvariant()))
-                    {
-                        definitionsBuilder
-                           .Append("?.map((dynamic x) => ");
-
-                        VisitTypeStatement(argType);
-
-                        definitionsBuilder
-                            .AppendLine(".fromJson(x))");
-                    }
-                    else
-                    {
-                        definitionsBuilder.Append("?.map((dynamic x) => x)");
-                    }
-
-                    definitionsBuilder
-                        .AppendSpaces(level + 3)
-                        .AppendLine("?.toList(growable: false)")
-                        .AppendSpaces(level + 3)
-                        .Append("?.cast<");
-
-                    VisitTypeStatement(field.Type.TypeArguments.First());
-
-                    definitionsBuilder
-                        .Append(">()");
-
-                    continue;
-                }
-
-                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLowerInvariant()))
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .Append($"..{identifier} = {map} != null ? ");
-
-                    VisitTypeStatement(field.Type);
-
-                    definitionsBuilder.Append($".fromJson({value}) : null");
-                }
-                else
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2);
-
-                    if (field.Type.Name == "DateTime")
-                    {
-                        value = $"DateTime.parse(normalizeDate({value}))";
-                        definitionsBuilder.Append($"..{identifier} = {map} != null ? {value} : null");
-                    }
-                    else if (field.Type.Name == "Double")
-                    {
-                        definitionsBuilder.AppendLine($"..{identifier} = {map} is String ?")
-                            .AppendLine($"double.parse({map}) : {map}");
-                    }
-                    else
-                    {
-                        definitionsBuilder
-                            .Append($"..{identifier} = {value}");
-                    }
-                }
-            }
+                .Append($"factory {name}.fromJson(Map<String, dynamic> json) =>")
+                .AppendLine($"_${name}FromJson(json);");
+            return;
         }
 
         private string Mangle(string namespaceName, string identifier)
