@@ -4,14 +4,18 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     public class DartConfiguration
     {
-        public string[] ContractsPreambleLines { get; set; } = new string[]
+        public static string[] DefaultPreambleLines { get; set; } = new string[]
         {
-            "import 'dart:convert';",
+            "import 'package:meta/meta.dart';",
+            "import 'package:json_annotation/json_annotation.dart';",
             "import 'package:dart_cqrs/dart_cqrs.dart';",
-            "abstract class IRemoteQuery<T1> extends Query<T1> {}",
+            "part '{0}.g.dart';",
+            "abstract class IRemoteQuery<T> extends Query<T> {}",
             "abstract class IRemoteCommand extends Command {}",
             string.Empty,
         };
+
+        public string[] ContractsPreambleLines { get; set; } = DefaultPreambleLines;
 
         public string ContractsPreamble
         {

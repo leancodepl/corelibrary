@@ -41,7 +41,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
         {
-            GenerateDartImportsAndHelpers(statement);
+            AddContractsPreamble(statement);
+
+            GenerateHelpers();
 
             GenerateTypeNames(statement);
 
@@ -54,19 +56,21 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             };
         }
 
-        private void GenerateDartImportsAndHelpers(ClientStatement statement)
+        private void AddContractsPreamble(ClientStatement statement)
         {
-            definitionsBuilder
-                .AppendLine("import 'package:meta/meta.dart';")
-                .AppendLine("import 'package:json_annotation/json_annotation.dart';")
-                .AppendLine("import 'package:dart_cqrs/dart_cqrs.dart';");
+            if (configuration.ContractsPreambleLines == DartConfiguration.DefaultPreambleLines)
+            {
+                var defaultPreamble = configuration.ContractsPreamble.Replace("{0}", statement.Name);
+                definitionsBuilder.AppendLine(defaultPreamble);
+            }
+            else
+            {
+                definitionsBuilder.AppendLine(configuration.ContractsPreamble);
+            }
+        }
 
-            definitionsBuilder.AppendLine($"part '{statement.Name}.g.dart';");
-
-            definitionsBuilder
-                .AppendLine("abstract class IRemoteQuery<T> extends Query<T> {}")
-                .AppendLine("abstract class IRemoteCommand extends Command {}");
-
+        private void GenerateHelpers()
+        {
             definitionsBuilder
                 .AppendLine("List<T> _listFromJson<T>(")
                 .AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
