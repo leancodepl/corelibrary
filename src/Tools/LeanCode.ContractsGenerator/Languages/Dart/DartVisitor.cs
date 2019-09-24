@@ -270,7 +270,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitFieldStatement(FieldStatement statement, int level)
         {
-            GenerateJsonKey(statement, level + 1);
+            GenerateJsonKey(statement, level);
+
+            definitionsBuilder.AppendSpaces(level);
 
             VisitTypeStatement(statement.Type);
 
@@ -300,7 +302,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             definitionsBuilder.AppendLine()
-                .AppendSpaces(level + 1)
+                .AppendSpaces(level)
                 .AppendLine("@JsonSerializable()");
 
             definitionsBuilder.AppendSpaces(level)
@@ -418,34 +420,25 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             VisitTypeStatement(result);
 
-            definitionsBuilder
-                .AppendLine(" resultFactory(dynamic decodedJson) {");
+            definitionsBuilder.Append(" resultFactory(dynamic decodedJson) => ");
 
             if (result.IsArrayLike)
             {
-                definitionsBuilder.AppendLine()
-                    .AppendSpaces(level + 1);
-
                 result = result.TypeArguments.First();
 
                 if (BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
                 {
-                    definitionsBuilder
-                        .AppendSpaces(level + 1)
-                        .AppendLine("return decodedJson.cast<");
+                    definitionsBuilder.AppendLine("decodedJson.cast<");
 
                     VisitTypeStatement(result);
 
-                    definitionsBuilder
-                        .AppendLine(">();");
+                    definitionsBuilder.AppendLine(">();");
                 }
                 else
                 {
                     var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
 
-                    definitionsBuilder
-                        .AppendSpaces(level + 1)
-                        .AppendLine($"return _listFromJson(decodedJson,_${name}FromJson);");
+                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson, _${name}FromJson);");
                 }
             }
             else
@@ -454,20 +447,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 {
                     var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
 
-                    definitionsBuilder
-                        .AppendLine($"return _${name}FromJson(decodedJson);");
+                    definitionsBuilder.AppendLine($"_${name}FromJson(decodedJson);");
                 }
                 else
                 {
-                    definitionsBuilder.Append("return decodedJson as ");
+                    definitionsBuilder.Append("decodedJson as ");
                     VisitTypeStatement(result);
                     definitionsBuilder.AppendLine(";");
                 }
             }
-
-            definitionsBuilder
-                .AppendSpaces(level + 1)
-                .AppendLine("}");
         }
 
         private void GenerateJsonKey(FieldStatement statement, int level)
@@ -502,7 +490,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder
                 .AppendLine()
-                .AppendSpaces(level)
+                .AppendSpaces(level + 1)
                 .AppendLine($"{name}();");
         }
 
@@ -515,8 +503,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendSpaces(level + 1)
                 .AppendLine(annotation)
                 .AppendSpaces(level + 1)
-                .AppendLine("Map<String, dynamic> toJsonMap()")
-                .Append("=>")
+                .Append("Map<String, dynamic> toJsonMap() => ")
                 .AppendLine($"_${fullName}ToJson(this);");
         }
 
@@ -524,7 +511,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder.AppendLine()
                 .AppendSpaces(level + 1)
-                .Append($"factory {name}.fromJson(Map<String, dynamic> json) =>")
+                .Append($"factory {name}.fromJson(Map<String, dynamic> json) => ")
                 .AppendLine($"_${name}FromJson(json);");
         }
 
