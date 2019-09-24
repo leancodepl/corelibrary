@@ -21,10 +21,7 @@ namespace LeanCode.CQRS.Default.Execution
         [return: MaybeNull]
         public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)
         {
-            var res = await executor
-                .ExecuteAsync(appContext, query)
-                .ConfigureAwait(false);
-
+            var res = await executor.ExecuteAsync(appContext, query);
             return (TResult)res!;
         }
     }

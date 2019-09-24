@@ -42,7 +42,7 @@ namespace LeanCode.IdentityServer.KeyVault
         }
 
         public async Task<SigningCredentials> GetSigningCredentialsAsync() =>
-            new SigningCredentials(await GetKeyAsync().ConfigureAwait(false), SecurityAlgorithms.RsaSha256);
+            new SigningCredentials(await GetKeyAsync(), SecurityAlgorithms.RsaSha256);
 
         public async Task<string> SignTokenAsync(JwtSecurityToken jwt)
         {
@@ -52,8 +52,7 @@ namespace LeanCode.IdentityServer.KeyVault
             var digest = sha.ComputeHash(rawBytes);
 
             var signatureRaw = await keyVaultClient
-                .SignAsync(config.KeyId, JsonWebKeySignatureAlgorithm.RS256, digest)
-                .ConfigureAwait(false);
+                .SignAsync(config.KeyId, JsonWebKeySignatureAlgorithm.RS256, digest);
 
             var signature = Base64Url.Encode(signatureRaw.Result);
 
@@ -72,10 +71,7 @@ namespace LeanCode.IdentityServer.KeyVault
 
             try
             {
-                var keyResult = await keyVaultClient
-                    .GetKeyAsync(config.KeyId)
-                    .ConfigureAwait(false);
-
+                var keyResult = await keyVaultClient.GetKeyAsync(config.KeyId);
                 return key = new RsaSecurityKey(keyResult.Key.ToRSA());
             }
             catch (Exception ex)
@@ -93,10 +89,7 @@ namespace LeanCode.IdentityServer.KeyVault
                 var authCtx = new AuthenticationContext(authority);
                 var cc = new ClientCredential(config.ClientId, config.ClientSecret);
 
-                var token = await authCtx
-                    .AcquireTokenAsync(resource, cc)
-                    .ConfigureAwait(false);
-
+                var token = await authCtx.AcquireTokenAsync(resource, cc);
                 return token.AccessToken;
             }
             catch (Exception ex)

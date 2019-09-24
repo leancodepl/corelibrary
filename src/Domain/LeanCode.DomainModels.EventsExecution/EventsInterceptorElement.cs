@@ -30,7 +30,7 @@ namespace LeanCode.DomainModels.EventsExecution
 
             try
             {
-                var result = await next(ctx, input).ConfigureAwait(false);
+                var result = await next(ctx, input);
 
                 var queue = interceptor.CaptureQueue()
                     ?? throw new NullReferenceException("Failed to capture prepared interceptor event queue.");

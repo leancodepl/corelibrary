@@ -54,8 +54,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         {
             using var content = PrepareContent(command);
             using var response = await client
-                .PostAsync("command/" + command.GetType().FullName, content)
-                .ConfigureAwait(false);
+                .PostAsync("command/" + command.GetType().FullName, content);
 
             // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)

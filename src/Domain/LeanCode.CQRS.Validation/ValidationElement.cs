@@ -26,12 +26,10 @@ namespace LeanCode.CQRS.Validation
 
             if (validator is null)
             {
-                return await next(appContext, payload).ConfigureAwait(false);
+                return await next(appContext, payload);
             }
 
-            var result = await validator
-                .ValidateAsync(appContext, payload)
-                .ConfigureAwait(false);
+            var result = await validator.ValidateAsync(appContext, payload);
 
             if (!result.IsValid)
             {
@@ -40,7 +38,7 @@ namespace LeanCode.CQRS.Validation
                 return CommandResult.NotValid(result);
             }
 
-            return await next(appContext, payload).ConfigureAwait(false);
+            return await next(appContext, payload);
         }
     }
 

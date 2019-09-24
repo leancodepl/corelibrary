@@ -34,7 +34,7 @@ namespace LeanCode.Pipelines
 
             ctx.Scope = scope;
 
-            return await exec(ctx, input).ConfigureAwait(false);
+            return await exec(ctx, input);
         }
 
         private static Func<TContext, TInput, Task<TOutput>> BuildPipeline(

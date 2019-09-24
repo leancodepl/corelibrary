@@ -69,7 +69,7 @@ namespace LeanCode.ClientCredentialsHandler
 
             try
             {
-                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await base.SendAsync(request, cancellationToken);
 
                 if (response.StatusCode != HttpStatusCode.Unauthorized)
                 {
@@ -91,7 +91,7 @@ namespace LeanCode.ClientCredentialsHandler
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
 
-            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            return await base.SendAsync(request, cancellationToken);
         }
 
         protected override void Dispose(bool disposing)
@@ -109,7 +109,7 @@ namespace LeanCode.ClientCredentialsHandler
 
         private async Task<bool> GetNewAccessToken(CancellationToken cancellationToken)
         {
-            if (await tokenLock.WaitAsync(LockTimeout, cancellationToken).ConfigureAwait(false))
+            if (await tokenLock.WaitAsync(LockTimeout, cancellationToken))
             {
                 try
                 {

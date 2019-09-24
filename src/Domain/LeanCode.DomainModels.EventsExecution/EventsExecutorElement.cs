@@ -32,7 +32,7 @@ namespace LeanCode.DomainModels.EventsExecution
             TInput input,
             Func<TContext, TInput, Task<TOutput>> next)
         {
-            var result = await next(ctx, input).ConfigureAwait(false);
+            var result = await next(ctx, input);
 
             if ((ctx.SavedEvents?.Count ?? 0) > 0)
             {
@@ -73,11 +73,10 @@ namespace LeanCode.DomainModels.EventsExecution
                 {
                     interceptor.Prepare();
 
-                    await handler.HandleAsync(domainEvent).ConfigureAwait(false);
+                    await handler.HandleAsync(domainEvent);
 
                     return interceptor.CaptureQueue();
-                })
-                .ConfigureAwait(false);
+                });
 
             if (result.Outcome == OutcomeType.Failure)
             {

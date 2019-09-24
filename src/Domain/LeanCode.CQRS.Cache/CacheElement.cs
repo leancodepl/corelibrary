@@ -27,9 +27,7 @@ namespace LeanCode.CQRS.Cache
             {
                 var key = QueryCacheKeyProvider.GetKey(ctx, query);
 
-                var res = await cacher
-                    .GetOrCreate(key, duration, () => Wrap(ctx, query, next))
-                    .ConfigureAwait(false);
+                var res = await cacher.GetOrCreate(key, duration, () => Wrap(ctx, query, next));
 
                 logger.Debug(
                     "Query result for {@Query}(key: {Key}) retrieved from cache",
@@ -39,7 +37,7 @@ namespace LeanCode.CQRS.Cache
             }
             else
             {
-                return await next(ctx, query).ConfigureAwait(false);
+                return await next(ctx, query);
             }
         }
 
@@ -48,7 +46,7 @@ namespace LeanCode.CQRS.Cache
             IQuery payload,
             Func<TAppContext, IQuery, Task<object>> next)
         {
-            var result = await next(ctx, payload).ConfigureAwait(false);
+            var result = await next(ctx, payload);
 
             return new CacheItemWrapper(result);
         }

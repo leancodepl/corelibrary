@@ -42,14 +42,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 var queryHandler = new RemoteQueryHandler<TAppContext>(
                     context.RequestServices, catalog, contextTranslator);
 
-                result = await queryHandler.ExecuteAsync(context).ConfigureAwait(false);
+                result = await queryHandler.ExecuteAsync(context);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
                 var commandHandler = new RemoteCommandHandler<TAppContext>(
                     context.RequestServices, catalog, contextTranslator);
 
-                result = await commandHandler.ExecuteAsync(context).ConfigureAwait(false);
+                result = await commandHandler.ExecuteAsync(context);
             }
             else
             {
@@ -77,7 +77,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     }
                     else
                     {
-                        await JsonSerializer.SerializeAsync(context.Response.Body, result.Payload, result.Payload.GetType());
+                        await JsonSerializer.SerializeAsync(
+                            context.Response.Body,
+                            result.Payload,
+                            result.Payload.GetType());
                     }
                 }
             }

@@ -23,21 +23,17 @@ namespace LeanCode.PushNotifications
             this.client = client;
         }
 
-        public virtual async Task<FCMResult> Send(FCMNotification notification)
+        public virtual async Task<FCMResult> SendAsync(FCMNotification notification)
         {
             using var content = PrepareContent(notification);
-            using var response = await client
-                .PostAsync(string.Empty, content)
-                .ConfigureAwait(false);
+            using var response = await client.PostAsync(string.Empty, content);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return new FCMResult.HttpError(response.StatusCode);
             }
 
-            await using var resultStream = await response.Content
-                .ReadAsStreamAsync()
-                .ConfigureAwait(false);
+            await using var resultStream = await response.Content.ReadAsStreamAsync();
             using var result = await JsonDocument.ParseAsync(resultStream);
             var root = result.RootElement;
 

@@ -46,7 +46,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             try
             {
-                cmdResult = await result.ConfigureAwait(false);
+                cmdResult = await result;
             }
             catch (CommandHandlerNotFoundException)
             {

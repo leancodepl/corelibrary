@@ -29,18 +29,14 @@ namespace LeanCode.IdentityServer.KeyVault
 
         public async Task<string> CreateTokenAsync(Token token)
         {
-            var credentials = await signing
-                .GetSigningCredentialsAsync()
-                .ConfigureAwait(false);
+            var credentials = await signing.GetSigningCredentialsAsync();
 
             var header = CreateHeader(credentials);
             var payload = CreatePayload(token);
 
             var jwt = new JwtSecurityToken(header, payload);
 
-            return await signing
-                .SignTokenAsync(jwt)
-                .ConfigureAwait(false);
+            return await signing.SignTokenAsync(jwt);
         }
 
         private JwtHeader CreateHeader(SigningCredentials credentials)

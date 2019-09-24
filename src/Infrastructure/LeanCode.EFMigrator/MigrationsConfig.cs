@@ -26,9 +26,7 @@ namespace LeanCode.EFMigrator
             var context = new AuthenticationContext(authority);
             var credential = new ClientCredential(clientId, clientSecret);
 
-            var token = await context.AcquireTokenAsync(resource, credential)
-                .ConfigureAwait(false);
-
+            var token = await context.AcquireTokenAsync(resource, credential);
             return token.AccessToken;
         }
 
@@ -41,9 +39,7 @@ namespace LeanCode.EFMigrator
 
             using (var client = new KeyVaultClient(GetAzureKeyVaultAccessTokenAsync))
             {
-                var secret = await client.GetSecretAsync(keyVaultUrl, connectionStringKey)
-                    .ConfigureAwait(false);
-
+                var secret = await client.GetSecretAsync(keyVaultUrl, connectionStringKey);
                 azureKeyVaultConnectionString = secret.Value;
             }
         }

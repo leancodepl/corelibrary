@@ -37,9 +37,7 @@ namespace LeanCode.Facebook
 
             try
             {
-                using var response = await client.Client
-                    .GetAsync(uri)
-                    .ConfigureAwait(false);
+                using var response = await client.Client.GetAsync(uri);
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -50,9 +48,7 @@ namespace LeanCode.Facebook
                     throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
                 }
 
-                await using var content = await response.Content
-                    .ReadAsStreamAsync()
-                    .ConfigureAwait(false);
+                await using var content = await response.Content.ReadAsStreamAsync();
                 var result = await JsonDocument.ParseAsync(content);
 
                 if (handleError && result.RootElement.TryGetProperty("error", out var error))

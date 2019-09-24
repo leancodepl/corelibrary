@@ -30,13 +30,11 @@ namespace LeanCode.PdfGenerator.PdfRocket
         public async Task<Stream> GenerateFromTemplate<TModel>(string templateName, TModel model)
             where TModel : notnull
         {
-            var html = await viewRenderer
-                .RenderToStringAsync(templateName, model)
-                .ConfigureAwait(false);
+            var html = await viewRenderer.RenderToStringAsync(templateName, model);
 
             logger.Debug("Generating PDF from template {TemplateName}", templateName);
 
-            return await GenerateFromHtml(html).ConfigureAwait(false);
+            return await GenerateFromHtml(html);
         }
 
         public Task<Stream> GenerateFromUrl(string url)
@@ -49,16 +47,10 @@ namespace LeanCode.PdfGenerator.PdfRocket
         private async Task<Stream> Generate(string source)
         {
             using var content = GetContent(source);
-
-            using var response = await client.Client
-                .PostAsync("pdf", content)
-                .ConfigureAwait(false);
-
+            using var response = await client.Client.PostAsync("pdf", content);
             using var result = new MemoryStream();
 
-            await response.Content
-                .CopyToAsync(result)
-                .ConfigureAwait(false);
+            await response.Content.CopyToAsync(result);
 
             result.Position = 0;
 
