@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace LeanCode.SmsSender
 {
     public class SmsApiClient : ISmsSender
     {
+        public const string ApiBase = "https://api.smsapi.pl";
+
         private static readonly ImmutableHashSet<int> ClientErrors = ImmutableHashSet.Create(
             101,  /* Invalid or no authorization data */
             102,  /* Invalid login or password */
@@ -66,41 +66,39 @@ namespace LeanCode.SmsSender
             using (var body = new FormUrlEncodedContent(parameters))
             using (var response = await client.Client.PostAsync("sms.do", body))
             {
-                var content = await response.Content.ReadAsStringAsync();
-
-                HandleResponse(content);
+                await using var content = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                try
+                {
+                    using var doc = JsonDocument.Parse(content);
+                    HandleResponse(doc.RootElement);
+                }
+                catch (Exception e) when (e is JsonException || e is KeyNotFoundException || e is FormatException)
+                {
+                    throw new SerializationException("Failed to parse error message.", e);
+                }
             }
 
             logger.Information("SMS to {PhoneNumber} sent successfully", phoneNumber);
         }
 
-        private static void HandleResponse(string response)
+        private static void HandleResponse(JsonElement response)
         {
-            var parsedResponse = JObject.Parse(response);
-
-            if (parsedResponse.Property("error") != null)
+            if (response.TryGetProperty("error", out var error))
             {
-                try
-                {
-                    var errorCode = parsedResponse.Value<int>("error");
-                    var errorMessage = parsedResponse.Value<string>("message");
+                var errorCode = error.GetProperty("error").GetInt32();
+                var errorMessage = error.GetProperty("message").GetString();
 
-                    if (IsClientError(errorCode))
-                    {
-                        throw new ClientException(errorCode, errorMessage);
-                    }
-                    else if (IsHostError(errorCode))
-                    {
-                        throw new HostException(errorCode, errorMessage);
-                    }
-                    else
-                    {
-                        throw new ActionException(errorCode, errorMessage);
-                    }
-                }
-                catch (JsonSerializationException e)
+                if (IsClientError(errorCode))
                 {
-                    throw new SerializationException("Failed to parse error message.", e);
+                    throw new ClientException(errorCode, errorMessage);
+                }
+                else if (IsHostError(errorCode))
+                {
+                    throw new HostException(errorCode, errorMessage);
+                }
+                else
+                {
+                    throw new ActionException(errorCode, errorMessage);
                 }
             }
         }

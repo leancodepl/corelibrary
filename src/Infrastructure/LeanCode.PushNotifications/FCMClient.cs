@@ -1,19 +1,18 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using static LeanCode.PushNotifications.FCMResult;
 
 namespace LeanCode.PushNotifications
 {
     public class FCMClient : IDisposable
     {
-        private readonly JsonSerializerSettings settings = new JsonSerializerSettings()
+        private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
         {
-            NullValueHandling = NullValueHandling.Ignore,
+            IgnoreNullValues = true,
         };
 
         private readonly HttpClient client;
@@ -26,47 +25,57 @@ namespace LeanCode.PushNotifications
 
         public virtual async Task<FCMResult> Send(FCMNotification notification)
         {
-            var stringified = JsonConvert.SerializeObject(notification, settings);
-
-            using var content = new StringContent(stringified, Encoding.UTF8, "application/json");
-
+            using var content = PrepareContent(notification);
             using var response = await client
                 .PostAsync(string.Empty, content)
                 .ConfigureAwait(false);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return new HttpError(response.StatusCode);
+                return new FCMResult.HttpError(response.StatusCode);
             }
 
-            var resultStr = await response.Content
-                .ReadAsStringAsync()
+            await using var resultStream = await response.Content
+                .ReadAsStreamAsync()
                 .ConfigureAwait(false);
+            using var result = await JsonDocument.ParseAsync(resultStream);
+            var root = result.RootElement;
 
-            var result = JObject.Parse(resultStr);
-
-            if (result["canonical_ids"].Value<int>() == 1)
+            if (root.GetProperty("canonical_ids").GetInt32() == 1)
             {
-                return new TokenUpdated(result["results"][0]["registration_id"].Value<string>());
+                var id = root.GetProperty("results")[0].GetProperty("registration_id").GetString();
+                return new FCMResult.TokenUpdated(id);
             }
-
-            if (result["failure"].Value<int>() == 1)
+            else if (result.RootElement.GetProperty("failure").GetInt32() == 1)
             {
-                var error = result["results"][0]["error"].Value<string>();
+                var error = root.GetProperty("results")[0].GetProperty("error").GetString();
 
                 if (error == "NotRegistered" || error == "InvalidRegistration")
                 {
-                    return new InvalidToken();
+                    return new FCMResult.InvalidToken();
                 }
                 else
                 {
-                    return new OtherError(error);
+                    return new FCMResult.OtherError(error);
                 }
             }
-
-            return new Success();
+            else
+            {
+                return new FCMResult.Success();
+            }
         }
 
         public void Dispose() => client.Dispose();
+
+        private ByteArrayContent PrepareContent(FCMNotification notification)
+        {
+            var payload = JsonSerializer.SerializeToUtf8Bytes(notification, serializerOptions);
+            var content = new ByteArrayContent(payload);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+            {
+                CharSet = Encoding.UTF8.WebName,
+            };
+            return content;
+        }
     }
 }

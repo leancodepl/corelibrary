@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -12,7 +13,6 @@ using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.RemoteHttp.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 
 namespace LeanCode.Benchmarks
 {
@@ -78,8 +78,7 @@ namespace LeanCode.Benchmarks
 
         private byte[] GetContent(object obj)
         {
-            var str = JsonConvert.SerializeObject(obj);
-            return System.Text.Encoding.UTF8.GetBytes(str);
+            return JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType());
         }
 
         private HttpContext PrepareCommand(bool multi)

@@ -4,21 +4,21 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.EmailSender.Model;
 using LeanCode.Localization.StringLocalizers;
 using LeanCode.ViewRenderer;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace LeanCode.EmailSender.SendGrid
 {
     public class SendGridClient : IEmailClient
     {
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings()
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridClient>();
@@ -47,11 +47,7 @@ namespace LeanCode.EmailSender.SendGrid
             logger.Verbose("Sending with subject {Subject}", model.Subject);
 
             var message = await BuildMessage(model);
-
-            var msgJson = JsonConvert.SerializeObject(message, JsonSettings);
-
-            using var content = new StringContent(msgJson, Encoding.UTF8, "application/json");
-
+            using var content = PrepareContent(message);
             using var response = await client.Client
                 .PostAsync("mail/send", content)
                 .ConfigureAwait(false);
@@ -144,5 +140,16 @@ namespace LeanCode.EmailSender.SendGrid
 
         private static List<string> GetViewNamesFromContent(EmailContent content) =>
             content.TemplateNames.Where(n => !string.IsNullOrWhiteSpace(n)).ToList();
+
+        private static ByteArrayContent PrepareContent(SendGridMessage message)
+        {
+            var payload = JsonSerializer.SerializeToUtf8Bytes(message, SerializerOptions);
+            var content = new ByteArrayContent(payload);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+            {
+                CharSet = Encoding.UTF8.WebName,
+            };
+            return content;
+        }
     }
 }

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="FirebaseAdmin" />
     <PackageReference Include="Google.Cloud.Firestore" />
   </ItemGroup>

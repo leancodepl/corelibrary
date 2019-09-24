@@ -13,7 +13,6 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog" />
 
     <PackageReference Include="Microsoft.Extensions.Http" />

@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public async Task Deserializes_correct_command_object()
         {
-            await Invoke(content: "{'Prop': 12}");
+            await Invoke(content: @"{""Prop"": 12}");
 
             var q = Assert.IsType<SampleRemoteCommand>(Command.LastCommand);
             Assert.Equal(12, q.Prop);
@@ -67,7 +67,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public async Task Returns_UnprocessableEntity_when_command_does_not_pass_validation()
         {
-            var (status, _) = await Invoke(content: "{'Prop': 999}");
+            var (status, _) = await Invoke(content: @"{""Prop"": 999}");
 
             Assert.Equal(StatusCodes.Status422UnprocessableEntity, status);
         }
@@ -75,7 +75,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public async Task Returns_CommandResult_with_errors_when_command_does_not_pass_validation()
         {
-            var (_, content) = await Invoke(content: "{'Prop': 999}");
+            var (_, content) = await Invoke(content: @"{""Prop"": 999}");
 
             var result = JsonConvert.DeserializeObject<CommandResult>(content);
             Assert.False(result.WasSuccessful);

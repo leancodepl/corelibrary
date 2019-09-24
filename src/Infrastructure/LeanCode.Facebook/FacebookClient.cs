@@ -2,8 +2,8 @@ using System;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace LeanCode.Facebook
 {
@@ -30,7 +30,7 @@ namespace LeanCode.Facebook
                 : new HMACSHA256(ParseKey(config.AppSecret));
         }
 
-        public virtual async Task<JObject> CallAsync(string endpoint, string accessToken, bool handleError = true)
+        public virtual async Task<JsonDocument> CallAsync(string endpoint, string accessToken, bool handleError = true)
         {
             var proof = GenerateProof(accessToken);
             var uri = AppendProof(endpoint, accessToken, proof);
@@ -50,23 +50,25 @@ namespace LeanCode.Facebook
                     throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
                 }
 
-                var content = await response.Content
-                    .ReadAsStringAsync()
+                await using var content = await response.Content
+                    .ReadAsStreamAsync()
                     .ConfigureAwait(false);
+                var result = await JsonDocument.ParseAsync(content);
 
-                var result = JObject.Parse(content);
-
-                if (handleError && result["error"] != null)
+                if (handleError && result.RootElement.TryGetProperty("error", out var error))
                 {
-                    var code = result["error"]["code"].Value<int>();
-                    var msg = result["error"]["message"];
+                    using (result)
+                    {
+                        var code = error.GetProperty("code").GetInt32();
+                        var msg = error.GetProperty("message").GetString();
 
-                    logger.Warning(
-                        "User tried to use invalid access token {FBAccessToken}, Facebook returned {Code} error code with message {Message}",
-                        accessToken, code, msg);
+                        logger.Warning(
+                            "User tried to use invalid access token {FBAccessToken}, Facebook returned {Code} error code with message {Message}",
+                            accessToken, code, msg);
 
-                    throw new FacebookException(
-                        $"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}.");
+                        throw new FacebookException(
+                            $"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}.");
+                    }
                 }
 
                 return result;
@@ -81,9 +83,9 @@ namespace LeanCode.Facebook
 
         public virtual async Task<FacebookUser> GetUserInfo(string accessToken)
         {
-            var result = await CallAsync("me?fields=" + FieldsStr, accessToken);
+            using var result = await CallAsync("me?fields=" + FieldsStr, accessToken);
 
-            var info = ConvertResponse(result);
+            var info = ConvertResponse(result.RootElement);
 
             logger.Information(
                 "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
@@ -92,15 +94,27 @@ namespace LeanCode.Facebook
             return info;
         }
 
-        private FacebookUser ConvertResponse(JObject result)
+        private FacebookUser ConvertResponse(JsonElement result)
         {
-            var id = result["id"].Value<string>();
-            var email = result["email"]?.Value<string>();
-            var firstName = result["first_name"]?.Value<string>();
-            var lastName = result["last_name"]?.Value<string>();
+            var id = result.GetProperty("id").GetString();
+            var email = GetOptionalProperty(result, "email");
+            var firstName = GetOptionalProperty(result, "first_name");
+            var lastName = GetOptionalProperty(result, "last_name");
             var photoUrl = $"{ApiBase}/{ApiVersion}/{id}/picture?width={photoSize}&height={photoSize}";
 
             return new FacebookUser(id, email, firstName, lastName, photoUrl);
+
+            static string? GetOptionalProperty(JsonElement element, string propName)
+            {
+                if (element.TryGetProperty(propName, out var prop))
+                {
+                    return prop.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         private string GenerateProof(string accessToken)

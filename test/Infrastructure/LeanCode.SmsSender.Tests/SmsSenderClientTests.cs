@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,7 +21,13 @@ namespace LeanCode.SmsSender.Tests
 
         public SmsSenderClientTests()
         {
-            this.client = new SmsApiClient(Config, new SmsApiHttpClient(new HttpClient()));
+            client = new SmsApiClient(
+                Config,
+                new SmsApiHttpClient(
+                    new HttpClient
+                    {
+                        BaseAddress = new Uri(SmsApiClient.ApiBase),
+                    }));
         }
 
         [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]

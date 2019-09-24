@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
 
