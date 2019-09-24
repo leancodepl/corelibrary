@@ -77,11 +77,20 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
 
             definitionsBuilder
-                .AppendLine("DateTime _normalizeDate(String dateString) {")
-                .AppendLine("return dateString == null")
-                .AppendLine("? null")
-                .AppendLine(": DateTime.parse(dateString.substring(0, 19) + ' Z');")
-                .AppendLine("}");
+                .AppendLine("DateTime _dateTimeFromJson(String value) {")
+                .AppendLine("return DateTime.parse(value.substring(0, 19) + ' Z'); }");
+
+            definitionsBuilder
+                .AppendLine("DateTime _nullableDateTimeFromJson(String value) {")
+                .AppendLine("return value == null ? null : _dateTimeFromJson(value); }");
+
+            definitionsBuilder
+                .AppendLine("double _doubleFromJson(dynamic value) {")
+                .AppendLine("return value is String ? double.parse(value) : value; }");
+
+            definitionsBuilder
+                .AppendLine("double _nullableDoubleFromJson(dynamic value) {")
+                .AppendLine("return value == null ? null : _doubleFromJson(value); }");
         }
 
         private void GenerateTypeNames(ClientStatement statement)
@@ -477,7 +486,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             if (type.Name == "DateTime")
             {
-                definitionsBuilder.Append($", fromJson: _normalizeDate");
+                var fromJsonMethod = type.IsNullable ? "_nullableDateTimeFromJson" : "_dateTimeFromJson";
+                definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
+            }
+            else if (type.Name == "Double")
+            {
+                var fromJsonMethod = type.IsNullable ? "_nullableDoubleFromJson" : "_doubleFromJson";
+                definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
             }
 
             definitionsBuilder.AppendLine(")");
