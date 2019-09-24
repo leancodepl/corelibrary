@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -163,6 +164,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine();
         }
 
+        [SuppressMessage("?", "IDE0060", Justification = "Keep `parentName` for the sake of consistency.")]
         private void AppendEnumHashCode(string parentName, int level)
         {
             definitionsBuilder

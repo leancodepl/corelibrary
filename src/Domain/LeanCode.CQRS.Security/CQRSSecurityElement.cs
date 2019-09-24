@@ -71,11 +71,11 @@ namespace LeanCode.CQRS.Security
             return builder.Use<CQRSSecurityElement<TContext, ICommand, CommandResult>>();
         }
 
-        public static PipelineBuilder<TContext, IQuery, object> Secure<TContext>(
-            this PipelineBuilder<TContext, IQuery, object> builder)
+        public static PipelineBuilder<TContext, IQuery, object?> Secure<TContext>(
+            this PipelineBuilder<TContext, IQuery, object?> builder)
             where TContext : ISecurityContext
         {
-            return builder.Use<CQRSSecurityElement<TContext, IQuery, object>>();
+            return builder.Use<CQRSSecurityElement<TContext, IQuery, object?>>();
         }
     }
 }

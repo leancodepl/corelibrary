@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using FluentValidation;
 
@@ -8,20 +9,30 @@ namespace LeanCode.CQRS.Validation.Fluent
         public const string ComponentContextKey = "ComponentContext";
         public const string AppContextKey = "AppContext";
 
-        public static TAppContext? AppContext<TAppContext>(this ValidationContext ctx)
+        public static TAppContext AppContext<TAppContext>(this ValidationContext ctx)
             where TAppContext : class
         {
-            return ctx.RootContextData.TryGetValue(AppContextKey, out var ac)
-                ? (TAppContext)ac
-                : null;
+            if (ctx.RootContextData.TryGetValue(AppContextKey, out var ac))
+            {
+                return (TAppContext)ac;
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot use `AppContext` extension method outside the `ContextualValidator` class.");
+            }
         }
 
-        public static T? GetService<T>(this ValidationContext ctx)
+        public static T GetService<T>(this ValidationContext ctx)
             where T : class
         {
-            return ctx.RootContextData.TryGetValue(ComponentContextKey, out var cc)
-                ? ((IComponentContext)cc).Resolve<T>()
-                : null;
+            if (ctx.RootContextData.TryGetValue(ComponentContextKey, out var cc))
+            {
+                return ((IComponentContext)cc).Resolve<T>();
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot use `GetService` extension method outside the `ContextualValidator` class.");
+            }
         }
     }
 }

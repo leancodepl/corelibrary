@@ -6,7 +6,7 @@ namespace LeanCode.CQRS.Default
         PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
         where TAppContext : IPipelineContext;
 
-    public delegate PipelineBuilder<TAppContext, IQuery, object> QueryBuilder<TAppContext>(
-        PipelineBuilder<TAppContext, IQuery, object> builder)
+    public delegate PipelineBuilder<TAppContext, IQuery, object?> QueryBuilder<TAppContext>(
+        PipelineBuilder<TAppContext, IQuery, object?> builder)
         where TAppContext : IPipelineContext;
 }

@@ -19,7 +19,11 @@ namespace LeanCode.Example
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddDbContext<ExampleDbContext>(opts => opts.UseSqlite("Data Source=example.db"));
+            services.AddDbContext<ExampleDbContext>(
+                opts =>
+                    opts
+                        .UseSqlite("Data Source=example.db")
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPushNotificationTokenStore<Guid>>(p => new EFPushNotificationTokenStore(p.GetRequiredService<ExampleDbContext>()));
             services.AddMvc();
 
