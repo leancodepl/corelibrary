@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             }
             else
             {
-                throw new InvalidOperationException("Cannot use `AppContext` extension method outside the `ContextualValdiator` class.");
+                throw new InvalidOperationException("Cannot use `AppContext` extension method outside the `ContextualValidator` class.");
             }
         }
 
@@ -31,7 +31,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             }
             else
             {
-                throw new InvalidOperationException("Cannot use `GetService` extension method outside the `ContextualValdiator` class.");
+                throw new InvalidOperationException("Cannot use `GetService` extension method outside the `ContextualValidator` class.");
             }
         }
     }
