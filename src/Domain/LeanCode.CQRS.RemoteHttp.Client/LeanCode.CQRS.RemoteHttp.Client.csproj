@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Json/LeanCode.Json.csproj" />
   </ItemGroup>
 
 </Project>

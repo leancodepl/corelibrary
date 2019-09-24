@@ -10,6 +10,7 @@
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.EmailSender/LeanCode.EmailSender.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
+    <ProjectReference Include="../LeanCode.Json/LeanCode.Json.csproj" />
   </ItemGroup>
 
   <ItemGroup>

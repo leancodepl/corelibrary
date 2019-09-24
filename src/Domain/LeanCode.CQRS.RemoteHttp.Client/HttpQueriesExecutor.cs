@@ -1,10 +1,9 @@
 using System;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LeanCode.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
@@ -52,7 +51,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 
         public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
         {
-            using var content = PrepareContent(query);
+            using var content = JsonContent.Create(query, query.GetType());
             using var response = await client
                 .PostAsync("query/" + query.GetType().FullName, content);
 
@@ -63,16 +62,5 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         }
 
         public void Dispose() => client.Dispose();
-
-        private ByteArrayContent PrepareContent<TResult>(IRemoteQuery<TResult> query)
-        {
-            var payload = JsonSerializer.SerializeToUtf8Bytes(query, query.GetType(), serializerOptions);
-            var content = new ByteArrayContent(payload);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
-            {
-                CharSet = Encoding.UTF8.WebName,
-            };
-            return content;
-        }
     }
 }
