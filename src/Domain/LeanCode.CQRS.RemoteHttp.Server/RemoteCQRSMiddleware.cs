@@ -1,15 +1,18 @@
 using System;
 using System.IO;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
     public sealed class RemoteCQRSMiddleware<TAppContext>
     {
+        private static readonly byte[] NullString = Encoding.UTF8.GetBytes("null");
+
         private readonly TypesCatalog catalog;
         private readonly Func<HttpContext, TAppContext> contextTranslator;
         private readonly RequestDelegate next;
@@ -56,25 +59,28 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             await ExecuteResult(result, context);
         }
 
-        private Task ExecuteResult(ExecutionResult result, HttpContext context)
+        private async Task ExecuteResult(ExecutionResult result, HttpContext context)
         {
             if (result.Skipped)
             {
-                return next(context);
+                await next(context);
             }
-
-            context.Response.StatusCode = result.StatusCode;
-
-            if (result.Succeeded)
+            else
             {
-                context.Response.ContentType = "application/json";
-
-                using var writer = new StreamWriter(context.Response.Body);
-
-                new JsonSerializer().Serialize(writer, result.Payload);
+                context.Response.StatusCode = result.StatusCode;
+                if (result.Succeeded)
+                {
+                    context.Response.ContentType = "application/json";
+                    if (result.Payload is null)
+                    {
+                        await context.Response.Body.WriteAsync(NullString);
+                    }
+                    else
+                    {
+                        await JsonSerializer.SerializeAsync(context.Response.Body, result.Payload, result.Payload.GetType());
+                    }
+                }
             }
-
-            return Task.CompletedTask;
         }
     }
 

@@ -1,16 +1,15 @@
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Security.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
     internal abstract class BaseRemoteObjectHandler<TAppContext>
     {
-        private readonly JsonSerializer serializer = new JsonSerializer();
         private readonly Func<HttpContext, TAppContext> contextTranslator;
 
         public TypesCatalog Catalog { get; }
@@ -40,7 +39,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             try
             {
-                obj = DeserializeObject(type, request.Body);
+                obj = await JsonSerializer.DeserializeAsync(request.Body, type);
             }
             catch (Exception ex)
             {
@@ -97,13 +96,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 : request.Path.Value;
 
             return Catalog.GetType(name);
-        }
-
-        private object? DeserializeObject(Type destType, Stream body)
-        {
-            using var reader = new JsonTextReader(new StreamReader(body));
-
-            return serializer.Deserialize(reader, destType);
         }
     }
 }

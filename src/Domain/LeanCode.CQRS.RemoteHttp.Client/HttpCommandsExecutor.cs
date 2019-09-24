@@ -1,60 +1,58 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
     public class HttpCommandsExecutor : IRemoteCommandExecutor, IDisposable
     {
         private readonly HttpClient client;
-        private readonly JsonSerializerSettings? serializerSettings;
+        private readonly JsonSerializerOptions? serializerOptions;
 
-        public HttpCommandsExecutor(Uri baseAddress, JsonSerializerSettings? settings = null)
+        public HttpCommandsExecutor(Uri baseAddress, JsonSerializerOptions? options = null)
         {
             client = new HttpClient()
             {
                 BaseAddress = baseAddress,
             };
 
-            serializerSettings = settings;
+            serializerOptions = options;
         }
 
         public HttpCommandsExecutor(
             Uri baseAddress,
             HttpMessageHandler handler,
-            JsonSerializerSettings? settings = null)
+            JsonSerializerOptions? options = null)
         {
             client = new HttpClient(handler)
             {
                 BaseAddress = baseAddress,
             };
 
-            serializerSettings = settings;
+            serializerOptions = options;
         }
 
         public HttpCommandsExecutor(
             Uri baseAddress,
             HttpMessageHandler handler,
             bool disposeHandler,
-            JsonSerializerSettings? settings = null)
+            JsonSerializerOptions? options = null)
         {
             client = new HttpClient(handler, disposeHandler)
             {
                 BaseAddress = baseAddress,
             };
 
-            serializerSettings = settings;
+            serializerOptions = options;
         }
 
         public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
         {
-            var stringified = JsonConvert.SerializeObject(command);
-
-            using var content = new StringContent(stringified, Encoding.UTF8, "application/json");
-
+            using var content = PrepareContent(command);
             using var response = await client
                 .PostAsync("command/" + command.GetType().FullName, content)
                 .ConfigureAwait(false);
@@ -62,9 +60,8 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                return JsonConvert.DeserializeObject<CommandResult>(responseContent, serializerSettings);
+                await using var responseContent = await response.Content.ReadAsStreamAsync();
+                return await JsonSerializer.DeserializeAsync<CommandResult>(responseContent, serializerOptions);
             }
 
             response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
@@ -73,5 +70,16 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         }
 
         public void Dispose() => client.Dispose();
+
+        private ByteArrayContent PrepareContent(IRemoteCommand command)
+        {
+            var payload = JsonSerializer.SerializeToUtf8Bytes(command, command.GetType(), serializerOptions);
+            var content = new ByteArrayContent(payload);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
+            {
+                CharSet = Encoding.UTF8.WebName,
+            };
+            return content;
+        }
     }
 }

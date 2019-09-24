@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace LeanCode.Mixpanel
 {
@@ -126,13 +126,12 @@ namespace LeanCode.Mixpanel
 
         private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object?> data)
         {
-            string dataString = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+            var dataString = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(data));
 
-            var jsonResponse = await client.Client
-                .GetStringAsync($"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}")
+            await using var jsonResponse = await client.Client
+                .GetStreamAsync($"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}")
                 .ConfigureAwait(false);
-
-            var response = JsonConvert.DeserializeObject<MixpanelResponse>(jsonResponse);
+            var response = await JsonSerializer.DeserializeAsync<MixpanelResponse>(jsonResponse);
 
             if (response.Status == MixpanelResponse.Success)
             {

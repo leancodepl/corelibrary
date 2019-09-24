@@ -41,7 +41,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         [Fact]
         public async Task Deserializes_correct_query_object()
         {
-            await Invoke(content: "{'Prop': 12}");
+            await Invoke(content: @"{""Prop"": 12}");
 
             var q = Assert.IsType<SampleRemoteQuery>(Query.LastQuery);
             Assert.Equal(12, q.Prop);

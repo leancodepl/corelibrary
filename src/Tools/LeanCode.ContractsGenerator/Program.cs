@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using LeanCode.ContractsGenerator.Languages;
 
 namespace LeanCode.ContractsGenerator
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             if (args.Contains("--help"))
             {
@@ -19,7 +20,7 @@ namespace LeanCode.ContractsGenerator
             List<GeneratorConfiguration> configurations;
             try
             {
-                configurations = GeneratorConfiguration.GetConfigurations(args);
+                configurations = await GeneratorConfiguration.GetConfigurations(args);
             }
             catch (FormatException e)
             {

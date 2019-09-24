@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 using LeanCode.ContractsGenerator.Languages.Dart;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -20,19 +21,16 @@ namespace LeanCode.ContractsGenerator
 
         public GeneratorConfiguration() { }
 
-        public static List<GeneratorConfiguration> GetConfigurations(string[] args)
+        public static async Task<List<GeneratorConfiguration>> GetConfigurations(string[] args)
         {
             var configFile = GetConfigFile(args);
-
-            using (var reader = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), configFile)))
-            {
-                return DeserializeConfigurationsFromString(reader.ReadToEnd());
-            }
+            await using var stream = File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), configFile));
+            return await JsonSerializer.DeserializeAsync<List<GeneratorConfiguration>>(stream);
         }
 
-        public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string configurations)
+        public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string cfg)
         {
-            return JsonConvert.DeserializeObject<List<GeneratorConfiguration>>(configurations);
+            return JsonSerializer.Deserialize<List<GeneratorConfiguration>>(cfg);
         }
 
         private static string GetConfigFile(string[] args)

@@ -11,7 +11,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        Dart: { }
+                        ""Dart"": { }
                     }
                 ]")[0].Dart;
 
@@ -32,8 +32,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        Dart: {
-                            ContractsPreambleLines: [
+                        ""Dart"": {
+                            ""ContractsPreambleLines"": [
                                 ""ContractsFirstLine"",
                                 ""ContractsSecondLine"",
                                 ""ContractsThirdLine"",
@@ -54,8 +54,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        Dart: {
-                            ContractsPreamble: ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n""
+                        ""Dart"": {
+                            ""ContractsPreamble"": ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n""
                         }
                     }
                 ]")[0].Dart;

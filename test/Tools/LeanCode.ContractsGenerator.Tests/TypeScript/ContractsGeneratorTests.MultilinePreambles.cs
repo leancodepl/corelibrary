@@ -11,7 +11,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        TypeScript: { }
+                        ""TypeScript"": { }
                     }
                 ]")[0].TypeScript;
 
@@ -32,14 +32,14 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        TypeScript: {
-                            ContractsPreambleLines: [
+                        ""TypeScript"": {
+                            ""ContractsPreambleLines"": [
                                 ""ContractsFirstLine"",
                                 ""ContractsSecondLine"",
                                 ""ContractsThirdLine"",
                                 """"
                             ],
-                            ClientPreambleLines: [
+                            ""ClientPreambleLines"": [
                                 ""ClientFirstLine"",
                                 ""ClientSecondLine"",
                                 ""ClientThirdLine"",
@@ -62,9 +62,9 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             var configuration = GeneratorConfiguration.DeserializeConfigurationsFromString(@"
                 [
                     {
-                        TypeScript: {
-                            ContractsPreamble: ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n"",
-                            ClientPreamble: ""ClientFirstLine\nClientSecondLine\nClientThirdLine\n""
+                        ""TypeScript"": {
+                            ""ContractsPreamble"": ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n"",
+                            ""ClientPreamble"": ""ClientFirstLine\nClientSecondLine\nClientThirdLine\n""
                         }
                     }
                 ]")[0].TypeScript;
