@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,10 +20,13 @@ namespace LeanCode.IdentityServer.KeyVault
             return signing.GetSigningCredentialsAsync();
         }
 
-        public async Task<IEnumerable<SecurityKey>> GetValidationKeysAsync()
+        public async Task<IEnumerable<SecurityKeyInfo>> GetValidationKeysAsync()
         {
             var rsa = await signing.GetKeyAsync();
-            return new SecurityKey[] { rsa };
+            return new[]
+            {
+                new SecurityKeyInfo { Key = rsa, SigningAlgorithm = "RS256" },
+            };
         }
     }
 }
