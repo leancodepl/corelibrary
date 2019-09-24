@@ -13,7 +13,7 @@ namespace LeanCode.DomainModels.DataAccess
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
         where TIdentity : notnull
     {
-        ValueTask<TEntity?> FindAsync(TIdentity id);
+        Task<TEntity?> FindAsync(TIdentity id);
 
         void Add(TEntity entity);
         void Delete(TEntity entity);
