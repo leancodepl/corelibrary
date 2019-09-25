@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -77,10 +76,10 @@ namespace LeanCode.Serialization.Tests
         {
             return @$"{{""{fieldName}"":""{payload.Data}""}}";
         }
-    }
 
-    public class Payload
-    {
-        public string Data { get; set; }
+        public class Payload
+        {
+            public string Data { get; set; }
+        }
     }
 }
