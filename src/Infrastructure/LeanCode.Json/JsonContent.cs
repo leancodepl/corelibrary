@@ -34,18 +34,23 @@ namespace LeanCode.Json
         public static JsonContent Create<T>(T payload)
             where T : notnull
         {
-            return new JsonContent(payload, typeof(T));
+            return Create<T>(payload, null);
         }
 
-        public static JsonContent Create(object payload, Type type)
+        public static JsonContent Create<T>(T payload, JsonSerializerOptions? options)
+            where T : notnull
         {
-            return new JsonContent(payload, type);
+            return new JsonContent(payload, typeof(T), options);
         }
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
-        {
-            return JsonSerializer.SerializeAsync(stream, payload, type, options);
-        }
+        public static JsonContent Create(object payload, Type type) =>
+            Create(payload, type, null);
+
+        public static JsonContent Create(object payload, Type type, JsonSerializerOptions? options) =>
+            new JsonContent(payload, type, options);
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context) =>
+            JsonSerializer.SerializeAsync(stream, payload, type, options);
 
         protected override bool TryComputeLength(out long length)
         {
