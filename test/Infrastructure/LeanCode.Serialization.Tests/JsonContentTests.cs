@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LeanCode.Json.Tests
+namespace LeanCode.Serialization.Tests
 {
     public class JsonContentTests
     {

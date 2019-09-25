@@ -7,7 +7,7 @@
   <Import Project="../../CommonRefs.props" />
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Json/LeanCode.Json.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

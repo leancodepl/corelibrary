@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace LeanCode.Json
+namespace LeanCode.Serialization
 {
     public class JsonContent : HttpContent
     {

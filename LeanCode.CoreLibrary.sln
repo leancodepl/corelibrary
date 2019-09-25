@@ -171,9 +171,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.AsyncInitializer.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Localization.Tests", "test\Infrastructure\LeanCode.Localization.Tests\LeanCode.Localization.Tests.csproj", "{2329CC11-BB1C-4DC4-9BD9-9DA36B26DB31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Json", "src\Infrastructure\LeanCode.Json\LeanCode.Json.csproj", "{4D2928CA-0803-4230-B33C-005443E99FCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Serialization", "src\Infrastructure\LeanCode.Serialization\LeanCode.Serialization.csproj", "{4D2928CA-0803-4230-B33C-005443E99FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Json.Tests", "test\Infrastructure\LeanCode.Json.Tests\LeanCode.Json.Tests.csproj", "{782C86E1-41EB-43FA-A74C-7B77049EC9C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Serialization.Tests", "test\Infrastructure\LeanCode.Serialization.Tests\LeanCode.Serialization.Tests.csproj", "{782C86E1-41EB-43FA-A74C-7B77049EC9C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
