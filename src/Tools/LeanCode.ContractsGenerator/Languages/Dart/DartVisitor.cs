@@ -365,8 +365,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendLine($"static const int {constant.Name} = {constant.Value};");
             }
 
-            definitionsBuilder.AppendLine();
-
             foreach (var field in statement.Fields)
             {
                 VisitFieldStatement(field, level + 1);

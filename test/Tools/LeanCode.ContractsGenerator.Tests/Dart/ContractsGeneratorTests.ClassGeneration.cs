@@ -96,60 +96,6 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
-        public void Base_type_properties_are_mapped_correctly_to_and_from_json()
-        {
-            var generator = CreateDartGeneratorFromNamespace(
-@"public class BaseTestClass
-{
-    public int BaseField { get; set; }
-}
-public class TestClass : BaseTestClass
-{
-    public string Field { get; set; }
-}");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            var expectedBaseClassProjection =
-@"class BaseTestClass {
-
-    int baseField;
-
-    @virtual
-    Map<String, dynamic> toJsonMap() {
-        final map = <String, dynamic>{
-            'BaseField': baseField,
-        };
-        return map;
-    }
-
-    static BaseTestClass fromJson(Map map) => BaseTestClass()
-            ..baseField = map['BaseField'];
-}";
-            Assert.Contains(expectedBaseClassProjection, contracts);
-
-            var expectedClassProjection =
-@"class TestClass extends BaseTestClass {
-
-    String field;
-
-    @override
-    Map<String, dynamic> toJsonMap() {
-        final map = <String, dynamic>{
-            'Field': field,
-        };
-        map.addAll(super.toJsonMap());
-        return map;
-    }
-
-    static TestClass fromJson(Map map) => TestClass()
-            ..field = map['Field']
-            ..baseField = map['BaseField'];
-}";
-            Assert.Contains(expectedClassProjection, contracts);
-        }
-
-        [Fact]
         public void Deep_generic_inheritance_from_interface_is_resolved_correctly()
         {
             var generator = CreateDartGeneratorFromNamespace("public interface IRemoteQuery<T> { } public class TestClass<T> : IRemoteQuery<List<T>> { }");
@@ -202,32 +148,28 @@ namespace Aaa.Bbb.Cc
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
             var firstClass =
-@"class CcBbClass {
+@"@JsonSerializable()
+class CcBbClass {
 
+    CcBbClass();
 
     @virtual
-    Map<String, dynamic> toJsonMap() {
-        final map = <String, dynamic>{
-        };
-        return map;
-    }
+    Map<String, dynamic> toJsonMap() => _$CcBbClassToJson(this);
 
-    static CcBbClass fromJson(Map map) => CcBbClass();
+    factory CcBbClass.fromJson(Map<String, dynamic> json) => _$CcBbClassFromJson(json);
 }";
             Assert.Contains(firstClass, contracts);
 
             var secondClass =
-@"class CcBbbClass {
+@"@JsonSerializable()
+class CcBbbClass {
 
+    CcBbbClass();
 
     @virtual
-    Map<String, dynamic> toJsonMap() {
-        final map = <String, dynamic>{
-        };
-        return map;
-    }
+    Map<String, dynamic> toJsonMap() => _$CcBbbClassToJson(this);
 
-    static CcBbbClass fromJson(Map map) => CcBbbClass();
+    factory CcBbbClass.fromJson(Map<String, dynamic> json) => _$CcBbbClassFromJson(json);
 }";
             Assert.Contains(secondClass, contracts);
         }

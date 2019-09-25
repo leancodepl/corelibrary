@@ -37,10 +37,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         public static readonly GeneratorConfiguration DefaultDartConfiguration = new GeneratorConfiguration()
         {
             Name = "Test",
-            Dart = new DartConfiguration
-            {
-                ContractsPreamble = string.Empty,
-            },
+            Dart = new DartConfiguration { },
         };
 
         public static string GetContracts(IEnumerable<LanguageFileOutput> output)

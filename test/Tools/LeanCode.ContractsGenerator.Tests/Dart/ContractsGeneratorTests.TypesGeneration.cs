@@ -6,13 +6,47 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
     public partial class ContractsGeneratorTests
     {
         [Fact]
-        public void Nullable_annotation_is_generated()
+        public void Imports_are_generated()
         {
             var generator = CreateDartGeneratorFromClass(string.Empty);
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class _Nullable { const _Nullable(); } const nullable = _Nullable();", contracts);
+            Assert.Contains("import 'package:meta/meta.dart';", contracts);
+            Assert.Contains("import 'package:json_annotation/json_annotation.dart';", contracts);
+            Assert.Contains("import 'package:dart_cqrs/dart_cqrs.dart';", contracts);
+        }
+
+        [Fact]
+        public void List_helper_is_generated()
+        {
+            var generator = CreateDartGeneratorFromClass(string.Empty);
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("List<T> _listFromJson<T>(", contracts);
+        }
+
+        [Fact]
+        public void DateTime_helpers_is_generated()
+        {
+            var generator = CreateDartGeneratorFromClass(string.Empty);
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("DateTime _dateTimeFromJson(String value)", contracts);
+            Assert.Contains("DateTime _nullableDateTimeFromJson(String value)", contracts);
+        }
+
+        [Fact]
+        public void Double_helpers_is_generated()
+        {
+            var generator = CreateDartGeneratorFromClass(string.Empty);
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("double _doubleFromJson(dynamic value)", contracts);
+            Assert.Contains("double _nullableDoubleFromJson(dynamic value)", contracts);
         }
 
         [Fact]
@@ -26,37 +60,47 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
-        public void Double_is_resolved_as_string_for_nan_or_infinity()
+        public void Double_uses_custom_from_json_method()
         {
             var generator = CreateDartGeneratorFromClass("public double Field { get; set; }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("..field = map['Field'] is String ?\ndouble.parse(map['Field']) : map['Field']", contracts);
+            Assert.Contains("@JsonKey(name: 'Field', fromJson: _doubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
         }
 
         [Fact]
-        public void DateTime_is_resolved_to_DateTime()
+        public void Nullable_double_uses_custom_from_json_method()
+        {
+            var generator = CreateDartGeneratorFromClass("public double? Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("@JsonKey(name: 'Field', nullable: true, fromJson: _nullableDoubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
+        }
+
+        [Fact]
+        public void DateTime_uses_custom_from_json_method()
         {
             var generator = CreateDartGeneratorFromClass("public DateTime TestVar { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
+            Assert.Contains("@JsonKey(name: 'TestVar', fromJson: _dateTimeFromJson)", contracts);
             Assert.Contains("DateTime testVar;", contracts);
-            Assert.Contains("'TestVar': testVar.toIso8601String(),", contracts);
-            Assert.Contains("..testVar = map['TestVar'] != null ? DateTime.parse(normalizeDate(map['TestVar'])) : null;", contracts);
         }
 
         [Fact]
-        public void Nullable_DateTime_is_resolved_correctly()
+        public void Nullable_DateTime_uses_custom_from_json_method()
         {
             var generator = CreateDartGeneratorFromClass("public DateTime? TestVar { get; set; };");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
+            Assert.Contains("@JsonKey(name: 'TestVar', nullable: true, fromJson: _nullableDateTimeFromJson)", contracts);
             Assert.Contains("DateTime testVar;", contracts);
-            Assert.Contains("'TestVar': testVar?.toIso8601String(),", contracts);
-            Assert.Contains("..testVar = map['TestVar'] != null ? DateTime.parse(normalizeDate(map['TestVar'])) : null;", contracts);
         }
 
         [Fact]
@@ -66,7 +110,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Matches("@nullable\n\\s*int testVar", contracts);
+            Assert.Contains("name: 'TestVar', nullable: true", contracts);
+            Assert.Contains("int testVar;", contracts);
         }
 
         [Fact]
@@ -76,28 +121,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Matches("@nullable\n\\s*int testVar", contracts);
-        }
-
-        [Fact]
-        public void Nullable_property_does_not_produce_attribute_inside_to_json()
-        {
-            var generator = CreateDartGeneratorFromNamespace(
-@"public class SomeDTO
-{
-    public CurrencyDTO? Currency { get; set; }
-}
-
-public enum CurrencyDTO
-{
-    PLN = 0,
-    EUR = 1,
-}");
-
-            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
-
-            Assert.Matches("@nullable\n\\s*CurrencyDTO currency", contracts);
-            Assert.Contains("..currency = map['Currency'] != null ? CurrencyDTO.fromJson(map['Currency']) : null;", contracts);
+            Assert.Contains("name: 'TestVar', nullable: true", contracts);
+            Assert.Contains("int testVar;", contracts);
         }
 
         [Fact]
