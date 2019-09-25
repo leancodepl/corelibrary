@@ -9,6 +9,8 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Bump C# language version to 8.0
 * Add support for Nullable Reference Types
 * Multiple breaking changes related to Razor, events, async methods and more
+* Remove now redundant calls to ConfigureAwait in async methods
+* Replace Newtonsoft.Json with System.Text.Json
 
 ## 3.5
 * Rewrite of EFMigrator
