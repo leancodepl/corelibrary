@@ -39,7 +39,7 @@ namespace LeanCode.PushNotifications
         {
             logger.Verbose("Sending notification to user {UserId} on device {Device}", to, device);
 
-            var token = await tokenStore.GetForDeviceAsync(to, device).ConfigureAwait(false);
+            var token = await tokenStore.GetForDeviceAsync(to, device);
 
             if (token is null)
             {
@@ -55,7 +55,7 @@ namespace LeanCode.PushNotifications
         {
             logger.Verbose("Sending notification to user {UserId} on all devices", to);
 
-            var tokens = await tokenStore.GetAllAsync(to).ConfigureAwait(false);
+            var tokens = await tokenStore.GetAllAsync(to);
 
             if (tokens.Count == 0)
             {
@@ -72,14 +72,12 @@ namespace LeanCode.PushNotifications
             PushNotification notification,
             List<PushNotificationToken<TUserId>> tokens)
         {
-            var results = await Task
-                .WhenAll(tokens.Select(t => SendAsync(t, notification)))
-                .ConfigureAwait(false);
+            var results = await Task.WhenAll(tokens.Select(t => SendAsync(t, notification)));
 
             // This may touch database, we need to linearize it
             for (int i = 0; i < results.Length; i++)
             {
-                await HandleResultAsync(to, tokens[i], results[i]).ConfigureAwait(false);
+                await HandleResultAsync(to, tokens[i], results[i]);
             }
         }
 
@@ -92,7 +90,7 @@ namespace LeanCode.PushNotifications
 
             try
             {
-                return await fcmClient.Send(converted);
+                return await fcmClient.SendAsync(converted);
             }
             catch (Exception ex)
             {

@@ -21,8 +21,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         public async Task StoreAsync(PersistedGrant token)
         {
             var existing = await dbContext.PersistedGrants
-                .SingleOrDefaultAsync(x => x.Key == token.Key)
-                .ConfigureAwait(false);
+                .SingleOrDefaultAsync(x => x.Key == token.Key);
 
             if (existing is null)
             {
@@ -39,7 +38,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
             try
             {
-                await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                await dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -50,8 +49,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         public async Task<PersistedGrant?> GetAsync(string key)
         {
             var persistedGrant = await dbContext.PersistedGrants
-                .FirstOrDefaultAsync(x => x.Key == key)
-                .ConfigureAwait(false);
+                .FirstOrDefaultAsync(x => x.Key == key);
 
             var model = PersistedGrantMapper.MapToModel(persistedGrant);
 
@@ -66,8 +64,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         {
             var persistedGrants = await dbContext.PersistedGrants
                 .Where(x => x.SubjectId == subjectId)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
 
             var model = persistedGrants.Select(x => PersistedGrantMapper.MapToModel(x)).ToList();
 
@@ -81,8 +78,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         public async Task RemoveAsync(string key)
         {
             var persistedGrant = await dbContext.PersistedGrants
-                .FirstOrDefaultAsync(x => x.Key == key)
-                .ConfigureAwait(false);
+                .FirstOrDefaultAsync(x => x.Key == key);
 
             if (persistedGrant is null)
             {
@@ -96,7 +92,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
                 try
                 {
-                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                    await dbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -109,8 +105,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         {
             var persistedGrants = await dbContext.PersistedGrants
                 .Where(x => x.SubjectId == subjectId && x.ClientId == clientId)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
 
             logger.Debug(
                 "Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}",
@@ -120,7 +115,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
             try
             {
-                await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                await dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -135,8 +130,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
         {
             var persistedGrants = await dbContext.PersistedGrants
                 .Where(x => x.SubjectId == subjectId && x.ClientId == clientId && x.Type == type)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
 
             logger.Debug(
                 "Removing {PersistedGrantCount} persisted grants from database for subject {SubjectId}, clientId {ClientId}, grantType {PersistedGrantType}",
@@ -146,7 +140,7 @@ namespace LeanCode.IdentityServer.PersistedGrantStore
 
             try
             {
-                await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                await dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {

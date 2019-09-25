@@ -25,9 +25,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         {
             var ctx = PrepareContext(appContext, command);
 
-            var fluentValidationResult = await fluentValidator
-                .ValidateAsync(ctx)
-                .ConfigureAwait(false);
+            var fluentValidationResult = await fluentValidator.ValidateAsync(ctx);
 
             var mappedResult = fluentValidationResult.Errors
                 .Select(MapFluentError)

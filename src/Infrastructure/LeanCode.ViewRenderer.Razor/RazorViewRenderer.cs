@@ -21,7 +21,7 @@ namespace LeanCode.ViewRenderer.Razor
         {
             logger.Debug("Rendering view {ViewName}", viewName);
 
-            await RenderAsync(outputStream, viewName, model, null, 0).ConfigureAwait(false);
+            await RenderAsync(outputStream, viewName, model, null, 0);
 
             logger.Information("View {ViewName} rendered", viewName);
         }
@@ -51,7 +51,7 @@ namespace LeanCode.ViewRenderer.Razor
             {
                 logger.Debug("Executing view object for view {ViewName}", viewName);
 
-                await view.ExecuteAsync(outputStream).ConfigureAwait(false);
+                await view.ExecuteAsync(outputStream);
             }
             else
             {
@@ -62,7 +62,7 @@ namespace LeanCode.ViewRenderer.Razor
                     compiledView.Layout,
                     model,
                     view,
-                    childSize + compiledView.ProjectedSize).ConfigureAwait(false);
+                    childSize + compiledView.ProjectedSize);
             }
         }
     }

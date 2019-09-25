@@ -134,7 +134,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         {
             var propContext = CreatePropertyContext(context, propertyName);
 
-            return await validator.ValidateAsync(propContext, cancellation).ConfigureAwait(false);
+            return await validator.ValidateAsync(propContext, cancellation);
         }
 
         private PropertyValidatorContext CreatePropertyContext(ValidationContext context, string propertyName)
@@ -149,7 +149,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         {
             var propValue = PropertyFunc(context.InstanceToValidate);
 
-            return await realValueFunc(context, propValue).ConfigureAwait(false);
+            return await realValueFunc(context, propValue);
         }
     }
 }

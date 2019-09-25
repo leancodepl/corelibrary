@@ -30,7 +30,7 @@ namespace LeanCode.CQRS.Execution
 
             try
             {
-                await handler.ExecuteAsync(appContext, command).ConfigureAwait(false);
+                await handler.ExecuteAsync(appContext, command);
             }
             catch (Exception ex)
             {

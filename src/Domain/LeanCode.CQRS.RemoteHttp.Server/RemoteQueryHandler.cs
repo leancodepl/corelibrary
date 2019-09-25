@@ -51,7 +51,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 var result = (Task<object?>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
 
-                var objResult = await result.ConfigureAwait(false);
+                var objResult = await result;
 
                 return ExecutionResult.Success(objResult);
             }
@@ -77,8 +77,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             // ContinueWith will not propagate exceptions correctly.
             return await serviceProvider
                 .GetService<IQueryExecutor<TAppContext>>()
-                .GetAsync(appContext, (TQuery)query)
-                .ConfigureAwait(false);
+                .GetAsync(appContext, (TQuery)query);
         }
 
         private static MethodInfo GenerateMethod(Type queryType)

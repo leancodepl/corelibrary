@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             var rule = new AsyncContextualPropertyRule(
                 member,
                 compiled.CoerceToNonGeneric(),
-                async (ctx, arg) => await realValueAccessor(ctx, (TProperty)arg).ConfigureAwait(false),
+                async (ctx, arg) => await realValueAccessor(ctx, (TProperty)arg),
                 expression,
                 () => CascadeMode,
                 typeof(TValue),

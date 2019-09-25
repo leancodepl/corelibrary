@@ -44,8 +44,7 @@ namespace LeanCode.CQRS.Security
                 }
 
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData)
-                    .ConfigureAwait(false);
+                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData);
 
                 if (!authorized)
                 {
@@ -58,7 +57,7 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            return await next(appContext, input).ConfigureAwait(false);
+            return await next(appContext, input);
         }
     }
 

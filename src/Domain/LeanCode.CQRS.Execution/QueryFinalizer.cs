@@ -29,7 +29,7 @@ namespace LeanCode.CQRS.Execution
 
             try
             {
-                var result = await handler.ExecuteAsync(appContext, query).ConfigureAwait(false);
+                var result = await handler.ExecuteAsync(appContext, query);
 
                 logger.Information("Query {@Query} executed successfuly", query);
 

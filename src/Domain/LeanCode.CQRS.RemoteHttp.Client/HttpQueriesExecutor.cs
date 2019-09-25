@@ -54,8 +54,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
         {
             using var content = PrepareContent(query);
             using var response = await client
-                .PostAsync("query/" + query.GetType().FullName, content)
-                .ConfigureAwait(false);
+                .PostAsync("query/" + query.GetType().FullName, content);
 
             response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 

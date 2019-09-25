@@ -40,7 +40,7 @@ namespace LeanCode.ViewRenderer.Razor
 
             if (tcs == newTcs)
             {
-                return new ValueTask<CompiledView>(WrappedCompile(viewName, tcs));
+                return new ValueTask<CompiledView>(WrappedCompileAsync(viewName, tcs));
             }
 
             logger.Verbose("View type for {ViewName} is being compiled, waiting", viewName);
@@ -48,11 +48,11 @@ namespace LeanCode.ViewRenderer.Razor
             return new ValueTask<CompiledView>(newTcs.Task);
         }
 
-        private async Task<CompiledView> WrappedCompile(string viewName, TaskCompletionSource<CompiledView> tcs)
+        private async Task<CompiledView> WrappedCompileAsync(string viewName, TaskCompletionSource<CompiledView> tcs)
         {
             try
             {
-                var result = await Compile(viewName).ConfigureAwait(false);
+                var result = await CompileAsync(viewName);
 
                 // The order is _very_ important - we need to store the result so that
                 // other tasks won't wait on the TCS (perf), then we need to set the TCS result (perf),
@@ -74,7 +74,7 @@ namespace LeanCode.ViewRenderer.Razor
             }
         }
 
-        private async Task<CompiledView> Compile(string viewName)
+        private async Task<CompiledView> CompileAsync(string viewName)
         {
             var item = locator.GetItem(viewName, null);
             if (!item.Exists)
@@ -84,7 +84,7 @@ namespace LeanCode.ViewRenderer.Razor
             }
 
             logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item.PhysicalPath);
-            return await compiler.CompileAsync(item).ConfigureAwait(false);
+            return await compiler.CompileAsync(item);
         }
     }
 }

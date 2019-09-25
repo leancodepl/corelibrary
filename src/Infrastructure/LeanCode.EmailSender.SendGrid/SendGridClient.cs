@@ -48,9 +48,7 @@ namespace LeanCode.EmailSender.SendGrid
 
             var message = await BuildMessage(model);
             using var content = PrepareContent(message);
-            using var response = await client.Client
-                .PostAsync("mail/send", content)
-                .ConfigureAwait(false);
+            using var response = await client.Client.PostAsync("mail/send", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -58,10 +56,7 @@ namespace LeanCode.EmailSender.SendGrid
                     "Cannot send e-mail with subject {Subject} to {Emails}",
                     model.Subject, model.Recipients);
 
-                var errorJson = await response.Content
-                    .ReadAsStringAsync()
-                    .ConfigureAwait(false);
-
+                var errorJson = await response.Content.ReadAsStringAsync();
                 throw new Exception($"SendGrid indicated failure, code: {response.StatusCode}, reason: {errorJson}");
             }
 
@@ -100,11 +95,9 @@ namespace LeanCode.EmailSender.SendGrid
             {
                 try
                 {
-                    return new SendGridContent(
-                        content.ContentType,
-                        await viewRenderer
-                            .RenderToStringAsync(viewName, content.Model)
-                            .ConfigureAwait(false));
+                    var renderedView = await viewRenderer
+                        .RenderToStringAsync(viewName, content.Model);
+                    return new SendGridContent(content.ContentType, renderedView);
                 }
                 catch (ViewNotFoundException ex)
                 {
@@ -130,7 +123,7 @@ namespace LeanCode.EmailSender.SendGrid
 
             using var stream = new MemoryStream();
 
-            await content.CopyToAsync(stream).ConfigureAwait(false);
+            await content.CopyToAsync(stream);
 
             var attachmentBytes = stream.ToArray();
             var attachmentContent = System.Convert.ToBase64String(attachmentBytes);

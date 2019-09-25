@@ -127,10 +127,9 @@ namespace LeanCode.Mixpanel
         private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object?> data)
         {
             var dataString = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(data));
+            var url = $"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}";
 
-            await using var jsonResponse = await client.Client
-                .GetStreamAsync($"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}")
-                .ConfigureAwait(false);
+            await using var jsonResponse = await client.Client.GetStreamAsync(url);
             var response = await JsonSerializer.DeserializeAsync<MixpanelResponse>(jsonResponse);
 
             if (response.Status == MixpanelResponse.Success)

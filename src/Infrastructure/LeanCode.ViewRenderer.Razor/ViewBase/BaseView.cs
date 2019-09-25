@@ -47,14 +47,14 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
         {
             using (var writer = new StreamWriter(outputStream, UTF8NoBOM, 4096, leaveOpen: true))
             {
-                await ExecuteAsync(writer).ConfigureAwait(false);
+                await ExecuteAsync(writer);
             }
         }
 
         private async Task ExecuteAsync(StreamWriter writer)
         {
             Output = writer;
-            await ExecuteAsync().ConfigureAwait(false);
+            await ExecuteAsync();
             Output = null;
         }
 
@@ -64,14 +64,14 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             {
                 ChildView.Model = Model;
 
-                await ChildView.ExecuteAsync(Output).ConfigureAwait(false);
+                await ChildView.ExecuteAsync(Output);
             }
 
             return null; // what?
         }
 
-        protected ConfiguredTaskAwaitable<object?> RenderBodyAsync() =>
-            RenderBodyAsyncInternal().ConfigureAwait(false);
+        protected Task<object?> RenderBodyAsync() =>
+            RenderBodyAsyncInternal();
 
         protected void Write(object value) => WriteTo(Output, value);
         protected void Write(string value) => WriteTo(Output, value);
