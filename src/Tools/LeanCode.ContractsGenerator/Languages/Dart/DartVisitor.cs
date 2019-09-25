@@ -424,7 +424,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 result = result.TypeArguments.First();
 
-                if (BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
+                var typeKey = Mangle(result.Namespace, result.Name);
+
+                if (mangledStatements.ContainsKey(typeKey))
+                {
+                    var name = mangledStatements[typeKey].name;
+
+                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson, _${name}FromJson);");
+                }
+                else
                 {
                     definitionsBuilder.AppendLine("decodedJson.cast<");
 
@@ -432,19 +440,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                     definitionsBuilder.AppendLine(">();");
                 }
-                else
-                {
-                    var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
-
-                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson, _${name}FromJson);");
-                }
             }
             else
             {
-                if (!BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
-                {
-                    var name = mangledStatements[Mangle(result.Namespace, result.Name)].name;
+                var typeKey = Mangle(result.Namespace, result.Name);
 
+                if (mangledStatements.ContainsKey(typeKey))
+                {
+                    var name = mangledStatements[typeKey].name;
                     definitionsBuilder.AppendLine($"_${name}FromJson(decodedJson);");
                 }
                 else

@@ -98,11 +98,11 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Deep_generic_inheritance_from_interface_is_resolved_correctly()
         {
-            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteQuery<T> { } public class TestClass<T> : IRemoteQuery<List<T>> { }");
+            var generator = CreateDartGeneratorFromNamespace("public interface IRemoteQuery<T> { } public class TestClass<T> : IRemoteQuery<T> { }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("class TestClass<T> implements IRemoteQuery<List<T>>", contracts);
+            Assert.Contains("class TestClass<T> implements IRemoteQuery<T>", contracts);
         }
 
         [Fact]
