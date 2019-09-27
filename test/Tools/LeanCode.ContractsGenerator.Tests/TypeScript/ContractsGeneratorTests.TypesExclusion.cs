@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             ";
 
             var generator = CreateTsGeneratorFromNamespace(code);
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.DoesNotContain("ToExclude", contracts);
             Assert.Contains("ToKeep", contracts);
@@ -41,7 +41,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             }";
 
             var generator = CreateTsGeneratorFromNamespace(code);
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.DoesNotContain("Inner", contracts);
             Assert.DoesNotContain("MoreInner", contracts);

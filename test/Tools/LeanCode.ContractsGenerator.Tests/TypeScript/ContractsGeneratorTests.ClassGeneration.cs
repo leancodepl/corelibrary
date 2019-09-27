@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("private class TestClass { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.DoesNotContain("interface TestClass", contracts);
         }
@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("private class TestClass { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.DoesNotContain("interface TestClass", contracts);
         }
@@ -30,7 +30,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("class TestClass { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.DoesNotContain("interface TestClass", contracts);
         }
@@ -40,7 +40,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass", contracts);
         }
@@ -50,7 +50,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass<T> { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass<T>", contracts);
         }
@@ -60,7 +60,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public interface IInt { } public class TestClass<T> where T: IList<IInt> { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass<T extends IInt[]>", contracts);
         }
@@ -70,7 +70,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public interface IInt { } public class TestClass : IInt {}");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass extends IInt", contracts);
         }
@@ -80,7 +80,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public interface IInt<T> { } public class TestClass<T> : IInt<T> {}");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass<T> extends IInt<T>", contracts);
         }
@@ -90,7 +90,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public interface IInt<T> { } public class TestClass : IInt<List<int>> {}");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass extends IInt<number[]>", contracts);
         }
@@ -100,7 +100,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public interface IInt<T> { } public class TestClass<T> : IInt<List<T>> { }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass<T> extends IInt<T[]>", contracts);
         }
@@ -110,7 +110,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromNamespace("public class TestClass : List<Result> { public class Result {} }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass extends Result[] {", contracts);
             Assert.Contains("interface Result {", contracts);
@@ -147,7 +147,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             }";
 
             var generator = CreateTsGenerator(file1, file2);
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass1", contracts);
             Assert.Contains("interface TestClass2", contracts);

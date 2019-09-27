@@ -18,9 +18,11 @@ namespace LeanCode.ContractsGenerator
             }
 
             List<GeneratorConfiguration> configurations;
+            string configFilePath;
             try
             {
-                configurations = await GeneratorConfiguration.GetConfigurations(args);
+                configFilePath = GeneratorConfiguration.GetConfigFile(args);
+                configurations = await GeneratorConfiguration.GetConfigurations(configFilePath);
             }
             catch (FormatException e)
             {
@@ -30,18 +32,20 @@ namespace LeanCode.ContractsGenerator
 
             foreach (var config in configurations)
             {
-                var compilation = new ContractsCompiler(config).GetCompilation(out var trees);
+                var configDir = Path.GetDirectoryName(configFilePath);
+
+                var compilation = new ContractsCompiler(config, configDir).GetCompilation(out var trees);
                 var generator = new CodeGenerator(trees, compilation);
 
-                SaveContracts(config, generator.Generate(config));
+                SaveContracts(config, generator.Generate(config), configDir);
             }
         }
 
-        private static void SaveContracts(GeneratorConfiguration config, IEnumerable<LanguageFileOutput> outputs)
+        private static void SaveContracts(GeneratorConfiguration config, IEnumerable<LanguageFileOutput> outputs, string configDir)
         {
             foreach (var output in outputs)
             {
-                using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(config.OutPath, output.Name), FileMode.Create)))
+                using (var fileWriter = new StreamWriter(new FileStream(Path.Combine(configDir, config.OutPath, output.Name), FileMode.Create)))
                 {
                     fileWriter.Write(output.Content);
                 }

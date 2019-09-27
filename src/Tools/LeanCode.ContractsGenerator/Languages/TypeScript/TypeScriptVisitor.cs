@@ -11,9 +11,8 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
     internal class TypeScriptVisitor : ILanguageVisitor
     {
         private readonly StringBuilder definitionsBuilder;
-        private readonly StringBuilder paramsBuilder;
-        private readonly StringBuilder creatorsBuilder;
         private readonly StringBuilder constsBuilder;
+        private readonly StringBuilder clientBuilder;
         private readonly TypeScriptConfiguration configuration;
 
         public TypeScriptVisitor(TypeScriptConfiguration configuration)
@@ -21,28 +20,25 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             this.configuration = configuration;
 
             definitionsBuilder = new StringBuilder();
-            paramsBuilder = new StringBuilder();
-            creatorsBuilder = new StringBuilder();
+            clientBuilder = new StringBuilder();
             constsBuilder = new StringBuilder();
         }
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
         {
-            definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
-            constsBuilder.Append(configuration.ClientPreamble).AppendLine();
+            var contractsBuilder = new StringBuilder(configuration.ContractsPreamble).AppendLine();
 
             Visit(statement, 0, null);
 
-            yield return new LanguageFileOutput
-            {
-                Name = statement.Name + ".d.ts",
-                Content = definitionsBuilder.ToString(),
-            };
+            contractsBuilder
+                .Append(definitionsBuilder)
+                .Append(constsBuilder)
+                .Append(clientBuilder);
 
             yield return new LanguageFileOutput
             {
                 Name = statement.Name + "Client.ts",
-                Content = constsBuilder.Append(paramsBuilder).Append(creatorsBuilder).ToString(),
+                Content = contractsBuilder.ToString()
             };
         }
 
@@ -63,32 +59,18 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
         private void VisitClientStatement(ClientStatement statement, int level)
         {
-            paramsBuilder.AppendLine("export type ClientParams = {");
-
-            creatorsBuilder.AppendLine("export default function (cqrsClient: CQRS): ClientType<ClientParams> {");
-            creatorsBuilder.AppendLine("    return {");
+            clientBuilder.AppendLine("export default function (cqrsClient: CQRS) {");
+            clientBuilder.AppendLine("    return {");
 
             definitionsBuilder.AppendSpaces(level);
-            definitionsBuilder.Append("declare namespace ");
-            definitionsBuilder.Append(statement.Name);
-            definitionsBuilder.AppendLine(" {");
-
-            constsBuilder.AppendLine($"export const globals: typeof {statement.Name} = {{");
 
             foreach (var child in statement.Children)
             {
-                Visit(child, level + 1, statement.Name);
+                Visit(child, level, statement.Name);
             }
 
-            constsBuilder.AppendLine("};").AppendLine();
-
-            definitionsBuilder.AppendSpaces(level);
-            definitionsBuilder.AppendLine("}");
-
-            paramsBuilder.AppendLine("};").AppendLine();
-
-            creatorsBuilder.AppendLine("    };");
-            creatorsBuilder.AppendLine("}");
+            clientBuilder.AppendLine("    };");
+            clientBuilder.AppendLine("}");
         }
 
         private void VisitEnumStatement(EnumStatement statement, int level)
@@ -134,72 +116,64 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             constsBuilder.AppendLine(",");
         }
 
-        private void VisitTypeStatement(TypeStatement statement)
+        private void VisitTypeStatement(TypeStatement statement, StringBuilder stringBuilder)
         {
             if (statement.IsDictionary)
             {
-                definitionsBuilder.Append("{ [index: ");
+                stringBuilder.Append("{ [index: ");
 
-                VisitTypeStatement(statement.TypeArguments.First());
+                VisitTypeStatement(statement.TypeArguments.First(), stringBuilder);
 
-                definitionsBuilder.Append("]: ");
+                stringBuilder.Append("]: ");
 
-                VisitTypeStatement(statement.TypeArguments.Last());
+                VisitTypeStatement(statement.TypeArguments.Last(), stringBuilder);
 
-                definitionsBuilder.Append(" }");
+                stringBuilder.Append(" }");
             }
             else if (statement.IsArrayLike)
             {
-                VisitTypeStatement(statement.TypeArguments.First());
+                VisitTypeStatement(statement.TypeArguments.First(), stringBuilder);
 
-                definitionsBuilder.Append("[]");
+                stringBuilder.Append("[]");
             }
             else if (statement.TypeArguments.Count > 0)
             {
-                definitionsBuilder.Append(statement.Name);
-                definitionsBuilder.Append("<");
+                stringBuilder.Append(statement.Name);
+                stringBuilder.Append("<");
 
                 for (int i = 0; i < statement.TypeArguments.Count; i++)
                 {
-                    VisitTypeStatement(statement.TypeArguments[i]);
+                    VisitTypeStatement(statement.TypeArguments[i], stringBuilder);
 
                     if (i < statement.TypeArguments.Count - 1)
                     {
-                        definitionsBuilder.Append(", ");
+                        stringBuilder.Append(", ");
                     }
                 }
 
-                definitionsBuilder.Append(">");
+                stringBuilder.Append(">");
             }
             else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out string name))
             {
-                definitionsBuilder.Append(name);
+                stringBuilder.Append(name);
             }
             else
             {
-                definitionsBuilder.Append(statement.Name);
+                stringBuilder.Append(statement.Name);
             }
         }
 
         private void VisitConstStatement(ConstStatement statement, int level)
         {
-            definitionsBuilder.AppendSpaces(level)
-                .Append("const ")
-                .Append(statement.Name);
-
             constsBuilder.AppendSpaces(level)
                 .Append(statement.Name);
 
             if (!string.IsNullOrWhiteSpace(statement.Value))
             {
-                definitionsBuilder.Append(" = ").Append(statement.Value);
-
                 constsBuilder.Append(": ").Append(statement.Value);
             }
 
             constsBuilder.AppendLine(",");
-
-            definitionsBuilder.AppendLine(";");
         }
 
         private void VisitTypeParameterStatement(TypeParameterStatement statement)
@@ -212,7 +186,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 for (int i = 0; i < statement.Constraints.Count; i++)
                 {
-                    VisitTypeStatement(statement.Constraints[i]);
+                    VisitTypeStatement(statement.Constraints[i], definitionsBuilder);
 
                     if (i < statement.Constraints.Count - 1)
                     {
@@ -234,7 +208,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             definitionsBuilder.Append(": ");
 
-            VisitTypeStatement(statement.Type);
+            VisitTypeStatement(statement.Type, definitionsBuilder);
 
             if (statement.Type.IsNullable)
             {
@@ -250,23 +224,32 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
 
-            paramsBuilder.AppendSpaces(1)
-                .Append("\"")
+            clientBuilder
+                .AppendSpaces(2)
                 .Append(name)
-                .Append("\": ")
-                .Append(parentName)
-                .Append(".")
+                .Append(": (dto: ")
                 .Append(statement.Name)
-                .AppendLine(",");
+                .Append(") => cqrsClient.executeCommand<");
 
-            creatorsBuilder.AppendSpaces(2)
-                .Append(name)
-                .Append(": ")
-                .Append("cqrsClient.executeCommand.bind(cqrsClient, \"")
+            if (statement.Children.Any(c => c.Name == "ErrorCodes"))
+            {
+                clientBuilder
+                    .Append("typeof ")
+                    .Append(statement.Name)
+                    .Append("[\"ErrorCodes\"]");
+            }
+            else
+            {
+                clientBuilder.Append("{}");
+            }
+
+            clientBuilder
+                .Append(">(\"")
                 .Append(statement.Namespace)
                 .Append(".")
                 .Append(statement.Name)
-                .AppendLine("\"),");
+                .Append("\", dto),")
+                .AppendLine();
         }
 
         private void VisitQueryStatement(QueryStatement statement, int level, string parentName)
@@ -275,23 +258,22 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
 
-            paramsBuilder.AppendSpaces(1)
-                .Append("\"")
+            clientBuilder.AppendSpaces(2)
                 .Append(name)
-                .Append("\": ")
-                .Append(parentName)
-                .Append(".")
+                .Append(": (dto: ")
                 .Append(statement.Name)
-                .AppendLine(",");
+                .Append(") => cqrsClient.executeQuery<");
 
-            creatorsBuilder.AppendSpaces(2)
-                .Append(name)
-                .Append(": ")
-                .Append("cqrsClient.executeQuery.bind(cqrsClient, \"")
+            var queryResult = statement.Extends.First(e => e.Name == "IRemoteQuery").TypeArguments.First();
+
+            VisitTypeStatement(queryResult, clientBuilder);
+
+            clientBuilder.Append(">(\"")
                 .Append(statement.Namespace)
                 .Append(".")
                 .Append(statement.Name)
-                .AppendLine("\"),");
+                .Append("\", dto),")
+                .AppendLine();
         }
 
         private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName)
@@ -299,7 +281,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             if (!statement.IsStatic)
             {
                 definitionsBuilder.AppendSpaces(level)
-                    .Append("interface ")
+                    .Append("export interface ")
                     .Append(statement.Name);
 
                 if (statement.Parameters.Any())
@@ -325,7 +307,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                     for (int i = 0; i < statement.Extends.Count; i++)
                     {
-                        VisitTypeStatement(statement.Extends[i]);
+                        VisitTypeStatement(statement.Extends[i], definitionsBuilder);
 
                         if (i < statement.Extends.Count - 1)
                         {
@@ -350,17 +332,22 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             {
                 var hasConsts = HasNestedConstStatements(statement);
 
-                definitionsBuilder.AppendSpaces(level);
-
-                definitionsBuilder.Append("namespace ");
-                definitionsBuilder.Append(statement.Name);
-                definitionsBuilder.AppendLine(" {");
-
                 if (hasConsts)
                 {
-                    constsBuilder.AppendSpaces(level);
-                    constsBuilder.Append(statement.Name);
-                    constsBuilder.AppendLine(": {");
+                    if (level == 0)
+                    {
+                        constsBuilder
+                            .Append("export const ")
+                            .Append(statement.Name)
+                            .AppendLine(" = {");
+                    }
+                    else
+                    {
+                        constsBuilder
+                            .AppendSpaces(level)
+                            .Append(statement.Name)
+                            .AppendLine(": {");
+                    }
                 }
 
                 foreach (var child in statement.Children.Concat<IStatement>(statement.Constants))
@@ -371,12 +358,19 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 if (hasConsts)
                 {
                     constsBuilder.AppendSpaces(level);
-                    constsBuilder.AppendLine("},");
-                }
+                    constsBuilder.Append("}");
 
-                definitionsBuilder.AppendSpaces(level);
-                definitionsBuilder.AppendLine("}");
-                definitionsBuilder.AppendLine();
+                    if (level == 0)
+                    {
+                        constsBuilder
+                            .AppendLine(";")
+                            .AppendLine();
+                    }
+                    else
+                    {
+                        constsBuilder.AppendLine(",");
+                    }
+                }
             }
         }
 

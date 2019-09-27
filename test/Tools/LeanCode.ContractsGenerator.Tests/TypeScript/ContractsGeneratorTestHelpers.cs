@@ -39,15 +39,9 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Name = "Test",
             TypeScript = new TypeScriptConfiguration
             {
-                ContractsPreamble = string.Empty,
-                ClientPreamble = string.Empty,
+                ContractsPreamble = string.Empty
             },
         };
-
-        public static string GetContracts(IEnumerable<LanguageFileOutput> output)
-        {
-            return output.Where(o => o.Name.EndsWith("d.ts")).First().Content;
-        }
 
         public static string GetClient(IEnumerable<LanguageFileOutput> output)
         {

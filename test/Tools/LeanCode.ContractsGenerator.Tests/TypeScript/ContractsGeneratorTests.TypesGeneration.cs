@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public int TestVar { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar: number;", contracts);
         }
@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public Nullable<int> TestVar { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: number | null;", contracts);
         }
@@ -30,7 +30,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public int? TestVar { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: number | null;", contracts);
         }
@@ -40,7 +40,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public string? TestVar { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: string | null;", contracts);
         }
@@ -50,7 +50,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("[CanBeNull] public string TestVar { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestVar?: string | null;", contracts);
         }
@@ -60,7 +60,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public int[] TestArray { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestArray: number[];", contracts);
         }
@@ -70,7 +70,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public List<int> TestArray { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestArray: number[];", contracts);
         }
@@ -80,7 +80,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public HashSet<int> TestArray { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("TestArray: number[];", contracts);
         }
@@ -90,7 +90,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         {
             var generator = CreateTsGeneratorFromClass("public Dictionary<string, int> TestDictionary { get; set; }");
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Matches("TestDictionary: { \\[[a-zA-Z]+: string\\]: number };", contracts);
         }

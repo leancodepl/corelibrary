@@ -24,7 +24,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             var generator = CreateTsGenerator(file1, file2);
 
-            var contracts = GetContracts(generator.Generate(DefaultTypeScriptConfiguration));
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("enum TestEnum1", contracts);
             Assert.Contains("enum TestEnum2", contracts);
