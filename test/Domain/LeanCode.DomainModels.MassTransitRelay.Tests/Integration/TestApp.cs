@@ -57,19 +57,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             CorrelationId = Identity.NewId();
         }
 
-        public void Dispose()
-        {
-            container.Dispose();
-        }
+        public void Dispose() => container.Dispose();
 
-        public Task DisposeAsync()
-        {
-            return bus.StopAsync();
-        }
+        public Task DisposeAsync() => bus.StopAsync();
 
-        public Task InitializeAsync()
-        {
-            return bus.StartAsync();
-        }
+        public Task InitializeAsync() => bus.StartAsync();
     }
 }

@@ -9,10 +9,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.AzureServiceBus
     {
         private readonly string connectionString;
 
-        public MassTransitServiceBusRelayModule(
-            string connectionString,
-            string queueName,
-            TypesCatalog consumers)
+        public MassTransitServiceBusRelayModule(string connectionString, string queueName, TypesCatalog consumers)
             : base(queueName, consumers)
         {
             this.connectionString = connectionString;

@@ -24,9 +24,7 @@ namespace LeanCode.Correlation
             return Guid.Empty;
         }
 
-        public static void Populate(HttpRequestMessage msg, Guid corrId)
-        {
+        public static void Populate(HttpRequestMessage msg, Guid corrId) =>
             msg.Headers.Add(Header, corrId.ToString());
-        }
     }
 }

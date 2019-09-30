@@ -14,14 +14,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.bus = bus;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            return bus.StartAsync(cancellationToken);
-        }
+        public Task StartAsync(CancellationToken cancellationToken) =>
+            bus.StartAsync(cancellationToken);
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return bus.StopAsync();
-        }
+        public Task StopAsync(CancellationToken cancellationToken) =>
+            bus.StopAsync();
     }
 }

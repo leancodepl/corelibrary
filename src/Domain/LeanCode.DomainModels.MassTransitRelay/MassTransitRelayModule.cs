@@ -20,10 +20,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.consumers = consumers;
         }
 
-        public override void ConfigureServices(IServiceCollection services)
-        {
+        public override void ConfigureServices(IServiceCollection services) =>
             services.AddHostedService<MassTransitRelayHostedService>();
-        }
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -44,9 +42,14 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
                 cfg.UseSerilog();
-                cfg.UseRetry(retryConfig => retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+
+                cfg.UseRetry(retryConfig =>
+                    retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+
                 cfg.UseInMemoryOutbox();
+
                 cfg.UseLifetimeScopeInjection(scopeFactory);
+
                 cfg.UseDomainEventsPublishing();
 
                 cfg.ReceiveEndpoint(queueName, rcv =>
@@ -60,13 +63,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
     public class MassTransitInMemoryRelayModule : MassTransitRelayModuleBase
     {
         public MassTransitInMemoryRelayModule(string queueName, TypesCatalog consumersAssemblies)
-            : base(queueName, consumersAssemblies)
-        {
-        }
+            : base(queueName, consumersAssemblies) { }
 
-        protected override IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator)
-        {
-            return Bus.Factory.CreateUsingInMemory(configurator);
-        }
+        protected override IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator) =>
+            Bus.Factory.CreateUsingInMemory(configurator);
     }
 }

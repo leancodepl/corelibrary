@@ -1,18 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
-using Serilog.Context;
 
 namespace LeanCode.Correlation
 {
-    public class CorrelationElement<TContext, TInput, TOutput>
-        : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : ICorrelationContext
+    public class CorrelationElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
+        where TContext : notnull, ICorrelationContext
     {
-        public async Task<TOutput> ExecuteAsync(
-            TContext ctx,
-            TInput input,
-            Func<TContext, TInput, Task<TOutput>> next)
+        public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
         {
             if (ctx.CorrelationId == default)
             {

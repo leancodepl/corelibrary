@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>LeanCode.DomainModels.MassTransitRelay.AzureServiceBus</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
+  </ItemGroup>
 
+  <ItemGroup>
     <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
   </ItemGroup>
+
 </Project>
