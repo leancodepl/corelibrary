@@ -38,7 +38,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             yield return new LanguageFileOutput
             {
                 Name = statement.Name + "Client.ts",
-                Content = contractsBuilder.ToString()
+                Content = contractsBuilder.ToString(),
             };
         }
 
@@ -76,13 +76,9 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         private void VisitEnumStatement(EnumStatement statement, int level)
         {
             definitionsBuilder.AppendSpaces(level)
-                .Append("const enum ")
+                .Append("export const enum ")
                 .Append(statement.Name)
                 .AppendLine(" {");
-
-            constsBuilder.AppendSpaces(level)
-                .Append(statement.Name)
-                .AppendLine(": {");
 
             foreach (var value in statement.Values)
             {
@@ -92,9 +88,6 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
                 .AppendLine();
-
-            constsBuilder.AppendSpaces(level)
-                .AppendLine("},");
         }
 
         private void VisitEnumValueStatement(EnumValueStatement statement, int level)
@@ -102,18 +95,12 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             definitionsBuilder.AppendSpaces(level)
                 .Append(statement.Name);
 
-            constsBuilder.AppendSpaces(level)
-                .Append(statement.Name);
-
             if (!string.IsNullOrWhiteSpace(statement.Value))
             {
                 definitionsBuilder.Append(" = ").Append(statement.Value);
-
-                constsBuilder.Append(": ").Append(statement.Value);
             }
 
             definitionsBuilder.AppendLine(",");
-            constsBuilder.AppendLine(",");
         }
 
         private void VisitTypeStatement(TypeStatement statement, StringBuilder stringBuilder)
