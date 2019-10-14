@@ -6,6 +6,7 @@ using Serilog.Events;
 namespace LeanCode.Logging
 {
     public abstract class BaseSanitizer<T> : IDestructuringPolicy
+        where T : class
     {
         public const string Placeholder = "*** REDACTED ***";
 
@@ -47,6 +48,6 @@ namespace LeanCode.Logging
             }
         }
 
-        protected abstract T TrySanitize(T obj);
+        protected abstract T? TrySanitize(T obj);
     }
 }
