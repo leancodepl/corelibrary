@@ -7,38 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
-    public class BackgroundProcessingApp : AppModule
+    public class HangfireTasksModule : AppModule
     {
         private readonly HangfireConfiguration configuration;
 
-        public BackgroundProcessingApp(HangfireConfiguration configuration)
+        public HangfireTasksModule(HangfireConfiguration configuration)
         {
             this.configuration = configuration;
-        }
-
-        [Obsolete("Obsolete, use `BackgroundProcessingApp(HangfireConfiguration)` constructor instead.")]
-        public BackgroundProcessingApp(
-                    string name,
-                    string queue,
-                    string connectionString,
-                    string schema,
-                    Action<BackgroundJobServerOptions> serverConfig,
-                    Action<SqlServerStorageOptions> storageConfig)
-        {
-            configuration = new HangfireConfiguration(
-                name,
-                queue,
-                connectionString,
-                schema,
-                serverConfig,
-                storageConfig,
-                int.MaxValue);
-        }
-
-        [Obsolete("Obsolete, use `BackgroundProcessingApp(HangfireConfiguration)` constructor instead.")]
-        public BackgroundProcessingApp(string name, string connectionString, string schema)
-        {
-            configuration = new HangfireConfiguration(name, connectionString, schema);
         }
 
         public override void ConfigureServices(IServiceCollection services)
