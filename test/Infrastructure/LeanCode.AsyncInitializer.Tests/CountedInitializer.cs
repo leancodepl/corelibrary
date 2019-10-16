@@ -27,16 +27,16 @@ namespace LeanCode.AsyncInitializer.Tests
 
         int IAsyncInitializable.Order => order;
 
-        ValueTask IAsyncInitializable.InitializeAsync()
+        Task IAsyncInitializable.InitializeAsync()
         {
             InitOrder = counter.Next();
-            return default;
+            return Task.CompletedTask;
         }
 
-        ValueTask IAsyncInitializable.DeinitializeAsync()
+        Task IAsyncInitializable.DeinitializeAsync()
         {
             DeinitOrder = counter.Next();
-            return default;
+            return Task.CompletedTask;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace LeanCode.AsyncInitializer
             this.allInits = allInits.OrderBy(i => i.Order).ToList();
         }
 
-        public async ValueTask InitializeAsync(CancellationToken token)
+        public async Task InitializeAsync(CancellationToken token)
         {
             logger.Information("Initializing async modules");
 
@@ -36,7 +36,7 @@ namespace LeanCode.AsyncInitializer
             }
         }
 
-        public async ValueTask DeinitializeAsync(CancellationToken token)
+        public async Task DeinitializeAsync(CancellationToken token)
         {
             logger.Information("Disposing async modules");
 

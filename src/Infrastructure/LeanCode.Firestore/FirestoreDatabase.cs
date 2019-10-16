@@ -31,7 +31,7 @@ namespace LeanCode.Firestore
         }
 
         int IAsyncInitializable.Order => 0;
-        ValueTask IAsyncInitializable.InitializeAsync() => default;
-        ValueTask IAsyncInitializable.DeinitializeAsync() => new ValueTask(channel.ShutdownAsync());
+        Task IAsyncInitializable.InitializeAsync() => Task.CompletedTask;
+        Task IAsyncInitializable.DeinitializeAsync() => channel.ShutdownAsync();
     }
 }
