@@ -16,13 +16,16 @@ namespace LeanCode.AsyncTasks.Hangfire
         public Action<BackgroundJobServerOptions>? ServerConfig { get; }
         public Action<SqlServerStorageOptions>? StorageConfig { get; }
 
+        public int InitializationOrder { get; }
+
         public HangfireConfiguration(
             string name,
             string connectionString,
             string schema,
             string? queue,
             Action<BackgroundJobServerOptions>? serverConfig,
-            Action<SqlServerStorageOptions>? storageConfig)
+            Action<SqlServerStorageOptions>? storageConfig,
+            int initOrder)
         {
             Name = name;
             ConnectionString = connectionString;
@@ -30,6 +33,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             Queue = queue;
             ServerConfig = serverConfig;
             StorageConfig = storageConfig;
+            InitializationOrder = initOrder;
         }
 
         public HangfireConfiguration(
@@ -43,6 +47,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             Queue = null;
             ServerConfig = null;
             StorageConfig = null;
+            InitializationOrder = int.MaxValue;
         }
     }
 }

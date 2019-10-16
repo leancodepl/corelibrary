@@ -31,7 +31,8 @@ namespace LeanCode.AsyncTasks.Hangfire
                 connectionString,
                 schema,
                 serverConfig,
-                storageConfig);
+                storageConfig,
+                int.MaxValue);
         }
 
         [Obsolete("Obsolete, use `BackgroundProcessingApp(HangfireConfiguration)` constructor instead.")]
@@ -42,30 +43,11 @@ namespace LeanCode.AsyncTasks.Hangfire
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var storageOpts = new SqlServerStorageOptions
-            {
-                PrepareSchemaIfNecessary = true,
-                SchemaName = configuration.Schema,
-            };
-            configuration.StorageConfig?.Invoke(storageOpts);
 
             services.AddHangfire(cfg => cfg
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(configuration.ConnectionString, storageOpts));
-
-            services.AddHangfireServer(opts =>
-            {
-                opts.ServerName = configuration.Name;
-
-                if (configuration.Queue is string queue && queue != HangfireConfiguration.DefaultQueue)
-                {
-                    opts.Queues = new[] { HangfireConfiguration.DefaultQueue, queue };
-                }
-
-                configuration.ServerConfig?.Invoke(opts);
-            });
+                .UseRecommendedSerializerSettings());
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -76,6 +58,20 @@ namespace LeanCode.AsyncTasks.Hangfire
             builder.RegisterType<HangfireScheduler>()
                 .WithParameter("queue", configuration.Queue)
                 .AsImplementedInterfaces();
+            builder.RegisterInstance(configuration);
+            builder.RegisterType<AutofacJobActivator>().SingleInstance();
+            builder.RegisterType<HangfireInitializer>().SingleInstance().AsImplementedInterfaces();
+
+            var storageOpts = new SqlServerStorageOptions
+            {
+                PrepareSchemaIfNecessary = false,
+                SchemaName = configuration.Schema,
+            };
+            configuration.StorageConfig?.Invoke(storageOpts);
+
+            builder.Register(_ => new SqlServerStorage(configuration.ConnectionString, storageOpts))
+                .As<JobStorage>()
+                .SingleInstance();
         }
     }
 }
