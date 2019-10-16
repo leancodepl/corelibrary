@@ -11,6 +11,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Multiple breaking changes related to Razor, events, async methods and more
 * Remove now redundant calls to ConfigureAwait in async methods
 * Replace Newtonsoft.Json with System.Text.Json
+* `AsyncTasks.Hangfire` does not prepare schema by default now
 
 ## 3.5
 * Rewrite of EFMigrator
