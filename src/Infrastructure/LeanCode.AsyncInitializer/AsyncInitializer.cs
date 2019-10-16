@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.AsyncInitializer
 {
-    public sealed class AsyncInitializer
+    public sealed class AsyncInitializer : IHostedService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<AsyncInitializer>();
 
@@ -17,7 +18,7 @@ namespace LeanCode.AsyncInitializer
             this.allInits = allInits.OrderBy(i => i.Order).ToList();
         }
 
-        public async Task InitializeAsync(CancellationToken token)
+        public async Task StartAsync(CancellationToken token)
         {
             logger.Information("Initializing async modules");
 
@@ -36,9 +37,9 @@ namespace LeanCode.AsyncInitializer
             }
         }
 
-        public async Task DeinitializeAsync(CancellationToken token)
+        public async Task StopAsync(CancellationToken token)
         {
-            logger.Information("Disposing async modules");
+            logger.Information("Deinitializing async modules");
 
             foreach (var i in allInits.Reverse())
             {

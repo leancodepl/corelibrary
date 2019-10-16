@@ -13,14 +13,14 @@ namespace LeanCode.AsyncInitializer.Tests
         private readonly Counter globalCounter = new Counter();
 
         [Fact]
-        public async Task InitializeAsync_calls_InitializeAsync_on_every_object()
+        public async Task StartAsync_calls_InitializeAsync_on_every_object()
         {
             var (sp, init) = Prepare(
                 Init(0),
                 Init(1),
                 Init(2));
 
-            await init.InitializeAsync(default);
+            await init.StartAsync(default);
 
             Assert.NotNull(sp.Initializers[0].InitOrder);
             Assert.NotNull(sp.Initializers[1].InitOrder);
@@ -28,14 +28,14 @@ namespace LeanCode.AsyncInitializer.Tests
         }
 
         [Fact]
-        public async Task DeinitializeAsync_calls_DisposeAsync_on_every_object()
+        public async Task StopAsync_calls_DeinitializeAsync_on_every_object()
         {
             var (sp, init) = Prepare(
                 Init(0),
                 Init(1),
                 Init(2));
 
-            await init.DeinitializeAsync(default);
+            await init.StopAsync(default);
 
             Assert.NotNull(sp.Initializers[0].DeinitOrder);
             Assert.NotNull(sp.Initializers[1].DeinitOrder);
@@ -43,14 +43,14 @@ namespace LeanCode.AsyncInitializer.Tests
         }
 
         [Fact]
-        public async Task DeinitializeAsync_orders_the_objects_in_reverse_order_before_calling_InitializeAsync()
+        public async Task StopAsync_orders_the_objects_in_reverse_order_before_calling_InitializeAsync()
         {
             var (sp, init) = Prepare(
                 Init(1),
                 Init(2),
                 Init(0));
 
-            await init.DeinitializeAsync(default);
+            await init.StopAsync(default);
 
             Assert.Equal(1, sp.Initializers[0].DeinitOrder);
             Assert.Equal(0, sp.Initializers[1].DeinitOrder);
@@ -58,14 +58,14 @@ namespace LeanCode.AsyncInitializer.Tests
         }
 
         [Fact]
-        public async Task InitializeAsync_orders_the_objects_before_calling_InitializeAsync()
+        public async Task StartAsync_orders_the_objects_before_calling_InitializeAsync()
         {
             var (sp, init) = Prepare(
                 Init(1),
                 Init(2),
                 Init(0));
 
-            await init.InitializeAsync(default);
+            await init.StartAsync(default);
 
             Assert.Equal(1, sp.Initializers[0].InitOrder);
             Assert.Equal(2, sp.Initializers[1].InitOrder);

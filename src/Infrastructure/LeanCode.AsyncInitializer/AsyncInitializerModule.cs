@@ -8,8 +8,9 @@ namespace LeanCode.AsyncInitializer
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AsyncInitializer>().SingleInstance();
-            builder.RegisterDecorator<AsyncInitializerServer, IServer>();
+            builder.RegisterType<AsyncInitializer>()
+                .AsSelf().AsImplementedInterfaces()
+                .SingleInstance();
         }
     }
 }
