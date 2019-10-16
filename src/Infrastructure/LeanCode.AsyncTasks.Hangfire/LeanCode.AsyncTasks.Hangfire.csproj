@@ -10,6 +10,7 @@
       <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
       <ProjectReference Include="../../Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
 
+      <ProjectReference Include="../LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
       <ProjectReference Include="../LeanCode.AsyncTasks/LeanCode.AsyncTasks.csproj" />
   </ItemGroup>
 
