@@ -63,7 +63,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         public Task ScheduleAfter<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>
         {
-            if (queue == BackgroundProcessingApp.DefaultQueue)
+            if (queue == HangfireConfiguration.DefaultQueue)
             {
                 ScheduleAfterDefault<TTask, TParams>(@params, delay);
             }
@@ -78,7 +78,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         public Task ScheduleAt<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>
         {
-            if (queue == BackgroundProcessingApp.DefaultQueue)
+            if (queue == HangfireConfiguration.DefaultQueue)
             {
                 ScheduleAtDefault<TTask, TParams>(@params, at);
             }

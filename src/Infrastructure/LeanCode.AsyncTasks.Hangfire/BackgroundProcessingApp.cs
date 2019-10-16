@@ -3,104 +3,79 @@ using Autofac;
 using Hangfire;
 using Hangfire.SqlServer;
 using LeanCode.Components;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
     public class BackgroundProcessingApp : AppModule
     {
-        public const string DefaultQueue = "default";
+        private readonly HangfireConfiguration configuration;
 
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<BackgroundProcessingApp>();
-
-        private readonly string name;
-        private readonly string queue;
-
-        private readonly string connectionString;
-        private readonly SqlServerStorageOptions storageOpts;
-        private readonly Action<BackgroundJobServerOptions> serverConfig;
-
-        private BackgroundJobServer? backgroundServer;
-
-        public BackgroundProcessingApp(
-            string name,
-            string queue,
-            string connectionString,
-            string schema,
-            Action<BackgroundJobServerOptions> serverConfig,
-            Action<SqlServerStorageOptions> storageConfig)
+        public BackgroundProcessingApp(HangfireConfiguration configuration)
         {
-            this.name = name;
-            this.queue = queue;
-            this.connectionString = connectionString;
-            this.storageOpts = new SqlServerStorageOptions
+            this.configuration = configuration;
+        }
+
+        [Obsolete("Obsolete, use `BackgroundProcessingApp(HangfireConfiguration)` constructor instead.")]
+        public BackgroundProcessingApp(
+                    string name,
+                    string queue,
+                    string connectionString,
+                    string schema,
+                    Action<BackgroundJobServerOptions> serverConfig,
+                    Action<SqlServerStorageOptions> storageConfig)
+        {
+            configuration = new HangfireConfiguration(
+                name,
+                queue,
+                connectionString,
+                schema,
+                serverConfig,
+                storageConfig);
+        }
+
+        [Obsolete("Obsolete, use `BackgroundProcessingApp(HangfireConfiguration)` constructor instead.")]
+        public BackgroundProcessingApp(string name, string connectionString, string schema)
+        {
+            configuration = new HangfireConfiguration(name, connectionString, schema);
+        }
+
+        public override void ConfigureServices(IServiceCollection services)
+        {
+            var storageOpts = new SqlServerStorageOptions
             {
                 PrepareSchemaIfNecessary = true,
-                SchemaName = schema,
+                SchemaName = configuration.Schema,
             };
+            configuration.StorageConfig?.Invoke(storageOpts);
 
-            storageConfig(this.storageOpts);
+            services.AddHangfire(cfg => cfg
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(configuration.ConnectionString, storageOpts));
 
-            this.serverConfig = serverConfig;
+            services.AddHangfireServer(opts =>
+            {
+                opts.ServerName = configuration.Name;
+
+                if (configuration.Queue is string queue && queue != HangfireConfiguration.DefaultQueue)
+                {
+                    opts.Queues = new[] { HangfireConfiguration.DefaultQueue, queue };
+                }
+
+                configuration.ServerConfig?.Invoke(opts);
+            });
         }
-
-        public BackgroundProcessingApp(string name, string connectionString, string schema)
-            : this(name, DefaultQueue, connectionString, schema, _ => { }, _ => { }) { }
-
-        public void ConfigureApp(IApplicationBuilder app)
-        {
-            var scope = app.ApplicationServices.GetRequiredService<ILifetimeScope>();
-            var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
-
-            GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString, storageOpts);
-            GlobalConfiguration.Configuration.UseAutofacActivator(scope);
-
-            appLifetime.ApplicationStarted.Register(StartProcessing);
-            appLifetime.ApplicationStopping.Register(StopProcessing);
-        }
-
-        public override void ConfigureServices(IServiceCollection services) =>
-            services.AddHangfire(cfg => cfg.UseSqlServerStorage(connectionString, storageOpts));
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterGeneric(typeof(AsyncTaskRunner<,>))
-                .AsSelf();
-            builder.RegisterGeneric(typeof(AsyncTaskRunner<>))
-                .AsSelf();
+            builder.RegisterGeneric(typeof(AsyncTaskRunner<,>)).AsSelf();
+            builder.RegisterGeneric(typeof(AsyncTaskRunner<>)).AsSelf();
 
             builder.RegisterType<HangfireScheduler>()
-                .WithParameter("queue", queue)
+                .WithParameter("queue", configuration.Queue)
                 .AsImplementedInterfaces();
-        }
-
-        private void StartProcessing()
-        {
-            logger.Information("Starting background server");
-
-            var cfg = new BackgroundJobServerOptions
-            {
-                ServerName = name,
-            };
-
-            if (!(queue == DefaultQueue))
-            {
-                cfg.Queues = new[] { DefaultQueue, queue };
-            }
-
-            serverConfig(cfg);
-
-            backgroundServer = new BackgroundJobServer(cfg);
-        }
-
-        private void StopProcessing()
-        {
-            logger.Information("App is stopping, disposing background server");
-
-            backgroundServer?.Dispose();
-            backgroundServer = null;
         }
     }
 }
