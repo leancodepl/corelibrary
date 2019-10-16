@@ -43,7 +43,6 @@ namespace LeanCode.AsyncTasks.Hangfire
 
         public override void ConfigureServices(IServiceCollection services)
         {
-
             services.AddHangfire(cfg => cfg
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()

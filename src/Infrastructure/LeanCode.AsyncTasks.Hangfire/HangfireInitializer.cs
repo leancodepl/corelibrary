@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hangfire;
@@ -13,7 +14,7 @@ namespace LeanCode.AsyncTasks.Hangfire
 
         private readonly HangfireConfiguration configuration;
 
-        private readonly JobStorage storage;
+        private readonly Func<JobStorage> storageCreator;
         private readonly IEnumerable<IBackgroundProcess> additionalProcesses;
         private readonly JobActivator? jobActivator;
         private readonly IJobFilterProvider? jobFilterProvider;
@@ -25,14 +26,14 @@ namespace LeanCode.AsyncTasks.Hangfire
 
         public HangfireInitializer(
             HangfireConfiguration configuration,
-            JobStorage storage,
+            Func<JobStorage> storageCreator,
             IEnumerable<IBackgroundProcess> additionalProcesses,
             JobActivator? jobActivator = null,
             IJobFilterProvider? jobFilterProvider = null,
             ITimeZoneResolver? timeZoneResolver = null)
         {
             this.configuration = configuration;
-            this.storage = storage;
+            this.storageCreator = storageCreator;
             this.additionalProcesses = additionalProcesses;
             this.jobActivator = jobActivator;
             this.jobFilterProvider = jobFilterProvider;
@@ -53,6 +54,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             opts.FilterProvider ??= jobFilterProvider;
             opts.TimeZoneResolver ??= timeZoneResolver;
 
+            var storage = storageCreator();
             processingServer = new BackgroundJobServer(opts, storage, additionalProcesses);
 
             return Task.CompletedTask;
