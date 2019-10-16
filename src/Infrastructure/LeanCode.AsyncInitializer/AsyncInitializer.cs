@@ -50,7 +50,7 @@ namespace LeanCode.AsyncInitializer
                     break;
                 }
 
-                logger.Debug("Disposing {Type}", i.GetType());
+                logger.Debug("Deinitializing {Type}", i.GetType());
 
                 await i.DeinitializeAsync();
             }
