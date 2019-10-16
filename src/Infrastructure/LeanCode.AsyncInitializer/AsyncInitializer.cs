@@ -3,56 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AsyncInitializer
 {
-    public sealed class AsyncInitializer : IServer
+    public sealed class AsyncInitializer
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<AsyncInitializer>();
 
-        private readonly IServiceProvider provider;
-        private readonly IServer innerServer;
+        private readonly IEnumerable<IAsyncInitializable> allInits;
 
-        public IFeatureCollection Features => innerServer.Features;
-
-        public AsyncInitializer(IServiceProvider provider, IServer innerServer)
+        public AsyncInitializer(IEnumerable<IAsyncInitializable> allInits)
         {
-            this.provider = provider;
-            this.innerServer = innerServer;
+            this.allInits = allInits.OrderBy(i => i.Order).ToList();
         }
 
-        public async Task StartAsync<TContext>(
-            IHttpApplication<TContext> application,
-            CancellationToken cancellationToken)
-        {
-            await InitializeAsync(cancellationToken);
-            await innerServer.StartAsync(application, cancellationToken);
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await innerServer.StopAsync(cancellationToken);
-            await DisposeAsync(cancellationToken);
-        }
-
-        public void Dispose() => innerServer.Dispose();
-
-        private async ValueTask InitializeAsync(CancellationToken token)
+        public async ValueTask InitializeAsync(CancellationToken token)
         {
             logger.Information("Initializing async modules");
 
-            var scopeFactory = provider.GetService<IServiceScopeFactory>();
-
-            using var scope = scopeFactory.CreateScope();
-
-            var inits = scope.ServiceProvider
-                .GetService<IEnumerable<IAsyncInitializable>>()
-                .OrderBy(i => i.Order);
-
-            foreach (var i in inits)
+            foreach (var i in allInits)
             {
                 if (token.IsCancellationRequested)
                 {
@@ -67,19 +36,11 @@ namespace LeanCode.AsyncInitializer
             }
         }
 
-        private async ValueTask DisposeAsync(CancellationToken token)
+        public async ValueTask DeinitializeAsync(CancellationToken token)
         {
             logger.Information("Disposing async modules");
 
-            var scopeFactory = provider.GetService<IServiceScopeFactory>();
-
-            using var scope = scopeFactory.CreateScope();
-
-            var inits = scope.ServiceProvider
-                .GetService<IEnumerable<IAsyncInitializable>>()
-                .OrderByDescending(i => i.Order);
-
-            foreach (var i in inits)
+            foreach (var i in allInits.Reverse())
             {
                 if (token.IsCancellationRequested)
                 {
@@ -90,7 +51,7 @@ namespace LeanCode.AsyncInitializer
 
                 logger.Debug("Disposing {Type}", i.GetType());
 
-                await i.DisposeAsync();
+                await i.DeinitializeAsync();
             }
         }
     }

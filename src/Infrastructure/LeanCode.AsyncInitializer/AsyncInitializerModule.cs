@@ -6,7 +6,10 @@ namespace LeanCode.AsyncInitializer
 {
     public class AsyncInitializerModule : AppModule
     {
-        protected override void Load(ContainerBuilder builder) =>
-            builder.RegisterDecorator<AsyncInitializer, IServer>();
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterType<AsyncInitializer>().SingleInstance();
+            builder.RegisterDecorator<AsyncInitializerServer, IServer>();
+        }
     }
 }

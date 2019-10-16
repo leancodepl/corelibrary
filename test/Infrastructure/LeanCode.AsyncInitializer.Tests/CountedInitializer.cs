@@ -23,7 +23,7 @@ namespace LeanCode.AsyncInitializer.Tests
         }
 
         public int? InitOrder { get; private set; }
-        public int? DisposeOrder { get; private set; }
+        public int? DeinitOrder { get; private set; }
 
         int IAsyncInitializable.Order => order;
 
@@ -33,9 +33,9 @@ namespace LeanCode.AsyncInitializer.Tests
             return default;
         }
 
-        ValueTask IAsyncDisposable.DisposeAsync()
+        ValueTask IAsyncInitializable.DeinitializeAsync()
         {
-            DisposeOrder = counter.Next();
+            DeinitOrder = counter.Next();
             return default;
         }
     }
