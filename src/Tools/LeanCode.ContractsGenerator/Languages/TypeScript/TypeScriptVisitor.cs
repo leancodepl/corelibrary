@@ -66,7 +66,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             foreach (var child in statement.Children)
             {
-                Visit(child, level, statement.Name);
+                Visit(child, level, null);
             }
 
             clientBuilder.AppendLine("    };");
@@ -267,8 +267,17 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             if (!statement.IsStatic)
             {
-                definitionsBuilder.AppendSpaces(level)
-                    .Append("export interface ")
+                definitionsBuilder
+                    .Append("export interface ");
+
+                if (parentName != null)
+                {
+                    definitionsBuilder
+                        .Append(parentName)
+                        .Append("_");
+                }
+
+                definitionsBuilder
                     .Append(statement.Name);
 
                 if (statement.Parameters.Any())
@@ -307,10 +316,9 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 foreach (var field in statement.Fields)
                 {
-                    VisitFieldStatement(field, level + 1);
+                    VisitFieldStatement(field, 1);
                 }
 
-                definitionsBuilder.AppendSpaces(level);
                 definitionsBuilder.AppendLine("}");
                 definitionsBuilder.AppendLine();
             }
@@ -339,7 +347,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 foreach (var child in statement.Children.Concat<IStatement>(statement.Constants))
                 {
-                    Visit(child, level + 1, parentName + "." + statement.Name);
+                    Visit(child, level + 1, parentName == null ? statement.Name : parentName + "_" + statement.Name);
                 }
 
                 if (hasConsts)

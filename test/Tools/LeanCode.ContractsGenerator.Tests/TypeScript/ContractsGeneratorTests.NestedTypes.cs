@@ -42,21 +42,19 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         }
 
         [Fact]
-        public void Does_not_generate_globals_if_type_has_children_without_consts()
+        public void Does_prepend_name_of_the_parent()
         {
             var generator = CreateTsGeneratorFromNamespace(
                 @"
                 public class Parent
                 {
                     public class Child
-                    {
-
-                    }
+                    { }
                 }");
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.DoesNotContain("Parent", client);
+            Assert.Contains("Parent_Child", client);
         }
     }
 }

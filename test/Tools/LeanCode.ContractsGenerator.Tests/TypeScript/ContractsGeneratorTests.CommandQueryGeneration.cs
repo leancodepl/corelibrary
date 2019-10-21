@@ -12,7 +12,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Contains("testClass: cqrsClient.executeCommand.bind(cqrsClient, \"TsGenerator.TestClass\")", client);
+            Assert.Contains("testClass: (dto: TestClass) => cqrsClient.executeCommand<{}>(\"TsGenerator.TestClass\", dto)", client);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Contains("testClass: cqrsClient.executeCommand.bind(cqrsClient, \"TsGenerator.TestNamespace1.TestNamespace2.TestClass\")", client);
+            Assert.Contains("testClass: (dto: TestClass) => cqrsClient.executeCommand<{}>(\"TsGenerator.TestNamespace1.TestNamespace2.TestClass\", dto)", client);
         }
     }
 }

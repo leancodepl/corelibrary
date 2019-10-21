@@ -39,7 +39,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Name = "Test",
             TypeScript = new TypeScriptConfiguration
             {
-                ContractsPreamble = string.Empty
+                ContractsPreamble = string.Empty,
             },
         };
 

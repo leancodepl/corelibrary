@@ -113,18 +113,18 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("interface TestClass extends Result[] {", contracts);
-            Assert.Contains("interface Result {", contracts);
+            Assert.Contains("interface TestClass_Result {", contracts);
         }
 
         [Fact]
-        public void Static_class_class_is_resolved_correctly()
+        public void Static_class_is_resolved_correctly()
         {
             var generator = CreateTsGeneratorFromNamespace("public static class ErrorCodes { public const int Invalid = 1; }");
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
             Assert.Contains("Invalid: 1", client);
-            Assert.Contains("ErrorCodes: {", client);
+            Assert.Contains("ErrorCodes = {", client);
         }
 
         [Fact]
