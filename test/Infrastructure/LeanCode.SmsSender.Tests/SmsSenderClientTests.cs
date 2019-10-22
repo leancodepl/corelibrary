@@ -69,7 +69,7 @@ namespace LeanCode.SmsSender.Tests
             {
                 await clientWithUnregisteredSender.SendAsync(Message, PhoneNumber);
             }
-            catch (ClientException)
+            catch (ResponseException)
             {
             }
         }

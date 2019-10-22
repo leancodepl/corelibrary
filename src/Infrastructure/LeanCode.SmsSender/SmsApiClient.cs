@@ -85,8 +85,8 @@ namespace LeanCode.SmsSender
         {
             if (response.TryGetProperty("error", out var error))
             {
-                var errorCode = error.GetProperty("error").GetInt32();
-                var errorMessage = error.GetProperty("message").GetString();
+                var errorCode = error.GetInt32();
+                var errorMessage = response.GetProperty("message").GetString();
 
                 if (IsClientError(errorCode))
                 {
