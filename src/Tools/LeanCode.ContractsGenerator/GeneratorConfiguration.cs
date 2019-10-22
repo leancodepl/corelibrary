@@ -15,6 +15,7 @@ namespace LeanCode.ContractsGenerator
         public string OutPath { get; set; } = Directory.GetCurrentDirectory();
         public string Name { get; set; } = "contracts";
         public string AdditionalCode { get; set; } = string.Empty;
+        public string ErrorCodesName { get; set; } = "ErrorCodes";
 
         public TypeScriptConfiguration TypeScript { get; set; }
         public DartConfiguration Dart { get; set; }

@@ -54,7 +54,7 @@ namespace LeanCode.ContractsGenerator
 
             if (configuration.TypeScript != null)
             {
-                var visitor = new TypeScriptVisitor(configuration.TypeScript);
+                var visitor = new TypeScriptVisitor(configuration.TypeScript, configuration.ErrorCodesName);
 
                 foreach (var outputFile in visitor.Visit(clientStatement))
                 {

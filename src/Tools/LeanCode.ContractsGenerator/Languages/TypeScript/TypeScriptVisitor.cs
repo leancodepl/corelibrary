@@ -14,10 +14,12 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         private readonly StringBuilder constsBuilder;
         private readonly StringBuilder clientBuilder;
         private readonly TypeScriptConfiguration configuration;
+        private readonly string errorCodesName;
 
-        public TypeScriptVisitor(TypeScriptConfiguration configuration)
+        public TypeScriptVisitor(TypeScriptConfiguration configuration, string errorCodesName)
         {
             this.configuration = configuration;
+            this.errorCodesName = errorCodesName;
 
             definitionsBuilder = new StringBuilder();
             clientBuilder = new StringBuilder();
@@ -225,12 +227,12 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .Append(statement.Name)
                 .Append(") => cqrsClient.executeCommand<");
 
-            if (statement.Children.Any(c => c.Name == "ErrorCodes"))
+            if (statement.Children.Any(c => c.Name == errorCodesName))
             {
                 clientBuilder
                     .Append("typeof ")
                     .Append(statement.Name)
-                    .Append("[\"ErrorCodes\"]");
+                    .Append($"[\"{errorCodesName}\"]");
             }
             else
             {
