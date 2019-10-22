@@ -9,6 +9,7 @@ namespace LeanCode.ContractsGenerator.Statements
         public bool IsClass { get; set; } = false;
         public TypeStatement BaseClass { get; set; } = null;
         public string Namespace { get; set; } = string.Empty;
+        public List<InterfaceStatement> ParentChain { get; set; } = new List<InterfaceStatement>();
         public List<TypeParameterStatement> Parameters { get; set; } = new List<TypeParameterStatement>();
         public List<TypeStatement> Extends { get; set; } = new List<TypeStatement>();
         public List<FieldStatement> Fields { get; set; } = new List<FieldStatement>();

@@ -56,5 +56,44 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             Assert.Contains("Parent_Child", client);
         }
+
+        [Fact]
+        public void Does_use_name_of_the_parent_with_prefix()
+        {
+            var generator = CreateTsGeneratorFromNamespace(
+                @"
+                public class Parent
+                {
+                    public Child Variable { get; set; }
+
+                    public class Child
+                    { }
+                }");
+
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("Variable: Parent_Child", client);
+        }
+
+        [Fact]
+        public void Does_use_deeply_nested_name_of_the_parent_with_prefix()
+        {
+            var generator = CreateTsGeneratorFromNamespace(
+                @"
+                public class Parent
+                {
+                    public Child.GrandChild Variable { get; set; }
+
+                    public class Child
+                    {
+                        public class GrandChild
+                        { }
+                    }
+                }");
+
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("Variable: Parent_Child_GrandChild", client);
+        }
     }
 }

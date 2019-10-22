@@ -73,7 +73,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private InterfaceStatement GenerateInterface(INamedTypeSymbol info)
+        private InterfaceStatement GenerateInterface(INamedTypeSymbol info, List<InterfaceStatement> parentChain)
         {
             if (info.AllInterfaces.Any(a => a.Name == "_Attribute" || a.Name == "_Exception"))
             {
@@ -103,12 +103,6 @@ namespace LeanCode.ContractsGenerator
                 })
                 .ToList();
 
-            var children = info
-                .GetMembers()
-                .OfType<INamedTypeSymbol>()
-                .Where(s => !HasAttribute<ExcludeFromContractsGenerationAttribute>(s))
-                .Select(GenerateInterface);
-
             var interfaceStatement = new InterfaceStatement
             {
                 Name = info.Name,
@@ -120,8 +114,15 @@ namespace LeanCode.ContractsGenerator
                 Extends = baseTypes,
                 Fields = GenerateProperties(info).ToList(),
                 Constants = consts,
-                Children = children.ToList(),
+                ParentChain = parentChain,
             };
+
+            interfaceStatement.Children = info
+                .GetMembers()
+                .OfType<INamedTypeSymbol>()
+                .Where(s => !HasAttribute<ExcludeFromContractsGenerationAttribute>(s))
+                .Select(i => GenerateInterface(i, parentChain.Concat(new InterfaceStatement[] { interfaceStatement }).ToList()))
+                .ToList();
 
             if (!info.IsAbstract)
             {
@@ -197,7 +198,7 @@ namespace LeanCode.ContractsGenerator
                 .Concat(publicInterfaces)
                 .Where(i => !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
                 .Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i))
-                .Select(GenerateInterface);
+                .Select(i => GenerateInterface(i, new List<InterfaceStatement>()));
         }
 
         private static string StringifyBuiltInTypeValue(object value)
@@ -266,6 +267,18 @@ namespace LeanCode.ContractsGenerator
             };
         }
 
+        private List<TypeStatement> GetTypeParentChain(INamedTypeSymbol type)
+        {
+            if (type.ContainingType is null)
+            {
+                return new List<TypeStatement>();
+            }
+
+            return GetTypeParentChain(type.ContainingType)
+                .Concat(new TypeStatement[] { ConvertType(type.ContainingType) })
+                .ToList();
+        }
+
         private TypeStatement ConvertType(ITypeSymbol typeSymbol)
         {
             bool isNullable = typeSymbol.Name == "Nullable";
@@ -304,6 +317,7 @@ namespace LeanCode.ContractsGenerator
                         return new TypeStatement
                         {
                             Name = type.Name,
+                            ParentChain = GetTypeParentChain(type),
                             Namespace = type is ITypeParameterSymbol ? string.Empty : GetFullNamespaceName(type.ContainingNamespace),
                             TypeArguments = type.TypeArguments.Select(ConvertType).ToList(),
                         };
@@ -312,7 +326,8 @@ namespace LeanCode.ContractsGenerator
                     {
                         return new TypeStatement
                         {
-                            Name = type.ContainingType != null ? type.ContainingType.Name + "." : string.Empty + type.Name,
+                            Name = type.Name,
+                            ParentChain = GetTypeParentChain(type),
                             Namespace = GetFullNamespaceName(type.ContainingNamespace),
                         };
                     }
