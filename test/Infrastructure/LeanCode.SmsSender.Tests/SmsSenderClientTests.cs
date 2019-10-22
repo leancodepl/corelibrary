@@ -65,13 +65,8 @@ namespace LeanCode.SmsSender.Tests
         [Fact(Skip = "SmsApi credentials required")]
         public async Task Gets_correct_errors_when_sender_is_unregistered_in_the_API()
         {
-            try
-            {
-                await clientWithUnregisteredSender.SendAsync(Message, PhoneNumber);
-            }
-            catch (ResponseException)
-            {
-            }
+            await Assert.ThrowsAsync<ActionException>(() =>
+                clientWithUnregisteredSender.SendAsync(Message, PhoneNumber));
         }
     }
 }
