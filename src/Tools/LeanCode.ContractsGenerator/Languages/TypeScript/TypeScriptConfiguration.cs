@@ -6,8 +6,10 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
     {
         public string[] ContractsPreambleLines { get; set; } = new string[]
         {
-            "type IRemoteCommand = import(\"@leancode/cqrs-client/ClientType\").IRemoteCommand",
-            "type IRemoteQuery<TOutput> = import(\"@leancode/cqrs-client/ClientType\").IRemoteQuery<TOutput>",
+            "/* eslint-disable */",
+            "import { ClientType } from \"@leancode/cqrs-client/ClientType\";",
+            "import { CQRS } from \"@leancode/cqrs-client/CQRS\";",
+            "import { IRemoteCommand, IRemoteQuery } from \"@leancode/cqrs-client/ClientType\";",
             string.Empty,
         };
 
@@ -15,19 +17,6 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             get => ContractsPreambleLines is null ? null : string.Join('\n', ContractsPreambleLines);
             set => ContractsPreambleLines = value?.Split('\n');
-        }
-
-        public string[] ClientPreambleLines { get; set; } = new string[]
-        {
-            "import { CQRS } from \"@leancode/cqrs-client/CQRS\";",
-            "import { ClientType } from \"@leancode/cqrs-client/ClientType\";",
-            string.Empty,
-        };
-
-        public string ClientPreamble
-        {
-            get => ClientPreambleLines is null ? null : string.Join('\n', ClientPreambleLines);
-            set => ClientPreambleLines = value?.Split('\n');
         }
 
         public Dictionary<string, string> TypeTranslations { get; set; } = new Dictionary<string, string>

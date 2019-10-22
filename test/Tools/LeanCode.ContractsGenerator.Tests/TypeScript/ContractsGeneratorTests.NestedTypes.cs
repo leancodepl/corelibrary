@@ -42,21 +42,58 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         }
 
         [Fact]
-        public void Does_not_generate_globals_if_type_has_children_without_consts()
+        public void Does_prepend_name_of_the_parent()
         {
             var generator = CreateTsGeneratorFromNamespace(
                 @"
                 public class Parent
                 {
                     public class Child
-                    {
+                    { }
+                }");
 
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("Parent_Child", client);
+        }
+
+        [Fact]
+        public void Does_use_name_of_the_parent_with_prefix()
+        {
+            var generator = CreateTsGeneratorFromNamespace(
+                @"
+                public class Parent
+                {
+                    public Child Variable { get; set; }
+
+                    public class Child
+                    { }
+                }");
+
+            var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("Variable: Parent_Child", client);
+        }
+
+        [Fact]
+        public void Does_use_deeply_nested_name_of_the_parent_with_prefix()
+        {
+            var generator = CreateTsGeneratorFromNamespace(
+                @"
+                public class Parent
+                {
+                    public Child.GrandChild Variable { get; set; }
+
+                    public class Child
+                    {
+                        public class GrandChild
+                        { }
                     }
                 }");
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.DoesNotContain("Parent", client);
+            Assert.Contains("Variable: Parent_Child_GrandChild", client);
         }
     }
 }

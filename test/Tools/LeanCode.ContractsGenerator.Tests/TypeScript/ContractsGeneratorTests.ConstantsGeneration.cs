@@ -33,7 +33,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
             var client = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
 
-            Assert.Contains("Constants: {", client);
+            Assert.Contains("Constants = {", client);
             Assert.Contains("Constants2: {", client);
             Assert.Contains("Value: \"p\"", client);
         }

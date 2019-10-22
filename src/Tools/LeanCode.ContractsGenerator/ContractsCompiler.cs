@@ -25,9 +25,11 @@ namespace LeanCode.ContractsGenerator
         private readonly string rootPath;
         private readonly string contractsRegex;
         private readonly string additionalCode;
+        private readonly string configDir;
 
-        public ContractsCompiler(GeneratorConfiguration configuration)
+        public ContractsCompiler(GeneratorConfiguration configuration, string configDir)
         {
+            this.configDir = configDir;
             rootPath = configuration.RootPath;
             contractsRegex = configuration.ContractsRegex;
             additionalCode = configuration.AdditionalCode;
@@ -37,7 +39,7 @@ namespace LeanCode.ContractsGenerator
         {
             trees = new List<SyntaxTree>();
 
-            var fileRoot = new DirectoryInfo(rootPath);
+            var fileRoot = new DirectoryInfo(Path.Combine(configDir, rootPath));
             var fileRegex = new Regex(contractsRegex);
 
             var contracts = fileRoot.GetFiles("*.*", SearchOption.AllDirectories)

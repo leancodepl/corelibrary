@@ -20,10 +20,6 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Assert.Equal(
                 defaultConfiguration.ContractsPreamble,
                 configuration.ContractsPreamble);
-
-            Assert.Equal(
-                defaultConfiguration.ClientPreamble,
-                configuration.ClientPreamble);
         }
 
         [Fact]
@@ -38,22 +34,14 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
                                 ""ContractsSecondLine"",
                                 ""ContractsThirdLine"",
                                 """"
-                            ],
-                            ""ClientPreambleLines"": [
-                                ""ClientFirstLine"",
-                                ""ClientSecondLine"",
-                                ""ClientThirdLine"",
-                                """"
                             ]
                         }
                     }
                 ]")[0].TypeScript;
 
             var expectedContractsPreamble = "ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n";
-            var expectedClientPreamble = "ClientFirstLine\nClientSecondLine\nClientThirdLine\n";
 
             Assert.Equal(expectedContractsPreamble, configuration.ContractsPreamble);
-            Assert.Equal(expectedClientPreamble, configuration.ClientPreamble);
         }
 
         [Fact]
@@ -63,17 +51,14 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
                 [
                     {
                         ""TypeScript"": {
-                            ""ContractsPreamble"": ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n"",
-                            ""ClientPreamble"": ""ClientFirstLine\nClientSecondLine\nClientThirdLine\n""
+                            ""ContractsPreamble"": ""ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n""
                         }
                     }
                 ]")[0].TypeScript;
 
             var expectedContractsPreamble = "ContractsFirstLine\nContractsSecondLine\nContractsThirdLine\n";
-            var expectedClientPreamble = "ClientFirstLine\nClientSecondLine\nClientThirdLine\n";
 
             Assert.Equal(expectedContractsPreamble, configuration.ContractsPreamble);
-            Assert.Equal(expectedClientPreamble, configuration.ClientPreamble);
         }
     }
 }
