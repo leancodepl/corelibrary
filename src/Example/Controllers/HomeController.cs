@@ -1,6 +1,6 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.RemoteHttp.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -51,20 +51,18 @@ namespace LeanCode.Example.Controllers
         [HttpGet("remote")]
         public async Task<IActionResult> RemoteQuery()
         {
-            using (var client = new HttpQueriesExecutor(new Uri("http://localhost:5000/api/")))
-            {
-                return Json(await client.GetAsync(new CQRS.SampleQuery()));
-            }
+            using var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5000/api/") };
+            var client = new HttpQueriesExecutor(httpClient);
+            return Json(await client.GetAsync(new CQRS.SampleQuery()));
         }
 
         [HttpGet("remote/do")]
         public async Task<IActionResult> RemoteCommand(string name = "")
         {
-            using (var client = new HttpCommandsExecutor(new Uri("http://localhost:5000/api/")))
-            {
-                await client.RunAsync(new CQRS.SampleCommand(name));
-                return Json(await client.RunAsync(new CQRS.SampleCommand(name)));
-            }
+            using var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5000/api/") };
+            var client = new HttpCommandsExecutor(httpClient);
+            await client.RunAsync(new CQRS.SampleCommand(name));
+            return Json(await client.RunAsync(new CQRS.SampleCommand(name)));
         }
     }
 }
