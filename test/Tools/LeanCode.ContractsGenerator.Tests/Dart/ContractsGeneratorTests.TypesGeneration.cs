@@ -82,6 +82,50 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void Float_uses_custom_from_json_method()
+        {
+            var generator = CreateDartGeneratorFromClass("public float Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("@JsonKey(name: 'Field', fromJson: _doubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
+        }
+
+        [Fact]
+        public void Nullable_float_uses_custom_from_json_method()
+        {
+            var generator = CreateDartGeneratorFromClass("public float? Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("@JsonKey(name: 'Field', nullable: true, fromJson: _nullableDoubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
+        }
+
+        [Fact]
+        public void Decimal_uses_custom_from_json_method()
+        {
+            var generator = CreateDartGeneratorFromClass("public decimal Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("@JsonKey(name: 'Field', fromJson: _doubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
+        }
+
+        [Fact]
+        public void Nullable_decimal_uses_custom_from_json_method()
+        {
+            var generator = CreateDartGeneratorFromClass("public decimal? Field { get; set; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("@JsonKey(name: 'Field', nullable: true, fromJson: _nullableDoubleFromJson)", contracts);
+            Assert.Contains("double field;", contracts);
+        }
+
+        [Fact]
         public void DateTime_uses_custom_from_json_method()
         {
             var generator = CreateDartGeneratorFromClass("public DateTime TestVar { get; set; };");
