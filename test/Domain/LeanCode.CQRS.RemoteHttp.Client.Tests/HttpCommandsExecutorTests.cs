@@ -132,6 +132,14 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
             await TestExceptionAsync<HttpCallErrorException>(HttpStatusCode.BadGateway);
         }
 
+        [Fact]
+        public async Task Wraps_JsonException_in_MalformedResponseException()
+        {
+            var (exec, _) = Prepare(HttpStatusCode.UnprocessableEntity, "[{\"");
+
+            await Assert.ThrowsAsync<MalformedResponseException>(() => exec.RunAsync(new ExampleCommand()));
+        }
+
         private static async Task TestExceptionAsync<TException>(HttpStatusCode statusCode)
             where TException : Exception
         {

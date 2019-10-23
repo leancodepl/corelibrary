@@ -33,7 +33,14 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 
             using var responseContent = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions);
+            try
+            {
+                return await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions);
+            }
+            catch (Exception ex)
+            {
+                throw new MalformedResponseException(ex);
+            }
         }
     }
 }

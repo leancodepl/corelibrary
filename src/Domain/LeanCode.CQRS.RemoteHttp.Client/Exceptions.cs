@@ -49,6 +49,9 @@ namespace LeanCode.CQRS.RemoteHttp.Client
     {
         public MalformedResponseException()
             : base("The server returned malformed response.") { }
+
+        public MalformedResponseException(Exception innerException)
+            : base("The server returned malformed response.", innerException) { }
     }
 
     public class HttpCallErrorException : Exception

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -36,7 +37,8 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
             {
                 await using var responseContent = await response.Content.ReadAsStreamAsync();
-                var result = await JsonSerializer.DeserializeAsync<CommandResult?>(responseContent, serializerOptions);
+                var result = await SafeParseResponseAsync(responseContent);
+
                 if (result is null)
                 {
                     throw new MalformedResponseException();
@@ -50,6 +52,18 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             {
                 response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
                 return CommandResult.Success;
+            }
+        }
+
+        private async Task<CommandResult?> SafeParseResponseAsync(Stream responseContent)
+        {
+            try
+            {
+                return await JsonSerializer.DeserializeAsync<CommandResult?>(responseContent, serializerOptions);
+            }
+            catch (Exception ex)
+            {
+                throw new MalformedResponseException(ex);
             }
         }
     }
