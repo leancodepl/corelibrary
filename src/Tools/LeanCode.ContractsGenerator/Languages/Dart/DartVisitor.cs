@@ -157,8 +157,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
                 .AppendLine();
-
-            return;
         }
 
         private void VisitEnumValueStatement(EnumValueStatement statement, int level)
@@ -473,18 +471,23 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 definitionsBuilder.Append(", nullable: true");
             }
 
-            if (type.Name == "DateTime")
+            if (IsA<DateTime>(type))
             {
                 var fromJsonMethod = type.IsNullable ? "_nullableDateTimeFromJson" : "_dateTimeFromJson";
                 definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
             }
-            else if (type.Name == "Double")
+            else if (IsA<double>(type) || IsA<decimal>(type) || IsA<float>(type))
             {
                 var fromJsonMethod = type.IsNullable ? "_nullableDoubleFromJson" : "_doubleFromJson";
                 definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
             }
 
             definitionsBuilder.AppendLine(")");
+        }
+
+        private bool IsA<T>(TypeStatement type)
+        {
+            return $"{type.Namespace}.{type.Name}" == typeof(T).FullName;
         }
 
         private void GenerateDefaultConstructor(string name, int level)
