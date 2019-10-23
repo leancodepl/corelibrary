@@ -12,7 +12,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         public string ConnectionString { get; }
         public string Schema { get; }
 
-        public string? Queue { get; }
+        public string Queue { get; }
         public Action<BackgroundJobServerOptions>? ServerConfig { get; }
         public Action<SqlServerStorageOptions>? StorageConfig { get; }
 
@@ -22,7 +22,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             string name,
             string connectionString,
             string schema,
-            string? queue,
+            string queue,
             Action<BackgroundJobServerOptions>? serverConfig,
             Action<SqlServerStorageOptions>? storageConfig,
             int initOrder)
@@ -44,7 +44,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             Name = name;
             ConnectionString = connectionString;
             Schema = schema;
-            Queue = null;
+            Queue = DefaultQueue;
             ServerConfig = null;
             StorageConfig = null;
             InitializationOrder = int.MaxValue;
