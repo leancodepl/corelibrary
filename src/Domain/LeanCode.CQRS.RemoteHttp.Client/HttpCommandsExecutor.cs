@@ -7,46 +7,23 @@ using LeanCode.Serialization;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
-    public class HttpCommandsExecutor : IRemoteCommandExecutor, IDisposable
+    public class HttpCommandsExecutor
     {
         private readonly HttpClient client;
         private readonly JsonSerializerOptions? serializerOptions;
 
-        public HttpCommandsExecutor(Uri baseAddress, JsonSerializerOptions? options = null)
-        {
-            client = new HttpClient()
-            {
-                BaseAddress = baseAddress,
-            };
-
-            serializerOptions = options;
-        }
+        public HttpCommandsExecutor(HttpClient client)
+            : this(client, null)
+        { }
 
         public HttpCommandsExecutor(
-            Uri baseAddress,
-            HttpMessageHandler handler,
-            JsonSerializerOptions? options = null)
+            HttpClient client,
+            JsonSerializerOptions? serializerOptions)
         {
-            client = new HttpClient(handler)
-            {
-                BaseAddress = baseAddress,
-            };
+            this.client = client;
+            this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
 
-            serializerOptions = options;
-        }
-
-        public HttpCommandsExecutor(
-            Uri baseAddress,
-            HttpMessageHandler handler,
-            bool disposeHandler,
-            JsonSerializerOptions? options = null)
-        {
-            client = new HttpClient(handler, disposeHandler)
-            {
-                BaseAddress = baseAddress,
-            };
-
-            serializerOptions = options;
+            this.serializerOptions.Converters.Add(new CommandResultConverter());
         }
 
         public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
@@ -59,14 +36,21 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
             {
                 await using var responseContent = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<CommandResult>(responseContent, serializerOptions);
+                var result = await JsonSerializer.DeserializeAsync<CommandResult?>(responseContent, serializerOptions);
+                if (result is null)
+                {
+                    throw new MalformedResponseException();
+                }
+                else
+                {
+                    return result;
+                }
             }
-
-            response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
-
-            return CommandResult.Success;
+            else
+            {
+                response.HandleCommonCQRSErrors<CommandNotFoundException, InvalidCommandException>();
+                return CommandResult.Success;
+            }
         }
-
-        public void Dispose() => client.Dispose();
     }
 }

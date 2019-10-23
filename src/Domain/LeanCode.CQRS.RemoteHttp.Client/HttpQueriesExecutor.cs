@@ -7,46 +7,21 @@ using LeanCode.Serialization;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
-    public class HttpQueriesExecutor : IRemoteQueryExecutor, IDisposable
+    public class HttpQueriesExecutor
     {
         private readonly HttpClient client;
         private readonly JsonSerializerOptions? serializerOptions;
 
-        public HttpQueriesExecutor(Uri baseAddress, JsonSerializerOptions? options = null)
-        {
-            client = new HttpClient()
-            {
-                BaseAddress = baseAddress,
-            };
-
-            serializerOptions = options;
-        }
+        public HttpQueriesExecutor(HttpClient client)
+            : this(client, null)
+        { }
 
         public HttpQueriesExecutor(
-            Uri baseAddress,
-            HttpMessageHandler handler,
-            JsonSerializerOptions? options = null)
+            HttpClient client,
+            JsonSerializerOptions? serializerOptions)
         {
-            client = new HttpClient(handler)
-            {
-                BaseAddress = baseAddress,
-            };
-
-            serializerOptions = options;
-        }
-
-        public HttpQueriesExecutor(
-            Uri baseAddress,
-            HttpMessageHandler handler,
-            bool disposeHandler,
-            JsonSerializerOptions? options = null)
-        {
-            client = new HttpClient(handler, disposeHandler)
-            {
-                BaseAddress = baseAddress,
-            };
-
-            serializerOptions = options;
+            this.client = client;
+            this.serializerOptions = serializerOptions;
         }
 
         public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
@@ -57,10 +32,8 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 
             response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 
-            var responseContent = await response.Content.ReadAsStreamAsync();
+            using var responseContent = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions);
         }
-
-        public void Dispose() => client.Dispose();
     }
 }
