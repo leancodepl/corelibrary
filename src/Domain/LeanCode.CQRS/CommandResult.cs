@@ -5,12 +5,12 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS
 {
-    public class CommandResult
+    public sealed class CommandResult
     {
         public ImmutableList<ValidationError> ValidationErrors { get; }
         public bool WasSuccessful => ValidationErrors.Count == 0;
 
-        public CommandResult(IReadOnlyList<ValidationError>? validationErrors)
+        public CommandResult(IEnumerable<ValidationError>? validationErrors)
         {
             ValidationErrors = validationErrors is null
                 ? ImmutableList.Create<ValidationError>()

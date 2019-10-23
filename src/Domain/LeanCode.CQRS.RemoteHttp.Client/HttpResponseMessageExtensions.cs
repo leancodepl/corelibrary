@@ -4,7 +4,7 @@ using static System.Net.HttpStatusCode;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
-    internal static class Helpers
+    public static class HttpResponseMessageExtensions
     {
         public static void HandleCommonCQRSErrors<TNotFound, TBadRequest>(this HttpResponseMessage response)
             where TNotFound : Exception, new()
