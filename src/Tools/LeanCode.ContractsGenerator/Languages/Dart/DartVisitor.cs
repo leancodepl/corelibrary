@@ -500,12 +500,17 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void GenerateToJsonMethod(InterfaceStatement statement, string fullName, int level, bool includeOverrideAnnotation, bool includeSuper)
         {
-            var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
+            definitionsBuilder
+                .AppendLine();
+
+            if (includeOverrideAnnotation)
+            {
+                definitionsBuilder
+                   .AppendSpaces(level + 1)
+                   .AppendLine("@override");
+            }
 
             definitionsBuilder
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine(annotation)
                 .AppendSpaces(level + 1)
                 .Append("Map<String, dynamic> toJsonMap() => ")
                 .AppendLine($"_${fullName}ToJson(this);");

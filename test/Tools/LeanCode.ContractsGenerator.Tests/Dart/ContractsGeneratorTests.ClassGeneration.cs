@@ -153,7 +153,6 @@ class CcBbClass {
 
     CcBbClass();
 
-    @virtual
     Map<String, dynamic> toJsonMap() => _$CcBbClassToJson(this);
 
     factory CcBbClass.fromJson(Map<String, dynamic> json) => _$CcBbClassFromJson(json);
@@ -166,7 +165,6 @@ class CcBbbClass {
 
     CcBbbClass();
 
-    @virtual
     Map<String, dynamic> toJsonMap() => _$CcBbbClassToJson(this);
 
     factory CcBbbClass.fromJson(Map<String, dynamic> json) => _$CcBbbClassFromJson(json);
