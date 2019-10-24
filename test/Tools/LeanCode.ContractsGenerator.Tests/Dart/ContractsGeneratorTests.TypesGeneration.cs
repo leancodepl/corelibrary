@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Languages.Dart;
 using Xunit;
 using static LeanCode.ContractsGenerator.Tests.Dart.ContractsGeneratorTestHelpers;
 
@@ -14,7 +15,24 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("import 'package:meta/meta.dart';", contracts);
             Assert.Contains("import 'package:json_annotation/json_annotation.dart';", contracts);
-            Assert.Contains("import 'package:dart_cqrs/dart_cqrs.dart';", contracts);
+            Assert.Contains("import 'package:cqrs/cqrs.dart';", contracts);
+        }
+
+        [Fact]
+        public void Part_uses_name_from_generator_configuration_for_default_preamble()
+        {
+            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var cfg = new GeneratorConfiguration()
+            {
+                Name = "Name",
+                Dart = new DartConfiguration
+                {
+                },
+            };
+
+            var contracts = GetContracts(generator.Generate(cfg));
+
+            Assert.Contains("part 'Name.g.dart';", contracts);
         }
 
         [Fact]
