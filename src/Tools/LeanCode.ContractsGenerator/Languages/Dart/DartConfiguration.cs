@@ -8,7 +8,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             "import 'package:meta/meta.dart';",
             "import 'package:json_annotation/json_annotation.dart';",
-            "import 'package:dart_cqrs/dart_cqrs.dart';",
+            "import 'package:cqrs/cqrs.dart';",
             "part '{0}.g.dart';",
             "abstract class IRemoteQuery<T> extends Query<T> {{}}",
             "abstract class IRemoteCommand extends Command {{}}",
