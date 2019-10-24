@@ -41,9 +41,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         public IEnumerable<LanguageFileOutput> Visit(ClientStatement statement)
         {
-            definitionsBuilder.Append(configuration.ContractsPreamble).AppendLine();
+            AddContractsPreamble(statement);
 
-            GenerateDartAnnotations();
+            GenerateHelpers();
 
             GenerateTypeNames(statement);
 
@@ -56,9 +56,41 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             };
         }
 
-        private void GenerateDartAnnotations()
+        private void AddContractsPreamble(ClientStatement statement)
         {
-            definitionsBuilder.AppendLine("class _Nullable { const _Nullable(); } const nullable = _Nullable();");
+            var defaultPreamble = DartConfiguration.DefaultContractsPreamble;
+            var preamble = configuration.ContractsPreamble;
+
+            if (preamble == defaultPreamble)
+            {
+                preamble = string.Format(defaultPreamble, statement.Name);
+            }
+
+            definitionsBuilder.AppendLine(preamble);
+        }
+
+        private void GenerateHelpers()
+        {
+            definitionsBuilder
+                .AppendLine("List<T> _listFromJson<T>(")
+                .AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
+                .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
+
+            definitionsBuilder
+                .AppendLine("DateTime _dateTimeFromJson(String value) {")
+                .AppendLine("return DateTime.parse(value.substring(0, 19) + ' Z'); }");
+
+            definitionsBuilder
+                .AppendLine("DateTime _nullableDateTimeFromJson(String value) {")
+                .AppendLine("return value == null ? null : _dateTimeFromJson(value); }");
+
+            definitionsBuilder
+                .AppendLine("double _doubleFromJson(dynamic value) {")
+                .AppendLine("return value is String ? double.parse(value) : value; }");
+
+            definitionsBuilder
+                .AppendLine("double _nullableDoubleFromJson(dynamic value) {")
+                .AppendLine("return value == null ? null : _doubleFromJson(value); }");
         }
 
         private void GenerateTypeNames(ClientStatement statement)
@@ -112,66 +144,40 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
 
             definitionsBuilder.AppendSpaces(level)
-                .Append("class ")
+                .Append("enum ")
                 .Append(name)
                 .AppendLine(" {")
-                .AppendSpaces(level + 1)
-                .AppendLine($"const {name}(this.value);");
+                .AppendSpaces(level + 1);
 
             foreach (var value in statement.Values)
             {
-                VisitEnumValueStatement(value, name, level + 1);
+                VisitEnumValueStatement(value, level + 1);
             }
-
-            definitionsBuilder
-                .AppendSpaces(level + 1)
-                .AppendLine("final int value;")
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine("dynamic toJsonMap() => value;")
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine($"static {name} fromJson(dynamic json) => {name}(json);")
-                .AppendLine();
-
-            AppendEnumEqualityOperator(name, level + 1);
-
-            AppendEnumHashCode(name, level + 1);
 
             definitionsBuilder.AppendSpaces(level)
                 .AppendLine("}")
                 .AppendLine();
         }
 
-        private void VisitEnumValueStatement(EnumValueStatement statement, string parentName, int level)
+        private void VisitEnumValueStatement(EnumValueStatement statement, int level)
         {
             definitionsBuilder.AppendSpaces(level)
-                .Append("const ")
-                .Append($"{parentName}.{TranslateIdentifier(statement.Name)}")
-                .Append($"() : value = {statement.Value};")
-                .AppendLine();
-        }
+                .Append("@JsonValue(");
 
-        private void AppendEnumEqualityOperator(string parentName, int level)
-        {
-            definitionsBuilder
-                .AppendSpaces(level)
-                .AppendLine("@override")
-                .AppendSpaces(level)
-                .AppendLine("bool operator ==(Object other) =>")
-                .AppendSpaces(level + 1)
-                .AppendLine($"other is {parentName} && value == other.value;")
-                .AppendLine();
-        }
+            if (int.TryParse(statement.Value, out int value))
+            {
+                definitionsBuilder.Append(value);
+            }
+            else
+            {
+                definitionsBuilder.Append($"\"{statement.Value}\"");
+            }
 
-        [SuppressMessage("?", "IDE0060", Justification = "Keep `parentName` for the sake of consistency.")]
-        private void AppendEnumHashCode(string parentName, int level)
-        {
-            definitionsBuilder
-                .AppendSpaces(level)
-                .AppendLine("@override")
-                .AppendSpaces(level)
-                .AppendLine("int get hashCode => value.hashCode;");
+            definitionsBuilder.AppendLine(")");
+
+            definitionsBuilder.AppendSpaces(level)
+                .Append(TranslateIdentifier(statement.Name))
+                .AppendLine(",");
         }
 
         private void VisitTypeStatement(TypeStatement statement)
@@ -262,20 +268,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void VisitFieldStatement(FieldStatement statement, int level)
         {
-            definitionsBuilder.AppendSpaces(level);
+            GenerateJsonKey(statement, level);
 
-            if (statement.Type.IsNullable)
-            {
-                definitionsBuilder
-                    .AppendLine("@nullable")
-                    .AppendSpaces(level);
-            }
+            definitionsBuilder.AppendSpaces(level);
 
             VisitTypeStatement(statement.Type);
 
-            definitionsBuilder.Append(" ");
-            definitionsBuilder.Append(TranslateIdentifier(statement.Name));
-            definitionsBuilder.AppendLine(";");
+            definitionsBuilder.Append(" ")
+                .Append(TranslateIdentifier(statement.Name))
+                .AppendLine(";");
         }
 
         private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
@@ -297,6 +298,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 VisitEnumStatement(new EnumStatement { Name = name }, level);
                 return;
             }
+
+            definitionsBuilder.AppendLine()
+                .AppendSpaces(level)
+                .AppendLine("@JsonSerializable()");
 
             definitionsBuilder.AppendSpaces(level)
                 .Append("class ")
@@ -349,14 +354,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder.AppendLine(" {");
 
+            GenerateDefaultConstructor(name, level);
+
             foreach (var constant in statement.Constants)
             {
                 definitionsBuilder
                     .AppendSpaces(level + 1)
                     .AppendLine($"static const int {constant.Name} = {constant.Value};");
             }
-
-            definitionsBuilder.AppendLine();
 
             foreach (var field in statement.Fields)
             {
@@ -380,8 +385,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
-            GenerateToJsonMethod(statement, level, includeOverrideAnnotation, mapJsonIncludeSuper);
-            GenerateFromJsonMethod(name, statement, level);
+            GenerateToJsonMethod(statement, name, level, includeOverrideAnnotation, mapJsonIncludeSuper);
+            GenerateFromJsonConstructor(name, statement, level);
 
             definitionsBuilder.AppendSpaces(level);
             definitionsBuilder.AppendLine("}");
@@ -411,45 +416,37 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             VisitTypeStatement(result);
 
+            definitionsBuilder.Append(" resultFactory(dynamic decodedJson) => ");
+
             if (result.IsArrayLike)
             {
-                definitionsBuilder
-                    .AppendLine(" resultFactory(dynamic decodedJson) {");
+                result = result.TypeArguments.First();
 
-                definitionsBuilder
-                    .AppendSpaces(level + 2)
-                    .AppendLine("return decodedJson")
-                    .AppendSpaces(level + 3)
-                    .Append("?.map((dynamic x) => ");
+                var typeKey = Mangle(result.Namespace, result.Name);
 
-                VisitTypeStatement(result.TypeArguments.First());
+                if (mangledStatements.ContainsKey(typeKey))
+                {
+                    var name = mangledStatements[typeKey].name;
 
-                definitionsBuilder
-                    .AppendLine(".fromJson(x))")
-                    .AppendSpaces(level + 3)
-                    .AppendLine("?.toList(growable: false)")
-                    .AppendSpaces(level + 3)
-                    .Append("?.cast<");
+                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson, _${name}FromJson);");
+                }
+                else
+                {
+                    definitionsBuilder.AppendLine("decodedJson.cast<");
 
-                VisitTypeStatement(result.TypeArguments.First());
+                    VisitTypeStatement(result);
 
-                definitionsBuilder
-                    .AppendLine(">();");
-
-                definitionsBuilder
-                    .AppendSpaces(level + 1)
-                    .AppendLine("}");
+                    definitionsBuilder.AppendLine(">();");
+                }
             }
             else
             {
-                definitionsBuilder
-                    .Append($" resultFactory(dynamic decodedJson) => ");
+                var typeKey = Mangle(result.Namespace, result.Name);
 
-                if (!BuiltinTypes.Contains(result.Name.ToLowerInvariant()))
+                if (mangledStatements.ContainsKey(typeKey))
                 {
-                    VisitTypeStatement(result);
-                    definitionsBuilder
-                        .AppendLine(".fromJson(decodedJson);");
+                    var name = mangledStatements[typeKey].name;
+                    definitionsBuilder.AppendLine($"_${name}FromJson(decodedJson);");
                 }
                 else
                 {
@@ -460,201 +457,71 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenerateToJsonMethod(InterfaceStatement statement, int level, bool includeOverrideAnnotation, bool includeSuper)
+        private void GenerateJsonKey(FieldStatement statement, int level)
         {
-            var annotation = includeOverrideAnnotation ? "@override" : "@virtual";
+            var type = statement.Type;
 
             definitionsBuilder
-                .AppendLine()
-                .AppendSpaces(level + 1)
-                .AppendLine(annotation)
-                .AppendSpaces(level + 1)
-                .AppendLine("Map<String, dynamic> toJsonMap() {");
+                .AppendSpaces(level)
+                .Append("@JsonKey(")
+                .Append($"name: '{statement.Name}'");
 
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("final map = <String, dynamic>{");
-
-            foreach (var field in statement.Fields)
+            if (type.IsNullable)
             {
-                var serializedField = TranslateIdentifier(field.Name);
-
-                definitionsBuilder
-                    .AppendSpaces(level + 3)
-                    .Append($"'{field.Name.Capitalize()}': {serializedField}");
-
-                GenerateTypeMapingForToJsonMethod(field.Type, 0);
-
-                definitionsBuilder.AppendLine(",");
+                definitionsBuilder.Append(", nullable: true");
             }
 
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("};");
-
-            if (includeSuper)
+            if (IsA<DateTime>(type))
             {
-                definitionsBuilder
-                    .AppendSpaces(level + 2)
-                    .AppendLine("map.addAll(super.toJsonMap());");
+                var fromJsonMethod = type.IsNullable ? "_nullableDateTimeFromJson" : "_dateTimeFromJson";
+                definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
+            }
+            else if (IsA<double>(type) || IsA<decimal>(type) || IsA<float>(type))
+            {
+                var fromJsonMethod = type.IsNullable ? "_nullableDoubleFromJson" : "_doubleFromJson";
+                definitionsBuilder.Append($", fromJson: {fromJsonMethod}");
             }
 
-            definitionsBuilder
-                .AppendSpaces(level + 2)
-                .AppendLine("return map;")
-                .AppendSpaces(level + 1)
-                .AppendLine("}");
+            definitionsBuilder.AppendLine(")");
         }
 
-        private void GenerateTypeMapingForToJsonMethod(TypeStatement statement, int depth)
+        private bool IsA<T>(TypeStatement type)
         {
-            if (statement.IsArrayLike)
-            {
-                if (statement.TypeArguments.FirstOrDefault() is TypeStatement argumentType)
-                {
-                    if (!configuration.TypeTranslations.ContainsKey(argumentType.Name.ToLowerInvariant()))
-                    {
-                        definitionsBuilder.Append($".map((x{depth}) => x{depth}");
-                        GenerateTypeMapingForToJsonMethod(argumentType, depth + 1);
-                        definitionsBuilder.Append(").toList()");
-                    }
-                }
-            }
-            else if (statement.Name == "DateTime" && !statement.IsNullable)
-            {
-                definitionsBuilder.Append(".toIso8601String()");
-            }
-            else if (statement.Name == "DateTime" && statement.IsNullable)
-            {
-                definitionsBuilder.Append("?.toIso8601String()");
-            }
-            else if (configuration.TypeTranslations.ContainsKey(statement.Name.ToLowerInvariant()))
-            {
-                return;
-            }
-            else if (statement.IsDictionary)
-            {
-                return;
-            }
-            else
-            {
-                definitionsBuilder.Append(".toJsonMap()");
-            }
+            return $"{type.Namespace}.{type.Name}" == typeof(T).FullName;
         }
 
-        private void GenerateFromJsonMethod(string name, InterfaceStatement statement, int level)
+        private void GenerateDefaultConstructor(string name, int level)
         {
             definitionsBuilder
                 .AppendLine()
                 .AppendSpaces(level + 1)
-                .Append($"static {name} fromJson(Map map) => {name}()");
-
-            GenerateFromJsonAssignments(statement.Fields, level + 1);
-
-            if (statement.BaseClass != null && statement.IsClass)
-            {
-                var type = mangledStatements[Mangle(statement.BaseClass.Namespace, statement.BaseClass.Name)];
-
-                if (type.statement is InterfaceStatement baseStatement)
-                {
-                    GenerateFromJsonAssignments(baseStatement.Fields, level + 1);
-                }
-            }
-
-            definitionsBuilder.AppendLine(";");
+                .AppendLine($"{name}();");
         }
 
-        private void GenerateFromJsonAssignments(List<FieldStatement> fields, int level)
+        private void GenerateToJsonMethod(InterfaceStatement statement, string fullName, int level, bool includeOverrideAnnotation, bool includeSuper)
         {
-            foreach (var field in fields)
+            definitionsBuilder
+                .AppendLine();
+
+            if (includeOverrideAnnotation)
             {
-                var identifier = TranslateIdentifier(field.Name);
-                var map = $"map['{field.Name.Capitalize()}']";
-                var value = map;
-
-                if (field.Type.IsDictionary)
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .Append($"..{field.Name.Uncapitalize()} = {value}");
-
-                    continue;
-                }
-
-                if (field.Type.IsArrayLike)
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .AppendLine($"..{identifier} = {value}")
-                        .AppendSpaces(level + 3);
-
-                    var argType = field.Type.TypeArguments.First();
-
-                    if (!configuration.TypeTranslations.ContainsKey(argType.Name.ToLowerInvariant()))
-                    {
-                        definitionsBuilder
-                           .Append("?.map((dynamic x) => ");
-
-                        VisitTypeStatement(argType);
-
-                        definitionsBuilder
-                            .AppendLine(".fromJson(x))");
-                    }
-                    else
-                    {
-                        definitionsBuilder.Append("?.map((dynamic x) => x)");
-                    }
-
-                    definitionsBuilder
-                        .AppendSpaces(level + 3)
-                        .AppendLine("?.toList(growable: false)")
-                        .AppendSpaces(level + 3)
-                        .Append("?.cast<");
-
-                    VisitTypeStatement(field.Type.TypeArguments.First());
-
-                    definitionsBuilder
-                        .Append(">()");
-
-                    continue;
-                }
-
-                if (!configuration.TypeTranslations.ContainsKey(field.Type.Name.ToLowerInvariant()))
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2)
-                        .Append($"..{identifier} = {map} != null ? ");
-
-                    VisitTypeStatement(field.Type);
-
-                    definitionsBuilder.Append($".fromJson({value}) : null");
-                }
-                else
-                {
-                    definitionsBuilder
-                        .AppendLine()
-                        .AppendSpaces(level + 2);
-
-                    if (field.Type.Name == "DateTime")
-                    {
-                        value = $"DateTime.parse(normalizeDate({value}))";
-                        definitionsBuilder.Append($"..{identifier} = {map} != null ? {value} : null");
-                    }
-                    else if (field.Type.Name == "Double")
-                    {
-                        definitionsBuilder.AppendLine($"..{identifier} = {map} is String ?")
-                            .AppendLine($"double.parse({map}) : {map}");
-                    }
-                    else
-                    {
-                        definitionsBuilder
-                            .Append($"..{identifier} = {value}");
-                    }
-                }
+                definitionsBuilder
+                   .AppendSpaces(level + 1)
+                   .AppendLine("@override");
             }
+
+            definitionsBuilder
+                .AppendSpaces(level + 1)
+                .Append("Map<String, dynamic> toJsonMap() => ")
+                .AppendLine($"_${fullName}ToJson(this);");
+        }
+
+        private void GenerateFromJsonConstructor(string name, InterfaceStatement statement, int level)
+        {
+            definitionsBuilder.AppendLine()
+                .AppendSpaces(level + 1)
+                .Append($"factory {name}.fromJson(Map<String, dynamic> json) => ")
+                .AppendLine($"_${name}FromJson(json);");
         }
 
         private string Mangle(string namespaceName, string identifier)

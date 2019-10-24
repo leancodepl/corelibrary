@@ -24,6 +24,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         public static LeanCode.ContractsGenerator.CodeGenerator CreateDartGeneratorFromNamespace(string namespaceBody, string namespaceName = "DartGenerator.Tests")
         {
             return CreateDartGenerator($@"
+                using System;
                 using LeanCode.CQRS;
                 using System.Collections.Generic;
 
@@ -37,10 +38,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         public static readonly GeneratorConfiguration DefaultDartConfiguration = new GeneratorConfiguration()
         {
             Name = "Test",
-            Dart = new DartConfiguration
-            {
-                ContractsPreamble = string.Empty,
-            },
+            Dart = new DartConfiguration { },
         };
 
         public static string GetContracts(IEnumerable<LanguageFileOutput> output)
