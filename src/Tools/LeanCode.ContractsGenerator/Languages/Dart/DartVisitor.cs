@@ -58,15 +58,15 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private void AddContractsPreamble(ClientStatement statement)
         {
-            if (configuration.ContractsPreambleLines == DartConfiguration.DefaultPreambleLines)
+            var defaultPreamble = DartConfiguration.DefaultContractsPreamble;
+            var preamble = configuration.ContractsPreamble;
+
+            if (preamble == defaultPreamble)
             {
-                var defaultPreamble = configuration.ContractsPreamble.Replace("{0}", statement.Name);
-                definitionsBuilder.AppendLine(defaultPreamble);
+                preamble = string.Format(defaultPreamble, statement.Name);
             }
-            else
-            {
-                definitionsBuilder.AppendLine(configuration.ContractsPreamble);
-            }
+
+            definitionsBuilder.AppendLine(preamble);
         }
 
         private void GenerateHelpers()
