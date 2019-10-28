@@ -42,14 +42,15 @@ namespace LeanCode.EmailSender.SendGrid
     {
         public SendGridEmail From { get; set; }
         public ImmutableList<SendGridPersonalization> Personalizations { get; set; }
-        public ImmutableArray<SendGridContent> Content { get; set; }
-        public ImmutableArray<SendGridAttachment> Attachments { get; set; }
+        public ImmutableList<SendGridContent> Content { get; set; }
+        public ImmutableList<SendGridAttachment>? Attachments { get; set; }
         public string? Subject { get; set; }
 
         public SendGridMessage(SendGridEmail from, IEnumerable<SendGridPersonalization> personalizations)
         {
             From = from;
             Personalizations = personalizations.ToImmutableList();
+            Content = ImmutableList<SendGridContent>.Empty;
         }
     }
 

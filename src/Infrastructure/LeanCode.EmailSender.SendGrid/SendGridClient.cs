@@ -80,8 +80,10 @@ namespace LeanCode.EmailSender.SendGrid
                     .Select(recipient => new SendGridEmail(recipient))
                     .ToImmutableList())))
             {
-                Content = contents.ToImmutableArray(),
-                Attachments = attachments.ToImmutableArray(),
+                Content = contents.ToImmutableList(),
+                Attachments = attachments.Length == 0
+                    ? null
+                    : attachments.ToImmutableList(),
 
                 Subject = model.Subject,
             };
