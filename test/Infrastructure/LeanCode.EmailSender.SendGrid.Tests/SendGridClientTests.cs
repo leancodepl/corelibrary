@@ -15,6 +15,8 @@ namespace LeanCode.Infrastructure.EmailSender.SendGrid.Tests
 {
     public class SendGridClientTests
     {
+        private const string EmailFrom = "tester@leancode.pl";
+        private const string EmailTo = "test@leancode.pl";
         private static readonly string SendGridKey = string.Empty;
 
         private static readonly SendGridConfiguration Config = new SendGridConfiguration
@@ -30,9 +32,9 @@ namespace LeanCode.Infrastructure.EmailSender.SendGrid.Tests
 
             renderer.RenderToStringAsync(null, null!).ReturnsForAnyArgs("rendered string");
             renderer.RenderToStreamAsync(Arg.Any<string>(), Arg.Any<object>(), Arg.Do<Stream>(s => new StreamWriter(s).WriteLine("Write line")));
-            IStringLocalizer localizer = new MockStringLocalizer();
+            var localizer = new MockStringLocalizer();
 
-            HttpClient httpClient = new HttpClient
+            var httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://api.sendgrid.com/v3/"),
             };
@@ -49,8 +51,8 @@ namespace LeanCode.Infrastructure.EmailSender.SendGrid.Tests
         public async Task Sends_email_correctly()
         {
             await client.New()
-                .From("tester@leancode.pl", "Tester")
-                .To("lukasz.g@leancode.pl", "Test")
+                .From(EmailFrom, "Tester")
+                .To(EmailTo, "Test")
                 .WithSubject("TEST")
                 .WithTextContent(new Body())
                 .SendAsync();
