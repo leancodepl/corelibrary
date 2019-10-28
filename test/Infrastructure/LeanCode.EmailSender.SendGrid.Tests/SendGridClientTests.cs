@@ -45,8 +45,7 @@ namespace LeanCode.Infrastructure.EmailSender.SendGrid.Tests
         }
 
         [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
-        // [Fact(Skip = "SendGrid credentials required")]
-        [Fact]
+        [Fact(Skip = "SendGrid credentials required")]
         public async Task Sends_email_correctly()
         {
             await client.New()
