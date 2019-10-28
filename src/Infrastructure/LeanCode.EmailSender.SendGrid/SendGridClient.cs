@@ -81,7 +81,9 @@ namespace LeanCode.EmailSender.SendGrid
                     .ToImmutableList())))
             {
                 Content = contents.ToImmutableArray(),
-                Attachments = attachments.ToImmutableArray(),
+                Attachments = attachments.Length == 0
+                    ? null
+                    : attachments.ToImmutableList(),
 
                 Subject = model.Subject,
             };
