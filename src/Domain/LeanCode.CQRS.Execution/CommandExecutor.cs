@@ -2,9 +2,13 @@ using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.CQRS.Default.Execution
+namespace LeanCode.CQRS.Execution
 {
-    internal class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
+    public delegate PipelineBuilder<TAppContext, ICommand, CommandResult> CommandBuilder<TAppContext>(
+        PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
+        where TAppContext : IPipelineContext;
+
+    public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
         where TAppContext : IPipelineContext
     {
         private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;

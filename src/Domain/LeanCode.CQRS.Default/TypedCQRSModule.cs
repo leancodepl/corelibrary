@@ -2,7 +2,6 @@ using Autofac;
 using Autofac.Features.Variance;
 using LeanCode.Components;
 using LeanCode.CQRS.Default.Autofac;
-using LeanCode.CQRS.Default.Execution;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;

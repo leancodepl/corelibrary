@@ -3,8 +3,12 @@ using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.CQRS.Default.Execution
+namespace LeanCode.CQRS.Execution
 {
+    public delegate PipelineBuilder<TAppContext, IQuery, object?> QueryBuilder<TAppContext>(
+        PipelineBuilder<TAppContext, IQuery, object?> builder)
+        where TAppContext : IPipelineContext;
+
     public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
         where TAppContext : notnull, IPipelineContext
     {
