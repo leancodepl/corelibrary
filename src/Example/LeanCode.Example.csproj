@@ -23,9 +23,10 @@
     <ProjectReference Include="../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
     <ProjectReference Include="../Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
-    <ProjectReference Include="../Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
+    <ProjectReference Include="../Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
     <ProjectReference Include="../Domain/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
