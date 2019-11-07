@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Validation
 {
-    public interface ICommandValidatorResolver<TAppContext>
+    public interface ICommandValidatorResolver<in TAppContext>
+        where TAppContext : notnull
     {
         ICommandValidatorWrapper? FindCommandValidator(Type commandType);
     }
