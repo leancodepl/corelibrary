@@ -34,8 +34,8 @@ namespace LeanCode.DomainModels.Model
                 .SequenceEqual(other.GetAttributesToIncludeInEqualityCheck());
         }
 
-        public static bool operator ==(ValueObject<T> left, ValueObject<T> right) => Equals(left, right);
+        public static bool operator ==(ValueObject<T>? left, ValueObject<T>? right) => Equals(left, right);
 
-        public static bool operator !=(ValueObject<T> left, ValueObject<T> right) => !Equals(left, right);
+        public static bool operator !=(ValueObject<T>? left, ValueObject<T>? right) => !Equals(left, right);
     }
 }
