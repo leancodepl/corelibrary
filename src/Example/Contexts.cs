@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using LeanCode.Pipelines;
 using LeanCode.CQRS.Security;
-using LeanCode.DomainModels.Model;
 using LeanCode.DomainModels.EventsExecution;
+using LeanCode.DomainModels.Model;
+using LeanCode.Pipelines;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Example
 {
