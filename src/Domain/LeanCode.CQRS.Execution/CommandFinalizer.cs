@@ -28,18 +28,7 @@ namespace LeanCode.CQRS.Execution
                 throw new CommandHandlerNotFoundException(commandType);
             }
 
-            try
-            {
-                await handler.ExecuteAsync(appContext, command);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Cannot execute command {@Command} because of internal error", command);
-
-                throw;
-            }
-
-            logger.Information("Command {@Command} executed successfully", command);
+            await handler.ExecuteAsync(appContext, command);
 
             return CommandResult.Success;
         }

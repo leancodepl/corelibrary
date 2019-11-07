@@ -1,6 +1,6 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using LeanCode.CQRS.Execution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution
@@ -12,6 +12,8 @@ namespace LeanCode.CQRS.Execution
     public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
         where TAppContext : notnull, IPipelineContext
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<QueryExecutor<TAppContext>>();
+
         private readonly PipelineExecutor<TAppContext, IQuery, object?> executor;
 
         public QueryExecutor(IPipelineFactory factory, QueryBuilder<TAppContext> config)
@@ -25,8 +27,17 @@ namespace LeanCode.CQRS.Execution
         [return: MaybeNull]
         public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)
         {
-            var res = await executor.ExecuteAsync(appContext, query);
-            return (TResult)res!;
+            try
+            {
+                var res = await executor.ExecuteAsync(appContext, query);
+                logger.Information("Query {@Query} executed successfuly", query);
+                return (TResult)res!;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Cannot execute query {@Query} because of internal error", query);
+                throw;
+            }
         }
     }
 }
