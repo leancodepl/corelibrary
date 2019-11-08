@@ -13,7 +13,6 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("import 'package:meta/meta.dart';", contracts);
             Assert.Contains("import 'package:json_annotation/json_annotation.dart';", contracts);
             Assert.Contains("import 'package:cqrs/cqrs.dart';", contracts);
         }
