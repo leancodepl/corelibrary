@@ -2,10 +2,5 @@
   "recommendations": [
     "EditorConfig.EditorConfig",
     "ms-vscode.csharp",
-    "msjsdiag.debugger-for-chrome",
-    "dbaeumer.vscode-eslint",
-    "eg2.tslint",
-    "Ionide.Ionide-FAKE",
-    "Ionide.Ionide-fsharp"
   ]
 }
