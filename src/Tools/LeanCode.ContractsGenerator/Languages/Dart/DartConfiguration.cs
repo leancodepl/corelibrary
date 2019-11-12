@@ -6,7 +6,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
     {
         public static string[] DefaultPreambleLines { get; set; } = new string[]
         {
-            "import 'package:meta/meta.dart';",
             "import 'package:json_annotation/json_annotation.dart';",
             "import 'package:cqrs/cqrs.dart';",
             "part '{0}.g.dart';",

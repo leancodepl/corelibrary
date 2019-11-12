@@ -86,7 +86,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder
                 .AppendLine("double _doubleFromJson(dynamic value) {")
-                .AppendLine("return value is String ? double.parse(value) : value; }");
+                .AppendLine("if (value is String) { return double.parse(value); }")
+                .AppendLine("else if (value is int) { return value.toDouble(); }")
+                .AppendLine("else { return value; }")
+                .AppendLine("}");
 
             definitionsBuilder
                 .AppendLine("double _nullableDoubleFromJson(dynamic value) {")
