@@ -8,6 +8,7 @@ leancode.builder('corelibrary')
         scmVars = safeCheckout scm
     }
 
+    def isMasterBuild = BRANCH_NAME ==~ /v\d\.\d(\.\d)?/
     leancode.configureRepositories()
 
     stage('Version') {
@@ -16,8 +17,12 @@ leancode.builder('corelibrary')
             returnStdout: true).trim()
 
         env.GIT_COMMIT = scmVars.GIT_COMMIT
-        env.VERSION = BRANCH_NAME ==~ /v\d\.\d(\.\d)?/ ? "${baseVer}.${nextBuildNumber()}" : '0.0.0'
+        env.VERSION = isMasterBuild ? "${baseVer}.${nextBuildNumber()}" : '0.0.0'
         echo "Building version: ${env.VERSION}"
+
+        if (isMasterBuild) {
+            currentBuild.displayName = "v${env.APP_VERSION}"
+        }
     }
 
     container('dotnet') {
@@ -41,7 +46,7 @@ leancode.builder('corelibrary')
         }
 
         stage('Publish') {
-            when (BRANCH_NAME ==~ /v\d\.\d(\.\d)?/) {
+            when (isMasterBuild) {
                 withCredentials([string(credentialsId: 'LeanCodeMyGetApiKey', variable: 'MYGET_APIKEY')]) {
                     sh "dotnet nuget push -k '$MYGET_APIKEY' -s 'https://www.myget.org/F/leancode/api/v2/package' 'packed/*.nupkg'"
                 }

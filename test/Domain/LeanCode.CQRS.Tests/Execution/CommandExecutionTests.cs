@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Autofac;
-using LeanCode.CQRS.Execution;
 using Xunit;
 
 namespace LeanCode.CQRS.Tests

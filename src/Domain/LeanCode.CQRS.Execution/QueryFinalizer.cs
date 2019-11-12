@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
 
@@ -27,20 +26,7 @@ namespace LeanCode.CQRS.Execution
                 throw new QueryHandlerNotFoundException(queryType);
             }
 
-            try
-            {
-                var result = await handler.ExecuteAsync(appContext, query);
-
-                logger.Information("Query {@Query} executed successfuly", query);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Cannot execute query {@Query} because of internal error", query);
-
-                throw;
-            }
+            return await handler.ExecuteAsync(appContext, query);
         }
     }
 }

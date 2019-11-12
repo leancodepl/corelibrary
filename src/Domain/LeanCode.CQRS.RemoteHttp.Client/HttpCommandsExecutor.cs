@@ -103,7 +103,6 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                     MaxDepth = serializerOptions.MaxDepth,
                 };
                 return await JsonDocument.ParseAsync(responseContent, opts);
-
             }
             catch (Exception ex)
             {
