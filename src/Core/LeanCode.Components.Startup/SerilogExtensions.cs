@@ -9,7 +9,7 @@ namespace LeanCode.Components.Startup
 {
     internal static class SerilogExtensions
     {
-        public static LoggerConfiguration DestructureCommonObjects(
+        internal static LoggerConfiguration DestructureCommonObjects(
             this LoggerConfiguration config,
             Assembly[]? searchAssemblies)
         {
@@ -24,6 +24,7 @@ namespace LeanCode.Components.Startup
             }
         }
 
+        [Obsolete]
         public static LoggerConfiguration EnrichWithAppName(
             this LoggerConfiguration config,
             string appName)

@@ -12,6 +12,7 @@ namespace LeanCode.Components.Startup
     {
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
 
+        [Obsolete]
         public static IWebHostBuilder BuildDefaultWebHost<TStartup>(
             string appName,
             bool requireEnvSettings = false,
@@ -58,6 +59,7 @@ namespace LeanCode.Components.Startup
                 .UseStartup<TStartup>();
         }
 
+        [Obsolete]
         public static IWebHostBuilder BuildMinimalWebHost<TStartup>(
             string appName,
             Func<WebHostBuilderContext, LoggerConfiguration> configLogger,
@@ -88,6 +90,18 @@ namespace LeanCode.Components.Startup
                 .UseDefaultServiceProvider((context, options) =>
                 {
                     options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
+                })
+                .UseStartup<TStartup>();
+        }
+
+        public static IWebHostBuilder BuildMinimalWebHost<TStartup>()
+            where TStartup : class
+        {
+            return new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddEnvironmentVariables();
                 })
                 .UseStartup<TStartup>();
         }
