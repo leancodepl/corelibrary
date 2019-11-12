@@ -8,7 +8,7 @@ namespace LeanCode.IntegrationTestHelpers
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Warning()
-                .WriteTo.LiterateConsole()
+                .WriteTo.Console()
                 .CreateLogger();
         }
     }

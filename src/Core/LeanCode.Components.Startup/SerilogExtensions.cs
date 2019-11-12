@@ -25,7 +25,7 @@ namespace LeanCode.Components.Startup
         }
 
         [Obsolete]
-        public static LoggerConfiguration EnrichWithAppName(
+        internal static LoggerConfiguration EnrichWithAppName(
             this LoggerConfiguration config,
             string appName)
         {
