@@ -49,9 +49,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-
-    <PackageReference Include="Serilog.Sinks.RollingFile" />
-    <PackageReference Include="Serilog.Sinks.Literate" />
   </ItemGroup>
 
 </Project>

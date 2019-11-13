@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 
     <PackageReference Include="Serilog.Extensions.Logging" />
-    <PackageReference Include="Serilog.Sinks.Literate" />
+    <PackageReference Include="Serilog.Sinks.Console" />
 
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
