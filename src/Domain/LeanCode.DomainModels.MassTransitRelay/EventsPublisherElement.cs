@@ -5,7 +5,6 @@ using LeanCode.Correlation;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
-using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -13,11 +12,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
         where TContext : notnull, ICorrelationContext, IEventsInterceptorContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
-        private readonly IBus bus;
+        private readonly IEventPublisher publisher;
 
-        public EventsPublisherElement(IBus bus)
+        public EventsPublisherElement(IEventPublisher publisher)
         {
-            this.bus = bus;
+            this.publisher = publisher;
         }
 
         public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
@@ -50,14 +49,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             try
             {
-                // The cast is important. Otherwise event will be published
-                // as IDomainEvent interface instead of concrete object and handlers
-                // won't be called.
-                await bus.Publish((object)evt, ctx =>
-                {
-                    ctx.MessageId = evt.Id;
-                    ctx.ConversationId = correlationId;
-                });
+                await publisher.PublishAsync(evt, correlationId);
             }
             catch (Exception e)
             {

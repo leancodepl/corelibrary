@@ -40,6 +40,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         public TestApp()
         {
+            Serilog.Log.Logger = new Serilog.LoggerConfiguration().CreateLogger();
+
             var builder = new ContainerBuilder();
 
             builder.RegisterGeneric(typeof(HandledEventsReporter<>))

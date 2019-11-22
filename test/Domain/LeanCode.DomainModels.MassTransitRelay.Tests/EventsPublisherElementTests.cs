@@ -14,24 +14,25 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 {
     public class EventsPublisherElementTests
     {
-        private readonly IBus bus;
-        private readonly EventsPublisherElement<TestContext, TestPayload, TestPayload> publisher;
-
-        private Action<PublishContext<IDomainEvent>> PublishCallback => Arg.Any<Action<PublishContext<IDomainEvent>>>();
+        private readonly IEventPublisher publisher;
+        private readonly EventsPublisherElement<TestContext, TestPayload, TestPayload> element;
+        private readonly TestContext testContext = new TestContext
+        {
+            CorrelationId = Guid.NewGuid(),
+        };
 
         public EventsPublisherElementTests()
         {
-            bus = Substitute.For<IBus>();
-            publisher = new EventsPublisherElement<TestContext, TestPayload, TestPayload>(bus);
+            publisher = Substitute.For<IEventPublisher>();
+            element = new EventsPublisherElement<TestContext, TestPayload, TestPayload>(publisher);
         }
 
-        [Fact(Skip = "Issues with mocking")]
+        [Fact]
         public async Task Publishes_intercepted_events()
         {
             var evt1 = new TestEvent();
             var evt2 = new TestEvent();
             var evt3 = new TestEvent();
-            var ctx = new TestContext();
 
             Task<TestPayload> Next(TestContext context, TestPayload input)
             {
@@ -39,20 +40,19 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 return Task.FromResult(input);
             }
 
-            await publisher.ExecuteAsync(ctx, new TestPayload(), Next);
+            await element.ExecuteAsync(testContext, new TestPayload(), Next);
 
-            await bus.Received(1).Publish(evt1, PublishCallback);
-            await bus.Received(1).Publish(evt2, PublishCallback);
-            await bus.Received(1).Publish(evt3, PublishCallback);
+            await publisher.Received(1).PublishAsync(evt1, testContext.CorrelationId);
+            await publisher.Received(1).PublishAsync(evt2, testContext.CorrelationId);
+            await publisher.Received(1).PublishAsync(evt3, testContext.CorrelationId);
         }
 
-        [Fact(Skip = "Issues with mocking")]
+        [Fact]
         public async Task If_publishing_one_event_fails_the_rest_are_not_interrupted()
         {
             var evt1 = new TestEvent();
             var evt2 = new TestEvent();
             var evt3 = new TestEvent();
-            var ctx = new TestContext();
             var inp = new TestPayload();
 
             Task<TestPayload> Next(TestContext context, TestPayload input)
@@ -61,12 +61,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 return Task.FromResult(input);
             }
 
-            bus.Publish(evt2, PublishCallback).Returns(x => throw new Exception());
+            publisher.PublishAsync(evt2, Arg.Any<Guid>()).Returns(x => throw new Exception());
 
-            await publisher.ExecuteAsync(ctx, inp, Next);
+            await element.ExecuteAsync(testContext, inp, Next);
 
-            await bus.Received(1).Publish(evt1, PublishCallback);
-            await bus.Received(1).Publish(evt3, PublishCallback);
+            await publisher.Received(1).PublishAsync(evt1, testContext.CorrelationId);
+            await publisher.Received(1).PublishAsync(evt3, testContext.CorrelationId);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             var next = Substitute.For<Func<TestContext, TestPayload, Task<TestPayload>>>();
             next(null, null).ReturnsForAnyArgs<TestPayload>(x => throw new InvalidOperationException());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => publisher.ExecuteAsync(ctx, input, next));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => element.ExecuteAsync(ctx, input, next));
         }
     }
 

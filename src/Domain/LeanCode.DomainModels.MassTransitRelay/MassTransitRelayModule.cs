@@ -28,6 +28,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterGeneric(typeof(EventsPublisherElement<,,>))
                 .AsSelf();
 
+            builder.RegisterType<BusEventPublisher>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
             builder.AddMassTransit(cfg =>
             {
                 cfg.AddConsumers(consumers.Assemblies);
@@ -40,8 +44,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
             return CreateBus(cfg =>
             {
                 var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
-
-                cfg.UseSerilog();
 
                 cfg.UseRetry(retryConfig =>
                     retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));

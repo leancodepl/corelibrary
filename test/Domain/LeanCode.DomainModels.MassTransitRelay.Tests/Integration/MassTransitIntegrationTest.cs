@@ -6,6 +6,10 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 {
+    /// <remarks>
+    /// Single intergration test checking if events from command handler and further
+    /// event handlers (consumers) are raised
+    /// </remarks>
     public class MassTransitIntegrationTest : IClassFixture<TestApp>
     {
         private readonly TestApp testApp;
@@ -30,8 +34,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             var handled = testApp.HandledEvents<Event1>();
 
             var evt = Assert.Single(handled);
-            Assert.Equal(typeof(FirstEvent1Consumer), evt.ConsumerType);
-            Assert.Equal(testApp.CorrelationId, evt.CorrelationId);
+            AssertConsumed(evt, typeof(FirstEvent1Consumer));
         }
 
         [TestStep(2)]

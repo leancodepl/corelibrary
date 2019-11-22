@@ -18,7 +18,6 @@
   <ItemGroup>
     <PackageReference Include="MassTransit" />
     <PackageReference Include="MassTransit.Autofac" />
-    <PackageReference Include="MassTransit.SerilogIntegration" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 </Project>
