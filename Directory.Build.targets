@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Update="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Update="System.Linq.Async" Version="4.0.0" />
     <PackageReference Update="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Update="System.Threading.Tasks.Extensions" Version="4.6.0-preview.18571.3" />
   </ItemGroup>
@@ -44,6 +45,7 @@
     <PackageReference Update="FluentValidation" Version="8.5.0-preview5" />
     <PackageReference Update="Glob" Version="1.1.3" />
     <PackageReference Update="Polly" Version="7.1.1" />
+    <PackageReference Update="Sendgrid" Version="9.12.0" />
   </ItemGroup>
 
   <ItemGroup>
