@@ -7,17 +7,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
+    public delegate void BusConfig(IComponentContext context, IBusFactoryConfigurator config, string queueName);
+
     public abstract class MassTransitRelayModuleBase : AppModule
     {
         private readonly string queueName;
         private readonly TypesCatalog consumers;
+        private readonly BusConfig busConfig;
 
         protected abstract IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator);
 
-        public MassTransitRelayModuleBase(string queueName, TypesCatalog consumers)
+        public MassTransitRelayModuleBase(
+            string queueName,
+            TypesCatalog consumers,
+            BusConfig? busConfig = null)
         {
             this.queueName = queueName;
             this.consumers = consumers;
+            this.busConfig = busConfig ?? DefaultBusConfig;
         }
 
         public override void ConfigureServices(IServiceCollection services) =>
@@ -41,23 +48,25 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private IBusControl CreateBus(IComponentContext context)
         {
-            return CreateBus(cfg =>
+            return CreateBus(cfg => busConfig(context, cfg, queueName));
+        }
+
+        public static void DefaultBusConfig(IComponentContext context, IBusFactoryConfigurator config, string queueName)
+        {
+            var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
+
+            config.UseRetry(retryConfig =>
+                retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+
+            config.UseInMemoryOutbox();
+
+            config.UseLifetimeScopeInjection(scopeFactory);
+
+            config.UseDomainEventsPublishing();
+
+            config.ReceiveEndpoint(queueName, rcv =>
             {
-                var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
-
-                cfg.UseRetry(retryConfig =>
-                    retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
-
-                cfg.UseInMemoryOutbox();
-
-                cfg.UseLifetimeScopeInjection(scopeFactory);
-
-                cfg.UseDomainEventsPublishing();
-
-                cfg.ReceiveEndpoint(queueName, rcv =>
-                {
-                    rcv.ConfigureConsumers(context);
-                });
+                rcv.ConfigureConsumers(context);
             });
         }
     }
