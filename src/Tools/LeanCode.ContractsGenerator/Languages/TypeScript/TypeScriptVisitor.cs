@@ -260,9 +260,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .Append(statement.Name)
                 .Append(") => cqrsClient.executeQuery<");
 
-            var queryResult = statement.Extends.First(e => e.Name == "IRemoteQuery").TypeArguments.First();
-
-            VisitTypeStatement(queryResult, clientBuilder);
+            VisitTypeStatement(statement.ResultType, clientBuilder);
 
             clientBuilder.Append(">(\"")
                 .Append(statement.Namespace)

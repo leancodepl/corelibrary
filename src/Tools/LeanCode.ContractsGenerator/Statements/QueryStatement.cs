@@ -3,6 +3,8 @@ namespace LeanCode.ContractsGenerator.Statements
     internal class QueryStatement : InterfaceStatement
     {
         public QueryStatement() { }
+        public TypeStatement ResultType { get; set; }
+
         public QueryStatement(InterfaceStatement interfaceStatement)
         {
             Name = interfaceStatement.Name;
