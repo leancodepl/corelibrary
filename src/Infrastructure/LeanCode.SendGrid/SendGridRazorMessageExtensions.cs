@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Mail;
@@ -49,11 +50,94 @@ namespace LeanCode.SendGrid
             return message;
         }
 
+        public static SendGridRazorMessage WithRecipients(
+            this SendGridRazorMessage message,
+            List<EmailAddress> emailAddresses)
+        {
+            message.AddTos(emailAddresses);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            EmailAddress emailAddress)
+        {
+            message.AddCc(emailAddress);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            string email,
+            string? name)
+        {
+            message.AddCc(email, name);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            string email)
+        {
+            message.AddCc(email, null);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithCarbonCopyRecipients(
+            this SendGridRazorMessage message,
+            List<EmailAddress> emailAddresses)
+        {
+            message.AddCcs(emailAddresses);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            EmailAddress emailAddress)
+        {
+            message.AddBcc(emailAddress);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            string email,
+            string? name)
+        {
+            message.AddBcc(email, name);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
+            this SendGridRazorMessage message,
+            string email)
+        {
+            message.AddBcc(email, null);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithBlindCarbonCopyRecipients(
+            this SendGridRazorMessage message,
+            List<EmailAddress> emailAddresses)
+        {
+            message.AddBccs(emailAddresses);
+
+            return message;
+        }
+
         public static SendGridRazorMessage WithSubject(this SendGridRazorMessage message, string subject)
         {
             if (message is SendGridLocalizedRazorMessage localized)
             {
-                localized.SetGlobalSubject(subject, Array.Empty<object>());
+                localized.SetGlobalSubject(subject, null);
             }
             else
             {
@@ -144,6 +228,13 @@ namespace LeanCode.SendGrid
                     Enable = false,
                 },
             };
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithDelayUntil(this SendGridRazorMessage message, DateTimeOffset sendAt)
+        {
+            message.SendAt = sendAt.ToUnixTimeSeconds();
 
             return message;
         }
