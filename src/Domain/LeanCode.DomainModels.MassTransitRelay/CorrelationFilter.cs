@@ -15,17 +15,13 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
         {
-            IDisposable? logs = context.ConversationId is Guid correlationId ?
+            var logs = context.ConversationId is Guid correlationId ?
                 Correlate.Logs(correlationId) :
                 null;
-            Serilog.Log.Logger.Information("Here");
-            try
+
+            using (logs)
             {
                 await next.Send(context);
-            }
-            finally
-            {
-                logs?.Dispose();
             }
         }
     }
