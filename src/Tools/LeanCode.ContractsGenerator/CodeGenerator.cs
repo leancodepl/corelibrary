@@ -135,9 +135,12 @@ namespace LeanCode.ContractsGenerator
                 }
                 else if (IsRemoteQuery(info))
                 {
+                    var resultType = info.AllInterfaces.First(i => i.Name == "IRemoteQuery").TypeArguments.First();
+
                     return new QueryStatement(interfaceStatement)
                     {
                         Namespace = GetFullNamespaceName(info.ContainingNamespace),
+                        ResultType = ConvertType(resultType),
                     };
                 }
             }
