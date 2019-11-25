@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -10,28 +9,37 @@ using SendGrid.Helpers.Mail;
 
 namespace LeanCode.SendGrid
 {
-    public class SendGridRazorClient : SendGridClient
+    public class SendGridRazorClient
     {
-        internal const string PlainTextModelSuffix = ".txt";
-        internal const string HtmlModelSuffix = "";
-
-        private const string IncorrectUsageMessage = "Use SendEmailAsync(SendGridRazorMessage, CancellationToken) overload instead.";
+        private const string PlainTextModelSuffix = ".txt";
+        private const string HtmlModelSuffix = "";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridRazorClient>();
 
+        private readonly SendGridClient client;
         private readonly IViewRenderer renderer;
         private readonly IStringLocalizer localizer;
 
-        public SendGridRazorClient(SendGridClientOptions options, IViewRenderer renderer, IStringLocalizer localizer)
-            : base(options)
+        public SendGridRazorClient(SendGridClient client, IViewRenderer renderer, IStringLocalizer localizer)
         {
+            this.client = client;
             this.renderer = renderer;
             this.localizer = localizer;
         }
 
         public async Task<Response> SendEmailAsync(
-            SendGridRazorMessage msg,
+            SendGridMessage msg,
             CancellationToken cancellationToken = default)
+        {
+            if (msg is SendGridRazorMessage rmsg)
+            {
+                await RenderMessageAsync(rmsg);
+            }
+
+            return await client.SendEmailAsync(msg, cancellationToken);
+        }
+
+        protected virtual async Task RenderMessageAsync(SendGridRazorMessage msg)
         {
             if (msg is SendGridLocalizedRazorMessage lrmsg)
             {
@@ -43,7 +51,7 @@ namespace LeanCode.SendGrid
                 var viewName = plainTextModel.GetType().Name;
 
                 msg.PlainTextContent = await msg
-                    .GenerateTemplateNames(viewName)
+                    .GetTemplateNames(viewName)
                     .SelectAsync(name => TryRenderViewAsync(name + PlainTextModelSuffix, plainTextModel))
                     .Where(view => view != null)
                     .FirstOrDefaultAsync();
@@ -61,7 +69,7 @@ namespace LeanCode.SendGrid
                 var viewName = htmlModel.GetType().Name;
 
                 msg.HtmlContent = await msg
-                    .GenerateTemplateNames(viewName)
+                    .GetTemplateNames(viewName)
                     .SelectAsync(name => TryRenderViewAsync(name + HtmlModelSuffix, htmlModel))
                     .Where(view => view != null)
                     .FirstOrDefaultAsync();
@@ -73,16 +81,6 @@ namespace LeanCode.SendGrid
                     throw new ViewNotFoundException(viewName, "Failed to render all HTML views.");
                 }
             }
-
-            return await base.SendEmailAsync(msg, cancellationToken);
-        }
-
-        [Obsolete(IncorrectUsageMessage)]
-        public new Task<Response> SendEmailAsync(SendGridMessage msg, CancellationToken cancellationToken = default)
-        {
-            return msg is SendGridRazorMessage
-                ? throw new InvalidOperationException(IncorrectUsageMessage)
-                : base.SendEmailAsync(msg, cancellationToken);
         }
 
         private async Task<string?> TryRenderViewAsync(string viewName, object model)

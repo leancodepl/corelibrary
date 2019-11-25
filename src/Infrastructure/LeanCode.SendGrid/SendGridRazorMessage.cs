@@ -12,7 +12,7 @@ namespace LeanCode.SendGrid
         [JsonIgnore]
         public object? HtmlContentModel { get; set; }
 
-        internal virtual IEnumerable<string> GenerateTemplateNames(string templateBaseName)
+        internal virtual IEnumerable<string> GetTemplateNames(string templateBaseName)
         {
             yield return templateBaseName;
         }

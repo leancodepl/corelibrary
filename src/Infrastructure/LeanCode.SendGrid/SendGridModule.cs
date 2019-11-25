@@ -1,5 +1,6 @@
 using Autofac;
 using LeanCode.Components;
+using SendGrid;
 
 namespace LeanCode.SendGrid
 {
@@ -7,6 +8,9 @@ namespace LeanCode.SendGrid
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.Register(context => new SendGridClient(context.Resolve<SendGridClientOptions>()))
+                .AsSelf();
+
             builder.RegisterType<SendGridRazorClient>()
                 .AsSelf();
         }

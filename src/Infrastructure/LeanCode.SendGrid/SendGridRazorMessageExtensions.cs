@@ -14,9 +14,37 @@ namespace LeanCode.SendGrid
             return message;
         }
 
+        public static SendGridRazorMessage WithSender(this SendGridRazorMessage message, string email, string? name)
+        {
+            message.SetFrom(email, name);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithSender(this SendGridRazorMessage message, string email)
+        {
+            message.SetFrom(email, null);
+
+            return message;
+        }
+
         public static SendGridRazorMessage WithRecipient(this SendGridRazorMessage message, EmailAddress emailAddress)
         {
             message.AddTo(emailAddress);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithRecipient(this SendGridRazorMessage message, string email, string? name)
+        {
+            message.AddTo(email, name);
+
+            return message;
+        }
+
+        public static SendGridRazorMessage WithRecipient(this SendGridRazorMessage message, string email)
+        {
+            message.AddTo(email, null);
 
             return message;
         }
@@ -93,6 +121,31 @@ namespace LeanCode.SendGrid
             this Task<SendGridRazorMessage> message, Stream content, string fileName, string? mimeType)
         {
             return await WithAttachmentAsync(await message, content, fileName, mimeType);
+        }
+
+        public static SendGridRazorMessage WithNoTracking(this SendGridRazorMessage message)
+        {
+            message.TrackingSettings = new TrackingSettings
+            {
+                ClickTracking = new ClickTracking
+                {
+                    Enable = false,
+                },
+                Ganalytics = new Ganalytics
+                {
+                    Enable = false,
+                },
+                OpenTracking = new OpenTracking
+                {
+                    Enable = false,
+                },
+                SubscriptionTracking = new SubscriptionTracking
+                {
+                    Enable = false,
+                },
+            };
+
+            return message;
         }
     }
 }

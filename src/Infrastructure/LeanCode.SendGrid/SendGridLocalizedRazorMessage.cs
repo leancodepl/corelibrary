@@ -18,17 +18,14 @@ namespace LeanCode.SendGrid
             Culture = CultureInfo.GetCultureInfo(cultureName);
         }
 
-        [Obsolete("Use SetGlobalSubject(string, object[]) overload instead.")]
-        public new void SetGlobalSubject(string subject) => base.SetGlobalSubject(subject);
-
         public void SetGlobalSubject(string subjectKey, object[]? subjectFormatArgs)
         {
-            base.SetGlobalSubject(subjectKey);
+            SetGlobalSubject(subjectKey);
 
             SubjectFormatArgs = subjectFormatArgs;
         }
 
-        internal override IEnumerable<string> GenerateTemplateNames(string templateBaseName)
+        internal override IEnumerable<string> GetTemplateNames(string templateBaseName)
         {
             for (var c = Culture; c != CultureInfo.InvariantCulture; c = c.Parent)
             {
