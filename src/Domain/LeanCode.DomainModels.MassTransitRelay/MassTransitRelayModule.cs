@@ -55,15 +55,13 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
+            config.UseLogsCorrelation();
             config.UseRetry(retryConfig =>
                 retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
 
             config.UseInMemoryOutbox();
-
             config.UseLifetimeScopeInjection(scopeFactory);
-
             config.UseDomainEventsPublishing();
-
             config.ReceiveEndpoint(queueName, rcv =>
             {
                 rcv.ConfigureConsumers(context);

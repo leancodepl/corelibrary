@@ -14,15 +14,12 @@ namespace LeanCode.DomainModels.MassTransitRelay
         public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
         {
             var interceptor = context.GetService<AsyncEventsInterceptor>();
-
             interceptor.Prepare();
 
             await next.Send(context);
 
             var queue = interceptor.CaptureQueue();
-
             var publishTasks = queue.Select(evt => context.Publish((object)evt));
-
             await Task.WhenAll(publishTasks);
         }
     }
