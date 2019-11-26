@@ -4,6 +4,7 @@
     <ExtensionsVersion>3.0.0</ExtensionsVersion>
     <HangfireVersion>1.7.6</HangfireVersion>
     <IdentityServerVersion>3.0.1</IdentityServerVersion>
+    <MassTransitVersion>6.0.0-develop.2275</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.3.1</CodeAnalysisVersion>
@@ -66,6 +67,7 @@
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)" />
@@ -85,6 +87,10 @@
     <PackageReference Update="IdentityServer4.EntityFramework" Version="$(IdentityServerVersion)" />
     <PackageReference Update="IdentityServer4.EntityFramework.Storage" Version="$(IdentityServerVersion)" />
     <PackageReference Update="IdentityServer4.Storage" Version="$(IdentityServerVersion)" />
+
+    <PackageReference Update="MassTransit" Version="$(MassTransitVersion)" />
+    <PackageReference Update="MassTransit.Autofac" Version="$(MassTransitVersion)" />
+    <PackageReference Update="MassTransit.Azure.ServiceBus.Core" Version="$(MassTransitVersion)" />
   </ItemGroup>
 
   <ItemGroup>
