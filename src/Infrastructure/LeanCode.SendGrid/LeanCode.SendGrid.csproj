@@ -2,12 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>LeanCode.EmailSender</AssemblyName>
+    <AssemblyName>LeanCode.SendGrid</AssemblyName>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Sendgrid" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../LeanCode.Localization/LeanCode.Localization.csproj" />
+    <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
   </ItemGroup>
 
 </Project>

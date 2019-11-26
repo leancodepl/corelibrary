@@ -44,6 +44,7 @@
     <PackageReference Update="FluentValidation" Version="8.5.0-preview5" />
     <PackageReference Update="Glob" Version="1.1.3" />
     <PackageReference Update="Polly" Version="7.1.1" />
+    <PackageReference Update="Sendgrid" Version="9.12.0" />
   </ItemGroup>
 
   <ItemGroup>
