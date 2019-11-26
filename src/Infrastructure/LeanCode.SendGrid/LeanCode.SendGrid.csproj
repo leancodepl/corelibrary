@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Sendgrid" />
-    <PackageReference Include="System.Linq.Async" />
   </ItemGroup>
 
   <ItemGroup>

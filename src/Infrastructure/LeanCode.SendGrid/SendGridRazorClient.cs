@@ -53,8 +53,7 @@ namespace LeanCode.SendGrid
                 msg.PlainTextContent = await msg
                     .GetTemplateNames(viewName)
                     .SelectAsync(name => TryRenderViewAsync(name + PlainTextModelSuffix, plainTextModel))
-                    .Where(view => view != null)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(view => view != null);
 
                 if (msg.PlainTextContent is null)
                 {
@@ -71,8 +70,7 @@ namespace LeanCode.SendGrid
                 msg.HtmlContent = await msg
                     .GetTemplateNames(viewName)
                     .SelectAsync(name => TryRenderViewAsync(name + HtmlModelSuffix, htmlModel))
-                    .Where(view => view != null)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(view => view != null);
 
                 if (msg.HtmlContent is null)
                 {
