@@ -232,7 +232,7 @@ namespace LeanCode.SendGrid
             return message;
         }
 
-        public static SendGridRazorMessage WithDelayUntil(this SendGridRazorMessage message, DateTimeOffset sendAt)
+        public static SendGridRazorMessage DelayedUntil(this SendGridRazorMessage message, DateTimeOffset sendAt)
         {
             message.SendAt = sendAt.ToUnixTimeSeconds();
 
