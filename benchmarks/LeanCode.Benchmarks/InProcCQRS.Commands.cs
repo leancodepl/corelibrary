@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using LeanCode.Components;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Default;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Benchmarks
 {
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     [MarkdownExporterAttribute.Atlassian]
     [MemoryDiagnoser]
     public class InProcCQRS__Commands
