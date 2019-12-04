@@ -21,7 +21,7 @@ leancode.builder('corelibrary')
         echo "Building version: ${env.VERSION}"
 
         if (isMasterBuild) {
-            currentBuild.displayName = "v${env.APP_VERSION}"
+            currentBuild.displayName = "v${env.VERSION}"
         }
     }
 
