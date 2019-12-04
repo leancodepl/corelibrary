@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <EntityFrameworkCoreVersion>3.1.0</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>3.1.0</AspNetCoreVersion>
     <ExtensionsVersion>3.1.0</ExtensionsVersion>
     <HangfireVersion>1.7.7</HangfireVersion>
     <IdentityServerVersion>3.0.2</IdentityServerVersion>
@@ -17,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="3.1.0" />
+    <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup>
