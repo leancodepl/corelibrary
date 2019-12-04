@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>LeanCode.Firestore</AssemblyName>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
