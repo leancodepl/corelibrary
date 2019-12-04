@@ -1,6 +1,6 @@
 leancode.builder('corelibrary')
     .withCustomJnlp()
-    .withDotnet(version: '3.0')
+    .withDotnet(version: '3.1')
     .run {
     def scmVars
 
