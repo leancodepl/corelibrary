@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-  </PropertyGroup>
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />

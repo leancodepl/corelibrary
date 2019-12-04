@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
   </ItemGroup>

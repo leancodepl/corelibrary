@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <Compile Update="TestSamples/*.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

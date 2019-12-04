@@ -4,8 +4,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
   </ItemGroup>

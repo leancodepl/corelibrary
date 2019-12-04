@@ -1,12 +1,7 @@
 <Project>
   <PropertyGroup>
-    <Authors>LeanCode</Authors>
-    <Description>LeanCode Core library</Description>
     <IsPackable>true</IsPackable>
-    <LangVersion>latest</LangVersion>
-
     <EmbedAllSources>true</EmbedAllSources>
-    <DebugType>portable</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
     <!-- Generate the documentation but don't require it on all public members -->

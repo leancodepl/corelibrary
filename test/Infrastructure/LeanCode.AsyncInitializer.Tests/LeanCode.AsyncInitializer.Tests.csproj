@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
   </ItemGroup>

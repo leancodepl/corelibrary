@@ -1,7 +1,13 @@
 <Project>
 
   <PropertyGroup>
+    <Authors>LeanCode</Authors>
+    <Description>LeanCode Core library</Description>
+
+    <LangVersion>latest</LangVersion>
+    <OutputType>library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
 </Project>

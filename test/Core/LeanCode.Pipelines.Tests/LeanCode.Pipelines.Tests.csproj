@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
   </ItemGroup>
