@@ -2,9 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LeanCode.ContractsGenerator.Languages;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
-using LeanCode.CQRS;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
@@ -50,17 +47,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
 
         public static CodeGenerator CreateTsGenerator(params string[] sources)
         {
-            var trees = sources.Select(s => CSharpSyntaxTree.ParseText(s)).ToList();
-
-            var compilation = CSharpCompilation.Create("TsGeneratorTests")
-                .AddReferences(new[]
-                {
-                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                    MetadataReference.CreateFromFile(typeof(HashSet<>).Assembly.Location),
-                    MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
-                })
-                .AddSyntaxTrees(trees);
-
+            var (trees, compilation) = Compilation.Create(sources);
             return new CodeGenerator(trees, compilation);
         }
     }
