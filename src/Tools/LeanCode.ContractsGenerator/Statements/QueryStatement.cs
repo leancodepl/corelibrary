@@ -4,8 +4,10 @@ namespace LeanCode.ContractsGenerator.Statements
     {
         public TypeStatement ResultType { get; set; }
 
-        public QueryStatement() { }
-        public QueryStatement(InterfaceStatement interfaceStatement)
+        public QueryStatement(
+            InterfaceStatement interfaceStatement,
+            string ns,
+            TypeStatement resultType)
         {
             Name = interfaceStatement.Name;
             Namespace = interfaceStatement.Namespace;
@@ -17,6 +19,8 @@ namespace LeanCode.ContractsGenerator.Statements
             Fields = interfaceStatement.Fields;
             Constants = interfaceStatement.Constants;
             Children = interfaceStatement.Children;
+            Namespace = ns;
+            ResultType = resultType;
         }
     }
 }

@@ -17,10 +17,8 @@ namespace LeanCode.ContractsGenerator
         public string AdditionalCode { get; set; } = string.Empty;
         public string ErrorCodesName { get; set; } = "ErrorCodes";
 
-        public TypeScriptConfiguration TypeScript { get; set; }
-        public DartConfiguration Dart { get; set; }
-
-        public GeneratorConfiguration() { }
+        public TypeScriptConfiguration? TypeScript { get; set; }
+        public DartConfiguration? Dart { get; set; }
 
         public static async Task<List<GeneratorConfiguration>> GetConfigurations(string configFile)
         {

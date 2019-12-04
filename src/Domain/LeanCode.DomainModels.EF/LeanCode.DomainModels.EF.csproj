@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />

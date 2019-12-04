@@ -14,13 +14,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
             {
                 return false;
             }
-
-            if (typeSymbol.GetFullNamespaceName() == type)
+            else if (typeSymbol.GetFullNamespaceName() == type)
             {
                 return true;
             }
-
-            if (typeSymbol.BaseType.GetFullNamespaceName() == type)
+            else if (typeSymbol.BaseType?.GetFullNamespaceName() == type)
             {
                 return true;
             }

@@ -28,7 +28,8 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
         [Fact]
         public void Complex_abstract_query_tree_gets_resolved_correctly()
         {
-            var generator = CreateTsGeneratorFromNamespace(@"
+            var generator = CreateTsGeneratorFromNamespace(
+                @"
                 public class TransactionItemDTO { }
 
                 public abstract class PaginatedTransactionItemsDTOBase<T>

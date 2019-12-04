@@ -30,10 +30,15 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
+            var configDir = Path.GetDirectoryName(configFilePath);
+            if (configDir == null)
+            {
+                Usage("Configuration file does not exist or is invalid");
+                return;
+            }
+
             foreach (var config in configurations)
             {
-                var configDir = Path.GetDirectoryName(configFilePath);
-
                 var compilation = new ContractsCompiler(config, configDir).GetCompilation(out var trees);
                 var generator = new CodeGenerator(trees, compilation);
 
@@ -52,7 +57,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private static void Usage(string errorMessage = null)
+        private static void Usage(string? errorMessage = null)
         {
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
