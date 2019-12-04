@@ -82,7 +82,7 @@ namespace LeanCode.PushNotifications
 
         public Task SendToDeviceAsync(DeviceType device)
         {
-            if (ToUser == default)
+            if (ToUser is null || ToUser.Equals(default))
             {
                 throw new ArgumentException("Recipient was not specified.");
             }
@@ -93,7 +93,7 @@ namespace LeanCode.PushNotifications
 
         public Task SendToAllDevicesAsync()
         {
-            if (ToUser == default)
+            if (ToUser is null || ToUser.Equals(default))
             {
                 throw new ArgumentException("Recipient was not specified.");
             }

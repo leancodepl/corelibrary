@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>LeanCode.Tests</AssemblyName>
   </PropertyGroup>
 
@@ -18,11 +18,11 @@
 
   <Target Name="RunTests" DependsOnTargets="Build">
     <ItemGroup>
-      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp3.0'" />
+      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp3.1'" />
     </ItemGroup>
 
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot;"
+      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot; --Blame"
       WorkingDirectory="$(TargetDir)" />
   </Target>
 
