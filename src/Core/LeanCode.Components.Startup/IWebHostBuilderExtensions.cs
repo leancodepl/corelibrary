@@ -86,7 +86,7 @@ namespace LeanCode.Components.Startup
                     .MinimumLevel.Is(configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose))
                     .DestructureCommonObjects(destructurers?.Assemblies);
 
-                if (configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+                if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
                 {
                     loggerConfiguration
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
