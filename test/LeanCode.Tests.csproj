@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot;"
+      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot; --Blame"
       WorkingDirectory="$(TargetDir)" />
   </Target>
 
