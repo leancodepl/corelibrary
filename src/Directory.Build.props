@@ -1,6 +1,5 @@
 <Project>
   <PropertyGroup>
-    <PackageId>$(AssemblyName)</PackageId>
     <Authors>LeanCode</Authors>
     <Description>LeanCode Core library</Description>
     <IsPackable>true</IsPackable>

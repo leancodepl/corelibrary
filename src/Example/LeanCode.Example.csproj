@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>LeanCode.Example</AssemblyName>
     <OutputType>exe</OutputType>
     <PackageId>LeanCode.Example</PackageId>
     <UserSecretsId>LeanCode.Example</UserSecretsId>
