@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autofac;
 using GreenPipes;
 using LeanCode.Components;
@@ -51,7 +52,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             return CreateBus(cfg => busConfig(context, cfg, queueName));
         }
 
-        public static void DefaultBusConfig(IComponentContext context, IBusFactoryConfigurator config, string queueName)
+        public static void DefaultBusConfig(
+            IComponentContext context,
+            IBusFactoryConfigurator config,
+            string queueName)
         {
             var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
@@ -65,7 +69,19 @@ namespace LeanCode.DomainModels.MassTransitRelay
             config.ReceiveEndpoint(queueName, rcv =>
             {
                 rcv.ConfigureConsumers(context);
+
+                var recvObservers = context.Resolve<IEnumerable<IReceiveEndpointObserver>>();
+                foreach (var obs in recvObservers)
+                {
+                    rcv.ConnectReceiveEndpointObserver(obs);
+                }
             });
+
+            var observers = context.Resolve<IEnumerable<IBusObserver>>();
+            foreach (var obs in observers)
+            {
+                config.ConnectBusObserver(obs);
+            }
         }
     }
 
