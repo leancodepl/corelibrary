@@ -4,7 +4,7 @@
     <Authors>LeanCode</Authors>
     <Description>LeanCode Core library</Description>
 
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <OutputType>library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <DebugType>portable</DebugType>

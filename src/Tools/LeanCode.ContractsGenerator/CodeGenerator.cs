@@ -114,7 +114,8 @@ namespace LeanCode.ContractsGenerator
                 .Where(s => !HasAttribute<ExcludeFromContractsGenerationAttribute>(s))
                 .Select(i => GenerateInterface(i, parentChain.Concat(new InterfaceStatement[] { interfaceStatement }).ToList()))
                 .Where(i => i != null)
-                .ToList()!;
+                .Cast<InterfaceStatement>()
+                .ToList();
 
             if (!info.IsAbstract)
             {
