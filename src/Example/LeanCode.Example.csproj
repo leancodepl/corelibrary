@@ -3,7 +3,6 @@
     <DebugType>portable</DebugType>
     <OutputType>exe</OutputType>
     <PackageId>LeanCode.Example</PackageId>
-    <UserSecretsId>LeanCode.Example</UserSecretsId>
     <IsPackable>false</IsPackable>
     <NoPackageDefaults>true</NoPackageDefaults>
   </PropertyGroup>
@@ -43,9 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Required, it generates UserSecretsIdAttribute on the assembly -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
   </ItemGroup>
 

@@ -64,7 +64,6 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
