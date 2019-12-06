@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace LeanCode.ContractsGenerator.Languages.Dart
@@ -16,9 +17,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         public static string DefaultContractsPreamble => string.Join('\n', DefaultPreambleLines);
 
-        public string[] ContractsPreambleLines { get; set; } = DefaultPreambleLines;
+        public string[]? ContractsPreambleLines { get; set; } = DefaultPreambleLines;
 
-        public string ContractsPreamble
+        public string? ContractsPreamble
         {
             get => ContractsPreambleLines is null ? null : string.Join('\n', ContractsPreambleLines);
             set => ContractsPreambleLines = value?.Split('\n');

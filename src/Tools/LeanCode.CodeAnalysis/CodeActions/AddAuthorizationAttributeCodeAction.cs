@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -37,7 +38,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var root = await document.GetSyntaxRootAsync(cancellationToken);
 
-            var classDeclaration = root.FindNode(classSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
+            var classDeclaration = root!.FindNode(classSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
 
             var authorizer = SF.Attribute(SF.ParseName(StripAttributeSuffix(authorizationAttribute)));
             var list = SF.AttributeList(SF.SingletonSeparatedList(authorizer)).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));

@@ -1,11 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>LeanCode.CQRS.RemoteHttp.Client</AssemblyName>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />

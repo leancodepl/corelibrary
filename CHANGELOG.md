@@ -16,6 +16,8 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Replace Newtonsoft.Json with System.Text.Json
 * `AsyncTasks.Hangfire` does not prepare schema by default now
 * `BackgroundProcessingApp` is now `HangfireTasksModule`
+* Add MassTransit integration
+* Replace hand-written SendGrid client with a small wrapper over official Client
 
 ## 3.5
 * Rewrite of EFMigrator

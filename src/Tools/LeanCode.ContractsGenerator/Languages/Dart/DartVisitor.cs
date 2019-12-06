@@ -11,28 +11,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 {
     internal class DartVisitor : ILanguageVisitor
     {
-        private static readonly HashSet<string> BuiltinTypes = new HashSet<string>
-        {
-            "int",
-            "double",
-            "float",
-            "single",
-            "int32",
-            "uint32",
-            "byte",
-            "sbyte",
-            "int64",
-            "short",
-            "long",
-            "decimal",
-            "bool",
-            "boolean",
-            "guid",
-            "string",
-        };
         private readonly StringBuilder definitionsBuilder = new StringBuilder();
         private readonly DartConfiguration configuration;
-        private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements;
+        private Dictionary<string, (string name, INamespacedStatement statement)> mangledStatements = null!;
 
         public DartVisitor(DartConfiguration configuration)
         {
@@ -49,11 +30,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             Visit(statement, 0, null);
 
-            yield return new LanguageFileOutput
-            {
-                Name = statement.Name + ".dart",
-                Content = definitionsBuilder.ToString(),
-            };
+            yield return new LanguageFileOutput(
+                statement.Name + ".dart",
+                definitionsBuilder.ToString());
         }
 
         private void AddContractsPreamble(ClientStatement statement)
@@ -102,14 +81,14 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             foreach (var child in statement.Children)
             {
-                if (child is InterfaceStatement || child is EnumStatement)
+                if (child is InterfaceStatement iStmt)
                 {
-                    symbols.Add((child.Name, child as INamespacedStatement));
-
-                    if (child is InterfaceStatement iStmt)
-                    {
-                        symbols.AddRange(iStmt.Children.Select(x => (x.Name, x as INamespacedStatement)));
-                    }
+                    symbols.Add((child.Name, iStmt));
+                    symbols.AddRange(iStmt.Children.Select(x => (x.Name, x as INamespacedStatement)));
+                }
+                else if (child is EnumStatement enumStmt)
+                {
+                    symbols.Add((child.Name, enumStmt));
                 }
             }
 
@@ -120,7 +99,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .ToDictionary(x => Mangle(x.statement.Namespace, x.statement.Name), x => (x.name, x.statement));
         }
 
-        private void Visit(IStatement statement, int level, string parentName)
+        private void Visit(IStatement statement, int level, string? parentName)
         {
             switch (statement)
             {
@@ -229,7 +208,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 definitionsBuilder.Append(">");
             }
-            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLowerInvariant(), out string newName))
+            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLowerInvariant(), out var newName))
             {
                 definitionsBuilder.Append(newName);
             }
@@ -282,17 +261,17 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine(";");
         }
 
-        private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
+        private void VisitCommandStatement(CommandStatement statement, int level, string? parentName)
         {
             VisitInterfaceStatement(statement, level, parentName, true);
         }
 
-        private void VisitQueryStatement(QueryStatement statement, int level, string parentName)
+        private void VisitQueryStatement(QueryStatement statement, int level, string? parentName)
         {
             VisitInterfaceStatement(statement, level, parentName, true, true);
         }
 
-        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName, bool includeFullName = false, bool includeResultFactory = false)
+        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string? parentName, bool includeFullName = false, bool includeResultFactory = false)
         {
             var name = mangledStatements[Mangle(statement.Namespace, statement.Name)].name;
 
@@ -327,11 +306,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 definitionsBuilder.Append(">");
             }
 
-            var mapJsonIncludeSuper = false;
-
             if (statement.IsClass && statement.BaseClass != null)
             {
-                mapJsonIncludeSuper = true;
                 definitionsBuilder.Append(" extends ");
                 VisitTypeStatement(statement.BaseClass);
             }
@@ -388,8 +364,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
-            GenerateToJsonMethod(statement, name, level, includeOverrideAnnotation, mapJsonIncludeSuper);
-            GenerateFromJsonConstructor(name, statement, level);
+            GenerateToJsonMethod(name, level, includeOverrideAnnotation);
+            GenerateFromJsonConstructor(name, level);
 
             definitionsBuilder.AppendSpaces(level);
             definitionsBuilder.AppendLine("}");
@@ -501,7 +477,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine($"{name}();");
         }
 
-        private void GenerateToJsonMethod(InterfaceStatement statement, string fullName, int level, bool includeOverrideAnnotation, bool includeSuper)
+        private void GenerateToJsonMethod(
+            string fullName,
+            int level,
+            bool includeOverrideAnnotation)
         {
             definitionsBuilder
                 .AppendLine();
@@ -519,7 +498,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine($"_${fullName}ToJson(this);");
         }
 
-        private void GenerateFromJsonConstructor(string name, InterfaceStatement statement, int level)
+        private void GenerateFromJsonConstructor(string name, int level)
         {
             definitionsBuilder.AppendLine()
                 .AppendSpaces(level + 1)

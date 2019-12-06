@@ -5,8 +5,14 @@ namespace LeanCode.ContractsGenerator.Languages
 {
     public class LanguageFileOutput
     {
-        public string Name { get; set; }
-        public string Content { get; set; }
+        public string Name { get; }
+        public string Content { get; }
+
+        public LanguageFileOutput(string name, string content)
+        {
+            Name = name;
+            Content = content;
+        }
     }
 
     internal interface ILanguageVisitor

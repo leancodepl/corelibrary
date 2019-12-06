@@ -6,7 +6,7 @@ namespace LeanCode.Example
 {
     public class ExampleDbContext : DbContext
     {
-        public DbSet<PushNotificationTokenEntity> Tokens { get; set; }
+        public DbSet<PushNotificationTokenEntity> Tokens => Set<PushNotificationTokenEntity>();
 
         public ExampleDbContext(DbContextOptions<ExampleDbContext> options)
             : base(options) { }

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Autofac;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using LeanCode.Benchmarks.Pipelines;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
@@ -8,7 +9,7 @@ using Executor = LeanCode.Pipelines.PipelineExecutor<LeanCode.Benchmarks.Pipelin
 
 namespace LeanCode.Benchmarks
 {
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     [MarkdownExporterAttribute.Atlassian]
     [MemoryDiagnoser]
     public class PipelinesBenchmark

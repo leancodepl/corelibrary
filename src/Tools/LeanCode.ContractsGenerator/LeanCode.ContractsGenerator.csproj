@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>LeanCode.ContractsGenerator</AssemblyName>
     <ToolCommandName>generate</ToolCommandName>
     <PackageId>LeanCode.ContractsGenerator</PackageId>
     <Authors>LeanCode</Authors>
@@ -10,7 +9,6 @@
 
     <PackAsTool>True</PackAsTool>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

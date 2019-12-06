@@ -37,14 +37,12 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .Append(constsBuilder)
                 .Append(clientBuilder);
 
-            yield return new LanguageFileOutput
-            {
-                Name = statement.Name + "Client.ts",
-                Content = contractsBuilder.ToString(),
-            };
+            yield return new LanguageFileOutput(
+                statement.Name + "Client.ts",
+                contractsBuilder.ToString());
         }
 
-        private void Visit(IStatement statement, int level, string parentName)
+        private void Visit(IStatement statement, int level, string? parentName)
         {
             switch (statement)
             {
@@ -142,7 +140,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 stringBuilder.Append(">");
             }
-            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out string name))
+            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out var name))
             {
                 stringBuilder.Append(name);
             }
@@ -214,7 +212,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             definitionsBuilder.AppendLine(";");
         }
 
-        private void VisitCommandStatement(CommandStatement statement, int level, string parentName)
+        private void VisitCommandStatement(CommandStatement statement, int level, string? parentName)
         {
             VisitInterfaceStatement(statement, level, parentName);
 
@@ -248,7 +246,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .AppendLine();
         }
 
-        private void VisitQueryStatement(QueryStatement statement, int level, string parentName)
+        private void VisitQueryStatement(QueryStatement statement, int level, string? parentName)
         {
             VisitInterfaceStatement(statement, level, parentName);
 
@@ -270,7 +268,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 .AppendLine();
         }
 
-        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string parentName)
+        private void VisitInterfaceStatement(InterfaceStatement statement, int level, string? parentName)
         {
             if (!statement.IsStatic)
             {

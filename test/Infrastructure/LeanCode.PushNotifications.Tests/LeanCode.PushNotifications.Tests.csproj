@@ -1,11 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-
-  <Import Project="../../CommonRefs.props" />
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.PushNotifications/LeanCode.PushNotifications.csproj" />
   </ItemGroup>

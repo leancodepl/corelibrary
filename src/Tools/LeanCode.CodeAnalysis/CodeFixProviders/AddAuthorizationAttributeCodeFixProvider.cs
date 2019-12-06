@@ -26,7 +26,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var model = await context.Document.GetSemanticModelAsync();
-            var solutionAuthorizers = await GetAvailableAuthorizers(context.Document.Project.Solution, model.Compilation);
+            var solutionAuthorizers = await GetAvailableAuthorizers(context.Document.Project.Solution, model!.Compilation);
 
             foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers))
             {
@@ -44,7 +44,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
                 .Select(attr => (attr.Name, attr.GetFullNamespaceName()));
         }
 
-        public override FixAllProvider GetFixAllProvider() => null;
+        public override FixAllProvider GetFixAllProvider() => null!;
 
         private static readonly (string Type, string Namespace)[] StaticAuthorizers = new[]
         {

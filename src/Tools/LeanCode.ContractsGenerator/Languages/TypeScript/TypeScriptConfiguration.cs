@@ -4,7 +4,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 {
     public class TypeScriptConfiguration
     {
-        public string[] ContractsPreambleLines { get; set; } = new string[]
+        public string[]? ContractsPreambleLines { get; set; } = new string[]
         {
             "/* eslint-disable */",
             "import { ClientType } from \"@leancode/cqrs-client/ClientType\";",
@@ -13,7 +13,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             string.Empty,
         };
 
-        public string ContractsPreamble
+        public string? ContractsPreamble
         {
             get => ContractsPreambleLines is null ? null : string.Join('\n', ContractsPreambleLines);
             set => ContractsPreambleLines = value?.Split('\n');

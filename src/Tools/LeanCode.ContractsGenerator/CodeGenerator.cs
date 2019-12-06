@@ -14,15 +14,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LeanCode.ContractsGenerator
 {
-    internal class RemoteQueryCommandInfo
-    {
-        public string Name { get; set; }
-        public string Parameter { get; set; }
-        public string Result { get; set; }
-        public bool IsQuery { get; set; }
-        public string Path { get; set; }
-    }
-
     public class CodeGenerator
     {
         private readonly List<SyntaxTree> trees;
@@ -73,7 +64,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private InterfaceStatement GenerateInterface(INamedTypeSymbol info, List<InterfaceStatement> parentChain)
+        private InterfaceStatement? GenerateInterface(INamedTypeSymbol info, List<InterfaceStatement> parentChain)
         {
             if (info.AllInterfaces.Any(a => a.Name == "_Attribute" || a.Name == "_Exception"))
             {
@@ -122,6 +113,8 @@ namespace LeanCode.ContractsGenerator
                 .OfType<INamedTypeSymbol>()
                 .Where(s => !HasAttribute<ExcludeFromContractsGenerationAttribute>(s))
                 .Select(i => GenerateInterface(i, parentChain.Concat(new InterfaceStatement[] { interfaceStatement }).ToList()))
+                .Where(i => i != null)
+                .Cast<InterfaceStatement>()
                 .ToList();
 
             if (!info.IsAbstract)
@@ -137,11 +130,10 @@ namespace LeanCode.ContractsGenerator
                 {
                     var resultType = info.AllInterfaces.First(i => i.Name == "IRemoteQuery").TypeArguments.First();
 
-                    return new QueryStatement(interfaceStatement)
-                    {
-                        Namespace = GetFullNamespaceName(info.ContainingNamespace),
-                        ResultType = ConvertType(resultType),
-                    };
+                    return new QueryStatement(
+                        interfaceStatement,
+                        GetFullNamespaceName(info.ContainingNamespace),
+                        ConvertType(resultType));
                 }
             }
 
@@ -166,11 +158,7 @@ namespace LeanCode.ContractsGenerator
                         type.IsNullable = true;
                     }
 
-                    yield return new FieldStatement
-                    {
-                        Name = property.Name,
-                        Type = type,
-                    };
+                    yield return new FieldStatement(property.Name, type);
                 }
             }
         }
@@ -201,10 +189,11 @@ namespace LeanCode.ContractsGenerator
                 .Concat(publicInterfaces)
                 .Where(i => !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
                 .Where(i => !IsCommandOrQuery(i) || IsRemoteCommandOrQuery(i))
-                .Select(i => GenerateInterface(i, new List<InterfaceStatement>()));
+                .Select(i => GenerateInterface(i, new List<InterfaceStatement>()))
+                .Where(i => i != null)!;
         }
 
-        private static string StringifyBuiltInTypeValue(object value)
+        private static string? StringifyBuiltInTypeValue(object? value)
         {
             if (value == null)
             {
@@ -247,7 +236,7 @@ namespace LeanCode.ContractsGenerator
             return new EnumStatement
             {
                 Name = info.Name,
-                Namespace = info.ContainingNamespace.ToString(),
+                Namespace = info.ContainingNamespace.ToString()!,
                 Values = enumValues,
             };
         }
@@ -361,14 +350,13 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private static string GetFullNamespaceName(INamespaceSymbol info, INamedTypeSymbol type = null)
+        private static string GetFullNamespaceName(INamespaceSymbol info, INamedTypeSymbol? type = null)
         {
             if (info == null)
             {
                 return string.Empty;
             }
-
-            if (info.ContainingNamespace == null || info.ContainingNamespace.IsGlobalNamespace)
+            else if (info.ContainingNamespace == null || info.ContainingNamespace.IsGlobalNamespace)
             {
                 return info.Name;
             }
