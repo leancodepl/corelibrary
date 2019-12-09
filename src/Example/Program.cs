@@ -7,9 +7,8 @@ namespace LeanCode.Example
     {
         public static void Main()
         {
-#pragma warning disable CS0612
-            LeanProgram.BuildDefaultWebHost<Startup>("LeanCode.Example")
-#pragma warning restore CS0612
+            LeanProgram.BuildMinimalWebHost<Startup>()
+                .ConfigureDefaultLogging("example")
                 .UseKestrel()
                 .Build()
                 .Run();
