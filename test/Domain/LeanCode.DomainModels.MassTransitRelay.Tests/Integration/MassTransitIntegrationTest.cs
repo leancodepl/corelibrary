@@ -19,16 +19,23 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             this.testApp = testApp;
         }
 
-        [PreparationStep(0)]
-        public async Task Publishing_events_from_command()
+        [Fact]
+        public async Task Test_event_relay_and_handling()
+        {
+            await PublishEvents();
+            await TestEventsFromCommandHandler();
+            await TestEventsFromConsumers();
+            await TestFailingHandlers();
+        }
+
+        private async Task PublishEvents()
         {
             var ctx = new Context { CorrelationId = testApp.CorrelationId };
             var cmd = new TestCommand();
             await testApp.Commands.RunAsync(ctx, cmd);
         }
 
-        [TestStep(1)]
-        public async Task Events_raised_directly_from_command_are_consumed()
+        private async Task TestEventsFromCommandHandler()
         {
             await WaitForConsumers();
             var handled = testApp.HandledEvents<Event1>();
@@ -37,8 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             AssertConsumed(evt, typeof(FirstEvent1Consumer));
         }
 
-        [TestStep(2)]
-        public async Task Events_raised_from_consumers_are_consumed_by_all_consumers()
+        private async Task TestEventsFromConsumers()
         {
             await WaitForConsumers();
             var handled = testApp.HandledEvents<Event2>();
@@ -49,8 +55,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 e => AssertConsumed(e, typeof(Event2SecondConsumer)));
         }
 
-        [TestStep(3)]
-        public async Task Failing_handlers_are_retried()
+        private async Task TestFailingHandlers()
         {
             await Task.Delay(5_500);
 

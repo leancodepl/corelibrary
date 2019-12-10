@@ -1,30 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
-    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
-
+    <ProjectReference Include="../../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
+    <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.AsyncTasks.Hangfire/LeanCode.AsyncTasks.Hangfire.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-
-    <PackageReference Include="Serilog.Extensions.Logging" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+
+    <PackageReference Include="IdentityModel" />
+
+    <PackageReference Include="Hangfire.Autofac" />
+    <PackageReference Include="Hangfire.Core" />
+    <PackageReference Include="Hangfire.AspNetCore" />
+    <PackageReference Include="Hangfire.SqlServer" />
+
+    <PackageReference Include="Xunit" />
   </ItemGroup>
+
 </Project>

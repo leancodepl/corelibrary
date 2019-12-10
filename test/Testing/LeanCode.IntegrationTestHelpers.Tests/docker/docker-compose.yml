@@ -6,7 +6,7 @@ services:
       context: ../../../..
       dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Dockerfile
     environment:
-      - ConnectionStrings__Database=Server=db,1433;User Id=sa;Password=Passw12#
+      - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:
       - db
 
@@ -17,7 +17,7 @@ services:
     volumes:
       - ../../../..:/app/code
     environment:
-      - ConnectionStrings__Database=Server=db,1433;User Id=sa;Password=Passw12#
+      - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:
       - db
 

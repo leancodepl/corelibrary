@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.IntegrationTestHelpers.Tests
+namespace LeanCode.IntegrationTestHelpers.Tests.App
 {
     public class TestDbContext : DbContext
     {

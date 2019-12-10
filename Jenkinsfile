@@ -42,7 +42,9 @@ leancode.builder('corelibrary')
         }
 
         stage('Pack') {
-            sh 'dotnet pack --no-restore -c Release -o $PWD/packed'
+            when (isMasterBuild) {
+                sh 'dotnet pack --no-restore -c Release -o $PWD/packed'
+            }
         }
 
         stage('Publish') {
