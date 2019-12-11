@@ -93,7 +93,6 @@
 
     <PackageReference Update="MassTransit" Version="$(MassTransitVersion)" />
     <PackageReference Update="MassTransit.Autofac" Version="$(MassTransitVersion)" />
-    <PackageReference Update="MassTransit.Azure.ServiceBus.Core" Version="$(MassTransitVersion)" />
   </ItemGroup>
 
   <ItemGroup>

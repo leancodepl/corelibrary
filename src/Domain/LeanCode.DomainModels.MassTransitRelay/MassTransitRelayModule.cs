@@ -8,24 +8,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public delegate void BusConfig(IComponentContext context, IBusFactoryConfigurator config, string queueName);
+    public delegate IBusControl BusFactory(IComponentContext context, string queueName);
 
-    public abstract class MassTransitRelayModuleBase : AppModule
+    public class MassTransitRelayModule : AppModule
     {
         private readonly string queueName;
         private readonly TypesCatalog consumers;
-        private readonly BusConfig busConfig;
+        private readonly BusFactory busFactory;
 
-        protected abstract IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator);
-
-        public MassTransitRelayModuleBase(
+        public MassTransitRelayModule(
             string queueName,
             TypesCatalog consumers,
-            BusConfig? busConfig = null)
+            BusFactory? busFactory = null)
         {
             this.queueName = queueName;
             this.consumers = consumers;
-            this.busConfig = busConfig ?? DefaultBusConfig;
+            this.busFactory = busFactory ?? DefaultBusFactory;
         }
 
         public override void ConfigureServices(IServiceCollection services) =>
@@ -49,48 +47,32 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private IBusControl CreateBus(IComponentContext context)
         {
-            return CreateBus(cfg => busConfig(context, cfg, queueName));
+            return busFactory(context, queueName);
         }
 
-        public static void DefaultBusConfig(
+        public static IBusControl DefaultBusFactory(
             IComponentContext context,
-            IBusFactoryConfigurator config,
             string queueName)
         {
-            var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
-
-            config.UseLogsCorrelation();
-            config.UseRetry(retryConfig =>
-                retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
-
-            config.UseInMemoryOutbox();
-            config.UseLifetimeScopeInjection(scopeFactory);
-            config.UseDomainEventsPublishing();
-            config.ReceiveEndpoint(queueName, rcv =>
+            return Bus.Factory.CreateUsingInMemory(config =>
             {
-                rcv.ConfigureConsumers(context);
+                var scopeFactory = context.Resolve<Func<ILifetimeScope>>();
 
-                var recvObservers = context.Resolve<IEnumerable<IReceiveEndpointObserver>>();
-                foreach (var obs in recvObservers)
+                config.UseLogsCorrelation();
+                config.UseRetry(retryConfig =>
+                    retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+
+                config.UseInMemoryOutbox();
+                config.UseLifetimeScopeInjection(scopeFactory);
+                config.UseDomainEventsPublishing();
+                config.ReceiveEndpoint(queueName, rcv =>
                 {
-                    rcv.ConnectReceiveEndpointObserver(obs);
-                }
+                    rcv.ConfigureConsumers(context);
+                    rcv.ConnectReceiveEndpointObservers(context);
+                });
+
+                config.ConnectBusObservers(context);
             });
-
-            var observers = context.Resolve<IEnumerable<IBusObserver>>();
-            foreach (var obs in observers)
-            {
-                config.ConnectBusObserver(obs);
-            }
         }
-    }
-
-    public class MassTransitInMemoryRelayModule : MassTransitRelayModuleBase
-    {
-        public MassTransitInMemoryRelayModule(string queueName, TypesCatalog consumersAssemblies)
-            : base(queueName, consumersAssemblies) { }
-
-        protected override IBusControl CreateBus(Action<IBusFactoryConfigurator> configurator) =>
-            Bus.Factory.CreateUsingInMemory(configurator);
     }
 }
