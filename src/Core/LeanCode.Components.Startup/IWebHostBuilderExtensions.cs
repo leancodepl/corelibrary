@@ -57,7 +57,7 @@ namespace LeanCode.Components.Startup
             this IWebHostBuilder builder,
             string projectName,
             TypesCatalog? destructurers = null,
-            Action<LoggerConfiguration>? additionalLoggingConfiguration = null)
+            Action<WebHostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
         {
             var entryAssembly = Assembly.GetEntryAssembly()!; // returns null only when called from unmanaged code
 
@@ -72,7 +72,7 @@ namespace LeanCode.Components.Startup
             string projectName,
             string appName,
             TypesCatalog? destructurers = null,
-            Action<LoggerConfiguration>? additionalLoggingConfiguration = null)
+            Action<WebHostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
         {
             return builder.ConfigureLogging((context, logging) =>
             {
@@ -105,7 +105,7 @@ namespace LeanCode.Components.Startup
                         .WriteTo.Console(new RenderedCompactJsonFormatter());
                 }
 
-                additionalLoggingConfiguration?.Invoke(loggerConfiguration);
+                additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
 
                 Log.Logger = loggerConfiguration.CreateLogger();
 
