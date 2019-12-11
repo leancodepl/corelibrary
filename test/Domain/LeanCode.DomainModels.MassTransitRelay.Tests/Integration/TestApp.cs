@@ -23,7 +23,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 cmd => cmd.Correlate().PublishEvents().InterceptEvents(),
                 query => query),
 
-            new MassTransitInMemoryRelayModule("test-queue", SearchAssemblies),
+            new MassTransitRelayModule("test-queue", SearchAssemblies),
             new CorrelationModule(),
         };
 
