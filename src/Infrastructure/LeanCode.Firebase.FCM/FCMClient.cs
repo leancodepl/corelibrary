@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 
 namespace LeanCode.Firebase.FCM
@@ -20,6 +20,8 @@ namespace LeanCode.Firebase.FCM
             this.tokenStore = tokenStore;
         }
 
+        public Task SendToUserAsync(Guid userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
+            SendToUserAsync(userId, message, false, cancellationToken);
         public Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
             SendAsync(message, false, cancellationToken);
         public Task SendMulticastAsync(MulticastMessage message, CancellationToken cancellationToken = default) =>
@@ -28,6 +30,17 @@ namespace LeanCode.Firebase.FCM
             SendAllAsync(messages, false, cancellationToken);
         public Task SendAsync(Message message, bool dryRun, CancellationToken cancellationToken = default) =>
             SendAllAsync(new[] { message }, dryRun, cancellationToken);
+
+        public async Task SendToUserAsync(Guid userId, MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
+        {
+            message.Tokens = await tokenStore.GetTokensAsync(userId);
+
+            logger.Debug(
+                "Sending push notification to user {UserId} that targets {Count} devices",
+                userId, message.Tokens.Count);
+            var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+            await HandleBatchResponseAsync(response, message.Tokens);
+        }
 
         public async Task SendAllAsync(IEnumerable<Message> messages, bool dryRun, CancellationToken cancellationToken = default)
         {
