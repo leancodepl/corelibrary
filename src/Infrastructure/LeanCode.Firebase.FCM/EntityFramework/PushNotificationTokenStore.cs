@@ -46,9 +46,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                 await dbContext.SaveChangesAsync();
                 logger.Information("New push notification token for user {UserId} saved", userId);
             }
-            catch (DbUpdateException exception)
-                when (exception.InnerException?.InnerException is SqlException sqlException &&
-                    sqlException.Number == 2601)
+            catch (DbUpdateException exception) when (IsConcurrencyException(exception))
             {
                 logger.Verbose("Duplicate token received for user {UserId}", userId);
             }
@@ -74,6 +72,13 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                 await dbContext.SaveChangesAsync();
                 logger.Information("Removed {Count} push notification tokens from the store", entities.Count);
             }
+        }
+
+        private static bool IsConcurrencyException(DbUpdateException exception)
+        {
+            return
+                exception.InnerException?.InnerException is SqlException sqlException &&
+                sqlException.Number == 2601;
         }
     }
 }

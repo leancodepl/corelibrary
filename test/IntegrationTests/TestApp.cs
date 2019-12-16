@@ -14,11 +14,6 @@ namespace LeanCode.IntegrationTests
 {
     public class TestApp : LeanCodeTestFactory<Startup>
     {
-        public override async Task InitializeAsync()
-        {
-            await base.InitializeAsync();
-        }
-
         protected override IEnumerable<Assembly> GetTestAssemblies()
         {
             yield return typeof(Startup).Assembly;

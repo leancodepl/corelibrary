@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LeanCode.Firebase.Firestore
 {
-    public class FirebaseConfiguration
+    public static class FirebaseConfiguration
     {
         private const string DefaultAppName = "[DEFAULT]";
 

@@ -92,14 +92,13 @@ namespace LeanCode.Firebase.FCM
                 logger.Warning(
                     "There was {Count} failures in sending the push notification",
                     response.FailureCount - tokensToRemove.Count);
-                System.Console.WriteLine(response.Responses[0].Exception.ToString());
                 throw new FCMSendException();
             }
         }
 
-        private static bool ShouldTokenBeRemoved((SendResponse response, string token) pair)
+        private static bool ShouldTokenBeRemoved((SendResponse Response, string Token) pair)
         {
-            var errorCode = pair.response.Exception?.MessagingErrorCode;
+            var errorCode = pair.Response.Exception?.MessagingErrorCode;
             return errorCode == MessagingErrorCode.Unregistered ||
                 errorCode == MessagingErrorCode.SenderIdMismatch;
         }
