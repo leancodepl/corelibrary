@@ -6,23 +6,31 @@ namespace LeanCode.Firebase.Firestore
 {
     public class FirebaseConfiguration
     {
-        public static FirebaseApp Prepare(string? cfg)
+        private const string DefaultAppName = "[DEFAULT]";
+
+        public static FirebaseApp Prepare(string? cfg) => Prepare(cfg, DefaultAppName);
+
+        public static FirebaseApp Prepare(string? cfg, string name)
         {
             if (string.IsNullOrEmpty(cfg))
             {
-                return FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromAccessToken("STUB"),
-                    ProjectId = "STUB",
-                });
+                return FirebaseApp.Create(
+                    new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromAccessToken("STUB"),
+                        ProjectId = "STUB",
+                    },
+                    name);
             }
             else
             {
-                return FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromJson(cfg),
-                    ProjectId = JObject.Parse(cfg)["project_id"].Value<string>(),
-                });
+                return FirebaseApp.Create(
+                    new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromJson(cfg),
+                        ProjectId = JObject.Parse(cfg)["project_id"].Value<string>(),
+                    },
+                    name);
             }
         }
     }

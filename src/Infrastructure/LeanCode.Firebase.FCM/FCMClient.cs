@@ -69,7 +69,7 @@ namespace LeanCode.Firebase.FCM
             if (tokensToRemove.Any())
             {
                 logger.Debug("Some PN tokens have to be removed because they either expired or are wrongly configured");
-                await tokenStore.RemoveAllTokensAsync(tokensToRemove);
+                await tokenStore.RemoveTokensAsync(tokensToRemove);
                 logger.Warning(
                     "{Count} tokens removed from token store because of either expired or are wrongly configured",
                     tokensToRemove.Count);
@@ -81,6 +81,7 @@ namespace LeanCode.Firebase.FCM
                 logger.Warning(
                     "There was {Count} failures in sending the push notification",
                     response.FailureCount - tokensToRemove.Count);
+                System.Console.WriteLine(response.Responses[0].Exception.ToString());
                 throw new FCMSendException();
             }
         }

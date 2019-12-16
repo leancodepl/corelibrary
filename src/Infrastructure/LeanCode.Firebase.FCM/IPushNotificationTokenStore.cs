@@ -9,6 +9,6 @@ namespace LeanCode.Firebase.FCM
         Task<List<string>> GetTokensAsync(Guid userId);
         Task AddTokenAsync(Guid userId, string newToken);
         Task RemoveTokenAsync(string token);
-        Task RemoveAllTokensAsync(IEnumerable<string> tokens);
+        Task RemoveTokensAsync(IEnumerable<string> tokens);
     }
 }
