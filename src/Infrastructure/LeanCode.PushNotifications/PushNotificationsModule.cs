@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.PushNotifications
 {
+    [Obsolete("This module uses deprecated FCM API. Consider moving to `LeanCode.Firebase.FCM` for complete featureset.")]
     public class PushNotificationsModule<TUserId> : AppModule
         where TUserId : notnull
     {

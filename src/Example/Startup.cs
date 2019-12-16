@@ -30,7 +30,9 @@ namespace LeanCode.Example
             new InMemoryCacheModule(),
             new FluentValidationModule(SearchAssemblies),
             new CQRSModule().WithDefaultPipelines<AppContext>(SearchAssemblies),
+#pragma warning disable CS0618
             new PushNotificationsModule<Guid>(),
+#pragma warning restore CS0618
 
             new ExampleAppModule(),
         };
