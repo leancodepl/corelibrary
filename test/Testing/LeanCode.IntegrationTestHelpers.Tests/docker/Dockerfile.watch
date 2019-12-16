@@ -1,6 +1,6 @@
 FROM leancode.azurecr.io/dotnet:3.1
 
-COPY test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Docker.Directory.Build.props /app/Directory.Build.props
+COPY Docker.Directory.Build.props /app/Directory.Build.props
 
 # Wait for SQL Server first
 WORKDIR /app/code/test/Testing/LeanCode.IntegrationTestHelpers.Tests
