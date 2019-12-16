@@ -44,6 +44,15 @@ namespace LeanCode.IntegrationTests
             await EnsureNoTokenIsInStoreAsync();
         }
 
+        [Fact]
+        public async Task Token_uniqueness_violation_is_a_noop()
+        {
+            await AddTokenAsync();
+            await AddTokenAsync();
+            await EnsureTokenIsInDatabaseAsync();
+            await EnsureTokenIsInStoreAsync();
+        }
+
         public Task InitializeAsync() => app.InitializeAsync();
         public Task DisposeAsync() => app.DisposeAsync();
 

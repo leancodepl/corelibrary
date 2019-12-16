@@ -77,7 +77,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         private static bool IsConcurrencyException(DbUpdateException exception)
         {
             return
-                exception.InnerException?.InnerException is SqlException sqlException &&
+                exception.InnerException is SqlException sqlException &&
                 sqlException.Number == 2601;
         }
     }
