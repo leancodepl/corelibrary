@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
+using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.Firebase.FCM
 {
@@ -13,13 +15,22 @@ namespace LeanCode.Firebase.FCM
 
         private readonly FirebaseMessaging messaging;
         private readonly IPushNotificationTokenStore tokenStore;
+        private readonly IStringLocalizer stringLocalizer;
 
-        public FCMClient(FirebaseMessaging messaging, IPushNotificationTokenStore tokenStore)
+        public FCMClient(
+            FirebaseMessaging messaging,
+            IPushNotificationTokenStore tokenStore,
+            IStringLocalizer stringLocalizer)
         {
             this.messaging = messaging;
             this.tokenStore = tokenStore;
+            this.stringLocalizer = stringLocalizer;
         }
 
+        public LocalizedNotification Localize(CultureInfo culture) =>
+            new LocalizedNotification(stringLocalizer, culture);
+        public LocalizedNotification Localize(string lang) =>
+            Localize(CultureInfo.GetCultureInfo(lang));
         public Task SendToUserAsync(Guid userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
             SendToUserAsync(userId, message, false, cancellationToken);
         public Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
