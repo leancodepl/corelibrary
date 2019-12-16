@@ -7,7 +7,7 @@ using Grpc.Auth;
 using Grpc.Core;
 using LeanCode.AsyncInitializer;
 
-namespace LeanCode.Firestore
+namespace LeanCode.Firebase.Firestore
 {
     public class FirestoreDatabase : IAsyncInitializable
     {
