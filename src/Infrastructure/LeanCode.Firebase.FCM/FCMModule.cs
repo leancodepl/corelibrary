@@ -2,6 +2,7 @@ using Autofac;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using LeanCode.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.Firebase.FCM
 {
@@ -15,6 +16,17 @@ namespace LeanCode.Firebase.FCM
 
             builder.RegisterType<FCMClient>()
                 .AsSelf();
+        }
+    }
+
+    public class FCMModule<TDbContext> : AppModule
+        where TDbContext : DbContext
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new FCMModule());
+            builder.RegisterType<EntityFramework.PushNotificationTokenStore<TDbContext>>()
+                .AsImplementedInterfaces();
         }
     }
 }
