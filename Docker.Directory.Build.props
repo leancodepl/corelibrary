@@ -1,7 +1,7 @@
 <Project InitialTargets="RemoveDockerProps">
 
   <PropertyGroup>
-    <ProjectRelativeDirectory>$([System.String]::Copy('$(MSBuildProjectDirectory)').Replace('$(MSBuildThisFileDirectory)code', ''))</ProjectRelativeDirectory>
+    <ProjectRelativeDirectory>$(MSBuildProjectDirectory.Replace('$(MSBuildThisFileDirectory)code', ''))</ProjectRelativeDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>/app/obj/$(ProjectRelativeDirectory)</BaseIntermediateOutputPath>
