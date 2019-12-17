@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.Dapper;
 using LeanCode.IdentityProvider;
 using LeanCode.TimeProvider;
 using Microsoft.Data.SqlClient;
@@ -58,19 +59,37 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             if (entity is object)
             {
                 dbSet.Remove(entity);
-                await dbContext.SaveChangesAsync();
-                logger.Information("Removed push notificatoin token for user {UserId}", entity.UserId);
+                try
+                {
+                    await dbContext.SaveChangesAsync();
+                    logger.Information("Removed push notificatoin token for user {UserId}", entity.UserId);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    logger.Information(
+                        "The push notificatio token for user {UserId} has been already deleted",
+                        entity.UserId);
+                }
             }
         }
 
         public async Task RemoveTokensAsync(IEnumerable<string> tokens)
         {
-            var entities = await dbSet.Where(t => tokens.Contains(t.Token)).ToListAsync();
-            if (entities.Count > 0)
+            await dbContext.ExecuteAsync(
+                $"DELETE FROM {GetTokensTable()} WHERE [Token] IN @tokens",
+                new { tokens });
+        }
+
+        private string GetTokensTable()
+        {
+            var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
+            if (string.IsNullOrEmpty(entity.GetSchema()))
             {
-                dbSet.RemoveRange(entities);
-                await dbContext.SaveChangesAsync();
-                logger.Information("Removed {Count} push notification tokens from the store", entities.Count);
+                return $"[{entity.GetTableName()}]";
+            }
+            else
+            {
+                return $"[{entity.GetSchema()}].[{entity.GetTableName()}]";
             }
         }
 
@@ -78,7 +97,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         {
             return
                 exception.InnerException is SqlException sqlException &&
-                sqlException.Number == 2601;
+                (sqlException.Number == 2601 || sqlException.Number == 2627);
         }
     }
 }
