@@ -47,7 +47,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                 await dbContext.SaveChangesAsync();
                 logger.Information("New push notification token for user {UserId} saved", userId);
             }
-            catch (DbUpdateException exception) when (IsConcurrencyException(exception))
+            catch (DbUpdateException exception) when (IsDuplicateException(exception))
             {
                 logger.Verbose("Duplicate token received for user {UserId}", userId);
             }
@@ -62,12 +62,19 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                 try
                 {
                     await dbContext.SaveChangesAsync();
-                    logger.Information("Removed push notificatoin token for user {UserId}", entity.UserId);
+                    logger.Information("Removed push notification token for user {UserId}", entity.UserId);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     logger.Information(
-                        "The push notificatio token for user {UserId} has been already deleted",
+                        "The push notification token for user {UserId} has been already deleted",
+                        entity.UserId);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(
+                        ex,
+                        "Something went wrong when deleting push notification token for user {UserId}",
                         entity.UserId);
                 }
             }
@@ -75,12 +82,20 @@ namespace LeanCode.Firebase.FCM.EntityFramework
 
         public async Task RemoveTokensAsync(IEnumerable<string> tokens)
         {
-            await dbContext.ExecuteAsync(
-                $"DELETE FROM {GetTokensTable()} WHERE [Token] IN @tokens",
-                new { tokens });
+            try
+            {
+                await dbContext.ExecuteAsync(
+                    $"DELETE FROM {GetTokensTableName()} WHERE [Token] IN @tokens",
+                    new { tokens });
+                logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Something went wrong when deleting push notification tokens");
+            }
         }
 
-        private string GetTokensTable()
+        private string GetTokensTableName()
         {
             var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
             if (string.IsNullOrEmpty(entity.GetSchema()))
@@ -93,7 +108,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        private static bool IsConcurrencyException(DbUpdateException exception)
+        private static bool IsDuplicateException(DbUpdateException exception)
         {
             return
                 exception.InnerException is SqlException sqlException &&

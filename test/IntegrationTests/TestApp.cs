@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.IntegrationTestHelpers;
