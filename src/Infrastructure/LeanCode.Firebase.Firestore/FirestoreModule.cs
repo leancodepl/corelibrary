@@ -1,7 +1,7 @@
 using Autofac;
 using LeanCode.Components;
 
-namespace LeanCode.Firestore
+namespace LeanCode.Firebase.Firestore
 {
     public class FirestoreModule : AppModule
     {
