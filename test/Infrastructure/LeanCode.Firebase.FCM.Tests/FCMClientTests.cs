@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
-using LeanCode.Firebase.Firestore;
+using LeanCode.Firebase;
 using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;
