@@ -2,7 +2,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Newtonsoft.Json.Linq;
 
-namespace LeanCode.Firebase.Firestore
+namespace LeanCode.Firebase
 {
     public static class FirebaseConfiguration
     {
