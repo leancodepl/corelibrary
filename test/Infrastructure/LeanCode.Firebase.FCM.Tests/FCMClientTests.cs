@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
-using LeanCode.Firebase;
 using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;
@@ -45,6 +44,21 @@ namespace LeanCode.Firebase.FCM.Tests
             };
 
             await client.SendToUserAsync(UserId, message);
+        }
+
+        [FCMFact]
+        public async Task Does_nothing_when_user_does_not_have_tokens()
+        {
+            var message = new MulticastMessage
+            {
+                Notification = new Notification
+                {
+                    Title = "Test title",
+                    Body = "Test body",
+                },
+            };
+
+            await client.SendToUserAsync(Guid.NewGuid(), message);
         }
 
         [FCMFact]

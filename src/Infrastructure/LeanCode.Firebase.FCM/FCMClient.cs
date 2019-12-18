@@ -46,11 +46,18 @@ namespace LeanCode.Firebase.FCM
         {
             message.Tokens = await tokenStore.GetTokensAsync(userId);
 
-            logger.Debug(
-                "Sending push notification to user {UserId} that targets {Count} devices",
-                userId, message.Tokens.Count);
-            var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
-            await HandleBatchResponseAsync(response, message.Tokens);
+            if (message.Tokens.Count == 0)
+            {
+                logger.Information("Cannot send push to user {UserId} - no tokens", userId);
+            }
+            else
+            {
+                logger.Debug(
+                    "Sending push notification to user {UserId} that targets {Count} devices",
+                    userId, message.Tokens.Count);
+                var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+                await HandleBatchResponseAsync(response, message.Tokens);
+            }
         }
 
         public async Task SendAllAsync(IEnumerable<Message> messages, bool dryRun, CancellationToken cancellationToken = default)

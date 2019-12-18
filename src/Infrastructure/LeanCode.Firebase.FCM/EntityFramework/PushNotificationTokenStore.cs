@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using LeanCode.Dapper;
 using LeanCode.IdentityProvider;
 using LeanCode.TimeProvider;
@@ -16,67 +17,73 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext>>();
 
         private readonly TDbContext dbContext;
-        private readonly DbSet<PushNotificationTokenEntity> dbSet;
 
         public PushNotificationTokenStore(TDbContext dbContext)
         {
             this.dbContext = dbContext;
-
-            dbSet = dbContext.Set<PushNotificationTokenEntity>();
         }
 
-        public Task<List<string>> GetTokensAsync(Guid userId)
+        public async Task<List<string>> GetTokensAsync(Guid userId)
         {
-            return dbSet
-                .Where(e => e.UserId == userId)
-                .Select(e => e.Token)
-                .ToListAsync();
+            var res = await dbContext.QueryAsync<string>(
+                $"SELECT [Token] FROM {GetTokensTableName()} WHERE [UserId] = @userId",
+                new { userId });
+            return res.AsList();
         }
 
-        public async Task AddTokenAsync(Guid userId, string newToken)
+        public async Task AddUserTokenAsync(Guid userId, string token)
         {
             try
             {
-                dbSet.Add(new PushNotificationTokenEntity
-                {
-                    Id = Identity.NewId(),
-                    UserId = userId,
-                    Token = newToken,
-                    DateCreated = Time.Now,
-                });
-                await dbContext.SaveChangesAsync();
-                logger.Information("New push notification token for user {UserId} saved", userId);
+                await dbContext.ExecuteAsync(
+                $@"
+                    BEGIN TRAN;
+
+                    -- Remove token from (possibly another) user
+                    DELETE FROM {GetTokensTableName()} WHERE [Token] = @token;
+
+                    -- And add the new token
+                    INSERT INTO {GetTokensTableName()} ([Id], [UserId], [Token], [DateCreated])
+                    VALUES (@newId, @userId, @token, @now);
+
+                    COMMIT TRAN;
+                ", new { newId = Identity.NewId(), userId, token, now = Time.Now });
+                logger.Information("Removed push notification token for user {UserId} from the store", userId);
             }
-            catch (DbUpdateException exception) when (IsDuplicateException(exception))
+            catch (Exception ex)
             {
-                logger.Verbose("Duplicate token received for user {UserId}", userId);
+                logger.Error(ex, "Something went wrong when deleting push notification token for user {UserId}", userId);
+                throw;
+            }
+        }
+
+        public async Task RemoveUserTokenAsync(Guid userId, string token)
+        {
+            try
+            {
+                await dbContext.ExecuteAsync(
+                    $"DELETE FROM {GetTokensTableName()} WHERE [UserId] = @userId AND [Token] = @token",
+                    new { userId, token });
+                logger.Information("Removed push notification token for user {UserId} from the store", userId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Something went wrong when deleting push notification token for user {UserId}", userId);
             }
         }
 
         public async Task RemoveTokenAsync(string token)
         {
-            var entity = await dbSet.FirstOrDefaultAsync(t => t.Token == token);
-            if (entity is object)
+            try
             {
-                dbSet.Remove(entity);
-                try
-                {
-                    await dbContext.SaveChangesAsync();
-                    logger.Information("Removed push notification token for user {UserId}", entity.UserId);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    logger.Information(
-                        "The push notification token for user {UserId} has been already deleted",
-                        entity.UserId);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(
-                        ex,
-                        "Something went wrong when deleting push notification token for user {UserId}",
-                        entity.UserId);
-                }
+                await dbContext.ExecuteAsync(
+                    $"DELETE FROM {GetTokensTableName()} WHERE [Token] = @token",
+                    new { token });
+                logger.Information("Removed push notification token from the store");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Something went wrong when deleting push notification token");
             }
         }
 
@@ -106,13 +113,6 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             {
                 return $"[{entity.GetSchema()}].[{entity.GetTableName()}]";
             }
-        }
-
-        private static bool IsDuplicateException(DbUpdateException exception)
-        {
-            return
-                exception.InnerException is SqlException sqlException &&
-                (sqlException.Number == 2601 || sqlException.Number == 2627);
         }
     }
 }

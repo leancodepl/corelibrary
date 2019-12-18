@@ -19,7 +19,12 @@ namespace LeanCode.Firebase.FCM.Tests
             this.token = token;
         }
 
-        public Task AddTokenAsync(Guid userId, string newToken)
+        public Task AddUserTokenAsync(Guid userId, string newToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveUserTokenAsync(Guid userId, string newToken)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +37,7 @@ namespace LeanCode.Firebase.FCM.Tests
             }
             else
             {
-                throw new KeyNotFoundException();
+                return Task.FromResult(new List<string>());
             }
         }
 
