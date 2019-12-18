@@ -51,7 +51,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Something went wrong when deleting push notification token for user {UserId}", userId);
+                logger.Error(ex, "Something went wrong when adding push notification token for user {UserId}", userId);
                 throw;
             }
         }
