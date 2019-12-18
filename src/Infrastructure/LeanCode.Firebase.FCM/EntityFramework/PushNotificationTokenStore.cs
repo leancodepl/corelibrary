@@ -6,7 +6,6 @@ using Dapper;
 using LeanCode.Dapper;
 using LeanCode.IdentityProvider;
 using LeanCode.TimeProvider;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.Firebase.FCM.EntityFramework
@@ -48,7 +47,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
 
                     COMMIT TRAN;
                 ", new { newId = Identity.NewId(), userId, token, now = Time.Now });
-                logger.Information("Removed push notification token for user {UserId} from the store", userId);
+                logger.Information("Added push notification token for user {UserId} from the store", userId);
             }
             catch (Exception ex)
             {
