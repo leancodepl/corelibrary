@@ -43,6 +43,7 @@ namespace LeanCode.Benchmarks
 
             middleware = new RemoteCQRSMiddleware<SampleAppContext>(
                 Catalog, _ => appContext,
+                null,
                 _ => Task.CompletedTask);
             serviceProvider = container.Resolve<IServiceProvider>();
 
