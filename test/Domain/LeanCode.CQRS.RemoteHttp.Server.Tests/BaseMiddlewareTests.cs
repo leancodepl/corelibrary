@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
-using Microsoft.AspNetCore.Http;
 using NSubstitute;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
@@ -24,10 +24,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         private readonly string endpoint;
         private readonly string defaultObject;
 
-        public BaseMiddlewareTests(string endpoint, Type defaultObject)
+        public BaseMiddlewareTests(string endpoint, Type defaultObject, JsonSerializerOptions? serializerOptions = null)
         {
             this.endpoint = endpoint;
-            this.defaultObject = defaultObject.FullName;
+            this.defaultObject = defaultObject.FullName!;
             this.serviceProvider = Substitute.For<IServiceProvider>();
             this.serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(Query);
             this.serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(Command);
@@ -35,6 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,
                 h => new AppContext(h.User),
+                serializerOptions,
                 ctx =>
                 {
                     ctx.Response.StatusCode = PipelineContinued;
@@ -43,17 +44,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         protected async Task<(int statusCode, string response)> Invoke(
-            string type = null,
+            string? type = null,
             string content = "{}",
             string method = "POST",
-            ClaimsPrincipal user = null)
+            ClaimsPrincipal? user = null)
         {
             type = type ?? defaultObject;
 
             var ctx = new StubContext(method, $"/{endpoint}/{type}", content)
             {
                 RequestServices = serviceProvider,
-                User = user,
+                User = user ?? new ClaimsPrincipal(),
             };
             await Middleware.Invoke(ctx);
 

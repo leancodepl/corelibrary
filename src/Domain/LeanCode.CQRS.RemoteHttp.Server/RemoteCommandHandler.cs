@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
@@ -21,8 +22,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public RemoteCommandHandler(
             IServiceProvider serviceProvider,
             TypesCatalog catalog,
-            Func<HttpContext, TAppContext> contextTranslator)
-            : base(catalog, contextTranslator)
+            Func<HttpContext, TAppContext> contextTranslator,
+            JsonSerializerOptions? serializerOptions)
+            : base(catalog, contextTranslator, serializerOptions)
         {
             this.serviceProvider = serviceProvider;
         }
@@ -40,26 +42,23 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             var method = MethodCache.GetOrAdd(type, MakeExecutorMethod);
 
-            var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
-
-            CommandResult cmdResult;
-
             try
             {
-                cmdResult = await result;
+                var result = (Task<CommandResult>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
+                var cmdResult = await result;
+
+                if (cmdResult.WasSuccessful)
+                {
+                    return ExecutionResult.Success(cmdResult);
+                }
+                else
+                {
+                    return ExecutionResult.Success(cmdResult, StatusCodes.Status422UnprocessableEntity);
+                }
             }
             catch (CommandHandlerNotFoundException)
             {
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
-            }
-
-            if (cmdResult.WasSuccessful)
-            {
-                return ExecutionResult.Success(cmdResult);
-            }
-            else
-            {
-                return ExecutionResult.Success(cmdResult, StatusCodes.Status422UnprocessableEntity);
             }
         }
 

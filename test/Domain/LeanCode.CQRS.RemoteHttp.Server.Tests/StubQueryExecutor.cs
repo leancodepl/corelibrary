@@ -6,8 +6,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {
     public class StubQueryExecutor : IQueryExecutor<AppContext>
     {
-        public AppContext LastAppContext { get; private set; }
-        public IQuery LastQuery { get; private set; }
+        public AppContext? LastAppContext { get; private set; }
+        public IQuery? LastQuery { get; private set; }
+
+        public object? NextResult { get; set; }
 
         public Task<TResult> GetAsync<TResult>(
             AppContext appContext,
@@ -15,7 +17,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             LastAppContext = appContext;
             LastQuery = query;
-            return Task.FromResult(default(TResult));
+            if (NextResult is null)
+            {
+                return Task.FromResult(default(TResult)!);
+            }
+            else
+            {
+                return Task.FromResult((TResult)NextResult!);
+            }
         }
     }
 }

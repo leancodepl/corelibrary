@@ -11,16 +11,21 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     internal abstract class BaseRemoteObjectHandler<TAppContext>
     {
         private readonly Func<HttpContext, TAppContext> contextTranslator;
+        private readonly JsonSerializerOptions? serializerOptions;
 
         public TypesCatalog Catalog { get; }
 
         protected Serilog.ILogger Logger { get; }
 
-        public BaseRemoteObjectHandler(TypesCatalog catalog, Func<HttpContext, TAppContext> contextTranslator)
+        public BaseRemoteObjectHandler(
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator,
+            JsonSerializerOptions? serializerOptions)
         {
             Logger = Serilog.Log.ForContext(GetType());
             Catalog = catalog;
             this.contextTranslator = contextTranslator;
+            this.serializerOptions = serializerOptions;
         }
 
         public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
@@ -39,7 +44,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             try
             {
-                obj = await JsonSerializer.DeserializeAsync(request.Body, type);
+                obj = await JsonSerializer.DeserializeAsync(request.Body, type, serializerOptions);
             }
             catch (Exception ex)
             {

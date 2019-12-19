@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
@@ -23,8 +24,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public RemoteQueryHandler(
             IServiceProvider serviceProvider,
             TypesCatalog catalog,
-            Func<HttpContext, TAppContext> contextTranslator)
-            : base(catalog, contextTranslator)
+            Func<HttpContext, TAppContext> contextTranslator,
+            JsonSerializerOptions? serializerOptions)
+            : base(catalog, contextTranslator, serializerOptions)
         {
             this.serviceProvider = serviceProvider;
         }
@@ -50,7 +52,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             try
             {
                 var result = (Task<object?>)method.Invoke(this, new[] { context, obj })!; // TODO: assert not null
-
                 var objResult = await result;
 
                 return ExecutionResult.Success(objResult);
