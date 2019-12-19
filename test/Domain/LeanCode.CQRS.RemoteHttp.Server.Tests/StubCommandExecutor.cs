@@ -9,8 +9,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     {
         public static readonly ValidationError SampleError = new ValidationError("Prop", "999", 2);
 
-        public AppContext LastAppContext { get; private set; }
-        public ICommand LastCommand { get; private set; }
+        public AppContext? LastAppContext { get; private set; }
+        public ICommand? LastCommand { get; private set; }
 
         public Task<CommandResult> RunAsync(
             AppContext appContext,

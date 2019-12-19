@@ -20,6 +20,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             Request = new StubRequest(this, method, path, content);
             Response = new StubResponse(this);
+
+            RequestServices = null!;
+            User = new ClaimsPrincipal();
         }
 
         public override IFeatureCollection Features => throw new NotImplementedException();
@@ -59,6 +62,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             var bytes = Encoding.UTF8.GetBytes(content);
             Body = new MemoryStream(bytes);
             ContentLength = bytes.Length;
+
+            Query = new QueryCollection();
+            Protocol = string.Empty;
         }
 
         public override IHeaderDictionary Headers => throw new NotImplementedException();
@@ -84,6 +90,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             HttpContext = ctx;
             Body = new MemoryStream();
+            ContentType = "text/plain";
         }
 
         public override IHeaderDictionary Headers => throw new NotImplementedException();

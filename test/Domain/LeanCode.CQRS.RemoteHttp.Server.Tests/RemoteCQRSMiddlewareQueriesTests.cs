@@ -76,7 +76,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             await Invoke(user: user);
 
             Assert.NotNull(Query.LastAppContext);
-            Assert.Equal(user, Query.LastAppContext.User);
+            Assert.Equal(user, Query.LastAppContext!.User);
         }
     }
 

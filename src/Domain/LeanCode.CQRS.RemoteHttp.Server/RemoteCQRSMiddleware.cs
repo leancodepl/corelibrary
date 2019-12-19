@@ -15,15 +15,18 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private readonly TypesCatalog catalog;
         private readonly Func<HttpContext, TAppContext> contextTranslator;
+        private readonly JsonSerializerOptions? serializerOptions;
         private readonly RequestDelegate next;
 
         public RemoteCQRSMiddleware(
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator,
+            JsonSerializerOptions? serializerOptions,
             RequestDelegate next)
         {
             this.catalog = catalog;
             this.contextTranslator = contextTranslator;
+            this.serializerOptions = serializerOptions;
             this.next = next;
         }
 
@@ -40,14 +43,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             else if (request.Path.StartsWithSegments("/query"))
             {
                 var queryHandler = new RemoteQueryHandler<TAppContext>(
-                    context.RequestServices, catalog, contextTranslator);
+                    context.RequestServices, catalog, contextTranslator, serializerOptions);
 
                 result = await queryHandler.ExecuteAsync(context);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
                 var commandHandler = new RemoteCommandHandler<TAppContext>(
-                    context.RequestServices, catalog, contextTranslator);
+                    context.RequestServices, catalog, contextTranslator, serializerOptions);
 
                 result = await commandHandler.ExecuteAsync(context);
             }
@@ -80,7 +83,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                         await JsonSerializer.SerializeAsync(
                             context.Response.Body,
                             result.Payload,
-                            result.Payload.GetType());
+                            result.Payload.GetType(),
+                            serializerOptions);
                     }
                 }
             }
