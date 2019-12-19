@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Execution;
@@ -23,8 +22,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             IServiceProvider serviceProvider,
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator,
-            JsonSerializerOptions? serializerOptions)
-            : base(catalog, contextTranslator, serializerOptions)
+            ISerializer serializer)
+            : base(catalog, contextTranslator, serializer)
         {
             this.serviceProvider = serviceProvider;
         }

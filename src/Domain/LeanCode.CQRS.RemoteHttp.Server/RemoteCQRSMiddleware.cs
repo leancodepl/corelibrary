@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using Microsoft.AspNetCore.Builder;
@@ -15,18 +16,29 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private readonly TypesCatalog catalog;
         private readonly Func<HttpContext, TAppContext> contextTranslator;
-        private readonly JsonSerializerOptions? serializerOptions;
+        private readonly ISerializer serializer;
         private readonly RequestDelegate next;
 
         public RemoteCQRSMiddleware(
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator,
-            JsonSerializerOptions? serializerOptions,
+            ISerializer serializer,
             RequestDelegate next)
         {
             this.catalog = catalog;
             this.contextTranslator = contextTranslator;
-            this.serializerOptions = serializerOptions;
+            this.serializer = serializer;
+            this.next = next;
+        }
+
+        public RemoteCQRSMiddleware(
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator,
+            RequestDelegate next)
+        {
+            this.catalog = catalog;
+            this.contextTranslator = contextTranslator;
+            this.serializer = new Utf8JsonSerializer();
             this.next = next;
         }
 
@@ -43,14 +55,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             else if (request.Path.StartsWithSegments("/query"))
             {
                 var queryHandler = new RemoteQueryHandler<TAppContext>(
-                    context.RequestServices, catalog, contextTranslator, serializerOptions);
+                    context.RequestServices, catalog, contextTranslator, serializer);
 
                 result = await queryHandler.ExecuteAsync(context);
             }
             else if (request.Path.StartsWithSegments("/command"))
             {
                 var commandHandler = new RemoteCommandHandler<TAppContext>(
-                    context.RequestServices, catalog, contextTranslator, serializerOptions);
+                    context.RequestServices, catalog, contextTranslator, serializer);
 
                 result = await commandHandler.ExecuteAsync(context);
             }
@@ -80,11 +92,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     }
                     else
                     {
-                        await JsonSerializer.SerializeAsync(
+                        await serializer.SerializeAsync(
                             context.Response.Body,
                             result.Payload,
                             result.Payload.GetType(),
-                            serializerOptions);
+                            context.RequestAborted);
                     }
                 }
             }
@@ -98,7 +110,16 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator);
+            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator, new Utf8JsonSerializer());
+        }
+
+        public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
+            this IApplicationBuilder builder,
+            TypesCatalog catalog,
+            Func<HttpContext, TAppContext> contextTranslator,
+            ISerializer serializer)
+        {
+            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator, serializer);
         }
     }
 }
