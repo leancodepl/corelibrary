@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         private readonly string endpoint;
         private readonly string defaultObject;
 
-        public BaseMiddlewareTests(string endpoint, Type defaultObject, JsonSerializerOptions? serializerOptions = null)
+        public BaseMiddlewareTests(string endpoint, Type defaultObject, ISerializer? serializer = null)
         {
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName!;
@@ -35,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             Middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,
                 h => new AppContext(h.User),
-                serializerOptions,
+                serializer ?? new Utf8JsonSerializer(),
                 ctx =>
                 {
                     ctx.Response.StatusCode = PipelineContinued;

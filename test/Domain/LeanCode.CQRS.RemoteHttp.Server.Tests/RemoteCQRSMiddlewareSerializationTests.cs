@@ -12,7 +12,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         };
 
         public RemoteCQRSMiddlewareSerializationTests()
-            : base("query", typeof(RemoteCQRSMiddlewareTests), SerializerOptions) { }
+            : base("query", typeof(RemoteCQRSMiddlewareTests), new Utf8JsonSerializer(SerializerOptions)) { }
 
         [Fact]
         public async Task Uses_serialization_options_when_deserializing_payload()

@@ -15,6 +15,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override HttpRequest Request { get; }
         public override HttpResponse Response { get; }
         public override IServiceProvider RequestServices { get; set; }
+        public override CancellationToken RequestAborted { get; set; }
 
         public StubContext(string method, string path, string content)
         {
@@ -30,7 +31,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override WebSocketManager WebSockets => throw new NotImplementedException();
         public override ClaimsPrincipal User { get; set; }
         public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override void Abort() => throw new NotImplementedException();

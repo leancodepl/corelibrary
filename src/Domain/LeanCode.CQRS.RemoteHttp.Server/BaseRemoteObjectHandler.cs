@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.CQRS.Security.Exceptions;
@@ -11,7 +9,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     internal abstract class BaseRemoteObjectHandler<TAppContext>
     {
         private readonly Func<HttpContext, TAppContext> contextTranslator;
-        private readonly JsonSerializerOptions? serializerOptions;
+        private readonly ISerializer serializer;
 
         public TypesCatalog Catalog { get; }
 
@@ -20,12 +18,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public BaseRemoteObjectHandler(
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator,
-            JsonSerializerOptions? serializerOptions)
+            ISerializer serializer)
         {
             Logger = Serilog.Log.ForContext(GetType());
             Catalog = catalog;
             this.contextTranslator = contextTranslator;
-            this.serializerOptions = serializerOptions;
+            this.serializer = serializer;
         }
 
         public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
@@ -44,7 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             try
             {
-                obj = await JsonSerializer.DeserializeAsync(request.Body, type, serializerOptions);
+                obj = await serializer.DeserializeAsync(request.Body, type, context.RequestAborted);
             }
             catch (Exception ex)
             {
