@@ -1,4 +1,3 @@
-LeanCode Core Library
-=====================
+# LeanCode Core Library
 
 [Documentation](./docs/README.md)
