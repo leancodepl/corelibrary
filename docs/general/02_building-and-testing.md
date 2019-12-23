@@ -1,5 +1,4 @@
-Building & Testing
-==================
+# Building & Testing
 
 ## Building
 
@@ -14,6 +13,7 @@ If you want to build release configuration of the library, you need to specify w
 ## Testing
 
 The framework can be unit-tested by `cd`ing into `test` folder and calling
+
 ```sh
 dotnet msbuild /t:RunTests
 ```
@@ -32,11 +32,15 @@ docker-compose run test
 ## Publishing
 
 After successful test, packages can be packed with
+
 ```sh
 dotnet pack -c Release -o $PWD/publish
 ```
+
 and then published to NuGet feed with
+
 ```sh
 dotnet nuget push 'publish/*.nupkg'
 ```
+
 provided that API Key is correctly specified in profile/machine `NuGet.Config`.

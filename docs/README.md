@@ -1,15 +1,14 @@
-LeanCode Core Library
-=====================
+# LeanCode Core Library
 
 LeanCode Core Library, or CoreLib for short, is a set of helper libraries developed at [our company](https://leancode.pl) that aids our day-to-day development. It also provides a general guidelines on how we should build our apps.
 
-Our aim is to provide an opinionated framework for .NET Core app development. As for now we have, more-or-less, standarized:
+Our aim is to provide an opinionated framework for .NET Core app development. As for now we have, more-or-less, standardized:
 
- * App startup, config & logging,
- * Base DDD models & how it interacts with the rest of the framework,
- * CQRS and CQRS-as-API,
- * Basic localization,
- * Some integrations with external services.
+* App startup, config & logging,
+* Base DDD models & how it interacts with the rest of the framework,
+* CQRS and CQRS-as-API,
+* Basic localization,
+* Some integrations with external services.
 
 Even though is a framework, we try to stick to the ASP.NET Core model as close as possible and keep the "framework" part really small.
 

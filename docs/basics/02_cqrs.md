@@ -1,5 +1,4 @@
-CQRS
-====
+# CQRS
 
 We use CQRS in almost every project. We try to stick to it as much as possible because it allows us to easily construct our APIs (using RemoteCQRS) and makes our code maintainable. Here, we present a short description on what CQRS is and how we designed it.
 
@@ -16,6 +15,7 @@ We went a step further and used commands and queries as our API (client-facing, 
 Command is just an object that implements the `ICommand` interface. Commands are used to execute an action that modifies data. Commands are validated, and if they pass validation, they should succeed. Commands do not return any value. This makes them quite constrained, yet reasoning is much easier.
 
 Consider the following command:
+
 ```csharp
 [AuthorizeWhenHasAnyOf(Permission.CreateDish)]
 public class CreateDish : ICommand
@@ -24,6 +24,7 @@ public class CreateDish : ICommand
     public string Name { get; set; }
 }
 ```
+
 that creates a new dish. Caller of the command is required to have the `CreateDish` permission (more on authorization and permissions later).
 
 ### Query
@@ -31,6 +32,7 @@ that creates a new dish. Caller of the command is required to have the `CreateDi
 Query is just an object that implements the `IQuery<TResult>` interface (there's also non-generic `IQuery` interface but it shouldn't be used directly). The only generic parameter specifies the type that the query returns when executed. It should be a DTO (because most of the time it will be serialized). Queries get the data from the system but don't modify it.
 
 Consider the following query
+
 ```csharp
 public class DishInfoDTO
 {
@@ -85,7 +87,8 @@ As you can see, the command handler is really simple - it just converts the comm
  6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
 
 #### Validation
-To reject commands that have invalid data or that cannot be fullfilled (the state of the system disallows it), you should use command validators. A command validator is instantiated and run before command handler even sees the command (but, by default, after authorization) and can return error code along the error message, so the system has an opportunity to inform the client why the command is invalid. A validator is a class that implements the `ICommandValidator<TAppContext, TCommand>` interface. To simplify things, we use `FluentValidation` so it is only necessary to implement `AbstractValidator<TCommand>`, everything else is handled by infrastructure.
+
+To reject commands that have invalid data or that cannot be fulfilled (the state of the system disallows it), you should use command validators. A command validator is instantiated and run before command handler even sees the command (but, by default, after authorization) and can return error code along the error message, so the system has an opportunity to inform the client why the command is invalid. A validator is a class that implements the `ICommandValidator<TAppContext, TCommand>` interface. To simplify things, we use `FluentValidation` so it is only necessary to implement `AbstractValidator<TCommand>`, everything else is handled by infrastructure.
 
 To validate the command above, you can use something like
 
@@ -130,6 +133,7 @@ Besides normal `RuleFor`s, there are `RuleForAsync`s. They are used to access ex
 Query handlers execute queries. They should not have any side effects but can return data back to the client. Since they can return data to the client, they don't need separate validation (handler can do it internally). In query handlers you don't need to operate on aggregate level (as this is read-side and is relatively DDD-free) and are allowed to perform arbitrary SQL queries (it is even recommended to not rely on EF or other ORM and go straight to Dapper).
 
 Example query handler:
+
 ```csharp
 public class FindDishesMatchingNameQH : IQueryHandler<AppContext, FindDishesMatchingName, List<DishInfoDTO>>
 {
@@ -153,6 +157,7 @@ public class FindDishesMatchingNameQH : IQueryHandler<AppContext, FindDishesMatc
 ```
 
 ### Authorization
+
 Each command and query has to be authorized or must explicitly opt-out of authorization (we enforce it using Roslyn analyzers). You can specify which authorizer to use using the `AuthorizeWhen` attribute and custom `ICustomAuthorizer`. Opting-out is done using the `AllowUnauthorized` attribute. There is a predefined authorizer that uses role- and permission-based authorization. You can specify which permissions to enforce using `AuthorizeWhenHasAnyOf` and configure the role-to-permission relationship using `IRoleRegistrations`.
 
 If multiple `AuthorizeWhen` attributes are specified, **all** authorization rules must pass.
@@ -160,6 +165,7 @@ If multiple `AuthorizeWhen` attributes are specified, **all** authorization rule
 An authorizer is a class that implements the `ICustomAuthorizer` interface or derives from one of the `CustomAuthorizer` base classes. It has access to both context and command/query. Command/query type doesn't need to be exact, it just has to be coercible to the specified type (`CustomAuthorizer` casts objects to the types internally). Therefore, if you want to use the same authorizer for many commands/queries, you can use base classes or interfaces and implement the authorizer for them.
 
 Example authorizer, along with the (not required, but convenient) plumbing:
+
 ```csharp
 // Authorizer marker
 public interface IsDishOwned
@@ -181,6 +187,7 @@ sealed class DishIsOwnedAttribute : AuthorizeWhenAttribute
 ```
 
 Sample usage:
+
 ```csharp
 [DishIsOwned]
 public class UpdateDishName : ICommand, IAmDish

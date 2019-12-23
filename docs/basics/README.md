@@ -1,5 +1,4 @@
-Basics
-======
+# Basics
 
 Here, we describe basic elements of CoreLib-based projects:
 

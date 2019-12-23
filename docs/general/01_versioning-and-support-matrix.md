@@ -1,5 +1,4 @@
-Versioning
-==========
+# Versioning
 
 CoreLib version is tricky. Since it is mostly used internally by us at LeanCode, we're not really following [Semantic Versioning](http://semver.org). Instead, we decide which version is considered stable but maintained, which one is under active development and which one is out of support. There will also be versions that are unmaintained and should be no longer used. There are some vague rules on how we decide what state particular version is in:
 
@@ -7,7 +6,7 @@ CoreLib version is tricky. Since it is mostly used internally by us at LeanCode,
  2. If it is based on old (out of support) .NET Core version, it is unmaintained,
  3. If the version is used by active projects only, it is under active development.
 
-Additionaly, there are some rules regarding versioning itself and changes to the version number:
+Additionally, there are some rules regarding versioning itself and changes to the version number:
 
  1. If major version of .NET Core changes, we bump major version of CoreLib,
  2. If minor version of .NET Core changes, we bump minor version,
@@ -22,6 +21,7 @@ Additionaly, there are some rules regarding versioning itself and changes to the
 All of the libraries that are part of the CoreLib are versioned together and require **exact** version of other libraries. This simplifies versioning substantially but at the expense of flexibility.
 
 ## Supported versions
+
 Here is the list of available major versions of the library (as of 20-12-2019):
 
 | CoreLib | .NET Core | Under development | Stable     | Notes         |

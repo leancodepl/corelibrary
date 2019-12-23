@@ -1,5 +1,4 @@
-CoreLib-based apps
-==================
+# CoreLib-based apps
 
 CoreLib tries to make developing ASP.NET Core-based apps easier. One of the goals is to provide common features out of the box (e.g. logging & config) and unify how the app is being composed. Here, we describe what is being done and how it affects app structure.
 
@@ -20,7 +19,8 @@ We decided to use Autofac as main IoC/DI container but because many external lib
 The `IAppModule` interface is defined in `LeanCode.Components` project.
 
 ### Recommendations
-`IAppModule` is the main building block for our modular projecs. Each project **should** provide **at most one** `IAppModule` implementation that is the main entry point to that project. Registering project's module should suffice to use the project, provided that it's dependencies are also registered. It is developer's job to register all the necessary dependencies.
+
+`IAppModule` is the main building block for our modular projects. Each project **should** provide **at most one** `IAppModule` implementation that is the main entry point to that project. Registering project's module should suffice to use the project, provided that it's dependencies are also registered. It is developer's job to register all the necessary dependencies.
 
 If project requires separate, user-provided configuration (e.g. api keys, certificates), don't require it in module. Leave it to app to register it separately.
 

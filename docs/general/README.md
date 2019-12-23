@@ -1,5 +1,4 @@
-General
-=======
+# General
 
 Here, we describe general topics regarding CoreLib:
 

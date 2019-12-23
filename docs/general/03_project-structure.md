@@ -1,7 +1,6 @@
-Project structure
-=================
+# Project structure
 
-# Root structure
+## Root structure
 
 The project is divided into the main directories:
 
@@ -12,7 +11,7 @@ The project is divided into the main directories:
 
 Plus there are some files in the root directory (SLN, config files & READMEs).
 
-## Project structure
+### Source code structure
 
 The `src` folder that contains the main source code is then divided into:
 
@@ -25,7 +24,7 @@ The `src` folder that contains the main source code is then divided into:
 
 `test` folder follows `str` structure closely.
 
-# Build system
+## Build system
 
 CoreLib build system mostly MSBuild-based, with some help of CI system to orchestrate build/test/publish process (see [Building & Testing](./02_building-and-testing.md) for more details).
 
@@ -33,7 +32,7 @@ We leverage .NET Core's MSBuild `Directory.Build.targets` files to centrally man
 
 Besides `.targets` file, we use central `Directory.Build.props` to manage some of the project properties. Check [/Directory.Build.props](../../Directory.Build.props), [/src/Directory.Build.props](../../src/Directory.Build.props) and [/test/Directory.Build.props](../../test/Directory.Build.props) what is being centrally set.
 
-# Creating new packages
+## Creating new packages
 
 Creating new packages (that will be published to the feed) is simple. You just have to:
 
@@ -42,7 +41,7 @@ Creating new packages (that will be published to the feed) is simple. You just h
 
 Or you can just modify the following project template (most of the projects use this):
 
-```
+```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
 </Project>
