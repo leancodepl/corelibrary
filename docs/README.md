@@ -17,4 +17,5 @@ Even though is a framework, we try to stick to the ASP.NET Core model as close a
 The CoreLib documentation is available here:
 
  1. [General](./general/README.me),
- 2. [Basics](./basics/README.md).
+ 2. [Basics](./basics/README.md),
+ 3. [Benchmarks](./benchmarks/README.md).
