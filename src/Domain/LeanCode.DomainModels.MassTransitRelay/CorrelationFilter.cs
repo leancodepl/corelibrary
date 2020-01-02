@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GreenPipes;
 using LeanCode.Correlation;
 using MassTransit;
+using Serilog.Context;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -19,13 +20,23 @@ namespace LeanCode.DomainModels.MassTransitRelay
             var correlationId = context.ConversationId is Guid conversationId ?
                 Correlate.Logs(conversationId) :
                 null;
+
+            var messageId = GetMessageId(context);
             var consumerType = GetConsumerType(next);
 
+            using (messageId)
             using (correlationId)
             using (consumerType)
             {
                 await next.Send(context);
             }
+        }
+
+        private static IDisposable? GetMessageId(ConsumeContext ctx)
+        {
+            return ctx.MessageId is Guid messageId ?
+                LogContext.PushProperty("MessageId", messageId) :
+                null;
         }
 
         private static IDisposable? GetConsumerType(IPipe<ConsumeContext> next)
@@ -47,7 +58,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 return null;
             }
 
-            return Serilog.Context.LogContext.PushProperty("ConsumerType", type);
+            return LogContext.PushProperty("ConsumerType", type);
         }
 
         private static bool TryGetTyped<T>(IDictionary<string, object> dict, string key, [NotNullWhen(returnValue: true)] out T? value)
