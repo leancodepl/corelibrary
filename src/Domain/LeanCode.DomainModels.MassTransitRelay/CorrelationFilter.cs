@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using GreenPipes;
@@ -15,13 +16,52 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
         {
-            var logs = context.ConversationId is Guid correlationId ?
-                Correlate.Logs(correlationId) :
+            var correlationId = context.ConversationId is Guid conversationId ?
+                Correlate.Logs(conversationId) :
                 null;
+            var consumerType = GetConsumerType(next);
 
-            using (logs)
+            using (correlationId)
+            using (consumerType)
             {
                 await next.Send(context);
+            }
+        }
+
+        private static IDisposable? GetConsumerType(IPipe<ConsumeContext> next)
+        {
+            var probe = next.GetProbeResult();
+
+            if (!TryGetTyped<IDictionary<string, object>>(probe.Results, "filters", out var filters))
+            {
+                return null;
+            }
+
+            if (!TryGetTyped<IDictionary<string, object>>(filters, "consumer", out var consumer))
+            {
+                return null;
+            }
+
+            if (!TryGetTyped<string>(consumer, "type", out var type))
+            {
+                return null;
+            }
+
+            return Serilog.Context.LogContext.PushProperty("ConsumerType", type);
+        }
+
+        private static bool TryGetTyped<T>(IDictionary<string, object> dict, string key, [NotNullWhen(returnValue: true)] out T? value)
+            where T : class
+        {
+            if (dict.TryGetValue(key, out var raw) && raw is T typed)
+            {
+                value = typed;
+                return true;
+            }
+            else
+            {
+                value = null;
+                return false;
             }
         }
     }
