@@ -1,6 +1,7 @@
-#!/bin sh
+#!/bin/sh
 
-VERSION=1.0.0
+export VERSION=5.0.0-pre
+
 dotnet pack
-cp bin/Debug/LeanCode.CodeAnalysis.1.0.0.nupkg ~/.local-nugets
+cp bin/Debug/LeanCode.CodeAnalysis.$VERSION.nupkg ~/.local-nugets
 rm -rf ~/.nuget/packages/leancode.codeanalysis
