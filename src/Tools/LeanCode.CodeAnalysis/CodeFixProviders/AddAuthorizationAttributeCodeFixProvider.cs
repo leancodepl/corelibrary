@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.CodeAnalysis.Analyzers;
 using LeanCode.CodeAnalysis.CodeActions;
-using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -48,8 +47,8 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
 
         private static readonly (string Type, string Namespace)[] StaticAuthorizers = new[]
         {
-            (nameof(AllowUnauthorizedAttribute), "LeanCode.CQRS.Security"),
-            (nameof(AuthorizeWhenHasAnyOfAttribute), "LeanCode.CQRS.Security"),
+            ("AllowUnauthorizedAttribute", "LeanCode.CQRS.Security"),
+            ("AuthorizeWhenHasAnyOfAttribute", "LeanCode.CQRS.Security"),
         };
     }
 }

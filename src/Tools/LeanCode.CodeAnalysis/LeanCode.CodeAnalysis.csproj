@@ -1,20 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <BuildPackage>true</BuildPackage>
+    <NoStyleCop>1</NoStyleCop>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+
+    <!-- It needs to target .NETStandard, otherwise it won't work in Omnisharp. See next comment for details. -->
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <!--
+      Omnisharp works on Mono, and it is compatible with .NETStandard2.1 and earlier. When using
+      `netcoreapp` (3.0 in particular) we are implicitly referencing `System.Collections.Immutable.dll`
+      in version 1.2.5.0. Mono has only 1.2.3.0 so it fails to match the version correctly.
+      Fortunately, System.Collections.Immutable package, version 1.5.0 has DLL with the correct version.
+      So we're just forcing MSBuild to use that particular version and everything is fine (although
+      we don't have .NET Core 3.0 features here).
+    -->
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0"/>
 
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
-    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build"/>
-    <None Include="$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath=""/>
-    <None Include="$(CodeAnalysisSettingsLocation)/stylecop.json" Pack="true" PackagePath=""/>
+
+    <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build" />
+    <None Include="$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath="build" />
+    <None Include="$(CodeAnalysisSettingsLocation)/stylecop.json" Pack="true" PackagePath="build" />
   </ItemGroup>
+
+  <Target Name="RawDeploy">
+    <Exec Command="/bin/sh $(MSBuildThisFileDirectory)deploy.sh" />
+  </Target>
 </Project>
