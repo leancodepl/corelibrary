@@ -8,7 +8,7 @@ namespace LeanCode.CQRS
     /// </summary>
     /// <remarks>
     /// Query results are cached with a key. A key is derived from all query and object context properties.
-    /// <remarks>
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class QueryCacheAttribute : Attribute
     {
