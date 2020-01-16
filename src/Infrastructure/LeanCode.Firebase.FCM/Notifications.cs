@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -28,7 +29,14 @@ namespace LeanCode.Firebase.FCM
 
                     if (value is object)
                     {
-                        result.Add(prop.Name, value.ToString()!);
+                        if (value is Enum @enum)
+                        {
+                            result.Add(prop.Name, Convert.ToInt32(@enum).ToString()!);
+                        }
+                        else
+                        {
+                            result.Add(prop.Name, value.ToString()!);
+                        }
                     }
                 }
             }
