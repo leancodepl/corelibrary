@@ -7,7 +7,7 @@ namespace LeanCode.DomainModels.EF
 {
     public sealed class SimpleEFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
         : EFRepositoryNoOC<TEntity, TIdentity, TContext, TUnitOfWork>
-        where TEntity : class, IAggregateRoot<TIdentity>
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
         where TIdentity : notnull, IEquatable<TIdentity>
         where TContext : notnull, DbContext
         where TUnitOfWork : notnull, EFUnitOfWorkBase<TContext>
