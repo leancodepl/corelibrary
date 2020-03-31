@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LeanCode.Mixpanel
@@ -127,7 +127,7 @@ namespace LeanCode.Mixpanel
         private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object?> data)
         {
             var dataString = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(data));
-            var url = $"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}";
+            var url = $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
             using var rawResponse = await client.Client.GetAsync(url);
             var content = await rawResponse.Content.ReadAsStringAsync();
@@ -168,7 +168,9 @@ namespace LeanCode.Mixpanel
         public const int Success = 1;
         public const int Failure = 0;
 
+        [JsonPropertyName("status")]
         public int Status { get; set; }
+        [JsonPropertyName("error")]
         public string? Error { get; set; }
     }
 }
