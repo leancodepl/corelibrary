@@ -15,21 +15,24 @@ namespace LeanCode.EFMigrator
             ?? throw new NullReferenceException();
 
         protected virtual void UseAdditionalSqlServerDbContextOptions(SqlServerDbContextOptionsBuilder builder) { }
+        protected virtual void UseAdditionalDbContextOptions(DbContextOptionsBuilder<TContext> builder) { }
 
         public TContext CreateDbContext(string[] args)
         {
-            return (TContext?)Activator.CreateInstance(
-                typeof(TContext),
-                new DbContextOptionsBuilder<TContext>()
-                    .UseLoggerFactory(new ServiceCollection()
-                        .AddLogging(cfg => cfg.AddConsole())
-                        .BuildServiceProvider()
-                        .GetRequiredService<ILoggerFactory>())
-                    .UseSqlServer(
-                        MigrationsConfig.GetConnectionString(),
-                        cfg => UseAdditionalSqlServerDbContextOptions(
-                            cfg.MigrationsAssembly(AssemblyName)))
-                    .Options) ?? throw new NullReferenceException("Failed to create DbContext instance.");
+            var builder = new DbContextOptionsBuilder<TContext>()
+                .UseLoggerFactory(new ServiceCollection()
+                    .AddLogging(cfg => cfg.AddConsole())
+                    .BuildServiceProvider()
+                    .GetRequiredService<ILoggerFactory>())
+                .UseSqlServer(
+                    MigrationsConfig.GetConnectionString(),
+                    cfg => UseAdditionalSqlServerDbContextOptions(
+                        cfg.MigrationsAssembly(AssemblyName)));
+
+            UseAdditionalDbContextOptions(builder);
+
+            return (TContext?)Activator.CreateInstance(typeof(TContext), builder.Options)
+                ?? throw new NullReferenceException("Failed to create DbContext instance.");
         }
     }
 }
