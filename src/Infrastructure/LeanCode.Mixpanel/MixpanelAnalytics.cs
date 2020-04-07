@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LeanCode.Mixpanel
@@ -106,14 +106,14 @@ namespace LeanCode.Mixpanel
                 ["properties"] = properties,
             };
 
-            logger.Verbose("Sending Mixpanel event {eventName} for user {userId}", name, userId);
+            logger.Verbose("Sending Mixpanel event {EventName} for user {UserId}", name, userId);
 
             return MakeRequest(userId, isImport ? "import" : "track", name, data);
         }
 
         private Task Engage(string userId, string operation, object? properties = null)
         {
-            logger.Verbose("Engaging Mixpanel operation {name} for user {userId}", operation, userId);
+            logger.Verbose("Engaging Mixpanel operation {Name} for user {UserId}", operation, userId);
             var data = new Dictionary<string, object?>()
             {
                 ["$token"] = configuration.Token,
@@ -127,26 +127,38 @@ namespace LeanCode.Mixpanel
         private async Task MakeRequest(string userId, string uri, string requestName, Dictionary<string, object?> data)
         {
             var dataString = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(data));
-            var url = $"{uri}/?data={dataString}&verbose=1&api_key={configuration.ApiKey}";
+            var url = $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
-            await using var jsonResponse = await client.Client.GetStreamAsync(url);
-            var response = await JsonSerializer.DeserializeAsync<MixpanelResponse>(jsonResponse);
-
-            if (response.Status == MixpanelResponse.Success)
+            using var rawResponse = await client.Client.GetAsync(url);
+            var content = await rawResponse.Content.ReadAsStringAsync();
+            if (content == "1")
             {
-                logger.Information(
-                    "Mixpanel request {requestName} for user {userId} sent successfully",
+                logger.Debug(
+                    "Mixpanel request {RequestName} for user {UserId} sent successfully",
                     requestName, userId);
+            }
+            else if (content == "0")
+            {
+                logger.Warning(
+                    "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}",
+                    requestName, userId, data);
             }
             else
             {
-                logger.Warning(
-                    "Error sending mixpanel request {requestName} for user {userId} with data: {@EventData}",
-                    requestName, userId, data);
+                var response = JsonSerializer.Deserialize<MixpanelResponse>(content);
 
-                logger.Warning(
-                    "Mixpanel returned error: {Error}",
-                    response.Error);
+                if (response.Status == MixpanelResponse.Success)
+                {
+                    logger.Information(
+                        "Mixpanel request {RequestName} for user {UserId} sent successfully",
+                        requestName, userId);
+                }
+                else
+                {
+                    logger.Warning(
+                        "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}. Mixpanel returned an error {Error}",
+                        requestName, userId, data);
+                }
             }
         }
     }
@@ -156,7 +168,9 @@ namespace LeanCode.Mixpanel
         public const int Success = 1;
         public const int Failure = 0;
 
+        [JsonPropertyName("status")]
         public int Status { get; set; }
+        [JsonPropertyName("error")]
         public string? Error { get; set; }
     }
 }
