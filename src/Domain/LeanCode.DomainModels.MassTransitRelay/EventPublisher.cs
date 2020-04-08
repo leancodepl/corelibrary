@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             var retryOnFailure = Policy
                 .Handle<Exception>()
-                .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Pow(2, a) < 120 ? Math.Pow(2, a) : 120));
+                .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
 
             // The cast is important. Otherwise event will be published
             // as IDomainEvent interface instead of concrete object and handlers
