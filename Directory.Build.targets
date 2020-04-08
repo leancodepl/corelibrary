@@ -5,7 +5,7 @@
     <ExtensionsVersion>3.1.0</ExtensionsVersion>
     <HangfireVersion>1.7.7</HangfireVersion>
     <IdentityServerVersion>3.0.2</IdentityServerVersion>
-    <MassTransitVersion>6.0.0</MassTransitVersion>
+    <MassTransitVersion>6.2.4</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.4.0</CodeAnalysisVersion>
