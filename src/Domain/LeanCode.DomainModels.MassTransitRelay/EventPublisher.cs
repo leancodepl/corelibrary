@@ -15,8 +15,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
     public class BusEventPublisher : IEventPublisher
     {
         private static readonly AsyncRetryPolicy RetryOnFailure = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
+            .Handle<Exception>()
+            .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
+
         private readonly IBus bus;
 
         public BusEventPublisher(IBus bus)
