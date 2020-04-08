@@ -30,10 +30,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             // as IDomainEvent interface instead of concrete object and handlers
             // won't be called.
             return retryOnFailure.ExecuteAsync(() => bus.Publish((object)evt, ctx =>
-                {
-                    ctx.MessageId = evt.Id;
-                    ctx.ConversationId = correlationId;
-                }));
+            {
+                ctx.MessageId = evt.Id;
+                ctx.ConversationId = correlationId;
+            }));
         }
     }
 }
