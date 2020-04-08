@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 using MassTransit;
 using Polly;
+using Polly.Retry;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -13,6 +14,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
     public class BusEventPublisher : IEventPublisher
     {
+        private static readonly AsyncRetryPolicy RetryOnFailure = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
         private readonly IBus bus;
 
         public BusEventPublisher(IBus bus)
@@ -22,14 +26,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public Task PublishAsync(IDomainEvent evt, Guid? correlationId)
         {
-            var retryOnFailure = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
-
             // The cast is important. Otherwise event will be published
             // as IDomainEvent interface instead of concrete object and handlers
             // won't be called.
-            return retryOnFailure.ExecuteAsync(() => bus.Publish((object)evt, ctx =>
+            return RetryOnFailure.ExecuteAsync(() => bus.Publish((object)evt, ctx =>
             {
                 ctx.MessageId = evt.Id;
                 ctx.ConversationId = correlationId;
