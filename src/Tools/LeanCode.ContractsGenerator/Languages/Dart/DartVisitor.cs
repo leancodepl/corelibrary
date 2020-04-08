@@ -52,12 +52,12 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             definitionsBuilder
                 .AppendLine("List<T> _listFromJson<T>(")
-                .AppendLine("dynamic decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
-                .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e))?.toList()?.cast<T>(); }");
+                .AppendLine("Iterable<dynamic> decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
+                .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e as Map<String,dynamic>))?.toList()?.cast<T>(); }");
 
             definitionsBuilder
                 .AppendLine("DateTime _dateTimeFromJson(String value) {")
-                .AppendLine("return DateTime.parse(value.substring(0, 19) + ' Z'); }");
+                .AppendLine("return DateTime.parse('${value.substring(0, 19)} Z'); }");
 
             definitionsBuilder
                 .AppendLine("DateTime _nullableDateTimeFromJson(String value) {")
@@ -65,9 +65,10 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder
                 .AppendLine("double _doubleFromJson(dynamic value) {")
-                .AppendLine("if (value is String) { return double.parse(value); }")
+                .AppendLine("if (value is double) { return value; }")
+                .AppendLine("else if (value is String) { return double.parse(value); }")
                 .AppendLine("else if (value is int) { return value.toDouble(); }")
-                .AppendLine("else { return value; }")
+                .AppendLine("throw Exception('Invalid argument type ${value.runtimeType}');")
                 .AppendLine("}");
 
             definitionsBuilder
@@ -407,7 +408,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 {
                     var name = mangledStatements[typeKey].name;
 
-                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson, _${name}FromJson);");
+                    definitionsBuilder.AppendLine($"_listFromJson(decodedJson as Iterable<dynamic>, _${name}FromJson);");
                 }
                 else
                 {
@@ -425,7 +426,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 if (mangledStatements.ContainsKey(typeKey))
                 {
                     var name = mangledStatements[typeKey].name;
-                    definitionsBuilder.AppendLine($"_${name}FromJson(decodedJson);");
+                    definitionsBuilder.AppendLine($"_${name}FromJson(decodedJson as Map<String, dynamic>);");
                 }
                 else
                 {

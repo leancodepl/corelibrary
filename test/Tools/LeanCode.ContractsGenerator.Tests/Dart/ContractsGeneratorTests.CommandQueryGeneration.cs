@@ -12,7 +12,18 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("DTO resultFactory(dynamic decodedJson) => _$DTOFromJson(decodedJson);", contracts);
+            Assert.Contains("DTO resultFactory(dynamic decodedJson) => _$DTOFromJson(decodedJson as Map<String, dynamic>);", contracts);
+        }
+
+        
+        [Fact]
+        public void Remote_query_contains_mapping_from_json_for_list()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public class DTO {} public class Query : IRemoteQuery<List<DTO>> { }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("List<DTO> resultFactory(dynamic decodedJson) => _listFromJson(decodedJson as Iterable<dynamic>, _$DTOFromJson);", contracts);
         }
 
         [Fact]
