@@ -112,7 +112,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid = 1", contracts);
+            Assert.Contains("invalid = 1", contracts);
             Assert.Contains("ErrorCodes {", contracts);
         }
 
@@ -133,6 +133,59 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         }
 
         [Fact]
+        public void Constructors_are_before_other_members()
+        {
+            var generator = CreateDartGeneratorFromNamespace(
+@"
+namespace N
+{
+    public class DTO {}
+
+    public class A : IRemoteQuery<DTO>
+    {
+        public int Field { get; set; }
+        public const int ConstField = 1;
+    }
+}
+");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("A();", contracts);
+            Assert.Contains("factory A.fromJson(", contracts);
+            Assert.Contains("Field", contracts);
+            Assert.Contains("constField", contracts);
+            Assert.Contains("getFullName", contracts);
+            Assert.Contains("resultFactory(", contracts);
+            Assert.Contains("toJsonMap(", contracts);
+
+            var constructorIdx = contracts.IndexOf("A();");
+            var factoryIdx = contracts.IndexOf("factory A.fromJson(");
+
+            Assert.True(constructorIdx < factoryIdx);
+
+            var testIdx = contracts.IndexOf("Field");
+            Assert.True(constructorIdx < testIdx);
+            Assert.True(factoryIdx < testIdx);
+
+            testIdx = contracts.IndexOf("constField");
+            Assert.True(constructorIdx < testIdx);
+            Assert.True(factoryIdx < testIdx);
+
+            testIdx = contracts.IndexOf("getFullName");
+            Assert.True(constructorIdx < testIdx);
+            Assert.True(factoryIdx < testIdx);
+
+            testIdx = contracts.IndexOf("resultFactory(");
+            Assert.True(constructorIdx < testIdx);
+            Assert.True(factoryIdx < testIdx);
+
+            testIdx = contracts.IndexOf("toJsonMap(");
+            Assert.True(constructorIdx < testIdx);
+            Assert.True(factoryIdx < testIdx);
+        }
+
+        [Fact]
         public void Classes_having_the_same_names_are_supplied_with_minimal_namespace_name()
         {
             var generator = CreateDartGenerator(
@@ -150,24 +203,22 @@ namespace Aaa.Bbb.Cc
             var firstClass =
 @"@JsonSerializable()
 class CcBbClass {
-
     CcBbClass();
 
-    Map<String, dynamic> toJsonMap() => _$CcBbClassToJson(this);
-
     factory CcBbClass.fromJson(Map<String, dynamic> json) => _$CcBbClassFromJson(json);
+
+    Map<String, dynamic> toJsonMap() => _$CcBbClassToJson(this);
 }";
             Assert.Contains(firstClass, contracts);
 
             var secondClass =
 @"@JsonSerializable()
 class CcBbbClass {
-
     CcBbbClass();
 
-    Map<String, dynamic> toJsonMap() => _$CcBbbClassToJson(this);
-
     factory CcBbbClass.fromJson(Map<String, dynamic> json) => _$CcBbbClassFromJson(json);
+
+    Map<String, dynamic> toJsonMap() => _$CcBbbClassToJson(this);
 }";
             Assert.Contains(secondClass, contracts);
         }

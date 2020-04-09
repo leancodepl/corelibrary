@@ -130,7 +130,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .Append("enum ")
                 .Append(name)
                 .AppendLine(" {")
-                .AppendSpaces(level + 1);
+                .AppendSpaces(level);
 
             foreach (var value in statement.Values)
             {
@@ -335,18 +335,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder.AppendLine(" {");
 
             GenerateDefaultConstructor(name, level);
-
-            foreach (var constant in statement.Constants)
-            {
-                definitionsBuilder
-                    .AppendSpaces(level + 1)
-                    .AppendLine($"static const int {constant.Name} = {constant.Value};");
-            }
-
-            foreach (var field in statement.Fields)
-            {
-                VisitFieldStatement(field, level + 1);
-            }
+            GenerateFromJsonConstructor(name, level);
+            GenerateConstans(statement.Constants, level);
+            GenearteFields(statement.Fields, level);
 
             if (includeFullName)
             {
@@ -355,8 +346,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     .AppendSpaces(level + 1)
                     .AppendLine("@override")
                     .AppendSpaces(level + 1)
-                    .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';")
-                    .AppendLine();
+                    .AppendLine($"String getFullName() => '{statement.Namespace}.{statement.Name}';");
             }
 
             if (includeResultFactory)
@@ -366,7 +356,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             var includeOverrideAnnotation = includeFullName || statement.Extends.Any();
             GenerateToJsonMethod(name, level, includeOverrideAnnotation);
-            GenerateFromJsonConstructor(name, level);
 
             definitionsBuilder.AppendSpaces(level);
             definitionsBuilder.AppendLine("}");
@@ -473,7 +462,6 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void GenerateDefaultConstructor(string name, int level)
         {
             definitionsBuilder
-                .AppendLine()
                 .AppendSpaces(level + 1)
                 .AppendLine($"{name}();");
         }
@@ -483,8 +471,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             int level,
             bool includeOverrideAnnotation)
         {
-            definitionsBuilder
-                .AppendLine();
+            definitionsBuilder.AppendLine();
 
             if (includeOverrideAnnotation)
             {
@@ -505,6 +492,36 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendSpaces(level + 1)
                 .Append($"factory {name}.fromJson(Map<String, dynamic> json) => ")
                 .AppendLine($"_${name}FromJson(json);");
+        }
+
+        private void GenerateConstans(List<ConstStatement> constants, int level)
+        {
+            if (constants.Any())
+            {
+                definitionsBuilder.AppendLine();
+
+                foreach (var constant in constants)
+                {
+                    var name = Char.ToLower(constant.Name[0]) + constant.Name[1..];
+
+                    definitionsBuilder
+                        .AppendSpaces(level + 1)
+                        .AppendLine($"static const int {name} = {constant.Value};");
+                }
+            }
+        }
+
+        private void GenearteFields(List<FieldStatement> fields, int level)
+        {
+            if (fields.Any())
+            {
+                definitionsBuilder.AppendLine();
+
+                foreach (var field in fields)
+                {
+                    VisitFieldStatement(field, level + 1);
+                }
+            }
         }
 
         private string Mangle(string namespaceName, string identifier)

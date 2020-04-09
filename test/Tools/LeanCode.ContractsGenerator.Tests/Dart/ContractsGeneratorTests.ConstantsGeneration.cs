@@ -13,7 +13,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid = 1", contracts);
+            Assert.Contains("invalid = 1", contracts);
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("Constants {", contracts);
             Assert.Contains("Constants2 {", contracts);
-            Assert.Contains("Value = 1", contracts);
+            Assert.Contains("value = 1", contracts);
         }
 
         [Fact]
@@ -35,8 +35,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid = 1", contracts);
-            Assert.Contains("Empty = 2", contracts);
+            Assert.Contains("invalid = 1", contracts);
+            Assert.Contains("empty = 2", contracts);
         }
     }
 }
