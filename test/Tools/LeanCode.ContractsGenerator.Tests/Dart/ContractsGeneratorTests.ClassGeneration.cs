@@ -112,7 +112,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("Invalid = 1", contracts);
+            Assert.Contains("invalid = 1", contracts);
             Assert.Contains("ErrorCodes {", contracts);
         }
 
@@ -144,7 +144,7 @@ namespace N
     public class A : IRemoteQuery<DTO>
     {
         public int Field { get; set; }
-        public const int Value = 1;
+        public const int ConstField = 1;
     }
 }
 ");
@@ -154,7 +154,7 @@ namespace N
             Assert.Contains("A();", contracts);
             Assert.Contains("factory A.fromJson(", contracts);
             Assert.Contains("Field", contracts);
-            Assert.Contains("Value", contracts);
+            Assert.Contains("constField", contracts);
             Assert.Contains("getFullName", contracts);
             Assert.Contains("resultFactory(", contracts);
             Assert.Contains("toJsonMap(", contracts);
@@ -168,7 +168,7 @@ namespace N
             Assert.True(constructorIdx < testIdx);
             Assert.True(factoryIdx < testIdx);
 
-            testIdx = contracts.IndexOf("Value");
+            testIdx = contracts.IndexOf("constField");
             Assert.True(constructorIdx < testIdx);
             Assert.True(factoryIdx < testIdx);
 
