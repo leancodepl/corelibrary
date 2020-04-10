@@ -157,7 +157,7 @@ namespace N
             Assert.Contains("constField", contracts);
             Assert.Contains("getFullName", contracts);
             Assert.Contains("resultFactory(", contracts);
-            Assert.Contains("toJsonMap(", contracts);
+            Assert.Contains("toJson(", contracts);
 
             var constructorIdx = contracts.IndexOf("A();");
             var factoryIdx = contracts.IndexOf("factory A.fromJson(");
@@ -180,7 +180,7 @@ namespace N
             Assert.True(constructorIdx < testIdx);
             Assert.True(factoryIdx < testIdx);
 
-            testIdx = contracts.IndexOf("toJsonMap(");
+            testIdx = contracts.IndexOf("toJson(");
             Assert.True(constructorIdx < testIdx);
             Assert.True(factoryIdx < testIdx);
         }
@@ -207,7 +207,7 @@ class CcBbClass {
 
     factory CcBbClass.fromJson(Map<String, dynamic> json) => _$CcBbClassFromJson(json);
 
-    Map<String, dynamic> toJsonMap() => _$CcBbClassToJson(this);
+    Map<String, dynamic> toJson() => _$CcBbClassToJson(this);
 }";
             Assert.Contains(firstClass, contracts);
 
@@ -218,7 +218,7 @@ class CcBbbClass {
 
     factory CcBbbClass.fromJson(Map<String, dynamic> json) => _$CcBbbClassFromJson(json);
 
-    Map<String, dynamic> toJsonMap() => _$CcBbbClassToJson(this);
+    Map<String, dynamic> toJson() => _$CcBbbClassToJson(this);
 }";
             Assert.Contains(secondClass, contracts);
         }

@@ -336,8 +336,8 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             GenerateDefaultConstructor(name, level);
             GenerateFromJsonConstructor(name, level);
-            GenerateConstans(statement.Constants, level);
-            GenearteFields(statement.Fields, level);
+            GenerateConstants(statement.Constants, level);
+            GenerateFields(statement.Fields, level);
 
             if (includeFullName)
             {
@@ -482,7 +482,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder
                 .AppendSpaces(level + 1)
-                .Append("Map<String, dynamic> toJsonMap() => ")
+                .Append("Map<String, dynamic> toJson() => ")
                 .AppendLine($"_${fullName}ToJson(this);");
         }
 
@@ -494,7 +494,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .AppendLine($"_${name}FromJson(json);");
         }
 
-        private void GenerateConstans(List<ConstStatement> constants, int level)
+        private void GenerateConstants(List<ConstStatement> constants, int level)
         {
             if (constants.Any())
             {
@@ -511,7 +511,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             }
         }
 
-        private void GenearteFields(List<FieldStatement> fields, int level)
+        private void GenerateFields(List<FieldStatement> fields, int level)
         {
             if (fields.Any())
             {
