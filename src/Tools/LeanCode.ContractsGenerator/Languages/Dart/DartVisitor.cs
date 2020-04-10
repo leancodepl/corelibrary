@@ -482,7 +482,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             definitionsBuilder
                 .AppendSpaces(level + 1)
-                .Append("Map<String, dynamic> toJsonMap() => ")
+                .Append("Map<String, dynamic> toJson() => ")
                 .AppendLine($"_${fullName}ToJson(this);");
         }
 
