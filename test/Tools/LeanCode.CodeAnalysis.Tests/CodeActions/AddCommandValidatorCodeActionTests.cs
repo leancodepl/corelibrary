@@ -39,12 +39,14 @@ namespace Test
 {
     public class Context { }
     public class Command : ICommand { }
+
     public class CommandCV : ContextualValidator<Command>
     {
         public CommandCV()
         {
         }
     }
+
     public class Handler : ICommandHandler<Context, Command>
     {
         public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
@@ -62,11 +64,14 @@ using System.Threading.Tasks;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 
-public class Context { }
-public class Command : ICommand { }
-public class Handler : ICommandHandler<Context, Command>
+namespace Test
 {
-    public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+    public class Context { }
+    public class Command : ICommand { }
+    public class Handler : ICommandHandler<Context, Command>
+    {
+        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+    }
 }";
 
             var expected = @"
@@ -75,17 +80,22 @@ using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
 
-public class Context { }
-public class Command : ICommand { }
-public class CommandCV : ContextualValidator<Command>
+namespace Test
 {
-    public CommandCV()
+    public class Context { }
+    public class Command : ICommand { }
+
+    public class CommandCV : ContextualValidator<Command>
     {
+        public CommandCV()
+        {
+        }
     }
-}
-public class Handler : ICommandHandler<Context, Command>
-{
-    public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+
+    public class Handler : ICommandHandler<Context, Command>
+    {
+        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+    }
 }";
             var fixes = new[] { "Add CommandValidator" };
             await VerifyCodeFix(source, expected, fixes, 0);

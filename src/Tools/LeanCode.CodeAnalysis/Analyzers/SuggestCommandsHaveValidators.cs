@@ -42,8 +42,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
             var tree = type.DeclaringSyntaxReferences.First().SyntaxTree;
             var model = context.Compilation.GetSemanticModel(tree);
 
-            var diags = context.Compilation.GetDiagnostics();
-
             if (!CommandIsValidated(commandType, tree, model))
             {
                 var diagnostic = Diagnostic.Create(Rule, type.Locations[0], commandType.Name);

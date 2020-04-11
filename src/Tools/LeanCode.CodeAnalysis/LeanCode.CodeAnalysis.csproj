@@ -31,8 +31,4 @@
     <None Include="$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath="build" />
     <None Include="$(CodeAnalysisSettingsLocation)/stylecop.json" Pack="true" PackagePath="build" />
   </ItemGroup>
-
-  <Target Name="RawDeploy">
-    <Exec Command="/bin/sh $(MSBuildThisFileDirectory)deploy.sh" />
-  </Target>
 </Project>
