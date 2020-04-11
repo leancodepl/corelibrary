@@ -36,6 +36,11 @@ namespace LeanCode.CodeAnalysis.CodeActions
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var root = await document.GetSyntaxRootAsync(cancellationToken);
 
+            if (root == null)
+            {
+                return document;
+            }
+
             var handlerSyntax = root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
             var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(handlerSyntax) as INamedTypeSymbol;
             var handlerInteface = concreteHandler.AllInterfaces

@@ -35,7 +35,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
             }
         }
 
-        public override FixAllProvider GetFixAllProvider() => null;
+        public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizers(Solution solution, Compilation compilation)
         {

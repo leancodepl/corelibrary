@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -50,7 +51,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
         }
 
-        private static bool IsCommandHandler(INamedTypeSymbol type, out INamedTypeSymbol commandType)
+        private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)]out INamedTypeSymbol? commandType)
         {
             var handler = type.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerTypeName);
 
@@ -60,8 +61,15 @@ namespace LeanCode.CodeAnalysis.Analyzers
                 return false;
             }
 
-            commandType = handler.TypeArguments[1] as INamedTypeSymbol;
-            return true;
+            var typeArgs = handler.TypeArguments;
+            if (typeArgs.Length > 1 && typeArgs[1] is INamedTypeSymbol cmdType)
+            {
+                commandType = cmdType;
+                return true;
+            }
+
+            commandType = null;
+            return false;
         }
 
         private static bool CommandIsValidated(INamedTypeSymbol command, SyntaxTree tree, SemanticModel model)
@@ -72,7 +80,8 @@ namespace LeanCode.CodeAnalysis.Analyzers
             var classes = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
             var types = classes.Select(cl => model.GetDeclaredSymbol(cl) as ITypeSymbol);
             return types
-                .Where(cl => IsThisCommandValidator(command, cl))
+                .Where(cl => cl != null)
+                .Where(cl => IsThisCommandValidator(command, cl!))
                 .Any();
         }
 
@@ -80,7 +89,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
         {
             return type.AllInterfaces
                 .Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
-                .Where(i => Equals(i.TypeArguments.First(), command))
+                .Where(i => SymbolEqualityComparer.Default.Equals(i.TypeArguments.First(), command))
                 .Any();
         }
     }
