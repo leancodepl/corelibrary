@@ -11,10 +11,10 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
     [Shared]
     public class AddCommandValidatorCodeFixProvider : CodeFixProvider
     {
-        public override FixAllProvider GetFixAllProvider() => null;
-
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(DiagnosticsIds.CommandsShouldHaveValidators);
+
+        public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         public override Task RegisterCodeFixesAsync(CodeFixContext context)
         {

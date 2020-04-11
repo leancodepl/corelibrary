@@ -1,0 +1,7 @@
+For playing with code analyzers without referencing it as a nuget package,
+reference the project in the following way.
+
+<ProjectReference Include="../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj">
+    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <OutputItemType>Analyzer</OutputItemType>
+</ProjectReference>

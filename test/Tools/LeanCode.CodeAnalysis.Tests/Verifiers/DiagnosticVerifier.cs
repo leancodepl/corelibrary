@@ -19,6 +19,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
     public abstract class DiagnosticVerifier : IDisposable
     {
         protected abstract DiagnosticAnalyzer GetDiagnosticAnalyzer();
+
         protected AdhocWorkspace Workspace { get; } = new AdhocWorkspace();
 
         protected Task VerifyDiagnostics(string source, params DiagnosticResult[] expected)
@@ -34,17 +35,6 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 
             Assert.Equal(expected, actual);
         }
-
-        private static readonly MetadataReference[] CommonReferences = new[]
-        {
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(ContextualValidator<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(AbstractValidator<>).Assembly.Location),
-            MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
-            MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
-        };
 
         private Task<List<Diagnostic>> GetSortedDiagnostics(string[] sources, DiagnosticAnalyzer analyzer)
         {
@@ -110,7 +100,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
                 .AddMetadataReferences(projectId, CommonReferences)
                 .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            int count = 0;
+            var count = 0;
             foreach (var source in sources)
             {
                 var newFileName = "Test" + count + "." + "cs";
@@ -126,5 +116,16 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
         {
             Workspace.Dispose();
         }
+
+        private static readonly MetadataReference[] CommonReferences = new[]
+        {
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(ContextualValidator<>).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(AbstractValidator<>).Assembly.Location),
+            MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
+            MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
+        };
     }
 }
