@@ -47,9 +47,8 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName);
 
             var commandName = handlerInteface.TypeArguments[1].Name;
-            var indentation = handlerSyntax.GetLeadingTrivia();
 
-            var (validator, baseValidatorName) = BuildValidator(commandName, indentation);
+            var (validator, baseValidatorName) = BuildValidator(commandName);
 
             editor.InsertBefore(handlerSyntax, validator);
 
@@ -61,7 +60,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
             return editor.GetChangedDocument();
         }
 
-        protected static (ClassDeclarationSyntax, NameSyntax) BuildValidator(string commandName, SyntaxTriviaList indentation)
+        protected static (ClassDeclarationSyntax, NameSyntax) BuildValidator(string commandName)
         {
             var name = commandName + "CV";
 
@@ -70,10 +69,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
                                     SF.TypeArgumentList(SF.SingletonSeparatedList<TypeSyntax>(
                                         SF.IdentifierName(commandName))));
 
-            // Don't do it alone
-            // https://roslynquoter.azurewebsites.net/
             var validator = SF.ClassDeclaration(name)
-                .WithAdditionalAnnotations(Formatter.Annotation)
                 .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
                 .WithBaseList(
                     SF.BaseList(
@@ -83,10 +79,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
                     SF.SingletonList<MemberDeclarationSyntax>(
                         SF.ConstructorDeclaration(SF.Identifier(name))
                             .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
-                            .WithBody(SF.Block())))
-                .NormalizeWhitespace(eol: "\n")
-                // .WithLeadingTrivia(indentation)
-                .WithTrailingTrivia(SF.ParseTrailingTrivia("\n\n"));
+                            .WithBody(SF.Block())));
 
             return (validator, baseValidatorName);
         }

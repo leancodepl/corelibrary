@@ -30,7 +30,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
             var diags = new[]
             {
                 new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 4, 17),
-                new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 7, 17),
+                new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 6, 17),
             };
 
             await VerifyDiagnostics(source, diags);
@@ -43,7 +43,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
             var diags = new[]
             {
                 new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 4, 17),
-                new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 7, 17),
+                new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 6, 17),
             };
 
             await VerifyDiagnostics(source, diags);

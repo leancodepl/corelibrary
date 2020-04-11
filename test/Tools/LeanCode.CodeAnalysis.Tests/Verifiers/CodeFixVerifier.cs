@@ -97,12 +97,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 
         private static async Task<string> GetStringFromDocument(Document document)
         {
-            var simplifiedDoc = await Simplifier.ReduceAsync(document, Simplifier.Annotation);
-            var root = await simplifiedDoc.GetSyntaxRootAsync();
-            root = Formatter.Format(
-                root.NormalizeWhitespace(eol: "\n"),
-                Formatter.Annotation,
-                simplifiedDoc.Project.Solution.Workspace);
+            var root = await document.GetSyntaxRootAsync();
             return root.GetText().ToString();
         }
     }

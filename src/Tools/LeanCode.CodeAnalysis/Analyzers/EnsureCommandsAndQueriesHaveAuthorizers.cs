@@ -42,7 +42,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             var type = (INamedTypeSymbol)context.Symbol;
             var contractType = GetContractType(type);
 
-            if (contractType == ContractType.None)
+            if (contractType == null)
             {
                 return;
             }
@@ -55,7 +55,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
         }
 
-        private static ContractType GetContractType(INamedTypeSymbol type)
+        private static ContractType? GetContractType(INamedTypeSymbol type)
         {
             if (IsCommand(type))
             {
@@ -67,7 +67,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
             else
             {
-                return ContractType.None;
+                return null;
             }
         }
 
@@ -85,7 +85,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
         {
             Query,
             Command,
-            None,
         }
     }
 }
