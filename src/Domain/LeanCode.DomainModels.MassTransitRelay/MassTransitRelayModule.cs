@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Autofac;
 using GreenPipes;
 using LeanCode.Components;
+using LeanCode.DomainModels.MassTransitRelay.Inbox;
+using LeanCode.PeriodicService;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,8 +28,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.busFactory = busFactory ?? DefaultBusFactory;
         }
 
-        public override void ConfigureServices(IServiceCollection services) =>
+        public override void ConfigureServices(IServiceCollection services)
+        {
             services.AddHostedService<MassTransitRelayHostedService>();
+            services.AddHostedService<PeriodicHostedService<ConsumedMessagesCleaner>>();
+        }
 
         protected override void Load(ContainerBuilder builder)
         {

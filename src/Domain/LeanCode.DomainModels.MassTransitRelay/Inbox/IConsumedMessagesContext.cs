@@ -6,6 +6,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
     public interface IConsumedMessagesContext
     {
         DbSet<ConsumedMessage> ConsumedMessages { get; }
+        DbContext Self { get; }
         Task SaveChangesAsync();
     }
 }
