@@ -29,7 +29,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             await next.Send(context);
 
             var queue = interceptor.CaptureQueue();
-            var publishTasks = queue.Select(evt => context.Publish((object)evt));
+            var publishTasks = queue.Select(evt => context.Publish((object)evt, cfg => cfg.MessageId = evt.Id));
             await Task.WhenAll(publishTasks);
         }
     }
