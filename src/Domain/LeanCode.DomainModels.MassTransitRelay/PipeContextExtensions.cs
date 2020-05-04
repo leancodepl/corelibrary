@@ -6,6 +6,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 {
     public static class PipeContextExtensions
     {
+        [Obsolete("Use `" + nameof(IPipeContextServiceResolver) + "` instead")]
         public static TService GetService<TService>(this PipeContext pipe)
         {
             if (pipe.TryGetPayload<ILifetimeScope>(out var scope))
