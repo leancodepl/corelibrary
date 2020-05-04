@@ -64,6 +64,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
                 config.UseInMemoryOutbox();
 
+                config.UseConsumedMessagesFiltering();
                 config.UseDomainEventsPublishing();
                 config.ReceiveEndpoint(queueName, rcv =>
                 {
