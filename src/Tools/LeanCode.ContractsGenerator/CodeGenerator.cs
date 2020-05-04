@@ -146,6 +146,11 @@ namespace LeanCode.ContractsGenerator
 
             foreach (var property in properties)
             {
+                if (HasAttribute<ExcludeFromContractsGenerationAttribute>(property))
+                {
+                    continue;
+                }
+
                 if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
                 {
                     var type = ConvertType(property.Type);
