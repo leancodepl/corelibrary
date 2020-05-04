@@ -1,9 +1,10 @@
 ﻿using System;
+using AT = System.AttributeTargets;
 
 namespace LeanCode.CQRS
 {
     [AttributeUsage(
-        AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Interface,
+        AT.Class | AT.Struct | AT.Enum | AT.Interface | AT.Property,
         AllowMultiple = false, Inherited = false)]
     public class ExcludeFromContractsGenerationAttribute : Attribute { }
 }

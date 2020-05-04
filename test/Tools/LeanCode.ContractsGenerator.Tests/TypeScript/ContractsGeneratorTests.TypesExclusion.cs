@@ -47,5 +47,24 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             Assert.DoesNotContain("MoreInner", contracts);
             Assert.Contains("Root", contracts);
         }
+
+        [Fact]
+        public void Excludes_properties_with_attribute()
+        {
+            var code = @"
+            public interface IEntitiesRelated
+            {
+                public int[] Included { get; }
+
+                [ExcludeFromContractsGeneration]
+                public int[] Excluded { get; }
+            }";
+
+            var generator = CreateTsGeneratorFromNamespace(code);
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("Included", contracts);
+            Assert.DoesNotContain("Excluded", contracts);
+        }
     }
 }
