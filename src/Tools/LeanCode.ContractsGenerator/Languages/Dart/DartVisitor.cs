@@ -502,7 +502,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 foreach (var constant in constants)
                 {
-                    var name = Char.ToLower(constant.Name[0]) + constant.Name[1..];
+                    var name = char.ToLower(constant.Name[0]) + constant.Name[1..];
 
                     definitionsBuilder
                         .AppendSpaces(level + 1)

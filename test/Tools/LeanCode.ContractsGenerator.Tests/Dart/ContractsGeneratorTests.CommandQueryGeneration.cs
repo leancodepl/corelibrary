@@ -15,7 +15,6 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             Assert.Contains("DTO resultFactory(dynamic decodedJson) => _$DTOFromJson(decodedJson as Map<String, dynamic>);", contracts);
         }
 
-        
         [Fact]
         public void Remote_query_contains_mapping_from_json_for_list()
         {
