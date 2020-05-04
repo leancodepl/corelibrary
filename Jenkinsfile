@@ -50,7 +50,7 @@ leancode.builder('corelibrary')
         stage('Publish') {
             when (isMasterBuild) {
                 withCredentials([string(credentialsId: 'LeanCodeFeedzApiKey', variable: 'FEEDZ_APIKEY')]) {
-                    sh "dotnet nuget push -k '$FEEDZ_APIKEY' -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' 'packed/*.nupkg'"
+                    sh "find packed/ -name '*.nupkg' -exec dotnet nuget push -k '$FEEDZ_APIKEY' -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' -n true '{}' ';'"
                 }
             }
         }
