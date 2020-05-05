@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.IntegrationTestHelpers;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
@@ -26,6 +28,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             await TestEventsFromCommandHandler();
             await TestEventsFromConsumers();
             await TestFailingHandlers();
+            await TestConsumedEventsWerePersisted();
         }
 
         private async Task PublishEvents()
@@ -41,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             var handled = testApp.HandledEvents<Event1>();
 
             var evt = Assert.Single(handled);
-            AssertConsumed(evt, typeof(FirstEvent1Consumer));
+            AssertConsumed(evt, typeof(Event1Consumer));
         }
 
         private async Task TestEventsFromConsumers()
@@ -65,10 +68,33 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             AssertConsumed(evt, typeof(Event3RetryingConsumer));
         }
 
+        private async Task TestConsumedEventsWerePersisted()
+        {
+            using var dbContext = new TestDbContext(testApp.DbConnection);
+
+            var consumedMsgs = await dbContext.ConsumedMessages
+                .OrderBy(e => e.ConsumerType)
+                .ThenBy(e => e.MessageType)
+                .ToListAsync();
+
+            Assert.Collection(
+                consumedMsgs,
+                msg => AssertConsumedMessage(msg, typeof(Event1Consumer), typeof(Event1)),
+                msg => AssertConsumedMessage(msg, typeof(Event2FirstConsumer), typeof(Event2)),
+                msg => AssertConsumedMessage(msg, typeof(Event2SecondConsumer), typeof(Event2)),
+                msg => AssertConsumedMessage(msg, typeof(Event3RetryingConsumer), typeof(Event3)));
+        }
+
         private void AssertConsumed(HandledEvent evt, Type consumerType)
         {
             Assert.Equal(consumerType, evt.ConsumerType);
             Assert.Equal(testApp.CorrelationId, evt.CorrelationId);
+        }
+
+        private void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType)
+        {
+            Assert.Equal(consumerType.FullName, msg.ConsumerType);
+            Assert.Equal(messageType.FullName, msg.MessageType);
         }
 
         private Task WaitForConsumers() => Task.Delay(500);

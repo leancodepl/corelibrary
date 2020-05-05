@@ -18,6 +18,14 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
             MessageType = null!;
         }
 
+        public ConsumedMessage(Guid messageId, DateTime dateConsumed, string consumerType, string messageType)
+        {
+            MessageId = messageId;
+            DateConsumed = dateConsumed;
+            ConsumerType = consumerType;
+            MessageType = messageType;
+        }
+
         public static ConsumedMessage Create<TConsumer, TMessage>(ConsumerConsumeContext<TConsumer, TMessage> context)
             where TConsumer : class
             where TMessage : class

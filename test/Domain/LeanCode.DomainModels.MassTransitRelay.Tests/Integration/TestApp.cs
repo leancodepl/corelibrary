@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Autofac;
 using LeanCode.Components;
@@ -9,6 +10,8 @@ using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
 using MassTransit;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
@@ -29,6 +32,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         private readonly IContainer container;
         private readonly IBusControl bus;
+        public DbConnection DbConnection { get; set; }
 
         public Guid CorrelationId { get; }
         public ICommandExecutor<Context> Commands { get; }
@@ -42,6 +46,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             Serilog.Log.Logger = new Serilog.LoggerConfiguration().CreateLogger();
 
+            DbConnection = new SqliteConnection("Filename=:memory:");
+
             var builder = new ContainerBuilder();
 
             builder.RegisterGeneric(typeof(HandledEventsReporter<>))
@@ -53,16 +59,35 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 builder.RegisterModule(m);
             }
 
+            builder.Register(ctx => new TestDbContext(DbConnection))
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
             container = builder.Build();
             bus = container.Resolve<IBusControl>();
             Commands = container.Resolve<ICommandExecutor<Context>>();
             CorrelationId = Identity.NewId();
         }
 
-        public void Dispose() => container.Dispose();
+        public void Dispose()
+        {
+            DbConnection.Dispose();
+            container.Dispose();
+        }
 
-        public Task DisposeAsync() => bus.StopAsync();
+        public async Task InitializeAsync()
+        {
+            await bus.StartAsync();
+            await DbConnection.OpenAsync();
 
-        public Task InitializeAsync() => bus.StartAsync();
+            using var dbContext = new TestDbContext(DbConnection);
+            await dbContext.Database.EnsureCreatedAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await bus.StopAsync();
+            await DbConnection.CloseAsync();
+        }
     }
 }
