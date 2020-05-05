@@ -6,11 +6,11 @@ using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 {
-    public class FirstEvent1Consumer : IConsumer<Event1>
+    public class Event1Consumer : IConsumer<Event1>
     {
         private readonly HandledEventsReporter<Event1> reporter;
 
-        public FirstEvent1Consumer(HandledEventsReporter<Event1> reporter)
+        public Event1Consumer(HandledEventsReporter<Event1> reporter)
         {
             this.reporter = reporter;
         }
