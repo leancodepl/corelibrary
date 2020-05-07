@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 4.2
+* MassTransit inbox/outbox pattern
+
 ## 4.1
 * Upgrade to .NET Core 3.1
 
