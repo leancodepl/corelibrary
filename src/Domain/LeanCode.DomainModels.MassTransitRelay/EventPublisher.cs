@@ -13,18 +13,18 @@ namespace LeanCode.DomainModels.MassTransitRelay
             => PublishAsync(evt, evt.Id, correlationId, cancellationToken);
     }
 
-    public class BusEventPublisher : IEventPublisher
+    public class EventPublisher : IEventPublisher
     {
-        private readonly IBus bus;
+        private readonly IPublishEndpoint publishEndpoint;
 
-        public BusEventPublisher(IBus bus)
+        public EventPublisher(IPublishEndpoint publishEndpoint)
         {
-            this.bus = bus;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public Task PublishAsync(object evt, Guid eventId, Guid? correlationId, CancellationToken cancellationToken = default)
         {
-            return bus.Publish(evt, ctx =>
+            return publishEndpoint.Publish(evt, ctx =>
             {
                 ctx.MessageId = eventId;
                 ctx.ConversationId = correlationId;
