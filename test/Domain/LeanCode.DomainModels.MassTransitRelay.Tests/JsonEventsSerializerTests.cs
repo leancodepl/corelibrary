@@ -44,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 DateOccurred,
                 false,
                 typeof(TestEvent).FullName,
-                $@"{{""Id"":""{EventId}"",""DateOccurred"":""2020-05-07T11:00:00Z"",""Value"":5}}");
+                @"{ ""Value"":5 }");
 
             var evt = serializer.ExtractEvent(raisedEvt);
 
