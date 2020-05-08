@@ -42,7 +42,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         private static IDisposable? GetConsumerType(IPipe<ConsumeContext> next)
         {
             var type = next.GetConsumerType();
-            return type == null ? null : LogContext.PushProperty("ConsumerType", type);
+            return type is null ? null : LogContext.PushProperty("ConsumerType", type);
         }
     }
 
