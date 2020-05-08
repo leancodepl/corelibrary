@@ -23,10 +23,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             new CQRSModule().WithCustomPipelines<Context>(
                 SearchAssemblies,
-                cmd => cmd.Correlate().PublishEvents().InterceptEvents(),
+                cmd => cmd.Correlate().StoreAndPublishEvents().InterceptEvents(),
                 query => query),
 
-            new MassTransitRelayModule("test-queue", SearchAssemblies),
+            new MassTransitRelayModule("test-queue", SearchAssemblies, SearchAssemblies),
             new CorrelationModule(),
         };
 

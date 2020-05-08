@@ -43,6 +43,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterGeneric(typeof(EventsPublisherElement<,,>))
                 .AsSelf();
 
+            builder.RegisterGeneric(typeof(StoreAndPublishEventsElement<,,>))
+                .AsSelf();
+
             builder.RegisterType<EventPublisher>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
@@ -76,10 +79,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 config.UseRetry(retryConfig =>
                     retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
 
-                config.UseInMemoryOutbox();
-
                 config.UseConsumedMessagesFiltering();
-                config.UseDomainEventsPublishing();
+                config.StoreAndPublishDomainEvents();
                 config.ReceiveEndpoint(queueName, rcv =>
                 {
                     rcv.ConfigureConsumers(context);
