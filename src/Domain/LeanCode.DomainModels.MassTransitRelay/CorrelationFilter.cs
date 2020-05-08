@@ -41,39 +41,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private static IDisposable? GetConsumerType(IPipe<ConsumeContext> next)
         {
-            var probe = next.GetProbeResult();
-
-            if (!TryGetTyped<IDictionary<string, object>>(probe.Results, "filters", out var filters))
-            {
-                return null;
-            }
-
-            if (!TryGetTyped<IDictionary<string, object>>(filters, "consumer", out var consumer))
-            {
-                return null;
-            }
-
-            if (!TryGetTyped<string>(consumer, "type", out var type))
-            {
-                return null;
-            }
-
-            return LogContext.PushProperty("ConsumerType", type);
-        }
-
-        private static bool TryGetTyped<T>(IDictionary<string, object> dict, string key, [NotNullWhen(returnValue: true)] out T? value)
-            where T : class
-        {
-            if (dict.TryGetValue(key, out var raw) && raw is T typed)
-            {
-                value = typed;
-                return true;
-            }
-            else
-            {
-                value = null;
-                return false;
-            }
+            var type = next.GetConsumerType();
+            return type is null ? null : LogContext.PushProperty("ConsumerType", type);
         }
     }
 

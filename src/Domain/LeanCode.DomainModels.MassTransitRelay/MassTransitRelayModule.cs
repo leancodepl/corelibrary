@@ -63,7 +63,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
 
                 config.UseInMemoryOutbox();
-                config.UseLifetimeScopeInjection(scopeFactory);
+
                 config.UseDomainEventsPublishing();
                 config.ReceiveEndpoint(queueName, rcv =>
                 {
