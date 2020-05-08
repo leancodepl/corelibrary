@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text.Json;
 using LeanCode.Components;
+using Newtonsoft.Json;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
@@ -12,6 +12,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         RaisedEvent WrapEvent(object evt, Guid correlationId);
     }
 
+    // https://github.com/dotnet/runtime/issues/29743
+    // using JSON.NET as System.Text.Json doesn't support private setters (will be in .NET 5)
+    // TODO: switch to System.Text.Json in .NET 5
     public class JsonEventsSerializer : IRaisedEventsSerializer
     {
         private readonly TypesCatalog typesCatalog;
@@ -24,18 +27,13 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         public RaisedEvent WrapEvent(object evt, Guid correlationId)
         {
-            return RaisedEvent.Create(evt, correlationId, Serialize);
+            return RaisedEvent.Create(evt, correlationId, JsonConvert.SerializeObject);
         }
 
         public object ExtractEvent(RaisedEvent evt)
         {
             var type = deserializerCache.GetOrAdd(evt.EventType, GetEventType);
-            return JsonSerializer.Deserialize(evt.Payload, type);
-        }
-
-        private string Serialize(object payload)
-        {
-            return JsonSerializer.Serialize(payload, payload.GetType());
+            return JsonConvert.DeserializeObject(evt.Payload, type);
         }
 
         private Type GetEventType(string type)

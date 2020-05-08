@@ -45,6 +45,17 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             return raisedEvt;
         }
 
+        // For tests
+        public RaisedEvent(Guid id, Guid correlationId, DateTime dateOcurred, bool wasPublished, string eventType, string payload)
+        {
+            Id = id;
+            CorrelationId = correlationId;
+            DateOcurred = dateOcurred;
+            WasPublished = wasPublished;
+            EventType = eventType;
+            Payload = payload;
+        }
+
         private RaisedEvent()
         {
             EventType = null!;
