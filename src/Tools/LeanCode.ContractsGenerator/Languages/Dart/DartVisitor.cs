@@ -582,7 +582,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         {
             var translated = identifier.Uncapitalize();
 
-            if (translated == "new")
+            if (translated == "new" || translated == "default")
             {
                 translated += '_';
             }
