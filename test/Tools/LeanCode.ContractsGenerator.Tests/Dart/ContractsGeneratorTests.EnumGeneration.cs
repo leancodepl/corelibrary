@@ -8,12 +8,13 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Enums_have_correct_values()
         {
-            var generator = CreateDartGeneratorFromNamespace("public enum TestEnum1 { New, NotNew }");
+            var generator = CreateDartGeneratorFromNamespace("public enum TestEnum1 { New, NotNew, Default }");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
             Assert.Contains("enum TestEnum1", contracts);
             Assert.Contains("new_", contracts);
+            Assert.Contains("default_", contracts);
             Assert.Contains("notNew", contracts);
         }
 
