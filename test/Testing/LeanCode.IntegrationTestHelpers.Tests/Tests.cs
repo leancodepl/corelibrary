@@ -17,7 +17,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
         {
             var res = await app.Query.GetAsync(new App.SampleQuery());
 
-            Assert.Equal($"{App.AuthConfig.UserId}-", res.Data);
+            Assert.Equal($"{App.AuthConfig.UserId}-", res?.Data);
         }
 
         public Task InitializeAsync() => app.InitializeAsync();

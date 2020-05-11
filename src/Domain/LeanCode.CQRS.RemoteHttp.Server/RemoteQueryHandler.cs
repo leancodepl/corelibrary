@@ -69,7 +69,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private async Task<object> ExecuteQuery<TQuery, TResult>(
+        private async Task<object?> ExecuteQuery<TQuery, TResult>(
             TAppContext appContext, object query)
             where TQuery : IRemoteQuery<TResult>
         {
