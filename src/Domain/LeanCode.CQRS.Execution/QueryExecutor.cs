@@ -24,7 +24,6 @@ namespace LeanCode.CQRS.Execution
                 .Finalize<QueryFinalizer<TAppContext>>());
         }
 
-        [return: MaybeNull]
         public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)
         {
             try

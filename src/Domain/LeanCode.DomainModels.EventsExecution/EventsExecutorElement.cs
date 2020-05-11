@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
@@ -89,9 +90,9 @@ namespace LeanCode.DomainModels.EventsExecution
             }
             else
             {
-                if (!result.Result.IsEmpty)
+                if (result.Result is ConcurrentQueue<IDomainEvent> queue && !queue.IsEmpty)
                 {
-                    ctx.SavedEvents.AddRange(result.Result);
+                    ctx.SavedEvents.AddRange(queue);
                 }
 
                 ctx.ExecutedHandlers.Add((domainEvent, handler.UnderlyingHandler));
