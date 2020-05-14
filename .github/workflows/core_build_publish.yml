@@ -20,7 +20,8 @@ jobs:
         BRANCH=${BRANCH##*/}
         if [[ $BRANCH =~ ^v[0-9]+.[0-9]+$ ]]
         then
-          VERSION="${BRANCH#v}.$GITHUB_RUN_NUMBER"
+          BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
+          VERSION="${BRANCH#v}.$BUILD_NUMBER"
           IS_MASTER_BUILD=1
         else
           VERSION="0.0.0"
@@ -33,7 +34,6 @@ jobs:
         echo "::set-env name=IS_MASTER_BUILD::$(echo $IS_MASTER_BUILD)"
       env:
         BRANCH: ${{ github.head_ref }}
-
     - name: Restore
       run: dotnet restore
     - name: Build
@@ -43,3 +43,11 @@ jobs:
     - name: Test
       run: dotnet msbuild /t:RunTests /p:Configuration=Release /p:LogFileName=$PWD/test-results/tests.trx
       working-directory: test
+    - name: Pack
+      if: env.IS_MASTER_BUILD == '1'
+      run: dotnet pack --no-build -c Release -o $PWD/packed
+    - name: Publish
+      if: env.IS_MASTER_BUILD == '1'
+      run: find packed/ -name '*.nupkg' -exec dotnet nuget push -k '$FEEDZ_APIKEY' -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' -n true '{}' ';'
+      env:
+        FEEDZ_APIKEY: ${{ secrets.FEEDZ_APIKEY }}
