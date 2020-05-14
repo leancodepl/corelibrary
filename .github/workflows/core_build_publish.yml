@@ -16,8 +16,6 @@ jobs:
         dotnet-version: 3.1.101
     - name: Version
       run: |
-        echo ${{ github.head_ref }}
-        BRANCH=${BRANCH##*/}
         if [[ $BRANCH =~ ^v[0-9]+.[0-9]+$ ]]
         then
           BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
