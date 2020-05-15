@@ -49,6 +49,6 @@ jobs:
       run: dotnet pack --no-build -c Release -o $PWD/packed
     - name: Publish
       if: env.IS_MASTER_BUILD == '1'
-      run: find packed/ -name '.nupkg' -exec dotnet nuget push -k "$FEEDZ_APIKEY" -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' -n true '{}' ';'
+      run: find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_APIKEY" -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' -n true '{}' ';'
       env:
         FEEDZ_APIKEY: ${{ secrets.FEEDZ_APIKEY }}
