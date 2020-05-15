@@ -31,8 +31,8 @@ jobs:
         echo $BRANCH
         echo $VERSION
         
-        echo "::set-env name=VERSION::$(echo $VERSION)"
-        echo "::set-env name=IS_MASTER_BUILD::$(echo $IS_MASTER_BUILD)"
+        echo "::set-env name=VERSION::${VERSION}"
+        echo "::set-env name=IS_MASTER_BUILD::${IS_MASTER_BUILD}"
       env:
         BRANCH: ${{ github.head_ref }}
     - name: Restore
