@@ -19,6 +19,7 @@ jobs:
         dotnet-version: 3.1.202
     - name: Version
       run: |
+        BRANCH=${GITHUB_REF#refs/*/}
         if [[ $BRANCH =~ ^v[0-9]+.[0-9]+$ ]]
         then
           BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
@@ -28,13 +29,11 @@ jobs:
           VERSION="0.0.0"
           IS_MASTER_BUILD=0
         fi
-        echo $BRANCH
-        echo $VERSION
+        echo Building on "$BRANCH"
+        echo Building version: "$VERSION"
         
         echo "::set-env name=VERSION::${VERSION}"
         echo "::set-env name=IS_MASTER_BUILD::${IS_MASTER_BUILD}"
-      env:
-        BRANCH: ${{ github.head_ref }}
     - name: Restore
       run: dotnet restore
     - name: Build
