@@ -1,6 +1,6 @@
 # MassTransit Integration
 
-`LeanCode.DomainModels.MassTransitRelay` allows to pass raised events to [MassTransit](https://masstransit-project.com/) bus, instead of handling then in the regular, in-proc, during the request lifetime fashion.
+`LeanCode.DomainModels.MassTransitRelay` allows to pass raised events to [MassTransit](https://masstransit-project.com/) bus instead of handling then in in-proc, during the request.
 
 ## Configuration
 
@@ -11,7 +11,7 @@ Relay requires the following elements to be configured in the CQRS pipeline (in 
 - `EventsInterceptorElement`.
 
 Additionally, `MassTransitRelayModule` has to be registered, with the assembly catalogs for events and consumers and a bus factory method.
-The customers registered that way **have to be** `public`. The bus factory method should specify transport and configure the bus and return `IBusControl` in a regular MassTransit way (typically it would call `Bus.Factory.CreateUsingInMemory/CreateUsingAzureServiceBus` etc.).
+The consumers registered that way **have to be** `public`. The bus factory method should specify transport and configure the bus and return `IBusControl` in a regular MassTransit way (typically it would call `Bus.Factory.CreateUsingInMemory/CreateUsingAzureServiceBus` etc.).
 
 ### Filters
 
@@ -33,7 +33,7 @@ Events relayed to MassTransit are not consumed by `IDomainEventHandler<TEvent>` 
 
 ## Inbox
 
-`ConsumeMessagesOnceFilter` ensures that messages are consumed at max once. This is important in case of replaying failed messages, given how Mass Transit works - all the messages are received through a single queue. So, in case of redelivery, all the consumers subscribed to a message will run, even those we don't want to.
+`ConsumeMessagesOnceFilter` ensures that messages are consumed at most once. This is important in case of replaying failed messages, given how Mass Transit works - all the messages are received through a single queue. So, in case of redelivery, all the consumers subscribed to a message will run, even those we don't want to.
 
 Inbox to work requires an `IConsumedMessageContext` to be registered in the DI container.
 
@@ -62,3 +62,5 @@ Important considerations when using outbox:
 - Command handlers and consumers **cannot** commit their database transactions, otherwise events won't be persisted in the same transaction. Database commits will be handled by the pipeline.
 - Mass Transit in memory outbox **cannot** be used along with our outbox, otherwise it will fool ours that events are published successfully, while being just acknowledged by the outbox
 - The outbox works only for Domain Events. Any events published in consumers directly through `ConsumeContext` will be published immediately
+- Enable duplicate detection on the bus - there might be cases when an event is published twice - via the CQRS pipeline and via `PeriodicEventsPublisher`
+- For the same reason make sure to either combine Outbox with Inbox or make handlers idempotent - messages might come multiple times
