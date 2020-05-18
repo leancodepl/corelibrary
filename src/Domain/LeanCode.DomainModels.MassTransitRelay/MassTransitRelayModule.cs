@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Autofac;
 using GreenPipes;
 using LeanCode.Components;
@@ -10,22 +11,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public delegate IBusControl BusFactory(IComponentContext context, string queueName);
+    public delegate IBusControl BusFactory(IComponentContext context);
 
     public class MassTransitRelayModule : AppModule
     {
-        private readonly string queueName;
         private readonly TypesCatalog consumersCatalog;
         private readonly TypesCatalog eventsCatalog;
         private readonly BusFactory busFactory;
 
         public MassTransitRelayModule(
-            string queueName,
             TypesCatalog consumersCatalog,
             TypesCatalog eventsCatalog,
             BusFactory? busFactory = null)
         {
-            this.queueName = queueName;
             this.consumersCatalog = consumersCatalog;
             this.eventsCatalog = eventsCatalog;
             this.busFactory = busFactory ?? DefaultBusFactory;
@@ -66,15 +64,15 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private IBusControl CreateBus(IComponentContext context)
         {
-            return busFactory(context, queueName);
+            return busFactory(context);
         }
 
-        public static IBusControl DefaultBusFactory(
-            IComponentContext context,
-            string queueName)
+        public static IBusControl DefaultBusFactory(IComponentContext context)
         {
             return Bus.Factory.CreateUsingInMemory(config =>
             {
+                var queueName = Assembly.GetEntryAssembly().GetName().Name;
+
                 config.UseLogsCorrelation();
                 config.UseRetry(retryConfig =>
                     retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
