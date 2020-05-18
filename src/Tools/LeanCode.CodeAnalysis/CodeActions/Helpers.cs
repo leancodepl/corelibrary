@@ -73,7 +73,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
 
             private static bool IsSystem(string name)
             {
-                return name.StartsWith("System");
+                return name == "System" || name.StartsWith("System.");
             }
         }
     }

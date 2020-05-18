@@ -17,7 +17,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
         }
 
         [Fact]
-        public async Task Queries_with_authorization_attibutes_are_accepted()
+        public async Task Queries_with_authorization_attributes_are_accepted()
         {
             var source = await File.ReadAllTextAsync("TestSamples/Accepted_queries.cs");
             await VerifyDiagnostics(source);
