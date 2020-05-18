@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
@@ -29,8 +30,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             RaisedEvent.Configure(modelBuilder);
         }
 
-        Task IConsumedMessagesContext.SaveChangesAsync() => SaveChangesAsync();
-        Task IOutboxContext.SaveChangesAsync() => SaveChangesAsync();
+        Task IConsumedMessagesContext.SaveChangesAsync(CancellationToken cancellationToken) => SaveChangesAsync(cancellationToken);
+        Task IOutboxContext.SaveChangesAsync(CancellationToken cancellationToken) => SaveChangesAsync(cancellationToken);
         public DbContext Self => this;
     }
 }

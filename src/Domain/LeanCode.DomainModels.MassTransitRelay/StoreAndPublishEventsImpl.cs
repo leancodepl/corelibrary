@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.Model;
@@ -20,20 +21,24 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.eventsSerializer = eventsSerializer;
         }
 
-        public async Task StoreAndPublishEvents(List<IDomainEvent> events, Guid correlationId, IEventPublisher publisher)
+        public async Task StoreAndPublishEvents(
+            List<IDomainEvent> events,
+            Guid correlationId,
+            IEventPublisher publisher,
+            CancellationToken cancellationToken = default)
         {
             if (events?.Count > 0)
             {
                 var persisted = PersistEvents(events, correlationId);
-                await outboxContext.SaveChangesAsync();
+                await outboxContext.SaveChangesAsync(cancellationToken);
 
                 var publishStatuses = await PublishEventsAsync(events, correlationId, publisher);
                 MarkEventsAsRaised(persisted, publishStatuses);
-                await outboxContext.SaveChangesAsync();
+                await outboxContext.SaveChangesAsync(cancellationToken);
             }
             else
             {
-                await outboxContext.SaveChangesAsync();
+                await outboxContext.SaveChangesAsync(cancellationToken);
             }
         }
 
@@ -56,7 +61,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             for (var i = 0; i < events.Count; ++i)
             {
-                events[i].SetWasPublished(statuses[i]);
+                events[i].WasPublished = statuses[i];
             }
         }
 

@@ -30,7 +30,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
             await next.Send(context);
 
             var queue = interceptor.CaptureQueue();
-            await impl.StoreAndPublishEvents(queue.ToList(), context.ConversationId!.Value, new EventPublisher(context));
+            await impl.StoreAndPublishEvents(
+                queue.ToList(),
+                context.ConversationId!.Value,
+                new EventPublisher(context),
+                context.CancellationToken);
         }
     }
 

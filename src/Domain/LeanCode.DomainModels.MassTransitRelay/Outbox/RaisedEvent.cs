@@ -6,21 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
-    public class RaisedEvent
+    public sealed class RaisedEvent
     {
         public const int MaxEventTypeLength = 500;
 
         public Guid Id { get; private set; }
         public Guid CorrelationId { get; private set; }
         public DateTime DateOcurred { get; private set; }
-        public bool WasPublished { get; private set; }
         public string EventType { get; private set; }
         public string Payload { get; private set; }
 
-        public void SetWasPublished(bool published)
-        {
-            WasPublished = published;
-        }
+        public bool WasPublished { get; set; }
 
         public static RaisedEvent Create(object evt, Guid correlationId, Func<object, string> evtSerializer)
         {

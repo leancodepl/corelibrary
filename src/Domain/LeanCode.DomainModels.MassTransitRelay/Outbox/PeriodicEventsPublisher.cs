@@ -55,8 +55,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     var deserialized = serializer.ExtractEvent(evt);
                     await eventPublisher.PublishAsync(deserialized, evt.Id, evt.CorrelationId, stoppingToken);
 
-                    evt.SetWasPublished(true);
-                    await outboxContext.SaveChangesAsync();
+                    evt.WasPublished = true;
+                    await outboxContext.SaveChangesAsync(stoppingToken);
                 }
                 catch (Exception e)
                 {
