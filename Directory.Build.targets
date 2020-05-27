@@ -2,7 +2,7 @@
   <PropertyGroup>
     <EntityFrameworkCoreVersion>3.1.4</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>3.1.4</AspNetCoreVersion>
-    <ExtensionsVersion>3.1.0</ExtensionsVersion>
+    <ExtensionsVersion>3.1.4</ExtensionsVersion>
     <HangfireVersion>1.7.7</HangfireVersion>
     <IdentityServerVersion>3.0.2</IdentityServerVersion>
     <MassTransitVersion>6.2.4</MassTransitVersion>
