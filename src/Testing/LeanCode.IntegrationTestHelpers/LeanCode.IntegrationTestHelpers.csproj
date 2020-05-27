@@ -25,6 +25,8 @@
     <PackageReference Include="Hangfire.AspNetCore" />
     <PackageReference Include="Hangfire.SqlServer" />
 
+    <PackageReference Include="Polly" />
+
     <PackageReference Include="Xunit" />
   </ItemGroup>
 
