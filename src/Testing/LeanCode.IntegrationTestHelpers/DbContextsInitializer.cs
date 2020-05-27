@@ -38,7 +38,11 @@ namespace LeanCode.IntegrationTestHelpers
                 // HACK: should mitigate (slightly) the bug in MSSQL that prevents us from creating
                 // new databases.
                 // See https://github.com/Microsoft/mssql-docker/issues/344 for tracking issue.
-                await CreatePolicy.ExecuteAsync(() => ctx.Database.EnsureCreatedAsync());
+                await CreatePolicy.ExecuteAsync(async () =>
+                {
+                    await ctx.Database.EnsureDeletedAsync();
+                    await ctx.Database.EnsureCreatedAsync();
+                });
             }
         }
 
