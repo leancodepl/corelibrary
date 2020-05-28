@@ -11,11 +11,20 @@
     <!-- Version is specified using external mechanisms -->
     <Version>$(VERSION)</Version>
     <InformationalVersion>$(VERSION)-$(GIT_COMMIT)</InformationalVersion>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Copyright>Copyright 2016-2020 LeanCode Sp. z o.o.</Copyright>
+
+    <RepositoryUrl>https://github.com/leancodepl/corelibrary</RepositoryUrl>
+    <RepositoryCommit>$(GIT_COMMIT)</RepositoryCommit>
   </PropertyGroup>
 
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(SolutionDir)LICENSE"  Pack="true" />
+  </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
           Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"/>
