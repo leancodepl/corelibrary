@@ -8,7 +8,7 @@
     <MassTransitVersion>6.2.4</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>3.4.0</CodeAnalysisVersion>
+    <CodeAnalysisVersion>3.6.0</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
