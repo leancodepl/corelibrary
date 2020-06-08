@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Autofac" Version="4.9.4" />
+    <PackageReference Update="Autofac" Version="5.2.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
 
     <PackageReference Update="Serilog" Version="2.9.0" />
