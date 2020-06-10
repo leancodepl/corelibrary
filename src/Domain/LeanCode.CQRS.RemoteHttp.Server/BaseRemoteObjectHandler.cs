@@ -46,14 +46,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (Exception ex)
             {
-                Logger.Information(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
+                Logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj is null)
             {
-                Logger.Information("Client sent an empty object for type {Type}, ignoring", type);
+                Logger.Warning("Client sent an empty object for type {Type}, ignoring", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }

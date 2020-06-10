@@ -29,7 +29,11 @@ namespace LeanCode.CQRS.Execution
             try
             {
                 var res = await executor.ExecuteAsync(appContext, command);
-                logger.Information("Command {@Command} executed successfully", command);
+                if (res.WasSuccessful)
+                {
+                    logger.Information("Command {@Command} executed successfully", command);
+                }
+
                 return res;
             }
             catch (Exception ex)

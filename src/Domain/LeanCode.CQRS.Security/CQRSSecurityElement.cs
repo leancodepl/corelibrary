@@ -29,6 +29,8 @@ namespace LeanCode.CQRS.Security
 
             if (customAuthorizers.Count > 0 && !(user?.Identity?.IsAuthenticated ?? false))
             {
+                logger.Warning("Unauthenticated user requested object that requires authorization");
+
                 throw new UnauthenticatedException(
                     "The current user is not authenticated and the object requires authorization");
             }
