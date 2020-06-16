@@ -26,21 +26,13 @@ namespace LeanCode.CQRS.Execution
 
         public async Task<CommandResult> RunAsync(TAppContext appContext, ICommand command)
         {
-            try
+            var res = await executor.ExecuteAsync(appContext, command);
+            if (res.WasSuccessful)
             {
-                var res = await executor.ExecuteAsync(appContext, command);
-                if (res.WasSuccessful)
-                {
-                    logger.Information("Command {@Command} executed successfully", command);
-                }
+                logger.Information("Command {@Command} executed successfully", command);
+            }
 
-                return res;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Cannot execute command {@Command} because of internal error", command);
-                throw;
-            }
+            return res;
         }
     }
 }

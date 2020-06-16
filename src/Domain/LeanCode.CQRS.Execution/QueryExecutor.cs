@@ -26,17 +26,9 @@ namespace LeanCode.CQRS.Execution
 
         public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)
         {
-            try
-            {
-                var res = await executor.ExecuteAsync(appContext, query);
-                logger.Information("Query {@Query} executed successfuly", query);
-                return (TResult)res!;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Cannot execute query {@Query} because of internal error", query);
-                throw;
-            }
+            var res = await executor.ExecuteAsync(appContext, query);
+            logger.Information("Query {@Query} executed successfuly", query);
+            return (TResult)res!;
         }
     }
 }

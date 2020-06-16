@@ -68,14 +68,25 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (UnauthenticatedException)
             {
                 result = ExecutionResult.Fail(StatusCodes.Status401Unauthorized);
+
+                Logger.Warning(
+                    "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
+                    obj,
+                    type);
             }
-            catch (InsufficientPermissionException)
+            catch (InsufficientPermissionException ex)
             {
                 result = ExecutionResult.Fail(StatusCodes.Status403Forbidden);
+
+                Logger.Warning(
+                    "Authorizer {Authorizer} failed to authorize the user to run {@Object} of type {Type}",
+                    ex.AuthorizerName,
+                    obj,
+                    type);
             }
             catch (Exception ex)
             {
-                Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
+                Logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
 
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }

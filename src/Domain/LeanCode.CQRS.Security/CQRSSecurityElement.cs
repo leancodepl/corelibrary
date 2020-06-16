@@ -29,8 +29,6 @@ namespace LeanCode.CQRS.Security
 
             if (customAuthorizers.Count > 0 && !(user?.Identity?.IsAuthenticated ?? false))
             {
-                logger.Warning("Unauthenticated user requested object that requires authorization");
-
                 throw new UnauthenticatedException(
                     "The current user is not authenticated and the object requires authorization");
             }
@@ -50,12 +48,9 @@ namespace LeanCode.CQRS.Security
 
                 if (!authorized)
                 {
-                    logger.Warning(
-                        "Authorizer {Authorizer} failed to authorize the user to run {@Object}",
-                        customAuthorizer.UnderlyingAuthorizer.FullName, input);
-
                     throw new InsufficientPermissionException(
-                        $"User is not authorized for {input.GetType()}.");
+                        $"User is not authorized for {input.GetType()}.",
+                        customAuthorizer.UnderlyingAuthorizer.FullName);
                 }
             }
 
