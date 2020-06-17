@@ -46,14 +46,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch (Exception ex)
             {
-                Logger.Information(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
+                Logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj is null)
             {
-                Logger.Information("Client sent an empty object for type {Type}, ignoring", type);
+                Logger.Warning("Client sent an empty object for type {Type}, ignoring", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
@@ -68,14 +68,25 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch (UnauthenticatedException)
             {
                 result = ExecutionResult.Fail(StatusCodes.Status401Unauthorized);
+
+                Logger.Warning(
+                    "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
+                    obj,
+                    type);
             }
-            catch (InsufficientPermissionException)
+            catch (InsufficientPermissionException ex)
             {
                 result = ExecutionResult.Fail(StatusCodes.Status403Forbidden);
+
+                Logger.Warning(
+                    "Authorizer {Authorizer} failed to authorize the user to run {@Object} of type {Type}",
+                    ex.AuthorizerName,
+                    obj,
+                    type);
             }
             catch (Exception ex)
             {
-                Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
+                Logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
 
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }

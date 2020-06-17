@@ -33,7 +33,7 @@ namespace LeanCode.CQRS.Validation
 
             if (!result.IsValid)
             {
-                logger.Information("Command {@Command} is not valid with result {@Result}", payload, result);
+                logger.Warning("Command {@Command} is not valid with result {@Result}", payload, result);
 
                 return CommandResult.NotValid(result);
             }

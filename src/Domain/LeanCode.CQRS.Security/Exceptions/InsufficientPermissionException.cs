@@ -4,7 +4,12 @@ namespace LeanCode.CQRS.Security.Exceptions
 {
     public class InsufficientPermissionException : Exception
     {
-        public InsufficientPermissionException(string message)
-            : base(message) { }
+        public string? AuthorizerName { get; private set; }
+
+        public InsufficientPermissionException(string message, string? authorizerName)
+            : base(message)
+        {
+            AuthorizerName = authorizerName;
+        }
     }
 }
