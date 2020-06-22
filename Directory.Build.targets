@@ -46,7 +46,7 @@
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.35" />
     <PackageReference Update="FluentValidation" Version="8.5.1" />
-    <PackageReference Update="Glob" Version="1.1.5" />
+    <PackageReference Update="Glob" Version="1.1.6" />
     <PackageReference Update="Polly" Version="7.2.1" />
     <PackageReference Update="Sendgrid" Version="9.12.0" />
   </ItemGroup>
