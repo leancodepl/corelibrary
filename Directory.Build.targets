@@ -103,7 +103,7 @@
     <PackageReference Update="NSubstitute" Version="4.2.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.2" />
   </ItemGroup>
 
   <PropertyGroup>
