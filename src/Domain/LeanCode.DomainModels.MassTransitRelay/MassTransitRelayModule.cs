@@ -48,7 +48,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 .AsImplementedInterfaces()
                 .SingleInstance();
 
-            builder.RegisterType<StoreAndPublishEventsImpl>()
+            builder.RegisterType<EventsStore>()
                 .AsSelf();
 
             builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))

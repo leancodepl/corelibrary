@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         private static readonly Guid Event2Id = Identity.NewId();
         private static readonly Guid CorrelationId = Identity.NewId();
 
-        private readonly StoreAndPublishEventsImpl impl;
+        private readonly EventsStore impl;
         private readonly TestDbContext dbContext;
         private readonly IRaisedEventsSerializer eventsSerializer;
         private readonly IEventPublisher publisher;
@@ -31,7 +31,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             publisher = Substitute.For<IEventPublisher>();
             eventsSerializer = new MockSerializer();
-            impl = new StoreAndPublishEventsImpl(dbContext, eventsSerializer);
+            impl = new EventsStore(dbContext, eventsSerializer);
 
             domainEvents = new List<IDomainEvent>
             {
@@ -43,7 +43,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Persists_events_and_marks_published_if_publish_succeeded()
         {
-            await impl.StoreAndPublishEvents(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -57,7 +57,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             publisher.PublishAsync(null, null).ReturnsForAnyArgs(_ => throw new Exception());
 
-            await impl.StoreAndPublishEvents(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -73,7 +73,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 _ => throw new Exception(),
                 _ => Task.CompletedTask);
 
-            await impl.StoreAndPublishEvents(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(

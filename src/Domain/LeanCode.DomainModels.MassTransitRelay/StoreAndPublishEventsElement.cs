@@ -10,11 +10,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
         where TContext : notnull, ICorrelationContext, IEventsInterceptorContext
     {
         private readonly IEventPublisher publisher;
-        private readonly StoreAndPublishEventsImpl impl;
+        private readonly EventsStore impl;
 
         public StoreAndPublishEventsElement(
             IEventPublisher publisher,
-            StoreAndPublishEventsImpl impl)
+            EventsStore impl)
         {
             this.impl = impl;
             this.publisher = publisher;
@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             var result = await next(ctx, input);
 
-            await impl.StoreAndPublishEvents(ctx.SavedEvents, ctx.CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(ctx.SavedEvents, ctx.CorrelationId, publisher);
 
             return result;
         }

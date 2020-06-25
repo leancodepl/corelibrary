@@ -8,20 +8,19 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    // TODO: Name it with dignity
-    public class StoreAndPublishEventsImpl
+    public class EventsStore
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<StoreAndPublishEventsImpl>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsStore>();
         private readonly IRaisedEventsSerializer eventsSerializer;
         private readonly IOutboxContext outboxContext;
 
-        public StoreAndPublishEventsImpl(IOutboxContext outboxContext, IRaisedEventsSerializer eventsSerializer)
+        public EventsStore(IOutboxContext outboxContext, IRaisedEventsSerializer eventsSerializer)
         {
             this.outboxContext = outboxContext;
             this.eventsSerializer = eventsSerializer;
         }
 
-        public async Task StoreAndPublishEvents(
+        public async Task StoreAndPublishEventsAsync(
             List<IDomainEvent> events,
             Guid correlationId,
             IEventPublisher publisher,
