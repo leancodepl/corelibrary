@@ -8,6 +8,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
     {
         DbSet<RaisedEvent> RaisedEvents { get; }
         DbContext Self { get; }
-        Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

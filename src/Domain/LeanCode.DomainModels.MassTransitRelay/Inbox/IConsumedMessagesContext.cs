@@ -8,6 +8,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
     {
         DbSet<ConsumedMessage> ConsumedMessages { get; }
         DbContext Self { get; }
-        Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

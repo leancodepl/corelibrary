@@ -38,18 +38,12 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterGeneric(typeof(EventsPublisherElement<,,>))
-                .AsSelf();
-
-            builder.RegisterGeneric(typeof(StoreAndPublishEventsElement<,,>))
-                .AsSelf();
-
-            builder.RegisterType<EventPublisher>()
-                .AsImplementedInterfaces()
-                .SingleInstance();
-
-            builder.RegisterType<EventsStore>()
-                .AsSelf();
+            builder.RegisterGeneric(typeof(EventsPublisherElement<,,>)).AsSelf();
+            builder.RegisterGeneric(typeof(StoreAndPublishEventsElement<,,>)).AsSelf();
+            builder.RegisterType<EventPublisher>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<EventsStore>().AsSelf();
+            builder.RegisterType<ConsumedMessagesCleaner>().AsSelf();
+            builder.RegisterType<PeriodicEventsPublisher>().AsSelf();
 
             builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()
