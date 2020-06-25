@@ -41,7 +41,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             {
                 consumedMessages.ConsumedMessages.Add(msg);
                 await next.Send(context);
-                await consumedMessages.SaveChangesAsync();
+                await consumedMessages.SaveChangesAsync(context.CancellationToken);
             }
         }
     }

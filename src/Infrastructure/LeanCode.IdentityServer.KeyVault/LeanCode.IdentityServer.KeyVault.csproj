@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Serilog" />
 
-    <PackageReference Include="System.Threading.Tasks.Extensions" />
     <PackageReference Include="IdentityServer4" />
     <PackageReference Include="Microsoft.Azure.KeyVault" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" />

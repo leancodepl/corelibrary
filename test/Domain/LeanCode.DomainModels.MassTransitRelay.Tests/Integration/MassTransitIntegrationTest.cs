@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
+using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.IntegrationTestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -28,7 +29,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             await TestEventsFromCommandHandler();
             await TestEventsFromConsumers();
             await TestFailingHandlers();
-            await TestConsumedEventsWerePersisted();
+            await AssertRaisedEventsWerePeristedAndMarkedPublished();
+            await AssertConsumedEventsWerePersisted();
         }
 
         private async Task PublishEvents()
@@ -68,7 +70,21 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             AssertConsumed(evt, typeof(Event3RetryingConsumer));
         }
 
-        private async Task TestConsumedEventsWerePersisted()
+        private async Task AssertRaisedEventsWerePeristedAndMarkedPublished()
+        {
+            using var dbContext = new TestDbContext(testApp.DbConnection);
+            var raisedEvents = await dbContext.RaisedEvents
+                .OrderBy(e => e.EventType)
+                .ToListAsync();
+
+            Assert.Collection(
+                raisedEvents,
+                evt => AssertRaisedEvent(evt, typeof(Event1)),
+                evt => AssertRaisedEvent(evt, typeof(Event2)),
+                evt => AssertRaisedEvent(evt, typeof(Event3)));
+        }
+
+        private async Task AssertConsumedEventsWerePersisted()
         {
             using var dbContext = new TestDbContext(testApp.DbConnection);
 
@@ -95,6 +111,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             Assert.Equal(consumerType.FullName, msg.ConsumerType);
             Assert.Equal(messageType.FullName, msg.MessageType);
+        }
+
+        private void AssertRaisedEvent(RaisedEvent evt, Type type)
+        {
+            Assert.Equal(type.FullName, evt.EventType);
+            Assert.True(evt.WasPublished);
         }
 
         private Task WaitForConsumers() => Task.Delay(500);
