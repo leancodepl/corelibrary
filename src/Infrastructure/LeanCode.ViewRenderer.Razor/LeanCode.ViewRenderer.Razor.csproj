@@ -12,7 +12,6 @@
   <ItemGroup>
     <PackageReference Include="Serilog" />
 
-    <PackageReference Include="System.Threading.Tasks.Extensions" />
     <PackageReference Include="System.Runtime.Loader" />
     <PackageReference Include="System.Dynamic.Runtime" />
 

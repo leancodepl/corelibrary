@@ -71,7 +71,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             return Bus.Factory.CreateUsingInMemory(config =>
             {
-                var queueName = Assembly.GetEntryAssembly().GetName().Name;
+                var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
 
                 config.UseLogsCorrelation();
                 config.UseRetry(retryConfig =>

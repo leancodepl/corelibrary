@@ -33,7 +33,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public object ExtractEvent(RaisedEvent evt)
         {
             var type = deserializerCache.GetOrAdd(evt.EventType, GetEventType);
-            return JsonConvert.DeserializeObject(evt.Payload, type);
+            return JsonConvert.DeserializeObject(evt.Payload, type)!;
         }
 
         private Type GetEventType(string type)
