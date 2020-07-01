@@ -13,6 +13,7 @@ namespace LeanCode.CQRS.Tests
     public class AppContext : IPipelineContext
     {
         IPipelineScope IPipelineContext.Scope { get; set; }
+        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
 
     public class SampleCommand : ICommand, IAuthorizerData { }

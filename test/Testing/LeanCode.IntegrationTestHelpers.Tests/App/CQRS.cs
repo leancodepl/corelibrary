@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Correlation;
 using LeanCode.CQRS;
@@ -57,20 +58,23 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
             set => user = value;
         }
 
+        public CancellationToken CancellationToken { get; }
+
         public Guid UserId { get; }
         Guid ICorrelationContext.CorrelationId { get; set; }
         Guid ICorrelationContext.ExecutionId { get; set; }
 
-        public AppContext(ClaimsPrincipal user, Guid userId)
+        public AppContext(ClaimsPrincipal user, Guid userId, CancellationToken cancellationToken)
         {
             User = user;
             UserId = userId;
+            CancellationToken = cancellationToken;
         }
 
         public static AppContext FromHttp(HttpContext context)
         {
             Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
-            return new AppContext(context.User!, uid);
+            return new AppContext(context.User!, uid, context.RequestAborted);
         }
     }
 }

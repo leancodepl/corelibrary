@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Correlation;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
@@ -101,5 +102,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public Guid CorrelationId { get; set; }
         public Guid ExecutionId { get; set; }
         public IPipelineScope Scope { get; set; }
+        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
 
@@ -7,6 +8,7 @@ namespace LeanCode.Benchmarks.Pipelines
     public struct Context : IPipelineContext
     {
         public IPipelineScope Scope { get; set; }
+        public CancellationToken CancellationToken { get; set; }
     }
 
     public struct Input { }
