@@ -26,7 +26,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         {
             var (result, events) = await interceptor.CaptureEventsOfAsync(() => next(ctx, input));
 
-            await impl.StoreAndPublishEventsAsync(events, ctx.CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(events, ctx.CorrelationId, publisher, ctx.CancellationToken);
 
             return result;
         }

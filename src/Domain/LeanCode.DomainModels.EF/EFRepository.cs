@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
@@ -65,31 +66,31 @@ namespace LeanCode.DomainModels.EF
 
         // NOTE: this may update more than just this one aggregate
         // if there are other objects tracked by EF change tracker
-        public virtual Task AddAsync(TEntity entity)
+        public virtual Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Add(entity);
-            return UnitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync(cancellationToken);
         }
 
-        public virtual Task DeleteAsync(TEntity entity)
+        public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Delete(entity);
-            return UnitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync(cancellationToken);
         }
 
-        public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities)
+        public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             DeleteRange(entities);
-            return UnitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync(cancellationToken);
         }
 
-        public virtual Task UpdateAsync(TEntity entity)
+        public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Update(entity);
-            return UnitOfWork.CommitAsync();
+            return UnitOfWork.CommitAsync(cancellationToken);
         }
 
-        public abstract Task<TEntity?> FindAsync(TIdentity id);
+        public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
     }
 
     public abstract class EFRepository<TEntity, TContext, TUnitOfWork>
