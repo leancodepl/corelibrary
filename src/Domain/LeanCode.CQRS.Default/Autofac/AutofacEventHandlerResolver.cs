@@ -29,11 +29,16 @@ namespace LeanCode.CQRS.Default.Autofac
         {
             var (handlerType, constructor) = TypesCache.Get(eventType);
 
-            componentContext.TryResolve(handlerType, out var handlers);
-
-            return ((IEnumerable<object>)handlers)
-                .Select(h => (IDomainEventHandlerWrapper)constructor.Invoke(new[] { h }))
-                .ToList();
+            if (componentContext.TryResolve(handlerType, out var handlers))
+            {
+                return ((IEnumerable<object>)handlers)
+                    .Select(h => (IDomainEventHandlerWrapper)constructor.Invoke(new[] { h }))
+                    .ToList();
+            }
+            else
+            {
+                return new List<IDomainEventHandlerWrapper>();
+            }
         }
     }
 }
