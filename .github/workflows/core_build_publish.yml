@@ -46,8 +46,8 @@ jobs:
     - name: Pack
       if: env.IS_MASTER_BUILD == '1'
       run: dotnet pack --no-build -c Release -o $PWD/packed
-    - name: Publish
-      if: env.IS_MASTER_BUILD == '1'
-      run: find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
-      env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    # - name: Publish
+    #   if: env.IS_MASTER_BUILD == '1'
+    #   run: find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+    #   env:
+    #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

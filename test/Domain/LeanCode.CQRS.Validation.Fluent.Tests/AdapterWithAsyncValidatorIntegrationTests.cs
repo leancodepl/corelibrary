@@ -74,7 +74,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         private class ComponentContext : IComponentContext
         {
             public IComponentRegistry ComponentRegistry => null;
-            public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters) => null;
+            public object ResolveComponent(ResolveRequest request) => null;
         }
     }
 }
