@@ -1,40 +1,34 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 using MassTransit;
-using Polly;
-using Polly.Retry;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
     public interface IEventPublisher
     {
-        Task PublishAsync(IDomainEvent evt, Guid? correlationId);
+        Task PublishAsync(object evt, Guid eventId, Guid? correlationId, CancellationToken cancellationToken = default);
+        Task PublishAsync(IDomainEvent evt, Guid? correlationId, CancellationToken cancellationToken = default)
+            => PublishAsync(evt, evt.Id, correlationId, cancellationToken);
     }
 
-    public class BusEventPublisher : IEventPublisher
+    public class EventPublisher : IEventPublisher
     {
-        private static readonly AsyncRetryPolicy RetryOnFailure = Policy
-            .Handle<Exception>()
-            .WaitAndRetryAsync(20, a => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, a), 120)));
+        private readonly IPublishEndpoint publishEndpoint;
 
-        private readonly IBus bus;
-
-        public BusEventPublisher(IBus bus)
+        public EventPublisher(IPublishEndpoint publishEndpoint)
         {
-            this.bus = bus;
+            this.publishEndpoint = publishEndpoint;
         }
 
-        public Task PublishAsync(IDomainEvent evt, Guid? correlationId)
+        public Task PublishAsync(object evt, Guid eventId, Guid? correlationId, CancellationToken cancellationToken = default)
         {
-            // The cast is important. Otherwise event will be published
-            // as IDomainEvent interface instead of concrete object and handlers
-            // won't be called.
-            return RetryOnFailure.ExecuteAsync(() => bus.Publish((object)evt, ctx =>
+            return publishEndpoint.Publish(evt, ctx =>
             {
-                ctx.MessageId = evt.Id;
+                ctx.MessageId = eventId;
                 ctx.ConversationId = correlationId;
-            }));
+            }, cancellationToken);
         }
     }
 }

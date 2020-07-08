@@ -48,12 +48,9 @@ namespace LeanCode.CQRS.Security
 
                 if (!authorized)
                 {
-                    logger.Warning(
-                        "Authorizer {Authorizer} failed to authorize the user to run {@Object}",
-                        customAuthorizer.UnderlyingAuthorizer.FullName, input);
-
                     throw new InsufficientPermissionException(
-                        $"User is not authorized for {input.GetType()}.");
+                        $"User is not authorized for {input.GetType()}.",
+                        customAuthorizer.UnderlyingAuthorizer.FullName);
                 }
             }
 

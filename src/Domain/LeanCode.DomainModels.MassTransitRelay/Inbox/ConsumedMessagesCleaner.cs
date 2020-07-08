@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
         public ConsumedMessagesCleaner(IConsumedMessagesContext dbContext)
         {
             this.dbContext = dbContext;
-            tableName = BuildTableName(dbContext);
+            tableName = dbContext.Self.GetFullTableName(typeof(ConsumedMessage));
         }
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,12 +37,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
                 new { time },
                 commandTimeout: 3600);
             logger.Information("Deleted {Count} consumed messages", deleted);
-        }
-
-        private static string BuildTableName(IConsumedMessagesContext dbContext)
-        {
-            var type = dbContext.Self.Model.FindEntityType(typeof(ConsumedMessage));
-            return $"[{type.GetSchema()}].[{type.GetTableName()}]";
         }
     }
 }

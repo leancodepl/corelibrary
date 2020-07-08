@@ -9,6 +9,7 @@
 
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+    <ProjectReference Include="../LeanCode.IdentityProvider/LeanCode.IdentityProvider.csproj" />
     <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
   </ItemGroup>
 
@@ -18,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Polly" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 </Project>

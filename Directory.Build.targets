@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>3.1.4</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>3.1.4</AspNetCoreVersion>
-    <ExtensionsVersion>3.1.4</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>3.1.5</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>3.1.5</AspNetCoreVersion>
+    <ExtensionsVersion>3.1.5</ExtensionsVersion>
     <HangfireVersion>1.7.11</HangfireVersion>
     <IdentityServerVersion>3.1.3</IdentityServerVersion>
     <MassTransitVersion>6.2.4</MassTransitVersion>
@@ -14,7 +14,6 @@
   <ItemGroup>
     <PackageReference Update="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Update="System.Runtime.Loader" Version="4.3.0" />
-    <PackageReference Update="System.Threading.Tasks.Extensions" Version="4.6.0-preview.18571.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +36,7 @@
     <PackageReference Update="IdentityModel" Version="4.1.1" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.7" />
 
-    <PackageReference Update="FirebaseAdmin" Version="1.12.0" />
+    <PackageReference Update="FirebaseAdmin" Version="1.14.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="1.1.0" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
@@ -45,10 +44,11 @@
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.35" />
-    <PackageReference Update="FluentValidation" Version="8.5.1" />
-    <PackageReference Update="Glob" Version="1.1.5" />
+    <PackageReference Update="FluentValidation" Version="8.6.2" />
+    <PackageReference Update="Glob" Version="1.1.6" />
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
-    <PackageReference Update="Sendgrid" Version="9.12.0" />
+    <PackageReference Update="Sendgrid" Version="9.16.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,11 +99,11 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Update="NSubstitute" Version="4.2.1" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Update="NSubstitute" Version="4.2.2" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.2" />
   </ItemGroup>
 
   <PropertyGroup>
