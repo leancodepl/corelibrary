@@ -11,7 +11,7 @@ namespace LeanCode.DomainModels.EF
         where TEntity : class, IAggregateRoot<TIdentity>
         where TIdentity : notnull, IEquatable<TIdentity>
         where TContext : notnull, DbContext
-        where TUnitOfWork : notnull, EFUnitOfWorkBase<TContext>
+        where TUnitOfWork : notnull, IUnitOfWork
     {
         public SimpleEFRepository(TContext dbContext, TUnitOfWork unitOfWork)
             : base(dbContext, unitOfWork) { }
@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.EF
         : EFRepository<TEntity, TContext, TUnitOfWork>
         where TEntity : class, IAggregateRoot<Guid>
         where TContext : notnull, DbContext
-        where TUnitOfWork : notnull, EFUnitOfWorkBase<TContext>
+        where TUnitOfWork : notnull, IUnitOfWork
     {
         public SimpleEFRepository(TContext dbContext, TUnitOfWork unitOfWork)
             : base(dbContext, unitOfWork) { }
