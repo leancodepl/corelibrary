@@ -14,6 +14,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private static readonly byte[] NullString = Encoding.UTF8.GetBytes("null");
 
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<RemoteCQRSMiddleware<TAppContext>>();
         private readonly TypesCatalog catalog;
         private readonly Func<HttpContext, TAppContext> contextTranslator;
         private readonly ISerializer serializer;
@@ -92,11 +93,18 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     }
                     else
                     {
-                        await serializer.SerializeAsync(
-                            context.Response.Body,
-                            result.Payload,
-                            result.Payload.GetType(),
-                            context.RequestAborted);
+                        try
+                        {
+                            await serializer.SerializeAsync(
+                                context.Response.Body,
+                                result.Payload,
+                                result.Payload.GetType(),
+                                context.RequestAborted);
+                        }
+                        catch (TaskCanceledException ex)
+                        {
+                            logger.Warning(ex, "Failed to serialize response, request aborted");
+                        }
                     }
                 }
             }
