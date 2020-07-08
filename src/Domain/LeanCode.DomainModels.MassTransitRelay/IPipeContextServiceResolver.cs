@@ -9,7 +9,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
     /// </remarks>
     public interface IPipeContextServiceResolver
     {
-        TService GetService<TService>(PipeContext pipe);
+        TService GetService<TService>(PipeContext pipe)
+            where TService : notnull;
     }
 
     public class AutofacPipeContextServiceResolver : IPipeContextServiceResolver
@@ -17,6 +18,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         public static readonly AutofacPipeContextServiceResolver Instance = new AutofacPipeContextServiceResolver();
 
         public TService GetService<TService>(PipeContext pipe)
+            where TService : notnull
         {
             if (pipe.TryGetPayload<ILifetimeScope>(out var scope))
             {
