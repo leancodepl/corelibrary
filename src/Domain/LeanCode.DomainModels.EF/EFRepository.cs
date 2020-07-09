@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeanCode.DomainModels.EF
 {
     public abstract class EFRepository<TEntity, TIdentity, TContext, TUnitOfWork> : IRepository<TEntity, TIdentity>
-        where TEntity : class, IAggregateRoot<TIdentity>
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
         where TIdentity : notnull
         where TContext : notnull, DbContext
         where TUnitOfWork : notnull, IUnitOfWork
@@ -25,21 +26,29 @@ namespace LeanCode.DomainModels.EF
 
         public virtual void Add(TEntity entity)
         {
-            entity.DateModified = Time.Now;
+            if (entity is IOptimisticConcurrency oc)
+            {
+                oc.DateModified = Time.Now;
+            }
+
             DbSet.Add(entity);
         }
 
         public virtual void Delete(TEntity entity)
         {
-            entity.DateModified = Time.Now;
+            if (entity is IOptimisticConcurrency oc)
+            {
+                oc.DateModified = Time.Now;
+            }
+
             DbSet.Remove(entity);
         }
 
         public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
-            foreach (var e in entities)
+            foreach (var oc in entities.OfType<IOptimisticConcurrency>())
             {
-                e.DateModified = Time.Now;
+                oc.DateModified = Time.Now;
             }
 
             DbSet.RemoveRange(entities);
@@ -47,7 +56,11 @@ namespace LeanCode.DomainModels.EF
 
         public virtual void Update(TEntity entity)
         {
-            entity.DateModified = Time.Now;
+            if (entity is IOptimisticConcurrency oc)
+            {
+                oc.DateModified = Time.Now;
+            }
+
             DbSet.Update(entity);
         }
 
