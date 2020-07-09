@@ -78,7 +78,7 @@ namespace LeanCode.SmsSender
                 }
             }
 
-            logger.Information("SMS to {PhoneNumber} sent successfully", phoneNumber);
+            logger.Information("SMS sent successfully");
         }
 
         private static void HandleResponse(JsonElement response)
