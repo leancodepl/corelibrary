@@ -49,7 +49,7 @@ namespace LeanCode.Serialization
         public static JsonContent Create(object payload, Type type, JsonSerializerOptions? options) =>
             new JsonContent(payload, type, options);
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context) =>
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
             JsonSerializer.SerializeAsync(stream, payload, type, options);
 
         protected override bool TryComputeLength(out long length)

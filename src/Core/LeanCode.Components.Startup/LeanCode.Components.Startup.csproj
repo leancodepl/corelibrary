@@ -11,12 +11,14 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
 
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+
+    <PackageReference Include="Azure.Extensions.Configuration.Secrets" />
+    <PackageReference Include="Azure.Identity" />
 
     <PackageReference Include="Autofac.Extensions.DependencyInjection" />
 

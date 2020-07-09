@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
+using Azure.Extensions.Configuration.Secrets;
+using Azure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -18,6 +19,7 @@ namespace LeanCode.Components.Startup
         public const string VaultKey = "Secrets:KeyVault:VaultUrl";
         public const string ClientIdKey = "Secrets:KeyVault:ClientId";
         public const string ClientSecretKey = "Secrets:KeyVault:ClientSecret";
+        public const string TenantIdKey = "Secrets:KeyVault:TenantId";
         public const string MinimumLogLevelKey = "Logging:MinimumLevel";
         public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
 
@@ -28,27 +30,15 @@ namespace LeanCode.Components.Startup
                 var configuration = builder.Build();
 
                 var vault = configuration.GetValue<string?>(VaultKey);
+                var tenantId = configuration.GetValue<string?>(TenantIdKey);
                 var clientId = configuration.GetValue<string?>(ClientIdKey);
                 var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
 
-                if (vault != null && clientId != null && clientSecret != null)
+                if (tenantId != null && vault != null && clientId != null && clientSecret != null)
                 {
-                    builder.AddAzureKeyVault(vault, clientId, clientSecret);
-                }
-            });
-        }
-
-        public static IWebHostBuilder AddAppConfigurationFromAzureKeyVault(
-            this IWebHostBuilder builder,
-            Func<IConfiguration, AzureKeyVaultConfigurationOptions?> optionsProvider)
-        {
-            return builder.ConfigureAppConfiguration((context, builder) =>
-            {
-                var options = optionsProvider(builder.Build());
-
-                if (options != null)
-                {
-                    builder.AddAzureKeyVault(options);
+                    var vaultUlr = new Uri(vault);
+                    var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                    builder.AddAzureKeyVault(vaultUlr, clientSecretCredential);
                 }
             });
         }
