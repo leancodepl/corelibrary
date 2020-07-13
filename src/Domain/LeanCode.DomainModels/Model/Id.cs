@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using LeanCode.DomainModels.Serialization;
-using LeanCode.IdentityProvider;
 
 namespace LeanCode.DomainModels.Model
 {
@@ -19,7 +18,7 @@ namespace LeanCode.DomainModels.Model
             Value = value;
         }
 
-        public static Id<TEntity> New() => new Id<TEntity>(Identity.NewId());
+        public static Id<TEntity> New() => new Id<TEntity>(Guid.NewGuid());
         public static Id<TEntity> From(Guid id) => new Id<TEntity>(id);
         public static Id<TEntity>? From(Guid? id) => id is Guid v ? new Id<TEntity>(v) : (Id<TEntity>?)null;
 
