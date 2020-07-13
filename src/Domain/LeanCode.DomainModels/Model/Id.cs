@@ -10,6 +10,8 @@ namespace LeanCode.DomainModels.Model
     public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEntity>>
         where TEntity : class, IIdentifiable<Id<TEntity>>
     {
+        public static readonly Id<TEntity> Empty = default;
+
         public Guid Value { get; }
 
         public Id(Guid value)
@@ -38,7 +40,7 @@ namespace LeanCode.DomainModels.Model
     public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<TEntity>>
         where TEntity : class, IIdentifiable<IId<TEntity>>
     {
-        public static readonly IId<TEntity> EmptyValue = IId<TEntity>.From(0);
+        public static readonly IId<TEntity> Empty = default;
 
         public int Value { get; }
 
