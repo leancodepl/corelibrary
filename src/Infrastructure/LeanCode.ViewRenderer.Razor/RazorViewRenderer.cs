@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 
@@ -17,7 +18,11 @@ namespace LeanCode.ViewRenderer.Razor
             cache = new CompiledViewsCache(options);
         }
 
-        public async Task RenderToStreamAsync(string viewName, object model, Stream outputStream)
+        public async Task RenderToStreamAsync(
+            string viewName,
+            object model,
+            Stream outputStream,
+            CancellationToken cancellationToken = default)
         {
             logger.Debug("Rendering view {ViewName}", viewName);
 
@@ -26,11 +31,14 @@ namespace LeanCode.ViewRenderer.Razor
             logger.Information("View {ViewName} rendered", viewName);
         }
 
-        public async Task<string> RenderToStringAsync(string viewName, object model)
+        public async Task<string> RenderToStringAsync(
+            string viewName,
+            object model,
+            CancellationToken cancellationToken = default)
         {
             using (var ms = new MemoryStream())
             {
-                await RenderToStreamAsync(viewName, model, ms);
+                await RenderToStreamAsync(viewName, model, ms, cancellationToken);
 
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
