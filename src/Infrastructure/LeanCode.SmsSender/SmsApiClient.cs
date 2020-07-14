@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
 
@@ -29,16 +30,16 @@ namespace LeanCode.SmsSender
             999 /* Internal system error */);
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
-        private readonly SmsApiHttpClient client;
+        private readonly HttpClient client;
         private readonly SmsApiConfiguration smsApiConfiguration;
 
-        public SmsApiClient(SmsApiConfiguration smsApiConfiguration, SmsApiHttpClient client)
+        public SmsApiClient(SmsApiConfiguration smsApiConfiguration, HttpClient client)
         {
             this.smsApiConfiguration = smsApiConfiguration;
             this.client = client;
         }
 
-        public async Task SendAsync(string message, string phoneNumber)
+        public async Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default)
         {
             logger.Verbose("Sending SMS using SMS Api");
 
@@ -64,7 +65,7 @@ namespace LeanCode.SmsSender
             }
 
             using (var body = new FormUrlEncodedContent(parameters))
-            using (var response = await client.Client.PostAsync("sms.do", body))
+            using (var response = await client.PostAsync("sms.do", body, cancellationToken))
             {
                 await using var content = await response.Content.ReadAsStreamAsync();
                 try
