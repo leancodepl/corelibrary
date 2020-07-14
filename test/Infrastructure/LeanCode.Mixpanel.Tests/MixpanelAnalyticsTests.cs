@@ -18,10 +18,10 @@ namespace LeanCode.Mixpanel.Tests
         public MixpanelAnalyticsTests()
         {
             analytics = new MixpanelAnalytics(
-                new MixpanelHttpClient(new HttpClient
+                new HttpClient
                 {
                     BaseAddress = new Uri("https://api.mixpanel.com"),
-                }),
+                },
                 Configuration);
         }
 
