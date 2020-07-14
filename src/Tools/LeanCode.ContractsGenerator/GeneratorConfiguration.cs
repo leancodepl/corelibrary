@@ -26,7 +26,7 @@ namespace LeanCode.ContractsGenerator
             return await JsonSerializer.DeserializeAsync<List<GeneratorConfiguration>>(stream);
         }
 
-        public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string cfg)
+        public static List<GeneratorConfiguration>? DeserializeConfigurationsFromString(string cfg)
         {
             return JsonSerializer.Deserialize<List<GeneratorConfiguration>>(cfg);
         }

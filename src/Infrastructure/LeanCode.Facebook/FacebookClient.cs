@@ -98,7 +98,7 @@ namespace LeanCode.Facebook
 
         private FacebookUser ConvertResponse(JsonElement result)
         {
-            var id = result.GetProperty("id").GetString();
+            var id = result.GetProperty("id").GetString()!;
             var email = GetOptionalProperty(result, "email");
             var firstName = GetOptionalProperty(result, "first_name");
             var lastName = GetOptionalProperty(result, "last_name");
