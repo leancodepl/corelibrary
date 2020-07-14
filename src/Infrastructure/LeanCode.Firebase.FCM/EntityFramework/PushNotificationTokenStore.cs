@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using LeanCode.Dapper;
@@ -22,15 +23,16 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             this.dbContext = dbContext;
         }
 
-        public async Task<List<string>> GetTokensAsync(Guid userId)
+        public async Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             var res = await dbContext.QueryAsync<string>(
                 $"SELECT [Token] FROM {GetTokensTableName()} WHERE [UserId] = @userId",
-                new { userId });
+                new { userId },
+                cancellationToken: cancellationToken);
             return res.AsList();
         }
 
-        public async Task AddUserTokenAsync(Guid userId, string token)
+        public async Task AddUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -46,7 +48,8 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     VALUES (@newId, @userId, @token, @now);
 
                     COMMIT TRAN;
-                ", new { newId = Identity.NewId(), userId, token, now = Time.Now });
+                ", new { newId = Identity.NewId(), userId, token, now = Time.Now },
+                cancellationToken: cancellationToken);
                 logger.Information("Added push notification token for user {UserId} from the store", userId);
             }
             catch (Exception ex)
@@ -56,13 +59,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        public async Task RemoveUserTokenAsync(Guid userId, string token)
+        public async Task RemoveUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
         {
             try
             {
                 await dbContext.ExecuteAsync(
                     $"DELETE FROM {GetTokensTableName()} WHERE [UserId] = @userId AND [Token] = @token",
-                    new { userId, token });
+                    new { userId, token },
+                    cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token for user {UserId} from the store", userId);
             }
             catch (Exception ex)
@@ -71,13 +75,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        public async Task RemoveTokenAsync(string token)
+        public async Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
         {
             try
             {
                 await dbContext.ExecuteAsync(
                     $"DELETE FROM {GetTokensTableName()} WHERE [Token] = @token",
-                    new { token });
+                    new { token },
+                    cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token from the store");
             }
             catch (Exception ex)
@@ -86,13 +91,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        public async Task RemoveTokensAsync(IEnumerable<string> tokens)
+        public async Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
         {
             try
             {
                 await dbContext.ExecuteAsync(
                     $"DELETE FROM {GetTokensTableName()} WHERE [Token] IN @tokens",
-                    new { tokens });
+                    new { tokens },
+                    cancellationToken: cancellationToken);
                 logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
             }
             catch (Exception ex)

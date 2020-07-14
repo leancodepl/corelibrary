@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LeanCode.Firebase.FCM.Tests
@@ -19,17 +20,17 @@ namespace LeanCode.Firebase.FCM.Tests
             this.token = token;
         }
 
-        public Task AddUserTokenAsync(Guid userId, string newToken)
+        public Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task RemoveUserTokenAsync(Guid userId, string newToken)
+        public Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<string>> GetTokensAsync(Guid userId)
+        public Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             if (userId == this.userId)
             {
@@ -41,7 +42,7 @@ namespace LeanCode.Firebase.FCM.Tests
             }
         }
 
-        public Task RemoveTokensAsync(IEnumerable<string> tokens)
+        public Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
         {
             if (tokens.All(t => t == token))
             {
@@ -54,7 +55,7 @@ namespace LeanCode.Firebase.FCM.Tests
             }
         }
 
-        public Task RemoveTokenAsync(string token)
+        public Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
         {
             if (token == this.token)
             {

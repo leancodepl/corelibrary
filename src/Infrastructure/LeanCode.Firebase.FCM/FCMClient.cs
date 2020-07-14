@@ -44,7 +44,7 @@ namespace LeanCode.Firebase.FCM
 
         public async Task SendToUserAsync(Guid userId, MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
         {
-            message.Tokens = await tokenStore.GetTokensAsync(userId);
+            message.Tokens = await tokenStore.GetTokensAsync(userId, cancellationToken);
 
             if (message.Tokens.Count == 0)
             {
@@ -56,7 +56,7 @@ namespace LeanCode.Firebase.FCM
                     "Sending push notification to user {UserId} that targets {Count} devices",
                     userId, message.Tokens.Count);
                 var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
-                await HandleBatchResponseAsync(response, message.Tokens);
+                await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
             }
         }
 
@@ -65,7 +65,7 @@ namespace LeanCode.Firebase.FCM
             logger.Debug("Sending {Count} push messages", messages.Count());
 
             var response = await messaging.SendAllAsync(messages, dryRun, cancellationToken);
-            await HandleBatchResponseAsync(response, messages.Select(m => m.Token));
+            await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
         }
 
         public async Task SendMulticastAsync(MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
@@ -73,10 +73,13 @@ namespace LeanCode.Firebase.FCM
             logger.Debug("Sending multicast push message to {Count} targets", message.Tokens.Count);
 
             var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
-            await HandleBatchResponseAsync(response, message.Tokens);
+            await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
         }
 
-        private async Task HandleBatchResponseAsync(BatchResponse response, IEnumerable<string> tokensUsed)
+        private async Task HandleBatchResponseAsync(
+            BatchResponse response,
+            IEnumerable<string> tokensUsed,
+            CancellationToken cancellationToken)
         {
             // Remove the leftover tokens
             var tokensToRemove = response.Responses
@@ -87,7 +90,7 @@ namespace LeanCode.Firebase.FCM
             if (tokensToRemove.Any())
             {
                 logger.Debug("Some PN tokens have to be removed because they either expired or are wrongly configured");
-                await tokenStore.RemoveTokensAsync(tokensToRemove);
+                await tokenStore.RemoveTokensAsync(tokensToRemove, cancellationToken);
                 logger.Warning(
                     "{Count} tokens removed from token store because of either expired or are wrongly configured",
                     tokensToRemove.Count);
