@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -30,10 +31,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.ExecuteAsync(cmd));
         }
 
 
@@ -43,10 +45,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.ExecuteScalarAsync<T>(cmd));
         }
 
 
@@ -56,10 +59,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryAsync<TResult>(cmd));
         }
 
         public static Task<IEnumerable<TResult>> QueryAsync<TFirst, TSecond, TResult>(
@@ -69,12 +73,13 @@ namespace LeanCode.Dapper
             object? param = null,
             string splitOn = "Id",
             IDbTransaction? transaction = null,
-            bool buffered = true,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CommandFlags commandFlags = CommandFlags.Buffered,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, commandFlags, cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryAsync(cmd, map, splitOn));
         }
 
         public static Task<IEnumerable<dynamic>> QueryAsync(
@@ -83,10 +88,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryAsync(cmd));
         }
 
 
@@ -96,10 +102,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QuerySingleOrDefaultAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QuerySingleOrDefaultAsync<TResult>(cmd));
         }
 
         public static Task<dynamic> QuerySingleOrDefaultAsync(
@@ -108,10 +115,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QuerySingleOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QuerySingleOrDefaultAsync(cmd));
         }
 
 
@@ -121,10 +129,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QuerySingleAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QuerySingleAsync<TResult>(cmd));
         }
 
         public static Task<dynamic> QuerySingleAsync(
@@ -133,10 +142,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QuerySingleAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QuerySingleAsync(cmd));
         }
 
 
@@ -146,10 +156,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryFirstOrDefaultAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryFirstOrDefaultAsync<TResult>(cmd));
         }
 
         public static Task<dynamic> QueryFirstOrDefaultAsync(
@@ -158,10 +169,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryFirstOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryFirstOrDefaultAsync(cmd));
         }
 
 
@@ -171,10 +183,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryFirstAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryFirstAsync<TResult>(cmd));
         }
 
         public static Task<dynamic> QueryFirstAsync(
@@ -183,10 +196,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryFirstAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryFirstAsync(cmd));
         }
 
 
@@ -196,10 +210,11 @@ namespace LeanCode.Dapper
             object? param = null,
             IDbTransaction? transaction = null,
             int? commandTimeout = null,
-            CommandType? commandType = null)
+            CommandType? commandType = null,
+            CancellationToken cancellationToken = default)
         {
-            return context.WithConnectionAsync(conn =>
-                conn.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
+            var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+            return context.WithConnectionAsync(conn => conn.QueryMultipleAsync(cmd));
         }
     }
 }
