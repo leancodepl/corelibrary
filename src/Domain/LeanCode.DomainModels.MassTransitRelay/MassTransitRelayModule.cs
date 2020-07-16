@@ -4,6 +4,7 @@ using Autofac;
 using GreenPipes;
 using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.PeriodicService;
 using MassTransit;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.IdentityProvider;
 using LeanCode.TimeProvider;
 using MassTransit;

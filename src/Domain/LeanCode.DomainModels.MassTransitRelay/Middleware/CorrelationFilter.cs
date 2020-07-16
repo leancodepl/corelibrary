@@ -8,7 +8,7 @@ using LeanCode.Correlation;
 using MassTransit;
 using Serilog.Context;
 
-namespace LeanCode.DomainModels.MassTransitRelay
+namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class CorrelationFilter : IFilter<ConsumeContext>
     {

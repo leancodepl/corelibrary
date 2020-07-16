@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GreenPipes.Pipes;
 using LeanCode.Correlation;
 using LeanCode.DomainModels.EventsExecution;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 using MassTransit;

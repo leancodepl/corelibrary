@@ -4,7 +4,7 @@ using LeanCode.Correlation;
 using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
 
-namespace LeanCode.DomainModels.MassTransitRelay
+namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class StoreAndPublishEventsElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
         where TContext : notnull, ICorrelationContext, IEventsInterceptorContext
