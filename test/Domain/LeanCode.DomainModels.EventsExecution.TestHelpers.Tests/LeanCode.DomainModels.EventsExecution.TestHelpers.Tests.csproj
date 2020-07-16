@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+    <ProjectReference Include="../../../src/Testing/LeanCode.DomainModels.EventsExecution.TestHelpers/LeanCode.DomainModels.EventsExecution.TestHelpers.csproj" />
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 
