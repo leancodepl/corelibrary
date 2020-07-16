@@ -3,7 +3,7 @@
     <EntityFrameworkCoreVersion>5.0.0-preview.6.*</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>5.0.0-preview.6.*</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0-preview.6.*</ExtensionsVersion>
-    <AzureVersion></AzureVersion>
+
     <HangfireVersion>1.7.11</HangfireVersion>
     <IdentityServerVersion>3.1.3</IdentityServerVersion>
     <MassTransitVersion>6.2.4</MassTransitVersion>
@@ -44,7 +44,7 @@
     <PackageReference Update="Google.Cloud.Firestore" Version="1.1.0" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="2.0.0-preview3.20122.2" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="2.0.0" />
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.35" />
