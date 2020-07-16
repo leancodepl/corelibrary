@@ -21,8 +21,6 @@
     <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
-    <ProjectReference Include="../../../src/Infrastructure/LeanCode.PushNotifications/LeanCode.PushNotifications.csproj" />
-    <ProjectReference Include="../../../src/Infrastructure/LeanCode.PushNotifications.EF/LeanCode.PushNotifications.EF.csproj" />
     <ProjectReference Include="../../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
   </ItemGroup>
 
