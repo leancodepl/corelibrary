@@ -34,11 +34,11 @@ namespace LeanCode.Components.Startup
                 var clientId = configuration.GetValue<string?>(ClientIdKey);
                 var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
 
-                if (tenantId != null && vault != null && clientId != null && clientSecret != null)
+                if (vault != null && tenantId != null && clientId != null && clientSecret != null)
                 {
-                    var vaultUlr = new Uri(vault);
+                    var vaultUrl = new Uri(vault);
                     var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                    builder.AddAzureKeyVault(vaultUlr, clientSecretCredential);
+                    builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
                 }
             });
         }

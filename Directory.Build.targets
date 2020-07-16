@@ -85,8 +85,6 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
 
-
-
     <PackageReference Update="Hangfire.Autofac" Version="2.3.1" />
     <PackageReference Update="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
     <PackageReference Update="Hangfire.Core" Version="$(HangfireVersion)" />
