@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
@@ -16,6 +15,11 @@ namespace LeanCode.SendGrid
         public SendGridLocalizedRazorMessage(string cultureName)
         {
             Culture = CultureInfo.GetCultureInfo(cultureName);
+        }
+
+        public SendGridLocalizedRazorMessage(CultureInfo cultureInfo)
+        {
+            Culture = cultureInfo.IsReadOnly ? cultureInfo : CultureInfo.ReadOnly(cultureInfo);
         }
 
         public void SetGlobalSubject(string subjectKey, object[]? subjectFormatArgs)
