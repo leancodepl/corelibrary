@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GreenPipes;
 using LeanCode.DomainModels.EventsExecution;
 using MassTransit;
@@ -25,13 +24,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         {
             var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
             var impl = serviceResolver.GetService<EventsStore>(context);
-            interceptor.Prepare();
 
-            await next.Send(context);
+            var events = await interceptor.CaptureEventsOf(() => next.Send(context));
 
-            var queue = interceptor.CaptureQueue();
             await impl.StoreAndPublishEventsAsync(
-                queue.ToList(),
+                events,
                 context.ConversationId!.Value,
                 new EventPublisher(context),
                 context.CancellationToken);

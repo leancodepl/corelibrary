@@ -23,7 +23,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             new CQRSModule().WithCustomPipelines<Context>(
                 SearchAssemblies,
-                cmd => cmd.Correlate().StoreAndPublishEvents().InterceptEvents(),
+                cmd => cmd.Correlate().StoreAndPublishEvents(),
                 query => query),
 
             new MassTransitRelayModule(SearchAssemblies, SearchAssemblies),

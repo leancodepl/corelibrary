@@ -24,12 +24,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
         {
             var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
-            interceptor.Prepare();
 
-            await next.Send(context);
+            var raisedEvents = await interceptor.CaptureEventsOf(() => next.Send(context));
 
-            var queue = interceptor.CaptureQueue();
-            var publishTasks = queue.Select(evt => context.Publish((object)evt, cfg => cfg.MessageId = evt.Id));
+            var publishTasks = raisedEvents.Select(evt => context.Publish((object)evt, cfg => cfg.MessageId = evt.Id));
             await Task.WhenAll(publishTasks);
         }
     }

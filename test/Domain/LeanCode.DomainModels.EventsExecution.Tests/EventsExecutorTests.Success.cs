@@ -8,6 +8,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.EventsExecution.Tests
 {
+    [Collection("EventsInterceptor")]
     public class EventsExecutorTests__Success
     {
         private static readonly RetryPolicies Policies = new RetryPolicies();

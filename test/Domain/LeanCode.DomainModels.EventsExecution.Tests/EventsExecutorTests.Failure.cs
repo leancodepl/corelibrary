@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
@@ -9,6 +8,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.EventsExecution.Tests
 {
+    [Collection("EventsInterceptor")]
     public class EventsExecutorTests__Failure
     {
         private static readonly RetryPolicies Policies = new RetryPolicies();

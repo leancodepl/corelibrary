@@ -5,6 +5,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
+    [Collection("EventsInterceptor")]
     public class EventsInterceptorTests
     {
         public EventsInterceptorTests()

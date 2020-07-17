@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.Correlation;
@@ -9,32 +10,32 @@ using LeanCode.Pipelines;
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : notnull, ICorrelationContext, IEventsInterceptorContext
+        where TContext : notnull, ICorrelationContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
         private readonly IEventPublisher publisher;
+        private readonly AsyncEventsInterceptor interceptor;
 
-        public EventsPublisherElement(IEventPublisher publisher)
+        public EventsPublisherElement(IEventPublisher publisher, AsyncEventsInterceptor interceptor)
         {
+            this.interceptor = interceptor;
             this.publisher = publisher;
         }
 
         public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
         {
-            var result = await next(ctx, input);
+            var (result, events) = await interceptor.CaptureEventsOf(() => next(ctx, input));
 
-            if (ctx.SavedEvents?.Count > 0)
+            if (events.Count > 0)
             {
-                await PublishEventsAsync(ctx);
+                await PublishEventsAsync(ctx, events);
             }
 
             return result;
         }
 
-        private Task PublishEventsAsync(TContext ctx)
+        private Task PublishEventsAsync(TContext ctx, List<IDomainEvent> events)
         {
-            var events = ctx.SavedEvents;
-
             logger.Debug("Publishing {Count} raised events", events.Count);
 
             var publishTasks = events
