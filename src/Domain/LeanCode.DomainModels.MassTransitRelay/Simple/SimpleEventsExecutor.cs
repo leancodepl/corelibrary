@@ -16,7 +16,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Simple
 
         private static ConfiguredPipeline<SimplePipelineContext, Func<Task>, ValueTuple> Outboxed() => Pipeline
             .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
-            .Use<EventsPublisherElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
+            .Use<StoreAndPublishEventsElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
             .Finalize<SimpleFinalizer>();
 
         public SimpleEventsExecutor(IPipelineFactory factory, bool useOutbox)
