@@ -20,22 +20,36 @@ namespace LeanCode.DomainModels.MassTransitRelay
         private readonly TypesCatalog consumersCatalog;
         private readonly TypesCatalog eventsCatalog;
         private readonly BusFactory busFactory;
+        private readonly bool useInbox;
+        private readonly bool useOutbox;
 
         public MassTransitRelayModule(
             TypesCatalog consumersCatalog,
             TypesCatalog eventsCatalog,
-            BusFactory? busFactory = null)
+            BusFactory? busFactory = null,
+            bool useInbox = true,
+            bool useOutbox = true)
         {
             this.consumersCatalog = consumersCatalog;
             this.eventsCatalog = eventsCatalog;
             this.busFactory = busFactory ?? DefaultBusFactory;
+            this.useInbox = useInbox;
+            this.useOutbox = useOutbox;
         }
 
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddHostedService<MassTransitRelayHostedService>();
-            services.AddHostedService<PeriodicHostedService<ConsumedMessagesCleaner>>();
-            services.AddHostedService<PeriodicHostedService<PeriodicEventsPublisher>>();
+
+            if (useInbox)
+            {
+                services.AddHostedService<PeriodicHostedService<ConsumedMessagesCleaner>>();
+            }
+
+            if (useOutbox)
+            {
+                services.AddHostedService<PeriodicHostedService<PeriodicEventsPublisher>>();
+            }
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -58,7 +72,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             builder.RegisterType<SimpleEventsExecutor>()
                 .AsSelf()
-                .SingleInstance();
+                .SingleInstance()
+                .WithParameter("useOutbox", useOutbox);
 
             builder.RegisterType<SimpleFinalizer>().AsSelf();
 
