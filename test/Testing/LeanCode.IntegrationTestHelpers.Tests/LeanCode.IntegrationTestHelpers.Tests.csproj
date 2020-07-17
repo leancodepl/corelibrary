@@ -17,7 +17,7 @@
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
-    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />

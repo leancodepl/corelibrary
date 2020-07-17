@@ -4,7 +4,6 @@ using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.DomainModels.EventsExecution;
 
 namespace LeanCode.CQRS.Tests
 {
@@ -18,7 +17,6 @@ namespace LeanCode.CQRS.Tests
         protected ICommandHandlerResolver<AppContext> CHResolver { get; private set; }
         protected IQueryHandlerResolver<AppContext> QHResolver { get; private set; }
         protected IAuthorizerResolver<AppContext> AuthResolver { get; private set; }
-        protected IDomainEventHandlerResolver EventResolver { get; private set; }
         protected ICommandValidatorResolver<AppContext> ValidatorResolver { get; private set; }
 
         public void Prepare(
@@ -45,7 +43,6 @@ namespace LeanCode.CQRS.Tests
             CHResolver = Container.Resolve<ICommandHandlerResolver<AppContext>>();
             QHResolver = Container.Resolve<IQueryHandlerResolver<AppContext>>();
             AuthResolver = Container.Resolve<IAuthorizerResolver<AppContext>>();
-            EventResolver = Container.Resolve<IDomainEventHandlerResolver>();
             ValidatorResolver = Container.Resolve<ICommandValidatorResolver<AppContext>>();
         }
 
@@ -78,19 +75,6 @@ namespace LeanCode.CQRS.Tests
 
             var underlying = SampleAuthorizer.LastInstance.Value;
             return (wrapper, underlying);
-        }
-
-        protected (IDomainEventHandlerWrapper, SampleEventHandler) FindSampleEventHandler()
-        {
-            var handlers = EventResolver.FindEventHandlers(typeof(SampleEvent));
-            if (handlers.Count > 0)
-            {
-                return (handlers[0], SampleEventHandler.LastInstance.Value);
-            }
-            else
-            {
-                return (null, null);
-            }
         }
 
         protected (ICommandValidatorWrapper, SampleValidator) FindSampleValidator()

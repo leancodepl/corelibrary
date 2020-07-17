@@ -6,6 +6,7 @@ using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
+using LeanCode.DomainModels.MassTransitRelay.Simple;
 using LeanCode.PeriodicService;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,17 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()
                 .SingleInstance();
+
+            builder.RegisterType<AsyncEventsInterceptor>()
+                .AsSelf()
+                .OnActivated(a => a.Instance.Configure())
+                .SingleInstance();
+
+            builder.RegisterType<SimpleEventsExecutor>()
+                .AsSelf()
+                .SingleInstance();
+
+            builder.RegisterType<SimpleFinalizer>().AsSelf();
 
             builder.AddMassTransit(cfg =>
             {

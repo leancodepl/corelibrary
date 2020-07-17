@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LeanCode.Correlation;
-using LeanCode.DomainModels.EventsExecution;
 using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
@@ -37,7 +36,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static PipelineBuilder<TContext, TInput, TOutput> StoreAndPublishEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : notnull, IEventsInterceptorContext, ICorrelationContext
+            where TContext : notnull, ICorrelationContext
         {
             return builder.Use<StoreAndPublishEventsElement<TContext, TInput, TOutput>>();
         }

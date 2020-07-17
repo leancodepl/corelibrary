@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using GreenPipes;
-using LeanCode.DomainModels.EventsExecution;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.PipeConfigurators;

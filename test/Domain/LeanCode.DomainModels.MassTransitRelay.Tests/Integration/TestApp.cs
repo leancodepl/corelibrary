@@ -6,7 +6,6 @@ using LeanCode.Components;
 using LeanCode.Correlation;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
-using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
