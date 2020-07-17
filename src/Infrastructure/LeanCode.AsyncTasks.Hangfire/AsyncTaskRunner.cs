@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using LeanCode.DomainModels.EventsExecution.Simple;
+using LeanCode.DomainModels.MassTransitRelay.Simple;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
