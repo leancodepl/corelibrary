@@ -22,14 +22,14 @@ namespace LeanCode.DomainModels.EF
 
     public sealed class SimpleEFRepository<TEntity, TContext, TUnitOfWork>
         : EFRepository<TEntity, TContext, TUnitOfWork>
-        where TEntity : class, IAggregateRoot<Guid>
+        where TEntity : class, IAggregateRoot<Id<TEntity>>
         where TContext : notnull, DbContext
         where TUnitOfWork : notnull, IUnitOfWork
     {
         public SimpleEFRepository(TContext dbContext, TUnitOfWork unitOfWork)
             : base(dbContext, unitOfWork) { }
 
-        public override Task<TEntity?> FindAsync(Guid id) =>
+        public override Task<TEntity?> FindAsync(Id<TEntity> id) =>
             DbSet.AsTracking().FirstOrDefaultAsync(e => e.Id == id)!; // TODO: remove ! when EF Core adds support for NRT
     }
 }

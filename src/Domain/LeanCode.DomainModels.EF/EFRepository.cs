@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,8 +93,8 @@ namespace LeanCode.DomainModels.EF
     }
 
     public abstract class EFRepository<TEntity, TContext, TUnitOfWork>
-        : EFRepository<TEntity, Guid, TContext, TUnitOfWork>, IRepository<TEntity>
-        where TEntity : class, IAggregateRoot<Guid>
+        : EFRepository<TEntity, Id<TEntity>, TContext, TUnitOfWork>, IRepository<TEntity>
+        where TEntity : class, IAggregateRoot<Id<TEntity>>
         where TContext : notnull, DbContext
         where TUnitOfWork : notnull, IUnitOfWork
     {

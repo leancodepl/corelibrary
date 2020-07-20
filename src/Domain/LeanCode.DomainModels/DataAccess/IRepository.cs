@@ -5,8 +5,8 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.DataAccess
 {
-    public interface IRepository<TEntity> : IRepository<TEntity, Guid>
-        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Guid>
+    public interface IRepository<TEntity> : IRepository<TEntity, Id<TEntity>>
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Id<TEntity>>
     { }
 
     public interface IRepository<TEntity, in TIdentity>

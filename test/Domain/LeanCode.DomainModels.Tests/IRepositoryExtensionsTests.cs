@@ -10,7 +10,7 @@ namespace LeanCode.DomainModels.Tests
     public class IRepositoryExtensionsTests
     {
         private const int UserId = 1;
-        private static readonly Guid CodeId = Guid.NewGuid();
+        private static readonly Id<DiscountCode> CodeId = Id<DiscountCode>.New();
         private static readonly DiscountCode Code = new DiscountCode
         {
             Id = CodeId,
@@ -63,9 +63,9 @@ namespace LeanCode.DomainModels.Tests
         }
     }
 
-    public class DiscountCode : IAggregateRoot<Guid>
+    public class DiscountCode : IAggregateRoot<Id<DiscountCode>>
     {
-        public Guid Id { get; set; }
+        public Id<DiscountCode> Id { get; set; }
 
         byte[] IOptimisticConcurrency.RowVersion { get; set; } = null!;
         DateTime IOptimisticConcurrency.DateModified { get; set; }
