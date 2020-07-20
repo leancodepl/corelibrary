@@ -8,6 +8,7 @@ namespace LeanCode.PdfRocket
 {
     public class PdfRocketGenerator
     {
+        public const string ApiUrl = "https://api.html2pdfrocket.com/";
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PdfRocketGenerator>();
 
         private readonly PdfRocketConfiguration config;
