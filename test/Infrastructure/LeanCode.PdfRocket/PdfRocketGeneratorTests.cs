@@ -53,7 +53,7 @@ namespace LeanCode.PdfRocket.Tests
                 PageHeight = 400,
             };
 
-            using var stream = await generator.GenerateFromHtml(html, options);
+            using var stream = await generator.GenerateFromHtmlAsync(html, options);
 
             using var file = File.OpenWrite($"{Guid.NewGuid()}.pdf");
             await stream.CopyToAsync(file);

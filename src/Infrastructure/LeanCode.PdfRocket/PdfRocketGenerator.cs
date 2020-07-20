@@ -22,17 +22,17 @@ namespace LeanCode.PdfRocket
             this.client = client;
         }
 
-        public virtual async Task<Stream> GenerateFromHtml(
+        public virtual Task<Stream> GenerateFromHtmlAsync(
             string html,
             PdfOptions? options = null,
             CancellationToken cancellationToken = default)
         {
             logger.Debug("Generating PDF from supplied HTML document");
 
-            return await Generate(html, options, cancellationToken);
+            return Generate(html, options, cancellationToken);
         }
 
-        public virtual async Task<Stream> GenerateFromTemplate<TModel>(
+        public virtual async Task<Stream> GenerateFromTemplateAsync<TModel>(
             string templateName,
             TModel model,
             PdfOptions? options = null,
@@ -45,10 +45,10 @@ namespace LeanCode.PdfRocket
 
             logger.Debug("Generating PDF from template {TemplateName}", templateName);
 
-            return await GenerateFromHtml(html, options, cancellationToken);
+            return await GenerateFromHtmlAsync(html, options, cancellationToken);
         }
 
-        public virtual Task<Stream> GenerateFromUrl(
+        public virtual Task<Stream> GenerateFromUrlAsync(
             string url,
             PdfOptions? options = null,
             CancellationToken cancellationToken = default)
