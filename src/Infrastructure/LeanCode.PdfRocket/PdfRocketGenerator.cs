@@ -22,14 +22,14 @@ namespace LeanCode.PdfRocket
             this.client = client;
         }
 
-        public virtual Task<Stream> GenerateFromHtml(
+        public virtual async Task<Stream> GenerateFromHtml(
             string html,
             PdfOptions? options = null,
             CancellationToken cancellationToken = default)
         {
             logger.Debug("Generating PDF from supplied HTML document");
 
-            return Generate(html, options, cancellationToken);
+            return await Generate(html, options, cancellationToken);
         }
 
         public virtual async Task<Stream> GenerateFromTemplate<TModel>(
