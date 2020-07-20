@@ -7,7 +7,6 @@ using Cronos;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.PeriodicService;
 using LeanCode.TimeProvider;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay

@@ -6,12 +6,11 @@ using LeanCode.Components;
 using LeanCode.Correlation;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
-using LeanCode.DomainModels.EventsExecution;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
 using MassTransit;
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
@@ -23,7 +22,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             new CQRSModule().WithCustomPipelines<Context>(
                 SearchAssemblies,
-                cmd => cmd.Correlate().StoreAndPublishEvents().InterceptEvents(),
+                cmd => cmd.Correlate().StoreAndPublishEvents(),
                 query => query),
 
             new MassTransitRelayModule(SearchAssemblies, SearchAssemblies),

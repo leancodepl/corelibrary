@@ -1,20 +1,18 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GreenPipes;
-using LeanCode.DomainModels.EventsExecution;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.PipeConfigurators;
 
-namespace LeanCode.DomainModels.MassTransitRelay
+namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
-    public class EventsPublisherFilter<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
+    public class StoreAndPublishEventsFilter<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
         where TConsumer : class
         where TMessage : class
     {
         private readonly IPipeContextServiceResolver serviceResolver;
 
-        public EventsPublisherFilter(IPipeContextServiceResolver serviceResolver)
+        public StoreAndPublishEventsFilter(IPipeContextServiceResolver serviceResolver)
         {
             this.serviceResolver = serviceResolver;
         }
@@ -24,34 +22,36 @@ namespace LeanCode.DomainModels.MassTransitRelay
         public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
         {
             var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
-            interceptor.Prepare();
+            var impl = serviceResolver.GetService<EventsStore>(context);
 
-            await next.Send(context);
+            var events = await interceptor.CaptureEventsOf(() => next.Send(context));
 
-            var queue = interceptor.CaptureQueue();
-            var publishTasks = queue.Select(evt => context.Publish((object)evt, cfg => cfg.MessageId = evt.Id));
-            await Task.WhenAll(publishTasks);
+            await impl.StoreAndPublishEventsAsync(
+                events,
+                context.ConversationId!.Value,
+                new EventPublisher(context),
+                context.CancellationToken);
         }
     }
 
-    public static class EventsPublisherFilterExtensions
+    public static class StoreAndPublishEventsFilterExtensions
     {
-        public static void UseDomainEventsPublishing(
+        public static void StoreAndPublishDomainEvents(
             this IConsumePipeConfigurator config,
             IPipeContextServiceResolver? serviceResolver = null)
         {
             serviceResolver ??= AutofacPipeContextServiceResolver.Instance;
-            _ = new EventsPublisherFilterConfigurationObserver(config, serviceResolver);
+            _ = new StoreAndPublishEventsFilterConfigurationObserver(config, serviceResolver);
         }
     }
 
-    public class EventsPublisherFilterConfigurationObserver :
+    public class StoreAndPublishEventsFilterConfigurationObserver :
         ConfigurationObserver,
         IConsumerConfigurationObserver
     {
         private readonly IPipeContextServiceResolver serviceResolver;
 
-        public EventsPublisherFilterConfigurationObserver(
+        public StoreAndPublishEventsFilterConfigurationObserver(
             IConsumePipeConfigurator configurator,
             IPipeContextServiceResolver serviceResolver)
             : base(configurator)
@@ -63,7 +63,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             where TConsumer : class
             where TMessage : class
         {
-            configurator.UseFilter(new EventsPublisherFilter<TConsumer, TMessage>(serviceResolver));
+            configurator.UseFilter(new StoreAndPublishEventsFilter<TConsumer, TMessage>(serviceResolver));
         }
     }
 }

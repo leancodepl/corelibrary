@@ -5,7 +5,6 @@ using Cronos;
 using LeanCode.Dapper;
 using LeanCode.PeriodicService;
 using LeanCode.TimeProvider;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 {

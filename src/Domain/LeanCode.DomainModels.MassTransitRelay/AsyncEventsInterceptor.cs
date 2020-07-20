@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.EventsExecution
+namespace LeanCode.DomainModels.MassTransitRelay
 {
     public sealed class AsyncEventsInterceptor
     {

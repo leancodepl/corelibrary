@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 
@@ -111,24 +110,6 @@ namespace LeanCode.CQRS.Tests
     {
         public Guid Id { get; } = Guid.NewGuid();
         public DateTime DateOccurred { get; } = DateTime.UtcNow;
-    }
-
-    public class SampleEventHandler : IDomainEventHandler<SampleEvent>
-    {
-        public static readonly AsyncLocal<SampleEventHandler> LastInstance = new AsyncLocal<SampleEventHandler>();
-
-        public SampleEvent Event { get; private set; }
-
-        public SampleEventHandler()
-        {
-            LastInstance.Value = this;
-        }
-
-        public Task HandleAsync(SampleEvent domainEvent)
-        {
-            Event = domainEvent;
-            return Task.CompletedTask;
-        }
     }
 
     public class SampleValidator : ICommandValidator<AppContext, SampleCommand>

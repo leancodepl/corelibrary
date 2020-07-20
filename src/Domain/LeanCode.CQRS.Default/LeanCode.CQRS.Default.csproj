@@ -12,7 +12,6 @@
     <ProjectReference Include="../LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
 
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
-    <ProjectReference Include="../LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
-using LeanCode.IntegrationTestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -13,6 +12,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
     /// Single intergration test checking if events from command handler and further
     /// event handlers (consumers) are raised
     /// </remarks>
+    [Collection("EventsInterceptor")]
     public class MassTransitIntegrationTest : IClassFixture<TestApp>
     {
         private readonly TestApp testApp;

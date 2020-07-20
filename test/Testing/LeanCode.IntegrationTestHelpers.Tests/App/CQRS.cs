@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LeanCode.Correlation;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
-using LeanCode.DomainModels.EventsExecution;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
@@ -40,14 +40,10 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
         }
     }
 
-    public sealed class AppContext : IEventsContext, ISecurityContext
+    public sealed class AppContext : ICorrelationContext, ISecurityContext
     {
         private IPipelineScope? scope;
         private ClaimsPrincipal? user;
-
-        List<IDomainEvent> IEventsInterceptorContext.SavedEvents { get; set; } = new List<IDomainEvent>();
-        List<(IDomainEvent Event, Type Handler)> IEventsExecutorContext.ExecutedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
-        List<(IDomainEvent Event, Type Handler)> IEventsExecutorContext.FailedHandlers { get; set; } = new List<(IDomainEvent Event, Type Handler)>();
 
         IPipelineScope IPipelineContext.Scope
         {
@@ -62,6 +58,8 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
         }
 
         public Guid UserId { get; }
+        Guid ICorrelationContext.CorrelationId { get; set; }
+        Guid ICorrelationContext.ExecutionId { get; set; }
 
         public AppContext(ClaimsPrincipal user, Guid userId)
         {

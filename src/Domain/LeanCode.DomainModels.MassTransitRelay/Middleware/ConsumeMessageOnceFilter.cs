@@ -7,7 +7,7 @@ using MassTransit.ConsumeConfigurators;
 using MassTransit.PipeConfigurators;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.DomainModels.MassTransitRelay
+namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class ConsumeMessageOnceFilter<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
         where TConsumer : class

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-      <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
-      <ProjectReference Include="../../Domain/LeanCode.DomainModels.EventsExecution/LeanCode.DomainModels.EventsExecution.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
 
-      <ProjectReference Include="../LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
-      <ProjectReference Include="../LeanCode.AsyncTasks/LeanCode.AsyncTasks.csproj" />
+    <ProjectReference Include="../LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
+    <ProjectReference Include="../LeanCode.AsyncTasks/LeanCode.AsyncTasks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
 
-namespace LeanCode.DomainModels.EventsExecution.Simple
+namespace LeanCode.DomainModels.MassTransitRelay.Simple
 {
     public sealed class SimpleFinalizer : IPipelineFinalizer<SimplePipelineContext, Func<Task>, ValueTuple>
     {

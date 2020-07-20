@@ -7,6 +7,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 {
+    [Collection("EventsInterceptor")]
     public abstract class EventsInterceptorTests_RaceCondsBase
     {
         private const int Iterations = 1000;

@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using GreenPipes.Pipes;
 using LeanCode.Correlation;
-using LeanCode.DomainModels.EventsExecution;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
-using MassTransit;
 using NSubstitute;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests
 {
+    [Collection("EventsInterceptor")]
     public class EventsPublisherElementTests
     {
         private readonly IEventPublisher publisher;
         private readonly EventsPublisherElement<TestContext, TestPayload, TestPayload> element;
+        private readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
+
         private readonly TestContext testContext = new TestContext
         {
             CorrelationId = Guid.NewGuid(),
@@ -24,7 +24,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public EventsPublisherElementTests()
         {
             publisher = Substitute.For<IEventPublisher>();
-            element = new EventsPublisherElement<TestContext, TestPayload, TestPayload>(publisher);
+            element = new EventsPublisherElement<TestContext, TestPayload, TestPayload>(publisher, interceptor);
+            interceptor.Configure();
         }
 
         [Fact]
@@ -36,7 +37,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             Task<TestPayload> Next(TestContext context, TestPayload input)
             {
-                context.SavedEvents = new List<IDomainEvent> { evt1, evt2, evt3 };
+                DomainEvents.Raise(evt1);
+                DomainEvents.Raise(evt2);
+                DomainEvents.Raise(evt3);
                 return Task.FromResult(input);
             }
 
@@ -57,7 +60,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             Task<TestPayload> Next(TestContext context, TestPayload input)
             {
-                context.SavedEvents = new List<IDomainEvent> { evt1, evt2, evt3 };
+                DomainEvents.Raise(evt1);
+                DomainEvents.Raise(evt2);
+                DomainEvents.Raise(evt3);
+
                 return Task.FromResult(input);
             }
 
@@ -90,11 +96,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     public class TestPayload
     { }
 
-    public class TestContext : IEventsInterceptorContext, ICorrelationContext
+    public class TestContext : ICorrelationContext
     {
         public Guid CorrelationId { get; set; }
         public Guid ExecutionId { get; set; }
         public IPipelineScope Scope { get; set; }
-        public List<IDomainEvent> SavedEvents { get; set; }
     }
 }
