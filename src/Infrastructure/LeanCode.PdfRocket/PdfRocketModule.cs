@@ -3,7 +3,7 @@ using Autofac;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.PdfGenerator.PdfRocket
+namespace LeanCode.PdfRocket
 {
     public class PdfRocketModule : AppModule
     {

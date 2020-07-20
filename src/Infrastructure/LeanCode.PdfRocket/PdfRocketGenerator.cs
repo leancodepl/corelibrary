@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.ViewRenderer;
 
-namespace LeanCode.PdfGenerator.PdfRocket
+namespace LeanCode.PdfRocket
 {
     public class PdfRocketGenerator
     {

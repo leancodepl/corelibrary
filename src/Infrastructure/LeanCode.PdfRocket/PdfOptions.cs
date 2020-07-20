@@ -1,4 +1,4 @@
-namespace LeanCode.PdfGenerator.PdfRocket
+namespace LeanCode.PdfRocket
 {
     // Parameters description taken from https://www.html2pdfrocket.com/#htmltopdf
     public class PdfOptions

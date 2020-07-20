@@ -1,4 +1,4 @@
-namespace LeanCode.PdfGenerator.PdfRocket
+namespace LeanCode.PdfRocket
 {
     public class PdfRocketConfiguration
     {
