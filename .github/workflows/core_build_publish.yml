@@ -101,8 +101,8 @@ jobs:
     - name: Create release
       uses: actions/create-release@v1
       with:
-        tag_name: v${{ needs.prepare.outputs.version }}
-        release_name: Release v${{ needs.prepare.outputs.version }}
+        tag_name: ${{ format('v{0}', needs.prepare.outputs.version) }}
+        release_name: ${{ format('Release v{0}', needs.prepare.outputs.version) }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ZIP: ${{ needs.prepare.outputs.artifacts_name }}
