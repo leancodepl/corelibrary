@@ -66,7 +66,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.202
+        dotnet-version: 3.1.302
     - name: Restore
       run: dotnet restore
     - name: Build
@@ -81,8 +81,8 @@ jobs:
       env:
         ZIP: ${{ needs.prepare.outputs.artifacts_name }} 
       run: |
-        dotnet pack --no-build -c Release -o $PWD/packed
-        zip -j $ZIP $PWD/packed/*.nupgk
+        dotnet pack --no-build -c Release -o "$PWD/packed"
+        zip -j "$ZIP" "$PWD/packed/*.nupkg"
     - name: Publish artifacts
       if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
       uses: actions/upload-artifact@v1
@@ -108,5 +108,5 @@ jobs:
         ZIP: ${{ needs.prepare.outputs.artifacts_name }}
     - name: Push to NuGet
       run: |
-        unzip $ZIP
-        dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' *.nupkg
+        unzip "$ZIP"
+        find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
