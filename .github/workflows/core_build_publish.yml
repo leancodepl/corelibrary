@@ -31,8 +31,8 @@ jobs:
           PUBLISH_ARTIFACTS=0
           ARTIFACTS_NAME="<none>"
         fi
-        echo $BRANCH
-        echo $VERSION
+        echo Building on "$BRANCH"
+        echo Building version: "$VERSION"
         echo "Artifacts will be saved as $ARTIFACTS_NAME" 
         
         if [[ $GITHUB_EVENT_NAME == 'workflow_dispatch' ]]
@@ -43,7 +43,7 @@ jobs:
           PUBLISH_NUGET=0
         fi
         
-        if [ $PUBLISH_ARTIFACTS == 0 ] && [ $PUBLISH_NUGET == 1 ]
+        if [[ $PUBLISH_ARTIFACTS == 0  &&  $PUBLISH_NUGET == 1 ]]
         then
           echo "Only vX.Y branches can be published to NuGet, failing"
           exit 1
@@ -82,7 +82,7 @@ jobs:
         ZIP: ${{ needs.prepare.outputs.artifacts_name }} 
       run: |
         dotnet pack --no-build -c Release -o "$PWD/packed"
-        zip -j "$ZIP" $PWD/packed/*.nupkg
+        zip -j "$ZIP" "$PWD"/packed/*.nupkg
     - name: Publish artifacts
       if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
       uses: actions/upload-artifact@v1
