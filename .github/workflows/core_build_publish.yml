@@ -82,7 +82,7 @@ jobs:
         ZIP: ${{ needs.prepare.outputs.artifacts_name }} 
       run: |
         dotnet pack --no-build -c Release -o "$PWD/packed"
-        zip -j "$ZIP" "$PWD/packed/*.nupkg"
+        zip -j "$ZIP" $PWD/packed/*.nupkg
     - name: Publish artifacts
       if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
       uses: actions/upload-artifact@v1
