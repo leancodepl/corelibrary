@@ -54,6 +54,7 @@ jobs:
         echo "::set-output name=publish_nuget::${PUBLISH_NUGET}"
         echo "::set-output name=artifacts_name::${ARTIFACTS_NAME}"      
   build:
+    name: Build
     runs-on: ubuntu-18.04
     needs: [prepare]
     env:
