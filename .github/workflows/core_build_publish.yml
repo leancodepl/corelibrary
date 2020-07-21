@@ -82,9 +82,31 @@ jobs:
         ZIP: ${{ needs.prepare.outputs.artifacts_name }} 
       run: |
         dotnet pack --no-build -c Release -o $PWD/packed
-        zip $ZIP $PWD/packed/*.nupgk
+        zip -j $ZIP $PWD/packed/*.nupgk
     - name: Publish artifacts
       if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
       uses: actions/upload-artifact@v1
       with:
         path: ${{ needs.prepare.outputs.artifacts_name }}
+  publish:
+    runs-on: ubuntu-18.04
+    name: Publish to NuGet
+    needs: [ prepare, build ]
+    if: ${{ needs.prepare.outputs.publish_nugets == '1' }}
+    steps:
+    - name: Fetch build
+      uses: actions/download-artifact@v1
+      with: 
+        name: ${{ needs.prepare.outputs.artifacts_name }}
+    - name: Create release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v${{ needs.prepare.outputs.version }}
+        release_name: Release v${{ needs.prepare.outputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+    - name: Push to NuGet
+      run: |
+        unzip $ZIP
+        dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' *.nupkg
