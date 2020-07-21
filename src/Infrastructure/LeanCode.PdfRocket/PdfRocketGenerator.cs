@@ -39,9 +39,7 @@ namespace LeanCode.PdfRocket
             CancellationToken cancellationToken = default)
             where TModel : notnull
         {
-            var html = await viewRenderer.RenderToStringAsync(templateName, model);
-            // var html = await viewRenderer.RenderToStringAsync(templateName, model, cancellationToken);
-            // TODO: replace when https://github.com/leancodepl/corelibrary/pull/65 is merged
+            var html = await viewRenderer.RenderToStringAsync(templateName, model, cancellationToken);
 
             logger.Debug("Generating PDF from template {TemplateName}", templateName);
 
