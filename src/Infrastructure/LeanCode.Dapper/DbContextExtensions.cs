@@ -15,7 +15,7 @@ namespace LeanCode.Dapper
         Justification = "Grouping of the methods improves readability.")]
     public static class DbContextDapperExtensions
     {
-        public static async Task<TResult> WithConnection<TResult>(
+        public static async Task<TResult> WithConnectionAsync<TResult>(
             this DbContext context,
             Func<DbConnection, Task<TResult>> call)
         {
@@ -32,7 +32,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -45,7 +45,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -58,7 +58,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -73,7 +73,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
         }
 
@@ -85,7 +85,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -98,7 +98,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QuerySingleOrDefaultAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -110,7 +110,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QuerySingleOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -123,7 +123,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QuerySingleAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -135,7 +135,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QuerySingleAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -148,7 +148,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryFirstOrDefaultAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -160,7 +160,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryFirstOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -173,7 +173,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryFirstAsync<TResult>(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -185,7 +185,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryFirstAsync(sql, param, transaction, commandTimeout, commandType));
         }
 
@@ -198,7 +198,7 @@ namespace LeanCode.Dapper
             int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            return context.WithConnection(conn =>
+            return context.WithConnectionAsync(conn =>
                 conn.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
         }
     }

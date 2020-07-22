@@ -25,7 +25,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var model = await context.Document.GetSemanticModelAsync();
-            var solutionAuthorizers = await GetAvailableAuthorizers(context.Document.Project.Solution, model!.Compilation);
+            var solutionAuthorizers = await GetAvailableAuthorizersAsync(context.Document.Project.Solution, model!.Compilation);
 
             foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers).Distinct())
             {
@@ -37,7 +37,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
 
         public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-        private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizers(Solution solution, Compilation compilation)
+        private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizersAsync(Solution solution, Compilation compilation)
         {
             var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
             var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);

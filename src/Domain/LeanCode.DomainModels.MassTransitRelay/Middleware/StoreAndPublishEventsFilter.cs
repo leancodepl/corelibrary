@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
             var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
             var impl = serviceResolver.GetService<EventsStore>(context);
 
-            var events = await interceptor.CaptureEventsOf(() => next.Send(context));
+            var events = await interceptor.CaptureEventsOfAsync(() => next.Send(context));
 
             await impl.StoreAndPublishEventsAsync(
                 events,

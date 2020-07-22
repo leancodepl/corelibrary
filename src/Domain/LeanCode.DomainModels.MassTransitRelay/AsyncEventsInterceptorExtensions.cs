@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 {
     public static class AsyncEventsInterceptorExtensions
     {
-        public static async Task<(TResult Result, List<IDomainEvent> Events)> CaptureEventsOf<TResult>(
+        public static async Task<(TResult Result, List<IDomainEvent> Events)> CaptureEventsOfAsync<TResult>(
             this AsyncEventsInterceptor interceptor,
             Func<Task<TResult>> action)
         {
@@ -19,7 +19,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             return (result, interceptedEvents);
         }
 
-        public static async Task<List<IDomainEvent>> CaptureEventsOf(
+        public static async Task<List<IDomainEvent>> CaptureEventsOfAsync(
             this AsyncEventsInterceptor interceptor,
             Func<Task> action)
         {

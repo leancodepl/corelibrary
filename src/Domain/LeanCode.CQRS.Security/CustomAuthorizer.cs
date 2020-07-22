@@ -20,12 +20,12 @@ namespace LeanCode.CQRS.Security
         where TCustomData : class
     {
         public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object obj, object? customData) =>
-            CheckIfAuthorizedInternal(appContext, (TObject)obj, customData);
+            CheckIfAuthorizedInternalAsync(appContext, (TObject)obj, customData);
 
         protected abstract Task<bool> CheckIfAuthorizedAsync(
             TAppContext appContext, TObject obj, TCustomData? customData);
 
-        private Task<bool> CheckIfAuthorizedInternal(TAppContext appContext, TObject obj, object? customData)
+        private Task<bool> CheckIfAuthorizedInternalAsync(TAppContext appContext, TObject obj, object? customData)
         {
             if (!(customData is null || customData is TCustomData))
             {

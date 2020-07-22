@@ -28,7 +28,7 @@ namespace LeanCode.Mixpanel.Tests
         [MixpanelFact]
         public async Task Track_works()
         {
-            await analytics.Track(Guid.NewGuid().ToString(), "ActivityCreated", "activityId", Guid.NewGuid().ToString());
+            await analytics.TrackAsync(Guid.NewGuid().ToString(), "ActivityCreated", "activityId", Guid.NewGuid().ToString());
         }
 
         public class MixpanelFactAttribute : FactAttribute

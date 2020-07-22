@@ -61,19 +61,19 @@ namespace LeanCode.Benchmarks
 
         [Benchmark]
         public Task EmptyQuery() =>
-            middleware.Invoke(PrepareQuery(false));
+            middleware.InvokeAsync(PrepareQuery(false));
 
         [Benchmark]
         public Task EmptyCommand() =>
-            middleware.Invoke(PrepareCommand(false));
+            middleware.InvokeAsync(PrepareCommand(false));
 
         [Benchmark]
         public Task MultipleFieldsQuery() =>
-            middleware.Invoke(PrepareQuery(true));
+            middleware.InvokeAsync(PrepareQuery(true));
 
         [Benchmark]
         public Task MultipleFieldsCommand() =>
-            middleware.Invoke(PrepareCommand(true));
+            middleware.InvokeAsync(PrepareCommand(true));
 
         private byte[] GetContent(object obj)
         {

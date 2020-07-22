@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             var request = context.Request;
 
@@ -71,10 +71,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 result = ExecutionResult.Skip;
             }
 
-            await ExecuteResult(result, context);
+            await ExecuteResultAsync(result, context);
         }
 
-        private async Task ExecuteResult(ExecutionResult result, HttpContext context)
+        private async Task ExecuteResultAsync(ExecutionResult result, HttpContext context)
         {
             if (result.Skipped)
             {

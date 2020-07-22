@@ -29,7 +29,7 @@ namespace LeanCode.PdfRocket
         {
             logger.Debug("Generating PDF from supplied HTML document");
 
-            return Generate(html, options, cancellationToken);
+            return GenerateAsync(html, options, cancellationToken);
         }
 
         public virtual async Task<Stream> GenerateFromTemplateAsync<TModel>(
@@ -55,10 +55,10 @@ namespace LeanCode.PdfRocket
         {
             logger.Debug("Generating PDF from URL {@URL}", url);
 
-            return Generate(url, options, cancellationToken);
+            return GenerateAsync(url, options, cancellationToken);
         }
 
-        private async Task<Stream> Generate(string source, PdfOptions? options, CancellationToken cancellationToken)
+        private async Task<Stream> GenerateAsync(string source, PdfOptions? options, CancellationToken cancellationToken)
         {
             using var content = GetContent(source, options);
             using var request = new HttpRequestMessage(HttpMethod.Post, "pdf")

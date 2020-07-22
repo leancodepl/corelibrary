@@ -25,7 +25,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Simple
             exec = PipelineExecutor.Create(factory, config);
         }
 
-        public Task HandleEventsOf(Func<Task> action, Guid? correlationId = null) =>
+        public Task HandleEventsOfAsync(Func<Task> action, Guid? correlationId = null) =>
             exec.ExecuteAsync(
                 new SimplePipelineContext
                 {

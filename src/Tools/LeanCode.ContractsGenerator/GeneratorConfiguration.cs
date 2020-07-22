@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator
         public TypeScriptConfiguration? TypeScript { get; set; }
         public DartConfiguration? Dart { get; set; }
 
-        public static async Task<List<GeneratorConfiguration>> GetConfigurations(string configFile)
+        public static async Task<List<GeneratorConfiguration>> GetConfigurationsAsync(string configFile)
         {
             await using var stream = File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), configFile));
             return await JsonSerializer.DeserializeAsync<List<GeneratorConfiguration>>(stream);

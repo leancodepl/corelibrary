@@ -22,7 +22,7 @@ namespace LeanCode.ContractsGenerator
             try
             {
                 configFilePath = GeneratorConfiguration.GetConfigFile(args);
-                configurations = await GeneratorConfiguration.GetConfigurations(configFilePath);
+                configurations = await GeneratorConfiguration.GetConfigurationsAsync(configFilePath);
             }
             catch (FormatException e)
             {

@@ -57,7 +57,7 @@ namespace LeanCode.ClientCredentialsHandler
         {
             if (AccessToken is null)
             {
-                if (!await GetNewAccessToken(cancellationToken))
+                if (!await GetNewAccessTokenAsync(cancellationToken))
                 {
                     return new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 }
@@ -84,7 +84,7 @@ namespace LeanCode.ClientCredentialsHandler
                 }
             }
 
-            if (!await GetNewAccessToken(cancellationToken))
+            if (!await GetNewAccessTokenAsync(cancellationToken))
             {
                 return new HttpResponseMessage(HttpStatusCode.Unauthorized);
             }
@@ -107,7 +107,7 @@ namespace LeanCode.ClientCredentialsHandler
             base.Dispose(disposing);
         }
 
-        private async Task<bool> GetNewAccessToken(CancellationToken cancellationToken)
+        private async Task<bool> GetNewAccessTokenAsync(CancellationToken cancellationToken)
         {
             if (await tokenLock.WaitAsync(LockTimeout, cancellationToken))
             {

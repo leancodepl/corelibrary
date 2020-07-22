@@ -25,7 +25,7 @@ namespace LeanCode.IntegrationTestHelpers
         {
             logger.Information("Installing Hangfire");
 
-            await dbContext.WithConnection(c =>
+            await dbContext.WithConnectionAsync(c =>
             {
                 Hangfire.SqlServer.SqlServerObjectsInstaller.Install(c);
                 return Task.FromResult(false);
