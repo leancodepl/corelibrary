@@ -97,6 +97,28 @@ namespace LeanCode.Infrastructure.SendGrid.Tests
             await client.SendEmailAsync(msg);
         }
 
+        [SendGridFact]
+        public async Task Throws_when_sending_failed()
+        {
+            var msg = new SendGridLocalizedRazorMessage("pl")
+                .WithSender(EmailFrom, "LeanCode Tester")
+                // .WithRecipient(EmailTo) omitted on purpose to cause a failure
+                .WithSubject("email.subject.test")
+                .WithPlainTextContent(new EmailTextVM { })
+                .WithHtmlContent(new EmailHtmlVM { })
+                .WithAttachment(
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
+                    "Attachment.txt",
+                    "text/plain")
+                .WithNoTracking();
+
+            var exception = await Assert.ThrowsAsync<SendGridException>(() => client.SendEmailAsync(msg));
+
+            Assert.Contains(
+                "The personalizations field is required and must have at least one personalization.",
+                exception.ErrorMessages);
+        }
+
         private class EmailTextVM
         {
             public string Value { get; set; } = "Text";
