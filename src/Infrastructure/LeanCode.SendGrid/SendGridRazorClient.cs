@@ -27,7 +27,7 @@ namespace LeanCode.SendGrid
             this.localizer = localizer;
         }
 
-        public async Task<Response> SendEmailAsync(
+        public async Task SendEmailAsync(
             SendGridMessage msg,
             CancellationToken cancellationToken = default)
         {
@@ -36,7 +36,9 @@ namespace LeanCode.SendGrid
                 await RenderMessageAsync(rmsg);
             }
 
-            return await client.SendEmailAsync(msg, cancellationToken);
+            var response = await client.SendEmailAsync(msg, cancellationToken);
+
+            await SendGridException.ThrowOnFailureAsync(response);
         }
 
         protected virtual async Task RenderMessageAsync(SendGridRazorMessage msg)
