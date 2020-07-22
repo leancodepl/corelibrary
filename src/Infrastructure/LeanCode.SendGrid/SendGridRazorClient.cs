@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Localization.StringLocalizers;
@@ -14,6 +16,11 @@ namespace LeanCode.SendGrid
         private const string PlainTextModelSuffix = ".txt";
         private const string HtmlModelSuffix = "";
 
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        };
+
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridRazorClient>();
 
         private readonly SendGridClient client;
@@ -27,9 +34,7 @@ namespace LeanCode.SendGrid
             this.localizer = localizer;
         }
 
-        public async Task SendEmailAsync(
-            SendGridMessage msg,
-            CancellationToken cancellationToken = default)
+        public async Task SendEmailAsync(SendGridMessage msg, CancellationToken cancellationToken = default)
         {
             if (msg is SendGridRazorMessage rmsg)
             {
@@ -38,7 +43,23 @@ namespace LeanCode.SendGrid
 
             var response = await client.SendEmailAsync(msg, cancellationToken);
 
-            await SendGridException.ThrowOnFailureAsync(response);
+            var statusCode = response.StatusCode;
+
+            if (statusCode >= HttpStatusCode.BadRequest)
+            {
+                await using var stream = await response.Body.ReadAsStreamAsync();
+
+                try
+                {
+                    var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(stream, SerializerOptions);
+
+                    throw new SendGridException(statusCode, body?.Errors);
+                }
+                catch (JsonException)
+                {
+                    throw new SendGridException(statusCode, null);
+                }
+            }
         }
 
         protected virtual async Task RenderMessageAsync(SendGridRazorMessage msg)
