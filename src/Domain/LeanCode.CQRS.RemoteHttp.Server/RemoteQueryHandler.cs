@@ -14,8 +14,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
-            .GetMethod(nameof(ExecuteQuery), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteQuery)} method.");
+            .GetMethod(nameof(ExecuteQueryAsync), BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
@@ -69,7 +69,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private async Task<object?> ExecuteQuery<TQuery, TResult>(
+        private async Task<object?> ExecuteQueryAsync<TQuery, TResult>(
             TAppContext appContext, object query)
             where TQuery : IRemoteQuery<TResult>
         {

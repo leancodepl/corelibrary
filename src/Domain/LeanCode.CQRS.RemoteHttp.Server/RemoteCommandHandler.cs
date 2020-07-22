@@ -12,8 +12,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     internal sealed class RemoteCommandHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
-            .GetMethod(nameof(ExecuteCommand), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteCommand)} method.");
+            .GetMethod(nameof(ExecuteCommandAsync), BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteCommandAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
@@ -61,7 +61,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
         }
 
-        private Task<CommandResult> ExecuteCommand<TCommand>(TAppContext appContext, object cmd)
+        private Task<CommandResult> ExecuteCommandAsync<TCommand>(TAppContext appContext, object cmd)
             where TCommand : IRemoteCommand
         {
             var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>();

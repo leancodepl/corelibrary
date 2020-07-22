@@ -5,16 +5,16 @@ namespace LeanCode.AsyncTasks
 {
     public interface ITaskScheduler
     {
-        Task ScheduleRecurring<TTask>(string cronExpression, TimeZoneInfo? tz = null, string? customId = null)
+        Task ScheduleRecurringAsync<TTask>(string cronExpression, TimeZoneInfo? tz = null, string? customId = null)
             where TTask : class, IAsyncTask;
 
-        Task ScheduleNow<TTask, TParams>(TParams @params)
+        Task ScheduleNowAsync<TTask, TParams>(TParams @params)
             where TTask : class, IAsyncTask<TParams>;
 
-        Task ScheduleAfter<TTask, TParams>(TParams @params, TimeSpan delay)
+        Task ScheduleAfterAsync<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>;
 
-        Task ScheduleAt<TTask, TParams>(TParams @params, DateTimeOffset at)
+        Task ScheduleAtAsync<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>;
     }
 }

@@ -15,8 +15,8 @@ namespace LeanCode.AsyncTasks.Hangfire
             this.task = task;
         }
 
-        public Task Run() =>
-            executor.HandleEventsOf(() => task.RunAsync());
+        public Task RunAsync() =>
+            executor.HandleEventsOfAsync(() => task.RunAsync());
     }
 
     internal sealed class AsyncTaskRunner<TTask, TParams>
@@ -31,7 +31,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             this.task = task;
         }
 
-        public Task Run(TParams @params) =>
-            executor.HandleEventsOf(() => task.RunAsync(@params));
+        public Task RunAsync(TParams @params) =>
+            executor.HandleEventsOfAsync(() => task.RunAsync(@params));
     }
 }

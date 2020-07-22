@@ -24,13 +24,13 @@ namespace LeanCode.AsyncTasks.Hangfire
             this.queue = queue;
         }
 
-        public Task ScheduleRecurring<TTask>(string cronExpression, TimeZoneInfo? tz = null, string? customId = null)
+        public Task ScheduleRecurringAsync<TTask>(string cronExpression, TimeZoneInfo? tz = null, string? customId = null)
             where TTask : class, IAsyncTask
         {
             customId ??= typeof(TTask).Name;
             tz ??= TimeZoneInfo.Utc;
 
-            var job = Job.FromExpression<AsyncTaskRunner<TTask>>(t => t.Run());
+            var job = Job.FromExpression<AsyncTaskRunner<TTask>>(t => t.RunAsync());
 
             recurringJobs.AddOrUpdate(
                 customId, job, cronExpression,
@@ -47,11 +47,11 @@ namespace LeanCode.AsyncTasks.Hangfire
             return Task.CompletedTask;
         }
 
-        public Task ScheduleNow<TTask, TParams>(TParams @params)
+        public Task ScheduleNowAsync<TTask, TParams>(TParams @params)
             where TTask : class, IAsyncTask<TParams>
         {
             var jobId = jobClient.Create<AsyncTaskRunner<TTask, TParams>>(
-                t => t.Run(@params), new EnqueuedState(queue));
+                t => t.RunAsync(@params), new EnqueuedState(queue));
 
             logger.Information(
                 "Task {Task} with params {@Params} enqueued as job {JobId}",
@@ -60,7 +60,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             return Task.CompletedTask;
         }
 
-        public Task ScheduleAfter<TTask, TParams>(TParams @params, TimeSpan delay)
+        public Task ScheduleAfterAsync<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>
         {
             if (queue == HangfireConfiguration.DefaultQueue)
@@ -75,7 +75,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             return Task.CompletedTask;
         }
 
-        public Task ScheduleAt<TTask, TParams>(TParams @params, DateTimeOffset at)
+        public Task ScheduleAtAsync<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>
         {
             if (queue == HangfireConfiguration.DefaultQueue)
@@ -93,7 +93,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAfterDefault<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>
         {
-            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.Run(@params), delay);
+            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), delay);
 
             logger.Information(
                 "Task {Task} with params {@Params} scheduled to run after {Delay} as {JobId}",
@@ -103,7 +103,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAfterQueue<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>
         {
-            var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.Run(@params));
+            var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params));
 
             var jobId = jobClient.Create<IBackgroundJobClient>(
                 c => c.Create(realJob, new EnqueuedState(queue)),
@@ -117,7 +117,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAtDefault<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>
         {
-            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.Run(@params), at);
+            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), at);
 
             logger.Information(
                 "Task {Task} with params {@Params} scheduled to run at {Offset} as {JobId}",
@@ -127,7 +127,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAtQueue<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>
         {
-            var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.Run(@params));
+            var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params));
 
             var jobId = jobClient.Create<IBackgroundJobClient>(
                 c => c.Create(realJob, new EnqueuedState(queue)),

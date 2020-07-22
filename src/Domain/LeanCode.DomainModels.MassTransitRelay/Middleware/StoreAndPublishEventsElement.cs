@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
         public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
         {
-            var (result, events) = await interceptor.CaptureEventsOf(() => next(ctx, input));
+            var (result, events) = await interceptor.CaptureEventsOfAsync(() => next(ctx, input));
 
             await impl.StoreAndPublishEventsAsync(events, ctx.CorrelationId, publisher);
 

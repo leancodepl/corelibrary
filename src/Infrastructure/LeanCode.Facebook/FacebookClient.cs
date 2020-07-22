@@ -77,7 +77,7 @@ namespace LeanCode.Facebook
             }
         }
 
-        public virtual async Task<FacebookUser> GetUserInfo(string accessToken)
+        public virtual async Task<FacebookUser> GetUserInfoAsync(string accessToken)
         {
             using var result = await CallAsync("me?fields=" + FieldsStr, accessToken);
 

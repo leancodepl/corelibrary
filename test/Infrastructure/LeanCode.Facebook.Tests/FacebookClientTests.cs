@@ -32,7 +32,7 @@ namespace LeanCode.Facebook.Tests
         [Fact(Skip = "Facebook credentials required")]
         public async Task Downloads_user_info_correctly()
         {
-            var user = await client.GetUserInfo(AccessToken);
+            var user = await client.GetUserInfoAsync(AccessToken);
 
             Assert.NotNull(user);
             Assert.NotEmpty(user.Id);

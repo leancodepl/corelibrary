@@ -58,7 +58,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
             Output = null;
         }
 
-        private async Task<object?> RenderBodyAsyncInternal()
+        private async Task<object?> RenderBodyAsyncInternalAsync()
         {
             if (ChildView != null)
             {
@@ -71,7 +71,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
         }
 
         protected Task<object?> RenderBodyAsync() =>
-            RenderBodyAsyncInternal();
+            RenderBodyAsyncInternalAsync();
 
         protected void Write(object value) => WriteTo(Output, value);
         protected void Write(string value) => WriteTo(Output, value);

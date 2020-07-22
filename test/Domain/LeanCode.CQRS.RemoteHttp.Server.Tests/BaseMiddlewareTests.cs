@@ -56,7 +56,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
                 RequestServices = serviceProvider,
                 User = user ?? new ClaimsPrincipal(),
             };
-            await Middleware.Invoke(ctx);
+            await Middleware.InvokeAsync(ctx);
 
             var statusCode = ctx.Response.StatusCode;
             var body = (MemoryStream)ctx.Response.Body;

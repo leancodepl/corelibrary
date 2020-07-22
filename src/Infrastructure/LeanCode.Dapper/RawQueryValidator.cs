@@ -11,7 +11,7 @@ namespace LeanCode.Dapper
     // https://github.com/kamil-mrzyglod/QueryValidator.Fody/blob/master/QueryValidator.Fody/QueryValidator.Fody/ModuleWeaver.cs
     public static class RawQueryValidator
     {
-        public static async Task ValidateQueries(string connectionString, params Assembly[] assemblies)
+        public static async Task ValidateQueriesAsync(string connectionString, params Assembly[] assemblies)
         {
             var dapperSqls = assemblies
                 .SelectMany(a => a.DefinedTypes)

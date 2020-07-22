@@ -38,7 +38,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             logger.Debug("Publishing unpublished events");
 
-            var events = await FetchUnpublishedEvents();
+            var events = await FetchUnpublishedEventsAsync();
 
             logger.Information("There are {EventsCount} to be published", events.Count);
 
@@ -64,7 +64,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             }
         }
 
-        public Task<List<RaisedEvent>> FetchUnpublishedEvents()
+        public Task<List<RaisedEvent>> FetchUnpublishedEventsAsync()
         {
             var after = Time.Now - RelayPeriod;
             return outboxContext.RaisedEvents
