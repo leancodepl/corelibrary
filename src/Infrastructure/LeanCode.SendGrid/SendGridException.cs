@@ -29,16 +29,9 @@ namespace LeanCode.SendGrid
             if (errors is object)
             {
                 ErrorMessages = errors
-                    .SelectMany(EnumerateMessages)
+                    .Select(e => e.Message!)
+                    .Where(m => m is object)
                     .ToImmutableArray();
-            }
-
-            static IEnumerable<string> EnumerateMessages(SendGridError error)
-            {
-                if (error.Message is string message)
-                {
-                    yield return message;
-                }
             }
         }
 
