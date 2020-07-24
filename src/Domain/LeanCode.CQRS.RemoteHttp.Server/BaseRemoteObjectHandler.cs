@@ -84,6 +84,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     obj,
                     type);
             }
+            catch (OperationCanceledException ex)
+            {
+                Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
+                result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
+            }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, type);

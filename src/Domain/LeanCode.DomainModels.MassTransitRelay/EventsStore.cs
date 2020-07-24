@@ -31,7 +31,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 var persisted = PersistEvents(events, correlationId);
                 await outboxContext.SaveChangesAsync(cancellationToken);
 
-                var publishStatuses = await PublishEventsAsync(events, correlationId, publisher);
+                var publishStatuses = await PublishEventsAsync(events, correlationId, publisher, cancellationToken);
                 MarkEventsAsRaised(persisted, publishStatuses);
                 await outboxContext.SaveChangesAsync(cancellationToken);
             }
@@ -64,23 +64,31 @@ namespace LeanCode.DomainModels.MassTransitRelay
             }
         }
 
-        private Task<bool[]> PublishEventsAsync(List<IDomainEvent> events, Guid correlationId, IEventPublisher publisher)
+        private Task<bool[]> PublishEventsAsync(
+            List<IDomainEvent> events,
+            Guid correlationId,
+            IEventPublisher publisher,
+            CancellationToken cancellationToken)
         {
             logger.Debug("Publishing {Count} raised events", events.Count);
 
             var publishTasks = events
-                .Select(evt => PublishEventAsync(evt, correlationId, publisher));
+                .Select(evt => PublishEventAsync(evt, correlationId, publisher, cancellationToken));
 
             return Task.WhenAll(publishTasks);
         }
 
-        private async Task<bool> PublishEventAsync(IDomainEvent evt, Guid correlationId, IEventPublisher publisher)
+        private async Task<bool> PublishEventAsync(
+            IDomainEvent evt,
+            Guid correlationId,
+            IEventPublisher publisher,
+            CancellationToken cancellationToken)
         {
             logger.Debug("Publishing event of type {DomainEvent}", evt);
 
             try
             {
-                await publisher.PublishAsync(evt, correlationId);
+                await publisher.PublishAsync(evt, correlationId, cancellationToken);
                 logger.Information("Domain event {DomainEvent} published", evt);
                 return true;
             }

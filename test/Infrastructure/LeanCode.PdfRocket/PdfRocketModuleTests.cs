@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -34,12 +35,12 @@ namespace LeanCode.PdfRocket
 
         private class MockRenderer : IViewRenderer
         {
-            public Task RenderToStreamAsync(string viewName, object model, Stream outputStream)
+            public Task RenderToStreamAsync(string viewName, object model, Stream outputStream, CancellationToken cancellationToken = default)
             {
                 throw new System.NotImplementedException();
             }
 
-            public Task<string> RenderToStringAsync(string viewName, object model)
+            public Task<string> RenderToStringAsync(string viewName, object model, CancellationToken cancellationToken = default)
             {
                 throw new System.NotImplementedException();
             }

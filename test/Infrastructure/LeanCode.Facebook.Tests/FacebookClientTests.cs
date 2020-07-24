@@ -21,11 +21,10 @@ namespace LeanCode.Facebook.Tests
         {
             client = new FacebookClient(
                 Config,
-                new FacebookHttpClient(
-                    new HttpClient
-                    {
-                        BaseAddress = new Uri(FacebookClient.ApiBase),
-                    }));
+                new HttpClient
+                {
+                    BaseAddress = new Uri(FacebookClient.ApiBase),
+                });
         }
 
         [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]

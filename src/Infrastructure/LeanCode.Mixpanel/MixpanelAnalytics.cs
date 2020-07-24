@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LeanCode.Mixpanel
@@ -15,81 +17,103 @@ namespace LeanCode.Mixpanel
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
 
-        private readonly MixpanelHttpClient client;
+        private readonly HttpClient client;
         private readonly MixpanelConfiguration configuration;
 
-        public MixpanelAnalytics(MixpanelHttpClient client, MixpanelConfiguration configuration)
+        public MixpanelAnalytics(HttpClient client, MixpanelConfiguration configuration)
         {
             this.configuration = configuration;
             this.client = client;
         }
 
-        public Task AliasAsync(string newId, string oldId)
+        public Task AliasAsync(string newId, string oldId, CancellationToken cancellationToken = default)
         {
             return TrackAsync(newId, "$create_alias", new Dictionary<string, object>()
             {
                 ["distinct_id"] = oldId,
                 ["alias"] = newId,
-            });
+            }, cancellationToken: cancellationToken);
         }
 
-        public Task TrackAsync(string userId, IMixpanelEvent mixpanelEvent, bool isImport = false)
-            => TrackAsync(userId, mixpanelEvent.EventName, mixpanelEvent.Properties, isImport);
+        public Task TrackAsync(
+            string userId,
+            IMixpanelEvent mixpanelEvent,
+            bool isImport = false,
+            CancellationToken cancellationToken = default)
+            => TrackAsync(userId, mixpanelEvent.EventName, mixpanelEvent.Properties, isImport, cancellationToken);
 
-        public Task TrackAsync(string userId, string eventName, string propertyName, string propertyValue, bool isImport = false)
-            => TrackAsync(userId, eventName, new Dictionary<string, object>() { [propertyName] = propertyValue }, isImport);
+        public Task TrackAsync(
+            string userId,
+            string eventName,
+            string propertyName,
+            string propertyValue,
+            bool isImport = false,
+            CancellationToken cancellationToken = default)
+            => TrackAsync(userId, eventName, new Dictionary<string, object>() { [propertyName] = propertyValue }, isImport, cancellationToken);
 
-        public Task TrackAsync(string userId, string eventName, Dictionary<string, object> properties, bool isImport = false)
-            => TrackEventAsync(userId, eventName, properties, isImport);
-
-
-        public Task SetAsync(string userId, string name, string value)
-            => SetAsync(userId, new Dictionary<string, string>() { [name] = value });
-
-        public Task SetAsync(string userId, Dictionary<string, string> properties)
-            => EngageAsync(userId, "$set", properties);
-
-
-        public Task AddAsync(string userId, string name, string value)
-            => AddAsync(userId, new Dictionary<string, string>() { [name] = value });
-
-        public Task AddAsync(string userId, Dictionary<string, string> properties)
-            => EngageAsync(userId, "$add", properties);
-
-
-        public Task AppendAsync(string userId, string name, object value)
-            => AppendAsync(userId, new Dictionary<string, object>() { [name] = value });
-
-        public Task AppendAsync(string userId, Dictionary<string, object> properties)
-            => EngageAsync(userId, "$append", properties);
+        public Task TrackAsync(
+            string userId,
+            string eventName,
+            Dictionary<string, object> properties,
+            bool isImport = false,
+            CancellationToken cancellationToken = default)
+            => TrackEventAsync(userId, eventName, properties, isImport, cancellationToken);
 
 
-        public Task SetOnceAsync(string userId, string name, string value)
-            => SetOnceAsync(userId, new Dictionary<string, string>() { [name] = value });
+        public Task SetAsync(string userId, string name, string value, CancellationToken cancellationToken = default)
+            => SetAsync(userId, new Dictionary<string, string>() { [name] = value }, cancellationToken);
 
-        public Task SetOnceAsync(string userId, Dictionary<string, string> properties)
-            => EngageAsync(userId, "$set_once", properties);
-
-
-        public Task UnionAsync(string userId, string name, List<string> elements)
-            => UnionAsync(userId, new Dictionary<string, List<string>>() { [name] = elements });
-
-        public Task UnionAsync(string userId, Dictionary<string, List<string>> properties)
-            => EngageAsync(userId, "$union", properties);
+        public Task SetAsync(string userId, Dictionary<string, string> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$set", properties, cancellationToken);
 
 
-        public Task UnsetAsync(string userId, string property)
-            => UnsetAsync(userId, new List<string>() { property });
+        public Task AddAsync(string userId, string name, string value, CancellationToken cancellationToken = default)
+            => AddAsync(userId, new Dictionary<string, string>() { [name] = value }, cancellationToken);
 
-        public Task UnsetAsync(string userId, List<string> properties)
-            => EngageAsync(userId, "$unset", properties);
-
-
-        public Task DeleteAsync(string userId)
-            => EngageAsync(userId, "$delete");
+        public Task AddAsync(string userId, Dictionary<string, string> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$add", properties, cancellationToken);
 
 
-        private Task TrackEventAsync(string userId, string name, Dictionary<string, object>? properties, bool isImport)
+        public Task AppendAsync(string userId, string name, object value, CancellationToken cancellationToken = default)
+            => AppendAsync(userId, new Dictionary<string, object>() { [name] = value }, cancellationToken);
+
+        public Task AppendAsync(string userId, Dictionary<string, object> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$append", properties, cancellationToken);
+
+
+        public Task SetOnceAsync(string userId, string name, string value, CancellationToken cancellationToken = default)
+            => SetOnceAsync(userId, new Dictionary<string, string>() { [name] = value }, cancellationToken);
+
+        public Task SetOnceAsync(string userId, Dictionary<string, string> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$set_once", properties, cancellationToken);
+
+
+        public Task UnionAsync(string userId, string name, List<string> elements, CancellationToken cancellationToken = default)
+            => UnionAsync(userId, new Dictionary<string, List<string>>() { [name] = elements }, cancellationToken);
+
+        public Task UnionAsync(
+            string userId,
+            Dictionary<string, List<string>> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$union", properties, cancellationToken);
+
+
+        public Task UnsetAsync(string userId, string property, CancellationToken cancellationToken = default)
+            => UnsetAsync(userId, new List<string>() { property }, cancellationToken);
+
+        public Task UnsetAsync(string userId, List<string> properties, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$unset", properties, cancellationToken);
+
+
+        public Task DeleteAsync(string userId, CancellationToken cancellationToken = default)
+            => EngageAsync(userId, "$delete", cancellationToken: cancellationToken);
+
+
+        private Task TrackEventAsync(
+            string userId,
+            string name,
+            Dictionary<string, object>? properties,
+            bool isImport,
+            CancellationToken cancellationToken)
         {
             properties ??= new Dictionary<string, object>();
 
@@ -108,10 +132,14 @@ namespace LeanCode.Mixpanel
 
             logger.Verbose("Sending Mixpanel event {EventName} for user {UserId}", name, userId);
 
-            return MakeRequestAsync(userId, isImport ? "import" : "track", name, data);
+            return MakeRequestAsync(userId, isImport ? "import" : "track", name, data, cancellationToken);
         }
 
-        private Task EngageAsync(string userId, string operation, object? properties = null)
+        private Task EngageAsync(
+            string userId,
+            string operation,
+            object? properties = null,
+            CancellationToken cancellationToken = default)
         {
             logger.Verbose("Engaging Mixpanel operation {Name} for user {UserId}", operation, userId);
             var data = new Dictionary<string, object?>()
@@ -121,15 +149,20 @@ namespace LeanCode.Mixpanel
                 [operation] = properties,
             };
 
-            return MakeRequestAsync(userId, "engage", operation, data);
+            return MakeRequestAsync(userId, "engage", operation, data, cancellationToken);
         }
 
-        private async Task MakeRequestAsync(string userId, string uri, string requestName, Dictionary<string, object?> data)
+        private async Task MakeRequestAsync(
+            string userId,
+            string uri,
+            string requestName,
+            Dictionary<string, object?> data,
+            CancellationToken cancellationToken)
         {
             var dataString = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(data));
             var url = $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
-            using var rawResponse = await client.Client.GetAsync(url);
+            using var rawResponse = await client.GetAsync(url, cancellationToken);
             var content = await rawResponse.Content.ReadAsStringAsync();
             if (content == "1")
             {

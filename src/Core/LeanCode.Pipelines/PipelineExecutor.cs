@@ -42,7 +42,7 @@ namespace LeanCode.Pipelines
         {
             var app = BuildNext(config.Finalizer);
 
-            for (int i = 1; i <= config.Elements.Count; ++i)
+            for (var i = 1; i <= config.Elements.Count; ++i)
             {
                 app = BuildNext(config.Elements[^i], app);
             }
@@ -52,18 +52,26 @@ namespace LeanCode.Pipelines
 
         private static Func<TContext, TInput, Task<TOutput>> BuildNext(Type finalType)
         {
-            return (ctx, input) => ctx.Scope
-                .ResolveFinalizer<TContext, TInput, TOutput>(finalType)
-                .ExecuteAsync(ctx, input);
+            return (ctx, input) =>
+            {
+                ctx.CancellationToken.ThrowIfCancellationRequested();
+                return ctx.Scope
+                    .ResolveFinalizer<TContext, TInput, TOutput>(finalType)
+                    .ExecuteAsync(ctx, input);
+            };
         }
 
         private static Func<TContext, TInput, Task<TOutput>> BuildNext(
             Type pipelineType,
             Func<TContext, TInput, Task<TOutput>> next)
         {
-            return (ctx, input) => ctx.Scope
-                .ResolveElement<TContext, TInput, TOutput>(pipelineType)
-                .ExecuteAsync(ctx, input, next);
+            return (ctx, input) =>
+            {
+                ctx.CancellationToken.ThrowIfCancellationRequested();
+                return ctx.Scope
+                    .ResolveElement<TContext, TInput, TOutput>(pipelineType)
+                    .ExecuteAsync(ctx, input, next);
+            };
         }
     }
 }

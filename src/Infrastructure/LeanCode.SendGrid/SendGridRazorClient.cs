@@ -38,7 +38,7 @@ namespace LeanCode.SendGrid
         {
             if (msg is SendGridRazorMessage rmsg)
             {
-                await RenderMessageAsync(rmsg);
+                await RenderMessageAsync(rmsg, cancellationToken);
             }
 
             var response = await client.SendEmailAsync(msg, cancellationToken);
@@ -62,7 +62,7 @@ namespace LeanCode.SendGrid
             }
         }
 
-        protected virtual async Task RenderMessageAsync(SendGridRazorMessage msg)
+        protected virtual async Task RenderMessageAsync(SendGridRazorMessage msg, CancellationToken cancellationToken)
         {
             if (msg is SendGridLocalizedRazorMessage lrmsg)
             {
@@ -75,7 +75,7 @@ namespace LeanCode.SendGrid
 
                 msg.PlainTextContent = await msg
                     .GetTemplateNames(viewName)
-                    .SelectAsync(name => TryRenderViewAsync(name + PlainTextModelSuffix, plainTextModel))
+                    .SelectAsync(name => TryRenderViewAsync(name + PlainTextModelSuffix, plainTextModel, cancellationToken))
                     .FirstOrDefaultAsync(view => view != null);
 
                 if (msg.PlainTextContent is null)
@@ -92,7 +92,7 @@ namespace LeanCode.SendGrid
 
                 msg.HtmlContent = await msg
                     .GetTemplateNames(viewName)
-                    .SelectAsync(name => TryRenderViewAsync(name + HtmlModelSuffix, htmlModel))
+                    .SelectAsync(name => TryRenderViewAsync(name + HtmlModelSuffix, htmlModel, cancellationToken))
                     .FirstOrDefaultAsync(view => view != null);
 
                 if (msg.HtmlContent is null)
@@ -104,11 +104,11 @@ namespace LeanCode.SendGrid
             }
         }
 
-        private async Task<string?> TryRenderViewAsync(string viewName, object model)
+        private async Task<string?> TryRenderViewAsync(string viewName, object model, CancellationToken cancellationToken)
         {
             try
             {
-                return await renderer.RenderToStringAsync(viewName, model);
+                return await renderer.RenderToStringAsync(viewName, model, cancellationToken);
             }
             catch (ViewNotFoundException ex)
             {

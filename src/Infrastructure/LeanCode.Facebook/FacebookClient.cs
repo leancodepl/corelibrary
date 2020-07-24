@@ -1,8 +1,10 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LeanCode.Facebook
@@ -16,12 +18,12 @@ namespace LeanCode.Facebook
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
-        private readonly FacebookHttpClient client;
+        private readonly HttpClient client;
         private readonly HMACSHA256? hmac;
 
         private readonly int photoSize;
 
-        public FacebookClient(FacebookConfiguration config, FacebookHttpClient client)
+        public FacebookClient(FacebookConfiguration config, HttpClient client)
         {
             this.photoSize = config.PhotoSize;
             this.client = client;
@@ -30,14 +32,18 @@ namespace LeanCode.Facebook
                 : new HMACSHA256(ParseKey(config.AppSecret));
         }
 
-        public virtual async Task<JsonDocument> CallAsync(string endpoint, string accessToken, bool handleError = true)
+        public virtual async Task<JsonDocument> CallAsync(
+            string endpoint,
+            string accessToken,
+            bool handleError = true,
+            CancellationToken cancellationToken = default)
         {
             var proof = GenerateProof(accessToken);
             var uri = AppendProof(endpoint, accessToken, proof);
 
             try
             {
-                using var response = await client.Client.GetAsync(uri);
+                using var response = await client.GetAsync(uri);
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {

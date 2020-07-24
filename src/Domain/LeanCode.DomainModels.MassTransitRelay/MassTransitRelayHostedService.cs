@@ -18,6 +18,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
             bus.StartAsync(cancellationToken);
 
         public Task StopAsync(CancellationToken cancellationToken) =>
-            bus.StopAsync();
+            bus.StopAsync(cancellationToken);
     }
 }

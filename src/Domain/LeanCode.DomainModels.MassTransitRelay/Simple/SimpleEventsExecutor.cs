@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.Pipelines;
@@ -25,12 +26,18 @@ namespace LeanCode.DomainModels.MassTransitRelay.Simple
             exec = PipelineExecutor.Create(factory, config);
         }
 
-        public Task HandleEventsOfAsync(Func<Task> action, Guid? correlationId = null) =>
-            exec.ExecuteAsync(
+        public Task HandleEventsOfAsync(
+            Func<Task> action,
+            Guid? correlationId = null,
+            CancellationToken cancellationToken = default)
+        {
+            return exec.ExecuteAsync(
                 new SimplePipelineContext
                 {
                     ExecutionId = correlationId ?? Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid(),
+                    CancellationToken = cancellationToken,
                 }, action);
+        }
     }
 }

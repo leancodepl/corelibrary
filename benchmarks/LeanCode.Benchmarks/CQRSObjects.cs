@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using FluentValidation;
@@ -51,6 +52,7 @@ namespace LeanCode.Benchmarks
         public IPipelineScope Scope { get; set; }
 
         public ClaimsPrincipal User { get; set; }
+        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
 
     public class SampleQueryHandler

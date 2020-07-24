@@ -39,19 +39,17 @@ namespace LeanCode.SmsSender.Tests
         {
             client = new SmsApiClient(
                 Config,
-                new SmsApiHttpClient(
-                    new HttpClient
-                    {
-                        BaseAddress = new Uri(SmsApiClient.ApiBase),
-                    }));
+                new HttpClient
+                {
+                    BaseAddress = new Uri(SmsApiClient.ApiBase),
+                });
 
             clientWithUnregisteredSender = new SmsApiClient(
                 ConfigWithUnregisteredSender,
-                new SmsApiHttpClient(
-                    new HttpClient
-                    {
-                        BaseAddress = new Uri(SmsApiClient.ApiBase),
-                    }));
+                new HttpClient
+                {
+                    BaseAddress = new Uri(SmsApiClient.ApiBase),
+                });
         }
 
         [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]

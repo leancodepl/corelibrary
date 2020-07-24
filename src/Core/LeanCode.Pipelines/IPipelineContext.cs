@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace LeanCode.Pipelines
 {
@@ -8,6 +9,7 @@ namespace LeanCode.Pipelines
         /// Managed by <see cref="PipelineExecutor{TContext, TInput, TOutput}" />.
         /// </summary>
         IPipelineScope Scope { get; set; }
+        CancellationToken CancellationToken { get; }
     }
 
     public class PipelineContext : IPipelineContext
@@ -19,5 +21,7 @@ namespace LeanCode.Pipelines
             get => scope ?? throw new NullReferenceException();
             set => scope = value;
         }
+
+        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
 }
