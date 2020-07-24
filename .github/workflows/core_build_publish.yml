@@ -43,7 +43,7 @@ jobs:
           PUBLISH_NUGET=0
         fi
         
-        if [[ $PUBLISH_ARTIFACTS == 0  &&  $PUBLISH_NUGET == 1 ]]
+        if [[ $PUBLISH_ARTIFACTS == 0 && $PUBLISH_NUGET == 1 ]]
         then
           echo "Only vX.Y branches can be published to NuGet, failing"
           exit 1
