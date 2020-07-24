@@ -109,7 +109,7 @@ jobs:
           ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Push to NuGet
         run: |
-          unzip "$ZIP"
-          find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+          unzip "$ZIP" -d packages
+          find packages/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
