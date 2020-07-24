@@ -87,6 +87,7 @@ jobs:
       if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
       uses: actions/upload-artifact@v1
       with:
+        name: ${{ needs.prepare.outputs.artifacts_name }}
         path: ${{ needs.prepare.outputs.artifacts_name }}
   publish:
     runs-on: ubuntu-18.04
