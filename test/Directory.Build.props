@@ -9,7 +9,7 @@
 
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.analyzers" />
-    <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+    <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'net5.0'" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
