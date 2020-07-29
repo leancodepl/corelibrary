@@ -64,7 +64,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private Task<CommandResult> ExecuteCommandAsync<TCommand>(TAppContext appContext, object cmd)
             where TCommand : IRemoteCommand
         {
-            var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>();
+            var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>()!;
 
             return commandExecutor.RunAsync(appContext, (TCommand)cmd);
         }

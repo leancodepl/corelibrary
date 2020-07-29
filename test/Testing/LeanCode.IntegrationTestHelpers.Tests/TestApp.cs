@@ -50,7 +50,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
 
             builder.ConfigureServices(services =>
             {
-                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>());
+                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>()!);
                 services.AddTransient<IAsyncInitializable, HangfireInitializer<TestDbContext>>();
             });
         }

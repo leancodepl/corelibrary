@@ -108,7 +108,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private Type? ExtractType(HttpRequest request)
         {
-            var idx = request.Path.Value.LastIndexOf('/');
+            var idx = request.Path.Value!.LastIndexOf('/');
 
             var name = idx != -1
                 ? request.Path.Value.Substring(idx + 1)
