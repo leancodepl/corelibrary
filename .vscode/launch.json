@@ -12,7 +12,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceRoot}/src/Example/bin/Debug/netcoreapp3.1/LeanCode.Example.dll",
+      "program": "${workspaceRoot}/src/Example/bin/Debug/net5.0/LeanCode.Example.dll",
       "args": [],
       "cwd": "${workspaceRoot}/src/Example",
       "stopAtEntry": false,
