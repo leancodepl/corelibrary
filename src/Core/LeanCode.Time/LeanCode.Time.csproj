@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Date and Time helper classes</Description>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageTags>Date TimeOfDay Time corefxlab</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RootNamespace />
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn),IDE0003,IDE0007,IDE0023,IDE0024,IDE0070,CS1574,SA1203,SA1309</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="System/Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <StronglyTypedFileName>System/Strings.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedNamespace>System</StronglyTypedNamespace>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>
