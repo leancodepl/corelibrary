@@ -29,7 +29,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
             await exec.GetAsync(new ExampleQuery { RequestData = "data" });
 
             Assert.NotNull(handler.Request);
-            var content = await handler.Request!.Content.ReadAsStringAsync();
+            var content = await handler!.Request!.Content!.ReadAsStringAsync();
             Assert.Equal("{\"RequestData\":\"data\"}", content);
         }
 

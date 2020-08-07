@@ -91,7 +91,7 @@ namespace LeanCode.PdfRocket
                     var val = prop.GetValue(options);
                     if (val != null)
                     {
-                        content.Add(new StringContent(val.ToString()), prop.Name);
+                        content.Add(new StringContent(val.ToString()!), prop.Name);
                     }
                 }
             }

@@ -9,7 +9,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     public interface ISerializer
     {
         Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken token);
-        ValueTask<object> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token);
+        ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token);
     }
 
     public sealed class Utf8JsonSerializer : ISerializer
@@ -25,7 +25,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             : this(null)
         { }
 
-        public ValueTask<object> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token)
+        public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token)
         {
             return JsonSerializer.DeserializeAsync(utf8Json, returnType, options, token);
         }

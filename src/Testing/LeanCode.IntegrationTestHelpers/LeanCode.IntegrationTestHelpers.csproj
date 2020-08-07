@@ -27,7 +27,7 @@
 
     <PackageReference Include="Polly" />
 
-    <PackageReference Include="Xunit" />
+    <PackageReference Include="xunit" />
   </ItemGroup>
 
 </Project>

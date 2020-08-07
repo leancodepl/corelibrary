@@ -24,7 +24,7 @@ namespace LeanCode.IntegrationTests
 
             builder.ConfigureServices(services =>
             {
-                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>());
+                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>()!);
             });
         }
 

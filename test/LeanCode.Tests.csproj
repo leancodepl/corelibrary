@@ -13,7 +13,7 @@
 
   <Target Name="RunTests" DependsOnTargets="Build">
     <ItemGroup>
-      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'netcoreapp3.1'" />
+      <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
     </ItemGroup>
 
     <exec

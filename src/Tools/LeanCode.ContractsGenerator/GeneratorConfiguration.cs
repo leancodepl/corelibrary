@@ -28,7 +28,8 @@ namespace LeanCode.ContractsGenerator
 
         public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string cfg)
         {
-            return JsonSerializer.Deserialize<List<GeneratorConfiguration>>(cfg);
+            return JsonSerializer.Deserialize<List<GeneratorConfiguration>>(cfg)
+                ?? new List<GeneratorConfiguration>();
         }
 
         public static string GetConfigFile(string[] args)

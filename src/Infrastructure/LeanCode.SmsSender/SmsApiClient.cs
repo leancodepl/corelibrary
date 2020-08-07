@@ -64,7 +64,7 @@ namespace LeanCode.SmsSender
                 parameters["fast"] = "1";
             }
 
-            using (var body = new FormUrlEncodedContent(parameters))
+            using (var body = new FormUrlEncodedContent(parameters!))
             using (var response = await client.PostAsync("sms.do", body, cancellationToken))
             {
                 await using var content = await response.Content.ReadAsStreamAsync();
@@ -87,7 +87,7 @@ namespace LeanCode.SmsSender
             if (response.TryGetProperty("error", out var error))
             {
                 var errorCode = error.GetInt32();
-                var errorMessage = response.GetProperty("message").GetString();
+                var errorMessage = response.GetProperty("message").GetString()!;
 
                 if (IsClientError(errorCode))
                 {

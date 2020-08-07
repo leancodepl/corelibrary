@@ -49,7 +49,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
                 return true;
             }
 
-            return type.BaseType != null ? HasAuthorizationAttribute(type.BaseType) : false;
+            return type.BaseType != null && HasAuthorizationAttribute(type.BaseType);
         }
     }
 }

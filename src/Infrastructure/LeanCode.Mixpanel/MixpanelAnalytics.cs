@@ -180,7 +180,7 @@ namespace LeanCode.Mixpanel
             {
                 var response = JsonSerializer.Deserialize<MixpanelResponse>(content);
 
-                if (response.Status == MixpanelResponse.Success)
+                if (response?.Status == MixpanelResponse.Success)
                 {
                     logger.Information(
                         "Mixpanel request {RequestName} for user {UserId} sent successfully",

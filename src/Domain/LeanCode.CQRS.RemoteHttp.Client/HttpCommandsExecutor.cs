@@ -82,8 +82,8 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                 propName.ValueKind == JsonValueKind.String)
             {
                 return new ValidationError(
-                    propName.GetString(),
-                    errMsg.GetString(),
+                    propName.GetString() ?? string.Empty,
+                    errMsg.GetString() ?? string.Empty,
                     errCode.GetInt32());
             }
             else
