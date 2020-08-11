@@ -113,3 +113,4 @@ jobs:
           find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
