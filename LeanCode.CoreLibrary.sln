@@ -183,6 +183,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.IntegrationTestHel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ExternalIdentityProviders.Tests", "test\Infrastructure\LeanCode.ExternalIdentityProviders.Tests\LeanCode.ExternalIdentityProviders.Tests.csproj", "{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}"
 EndProject
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.OpenTelemetry", "src\Infrastructure\LeanCode.OpenTelemetry\LeanCode.OpenTelemetry.csproj", "{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1108,6 +1111,18 @@ Global
 		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x64.Build.0 = Release|Any CPU
 		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x86.ActiveCfg = Release|Any CPU
 		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x86.Build.0 = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|x64.Build.0 = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|x64.ActiveCfg = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|x64.Build.0 = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AFA22EA-B093-4457-ABA2-CFF96DF41350} = {7324BABF-C1F7-430D-BF76-CF9BFA559DC6}
@@ -1196,5 +1211,6 @@ Global
 		{92856887-87D8-4B67-8406-29624FC0AC6D} = {9DC20510-2DB6-4B63-AAA7-C65A0B8F0157}
 		{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D} = {92856887-87D8-4B67-8406-29624FC0AC6D}
 		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
+		{699B7316-9635-4AFA-8ED6-0BEA949AD8E9} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 	EndGlobalSection
 EndGlobal

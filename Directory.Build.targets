@@ -104,6 +104,8 @@
 
     <PackageReference Update="MassTransit" Version="$(MassTransitVersion)" />
     <PackageReference Update="MassTransit.Autofac" Version="$(MassTransitVersion)" />
+
+    <PackageReference Update="OpenTelemetry" Version="0.4.0-beta.2" />
   </ItemGroup>
 
   <ItemGroup>
