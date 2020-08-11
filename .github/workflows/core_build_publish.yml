@@ -1,9 +1,9 @@
-name: Corelibrary Build & Publish 
+name: Corelibrary Build & Publish
 
 on:
   push:
     branches:
-      - 'v[0-9]+.[0-9]+'
+      - "v[0-9]+.[0-9]+"
   pull_request:
   workflow_dispatch:
 jobs:
@@ -16,43 +16,43 @@ jobs:
       publish_nuget: ${{ steps.version.outputs.publish_nuget }}
       artifacts_name: ${{ steps.version.outputs.artifacts_name }}
     steps:
-    - name: Version
-      id: version
-      run: |
-        BRANCH=${GITHUB_REF#refs/*/}
-        if [[ $BRANCH =~ ^v[0-9]+.[0-9]+$ ]]
-        then
-          BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
-          VERSION="${BRANCH#v}.$BUILD_NUMBER"
-          PUBLISH_ARTIFACTS=1
-          ARTIFACTS_NAME="LeanCode.CoreLibrary.$VERSION.zip"
-        else
-          VERSION="0.0.0"
-          PUBLISH_ARTIFACTS=0
-          ARTIFACTS_NAME="<none>"
-        fi
-        echo Building on "$BRANCH"
-        echo Building version: "$VERSION"
-        echo "Artifacts will be saved as $ARTIFACTS_NAME" 
-        
-        if [[ $GITHUB_EVENT_NAME == 'workflow_dispatch' ]]
-        then
-          echo "Packages will be published to NuGet"
-          PUBLISH_NUGET=1
-        else
-          PUBLISH_NUGET=0
-        fi
-        
-        if [[ $PUBLISH_ARTIFACTS == 0 && $PUBLISH_NUGET == 1 ]]
-        then
-          echo "Only vX.Y branches can be published to NuGet, failing"
-          exit 1
-        fi 
-                
-        echo "::set-output name=version::${VERSION}"
-        echo "::set-output name=publish_artifacts::${PUBLISH_ARTIFACTS}"
-        echo "::set-output name=publish_nuget::${PUBLISH_NUGET}"
-        echo "::set-output name=artifacts_name::${ARTIFACTS_NAME}"      
+      - name: Version
+        id: version
+        run: |
+          BRANCH=${GITHUB_REF#refs/*/}
+          if [[ $BRANCH =~ ^v[0-9]+.[0-9]+$ ]]
+          then
+            BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
+            VERSION="${BRANCH#v}.$BUILD_NUMBER"
+            PUBLISH_ARTIFACTS=1
+            ARTIFACTS_NAME="LeanCode.CoreLibrary.$VERSION.zip"
+          else
+            VERSION="0.0.0"
+            PUBLISH_ARTIFACTS=0
+            ARTIFACTS_NAME="<none>"
+          fi
+          echo Building on "$BRANCH"
+          echo Building version: "$VERSION"
+          echo "Artifacts will be saved as $ARTIFACTS_NAME"
+
+          if [[ $GITHUB_EVENT_NAME == 'workflow_dispatch' ]]
+          then
+            echo "Packages will be published to NuGet"
+            PUBLISH_NUGET=1
+          else
+            PUBLISH_NUGET=0
+          fi
+
+          if [[ $PUBLISH_ARTIFACTS == 0 && $PUBLISH_NUGET == 1 ]]
+          then
+            echo "Only vX.Y branches can be published to NuGet, failing"
+            exit 1
+          fi
+
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=publish_artifacts::${PUBLISH_ARTIFACTS}"
+          echo "::set-output name=publish_nuget::${PUBLISH_NUGET}"
+          echo "::set-output name=artifacts_name::${ARTIFACTS_NAME}"
   build:
     name: Build
     runs-on: ubuntu-18.04
@@ -62,52 +62,54 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100-preview.7.20366.6
-    - name: Restore
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-      env:
-        GIT_COMMIT: ${{ github.sha }}
-    - name: Test
-      run: dotnet msbuild /t:RunTests /p:Configuration=Release
-      working-directory: test
-    - name: Pack
-      if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-      env:
-        ZIP: ${{ needs.prepare.outputs.artifacts_name }} 
-      run: |
-        dotnet pack --no-build -c Release -o "$PWD/packed"
-        zip -j "$ZIP" "$PWD"/packed/*.nupkg
-    - name: Publish artifacts
-      if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ needs.prepare.outputs.artifacts_name }}
-        path: ${{ needs.prepare.outputs.artifacts_name }}
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-preview.7.20366.6
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        env:
+          GIT_COMMIT: ${{ github.sha }}
+      - name: Test
+        run: dotnet msbuild /t:RunTests /p:Configuration=Release
+        working-directory: test
+      - name: Pack
+        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
+        env:
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+        run: |
+          dotnet pack --no-build -c Release -o "$PWD/packed"
+          zip -j "$ZIP" "$PWD"/packed/*.nupkg
+      - name: Publish artifacts
+        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ needs.prepare.outputs.artifacts_name }}
+          path: ${{ needs.prepare.outputs.artifacts_name }}
   publish:
     runs-on: ubuntu-18.04
     name: Publish to NuGet
-    needs: [ prepare, build ]
-    if: ${{ needs.prepare.outputs.publish_nugets == '1' }}
+    needs: [prepare, build]
+    if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
     steps:
-    - name: Fetch build
-      uses: actions/download-artifact@v1
-      with: 
-        name: ${{ needs.prepare.outputs.artifacts_name }}
-    - name: Create release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ format('v{0}', needs.prepare.outputs.version) }}
-        release_name: ${{ format('Release v{0}', needs.prepare.outputs.version) }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ZIP: ${{ needs.prepare.outputs.artifacts_name }}
-    - name: Push to NuGet
-      run: |
-        unzip "$ZIP"
-        find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+      - name: Fetch build
+        uses: actions/download-artifact@v1
+        with:
+          name: ${{ needs.prepare.outputs.artifacts_name }}
+      - name: Create release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ format('v{0}', needs.prepare.outputs.version) }}
+          release_name: ${{ format('Release v{0}', needs.prepare.outputs.version) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+      - name: Push to NuGet
+        run: |
+          unzip "$ZIP"
+          find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
