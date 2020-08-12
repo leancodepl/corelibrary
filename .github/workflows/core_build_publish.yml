@@ -85,7 +85,7 @@ jobs:
           zip -j "$ZIP" "$PWD"/packed/*.nupkg
       - name: Publish artifacts
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
           path: ${{ needs.prepare.outputs.artifacts_name }}
@@ -97,7 +97,7 @@ jobs:
     steps:
       - name: Fetch build
         id: download
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Create release
@@ -110,7 +110,7 @@ jobs:
       - name: Push to NuGet
         run: |
           unzip "$ZIP"
-          find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+          find -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
           ZIP: ${{ steps.download.outputs.download-path }}
