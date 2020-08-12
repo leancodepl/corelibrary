@@ -96,6 +96,7 @@ jobs:
     if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
     steps:
       - name: Fetch build
+        id: download
         uses: actions/download-artifact@v1
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
@@ -106,11 +107,10 @@ jobs:
           release_name: ${{ format('Release v{0}', needs.prepare.outputs.version) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Push to NuGet
         run: |
           unzip "$ZIP"
           find packed/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+          ZIP: ${{ steps.download.outputs.download-path }}
