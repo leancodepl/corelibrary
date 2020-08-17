@@ -27,9 +27,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             };
         }
 
-        public RaisedEvent WrapEvent(object evt)
+        public RaisedEvent WrapEvent(object evt, RaisedEventMetadata metadata)
         {
-            return RaisedEvent.Create(evt, JsonConvert.SerializeObject(evt, settings));
+            return RaisedEvent.Create(evt, metadata, JsonConvert.SerializeObject(evt,settings));
         }
 
         public object ExtractEvent(RaisedEvent evt)

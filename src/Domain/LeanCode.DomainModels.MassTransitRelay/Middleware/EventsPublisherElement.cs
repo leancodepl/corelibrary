@@ -35,20 +35,21 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         private Task PublishEventsAsync(TContext ctx, List<IDomainEvent> events)
         {
             logger.Debug("Publishing {Count} raised events", events.Count);
+            var conversationId = Guid.NewGuid();
 
             var publishTasks = events
-                .Select(evt => PublishEventAsync(evt, ctx));
+                .Select(evt => PublishEventAsync(evt, ctx, conversationId));
 
             return Task.WhenAll(publishTasks);
         }
 
-        private async Task PublishEventAsync(IDomainEvent evt, TContext ctx)
+        private async Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
         {
             logger.Debug("Publishing event of type {DomainEvent}", evt);
 
             try
             {
-                await publisher.PublishAsync(evt, ctx.CancellationToken);
+                await publisher.PublishAsync(evt, conversationId, ctx.CancellationToken);
             }
             catch (Exception e)
             {

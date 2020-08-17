@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
 using LeanCode.Time;
@@ -11,17 +12,18 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public const int MaxEventTypeLength = 500;
 
         public Guid Id { get; private set; }
-        public Guid CorrelationId { get; private set; }
         public DateTime DateOcurred { get; private set; }
         public string EventType { get; private set; }
         public string Payload { get; private set; }
+        public RaisedEventMetadata Metadata { get; private set; }
 
         public bool WasPublished { get; set; }
 
-        public static RaisedEvent Create(object evt, string serializedEvent)
+        public static RaisedEvent Create(object evt, RaisedEventMetadata metadata, string serializedEvent)
         {
             var raisedEvt = new RaisedEvent
             {
+                Metadata = metadata,
                 Payload = serializedEvent,
                 EventType = evt.GetType().FullName!,
             };
@@ -41,10 +43,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         }
 
         // For tests
-        public RaisedEvent(Guid id, Guid correlationId, DateTime dateOcurred, bool wasPublished, string eventType, string payload)
+        public RaisedEvent(Guid id, RaisedEventMetadata metadata, DateTime dateOcurred, bool wasPublished, string eventType, string payload)
         {
             Id = id;
-            CorrelationId = correlationId;
+            Metadata = metadata;
             DateOcurred = dateOcurred;
             WasPublished = wasPublished;
             EventType = eventType;
@@ -55,6 +57,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         {
             EventType = null!;
             Payload = null!;
+            Metadata = null!;
         }
 
         public static void Configure(ModelBuilder builder)
@@ -63,6 +66,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             {
                 cfg.HasKey(e => e.Id).IsClustered(false);
                 cfg.HasIndex(e => new { e.DateOcurred, e.WasPublished }).IsClustered(true);
+                cfg.OwnsOne(e => e.Metadata, inner =>
+                {
+                    inner.Property(e => e.ActivityContext)
+                        .HasConversion(new ActivityContextEFConverter());
+                });
 
                 cfg.Property(e => e.Id)
                     .ValueGeneratedNever();
@@ -71,5 +79,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                     .HasMaxLength(MaxEventTypeLength);
             });
         }
+    }
+
+    public class RaisedEventMetadata
+    {
+        public ActivityContext? ActivityContext { get; set; }
+        public Guid? ConversationId { get; set; }
     }
 }

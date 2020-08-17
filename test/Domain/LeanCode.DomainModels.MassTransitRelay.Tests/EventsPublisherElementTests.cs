@@ -42,9 +42,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             await element.ExecuteAsync(testContext, new TestPayload(), Next);
 
-            await publisher.Received(1).PublishAsync(evt1);
-            await publisher.Received(1).PublishAsync(evt2);
-            await publisher.Received(1).PublishAsync(evt3);
+            await publisher.Received(1).PublishAsync(evt1, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt2, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt3, Arg.Any<Guid>());
         }
 
         [Fact]
@@ -64,12 +64,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 return Task.FromResult(input);
             }
 
-            publisher.PublishAsync(evt2).Returns(x => throw new Exception());
+            publisher.PublishAsync(evt2, Arg.Any<Guid>()).Returns(x => throw new Exception());
 
             await element.ExecuteAsync(testContext, inp, Next);
 
-            await publisher.Received(1).PublishAsync(evt1);
-            await publisher.Received(1).PublishAsync(evt3);
+            await publisher.Received(1).PublishAsync(evt1, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt3, Arg.Any<Guid>());
         }
 
         [Fact]
