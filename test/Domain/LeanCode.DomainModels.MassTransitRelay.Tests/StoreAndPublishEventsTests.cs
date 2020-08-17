@@ -15,7 +15,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     {
         private static readonly Guid Event1Id = Identity.NewId();
         private static readonly Guid Event2Id = Identity.NewId();
-        private static readonly Guid CorrelationId = Identity.NewId();
 
         private readonly EventsStore impl;
         private readonly TestDbContext dbContext;
@@ -43,7 +42,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Persists_events_and_marks_published_if_publish_succeeded()
         {
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -55,9 +54,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Persists_event_but_does_not_marks_published_if_publish_failed()
         {
-            publisher.PublishAsync(null, null).ReturnsForAnyArgs(_ => throw new Exception());
+            publisher.PublishAsync(null).ReturnsForAnyArgs(_ => throw new Exception());
 
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -69,11 +68,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task One_interupted_publish_does_not_affect_consecutive_ones()
         {
-            publisher.PublishAsync(null, null).ReturnsForAnyArgs(
+            publisher.PublishAsync(null).ReturnsForAnyArgs(
                 _ => throw new Exception(),
                 _ => Task.CompletedTask);
 
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -114,9 +113,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             public object ExtractEvent(RaisedEvent evt) => throw new NotImplementedException();
 
-            public RaisedEvent WrapEvent(object evt, Guid correlationId)
+            public RaisedEvent WrapEvent(object evt)
             {
-                return RaisedEvent.Create(evt, correlationId, "mock_payload");
+                return RaisedEvent.Create(evt, "mock_payload");
             }
         }
     }

@@ -22,16 +22,15 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task StoreAndPublishEventsAsync(
             List<IDomainEvent> events,
-            Guid correlationId,
             IEventPublisher publisher,
             CancellationToken cancellationToken = default)
         {
             if (events?.Count > 0)
             {
-                var persisted = PersistEvents(events, correlationId);
+                var persisted = PersistEvents(events);
                 await outboxContext.SaveChangesAsync(cancellationToken);
 
-                var publishStatuses = await PublishEventsAsync(events, correlationId, publisher, cancellationToken);
+                var publishStatuses = await PublishEventsAsync(events, publisher, cancellationToken);
                 MarkEventsAsRaised(persisted, publishStatuses);
                 await outboxContext.SaveChangesAsync(cancellationToken);
             }
@@ -41,10 +40,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
             }
         }
 
-        private List<RaisedEvent> PersistEvents(List<IDomainEvent> events, Guid correlationId)
+        private List<RaisedEvent> PersistEvents(List<IDomainEvent> events)
         {
             var evts = events
-                .Select(evt => eventsSerializer.WrapEvent(evt, correlationId))
+                .Select(evt => eventsSerializer.WrapEvent(evt))
                 .ToList();
 
             outboxContext.RaisedEvents.AddRange(evts);
@@ -66,21 +65,19 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private Task<bool[]> PublishEventsAsync(
             List<IDomainEvent> events,
-            Guid correlationId,
             IEventPublisher publisher,
             CancellationToken cancellationToken)
         {
             logger.Debug("Publishing {Count} raised events", events.Count);
 
             var publishTasks = events
-                .Select(evt => PublishEventAsync(evt, correlationId, publisher, cancellationToken));
+                .Select(evt => PublishEventAsync(evt, publisher, cancellationToken));
 
             return Task.WhenAll(publishTasks);
         }
 
         private async Task<bool> PublishEventAsync(
             IDomainEvent evt,
-            Guid correlationId,
             IEventPublisher publisher,
             CancellationToken cancellationToken)
         {
@@ -88,7 +85,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             try
             {
-                await publisher.PublishAsync(evt, correlationId, cancellationToken);
+                await publisher.PublishAsync(evt, cancellationToken);
                 logger.Information("Domain event {DomainEvent} published", evt);
                 return true;
             }

@@ -12,19 +12,17 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         public HandledEvent[] HandledEvents => events.ToArray();
 
         public void ReportEvent(IConsumer consumer, ConsumeContext<TEvent> ctx) =>
-            events.Enqueue(new HandledEvent(ctx.Message, ctx.ConversationId ?? Guid.Empty, consumer.GetType()));
+            events.Enqueue(new HandledEvent(ctx.Message, consumer.GetType()));
     }
 
     public class HandledEvent
     {
         public IDomainEvent Event { get; }
-        public Guid CorrelationId { get; }
         public Type ConsumerType { get; }
 
-        public HandledEvent(IDomainEvent @event, Guid correlationId, Type consumerType)
+        public HandledEvent(IDomainEvent @event, Type consumerType)
         {
             Event = @event;
-            CorrelationId = correlationId;
             ConsumerType = consumerType;
         }
     }

@@ -18,13 +18,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         public bool WasPublished { get; set; }
 
-        public static RaisedEvent Create(object evt, Guid correlationId, string serializedEvent)
+        public static RaisedEvent Create(object evt, string serializedEvent)
         {
             var raisedEvt = new RaisedEvent
             {
                 Payload = serializedEvent,
                 EventType = evt.GetType().FullName!,
-                CorrelationId = correlationId,
             };
 
             if (evt is IDomainEvent domainEvent)

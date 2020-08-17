@@ -28,7 +28,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
             await impl.StoreAndPublishEventsAsync(
                 events,
-                context.ConversationId!.Value,
                 new EventPublisher(context),
                 context.CancellationToken);
         }

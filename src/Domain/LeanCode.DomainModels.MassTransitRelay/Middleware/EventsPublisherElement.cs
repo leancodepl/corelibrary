@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LeanCode.Correlation;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : notnull, ICorrelationContext
+        where TContext : notnull, IPipelineContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
         private readonly IEventPublisher publisher;
@@ -49,7 +48,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
             try
             {
-                await publisher.PublishAsync(evt, ctx.CorrelationId, ctx.CancellationToken);
+                await publisher.PublishAsync(evt, ctx.CancellationToken);
             }
             catch (Exception e)
             {
@@ -64,7 +63,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static PipelineBuilder<TContext, TInput, TOutput> PublishEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : notnull, ICorrelationContext
+            where TContext : notnull, IPipelineContext
         {
             return builder.Use<EventsPublisherElement<TContext, TInput, TOutput>>();
         }

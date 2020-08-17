@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.Correlation;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -41,7 +40,7 @@ namespace LeanCode.IntegrationTests.App
         }
     }
 
-    public sealed class AppContext : ICorrelationContext, ISecurityContext
+    public sealed class AppContext : ISecurityContext
     {
         private IPipelineScope? scope;
         private ClaimsPrincipal? user;
@@ -61,8 +60,6 @@ namespace LeanCode.IntegrationTests.App
         public CancellationToken CancellationToken { get; }
 
         public Guid UserId { get; }
-        Guid ICorrelationContext.CorrelationId { get; set; }
-        Guid ICorrelationContext.ExecutionId { get; set; }
 
         public AppContext(ClaimsPrincipal user, Guid userId, CancellationToken cancellationToken)
         {

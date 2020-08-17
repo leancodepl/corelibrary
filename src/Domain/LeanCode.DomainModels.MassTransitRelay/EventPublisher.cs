@@ -8,9 +8,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
 {
     public interface IEventPublisher
     {
-        Task PublishAsync(object evt, Guid eventId, Guid? correlationId, CancellationToken cancellationToken = default);
-        Task PublishAsync(IDomainEvent evt, Guid? correlationId, CancellationToken cancellationToken = default)
-            => PublishAsync(evt, evt.Id, correlationId, cancellationToken);
+        Task PublishAsync(object evt, Guid eventId, CancellationToken cancellationToken = default);
+        Task PublishAsync(IDomainEvent evt, CancellationToken cancellationToken = default)
+            => PublishAsync(evt, evt.Id, cancellationToken);
     }
 
     public class EventPublisher : IEventPublisher
@@ -22,12 +22,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.publishEndpoint = publishEndpoint;
         }
 
-        public Task PublishAsync(object evt, Guid eventId, Guid? correlationId, CancellationToken cancellationToken = default)
+        public Task PublishAsync(object evt, Guid eventId, CancellationToken cancellationToken = default)
         {
             return publishEndpoint.Publish(evt, ctx =>
             {
                 ctx.MessageId = eventId;
-                ctx.ConversationId = correlationId;
             }, cancellationToken);
         }
     }

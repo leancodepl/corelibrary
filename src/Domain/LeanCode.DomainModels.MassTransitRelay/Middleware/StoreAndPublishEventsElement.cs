@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LeanCode.Correlation;
 using LeanCode.Pipelines;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
     public class StoreAndPublishEventsElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
-        where TContext : notnull, ICorrelationContext
+        where TContext : notnull, IPipelineContext
     {
         private readonly IEventPublisher publisher;
         private readonly EventsStore impl;
@@ -26,7 +25,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         {
             var (result, events) = await interceptor.CaptureEventsOfAsync(() => next(ctx, input));
 
-            await impl.StoreAndPublishEventsAsync(events, ctx.CorrelationId, publisher, ctx.CancellationToken);
+            await impl.StoreAndPublishEventsAsync(events, publisher, ctx.CancellationToken);
 
             return result;
         }
@@ -36,7 +35,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static PipelineBuilder<TContext, TInput, TOutput> StoreAndPublishEvents<TContext, TInput, TOutput>(
             this PipelineBuilder<TContext, TInput, TOutput> builder)
-            where TContext : notnull, ICorrelationContext
+            where TContext : notnull, IPipelineContext
         {
             return builder.Use<StoreAndPublishEventsElement<TContext, TInput, TOutput>>();
         }

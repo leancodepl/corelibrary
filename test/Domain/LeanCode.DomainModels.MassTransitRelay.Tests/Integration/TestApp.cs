@@ -6,13 +6,13 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using GreenPipes;
 using LeanCode.Components;
-using LeanCode.Correlation;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
+using LeanCode.OpenTelemetry;
 using MassTransit;
 using MassTransit.AutofacIntegration;
 using MassTransit.Testing.Indicators;
@@ -32,12 +32,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             new CQRSModule().WithCustomPipelines<Context>(
                 SearchAssemblies,
-                cmd => cmd.Correlate().StoreAndPublishEvents(),
+                cmd => cmd.Trace().StoreAndPublishEvents(),
                 query => query),
 
             new MassTransitRelayModule(SearchAssemblies, SearchAssemblies, MassTransitTestRelayModule.TestBusConfigurator),
             new MassTransitTestRelayModule(),
-            new CorrelationModule(),
+            new OpenTelemetryModule(),
         };
 
         private readonly IBusControl bus;

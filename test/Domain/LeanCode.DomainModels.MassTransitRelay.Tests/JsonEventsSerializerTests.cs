@@ -24,10 +24,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var evt = new TestEvent(EventId, DateOccurred, 5);
 
-            var raised = Serializer.WrapEvent(evt, CorrelationId);
+            var raised = Serializer.WrapEvent(evt);
 
             Assert.Equal(EventId, raised.Id);
-            Assert.Equal(CorrelationId, raised.CorrelationId);
+            Assert.Equal(Guid.Empty, raised.CorrelationId); // TODO: fixme
             Assert.Equal(DateOccurred, raised.DateOcurred);
             Assert.Equal(typeof(TestEvent).FullName, raised.EventType);
             Assert.False(raised.WasPublished);
@@ -57,7 +57,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var evt = new TestEvent(EventId, DateOccurred, 5);
 
-            var wrapped = Serializer.WrapEvent(evt, CorrelationId);
+            var wrapped = Serializer.WrapEvent(evt);
             var unwrapped = Serializer.ExtractEvent(wrapped);
 
             Assert.Equal(evt, unwrapped);
@@ -68,7 +68,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var evt = TestEventWithPrivateFields.Create("test value");
 
-            var wrapped = Serializer.WrapEvent(evt, CorrelationId);
+            var wrapped = Serializer.WrapEvent(evt);
             var unwrapped = Serializer.ExtractEvent(wrapped);
 
             Assert.Equal(evt, unwrapped);

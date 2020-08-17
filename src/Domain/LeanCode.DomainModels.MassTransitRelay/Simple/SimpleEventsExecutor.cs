@@ -28,14 +28,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Simple
 
         public Task HandleEventsOfAsync(
             Func<Task> action,
-            Guid? correlationId = null,
             CancellationToken cancellationToken = default)
         {
             return exec.ExecuteAsync(
                 new SimplePipelineContext
                 {
-                    ExecutionId = correlationId ?? Guid.NewGuid(),
-                    CorrelationId = Guid.NewGuid(),
                     CancellationToken = cancellationToken,
                 }, action);
         }

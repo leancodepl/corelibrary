@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using GreenPipes;
-using LeanCode.Correlation;
 using MassTransit;
 using Serilog.Context;
 
@@ -17,15 +15,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
         public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
         {
-            var correlationId = context.ConversationId is Guid conversationId ?
-                Correlate.Logs(conversationId) :
-                null;
-
             var messageId = GetMessageId(context);
             var consumerType = GetConsumerType(next);
 
             using (messageId)
-            using (correlationId)
             using (consumerType)
             {
                 await next.Send(context);

@@ -52,7 +52,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 try
                 {
                     var deserialized = serializer.ExtractEvent(evt);
-                    await eventPublisher.PublishAsync(deserialized, evt.Id, evt.CorrelationId, stoppingToken);
+                    await eventPublisher.PublishAsync(deserialized, evt.Id, stoppingToken);
 
                     evt.WasPublished = true;
                     await outboxContext.SaveChangesAsync(stoppingToken);

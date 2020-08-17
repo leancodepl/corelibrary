@@ -24,9 +24,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             this.options = options ?? new();
         }
 
-        public RaisedEvent WrapEvent(object evt, Guid correlationId)
+        public RaisedEvent WrapEvent(object evt)
         {
-            return RaisedEvent.Create(evt, correlationId, Serialize(evt));
+            return RaisedEvent.Create(evt, Serialize(evt));
         }
 
         public object ExtractEvent(RaisedEvent evt)
