@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics;
+using LeanCode.OpenTelemetry.Datadog;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -10,10 +12,12 @@ namespace LeanCode.OpenTelemetry
     {
         private readonly string traceIdKey;
         private readonly string spanIdKey;
+        private readonly bool useDatadogFormat;
 
-        public ActivityLogsEnricher(string traceIdKey, string spanIdKey)
+        public ActivityLogsEnricher(string traceIdKey, string spanIdKey, bool useDatadogFormat)
         {
             this.spanIdKey = spanIdKey;
+            this.useDatadogFormat = useDatadogFormat;
             this.traceIdKey = traceIdKey;
         }
 
@@ -22,8 +26,20 @@ namespace LeanCode.OpenTelemetry
             var activity = Activity.Current;
             if (activity != null)
             {
-                var spanId = propertyFactory.CreateProperty(spanIdKey, activity.SpanId.ToString());
-                var traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToString());
+                LogEventProperty spanId;
+                LogEventProperty traceId;
+
+                if (useDatadogFormat)
+                {
+                    traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToDatadogFormat());
+                    spanId = propertyFactory.CreateProperty(traceIdKey, activity.SpanId.ToDatadogFormat());
+                }
+                else
+                {
+                    traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToString());
+                    spanId = propertyFactory.CreateProperty(spanIdKey, activity.SpanId.ToString());
+                }
+
                 logEvent.AddOrUpdateProperty(spanId);
                 logEvent.AddOrUpdateProperty(traceId);
             }
@@ -38,9 +54,10 @@ namespace LeanCode.OpenTelemetry
         public static LoggerConfiguration FromCurrentActivity(
             this LoggerEnrichmentConfiguration config,
             string spanIdKey = "dd.spanId",
-            string traceIdKey = "dd.traceId")
+            string traceIdKey = "dd.traceId",
+            bool useDatadogFormat = true)
         {
-            return config.With(new ActivityLogsEnricher(spanIdKey, traceIdKey));
+            return config.With(new ActivityLogsEnricher(spanIdKey, traceIdKey, useDatadogFormat));
         }
     }
 }
