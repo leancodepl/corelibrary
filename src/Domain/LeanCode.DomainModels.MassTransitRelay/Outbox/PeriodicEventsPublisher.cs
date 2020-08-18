@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
+using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +50,11 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 {
                     break;
                 }
+
+                using var activity = LeanCodeActivitySource.ActivitySource.StartActivity(
+                    typeof(PeriodicEventsPublisher).FullName!,
+                    ActivityKind.Internal,
+                    evt.Metadata.ActivityContext ?? default);
 
                 try
                 {
