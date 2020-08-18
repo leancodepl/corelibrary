@@ -56,6 +56,9 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     ActivityKind.Internal,
                     evt.Metadata.ActivityContext ?? default);
 
+                activity?.AddTag("event.id", evt.Id.ToString());
+                activity?.AddTag("event.type", evt.EventType);
+
                 try
                 {
                     var deserialized = serializer.ExtractEvent(evt);
