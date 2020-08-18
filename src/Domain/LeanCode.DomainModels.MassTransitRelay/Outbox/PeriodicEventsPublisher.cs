@@ -38,6 +38,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            using var fetchActivity = LeanCodeActivitySource.Start("outbox.fetch-unpublished");
+
             logger.Debug("Publishing unpublished events");
 
             var events = await FetchUnpublishedEventsAsync();
@@ -51,13 +53,15 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     break;
                 }
 
-                using var activity = LeanCodeActivitySource.ActivitySource.StartActivity(
-                    typeof(PeriodicEventsPublisher).FullName!,
+                var link = fetchActivity != null ? new[] { new ActivityLink(fetchActivity.Context) } : null;
+                using var publishActivity = LeanCodeActivitySource.ActivitySource.StartActivity(
+                    "outbox.publish",
                     ActivityKind.Internal,
-                    evt.Metadata.ActivityContext ?? default);
+                    evt.Metadata.ActivityContext ?? default,
+                    links: link);
 
-                activity?.AddTag("event.id", evt.Id.ToString());
-                activity?.AddTag("event.type", evt.EventType);
+                publishActivity?.AddTag("event.id", evt.Id.ToString());
+                publishActivity?.AddTag("event.type", evt.EventType);
 
                 try
                 {

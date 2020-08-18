@@ -31,8 +31,8 @@ namespace LeanCode.OpenTelemetry
 
                 if (useDatadogFormat)
                 {
-                    traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToDatadogFormat());
-                    spanId = propertyFactory.CreateProperty(traceIdKey, activity.SpanId.ToDatadogFormat());
+                    traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToDatadogFormat().ToString());
+                    spanId = propertyFactory.CreateProperty(spanIdKey, activity.SpanId.ToDatadogFormat().ToString());
                 }
                 else
                 {
@@ -53,8 +53,8 @@ namespace LeanCode.OpenTelemetry
         /// </summary>
         public static LoggerConfiguration FromCurrentActivity(
             this LoggerEnrichmentConfiguration config,
-            string spanIdKey = "dd.spanId",
-            string traceIdKey = "dd.traceId",
+            string spanIdKey = "dd.span_id",
+            string traceIdKey = "dd.trace_id",
             bool useDatadogFormat = true)
         {
             return config.With(new ActivityLogsEnricher(spanIdKey, traceIdKey, useDatadogFormat));

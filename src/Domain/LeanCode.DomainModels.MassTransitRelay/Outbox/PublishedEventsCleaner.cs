@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
 using LeanCode.Dapper;
+using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
 using LeanCode.Time;
 
@@ -26,6 +27,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            using var activity = LeanCodeActivitySource.Start("outbox.clean");
+
             logger.Verbose("Startic raised events cleanup");
             var time = TimeProvider.Now - KeepPeriod;
 
