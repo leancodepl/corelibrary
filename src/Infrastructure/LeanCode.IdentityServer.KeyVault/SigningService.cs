@@ -96,7 +96,7 @@ namespace LeanCode.IdentityServer.KeyVault
             {
                 logger.Fatal(ex, "Cannot acqure access token from Azure AD");
 
-                throw ex;
+                throw;
             }
         }
     }
