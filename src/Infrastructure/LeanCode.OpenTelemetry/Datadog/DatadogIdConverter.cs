@@ -9,6 +9,13 @@ namespace LeanCode.OpenTelemetry.Datadog
         {
             Span<byte> buffer = stackalloc byte[8];
             spanId.CopyTo(buffer);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                // the ids are in big endian
+                buffer.Reverse();
+            }
+
             return BitConverter.ToUInt64(buffer);
         }
 
@@ -17,6 +24,13 @@ namespace LeanCode.OpenTelemetry.Datadog
         {
             Span<byte> buffer = stackalloc byte[16];
             traceId.CopyTo(buffer);
+
+            if (BitConverter.IsLittleEndian)
+            {
+                // the ids are in big endian
+                buffer.Reverse();
+            }
+
             return BitConverter.ToUInt64(buffer);
         }
     }

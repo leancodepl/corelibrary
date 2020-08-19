@@ -57,7 +57,7 @@ namespace LeanCode.OpenTelemetry
             string traceIdKey = "dd.trace_id",
             bool useDatadogFormat = true)
         {
-            return config.With(new ActivityLogsEnricher(spanIdKey, traceIdKey, useDatadogFormat));
+            return config.With(new ActivityLogsEnricher(traceIdKey, spanIdKey, useDatadogFormat));
         }
     }
 }
