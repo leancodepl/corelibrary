@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -15,9 +16,21 @@ namespace LeanCode.IdentityServer.KeyVault
             this.signing = signing;
         }
 
-        public Task<SigningCredentials> GetSigningCredentialsAsync()
+        public async Task<IEnumerable<SigningCredentials>> GetAllSigningCredentialsAsync()
         {
-            return signing.GetSigningCredentialsAsync();
+            return new[] { await signing.GetSigningCredentialsAsync() };
+        }
+
+        public Task<SigningCredentials?> GetSigningCredentialsAsync(IEnumerable<string>? allowedAlgorithms = null)
+        {
+            if (allowedAlgorithms == null || !allowedAlgorithms.Any() || allowedAlgorithms.Contains(SecurityAlgorithms.RsaSha256))
+            {
+                return signing.GetSigningCredentialsAsync()!;
+            }
+            else
+            {
+                return Task.FromResult<SigningCredentials?>(null);
+            }
         }
 
         public async Task<IEnumerable<SecurityKeyInfo>> GetValidationKeysAsync()
