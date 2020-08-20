@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Azure.Extensions.Configuration.Secrets;
 using Azure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,18 +26,18 @@ namespace LeanCode.Components.Startup
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
-                var configuration = builder.Build();
+                ConfigureAzureKeyVault(builder);
+            });
+        }
 
-                var vault = configuration.GetValue<string?>(VaultKey);
-                var tenantId = configuration.GetValue<string?>(TenantIdKey);
-                var clientId = configuration.GetValue<string?>(ClientIdKey);
-                var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
-
-                if (vault != null && tenantId != null && clientId != null && clientSecret != null)
+        public static IWebHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
+            this IWebHostBuilder builder)
+        {
+            return builder.ConfigureAppConfiguration((context, builder) =>
+            {
+                if (!context.HostingEnvironment.IsDevelopment())
                 {
-                    var vaultUrl = new Uri(vault);
-                    var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                    builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
+                    ConfigureAzureKeyVault(builder);
                 }
             });
         }
@@ -102,6 +101,27 @@ namespace LeanCode.Components.Startup
                 logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
                 logging.AddSerilog();
             });
+        }
+
+        private static void ConfigureAzureKeyVault(IConfigurationBuilder builder)
+        {
+            var configuration = builder.Build();
+
+            var vault = configuration.GetValue<string?>(VaultKey);
+            var tenantId = configuration.GetValue<string?>(TenantIdKey);
+            var clientId = configuration.GetValue<string?>(ClientIdKey);
+            var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
+
+            if (vault != null && tenantId != null && clientId != null && clientSecret != null)
+            {
+                var vaultUrl = new Uri(vault);
+                var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
+            }
+            else
+            {
+                throw new ApplicationException("Application startup exception: null key vault credentials.");
+            }
         }
     }
 }
