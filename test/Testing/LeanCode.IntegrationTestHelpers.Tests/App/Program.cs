@@ -19,7 +19,8 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
             return LeanProgram
                 .BuildMinimalWebHost<Startup>()
                 .UseKestrel()
-                .AddAppConfigurationFromAzureKeyVault()
+                .ConfigureOnNonDevelopmentEnvironment(
+                    IConfigurationBuilderExtensions.AddAppConfigurationFromAzureKeyVault)
                 .ConfigureDefaultLogging(
                     projectName: "test",
                     destructurers: new TypesCatalog(typeof(Program)));
