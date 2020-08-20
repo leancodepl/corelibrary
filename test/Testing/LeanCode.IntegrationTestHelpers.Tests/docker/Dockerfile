@@ -1,4 +1,4 @@
-FROM leancode.azurecr.io/dotnet:3.1
+FROM leancode.azurecr.io/dotnet:5.0
 
 WORKDIR /app/code
 
