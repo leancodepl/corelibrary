@@ -1,17 +1,15 @@
 # MassTransit Integration
 
-`LeanCode.DomainModels.MassTransitRelay` allows to pass raised events to [MassTransit](https://masstransit-project.com/) bus instead of handling then in in-proc, during the request.
+`LeanCode.DomainModels.MassTransitRelay` allows to pass raised events to [MassTransit](https://masstransit-project.com/) bus. This is the only way of consuming domain events.
 
 ## Configuration
 
 Relay requires the following elements to be configured in the CQRS pipeline (in the following order):
 
 - `CorrelationElement`
-- `StoreAndPublishEventsElement` (`EventsPublisherElement` if the outbox is not necessary)
-- `EventsInterceptorElement`.
+- `StoreAndPublishEventsElement` (`EventsPublisherElement` if the outbox is not necessary).
 
-Additionally, `MassTransitRelayModule` has to be registered, with the assembly catalogs for events and consumers and a bus factory method.
-The consumers registered that way **have to be** `public`. The bus factory method should specify transport and configure the bus and return `IBusControl` in a regular MassTransit way (typically it would call `Bus.Factory.CreateUsingInMemory/CreateUsingAzureServiceBus` etc.).
+Additionally, `MassTransitRelayModule` has to be registered, with the assembly catalogs for events and consumers and a bus factory method. The consumers registered that way **have to be** `public`. The bus factory method should specify transport and configure the bus in a regular MassTransit way (typically it would call `UsingInMemory/UsingAzureServiceBus` etc., see [Mass Transit docs](https://masstransit-project.com/usage/configuration.html#asp-net-core) for more information).
 
 ### Filters
 
