@@ -91,14 +91,14 @@ namespace LeanCode.DomainModels.MassTransitRelay
             {
                 var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
 
-                config.UseLogsCorrelation();
-                config.UseRetry(retryConfig =>
-                    retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
-
-                config.UseConsumedMessagesFiltering();
-                config.StoreAndPublishDomainEvents();
                 config.ReceiveEndpoint(queueName, rcv =>
                 {
+                    rcv.UseLogsCorrelation();
+                    rcv.UseRetry(retryConfig =>
+                        retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
+                    rcv.UseConsumedMessagesFiltering();
+                    rcv.StoreAndPublishDomainEvents();
+
                     rcv.ConfigureConsumers(context);
                     rcv.ConnectReceiveEndpointObservers(context);
                 });
