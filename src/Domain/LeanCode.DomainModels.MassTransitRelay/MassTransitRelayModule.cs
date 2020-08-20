@@ -9,11 +9,12 @@ using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.MassTransitRelay.Simple;
 using LeanCode.PeriodicService;
 using MassTransit;
+using MassTransit.AutofacIntegration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public delegate IBusControl BusFactory(IComponentContext context);
+    public delegate void BusFactory(IContainerBuilderBusConfigurator busConfig);
 
     public class MassTransitRelayModule : AppModule
     {
@@ -32,7 +33,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         {
             this.consumersCatalog = consumersCatalog;
             this.eventsCatalog = eventsCatalog;
-            this.busFactory = busFactory ?? DefaultBusFactory;
+            this.busFactory = busFactory ?? DefaultBusConfigurator;
             this.useInbox = useInbox;
             this.useOutbox = useOutbox;
         }
@@ -80,18 +81,13 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.AddMassTransit(cfg =>
             {
                 cfg.AddConsumers(consumersCatalog.Assemblies);
-                cfg.AddBus(CreateBus);
+                busFactory(cfg);
             });
         }
 
-        private IBusControl CreateBus(IComponentContext context)
+        public static void DefaultBusConfigurator(IContainerBuilderBusConfigurator busCfg)
         {
-            return busFactory(context);
-        }
-
-        public static IBusControl DefaultBusFactory(IComponentContext context)
-        {
-            return Bus.Factory.CreateUsingInMemory(config =>
+            busCfg.UsingInMemory((context, config) =>
             {
                 var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
 
