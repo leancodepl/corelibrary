@@ -26,19 +26,7 @@ namespace LeanCode.Components.Startup
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
-                var configuration = builder.Build();
-
-                var vault = configuration.GetValue<string?>(VaultKey);
-                var tenantId = configuration.GetValue<string?>(TenantIdKey);
-                var clientId = configuration.GetValue<string?>(ClientIdKey);
-                var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
-
-                if (vault != null && tenantId != null && clientId != null && clientSecret != null)
-                {
-                    var vaultUrl = new Uri(vault);
-                    var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                    builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
-                }
+                ConfigureAzureKeyVault(builder);
             });
         }
 
@@ -49,23 +37,7 @@ namespace LeanCode.Components.Startup
             {
                 if (!context.HostingEnvironment.IsDevelopment())
                 {
-                    var configuration = builder.Build();
-
-                    var vault = configuration.GetValue<string?>(VaultKey);
-                    var tenantId = configuration.GetValue<string?>(TenantIdKey);
-                    var clientId = configuration.GetValue<string?>(ClientIdKey);
-                    var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
-
-                    if (vault != null && tenantId != null && clientId != null && clientSecret != null)
-                    {
-                        var vaultUrl = new Uri(vault);
-                        var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                        builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
-                    }
-                    else
-                    {
-                        throw new ApplicationException("Application startup exception: null key vault credentials.");
-                    }
+                    ConfigureAzureKeyVault(builder);
                 }
             });
         }
@@ -129,6 +101,27 @@ namespace LeanCode.Components.Startup
                 logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
                 logging.AddSerilog();
             });
+        }
+
+        private static void ConfigureAzureKeyVault(IConfigurationBuilder builder)
+        {
+            var configuration = builder.Build();
+
+            var vault = configuration.GetValue<string?>(VaultKey);
+            var tenantId = configuration.GetValue<string?>(TenantIdKey);
+            var clientId = configuration.GetValue<string?>(ClientIdKey);
+            var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
+
+            if (vault != null && tenantId != null && clientId != null && clientSecret != null)
+            {
+                var vaultUrl = new Uri(vault);
+                var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
+            }
+            else
+            {
+                throw new ApplicationException("Application startup exception: null key vault credentials.");
+            }
         }
     }
 }
