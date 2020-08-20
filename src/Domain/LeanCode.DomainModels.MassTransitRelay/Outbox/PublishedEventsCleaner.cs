@@ -5,7 +5,8 @@ using Cronos;
 using LeanCode.Dapper;
 using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
-using LeanCode.Time;
+using LeanCode.TimeProvider;
+using OpenTelemetry.Trace;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
@@ -28,18 +29,26 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var activity = LeanCodeActivitySource.Start("outbox.clean");
+            try
+            {
+                logger.Verbose("Startic raised events cleanup");
+                var time = TimeProvider.Now - KeepPeriod;
 
-            logger.Verbose("Startic raised events cleanup");
-            var time = TimeProvider.Now - KeepPeriod;
+                var count = await outboxContext.Self.ExecuteScalarAsync<int>(
+                    $@"
+                    DELETE FROM {tableName} t WHERE
+                    t.[DateOcurred] < @time AND t.[WasPublished] = 1",
+                    new[] { time },
+                    commandTimeout: 3600,
+                    cancellationToken: stoppingToken);
 
-            var count = await outboxContext.Self.ExecuteScalarAsync<int>(
-                $@"DELETE t FROM {tableName} t WHERE
-                t.[DateOcurred] < @time AND t.[WasPublished] = 1",
-                new { time },
-                commandTimeout: 3600,
-                cancellationToken: stoppingToken);
-
-            logger.Verbose("Removed {Count} raised and published events", count);
+                logger.Verbose("Removed {Count} raised and published events", count);
+            }
+            catch
+            {
+                activity?.SetStatus(Status.Error);
+                throw;
+            }
         }
     }
 }

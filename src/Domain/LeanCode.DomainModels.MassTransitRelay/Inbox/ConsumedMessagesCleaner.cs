@@ -5,7 +5,8 @@ using Cronos;
 using LeanCode.Dapper;
 using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
-using LeanCode.Time;
+using LeanCode.TimeProvider;
+using OpenTelemetry.Trace;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 {
@@ -31,16 +32,25 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
         {
             using var activity = LeanCodeActivitySource.Start("inbox.clear");
 
-            logger.Verbose("Starting periodic message cleanup");
-            var time = TimeProvider.Now - KeepTime;
-            
-            var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
-                $@"DELETE t FROM {tableName} t
-                WHERE t.[DateConsumed] < @time;",
-                new { time },
-                commandTimeout: 3600,
-                cancellationToken: stoppingToken);
-            logger.Verbose("Deleted {Count} consumed messages", deleted);
+            try
+            {
+                logger.Verbose("Starting periodic message cleanup");
+                var time = TimeProvider.Now - KeepTime;
+
+                var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
+                    $@"
+                    DELETE t FROM {tableName} t
+                    WHERE t.[DateConsumed] < @time;",
+                    new { time },
+                    commandTimeout: 3600,
+                    cancellationToken: stoppingToken);
+                logger.Verbose("Deleted {Count} consumed messages", deleted);
+            }
+            catch
+            {
+                activity.SetStatus(Status.Error);
+                throw;
+            }
         }
     }
 }

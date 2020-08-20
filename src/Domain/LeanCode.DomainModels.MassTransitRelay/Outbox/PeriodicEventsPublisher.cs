@@ -10,6 +10,7 @@ using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Trace;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -74,6 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 catch (Exception e)
                 {
                     logger.Warning(e, "Failed to publish event {MessageId}", evt.Id);
+                    publishActivity?.SetStatus(Status.Internal);
                 }
             }
         }

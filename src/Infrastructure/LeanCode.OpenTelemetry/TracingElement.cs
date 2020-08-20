@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
+using OpenTelemetry.Trace;
 
 namespace LeanCode.OpenTelemetry
 {
@@ -12,7 +13,16 @@ namespace LeanCode.OpenTelemetry
         {
             using var activity = LeanCodeActivitySource.ActivitySource.StartActivity("pipeline.action");
             activity?.AddTag("object", typeof(TInput).FullName);
-            return await next(ctx, input);
+
+            try
+            {
+                return await next(ctx, input);
+            }
+            catch
+            {
+                activity?.SetStatus(Status.Internal);
+                throw;
+            }
         }
     }
 
