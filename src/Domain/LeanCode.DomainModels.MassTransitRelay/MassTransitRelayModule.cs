@@ -14,26 +14,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public delegate void BusFactory(IContainerBuilderBusConfigurator busConfig);
-
     public class MassTransitRelayModule : AppModule
     {
         private readonly TypesCatalog consumersCatalog;
         private readonly TypesCatalog eventsCatalog;
-        private readonly BusFactory busFactory;
+        private readonly Action<IContainerBuilderBusConfigurator> busConfig;
         private readonly bool useInbox;
         private readonly bool useOutbox;
 
         public MassTransitRelayModule(
             TypesCatalog consumersCatalog,
             TypesCatalog eventsCatalog,
-            BusFactory? busFactory = null,
+            Action<IContainerBuilderBusConfigurator>? busConfig = null,
             bool useInbox = true,
             bool useOutbox = true)
         {
             this.consumersCatalog = consumersCatalog;
             this.eventsCatalog = eventsCatalog;
-            this.busFactory = busFactory ?? DefaultBusConfigurator;
+            this.busConfig = busConfig ?? DefaultBusConfigurator;
             this.useInbox = useInbox;
             this.useOutbox = useOutbox;
         }
@@ -81,7 +79,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.AddMassTransit(cfg =>
             {
                 cfg.AddConsumers(consumersCatalog.Assemblies);
-                busFactory(cfg);
+                busConfig(cfg);
             });
         }
 
