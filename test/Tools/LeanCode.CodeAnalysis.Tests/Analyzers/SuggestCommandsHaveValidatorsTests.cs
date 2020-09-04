@@ -12,7 +12,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
         [Fact]
         public async Task Ignores_commands_with_validators_reports_not_validated()
         {
-            var source = await File.ReadAllTextAsync("TestSamples/Command_validation.cs");
+            var source = await File.ReadAllTextAsync("TestSamples/SuggestCommandsHaveValidatorsTests_Command_validation.cs");
             var diag = new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveValidators, 17, 17);
             await VerifyDiagnostics(source, diag);
         }

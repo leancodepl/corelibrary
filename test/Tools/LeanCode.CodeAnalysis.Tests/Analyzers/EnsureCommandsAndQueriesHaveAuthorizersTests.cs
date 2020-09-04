@@ -12,21 +12,21 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
         [Fact]
         public async Task Commands_with_authorization_attributes_are_accepted()
         {
-            var source = await File.ReadAllTextAsync("TestSamples/Accepted_commands.cs");
+            var source = await File.ReadAllTextAsync("TestSamples/EnsureCommandsAndQueriesHaveAuthorizersTests_Accepted_commands.cs");
             await VerifyDiagnostics(source);
         }
 
         [Fact]
         public async Task Queries_with_authorization_attributes_are_accepted()
         {
-            var source = await File.ReadAllTextAsync("TestSamples/Accepted_queries.cs");
+            var source = await File.ReadAllTextAsync("TestSamples/EnsureCommandsAndQueriesHaveAuthorizersTests_Accepted_queries.cs");
             await VerifyDiagnostics(source);
         }
 
         [Fact]
         public async Task Commands_without_authorization_are_rejected()
         {
-            var source = await File.ReadAllTextAsync("TestSamples/Rejected_commands.cs");
+            var source = await File.ReadAllTextAsync("TestSamples/EnsureCommandsAndQueriesHaveAuthorizersTests_Rejected_commands.cs");
             var diags = new[]
             {
                 new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 4, 17),
@@ -39,7 +39,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
         [Fact]
         public async Task Queries_without_authorization_are_rejected()
         {
-            var source = await File.ReadAllTextAsync("TestSamples/Rejected_queries.cs");
+            var source = await File.ReadAllTextAsync("TestSamples/EnsureCommandsAndQueriesHaveAuthorizersTests_Rejected_queries.cs");
             var diags = new[]
             {
                 new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 4, 17),
