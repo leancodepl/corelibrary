@@ -11,7 +11,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
     public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
     {
         private const string HandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler`2";
-        private const string ValidatorTypeName = "FluentValidation.IValidator`1";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticsIds.CommandsShouldHaveValidators,
@@ -49,7 +48,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
         }
 
-        private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)]out INamedTypeSymbol? commandType)
+        private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)] out INamedTypeSymbol? commandType)
         {
             var handler = type.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerTypeName);
 
@@ -79,15 +78,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             var types = classes.Select(cl => model.GetDeclaredSymbol(cl) as ITypeSymbol);
             return types
                 .Where(cl => cl != null)
-                .Where(cl => IsThisCommandValidator(command, cl!))
-                .Any();
-        }
-
-        private static bool IsThisCommandValidator(INamedTypeSymbol command, ITypeSymbol type)
-        {
-            return type.AllInterfaces
-                .Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
-                .Where(i => SymbolEqualityComparer.Default.Equals(i.TypeArguments.First(), command))
+                .Where(cl => cl!.IsObjectValidator(command))
                 .Any();
         }
     }

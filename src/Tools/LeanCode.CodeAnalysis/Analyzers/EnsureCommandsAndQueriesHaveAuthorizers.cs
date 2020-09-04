@@ -37,7 +37,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
         }
 
-        public void AnalyzeSymbol(SymbolAnalysisContext context)
+        private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             var type = (INamedTypeSymbol)context.Symbol;
             var contractType = GetContractType(type);
@@ -57,11 +57,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
 
         private static ContractType? GetContractType(INamedTypeSymbol type)
         {
-            if (IsCommand(type))
+            if (type.IsCommand())
             {
                 return ContractType.Command;
             }
-            else if (IsQuery(type))
+            else if (type.IsQuery())
             {
                 return ContractType.Query;
             }
@@ -69,16 +69,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
             {
                 return null;
             }
-        }
-
-        private static bool IsCommand(INamedTypeSymbol type)
-        {
-            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName) && !type.IsAbstract;
-        }
-
-        private static bool IsQuery(INamedTypeSymbol type)
-        {
-            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName) && !type.IsAbstract;
         }
 
         private enum ContractType

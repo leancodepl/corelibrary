@@ -5,8 +5,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
 {
     public static class NamedTypeSymbolExtensions
     {
-        private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
-        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
+        public const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
+        public const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
+        public const string CommandTypeName = "LeanCode.CQRS.ICommand";
+        public const string QueryTypeName = "LeanCode.CQRS.IQuery";
+        public const string ValidatorTypeName = "FluentValidation.IValidator`1";
 
         public static bool ImplementsInterfaceOrBaseClass(this INamedTypeSymbol typeSymbol, string type)
         {
@@ -50,6 +53,31 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
 
             return type.BaseType != null && HasAuthorizationAttribute(type.BaseType);
+        }
+
+        public static bool IsCommand(this INamedTypeSymbol type)
+        {
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(CommandTypeName) && !type.IsAbstract;
+        }
+
+        public static bool IsQuery(this INamedTypeSymbol type)
+        {
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName) && !type.IsAbstract;
+        }
+
+        public static bool IsValidator(this INamedTypeSymbol type)
+        {
+            return type.AllInterfaces
+                .Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
+                .Any();
+        }
+
+        public static bool IsObjectValidator(this ITypeSymbol type, INamedTypeSymbol validatedObj)
+        {
+            return type.AllInterfaces
+                .Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
+                .Where(i => SymbolEqualityComparer.Default.Equals(i.TypeArguments.First(), validatedObj))
+                .Any();
         }
     }
 }
