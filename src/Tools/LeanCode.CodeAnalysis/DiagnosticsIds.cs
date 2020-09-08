@@ -6,5 +6,6 @@ namespace LeanCode.CodeAnalysis
         public const string QueriesShouldHaveAuthorizers = "LNCD0002";
         public const string CommandsShouldHaveValidators = "LNCD0003";
         public const string AllValidationErrorCodesShouldBeUsed = "LNCD0004";
+        public const string ErrorCodesShouldBeUnique = "LNCD0005";
     }
 }

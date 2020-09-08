@@ -13,7 +13,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
     {
         private const string MessageFormat = "`{0}` does not use all validation error codes from `{1}`. Not checked codes `{2}`";
 
-        private static readonly ImmutableHashSet<string> ValidationErrorClasses = ImmutableHashSet.Create(
+        public static readonly ImmutableHashSet<string> ValidationErrorClasses = ImmutableHashSet.Create(
             "ErrorCodes",
             "ValidationErrors");
 
@@ -85,11 +85,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
                 return s
                     .Declaration
                     .Variables
-                    .Select(v => (IFieldSymbol)model.GetDeclaredSymbol(v))
+                    .Select(v => (IFieldSymbol)model.GetDeclaredSymbol(v, context.CancellationToken))
                     .Where(f =>
                         SymbolEqualityComparer.Default.Equals(f.Type, intType) &&
                         f.DeclaredAccessibility == Accessibility.Public &&
-                        IsStaticReadonlyOrConst(f));
+                        f.IsStaticReadonlyOrConst());
             }
         }
 
@@ -106,9 +106,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
         private static bool IsErrorCodeField(IFieldSymbol field)
         {
             return ValidationErrorClasses.Contains(field.ContainingSymbol.Name)
-                && IsStaticReadonlyOrConst(field);
+                && field.IsStaticReadonlyOrConst();
         }
-
-        private static bool IsStaticReadonlyOrConst(IFieldSymbol field) => field.IsConst || (field.IsStatic && field.IsReadOnly);
     }
 }

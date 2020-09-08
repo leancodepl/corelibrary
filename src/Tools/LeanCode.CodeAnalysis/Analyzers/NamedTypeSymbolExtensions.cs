@@ -37,7 +37,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             return false;
         }
 
-        public static string GetFullNamespaceName(this INamedTypeSymbol type)
+        public static string GetFullNamespaceName(this ITypeSymbol type)
         {
             return $"{type.ContainingNamespace}.{type.MetadataName}";
         }
@@ -79,5 +79,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
                 .Where(i => SymbolEqualityComparer.Default.Equals(i.TypeArguments.First(), validatedObj))
                 .Any();
         }
+
+        public static bool IsStaticReadonlyOrConst(this IFieldSymbol field) => field.IsConst || (field.IsStatic && field.IsReadOnly);
     }
 }

@@ -9,8 +9,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
     {
         private const string Category = "Cqrs";
         private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization";
-        private const string CommandTypeName = "LeanCode.CQRS.ICommand";
-        private const string QueryTypeName = "LeanCode.CQRS.IQuery";
 
         private static readonly DiagnosticDescriptor CommandRule = new DiagnosticDescriptor(
             DiagnosticsIds.CommandsShouldHaveAuthorizers,
