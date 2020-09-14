@@ -76,7 +76,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         private void VisitEnumStatement(EnumStatement statement, int level)
         {
             definitionsBuilder.AppendSpaces(level)
-                .Append("export const enum ")
+                .Append("export enum ")
                 .Append(statement.Name)
                 .AppendLine(" {");
 

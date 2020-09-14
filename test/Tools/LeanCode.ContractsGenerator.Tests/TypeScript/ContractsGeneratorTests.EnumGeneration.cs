@@ -6,6 +6,29 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
     public partial class ContractsGeneratorTests
     {
         [Fact]
+        public void Simple_enum_is_generated_correctly()
+        {
+            var source = @"
+            namespace File1
+            {
+                public enum TestEnum1
+                {
+                    Value1 = 0;
+                    Value2 = 1;
+                }
+            }";
+
+            var generator = CreateTsGenerator(source);
+
+            var contracts = GetClient(generator.Generate(DefaultTypeScriptConfiguration));
+
+            Assert.Contains("enum TestEnum1", contracts);
+            Assert.Contains("Value1 = 0", contracts);
+            Assert.Contains("Value2 = 1", contracts);
+            Assert.DoesNotContain("const", contracts);
+        }
+
+        [Fact]
         public void Order_of_enums_is_alphanumeric()
         {
             var file1 = @"
