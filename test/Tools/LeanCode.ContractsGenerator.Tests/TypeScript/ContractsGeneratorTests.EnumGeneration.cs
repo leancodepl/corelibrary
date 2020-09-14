@@ -13,8 +13,8 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             {
                 public enum TestEnum1
                 {
-                    Value1 = 0;
-                    Value2 = 1;
+                    Value1 = 0,
+                    Value2 = 1,
                 }
             }";
 
