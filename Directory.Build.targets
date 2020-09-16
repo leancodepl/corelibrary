@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.0-preview.8.*</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.0-preview.8.*</AspNetCoreVersion>
-    <ExtensionsVersion>5.0.0-preview.8.*</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>5.0.0-rc.1.*</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>5.0.0-rc.1.*</AspNetCoreVersion>
+    <ExtensionsVersion>5.0.0-rc.1.*</ExtensionsVersion>
 
-    <HangfireVersion>1.7.12</HangfireVersion>
+    <HangfireVersion>1.7.13</HangfireVersion>
     <IdentityServerVersion>4.0.4</IdentityServerVersion>
-    <MassTransitVersion>7.0.3</MassTransitVersion>
+    <MassTransitVersion>7.0.4</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.4.0</CodeAnalysisVersion>
@@ -30,14 +30,14 @@
     <PackageReference Update="Azure.Extensions.Configuration.Secrets" Version="1.0.0-preview.1" />
     <PackageReference Update="Azure.Identity" Version="1.2.0-preview.5" />
 
-    <PackageReference Update="Serilog" Version="2.9.0" />
+    <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Update="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="4.0.0" />
 
-    <PackageReference Update="IdentityModel" Version="4.3.1" />
+    <PackageReference Update="IdentityModel" Version="4.4.0" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
 
     <PackageReference Update="FirebaseAdmin" Version="1.14.0" />
@@ -49,7 +49,7 @@
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.35" />
     <PackageReference Update="FluentValidation" Version="8.6.2" />
-    <PackageReference Update="Glob" Version="1.1.6" />
+    <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
     <PackageReference Update="Sendgrid" Version="9.21.0" />

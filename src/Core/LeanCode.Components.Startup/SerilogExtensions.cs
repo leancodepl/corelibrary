@@ -32,7 +32,7 @@ namespace LeanCode.Components.Startup
             return config.Enrich.WithProperty("AppName", appName);
         }
 
-        private static List<TType> SelectTypes<TType>(Assembly[] searchAssemblies)
+        private static List<TType?> SelectTypes<TType>(Assembly[] searchAssemblies)
         {
             return searchAssemblies
                 .SelectMany(a => a.ExportedTypes)

@@ -23,7 +23,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             this.serializerOptions = serializerOptions;
         }
 
-        public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
+        public virtual async Task<TResult?> GetAsync<TResult>(IRemoteQuery<TResult> query)
         {
             using var content = JsonContent.Create(query, query.GetType());
             using var response = await client
