@@ -1,7 +1,7 @@
 using System;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 {
@@ -13,7 +13,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         public Event1()
         {
             Id = Identity.NewId();
-            DateOccurred = Time.Now;
+            DateOccurred = TimeProvider.Now;
         }
     }
 
@@ -25,7 +25,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         public Event2()
         {
             Id = Identity.NewId();
-            DateOccurred = Time.Now;
+            DateOccurred = TimeProvider.Now;
         }
     }
 
@@ -37,7 +37,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         public Event3()
         {
             Id = Identity.NewId();
-            DateOccurred = Time.Now;
+            DateOccurred = TimeProvider.Now;
         }
     }
 }

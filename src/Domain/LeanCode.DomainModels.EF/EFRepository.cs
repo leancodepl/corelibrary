@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
@@ -28,7 +28,7 @@ namespace LeanCode.DomainModels.EF
         {
             if (entity is IOptimisticConcurrency oc)
             {
-                oc.DateModified = Time.Now;
+                oc.DateModified = TimeProvider.Now;
             }
 
             DbSet.Add(entity);
@@ -38,7 +38,7 @@ namespace LeanCode.DomainModels.EF
         {
             if (entity is IOptimisticConcurrency oc)
             {
-                oc.DateModified = Time.Now;
+                oc.DateModified = TimeProvider.Now;
             }
 
             DbSet.Remove(entity);
@@ -48,7 +48,7 @@ namespace LeanCode.DomainModels.EF
         {
             foreach (var oc in entities.OfType<IOptimisticConcurrency>())
             {
-                oc.DateModified = Time.Now;
+                oc.DateModified = TimeProvider.Now;
             }
 
             DbSet.RemoveRange(entities);
@@ -58,7 +58,7 @@ namespace LeanCode.DomainModels.EF
         {
             if (entity is IOptimisticConcurrency oc)
             {
-                oc.DateModified = Time.Now;
+                oc.DateModified = TimeProvider.Now;
             }
 
             DbSet.Update(entity);

@@ -1,5 +1,5 @@
 ﻿using System;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +35,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
                 MessageId = context.MessageId ?? throw new InvalidOperationException("Message does not have an id"),
                 ConsumerType = typeof(TConsumer).FullName!,
                 MessageType = typeof(TMessage).FullName!,
-                DateConsumed = Time.Now,
+                DateConsumed = TimeProvider.Now,
             };
         }
 

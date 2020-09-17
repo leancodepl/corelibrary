@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using LeanCode.Test.Helpers;
 using Xunit;
 
-namespace LeanCode.TimeProvider.Tests
+namespace LeanCode.Time.Tests
 {
     public abstract class FixedTimeProviderTestsBase
     {
@@ -26,7 +26,7 @@ namespace LeanCode.TimeProvider.Tests
 
             for (int i = 0; i < Iterations; i++)
             {
-                Assert.Equal(expectedTime, Time.Now);
+                Assert.Equal(expectedTime, TimeProvider.Now);
             }
         }
 
@@ -37,7 +37,7 @@ namespace LeanCode.TimeProvider.Tests
 
             for (int i = 0; i < DelayIterations; i++)
             {
-                Assert.Equal(expectedTime, Time.Now);
+                Assert.Equal(expectedTime, TimeProvider.Now);
                 await Task.Delay(Delay);
             }
         }
@@ -49,7 +49,7 @@ namespace LeanCode.TimeProvider.Tests
 
             var expectedTimeWithOffset = new DateTimeOffset(expectedTime, TimeSpan.Zero);
 
-            Assert.Equal(expectedTimeWithOffset, Time.NowWithOffset);
+            Assert.Equal(expectedTimeWithOffset, TimeProvider.NowWithOffset);
         }
     }
 

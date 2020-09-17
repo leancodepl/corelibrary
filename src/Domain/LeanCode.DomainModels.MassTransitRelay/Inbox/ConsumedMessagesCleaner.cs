@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Cronos;
 using LeanCode.Dapper;
 using LeanCode.PeriodicService;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 {
@@ -29,7 +29,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.Debug("Starting periodic message cleanup");
-            var time = Time.Now - KeepTime;
+            var time = TimeProvider.Now - KeepTime;
             var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
                 $@"DELETE t FROM {tableName} t
                 WHERE t.[DateConsumed] < @time;",
