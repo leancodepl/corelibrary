@@ -39,7 +39,7 @@ namespace LeanCode.Time
                     "Cannot assign local DateTime, use SetTo(DateTimeOffset) overload with correct offset instead.");
             }
 
-            TimeProvider.UseTimeProvider(SharedInstance);
+            TimeProvider.Use(SharedInstance);
 
             SharedInstance.savedTime.Value = new DateTimeOffset(time, TimeSpan.Zero);
         }
@@ -49,7 +49,7 @@ namespace LeanCode.Time
         /// </summary>
         public static void SetTo(DateTimeOffset time)
         {
-            TimeProvider.UseTimeProvider(SharedInstance);
+            TimeProvider.Use(SharedInstance);
 
             SharedInstance.savedTime.Value = time;
         }

@@ -9,7 +9,7 @@ namespace LeanCode.Time
         public static DateTime Now => timeProvider.Now;
         public static DateTimeOffset NowWithOffset => timeProvider.NowWithOffset;
 
-        public static void UseTimeProvider(ITimeProvider newProvider) =>
+        public static void Use(ITimeProvider newProvider) =>
             timeProvider = newProvider;
     }
 }
