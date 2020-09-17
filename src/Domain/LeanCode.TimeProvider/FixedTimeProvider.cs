@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace LeanCode.TimeProvider
+namespace LeanCode.Time
 {
     public sealed class FixedTimeProvider : ITimeProvider
     {
@@ -39,7 +39,7 @@ namespace LeanCode.TimeProvider
                     "Cannot assign local DateTime, use SetTo(DateTimeOffset) overload with correct offset instead.");
             }
 
-            Time.UseTimeProvider(SharedInstance);
+            TimeProvider.UseTimeProvider(SharedInstance);
 
             SharedInstance.savedTime.Value = new DateTimeOffset(time, TimeSpan.Zero);
         }
@@ -49,7 +49,7 @@ namespace LeanCode.TimeProvider
         /// </summary>
         public static void SetTo(DateTimeOffset time)
         {
-            Time.UseTimeProvider(SharedInstance);
+            TimeProvider.UseTimeProvider(SharedInstance);
 
             SharedInstance.savedTime.Value = time;
         }

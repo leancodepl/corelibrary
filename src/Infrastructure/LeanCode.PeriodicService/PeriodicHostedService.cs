@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.PeriodicService
@@ -57,7 +57,7 @@ namespace LeanCode.PeriodicService
 
         private static TimeSpan CalculateDelay(IPeriodicAction action)
         {
-            var now = Time.Now;
+            var now = TimeProvider.Now;
             var next = action.When.GetNextOccurrence(now, false) ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");
             return next - now;
         }

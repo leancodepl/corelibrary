@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.TimeProvider
+namespace LeanCode.Time
 {
     public sealed class UtcTimeProvider : ITimeProvider
     {

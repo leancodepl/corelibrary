@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.TimeProvider
+namespace LeanCode.Time
 {
     public interface ITimeProvider
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Cronos;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.PeriodicService;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay
@@ -66,7 +66,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public Task<List<RaisedEvent>> FetchUnpublishedEventsAsync()
         {
-            var after = Time.Now - RelayPeriod;
+            var after = TimeProvider.Now - RelayPeriod;
             return outboxContext.RaisedEvents
                 .Where(evt => evt.DateOcurred > after && !evt.WasPublished)
                 .OrderBy(evt => evt.DateOcurred)

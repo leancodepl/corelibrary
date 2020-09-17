@@ -7,7 +7,7 @@ using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.IdentityProvider;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.Data.Sqlite;
@@ -84,7 +84,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public async Task Does_not_consume_already_consumed_message()
         {
             using var dbContext = new TestDbContext(dbConnection);
-            dbContext.Add(new ConsumedMessage(MessageId, Time.Now, typeof(ReportingConsumer).FullName, typeof(TestMsg).FullName));
+            dbContext.Add(new ConsumedMessage(MessageId, TimeProvider.Now, typeof(ReportingConsumer).FullName, typeof(TestMsg).FullName));
             await dbContext.SaveChangesAsync();
 
             var consumer = new ReportingConsumer();

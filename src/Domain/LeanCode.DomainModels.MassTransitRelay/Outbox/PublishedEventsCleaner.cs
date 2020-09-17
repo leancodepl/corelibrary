@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Cronos;
 using LeanCode.Dapper;
 using LeanCode.PeriodicService;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
@@ -27,7 +27,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.Debug("Startic raised events cleanup");
-            var time = Time.Now - KeepPeriod;
+            var time = TimeProvider.Now - KeepPeriod;
 
             var count = await outboxContext.Self.ExecuteScalarAsync<int>(
                 $@"DELETE FROM {tableName} t WHERE
