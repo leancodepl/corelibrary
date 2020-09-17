@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Features.Variance;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default.Autofac;
 using LeanCode.CQRS.Execution;
@@ -46,6 +47,8 @@ namespace LeanCode.CQRS.Default
             builder.RegisterType<SimpleFinalizer>().AsSelf();
 
             builder.RegisterType<AutofacEventHandlerResolver>().As<IDomainEventHandlerResolver>();
+
+            builder.RegisterSource(new ContravariantRegistrationSource());
         }
     }
 }
