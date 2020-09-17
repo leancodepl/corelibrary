@@ -23,7 +23,7 @@ namespace LeanCode.ContractsGenerator
         public static async Task<List<GeneratorConfiguration>> GetConfigurationsAsync(string configFile)
         {
             await using var stream = File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), configFile));
-            return await JsonSerializer.DeserializeAsync<List<GeneratorConfiguration>>(stream);
+            return (await JsonSerializer.DeserializeAsync<List<GeneratorConfiguration>>(stream))!;
         }
 
         public static List<GeneratorConfiguration> DeserializeConfigurationsFromString(string cfg)

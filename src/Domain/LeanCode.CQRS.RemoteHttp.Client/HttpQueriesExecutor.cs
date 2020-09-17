@@ -34,7 +34,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             using var responseContent = await response.Content.ReadAsStreamAsync();
             try
             {
-                return await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions);
+                return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions))!;
             }
             catch (Exception ex)
             {

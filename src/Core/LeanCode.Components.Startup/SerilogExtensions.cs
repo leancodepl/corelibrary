@@ -42,7 +42,7 @@ namespace LeanCode.Components.Startup
                     t.GetConstructor(Type.EmptyTypes) != null)
                 .Select(Activator.CreateInstance)
                 .Cast<TType>()
-                .ToList();
+                .ToList()!;
         }
     }
 }
