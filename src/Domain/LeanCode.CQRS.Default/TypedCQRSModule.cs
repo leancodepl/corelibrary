@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Features.Variance;
 using LeanCode.Components;
 using LeanCode.CQRS.Default.Autofac;
 using LeanCode.CQRS.Execution;
@@ -29,8 +28,6 @@ namespace LeanCode.CQRS.Default
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterSource(new ContravariantRegistrationSource());
-
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
             builder.RegisterAssemblyTypes(catalog.Assemblies).AsClosedTypesOf(typeof(IDomainEventHandler<>));
