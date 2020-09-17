@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Features.Variance;
 using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -24,6 +25,8 @@ namespace LeanCode.CQRS.Default
 
             builder.RegisterType<RoleRegistry>().AsSelf().SingleInstance();
             builder.RegisterType<DefaultPermissionAuthorizer>().AsSelf().AsImplementedInterfaces();
+
+            builder.RegisterSource(new ContravariantRegistrationSource());
         }
     }
 }
