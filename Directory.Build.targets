@@ -37,7 +37,7 @@
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.7" />
 
     <PackageReference Update="FirebaseAdmin" Version="1.14.0" />
-    <PackageReference Update="Google.Cloud.Firestore" Version="1.1.0" />
+    <PackageReference Update="Google.Cloud.Firestore" Version="2.1.0" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
     <PackageReference Update="Microsoft.Data.SqlClient" Version="1.1.3" />
