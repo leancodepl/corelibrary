@@ -85,31 +85,41 @@ jobs:
           zip -j "$ZIP" "$PWD"/packed/*.nupkg
       - name: Publish artifacts
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
           path: ${{ needs.prepare.outputs.artifacts_name }}
   publish:
     runs-on: ubuntu-18.04
-    name: Publish to NuGet
+    name: Publish to feeds
     needs: [prepare, build]
-    if: ${{ needs.prepare.outputs.publish_nugets == '1' }}
+    if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
     steps:
       - name: Fetch build
-        uses: actions/download-artifact@v1
+        id: download
+        uses: actions/download-artifact@v2
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
+      - name: Push to Feedz
+        run: |
+          unzip "$ZIP"
+          find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n true '{}' ';'
+        env:
+          FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Create release
+        if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
         uses: actions/create-release@v1
         with:
           tag_name: ${{ format('v{0}', needs.prepare.outputs.version) }}
           release_name: ${{ format('Release v{0}', needs.prepare.outputs.version) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Push to NuGet
+        if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
         run: |
-          unzip "$ZIP" -d packages
-          find packages/ -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+          unzip "$ZIP"
+          find -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
