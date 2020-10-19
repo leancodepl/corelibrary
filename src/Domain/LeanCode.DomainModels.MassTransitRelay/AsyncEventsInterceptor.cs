@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
+    [SuppressMessage("?", "CA1822", Justification = "Forcing these to be instance methods makes for better desing.")]
     public sealed class AsyncEventsInterceptor
     {
         private static readonly EventInterceptor Interceptor = new EventInterceptor();

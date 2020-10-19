@@ -44,7 +44,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override HttpContext HttpContext { get; }
         public override string Method { get; set; }
         public override string Scheme { get; set; } = "http";
-        public override bool IsHttps { get; set; } = false;
+        public override bool IsHttps { get; set; }
         public override HostString Host { get; set; }
         public override PathString PathBase { get; set; }
         public override PathString Path { get; set; }

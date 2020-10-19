@@ -103,7 +103,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public void The_accessor_is_called_only_once_for_multiple_validation_rules_sync_case()
         {
-            int calledCount = 0;
+            var calledCount = 0;
             object Accessor(IValidationContext ctx, object data)
             {
                 return Interlocked.Increment(ref calledCount);
@@ -118,7 +118,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public async Task The_accessor_is_called_only_once_for_multiple_validation_rules_async_case()
         {
-            int calledCount = 0;
+            var calledCount = 0;
             object Accessor(IValidationContext ctx, object data)
             {
                 return Interlocked.Increment(ref calledCount);

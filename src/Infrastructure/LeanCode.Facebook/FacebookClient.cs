@@ -25,9 +25,10 @@ namespace LeanCode.Facebook
 
         public FacebookClient(FacebookConfiguration config, HttpClient client)
         {
-            this.photoSize = config.PhotoSize;
             this.client = client;
-            this.hmac = config.AppSecret is null
+
+            photoSize = config.PhotoSize;
+            hmac = config.AppSecret is null
                 ? null
                 : new HMACSHA256(ParseKey(config.AppSecret));
         }
@@ -43,7 +44,7 @@ namespace LeanCode.Facebook
 
             try
             {
-                using var response = await client.GetAsync(uri);
+                using var response = await client.GetAsync(uri, cancellationToken);
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -54,8 +55,8 @@ namespace LeanCode.Facebook
                     throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
                 }
 
-                await using var content = await response.Content.ReadAsStreamAsync();
-                var result = await JsonDocument.ParseAsync(content);
+                await using var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+                var result = await JsonDocument.ParseAsync(content, cancellationToken: cancellationToken);
 
                 if (handleError && result.RootElement.TryGetProperty("error", out var error))
                 {

@@ -26,16 +26,17 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            logger.Debug("Startic raised events cleanup");
+            logger.Verbose("Startic raised events cleanup");
             var time = TimeProvider.Now - KeepPeriod;
 
             var count = await outboxContext.Self.ExecuteScalarAsync<int>(
                 $@"DELETE FROM {tableName} t WHERE
                 t.[DateOcurred] < @time AND t.[WasPublished] = 1",
                 new[] { time },
-                commandTimeout: 3600);
+                commandTimeout: 3600,
+                cancellationToken: stoppingToken);
 
-            logger.Information("Removed {Count} raised and published events", count);
+            logger.Verbose("Removed {Count} raised and published events", count);
         }
     }
 }

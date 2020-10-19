@@ -43,7 +43,7 @@ namespace LeanCode.CQRS.Tests
         {
             var appCtx = new AppContext();
             var cmd = new SampleCommand();
-            var expResult = new ValidationResult(new ValidationError[0]);
+            var expResult = new ValidationResult(System.Array.Empty<ValidationError>());
 
             var (handler, underlying) = FindSampleValidator();
             underlying.Result = expResult;

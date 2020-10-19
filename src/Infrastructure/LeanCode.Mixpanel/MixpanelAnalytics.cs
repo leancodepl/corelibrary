@@ -163,7 +163,7 @@ namespace LeanCode.Mixpanel
             var url = $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
             using var rawResponse = await client.GetAsync(url, cancellationToken);
-            var content = await rawResponse.Content.ReadAsStringAsync();
+            var content = await rawResponse.Content.ReadAsStringAsync(cancellationToken);
             if (content == "1")
             {
                 logger.Debug(

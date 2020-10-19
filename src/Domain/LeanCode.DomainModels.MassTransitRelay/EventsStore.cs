@@ -51,7 +51,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             return evts;
         }
 
-        private void MarkEventsAsRaised(List<RaisedEvent> events, bool[] statuses)
+        private static void MarkEventsAsRaised(List<RaisedEvent> events, bool[] statuses)
         {
             if (events.Count != statuses.Length)
             {

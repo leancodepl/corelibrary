@@ -68,7 +68,7 @@ namespace LeanCode.PdfRocket
             response.EnsureSuccessStatusCode();
 
             var result = new MemoryStream();
-            await response.Content.CopyToAsync(result);
+            await response.Content.CopyToAsync(result, cancellationToken);
             result.Position = 0;
 
             logger.Information("PDF generated");

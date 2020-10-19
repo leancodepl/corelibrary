@@ -57,42 +57,42 @@ namespace LeanCode.DomainModels.Tests
             Assert.False(TenPLN().GetHashCode() == TenUSD().GetHashCode());
         }
 
-        private Money TenPLN() =>
+        private static Money TenPLN() =>
             new Money()
             {
                 Amount = 10,
                 Currency = "PLN",
             };
 
-        private Money TwentyPLN() =>
+        private static Money TwentyPLN() =>
             new Money()
             {
                 Amount = 20,
                 Currency = "PLN",
             };
 
-        private Money TenUSD() =>
+        private static Money TenUSD() =>
             new Money()
             {
                 Amount = 10,
                 Currency = "USD",
             };
 
-        private Money? MaybeTenPLN(bool @null) =>
+        private static Money? MaybeTenPLN(bool @null) =>
             @null ? null : new Money()
             {
                 Amount = 10,
                 Currency = "PLN",
             };
 
-        private Money? MaybeTwentyPLN(bool @null) =>
+        private static Money? MaybeTwentyPLN(bool @null) =>
             @null ? null : new Money()
             {
                 Amount = 20,
                 Currency = "PLN",
             };
 
-        private Money? MaybeTenUSD(bool @null) =>
+        private static Money? MaybeTenUSD(bool @null) =>
             @null ? null : new Money()
             {
                 Amount = 10,

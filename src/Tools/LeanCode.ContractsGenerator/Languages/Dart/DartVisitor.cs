@@ -147,7 +147,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder.AppendSpaces(level)
                 .Append("@JsonValue(");
 
-            if (int.TryParse(statement.Value, out int value))
+            if (int.TryParse(statement.Value, out var value))
             {
                 definitionsBuilder.Append(value);
             }
@@ -175,7 +175,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 VisitTypeStatement(statement.TypeArguments.Last());
 
-                definitionsBuilder.Append(">");
+                definitionsBuilder.Append('>');
             }
             else if (statement.IsArrayLike)
             {
@@ -183,7 +183,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 VisitTypeStatement(statement.TypeArguments.First());
 
-                definitionsBuilder.Append(">");
+                definitionsBuilder.Append('>');
             }
             else if (statement.TypeArguments.Count > 0)
             {
@@ -195,9 +195,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 }
 
                 definitionsBuilder.Append(name);
-                definitionsBuilder.Append("<");
+                definitionsBuilder.Append('<');
 
-                for (int i = 0; i < statement.TypeArguments.Count; i++)
+                for (var i = 0; i < statement.TypeArguments.Count; i++)
                 {
                     VisitTypeStatement(statement.TypeArguments[i]);
 
@@ -207,7 +207,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     }
                 }
 
-                definitionsBuilder.Append(">");
+                definitionsBuilder.Append('>');
             }
             else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLowerInvariant(), out var newName))
             {
@@ -237,7 +237,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             {
                 definitionsBuilder.Append(" implements ");
 
-                for (int i = 0; i < statement.Constraints.Count; i++)
+                for (var i = 0; i < statement.Constraints.Count; i++)
                 {
                     VisitTypeStatement(statement.Constraints[i]);
 
@@ -257,7 +257,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             VisitTypeStatement(statement.Type);
 
-            definitionsBuilder.Append(" ")
+            definitionsBuilder.Append(' ')
                 .Append(TranslateIdentifier(statement.Name))
                 .AppendLine(";");
         }
@@ -292,9 +292,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
             if (statement.Parameters.Any())
             {
-                definitionsBuilder.Append("<");
+                definitionsBuilder.Append('<');
 
-                for (int i = 0; i < statement.Parameters.Count; i++)
+                for (var i = 0; i < statement.Parameters.Count; i++)
                 {
                     VisitTypeParameterStatement(statement.Parameters[i]);
 
@@ -304,7 +304,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                     }
                 }
 
-                definitionsBuilder.Append(">");
+                definitionsBuilder.Append('>');
             }
 
             if (statement.IsClass && statement.BaseClass != null)
@@ -454,7 +454,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             definitionsBuilder.AppendLine(")");
         }
 
-        private bool IsA<T>(TypeStatement type)
+        private static bool IsA<T>(TypeStatement type)
         {
             return $"{type.Namespace}.{type.Name}" == typeof(T).FullName;
         }
@@ -548,9 +548,9 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 return group.Select(x => (x.name, x.statement)).ToList();
             }
 
-            var limit = group.Select(s => s.statement.Namespace.Split('.').Count()).Max();
+            var limit = group.Select(s => s.statement.Namespace.Split('.').Length).Max();
 
-            int depth = 1;
+            var depth = 1;
 
             while (depth <= limit)
             {
@@ -572,13 +572,13 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
                 .ToList();
         }
 
-        private string MakeName(string namespaceName, string name, int depth)
+        private static string MakeName(string namespaceName, string name, int depth)
         {
             var split = namespaceName.Split('.').Reverse().Take(depth).Append(name);
             return string.Join(string.Empty, split);
         }
 
-        private string TranslateIdentifier(string identifier)
+        private static string TranslateIdentifier(string identifier)
         {
             var translated = identifier.Uncapitalize();
 

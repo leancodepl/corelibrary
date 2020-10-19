@@ -285,7 +285,7 @@ namespace LeanCode.ContractsGenerator
 
         private TypeStatement ConvertType(ITypeSymbol typeSymbol)
         {
-            bool isNullable = typeSymbol.Name == "Nullable";
+            var isNullable = typeSymbol.Name == "Nullable";
 
             switch (typeSymbol)
             {

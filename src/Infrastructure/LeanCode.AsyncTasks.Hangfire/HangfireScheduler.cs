@@ -10,7 +10,7 @@ namespace LeanCode.AsyncTasks.Hangfire
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireScheduler>();
 
-        private readonly IBackgroundJobClient jobClient;
+        private readonly IBackgroundJobClient backgroundJobClient;
         private readonly IRecurringJobManager recurringJobs;
         private readonly string queue;
 
@@ -19,7 +19,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             IRecurringJobManager recurringJobs,
             string queue)
         {
-            this.jobClient = backgroundJobClient;
+            this.backgroundJobClient = backgroundJobClient;
             this.recurringJobs = recurringJobs;
             this.queue = queue;
         }
@@ -50,7 +50,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         public Task ScheduleNowAsync<TTask, TParams>(TParams @params)
             where TTask : class, IAsyncTask<TParams>
         {
-            var jobId = jobClient.Create<AsyncTaskRunner<TTask, TParams>>(
+            var jobId = backgroundJobClient.Create<AsyncTaskRunner<TTask, TParams>>(
                 t => t.RunAsync(@params), new EnqueuedState(queue));
 
             logger.Information(
@@ -93,7 +93,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAfterDefault<TTask, TParams>(TParams @params, TimeSpan delay)
             where TTask : class, IAsyncTask<TParams>
         {
-            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), delay);
+            var jobId = backgroundJobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), delay);
 
             logger.Information(
                 "Task {Task} with params {@Params} scheduled to run after {Delay} as {JobId}",
@@ -105,7 +105,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         {
             var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params));
 
-            var jobId = jobClient.Create<IBackgroundJobClient>(
+            var jobId = backgroundJobClient.Create<IBackgroundJobClient>(
                 c => c.Create(realJob, new EnqueuedState(queue)),
                 new ScheduledState(delay));
 
@@ -117,7 +117,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         private void ScheduleAtDefault<TTask, TParams>(TParams @params, DateTimeOffset at)
             where TTask : class, IAsyncTask<TParams>
         {
-            var jobId = jobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), at);
+            var jobId = backgroundJobClient.Schedule<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params), at);
 
             logger.Information(
                 "Task {Task} with params {@Params} scheduled to run at {Offset} as {JobId}",
@@ -129,7 +129,7 @@ namespace LeanCode.AsyncTasks.Hangfire
         {
             var realJob = Job.FromExpression<AsyncTaskRunner<TTask, TParams>>(t => t.RunAsync(@params));
 
-            var jobId = jobClient.Create<IBackgroundJobClient>(
+            var jobId = backgroundJobClient.Create<IBackgroundJobClient>(
                 c => c.Create(realJob, new EnqueuedState(queue)),
                 new ScheduledState(at.UtcDateTime));
 

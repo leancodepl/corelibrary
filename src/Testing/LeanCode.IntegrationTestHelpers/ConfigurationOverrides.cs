@@ -56,7 +56,7 @@ namespace LeanCode.IntegrationTestHelpers
 
             public override void Load()
             {
-                var dbName = $"integration_tests_{Guid.NewGuid().ToString("N")}";
+                var dbName = $"integration_tests_{Guid.NewGuid():N}";
                 var rest = Environment.GetEnvironmentVariable(connectionStringBase);
                 var dbConnStr = $"Initial Catalog={dbName};" + rest;
 

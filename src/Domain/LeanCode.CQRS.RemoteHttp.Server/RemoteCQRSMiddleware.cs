@@ -39,8 +39,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             this.catalog = catalog;
             this.contextTranslator = contextTranslator;
-            this.serializer = new Utf8JsonSerializer();
             this.next = next;
+
+            serializer = new Utf8JsonSerializer();
         }
 
         public async Task InvokeAsync(HttpContext context)

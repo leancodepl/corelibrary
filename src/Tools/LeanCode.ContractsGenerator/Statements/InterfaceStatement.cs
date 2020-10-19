@@ -5,9 +5,9 @@ namespace LeanCode.ContractsGenerator.Statements
     internal class InterfaceStatement : INamespacedStatement
     {
         public string Name { get; set; } = string.Empty;
-        public bool IsStatic { get; set; } = false;
-        public bool IsClass { get; set; } = false;
-        public TypeStatement? BaseClass { get; set; } = null;
+        public bool IsStatic { get; set; }
+        public bool IsClass { get; set; }
+        public TypeStatement? BaseClass { get; set; }
         public string Namespace { get; set; } = string.Empty;
         public List<InterfaceStatement> ParentChain { get; set; } = new List<InterfaceStatement>();
         public List<TypeParameterStatement> Parameters { get; set; } = new List<TypeParameterStatement>();

@@ -111,7 +111,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             var idx = request.Path.Value!.LastIndexOf('/');
 
             var name = idx != -1
-                ? request.Path.Value.Substring(idx + 1)
+                ? request.Path.Value[(idx + 1)..]
                 : request.Path.Value;
 
             return Catalog.GetType(name);

@@ -98,6 +98,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
         protected void WriteLiteral(object value) => WriteLiteralTo(Output, value);
         protected void WriteLiteralTo(TextWriter writer, object value) => WriteLiteralTo(writer, Stringify(value));
 
+        [SuppressMessage("?", "CA1822", Justification = "We need to expose certain interface.")]
         protected void WriteLiteralTo(TextWriter writer, string? value)
         {
             if (!string.IsNullOrEmpty(value))

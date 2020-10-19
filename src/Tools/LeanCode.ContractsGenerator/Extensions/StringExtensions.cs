@@ -9,12 +9,12 @@ namespace LeanCode.ContractsGenerator.Extensions
                 return str;
             }
 
-            return char.ToLowerInvariant(str[0]) + str.Substring(1);
+            return char.ToLowerInvariant(str[0]) + str[1..];
         }
 
         public static string Capitalize(this string str)
         {
-            return char.ToUpperInvariant(str[0]) + str.Substring(1);
+            return char.ToUpperInvariant(str[0]) + str[1..];
         }
     }
 }

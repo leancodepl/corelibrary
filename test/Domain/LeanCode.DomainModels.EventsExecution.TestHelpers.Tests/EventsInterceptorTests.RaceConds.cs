@@ -32,7 +32,7 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 
         private static async Task RunTaskTest()
         {
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
             {
                 var inter = EventsInterceptor.Single<SampleEvent1>();
                 var id = Guid.NewGuid();
@@ -46,7 +46,7 @@ namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
 
         private static void RunThreadTest()
         {
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
             {
                 var inter = EventsInterceptor.Single<SampleEvent1>();
                 var id = Guid.NewGuid();

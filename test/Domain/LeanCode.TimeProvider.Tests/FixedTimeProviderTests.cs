@@ -24,7 +24,7 @@ namespace LeanCode.Time.Tests
         {
             FixedTimeProvider.SetTo(expectedTime);
 
-            for (int i = 0; i < Iterations; i++)
+            for (var i = 0; i < Iterations; i++)
             {
                 Assert.Equal(expectedTime, TimeProvider.Now);
             }
@@ -35,7 +35,7 @@ namespace LeanCode.Time.Tests
         {
             FixedTimeProvider.SetTo(expectedTime);
 
-            for (int i = 0; i < DelayIterations; i++)
+            for (var i = 0; i < DelayIterations; i++)
             {
                 Assert.Equal(expectedTime, TimeProvider.Now);
                 await Task.Delay(Delay);

@@ -104,7 +104,7 @@ namespace LeanCode.CQRS.Default.Tests.Security
             Assert.False(hasPermission);
         }
 
-        private ClaimsPrincipal CreateUser(params string[] roles)
+        private static ClaimsPrincipal CreateUser(params string[] roles)
         {
             var claims = roles.Select(r => new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", r));
 

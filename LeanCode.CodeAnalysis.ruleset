@@ -9,6 +9,8 @@
         <!-- ConvertSwitchStatementToExpression -->
         <Rule Id="IDE1006" Action="None"/>
         <!-- NamingRule (interface with I) - we already have this rule in StyleCop -->
+        <Rule Id="CA1816" Action="None"/>
+        <!-- DisposeMethodsShouldCallSuppressFinalize - we don't use finalizers that much -->
     </Rules>
 
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">

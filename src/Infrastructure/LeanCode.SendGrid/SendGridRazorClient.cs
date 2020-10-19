@@ -47,11 +47,11 @@ namespace LeanCode.SendGrid
 
             if (statusCode >= HttpStatusCode.BadRequest)
             {
-                await using var stream = await response.Body.ReadAsStreamAsync();
+                await using var stream = await response.Body.ReadAsStreamAsync(cancellationToken);
 
                 try
                 {
-                    var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(stream, SerializerOptions);
+                    var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(stream, SerializerOptions, cancellationToken);
 
                     throw new SendGridException(statusCode, body?.Errors);
                 }

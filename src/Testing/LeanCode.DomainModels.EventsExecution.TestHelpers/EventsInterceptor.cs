@@ -48,8 +48,8 @@ namespace LeanCode.UnitTests.TestHelpers
         public sealed class SingleStorage<TEvent>
             where TEvent : class, IDomainEvent
         {
-            public bool Raised { get; private set; } = false;
-            public TEvent? Event { get; private set; } = default;
+            public bool Raised { get; private set; }
+            public TEvent? Event { get; private set; }
 
             internal void Store(IDomainEvent @event)
             {

@@ -112,10 +112,8 @@ namespace LeanCode.DomainModels.EF.Tests
 
     public class WrongRowVersion : IOptimisticConcurrency
     {
-        private byte[] rowVersion;
-
         public int Id { get; set; }
-        public byte[] RowVersion { get => rowVersion; set => rowVersion = value; }
+        public byte[] RowVersion { get; set; }
         public DateTime DateModified { get; set; }
     }
 
@@ -134,11 +132,9 @@ namespace LeanCode.DomainModels.EF.Tests
 
     public class WrongDateModified : IOptimisticConcurrency
     {
-        private DateTime dateModified;
-
         public int Id { get; set; }
         public byte[] RowVersion { get; set; }
-        public DateTime DateModified { get => dateModified; set => dateModified = value; }
+        public DateTime DateModified { get; set; }
     }
 
     public class WrongDateModifiedContext : DbContext

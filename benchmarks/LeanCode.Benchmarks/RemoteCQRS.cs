@@ -22,7 +22,6 @@ namespace LeanCode.Benchmarks
         private static readonly TypesCatalog Catalog = TypesCatalog.Of<RemoteCQRS>();
 
         private readonly SampleAppContext appContext = new SampleAppContext();
-        private readonly InputToOutputMiddleware simpleMiddleware = new InputToOutputMiddleware();
 
         private IServiceProvider serviceProvider;
         private RemoteCQRSMiddleware<SampleAppContext> middleware;
@@ -38,7 +37,7 @@ namespace LeanCode.Benchmarks
                 .WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b);
             builder.RegisterModule(module);
 
-            builder.Populate(new ServiceDescriptor[0]);
+            builder.Populate(Array.Empty<ServiceDescriptor>());
             var container = builder.Build();
 
             middleware = new RemoteCQRSMiddleware<SampleAppContext>(
@@ -57,7 +56,7 @@ namespace LeanCode.Benchmarks
 
         [Benchmark(Baseline = true)]
         public Task SimpleMiddleware() =>
-            simpleMiddleware.Invoke(PrepareQuery(true));
+            InputToOutputMiddleware.Invoke(PrepareQuery(true));
 
         [Benchmark]
         public Task EmptyQuery() =>
@@ -75,7 +74,7 @@ namespace LeanCode.Benchmarks
         public Task MultipleFieldsCommand() =>
             middleware.InvokeAsync(PrepareCommand(true));
 
-        private byte[] GetContent(object obj)
+        private static byte[] GetContent(object obj)
         {
             return JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType());
         }

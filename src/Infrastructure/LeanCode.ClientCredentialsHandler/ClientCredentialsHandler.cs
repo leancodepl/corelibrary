@@ -20,9 +20,9 @@ namespace LeanCode.ClientCredentialsHandler
         private readonly SemaphoreSlim tokenLock = new SemaphoreSlim(1, 1);
         private readonly HttpClient httpClient;
 
-        private string? accessToken = null;
+        private string? accessToken;
 
-        private bool disposed = false;
+        private bool disposed;
 
         private string? AccessToken
         {
@@ -48,8 +48,9 @@ namespace LeanCode.ClientCredentialsHandler
             : base(new HttpClientHandler())
         {
             this.config = config;
-            this.httpClient = new HttpClient();
-            this.tokenEndpoint = UrlHelper.Concat(config.ServerAddress, "connect/token");
+
+            httpClient = new HttpClient();
+            tokenEndpoint = UrlHelper.Concat(config.ServerAddress, "connect/token");
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(
