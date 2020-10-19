@@ -13,7 +13,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         {
             const string value = "Value";
             string dataPassed = null;
-            Task<object> Accessor(ValidationContext ctx, string str)
+            Task<object> Accessor(IValidationContext ctx, string str)
             {
                 dataPassed = str;
                 return Task.FromResult<object>(null);
@@ -28,8 +28,8 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public async Task Passes_the_context_to_accessor()
         {
-            ValidationContext dataPassed = null;
-            Task<object> Accessor(ValidationContext ctx2, string str)
+            IValidationContext dataPassed = null;
+            Task<object> Accessor(IValidationContext ctx2, string str)
             {
                 dataPassed = ctx2;
                 return Task.FromResult<object>(null);
@@ -58,7 +58,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         public async Task The_accessor_is_called_only_once_for_multiple_validation_rules()
         {
             int calledCount = 0;
-            Task<object> Accessor(ValidationContext ctx, object data)
+            Task<object> Accessor(IValidationContext ctx, object data)
             {
                 return Task.FromResult((object)Interlocked.Increment(ref calledCount));
             }
@@ -81,7 +81,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
 
         private class TestValidator : ContextualValidator<SampleData>
         {
-            public TestValidator(Func<ValidationContext, string, Task<object>> accessor, Func<object, bool> must = null)
+            public TestValidator(Func<IValidationContext, string, Task<object>> accessor, Func<object, bool> must = null)
             {
                 RuleForAsync(d => d.Test, accessor).Must(must ?? (e => true));
             }
@@ -89,7 +89,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
 
         private class MultiValidator : ContextualValidator<SampleData>
         {
-            public MultiValidator(Func<ValidationContext, string, Task<object>> accessor)
+            public MultiValidator(Func<IValidationContext, string, Task<object>> accessor)
             {
                 RuleForAsync(d => d.Test, accessor)
                     .Must(e => true)

@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -27,12 +28,12 @@ namespace LeanCode.CodeAnalysis.Analyzers
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
+            context.RegisterSyntaxNodeAction(AnalyzeSymbol, SyntaxKind.ClassDeclaration);
         }
 
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
+        private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context)
         {
-            var type = (INamedTypeSymbol)context.Symbol;
+            var type = (INamedTypeSymbol)context.ContainingSymbol!;
 
             if (!IsCommandHandler(type, out var commandType))
             {
@@ -40,16 +41,15 @@ namespace LeanCode.CodeAnalysis.Analyzers
             }
 
             var tree = type.DeclaringSyntaxReferences.First().SyntaxTree;
-            var model = context.Compilation.GetSemanticModel(tree);
 
-            if (!CommandIsValidated(commandType, tree, model))
+            if (!CommandIsValidated(commandType, tree, context.SemanticModel))
             {
                 var diagnostic = Diagnostic.Create(Rule, type.Locations[0], commandType.Name);
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)]out INamedTypeSymbol? commandType)
+        private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)] out INamedTypeSymbol? commandType)
         {
             var handler = type.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerTypeName);
 

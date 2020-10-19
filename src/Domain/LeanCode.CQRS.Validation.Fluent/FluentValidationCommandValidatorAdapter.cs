@@ -49,7 +49,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             var ctx = new ValidationContext<TCommand>(
                 command,
                 new PropertyChain(),
-                ValidatorOptions.ValidatorSelectors.DefaultValidatorSelectorFactory());
+                ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory());
 
             ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;
             ctx.RootContextData[ValidationContextExtensions.ComponentContextKey] = componentContext;

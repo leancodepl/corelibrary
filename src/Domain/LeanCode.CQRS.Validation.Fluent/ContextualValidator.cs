@@ -10,11 +10,11 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         public IRuleBuilderInitial<T, TValue> RuleFor<TProperty, TValue>(
             Expression<Func<T, TProperty>> expression,
-            Func<ValidationContext, TProperty, TValue> realValueAccessor)
+            Func<IValidationContext, TProperty, TValue> realValueAccessor)
         {
             var member = expression.GetMember();
 
-            var compiled = member is null || ValidatorOptions.DisableAccessorCache
+            var compiled = member is null || ValidatorOptions.Global.DisableAccessorCache
                 ? expression.Compile()
                 : AccessorCache<T>.GetCachedAccessor(member, expression);
 
@@ -34,11 +34,11 @@ namespace LeanCode.CQRS.Validation.Fluent
 
         public IRuleBuilderInitial<T, TValue> RuleForAsync<TProperty, TValue>(
             Expression<Func<T, TProperty>> expression,
-            Func<ValidationContext, TProperty, Task<TValue>> realValueAccessor)
+            Func<IValidationContext, TProperty, Task<TValue>> realValueAccessor)
         {
             var member = expression.GetMember();
 
-            var compiled = member is null || ValidatorOptions.DisableAccessorCache
+            var compiled = member is null || ValidatorOptions.Global.DisableAccessorCache
                 ? expression.Compile()
                 : AccessorCache<T>.GetCachedAccessor(member, expression);
 

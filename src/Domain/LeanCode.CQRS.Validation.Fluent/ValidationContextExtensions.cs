@@ -9,7 +9,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         public const string ComponentContextKey = "ComponentContext";
         public const string AppContextKey = "AppContext";
 
-        public static TAppContext AppContext<TAppContext>(this ValidationContext ctx)
+        public static TAppContext AppContext<TAppContext>(this IValidationContext ctx)
             where TAppContext : class
         {
             if (ctx.RootContextData.TryGetValue(AppContextKey, out var ac))
@@ -22,7 +22,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             }
         }
 
-        public static T GetService<T>(this ValidationContext ctx)
+        public static T GetService<T>(this IValidationContext ctx)
             where T : class
         {
             if (ctx.RootContextData.TryGetValue(ComponentContextKey, out var cc))
