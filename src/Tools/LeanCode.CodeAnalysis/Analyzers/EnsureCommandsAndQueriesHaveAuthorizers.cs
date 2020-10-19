@@ -12,7 +12,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
         private const string QueryTypeName = "LeanCode.CQRS.IQuery";
 
-#pragma warning disable RS2008
         private static readonly DiagnosticDescriptor CommandRule = new DiagnosticDescriptor(
             DiagnosticsIds.CommandsShouldHaveAuthorizers,
             "Command should be authorized",
@@ -28,7 +27,6 @@ namespace LeanCode.CodeAnalysis.Analyzers
             Category,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
-#pragma warning restore RS2008
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(CommandRule, QueryRule);
 

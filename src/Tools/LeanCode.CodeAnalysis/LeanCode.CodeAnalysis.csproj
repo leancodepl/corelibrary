@@ -30,5 +30,7 @@
     <None Include="LeanCode.CodeAnalysis.props" Pack="true" PackagePath="build" />
     <None Include="$(CodeAnalysisSettingsLocation)/LeanCode.CodeAnalysis.ruleset" Pack="true" PackagePath="build" />
     <None Include="$(CodeAnalysisSettingsLocation)/stylecop.json" Pack="true" PackagePath="build" />
+
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
   </ItemGroup>
 </Project>
