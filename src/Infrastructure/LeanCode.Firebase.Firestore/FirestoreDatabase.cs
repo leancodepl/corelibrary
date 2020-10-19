@@ -11,27 +11,29 @@ namespace LeanCode.Firebase.Firestore
 {
     public class FirestoreDatabase : IAsyncInitializable
     {
-        private readonly Channel channel;
-        private readonly FirestoreClient client;
+        private readonly FirebaseApp firebaseApp;
+        private FirestoreDb? database;
 
-        public FirestoreDb Database { get; }
+        public FirestoreDb Database => database ?? throw new InvalidOperationException("The database needs to be initialized first.");
 
         public FirestoreDatabase(FirebaseApp firebaseApp)
         {
+            this.firebaseApp = firebaseApp;
+        }
+
+        async Task IAsyncInitializable.InitializeAsync()
+        {
             var credentials = firebaseApp.Options.Credential;
 
-            channel = new Channel(
-               FirestoreClient.DefaultEndpoint.Host,
-               FirestoreClient.DefaultEndpoint.Port,
-               credentials.ToChannelCredentials());
-
-            client = FirestoreClient.Create(channel);
-
-            Database = FirestoreDb.Create(firebaseApp.Options.ProjectId, client);
+            var builder = new FirestoreClientBuilder
+            {
+                ChannelCredentials = credentials.ToChannelCredentials(),
+            };
+            var client = await builder.BuildAsync();
+            database = FirestoreDb.Create(firebaseApp.Options.ProjectId, client);
         }
 
         int IAsyncInitializable.Order => 0;
-        Task IAsyncInitializable.InitializeAsync() => Task.CompletedTask;
-        Task IAsyncInitializable.DeinitializeAsync() => channel.ShutdownAsync();
+        Task IAsyncInitializable.DeinitializeAsync() => Task.CompletedTask;
     }
 }
