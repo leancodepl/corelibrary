@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Autofac" Version="5.2.0" />
+    <PackageReference Update="Autofac" Version="6.0.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
 
     <PackageReference Update="Azure.Extensions.Configuration.Secrets" Version="1.0.0-preview.1" />
