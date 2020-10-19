@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using LeanCode.ContractsGenerator.Languages;
 using LeanCode.ContractsGenerator.Languages.Dart;
 using LeanCode.ContractsGenerator.Languages.TypeScript;
@@ -151,7 +150,7 @@ namespace LeanCode.ContractsGenerator
                     continue;
                 }
 
-                if (property.DeclaredAccessibility.HasFlag(Accessibility.Public))
+                if (property.DeclaredAccessibility == Accessibility.Public)
                 {
                     var type = ConvertType(property.Type);
 
@@ -168,12 +167,12 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private bool HasAttribute<TAttribute>(ISymbol symbol)
+        private static bool HasAttribute<TAttribute>(ISymbol symbol)
             where TAttribute : Attribute
         {
             return symbol
                 .GetAttributes()
-                .Any(attr => attr.AttributeClass.Name == typeof(TAttribute).Name);
+                .Any(attr => attr.AttributeClass?.Name == typeof(TAttribute).Name);
         }
 
         private IEnumerable<InterfaceStatement> GenerateClassesAndInterfaces(SemanticModel model, SyntaxTree tree)
@@ -182,11 +181,18 @@ namespace LeanCode.ContractsGenerator
             var interfacesDeclarations = tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>();
             var structsDeclarations = tree.GetRoot().DescendantNodes().OfType<StructDeclarationSyntax>();
 
-            var classes = classesDeclarations.Select(c => model.GetDeclaredSymbol(c)).Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s)));
-            var interfaces = interfacesDeclarations.Select(i => model.GetDeclaredSymbol(i));
+            var classes = classesDeclarations
+                .Select(c => model.GetDeclaredSymbol(c))
+                .Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s)))
+                .Where(c => c is object)
+                .Cast<INamedTypeSymbol>();
+            var interfaces = interfacesDeclarations
+                .Select(i => model.GetDeclaredSymbol(i))
+                .Where(i => i is object)
+                .Cast<INamedTypeSymbol>();
 
-            var publicClasses = classes.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public));
-            var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility.HasFlag(Accessibility.Public));
+            var publicClasses = classes.Where(i => i.DeclaredAccessibility == Accessibility.Public);
+            var publicInterfaces = interfaces.Where(i => i.DeclaredAccessibility == Accessibility.Public);
 
             var rootLevelClasses = publicClasses.Where(i => i.ContainingType == null);
 
@@ -251,7 +257,8 @@ namespace LeanCode.ContractsGenerator
             var enums = tree.GetRoot().DescendantNodes().OfType<EnumDeclarationSyntax>();
             return enums
                 .Select(e => model.GetDeclaredSymbol(e))
-                .Where(i => !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
+                .Where(i => i is object && !HasAttribute<ExcludeFromContractsGenerationAttribute>(i))
+                .Cast<INamedTypeSymbol>()
                 .Select(GenerateEnum);
         }
 

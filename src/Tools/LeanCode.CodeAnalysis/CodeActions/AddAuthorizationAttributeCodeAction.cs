@@ -38,7 +38,9 @@ namespace LeanCode.CodeAnalysis.CodeActions
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var root = await document.GetSyntaxRootAsync(cancellationToken);
 
-            var classDeclaration = root!.FindNode(classSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
+            var classDeclaration =
+                root!.FindNode(classSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>()
+                ?? throw new InvalidOperationException("Cannot find parent class.");
 
             var authorizer = SF.Attribute(SF.ParseName(StripAttributeSuffix(authorizationAttribute)));
             var list = SF.AttributeList(SF.SingletonSeparatedList(authorizer)).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));

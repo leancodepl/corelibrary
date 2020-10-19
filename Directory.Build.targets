@@ -9,7 +9,7 @@
     <MassTransitVersion>7.0.4</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>3.4.0</CodeAnalysisVersion>
+    <CodeAnalysisVersion>3.7.0</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -118,6 +118,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.113" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.205" />
   </ItemGroup>
 </Project>

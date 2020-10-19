@@ -43,8 +43,9 @@ namespace LeanCode.CodeAnalysis.Analyzers
         {
             var attributes = type.GetAttributes();
             if (attributes.Any(attr =>
-                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName) ||
-                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)))
+                attr.AttributeClass is object &&
+                (attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName) ||
+                attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName))))
             {
                 return true;
             }

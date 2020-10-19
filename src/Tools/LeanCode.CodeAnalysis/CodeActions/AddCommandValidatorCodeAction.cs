@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,8 +42,10 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 return document;
             }
 
-            var handlerSyntax = root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>();
-            var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(handlerSyntax) as INamedTypeSymbol;
+            var handlerSyntax =
+                root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>() ??
+                throw new InvalidOperationException("Cannot find parent class.");
+            var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(handlerSyntax)!;
             var handlerInteface = concreteHandler.AllInterfaces
                 .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName);
 

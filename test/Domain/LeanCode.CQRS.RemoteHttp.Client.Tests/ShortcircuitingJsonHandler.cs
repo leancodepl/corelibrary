@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -55,9 +56,9 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
                 }
             }
 
-            foreach (var prop in req.Properties)
+            foreach (var prop in req.Options)
             {
-                clone.Properties.Add(prop);
+                ((IDictionary<string, object?>)clone.Options).Add(prop);
             }
 
             foreach (var header in req.Headers)

@@ -8,11 +8,6 @@ namespace LeanCode.IntegrationTests.App
 {
     public static class Program
     {
-        public static Task Main(string[] args)
-        {
-            return CreateWebHostBuilder(args).Build().RunAsync();
-        }
-
         [SuppressMessage("?", "IDE0060", Justification = "`args` are required by convention.")]
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {

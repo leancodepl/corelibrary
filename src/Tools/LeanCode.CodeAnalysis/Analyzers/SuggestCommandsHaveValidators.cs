@@ -13,6 +13,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
         private const string HandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler`2";
         private const string ValidatorTypeName = "FluentValidation.IValidator`1";
 
+#pragma warning disable RS2008
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticsIds.CommandsShouldHaveValidators,
             "Commands should be validated",
@@ -20,6 +21,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             "Cqrs",
             DiagnosticSeverity.Info,
             true);
+#pragma warning restore RS2008
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
 
