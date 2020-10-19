@@ -10,11 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="System/Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
     <EmbeddedResource Update="System/Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <StronglyTypedFileName>System/Strings.Designer.cs</StronglyTypedFileName>
@@ -22,6 +17,11 @@
       <StronglyTypedClassName>Strings</StronglyTypedClassName>
       <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
     </EmbeddedResource>
+    <Compile Update="System/Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>System/Strings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
