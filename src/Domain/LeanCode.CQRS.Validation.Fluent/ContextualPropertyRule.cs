@@ -15,12 +15,12 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 
-        private readonly Func<ValidationContext, object, object?> realValueFunc;
+        private readonly Func<IValidationContext, object, object?> realValueFunc;
 
         public ContextualPropertyRule(
             MemberInfo? member,
             Func<object, object>? propertyFunc,
-            Func<ValidationContext, object, object?> realValueFunc,
+            Func<IValidationContext, object, object?> realValueFunc,
             LambdaExpression? expression,
             Func<CascadeMode>? cascadeModeThunk,
             Type? typeToValidate,
@@ -30,7 +30,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             this.realValueFunc = realValueFunc;
         }
 
-        public override IEnumerable<ValidationFailure> Validate(ValidationContext context)
+        public override IEnumerable<ValidationFailure> Validate(IValidationContext context)
         {
             context.RootContextData[InstanceUnderValidationKey] = GetRealValue(context);
 
@@ -38,7 +38,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
 
         public override Task<IEnumerable<ValidationFailure>> ValidateAsync(
-            ValidationContext context,
+            IValidationContext context,
             CancellationToken cancellation)
         {
             context.RootContextData[InstanceUnderValidationKey] = GetRealValue(context);
@@ -47,7 +47,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
 
         protected override IEnumerable<ValidationFailure> InvokePropertyValidator(
-            ValidationContext context,
+            IValidationContext context,
             IPropertyValidator validator,
             string propertyName)
         {
@@ -57,7 +57,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
 
         protected override Task<IEnumerable<ValidationFailure>> InvokePropertyValidatorAsync(
-            ValidationContext context,
+            IValidationContext context,
             IPropertyValidator validator,
             string propertyName,
             CancellationToken cancellation)
@@ -67,7 +67,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             return validator.ValidateAsync(propContext, cancellation);
         }
 
-        private PropertyValidatorContext CreatePropertyContext(ValidationContext context, string propertyName)
+        private PropertyValidatorContext CreatePropertyContext(IValidationContext context, string propertyName)
         {
             var realValue = context.RootContextData[InstanceUnderValidationKey];
             var propContext = new PropertyValidatorContext(context, this, propertyName, realValue);
@@ -75,7 +75,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             return propContext;
         }
 
-        private object? GetRealValue(ValidationContext context)
+        private object? GetRealValue(IValidationContext context)
         {
             var propValue = PropertyFunc(context.InstanceToValidate);
 
@@ -87,12 +87,12 @@ namespace LeanCode.CQRS.Validation.Fluent
     {
         private const string InstanceUnderValidationKey = "InstanceUnderValidation";
 
-        private readonly Func<ValidationContext, object, Task<object?>> realValueFunc;
+        private readonly Func<IValidationContext, object, Task<object?>> realValueFunc;
 
         public AsyncContextualPropertyRule(
             MemberInfo? member,
             Func<object, object>? propertyFunc,
-            Func<ValidationContext, object, Task<object?>> realValueFunc,
+            Func<IValidationContext, object, Task<object?>> realValueFunc,
             LambdaExpression? expression,
             Func<CascadeMode>? cascadeModeThunk,
             Type? typeToValidate,
@@ -102,13 +102,13 @@ namespace LeanCode.CQRS.Validation.Fluent
             this.realValueFunc = realValueFunc;
         }
 
-        public override IEnumerable<ValidationFailure> Validate(ValidationContext context)
+        public override IEnumerable<ValidationFailure> Validate(IValidationContext context)
         {
             throw new NotSupportedException("Cannot execute async validator in sync context.");
         }
 
         public override async Task<IEnumerable<ValidationFailure>> ValidateAsync(
-            ValidationContext context,
+            IValidationContext context,
             CancellationToken cancellation)
         {
             context.RootContextData[InstanceUnderValidationKey] = await GetRealValueAsync(context);
@@ -117,7 +117,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
 
         protected override IEnumerable<ValidationFailure> InvokePropertyValidator(
-            ValidationContext context,
+            IValidationContext context,
             IPropertyValidator validator,
             string propertyName)
         {
@@ -127,7 +127,7 @@ namespace LeanCode.CQRS.Validation.Fluent
         }
 
         protected override async Task<IEnumerable<ValidationFailure>> InvokePropertyValidatorAsync(
-            ValidationContext context,
+            IValidationContext context,
             IPropertyValidator validator,
             string propertyName,
             CancellationToken cancellation)
@@ -137,7 +137,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             return await validator.ValidateAsync(propContext, cancellation);
         }
 
-        private PropertyValidatorContext CreatePropertyContext(ValidationContext context, string propertyName)
+        private PropertyValidatorContext CreatePropertyContext(IValidationContext context, string propertyName)
         {
             var realValue = context.RootContextData[InstanceUnderValidationKey];
             var propContext = new PropertyValidatorContext(context, this, propertyName, realValue);
@@ -145,7 +145,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             return propContext;
         }
 
-        private async Task<object?> GetRealValueAsync(ValidationContext context)
+        private async Task<object?> GetRealValueAsync(IValidationContext context)
         {
             var propValue = PropertyFunc(context.InstanceToValidate);
 
