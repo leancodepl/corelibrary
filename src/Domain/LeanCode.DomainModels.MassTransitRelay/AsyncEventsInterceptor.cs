@@ -6,7 +6,7 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    [SuppressMessage("?", "CA1822", Justification = "Forcing these to be instance methods makes for better desing.")]
+    [SuppressMessage("?", "CA1822", Justification = "Forcing these to be instance methods makes for better design.")]
     public sealed class AsyncEventsInterceptor
     {
         private static readonly EventInterceptor Interceptor = new EventInterceptor();

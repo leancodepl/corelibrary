@@ -89,10 +89,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 .ToListAsync();
         }
 
-        public void Dispose()
-        {
-            dbContext.Dispose();
-        }
+        public void Dispose() => dbContext.Dispose();
 
         private static void AssertRaisedEvent(RaisedEvent evt, Guid id, Type type, bool wasPublished)
         {
