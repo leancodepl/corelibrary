@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -7,13 +8,14 @@ namespace LeanCode.Serialization.Tests
 {
     public class JsonContentTests
     {
+        private static readonly JsonSerializerOptions GeneralSerializerOptions = new JsonSerializerOptions();
         private static readonly Payload SamplePayload = new Payload { Data = "abcd1234" };
         private static readonly string SampleJson = ToJson(SamplePayload);
 
         [Fact]
         public async Task Correctly_serializes_the_payload_if_read_as_string()
         {
-            using var content = JsonContent.Create(SamplePayload);
+            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
             var res = await content.ReadAsStringAsync();
 
@@ -23,7 +25,7 @@ namespace LeanCode.Serialization.Tests
         [Fact]
         public async Task Correctly_serializes_the_payload_if_read_as_stream()
         {
-            using var content = JsonContent.Create(SamplePayload);
+            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
             await using var res = await content.ReadAsStreamAsync();
 
             var data = new byte[SampleJson.Length];
@@ -36,7 +38,7 @@ namespace LeanCode.Serialization.Tests
         [Fact]
         public async Task Correctly_serializes_the_payload_if_read_as_bytearray()
         {
-            using var content = JsonContent.Create(SamplePayload);
+            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
             var res = await content.ReadAsByteArrayAsync();
 
@@ -48,7 +50,7 @@ namespace LeanCode.Serialization.Tests
         public async Task Respects_the_serializer_options()
         {
             var opts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            using var content = JsonContent.Create(SamplePayload, opts);
+            using var content = JsonContent.Create(SamplePayload, options: opts);
 
             var res = await content.ReadAsStringAsync();
 
@@ -58,7 +60,7 @@ namespace LeanCode.Serialization.Tests
         [Fact]
         public void Has_correct_content_type()
         {
-            using var content = JsonContent.Create(SamplePayload);
+            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
             Assert.Equal("application/json", content.Headers.ContentType.MediaType);
             Assert.Equal("utf-8", content.Headers.ContentType.CharSet);
@@ -67,7 +69,7 @@ namespace LeanCode.Serialization.Tests
         [Fact]
         public void Forces_chunk_encoding()
         {
-            using var content = JsonContent.Create(SamplePayload);
+            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
             Assert.Null(content.Headers.ContentLength);
         }

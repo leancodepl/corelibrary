@@ -1,8 +1,8 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using LeanCode.Serialization;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
@@ -20,14 +20,13 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             JsonSerializerOptions? serializerOptions)
         {
             this.client = client;
-            this.serializerOptions = serializerOptions;
+            this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
         }
 
         public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
         {
-            using var content = JsonContent.Create(query, query.GetType());
-            using var response = await client
-                .PostAsync("query/" + query.GetType().FullName, content);
+            using var content = JsonContent.Create(query, query.GetType(), options: serializerOptions);
+            using var response = await client.PostAsync("query/" + query.GetType().FullName, content);
 
             response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 

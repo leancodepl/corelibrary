@@ -16,6 +16,7 @@ namespace LeanCode.Serialization.Tests
         [InlineData("Darwin_Case", "darwin_case")]
         [InlineData("kebab-case", "kebab_case")]
         [InlineData("MACRO_CASE", "macro_case")]
+        [InlineData("𐓏𐓘𐓻𐓘𐓻𐓟 𐒻𐓟", "𐓷𐓘𐓻𐓘𐓻𐓟_𐓣𐓟")]
         public void Correctly_converts_string_to_snake_case(string input, string expectedOutput)
         {
             var converted = input.ToSnakeCase();

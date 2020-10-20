@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.CQRS.Validation;
-using LeanCode.Serialization;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
@@ -29,9 +29,8 @@ namespace LeanCode.CQRS.RemoteHttp.Client
 
         public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
         {
-            using var content = JsonContent.Create(command, command.GetType());
-            using var response = await client
-                .PostAsync("command/" + command.GetType().FullName, content);
+            using var content = JsonContent.Create(command, command.GetType(), options: serializerOptions);
+            using var response = await client.PostAsync("command/" + command.GetType().FullName, content);
 
             // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
