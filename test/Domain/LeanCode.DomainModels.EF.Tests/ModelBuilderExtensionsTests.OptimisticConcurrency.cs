@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -110,6 +111,7 @@ namespace LeanCode.DomainModels.EF.Tests
         }
     }
 
+    [SuppressMessage("?", "IDE0032", Justification = "Specifically for tests.")]
     public class WrongRowVersion : IOptimisticConcurrency
     {
         private byte[] rowVersion;
@@ -132,6 +134,7 @@ namespace LeanCode.DomainModels.EF.Tests
         }
     }
 
+    [SuppressMessage("?", "IDE0032", Justification = "Specifically for tests.")]
     public class WrongDateModified : IOptimisticConcurrency
     {
         private DateTime dateModified;

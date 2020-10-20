@@ -67,7 +67,7 @@ namespace LeanCode.SmsSender
             using (var body = new FormUrlEncodedContent(parameters!))
             using (var response = await client.PostAsync("sms.do", body, cancellationToken))
             {
-                await using var content = await response.Content.ReadAsStreamAsync();
+                await using var content = await response.Content.ReadAsStreamAsync(cancellationToken);
                 try
                 {
                     using var doc = JsonDocument.Parse(content);

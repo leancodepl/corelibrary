@@ -126,9 +126,9 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             else if (statement.TypeArguments.Count > 0)
             {
                 stringBuilder.Append(statement.Name);
-                stringBuilder.Append("<");
+                stringBuilder.Append('<');
 
-                for (int i = 0; i < statement.TypeArguments.Count; i++)
+                for (var i = 0; i < statement.TypeArguments.Count; i++)
                 {
                     VisitTypeStatement(statement.TypeArguments[i], stringBuilder);
 
@@ -138,7 +138,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                     }
                 }
 
-                stringBuilder.Append(">");
+                stringBuilder.Append('>');
             }
             else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out var name))
             {
@@ -150,7 +150,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 {
                     stringBuilder
                         .Append(string.Join("_", statement.ParentChain.Select(t => t.Name)))
-                        .Append("_");
+                        .Append('_');
                 }
 
                 stringBuilder.Append(statement.Name);
@@ -178,7 +178,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             {
                 definitionsBuilder.Append(" extends ");
 
-                for (int i = 0; i < statement.Constraints.Count; i++)
+                for (var i = 0; i < statement.Constraints.Count; i++)
                 {
                     VisitTypeStatement(statement.Constraints[i], definitionsBuilder);
 
@@ -197,7 +197,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             if (statement.Type.IsNullable)
             {
-                definitionsBuilder.Append("?");
+                definitionsBuilder.Append('?');
             }
 
             definitionsBuilder.Append(": ");
@@ -216,7 +216,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
+            var name = char.ToLower(statement.Name[0]) + statement.Name[1..];
 
             clientBuilder
                 .AppendSpaces(2)
@@ -240,7 +240,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             clientBuilder
                 .Append(">(\"")
                 .Append(statement.Namespace)
-                .Append(".")
+                .Append('.')
                 .Append(statement.Name)
                 .Append("\", dto),")
                 .AppendLine();
@@ -250,7 +250,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = char.ToLower(statement.Name[0]) + statement.Name.Substring(1);
+            var name = char.ToLower(statement.Name[0]) + statement.Name[1..];
 
             clientBuilder.AppendSpaces(2)
                 .Append(name)
@@ -262,7 +262,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
             clientBuilder.Append(">(\"")
                 .Append(statement.Namespace)
-                .Append(".")
+                .Append('.')
                 .Append(statement.Name)
                 .Append("\", dto),")
                 .AppendLine();
@@ -279,7 +279,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 {
                     definitionsBuilder
                         .Append(string.Join("_", statement.ParentChain.Select(p => p.Name)))
-                        .Append("_");
+                        .Append('_');
                 }
 
                 definitionsBuilder
@@ -287,9 +287,9 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 if (statement.Parameters.Any())
                 {
-                    definitionsBuilder.Append("<");
+                    definitionsBuilder.Append('<');
 
-                    for (int i = 0; i < statement.Parameters.Count; i++)
+                    for (var i = 0; i < statement.Parameters.Count; i++)
                     {
                         VisitTypeParameterStatement(statement.Parameters[i]);
 
@@ -299,14 +299,14 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                         }
                     }
 
-                    definitionsBuilder.Append(">");
+                    definitionsBuilder.Append('>');
                 }
 
                 if (statement.Extends.Any())
                 {
                     definitionsBuilder.Append(" extends ");
 
-                    for (int i = 0; i < statement.Extends.Count; i++)
+                    for (var i = 0; i < statement.Extends.Count; i++)
                     {
                         VisitTypeStatement(statement.Extends[i], definitionsBuilder);
 
@@ -358,7 +358,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
                 if (hasConsts)
                 {
                     constsBuilder.AppendSpaces(level);
-                    constsBuilder.Append("}");
+                    constsBuilder.Append('}');
 
                     if (level == 0)
                     {

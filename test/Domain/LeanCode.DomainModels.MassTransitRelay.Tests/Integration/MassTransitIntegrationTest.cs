@@ -107,18 +107,18 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             Assert.Equal(testApp.CorrelationId, evt.CorrelationId);
         }
 
-        private void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType)
+        private static void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType)
         {
             Assert.Equal(consumerType.FullName, msg.ConsumerType);
             Assert.Equal(messageType.FullName, msg.MessageType);
         }
 
-        private void AssertRaisedEvent(RaisedEvent evt, Type type)
+        private static void AssertRaisedEvent(RaisedEvent evt, Type type)
         {
             Assert.Equal(type.FullName, evt.EventType);
             Assert.True(evt.WasPublished);
         }
 
-        private Task WaitForConsumers() => Task.Delay(500);
+        private static Task WaitForConsumers() => Task.Delay(500);
     }
 }

@@ -13,7 +13,7 @@ namespace LeanCode.DomainModels.Model
         {
             var hc = new HashCode();
 
-            foreach (object? attr in GetAttributesToIncludeInEqualityCheck())
+            foreach (var attr in GetAttributesToIncludeInEqualityCheck())
             {
                 hc.Add(attr);
             }

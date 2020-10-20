@@ -15,7 +15,7 @@ namespace LeanCode.EFMigrator
 
         public virtual void Run()
         {
-            int result = Run(Args);
+            var result = Run(Args);
 
             if (result != 0)
             {
@@ -25,10 +25,10 @@ namespace LeanCode.EFMigrator
 
         public virtual int Run(string[] args)
         {
-            bool migrate = false;
-            bool seed = false;
+            var migrate = false;
+            var seed = false;
 
-            foreach (string arg in args)
+            foreach (var arg in args)
             {
                 switch (arg)
                 {
@@ -58,7 +58,7 @@ namespace LeanCode.EFMigrator
                 return 2;
             }
 
-            string? connectionString = MigrationsConfig.GetConnectionString();
+            var connectionString = MigrationsConfig.GetConnectionString();
 
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -100,7 +100,7 @@ namespace LeanCode.EFMigrator
             where TFactory : IDesignTimeDbContextFactory<TContext>, new()
             where TContext : DbContext
         {
-            string contextName = typeof(TContext).Name;
+            var contextName = typeof(TContext).Name;
 
             WriteLine($"Starting migration of {contextName}");
 

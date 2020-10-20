@@ -17,7 +17,7 @@ namespace LeanCode.Serialization
             var sb = new StringBuilder(s.Length * 2);
             var state = SnakeCaseState.Start;
 
-            for (int i = 0; i < s.Length; i++)
+            for (var i = 0; i < s.Length; i++)
             {
                 if (s[i] == ' ')
                 {
@@ -33,7 +33,7 @@ namespace LeanCode.Serialization
                         case SnakeCaseState.Upper:
                             if (i > 0 && i + 1 < s.Length)
                             {
-                                char nextChar = s[i + 1];
+                                var nextChar = s[i + 1];
 
                                 if (!char.IsUpper(nextChar) && nextChar != '_')
                                 {

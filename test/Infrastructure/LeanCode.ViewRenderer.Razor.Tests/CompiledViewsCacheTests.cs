@@ -48,7 +48,7 @@ namespace LeanCode.ViewRenderer.Razor.Tests
         [LongRunningFact]
         public async Task Stress_test_the_multithreading_part()
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var tasks = Enumerable.Range(0, 1000).Select(_ => cache.GetOrCompileAsync(View).AsTask());
                 var results = await Task.WhenAll(tasks);

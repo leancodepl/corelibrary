@@ -63,7 +63,7 @@ namespace LeanCode.Firebase.FCM.Tests
             stringLocalizer[Culture, Key].Returns(Value);
 
             var n = client.Localize(Culture)
-                .ImageUrl(Key, new object[0])
+                .ImageUrl(Key, System.Array.Empty<object>())
                 .Build();
 
             Assert.Equal(Value, n.ImageUrl);

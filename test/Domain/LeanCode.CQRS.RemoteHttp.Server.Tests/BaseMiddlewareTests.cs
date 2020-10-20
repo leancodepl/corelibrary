@@ -28,9 +28,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName!;
-            this.serviceProvider = Substitute.For<IServiceProvider>();
-            this.serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(Query);
-            this.serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(Command);
+
+            serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(Query);
+            serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(Command);
 
             Middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,

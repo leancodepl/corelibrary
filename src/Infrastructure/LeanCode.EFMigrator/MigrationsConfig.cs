@@ -17,10 +17,10 @@ namespace LeanCode.EFMigrator
         private static async Task<string> GetAzureKeyVaultAccessTokenAsync(
             string authority, string resource, string scope)
         {
-            string clientId = GetEnvironmentVariable(KeyVaultClientIdKey)
+            var clientId = GetEnvironmentVariable(KeyVaultClientIdKey)
                 ?? throw new ArgumentNullException(KeyVaultClientIdKey);
 
-            string clientSecret = GetEnvironmentVariable(KeyVaultClientSecretKey)
+            var clientSecret = GetEnvironmentVariable(KeyVaultClientSecretKey)
                 ?? throw new ArgumentNullException(KeyVaultClientSecretKey);
 
             var context = new AuthenticationContext(authority);
@@ -32,10 +32,10 @@ namespace LeanCode.EFMigrator
 
         public static async Task UseConnectionStringFromAzureKeyVaultAsync()
         {
-            string keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey)
+            var keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey)
                 ?? throw new ArgumentNullException(KeyVaultUrlKey);
 
-            string connectionStringKey = ConnectionStringKey.Replace(":", "--");
+            var connectionStringKey = ConnectionStringKey.Replace(":", "--");
 
             using (var client = new KeyVaultClient(GetAzureKeyVaultAccessTokenAsync))
             {

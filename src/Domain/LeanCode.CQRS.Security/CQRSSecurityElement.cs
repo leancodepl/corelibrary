@@ -9,8 +9,6 @@ namespace LeanCode.CQRS.Security
         where TAppContext : ISecurityContext
         where TInput : notnull
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSSecurityElement<TAppContext, TInput, TOutput>>();
-
         private readonly IAuthorizerResolver<TAppContext> authorizerResolver;
 
         public CQRSSecurityElement(IAuthorizerResolver<TAppContext> authorizerResolver)

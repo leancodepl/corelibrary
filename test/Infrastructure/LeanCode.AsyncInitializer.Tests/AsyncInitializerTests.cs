@@ -72,7 +72,7 @@ namespace LeanCode.AsyncInitializer.Tests
             Assert.Equal(0, sp.Initializers[2].InitOrder);
         }
 
-        private (StubProvider, AsyncInitializer) Prepare(params CountedInitializer[] inits)
+        private static (StubProvider, AsyncInitializer) Prepare(params CountedInitializer[] inits)
         {
             var sp = new StubProvider(inits.ToList());
             return (sp, new AsyncInitializer(inits));

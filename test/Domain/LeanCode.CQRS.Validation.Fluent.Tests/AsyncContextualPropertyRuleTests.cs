@@ -57,7 +57,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public async Task The_accessor_is_called_only_once_for_multiple_validation_rules()
         {
-            int calledCount = 0;
+            var calledCount = 0;
             Task<object> Accessor(IValidationContext ctx, object data)
             {
                 return Task.FromResult((object)Interlocked.Increment(ref calledCount));

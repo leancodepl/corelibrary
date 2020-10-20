@@ -28,14 +28,15 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            logger.Debug("Starting periodic message cleanup");
+            logger.Verbose("Starting periodic message cleanup");
             var time = TimeProvider.Now - KeepTime;
             var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
                 $@"DELETE t FROM {tableName} t
                 WHERE t.[DateConsumed] < @time;",
                 new { time },
-                commandTimeout: 3600);
-            logger.Information("Deleted {Count} consumed messages", deleted);
+                commandTimeout: 3600,
+                cancellationToken: stoppingToken);
+            logger.Verbose("Deleted {Count} consumed messages", deleted);
         }
     }
 }

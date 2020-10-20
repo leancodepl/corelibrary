@@ -127,7 +127,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 .ToListAsync();
         }
 
-        private void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType, Guid messageId)
+        private static void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType, Guid messageId)
         {
             Assert.Equal(consumerType.FullName, msg.ConsumerType);
             Assert.Equal(messageType.FullName, msg.MessageType);

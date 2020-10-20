@@ -120,7 +120,7 @@ namespace LeanCode.CQRS.Tests
         public AppContext AppContext { get; private set; }
         public SampleCommand Command { get; private set; }
 
-        public ValidationResult Result { get; set; } = new ValidationResult(new ValidationError[0]);
+        public ValidationResult Result { get; set; } = new ValidationResult(Array.Empty<ValidationError>());
 
         public SampleValidator()
         {

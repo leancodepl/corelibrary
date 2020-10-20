@@ -18,7 +18,7 @@ namespace LeanCode.Localization.Tests
         [Fact]
         public void Correct_string_is_returned_for_InvariantCulture()
         {
-            string value = stringLocalizer[InvariantCulture, "order.simple"];
+            var value = stringLocalizer[InvariantCulture, "order.simple"];
 
             Assert.Equal("Order", value);
         }
@@ -26,7 +26,7 @@ namespace LeanCode.Localization.Tests
         [Fact]
         public void Correct_string_is_returned_for_specific_culture()
         {
-            string value = stringLocalizer[GetCultureInfo("pl"), "order.simple"];
+            var value = stringLocalizer[GetCultureInfo("pl"), "order.simple"];
 
             Assert.Equal("Zamówienie", value);
         }
@@ -34,7 +34,7 @@ namespace LeanCode.Localization.Tests
         [Fact]
         public void Correct_string_is_returned_for_more_specific_culture()
         {
-            string value = stringLocalizer[GetCultureInfo("pl-PL"), "order.simple"];
+            var value = stringLocalizer[GetCultureInfo("pl-PL"), "order.simple"];
 
             Assert.Equal("Zamówienie", value);
         }
@@ -42,7 +42,7 @@ namespace LeanCode.Localization.Tests
         [Fact]
         public void Correct_string_is_returned_for_another_more_specific_culture()
         {
-            string value = stringLocalizer[GetCultureInfo("pl_pl"), "order.simple"];
+            var value = stringLocalizer[GetCultureInfo("pl_pl"), "order.simple"];
 
             Assert.Equal("Zamówienie", value);
         }
@@ -50,7 +50,7 @@ namespace LeanCode.Localization.Tests
         [Fact]
         public void Default_string_is_returned_for_missing_culture()
         {
-            string value = stringLocalizer[GetCultureInfo("es"), "order.simple"];
+            var value = stringLocalizer[GetCultureInfo("es"), "order.simple"];
 
             Assert.Equal("Order", value);
         }

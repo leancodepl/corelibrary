@@ -91,7 +91,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
         public void Dispose() => dbContext.Dispose();
 
-        private void AssertRaisedEvent(RaisedEvent evt, Guid id, Type type, bool wasPublished)
+        private static void AssertRaisedEvent(RaisedEvent evt, Guid id, Type type, bool wasPublished)
         {
             Assert.Equal(id, evt.Id);
             Assert.Equal(type.FullName, evt.EventType);

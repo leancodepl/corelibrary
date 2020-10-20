@@ -6,7 +6,7 @@ namespace LeanCode.Benchmarks
 {
     public class InputToOutputMiddleware
     {
-        public async Task Invoke(HttpContext context)
+        public static async Task Invoke(HttpContext context)
         {
             var request = context.Request;
             var response = context.Response;

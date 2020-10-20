@@ -17,6 +17,11 @@
       <StronglyTypedClassName>Strings</StronglyTypedClassName>
       <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
     </EmbeddedResource>
+    <Compile Update="System/Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>System/Strings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

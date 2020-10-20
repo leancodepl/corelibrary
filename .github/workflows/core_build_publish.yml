@@ -66,7 +66,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100-rc.1.20452.10
+          dotnet-version: 5.0.100-rc.2.20479.15
       - name: Restore
         run: dotnet restore
       - name: Build
@@ -100,13 +100,16 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
-      - name: Push to Feedz
+      - name: Unzip
         run: |
           unzip "$ZIP"
+        env:
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+      - name: Push to Feedz
+        run: |
           find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n true '{}' ';'
         env:
           FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Create release
         if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
         uses: actions/create-release@v1
@@ -121,4 +124,3 @@ jobs:
           find -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}

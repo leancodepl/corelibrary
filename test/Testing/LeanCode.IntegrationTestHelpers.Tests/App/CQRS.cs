@@ -73,7 +73,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
 
         public static AppContext FromHttp(HttpContext context)
         {
-            Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
+            _ = Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
             return new AppContext(context.User!, uid, context.RequestAborted);
         }
     }

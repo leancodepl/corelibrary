@@ -36,10 +36,7 @@ namespace LeanCode.Benchmarks.Pipelines
         private readonly PassthroughElement element = new PassthroughElement();
         private readonly Finalizer finalizer = new Finalizer();
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
+        public void Dispose() { }
 
         public IPipelineElement<TContext, TInput, TOutput> ResolveElement<TContext, TInput, TOutput>(Type type)
             where TContext : IPipelineContext

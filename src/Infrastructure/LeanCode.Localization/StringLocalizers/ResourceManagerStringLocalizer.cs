@@ -27,7 +27,7 @@ namespace LeanCode.Localization.StringLocalizers
 
                 try
                 {
-                    string? value = resourceManager.GetString(name, culture);
+                    var value = resourceManager.GetString(name, culture);
 
                     return value ?? throw new InvalidOperationException(
                         "Name cannot be found in a resource set.");
