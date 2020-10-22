@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
@@ -68,6 +69,48 @@ namespace LeanCode.DomainModels.EF
             return typeof(TEntity).GetField(fieldName, flags) is FieldInfo fi
                 ? fi.Name
                 : null;
+        }
+
+        public static PropertyBuilder<Date> DateProperty<T>(
+            this EntityTypeBuilder<T> builder,
+            Expression<Func<T, Date>> selector)
+            where T : class
+        {
+            return builder.Property(selector)
+                .HasConversion(DateConverter.Instance)
+                .HasColumnType("date");
+        }
+
+        public static PropertyBuilder<Date?> DateProperty<T>(
+            this EntityTypeBuilder<T> builder,
+            Expression<Func<T, Date?>> selector)
+            where T : class
+        {
+            return builder.Property(selector)
+                .HasConversion(DateConverter.Instance)
+                .HasColumnType("date");
+        }
+
+        public static PropertyBuilder<Date> DateProperty<TOwner, TOwned>(
+            this OwnedNavigationBuilder<TOwner, TOwned> builder,
+            Expression<Func<TOwned, Date>> selector)
+            where TOwner : class
+            where TOwned : class
+        {
+            return builder.Property(selector)
+                .HasConversion(DateConverter.Instance)
+                .HasColumnType("date");
+        }
+
+        public static PropertyBuilder<Date?> DateProperty<TOwner, TOwned>(
+            this OwnedNavigationBuilder<TOwner, TOwned> builder,
+            Expression<Func<TOwned, Date?>> selector)
+            where TOwner : class
+            where TOwned : class
+        {
+            return builder.Property(selector)
+                .HasConversion(DateConverter.Instance)
+                .HasColumnType("date");
         }
     }
 }
