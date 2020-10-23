@@ -14,9 +14,9 @@ namespace LeanCode.DomainModels.EF
         where TIdentity : notnull
         where TContext : notnull, DbContext
     {
-        private TContext DbContext { get; }
+        protected TContext DbContext { get; }
         protected DbSet<TEntity> DbSet { get; }
-        protected Task CommitAsync(CancellationToken cancellationToken = default) =>
+        protected Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
             DbContext.SaveChangesAsync(cancellationToken);
 
         public EFRepository(TContext dbContext)
@@ -70,25 +70,25 @@ namespace LeanCode.DomainModels.EF
         public virtual Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Add(entity);
-            return CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Delete(entity);
-            return CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             DeleteRange(entities);
-            return CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Update(entity);
-            return CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
