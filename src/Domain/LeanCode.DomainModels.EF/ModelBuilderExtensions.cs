@@ -112,5 +112,47 @@ namespace LeanCode.DomainModels.EF
                 .HasConversion(DateConverter.Instance)
                 .HasColumnType("date");
         }
+
+        public static PropertyBuilder<System.Time> TimeProperty<T>(
+            this EntityTypeBuilder<T> builder,
+            Expression<Func<T, System.Time>> selector)
+            where T : class
+        {
+            return builder.Property(selector)
+                .HasConversion(TimeConverter.Instance)
+                .HasColumnType("time");
+        }
+
+        public static PropertyBuilder<System.Time?> TimeProperty<T>(
+            this EntityTypeBuilder<T> builder,
+            Expression<Func<T, System.Time?>> selector)
+            where T : class
+        {
+            return builder.Property(selector)
+                .HasConversion(TimeConverter.Instance)
+                .HasColumnType("time");
+        }
+
+        public static PropertyBuilder<System.Time> TimeProperty<TOwner, TOwned>(
+            this OwnedNavigationBuilder<TOwner, TOwned> builder,
+            Expression<Func<TOwned, System.Time>> selector)
+            where TOwner : class
+            where TOwned : class
+        {
+            return builder.Property(selector)
+                .HasConversion(TimeConverter.Instance)
+                .HasColumnType("time");
+        }
+
+        public static PropertyBuilder<System.Time?> TimeProperty<TOwner, TOwned>(
+            this OwnedNavigationBuilder<TOwner, TOwned> builder,
+            Expression<Func<TOwned, System.Time?>> selector)
+            where TOwner : class
+            where TOwned : class
+        {
+            return builder.Property(selector)
+                .HasConversion(TimeConverter.Instance)
+                .HasColumnType("time");
+        }
     }
 }
