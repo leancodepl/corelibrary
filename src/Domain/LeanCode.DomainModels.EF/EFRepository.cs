@@ -16,8 +16,6 @@ namespace LeanCode.DomainModels.EF
     {
         protected TContext DbContext { get; }
         protected DbSet<TEntity> DbSet { get; }
-        protected Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
-            DbContext.SaveChangesAsync(cancellationToken);
 
         public EFRepository(TContext dbContext)
         {
@@ -92,6 +90,9 @@ namespace LeanCode.DomainModels.EF
         }
 
         public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
+
+        protected Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            DbContext.SaveChangesAsync(cancellationToken);
     }
 
     public abstract class EFRepository<TEntity, TContext>
