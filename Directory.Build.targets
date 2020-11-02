@@ -4,7 +4,7 @@
     <AspNetCoreVersion>5.0.0-rc.2.*</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0-rc.2.*</ExtensionsVersion>
 
-    <HangfireVersion>1.7.16</HangfireVersion>
+    <HangfireVersion>1.7.17</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
     <MassTransitVersion>7.0.4</MassTransitVersion>
 
