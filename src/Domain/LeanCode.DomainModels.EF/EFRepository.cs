@@ -9,19 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF
 {
-    public abstract class EFRepository<TEntity, TIdentity, TContext, TUnitOfWork> : IRepository<TEntity, TIdentity>
+    public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<TEntity, TIdentity>
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
         where TIdentity : notnull
         where TContext : notnull, DbContext
-        where TUnitOfWork : notnull, IUnitOfWork
     {
+        protected TContext DbContext { get; }
         protected DbSet<TEntity> DbSet { get; }
-        protected TUnitOfWork UnitOfWork { get; }
 
-        public EFRepository(TContext dbContext, TUnitOfWork unitOfWork)
+        public EFRepository(TContext dbContext)
         {
+            DbContext = dbContext;
             DbSet = dbContext.Set<TEntity>();
-            UnitOfWork = unitOfWork;
         }
 
         public virtual void Add(TEntity entity)
@@ -69,37 +68,39 @@ namespace LeanCode.DomainModels.EF
         public virtual Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Add(entity);
-            return UnitOfWork.CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Delete(entity);
-            return UnitOfWork.CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             DeleteRange(entities);
-            return UnitOfWork.CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public virtual Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             Update(entity);
-            return UnitOfWork.CommitAsync(cancellationToken);
+            return SaveChangesAsync(cancellationToken);
         }
 
         public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
+
+        protected Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public abstract class EFRepository<TEntity, TContext, TUnitOfWork>
-        : EFRepository<TEntity, Id<TEntity>, TContext, TUnitOfWork>, IRepository<TEntity>
+    public abstract class EFRepository<TEntity, TContext>
+        : EFRepository<TEntity, Id<TEntity>, TContext>, IRepository<TEntity>
         where TEntity : class, IAggregateRoot<Id<TEntity>>
         where TContext : notnull, DbContext
-        where TUnitOfWork : notnull, IUnitOfWork
     {
-        public EFRepository(TContext dbContext, TUnitOfWork unitOfWork)
-            : base(dbContext, unitOfWork) { }
+        public EFRepository(TContext dbContext)
+            : base(dbContext) { }
     }
 }
