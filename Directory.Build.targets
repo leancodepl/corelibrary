@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.0-rc.2.*</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.0-rc.2.*</AspNetCoreVersion>
-    <ExtensionsVersion>5.0.0-rc.2.*</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>5.0.0</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>5.0.0</AspNetCoreVersion>
+    <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
-    <HangfireVersion>1.7.16</HangfireVersion>
+    <HangfireVersion>1.7.17</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
-    <MassTransitVersion>7.0.4</MassTransitVersion>
+    <MassTransitVersion>7.0.6</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.7.0</CodeAnalysisVersion>
@@ -48,11 +48,11 @@
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.35" />
-    <PackageReference Update="FluentValidation" Version="9.2.2" />
+    <PackageReference Update="FluentValidation" Version="9.3.0" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
-    <PackageReference Update="Sendgrid" Version="9.21.0" />
+    <PackageReference Update="Sendgrid" Version="9.21.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -102,7 +102,7 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0-preview-20200921-01" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     <PackageReference Update="NSubstitute" Version="4.2.2" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />

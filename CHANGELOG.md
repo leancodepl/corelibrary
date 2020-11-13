@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 5.0
+
+* Upgrade to .NET 5.0
+* Use `CancellationToken` in CQRS pipeline and some integrations
+* Import `System.Time` from corefxlab as `LeanCode.Time`
+* Add strongly–typed IDs (`Id<T>` / `IId<T>`)
+* Remove `IUnitOfWork`, `LeanCode.PushNotifications` and in–proc event handlers
+* Rework PdfRocket integration
+* Throw exceptions on SendGrid call failures
+* Bump packages (MassTransit to v7, IdentityServer4 to v4)
+
 ## 4.2
 * MassTransit inbox/outbox pattern
 
