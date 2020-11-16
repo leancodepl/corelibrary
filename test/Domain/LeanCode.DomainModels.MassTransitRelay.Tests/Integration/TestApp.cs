@@ -7,9 +7,11 @@ using LeanCode.Correlation;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
+using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
 using MassTransit;
+using MassTransit.Testing.Indicators;
 using Microsoft.Data.Sqlite;
 using Xunit;
 
@@ -26,15 +28,18 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 query => query),
 
             new MassTransitRelayModule(SearchAssemblies, SearchAssemblies),
+            new MassTransitTestRelayModule(),
             new CorrelationModule(),
         };
 
         private readonly IContainer container;
         private readonly IBusControl bus;
-        public DbConnection DbConnection { get; set; }
 
         public Guid CorrelationId { get; }
+        public DbConnection DbConnection { get; }
         public ICommandExecutor<Context> Commands { get; }
+        public IBusActivityMonitor ActivityMonitor { get; }
+
         public HandledEvent[] HandledEvents<TEvent>()
             where TEvent : class, IDomainEvent
         {
@@ -64,8 +69,10 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
             container = builder.Build();
             bus = container.Resolve<IBusControl>();
-            Commands = container.Resolve<ICommandExecutor<Context>>();
+
             CorrelationId = Identity.NewId();
+            Commands = container.Resolve<ICommandExecutor<Context>>();
+            ActivityMonitor = container.Resolve<IBusActivityMonitor>();
         }
 
         public void Dispose()
