@@ -1,23 +1,21 @@
-using System.Threading;
 using System.Threading.Tasks;
+using LeanCode.AsyncInitializer;
 using MassTransit;
-using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public class MassTransitRelayHostedService : IHostedService
+    public class MassTransitRelayHostedService : IAsyncInitializable
     {
         private readonly IBusControl bus;
+
+        public int Order => int.MaxValue;
 
         public MassTransitRelayHostedService(IBusControl bus)
         {
             this.bus = bus;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken) =>
-            bus.StartAsync(cancellationToken);
-
-        public Task StopAsync(CancellationToken cancellationToken) =>
-            bus.StopAsync(cancellationToken);
+        public Task InitializeAsync() => bus.StartAsync();
+        public Task DeinitializeAsync() => bus.StopAsync();
     }
 }

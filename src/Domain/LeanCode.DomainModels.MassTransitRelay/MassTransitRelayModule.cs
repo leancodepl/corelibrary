@@ -38,8 +38,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHostedService<MassTransitRelayHostedService>();
-
             if (useInbox)
             {
                 services.AddHostedService<PeriodicHostedService<ConsumedMessagesCleaner>>();
@@ -81,6 +79,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 cfg.AddConsumers(consumersCatalog.Assemblies);
                 busConfig(cfg);
             });
+
+            builder.RegisterType<MassTransitRelayHostedService>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
         }
 
         public static void DefaultBusConfigurator(IContainerBuilderBusConfigurator busCfg)
