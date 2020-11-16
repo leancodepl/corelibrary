@@ -4,6 +4,7 @@
     <AspNetCoreVersion>5.0.0</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
+    <GoogleApisVersion>1.49.0</GoogleApisVersion>
     <HangfireVersion>1.7.17</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
     <MassTransitVersion>7.0.6</MassTransitVersion>
@@ -15,12 +16,6 @@
   <ItemGroup>
     <PackageReference Update="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Update="System.Runtime.Loader" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +34,8 @@
 
     <PackageReference Update="IdentityModel" Version="4.4.0" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
+    <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
+    <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
 
     <PackageReference Update="FirebaseAdmin" Version="1.17.1" />
     <PackageReference Update="Google.Cloud.Firestore" Version="2.2.0" />
@@ -56,6 +53,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="$(AspNetCoreVersion)" />
+
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersion)" />
@@ -84,6 +85,9 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
+
+    <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
+    <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
 
     <PackageReference Update="Hangfire.Autofac" Version="2.3.1" />
     <PackageReference Update="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
