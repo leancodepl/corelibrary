@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
+using LeanCode.DomainModels.MassTransitRelay.Testing;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -28,7 +29,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             await PublishEvents();
             await TestEventsFromCommandHandler();
             await TestEventsFromConsumers();
-            await TestFailingHandlers();
+            TestFailingHandlers();
             await AssertRaisedEventsWerePeristedAndMarkedPublished();
             await AssertConsumedEventsWerePersisted();
         }
@@ -60,10 +61,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 e => AssertConsumed(e, typeof(Event2SecondConsumer)));
         }
 
-        private async Task TestFailingHandlers()
+        private void TestFailingHandlers()
         {
-            await Task.Delay(5_500);
-
             var handled = testApp.HandledEvents<Event3>();
             var evt = Assert.Single(handled);
 
@@ -119,6 +118,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             Assert.True(evt.WasPublished);
         }
 
-        private static Task WaitForConsumers() => Task.Delay(500);
+        private async Task WaitForConsumers()
+        {
+            // 5 because of the retries + inactivity timeout
+            var result = await testApp.ActivityMonitor.AwaitBusInactivity(TimeSpan.FromSeconds(6));
+            Assert.True(result, "The bus did not stabilize.");
+        }
     }
 }
