@@ -8,11 +8,21 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
 {
     public class MassTransitTestRelayModule : AppModule
     {
-        public static readonly TimeSpan NoActivityGranule = TimeSpan.FromSeconds(1);
+        private readonly TimeSpan inactivityTimeout;
+
+        public MassTransitTestRelayModule()
+        {
+            this.inactivityTimeout = TimeSpan.FromSeconds(1);
+        }
+
+        public MassTransitTestRelayModule(TimeSpan inactivityTimeout)
+        {
+            this.inactivityTimeout = inactivityTimeout;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(c => c.Resolve<IBusControl>().CreateBusActivityMonitor(NoActivityGranule))
+            builder.Register(c => c.Resolve<IBusControl>().CreateBusActivityMonitor(inactivityTimeout))
                 .AutoActivate()
                 .AsImplementedInterfaces()
                 .SingleInstance();

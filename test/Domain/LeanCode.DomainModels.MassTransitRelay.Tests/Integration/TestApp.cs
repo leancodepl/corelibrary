@@ -28,7 +28,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 query => query),
 
             new MassTransitRelayModule(SearchAssemblies, SearchAssemblies),
-            new MassTransitTestRelayModule(),
+            new MassTransitTestRelayModule(TimeSpan.FromSeconds(1)),
             new CorrelationModule(),
         };
 
