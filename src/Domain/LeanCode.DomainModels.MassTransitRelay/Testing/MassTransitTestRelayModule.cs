@@ -2,27 +2,26 @@ using System;
 using Autofac;
 using LeanCode.Components;
 using MassTransit;
-using MassTransit.Testing;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Testing
 {
     public class MassTransitTestRelayModule : AppModule
     {
-        private readonly TimeSpan inactivityTimeout;
+        private readonly TimeSpan inactivityWaitTime;
 
         public MassTransitTestRelayModule()
         {
-            this.inactivityTimeout = TimeSpan.FromSeconds(1);
+            inactivityWaitTime = TimeSpan.FromSeconds(1);
         }
 
-        public MassTransitTestRelayModule(TimeSpan inactivityTimeout)
+        public MassTransitTestRelayModule(TimeSpan inactivityWaitTime)
         {
-            this.inactivityTimeout = inactivityTimeout;
+            this.inactivityWaitTime = inactivityWaitTime;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(c => c.Resolve<IBusControl>().CreateBusActivityMonitor(inactivityTimeout))
+            builder.Register(c => ResettableBusActivityMonitor.CreateFor(c.Resolve<IBusControl>(), inactivityWaitTime))
                 .AutoActivate()
                 .AsImplementedInterfaces()
                 .SingleInstance();
