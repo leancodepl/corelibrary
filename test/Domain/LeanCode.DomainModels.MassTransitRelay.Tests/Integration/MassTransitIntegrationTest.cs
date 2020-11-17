@@ -120,8 +120,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         private async Task WaitForConsumers()
         {
-            // 5 because of the single retry + wait granule
-            var result = await testApp.ActivityMonitor.AwaitBusInactivity(TimeSpan.FromSeconds(5) + MassTransitTestRelayModule.NoActivityGranule);
+            // 5 because of the retries + inactivity timeout
+            var result = await testApp.ActivityMonitor.AwaitBusInactivity(TimeSpan.FromSeconds(6));
             Assert.True(result, "The bus did not stabilize.");
         }
     }
