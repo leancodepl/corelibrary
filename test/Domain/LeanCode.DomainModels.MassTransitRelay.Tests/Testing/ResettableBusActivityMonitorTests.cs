@@ -84,5 +84,24 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing
 
             await Assert.ThrowsAsync<TimeoutException>(() => monitor.AwaitBusInactivity().OrTimeout(TimeSpan.FromSeconds(1)));
         }
+
+        [Fact]
+        public async Task Await_with_timeout_returns_false_if_the_event_is_not_triggered()
+        {
+            await ((IConsumeObserver)monitor).PreConsume<object>(null!);
+
+            var res = await monitor.AwaitBusInactivity(TimeSpan.FromMilliseconds(1));
+            Assert.False(res);
+        }
+
+        [Fact]
+        public async Task Await_with_timeout_returns_true_if_the_event_is_triggered()
+        {
+            await ((IConsumeObserver)monitor).PreConsume<object>(null!);
+            await ((IConsumeObserver)monitor).PostConsume<object>(null!);
+
+            var res = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(1));
+            Assert.True(res);
+        }
     }
 }
