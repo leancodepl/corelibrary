@@ -9,16 +9,16 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
     public sealed class AsyncManualResetEvent
     {
         private readonly object mutex;
-        private TaskCompletionSource<object?> tcs;
+        private TaskCompletionSource<ValueTuple> tcs;
 
         public AsyncManualResetEvent(bool set)
         {
             mutex = new object();
-            tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+            tcs = new TaskCompletionSource<ValueTuple>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             if (set)
             {
-                tcs.TrySetResult(null);
+                tcs.TrySetResult(new ValueTuple());
             }
         }
 
@@ -75,7 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                tcs.TrySetResult(null);
+                tcs.TrySetResult(new ValueTuple());
             }
         }
 
@@ -85,7 +85,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
             {
                 if (tcs.Task.IsCompleted)
                 {
-                    tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+                    tcs = new TaskCompletionSource<ValueTuple>(TaskCreationOptions.RunContinuationsAsynchronously);
                 }
             }
         }
