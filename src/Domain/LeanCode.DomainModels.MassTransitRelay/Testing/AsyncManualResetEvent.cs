@@ -14,7 +14,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         public AsyncManualResetEvent(bool set)
         {
             mutex = new object();
-            tcs = new TaskCompletionSource<ValueTuple>(TaskCreationOptions.RunContinuationsAsynchronously);
+            tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
             if (set)
             {
@@ -85,7 +85,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
             {
                 if (tcs.Task.IsCompleted)
                 {
-                    tcs = new TaskCompletionSource<ValueTuple>(TaskCreationOptions.RunContinuationsAsynchronously);
+                    tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
                 }
             }
         }

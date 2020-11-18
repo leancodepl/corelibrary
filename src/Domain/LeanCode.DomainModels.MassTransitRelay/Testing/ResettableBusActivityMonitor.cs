@@ -14,7 +14,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         IDisposable
     {
         private readonly object mutex = new object();
-        private readonly AsyncManualResetEvent inactive = new AsyncManualResetEvent(true);
+        private readonly AsyncManualResetEvent inactive = new(true);
         private readonly RollingTimer timer;
 
         private volatile int consumersInFlight;
