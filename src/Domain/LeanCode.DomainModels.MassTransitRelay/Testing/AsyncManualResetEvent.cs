@@ -18,7 +18,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
 
             if (set)
             {
-                tcs.TrySetResult(new ValueTuple());
+                tcs.TrySetResult(default);
             }
         }
 
@@ -75,7 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                tcs.TrySetResult(new ValueTuple());
+                tcs.TrySetResult(default);
             }
         }
 
