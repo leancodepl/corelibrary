@@ -17,8 +17,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         private readonly AsyncManualResetEvent inactive = new AsyncManualResetEvent(true);
         private readonly RollingTimer timer;
 
-        private int consumersInFlight;
-        private int receiversInFlight;
+        private volatile int consumersInFlight;
+        private volatile int receiversInFlight;
 
         public ResettableBusActivityMonitor(TimeSpan inactivityWaitTime)
         {
@@ -42,7 +42,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Decrement(ref consumersInFlight);
+                consumersInFlight--;
                 CheckCondition();
             }
 
@@ -54,7 +54,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Decrement(ref consumersInFlight);
+                consumersInFlight--;
                 CheckCondition();
             }
 
@@ -66,7 +66,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Increment(ref consumersInFlight);
+                consumersInFlight++;
                 Reset();
             }
 
@@ -77,7 +77,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Increment(ref receiversInFlight);
+                receiversInFlight++;
                 Reset();
             }
 
@@ -88,7 +88,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Decrement(ref receiversInFlight);
+                receiversInFlight--;
                 CheckCondition();
             }
 
@@ -109,7 +109,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                Interlocked.Decrement(ref receiversInFlight);
+                receiversInFlight--;
                 CheckCondition();
             }
 
@@ -126,8 +126,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
 
         private void CheckCondition()
         {
-            if (Volatile.Read(ref consumersInFlight) == 0 &&
-                Volatile.Read(ref receiversInFlight) == 0)
+            if (consumersInFlight == 0 && receiversInFlight == 0)
             {
                 timer.Restart();
             }
@@ -137,8 +136,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             lock (mutex)
             {
-                if (Volatile.Read(ref consumersInFlight) == 0 &&
-                    Volatile.Read(ref receiversInFlight) == 0)
+                if (consumersInFlight == 0 && receiversInFlight == 0)
                 {
                     inactive.Set();
                 }
