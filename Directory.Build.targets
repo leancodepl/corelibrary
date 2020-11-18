@@ -122,6 +122,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.205" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.261" />
   </ItemGroup>
 </Project>
