@@ -103,5 +103,26 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing
             var res = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(1));
             Assert.True(res);
         }
+
+        [Fact]
+        public async Task Toggling_inactivity_works_as_expected()
+        {
+            await ((IConsumeObserver)monitor).PreConsume<object>(null!);
+            await ((IConsumeObserver)monitor).PostConsume<object>(null!);
+
+            var res1 = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(1));
+            Assert.True(res1);
+
+            await ((IConsumeObserver)monitor).PreConsume<object>(null!);
+
+            Assert.False(monitor.AwaitBusInactivity().IsCompleted);
+            var res2 = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(0.5));
+            Assert.False(res2);
+
+            await ((IConsumeObserver)monitor).PostConsume<object>(null!);
+
+            var res3 = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(1));
+            Assert.True(res3);
+        }
     }
 }
