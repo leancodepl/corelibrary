@@ -45,13 +45,14 @@ namespace LeanCode.SendGrid
 
             var statusCode = response.StatusCode;
 
-            if (statusCode >= HttpStatusCode.BadRequest)
+            if (statusCode is < HttpStatusCode.OK or >= HttpStatusCode.Ambiguous)
             {
                 await using var stream = await response.Body.ReadAsStreamAsync(cancellationToken);
 
                 try
                 {
-                    var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(stream, SerializerOptions, cancellationToken);
+                    var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(
+                        stream, SerializerOptions, cancellationToken);
 
                     throw new SendGridException(statusCode, body?.Errors);
                 }
