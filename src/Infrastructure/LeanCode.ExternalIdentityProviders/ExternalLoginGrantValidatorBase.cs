@@ -10,7 +10,7 @@ namespace LeanCode.ExternalIdentityProviders
         where TUser : IdentityUser<Guid>
         where TExternalLogin : ExternalLoginBase<TUser>
     {
-        public const string AssertionField = "token";
+        public const string AssertionField = "assertion";
 
         private readonly TExternalLogin externalLogin;
 
@@ -36,13 +36,13 @@ namespace LeanCode.ExternalIdentityProviders
 
             context.Result = await externalLogin.TrySignInAsync(token) switch
             {
-                SignInResult.Success s => new GrantValidationResult(s.UserId.ToString(), GrantType),
+                SignInResult.Success s => new(s.UserId.ToString(), GrantType),
 
-                SignInResult.UserDoesNotExist => new GrantValidationResult(
+                SignInResult.UserDoesNotExist => new(
                     TokenRequestErrors.InvalidGrant,
                     GrantValidationErrors.NoUser),
 
-                SignInResult.TokenIsInvalid => new GrantValidationResult(
+                SignInResult.TokenIsInvalid => new(
                     TokenRequestErrors.InvalidGrant,
                     GrantValidationErrors.InvalidAssertion),
 
