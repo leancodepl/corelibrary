@@ -51,11 +51,24 @@ namespace LeanCode.ExternalIdentityProviders
 
         public async Task ConnectAsync(Guid userId, string token)
         {
-            var providerId = await ExchangeAndValidateAsync(token);
-            var login = new UserLoginInfo(GrantType, providerId, GrantType);
+            var providerId = await GetProviderIdAsync(token);
+
+            if (providerId is null)
+            {
+                throw new ExternalLoginException("The token is invalid.", TokenValidationError.Invalid);
+            }
+            else if (await userManager.FindByLoginAsync(GrantType, providerId) is not null)
+            {
+                throw new ExternalLoginException(
+                    "Other account is already connected with this token.",
+                    TokenValidationError.OtherConnected);
+            }
+
             var user = await userManager.FindByIdAsync(userId.ToString());
 
-            await userManager.AddLoginAsync(user, login);
+            await userManager
+                .AddLoginAsync(user, new(GrantType, providerId, GrantType))
+                .EnsureIdentitySuccess();
 
             Logger.Information("User {UserId} connected their account with {GrantType}", userId, GrantType);
         }
@@ -67,9 +80,15 @@ namespace LeanCode.ExternalIdentityProviders
 
             if (logins.FirstOrDefault(l => l.LoginProvider == GrantType) is UserLoginInfo login)
             {
-                await userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+                await userManager
+                    .RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey)
+                    .EnsureIdentitySuccess();
 
                 Logger.Information("User {UserId} disconnected their {GrantType} account", userId, GrantType);
+            }
+            else
+            {
+                Logger.Warning("User {UserId} does not have any {GrantType} account connected", userId, GrantType);
             }
         }
 
@@ -92,23 +111,5 @@ namespace LeanCode.ExternalIdentityProviders
         }
 
         protected abstract Task<string?> GetProviderIdAsync(string token);
-
-        private async Task<string> ExchangeAndValidateAsync(string token)
-        {
-            var providerId = await GetProviderIdAsync(token);
-
-            if (providerId is null)
-            {
-                throw new ExternalLoginException("The token is invalid.", TokenValidationError.Invalid);
-            }
-            else if (await userManager.FindByLoginAsync(GrantType, providerId) is not null)
-            {
-                throw new ExternalLoginException(
-                    "Other account is already connected with this token.",
-                    TokenValidationError.OtherConnected);
-            }
-
-            return providerId;
-        }
     }
 }
