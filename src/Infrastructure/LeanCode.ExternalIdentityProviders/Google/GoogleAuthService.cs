@@ -11,7 +11,7 @@ namespace LeanCode.ExternalIdentityProviders.Google
 
         public GoogleAuthService(GoogleAuthConfiguration config)
         {
-            settings = new GoogleJsonWebSignature.ValidationSettings
+            settings = new()
             {
                 Audience = new[] { config.ClientId },
             };
@@ -22,9 +22,9 @@ namespace LeanCode.ExternalIdentityProviders.Google
             try
             {
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-                var user = new GoogleUser(payload.Subject, payload.Email, payload.EmailVerified);
 
-                return new GoogleTokenValidationResult.Success(user);
+                return new GoogleTokenValidationResult.Success(
+                    new(payload.Subject, payload.Email, payload.EmailVerified, payload.Picture));
             }
             catch (Exception ex)
             {

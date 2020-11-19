@@ -28,8 +28,8 @@ namespace LeanCode.ExternalIdentityProviders.Apple
             this.memoryCache = memoryCache;
 
             // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1302
-            cryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false };
-            tokenHandler = new JwtSecurityTokenHandler();
+            cryptoProviderFactory = new() { CacheSignatureProviders = false };
+            tokenHandler = new();
         }
 
         public async Task<AppleTokenValidationResult> ValidateTokenAsync(string idToken)
@@ -49,8 +49,6 @@ namespace LeanCode.ExternalIdentityProviders.Apple
                 var token = tokenHandler.ValidateToken(idToken, tokenParams, out var _);
 
                 var uid = token.FindFirst("sub")?.Value;
-                var email = token.FindFirst("email")?.Value;
-                var emailConfirmed = token.FindFirst("email_verified")?.Value == "true";
 
                 if (string.IsNullOrEmpty(uid))
                 {
@@ -62,7 +60,11 @@ namespace LeanCode.ExternalIdentityProviders.Apple
                 }
                 else
                 {
-                    return new AppleTokenValidationResult.Success(new AppleUser(uid, email!, emailConfirmed));
+                    var email = token.FindFirst("email")?.Value;
+                    var emailConfirmed = token.FindFirst("email_verified")?.Value == "true";
+                    var picture = token.FindFirst("picture")?.Value;
+
+                    return new AppleTokenValidationResult.Success(new(uid, email, emailConfirmed, picture));
                 }
             }
             catch (Exception ex)
