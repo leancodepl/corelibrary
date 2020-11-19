@@ -14,22 +14,19 @@ namespace LeanCode.ExternalIdentityProviders.Apple
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<AppleIdService>();
 
+        // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1302
+        private readonly CryptoProviderFactory cryptoProviderFactory = new() { CacheSignatureProviders = false };
+        private readonly JwtSecurityTokenHandler tokenHandler = new();
+
         private readonly HttpClient httpClient;
         private readonly AppleIdConfiguration config;
         private readonly IMemoryCache memoryCache;
-
-        private readonly CryptoProviderFactory cryptoProviderFactory;
-        private readonly JwtSecurityTokenHandler tokenHandler;
 
         public AppleIdService(HttpClient httpClient, AppleIdConfiguration config, IMemoryCache memoryCache)
         {
             this.httpClient = httpClient;
             this.config = config;
             this.memoryCache = memoryCache;
-
-            // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1302
-            cryptoProviderFactory = new() { CacheSignatureProviders = false };
-            tokenHandler = new();
         }
 
         public async Task<AppleTokenValidationResult> ValidateTokenAsync(string idToken)
