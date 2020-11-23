@@ -49,7 +49,7 @@
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
-    <PackageReference Update="Sendgrid" Version="9.21.1" />
+    <PackageReference Update="Sendgrid" Version="9.21.2" />
   </ItemGroup>
 
   <ItemGroup>
