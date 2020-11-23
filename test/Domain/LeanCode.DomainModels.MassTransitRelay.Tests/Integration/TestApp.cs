@@ -1,7 +1,9 @@
 using System;
 using System.Data.Common;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using GreenPipes;
 using LeanCode.Components;
 using LeanCode.Correlation;
 using LeanCode.CQRS.Default;
@@ -11,6 +13,7 @@ using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.DomainModels.Model;
 using LeanCode.IdentityProvider;
 using MassTransit;
+using MassTransit.AutofacIntegration;
 using MassTransit.Testing.Indicators;
 using Microsoft.Data.Sqlite;
 using Xunit;
@@ -27,8 +30,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 cmd => cmd.Correlate().StoreAndPublishEvents(),
                 query => query),
 
-            new MassTransitRelayModule(SearchAssemblies, SearchAssemblies),
-            new MassTransitTestRelayModule(TimeSpan.FromSeconds(1)),
+            new MassTransitRelayModule(SearchAssemblies, SearchAssemblies, MassTransitTestRelayModule.TestBusConfigurator),
+            new MassTransitTestRelayModule(),
             new CorrelationModule(),
         };
 
