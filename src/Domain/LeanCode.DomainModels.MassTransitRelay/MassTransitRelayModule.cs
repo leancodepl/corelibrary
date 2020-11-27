@@ -46,6 +46,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             if (useOutbox)
             {
                 services.AddHostedService<PeriodicHostedService<PeriodicEventsPublisher>>();
+                services.AddHostedService<PeriodicHostedService<PublishedEventsCleaner>>();
             }
         }
 
@@ -57,6 +58,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterType<EventsStore>().AsSelf();
             builder.RegisterType<ConsumedMessagesCleaner>().AsSelf();
             builder.RegisterType<PeriodicEventsPublisher>().AsSelf();
+            builder.RegisterType<PublishedEventsCleaner>().AsSelf();
 
             builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()
