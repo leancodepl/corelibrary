@@ -5,7 +5,7 @@
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.49.0</GoogleApisVersion>
-    <HangfireVersion>1.7.17</HangfireVersion>
+    <HangfireVersion>1.7.18</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
     <MassTransitVersion>7.0.6</MassTransitVersion>
 
