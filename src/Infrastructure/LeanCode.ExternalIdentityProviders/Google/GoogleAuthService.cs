@@ -13,7 +13,7 @@ namespace LeanCode.ExternalIdentityProviders.Google
         {
             settings = new()
             {
-                Audience = new[] { config.ClientId },
+                Audience = config.ClientIds,
             };
         }
 
