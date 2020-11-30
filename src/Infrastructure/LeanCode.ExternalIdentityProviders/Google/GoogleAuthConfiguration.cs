@@ -1,4 +1,11 @@
+using System.Collections.Immutable;
+
 namespace LeanCode.ExternalIdentityProviders.Google
 {
-    public sealed record GoogleAuthConfiguration(string ClientId);
+    public sealed record GoogleAuthConfiguration(ImmutableList<string> ClientIds)
+    {
+        public GoogleAuthConfiguration(string clientId)
+            : this(ClientIds: ImmutableList.Create(clientId))
+        { }
+    }
 }
