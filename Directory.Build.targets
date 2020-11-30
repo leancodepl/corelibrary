@@ -44,7 +44,7 @@
     <PackageReference Update="Microsoft.Data.SqlClient" Version="2.1.0" />
 
     <PackageReference Update="Cronos" Version="0.7.0" />
-    <PackageReference Update="Dapper" Version="2.0.35" />
+    <PackageReference Update="Dapper" Version="2.0.78" />
     <PackageReference Update="FluentValidation" Version="9.3.0" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
