@@ -38,7 +38,7 @@ namespace LeanCode.ExternalIdentityProviders.Apple
                 CryptoProviderFactory = cryptoProviderFactory,
                 IssuerSigningKeys = keySet.Keys,
                 ValidIssuer = "https://appleid.apple.com",
-                ValidAudience = config.ClientId,
+                ValidAudiences = config.ClientIds,
             };
 
             try
