@@ -15,7 +15,7 @@ namespace LeanCode.PeriodicService
         }
 
         public static IRegistrationBuilder<PeriodicHostedService<T>, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            AddOrderedHostedService<T>(this ContainerBuilder builder)
+            RegisterPeriodicAction<T>(this ContainerBuilder builder)
             where T : IPeriodicAction
         {
             return builder.RegisterPeriodicAction<T>(order: 0);
