@@ -1,11 +1,12 @@
+using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.AsyncInitializer;
 using LeanCode.Dapper;
+using LeanCode.OrderedHostedServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.IntegrationTestHelpers
 {
-    public sealed class HangfireInitializer<TContext> : IAsyncInitializable
+    public sealed class HangfireInitializer<TContext> : IOrderedHostedService
         where TContext : DbContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireInitializer<TContext>>();
@@ -19,17 +20,14 @@ namespace LeanCode.IntegrationTestHelpers
             this.dbContext = dbContext;
         }
 
-        public Task DeinitializeAsync() => Task.CompletedTask;
-
-        public async Task InitializeAsync()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             logger.Information("Installing Hangfire");
 
-            await dbContext.WithConnectionAsync(c =>
-            {
-                Hangfire.SqlServer.SqlServerObjectsInstaller.Install(c);
-                return Task.FromResult(false);
-            });
+            var installScript = Hangfire.SqlServer.SqlServerObjectsInstaller.GetInstallScript(null, false);
+            await dbContext.ExecuteAsync(installScript, cancellationToken: cancellationToken);
         }
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

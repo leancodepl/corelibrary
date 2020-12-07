@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
-    <ProjectReference Include="../LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
+    <ProjectReference Include="../LeanCode.OrderedHostedServices/LeanCode.OrderedHostedServices.csproj" />
     <ProjectReference Include="../LeanCode.Firebase/LeanCode.Firebase.csproj" />
   </ItemGroup>
 

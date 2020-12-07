@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using IdentityModel.Client;
-using LeanCode.AsyncInitializer;
 using LeanCode.CQRS.RemoteHttp.Client;
+using LeanCode.OrderedHostedServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -87,7 +87,7 @@ namespace LeanCode.IntegrationTestHelpers
                         JwtBearerDefaults.AuthenticationScheme,
                         opts => opts.BackchannelHttpHandler = Server.CreateHandler());
 
-                    services.AddTransient<IAsyncInitializable, DbContextsInitializer>();
+                    services.AddTransient<IOrderedHostedService, DbContextsInitializer>();
                 });
         }
 

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.AsyncInitializer;
+using LeanCode.OrderedHostedServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 
 namespace LeanCode.IntegrationTestHelpers
 {
-    public class DbContextsInitializer : IAsyncInitializable
+    public class DbContextsInitializer : IOrderedHostedService
     {
         private static readonly IAsyncPolicy CreatePolicy = Policy
             .Handle<SqlException>(e => e.Number == 5177)
@@ -30,7 +31,7 @@ namespace LeanCode.IntegrationTestHelpers
             this.getContexts = getContexts;
         }
 
-        public async Task InitializeAsync()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             foreach (var ctx in getContexts())
             {
@@ -38,20 +39,22 @@ namespace LeanCode.IntegrationTestHelpers
                 // HACK: should mitigate (slightly) the bug in MSSQL that prevents us from creating
                 // new databases.
                 // See https://github.com/Microsoft/mssql-docker/issues/344 for tracking issue.
-                await CreatePolicy.ExecuteAsync(async () =>
-                {
-                    await ctx.Database.EnsureDeletedAsync();
-                    await ctx.Database.EnsureCreatedAsync();
-                });
+                await CreatePolicy.ExecuteAsync(
+                    async token =>
+                    {
+                        await ctx.Database.EnsureDeletedAsync(token);
+                        await ctx.Database.EnsureCreatedAsync(token);
+                    },
+                    cancellationToken);
             }
         }
 
-        public async Task DeinitializeAsync()
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             foreach (var ctx in getContexts())
             {
                 logger.Information("Dropping database for context {ContextType}", ctx.GetType());
-                await ctx.Database.EnsureDeletedAsync();
+                await ctx.Database.EnsureDeletedAsync(cancellationToken);
             }
         }
     }
