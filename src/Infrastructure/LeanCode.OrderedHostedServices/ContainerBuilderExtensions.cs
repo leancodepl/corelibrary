@@ -8,7 +8,7 @@ namespace LeanCode.OrderedHostedServices
     public static class ContainerBuilderExtensions
     {
         public static IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            AddOrderedHostedService<T>(this ContainerBuilder builder)
+            RegisterOrderedHostedService<T>(this ContainerBuilder builder)
             where T : IOrderedHostedService
         {
             return builder.RegisterType<T>()
@@ -16,7 +16,7 @@ namespace LeanCode.OrderedHostedServices
         }
 
         public static IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            AddOrderedHostedService<T>(this ContainerBuilder builder, int order)
+            RegisterOrderedHostedService<T>(this ContainerBuilder builder, int order)
             where T : IHostedService
         {
             if (typeof(T).IsAssignableTo<IOrderedHostedService>())
@@ -31,7 +31,7 @@ namespace LeanCode.OrderedHostedServices
         }
 
         public static IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            AddHostedService<T>(this ContainerBuilder builder)
+            RegisterHostedService<T>(this ContainerBuilder builder)
             where T : IHostedService
         {
             if (typeof(T).IsAssignableTo<IOrderedHostedService>())

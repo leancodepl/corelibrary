@@ -12,19 +12,19 @@ namespace LeanCode.OrderedHostedServices.Tests
         [Fact]
         public void Cannot_add_ordered_service_as_normal_service()
         {
-            Assert.Throws<ArgumentException>(() => Build(b => b.AddHostedService<Ordered>()));
+            Assert.Throws<ArgumentException>(() => Build(b => b.RegisterHostedService<Ordered>()));
         }
 
         [Fact]
         public void Cannot_add_ordered_service_as_wrapped_normal_service()
         {
-            Assert.Throws<ArgumentException>(() => Build(b => b.AddOrderedHostedService<Ordered>(0)));
+            Assert.Throws<ArgumentException>(() => Build(b => b.RegisterOrderedHostedService<Ordered>(0)));
         }
 
         [Fact]
         public void Ordered_service_is_resolvable_only_as_an_IOrderedHostedService_interface()
         {
-            var container = Build(b => b.AddOrderedHostedService<Ordered>());
+            var container = Build(b => b.RegisterOrderedHostedService<Ordered>());
 
             Assert.IsType<Ordered>(container.Resolve<IOrderedHostedService>());
             Assert.Null(container.ResolveOptional<IHostedService>());
@@ -34,7 +34,7 @@ namespace LeanCode.OrderedHostedServices.Tests
         [Fact]
         public void Wrapped_service_is_registered_as_self_and_as_an_IOrderedHostedService()
         {
-            var container = Build(b => b.AddOrderedHostedService<Normal>(0));
+            var container = Build(b => b.RegisterOrderedHostedService<Normal>(0));
 
             Assert.IsType<HostedServiceWrapper<Normal>>(container.Resolve<IOrderedHostedService>());
             Assert.IsType<Normal>(container.ResolveOptional<Normal>());
@@ -44,7 +44,7 @@ namespace LeanCode.OrderedHostedServices.Tests
         [Fact]
         public void Normal_service_is_resolvable_only_as_an_IHostedService_interface()
         {
-            var container = Build(b => b.AddHostedService<Normal>());
+            var container = Build(b => b.RegisterHostedService<Normal>());
 
             Assert.IsType<Normal>(container.Resolve<IHostedService>());
             Assert.Null(container.ResolveOptional<IOrderedHostedService>());

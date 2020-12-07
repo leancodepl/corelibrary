@@ -10,7 +10,7 @@ namespace LeanCode.PeriodicService
             RegisterPeriodicAction<T>(this ContainerBuilder builder, int order)
             where T : IPeriodicAction
         {
-            return builder.AddOrderedHostedService<PeriodicHostedService<T>>()
+            return builder.RegisterOrderedHostedService<PeriodicHostedService<T>>()
                 .WithParameter(nameof(order), order);
         }
 
