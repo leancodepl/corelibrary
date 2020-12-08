@@ -1,7 +1,0 @@
-The code in this namespace comes from open-telemetry-contrib repo (https://github.com/open-telemetry/opentelemetry-dotnet-contrib/pull/14)
-and should be eventually replaced when they'll release it
-
-See the issues for tracking
-
-https://github.com/open-telemetry/opentelemetry-dotnet/issues/1030
-https://github.com/open-telemetry/opentelemetry-dotnet-contrib/issues/20
