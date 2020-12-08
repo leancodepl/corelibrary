@@ -20,7 +20,7 @@ namespace LeanCode.OpenTelemetry
             }
             catch
             {
-                activity?.SetStatus(Status.Internal);
+                activity?.SetStatus(Status.Error);
                 throw;
             }
         }

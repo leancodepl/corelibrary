@@ -7,7 +7,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
     public class ActivityContextEFConverter : ValueConverter<ActivityContext, string>
     {
-        private static readonly TraceContextFormat TraceFormat = new TraceContextFormat();
+        private static readonly TraceContextPropagator TraceFormat = new TraceContextPropagator();
 
         public ActivityContextEFConverter()
             : base(
@@ -17,8 +17,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         private static string From(ActivityContext ctx)
         {
+            // ctx.
             var carrier = new Carrier();
-            TraceFormat.Inject(ctx, carrier, (c, key, value) =>
+            var propagationCtx = new PropagationContext(ctx, default);
+
+            TraceFormat.Inject(propagationCtx, carrier, (c, key, value) =>
             {
                 if (key == "traceparent")
                 {
@@ -31,7 +34,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         private static ActivityContext To(string value)
         {
             var carrier = new Carrier { Value = value };
-            return TraceFormat.Extract(carrier, (c, key) =>
+            return TraceFormat.Extract(default, carrier, (c, key) =>
             {
                 if (key == "traceparent")
                 {
@@ -41,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                 {
                     return Array.Empty<string>();
                 }
-            });
+            }).ActivityContext;
         }
 
         // OpenTelemetry implementation for .NET does not have separate ActivityContext serializer.

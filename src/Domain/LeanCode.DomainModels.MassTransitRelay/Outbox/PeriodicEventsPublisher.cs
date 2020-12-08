@@ -75,7 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 catch (Exception e)
                 {
                     logger.Warning(e, "Failed to publish event {MessageId}", evt.Id);
-                    publishActivity?.SetStatus(Status.Internal);
+                    publishActivity?.SetStatus(Status.Error);
                 }
             }
         }

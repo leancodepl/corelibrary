@@ -6,7 +6,7 @@ namespace LeanCode.OpenTelemetry
     {
         public static TracerProviderBuilder AddLeanCodeTelemetry(this TracerProviderBuilder builder)
         {
-            return builder.AddActivitySource(LeanCodeActivitySource.ActivitySource.Name);
+            return builder.AddSource(LeanCodeActivitySource.ActivitySource.Name);
         }
     }
 }

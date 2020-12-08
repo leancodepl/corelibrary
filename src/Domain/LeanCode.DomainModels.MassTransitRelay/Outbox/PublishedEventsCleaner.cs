@@ -5,7 +5,7 @@ using Cronos;
 using LeanCode.Dapper;
 using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
-using LeanCode.TimeProvider;
+using LeanCode.Time;
 using OpenTelemetry.Trace;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
