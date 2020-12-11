@@ -22,6 +22,8 @@ namespace LeanCode.Components.Startup
         public const string MinimumLogLevelKey = "Logging:MinimumLevel";
         public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
 
+        public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
+
         public static IWebHostBuilder AddAppConfigurationFromAzureKeyVault(this IWebHostBuilder builder)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
@@ -66,20 +68,22 @@ namespace LeanCode.Components.Startup
             return builder.ConfigureLogging((context, logging) =>
             {
                 var configuration = context.Configuration;
+                var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
 
                 var loggerConfiguration = new LoggerConfiguration()
                     .ReadFrom.Configuration(configuration)
                     .Enrich.FromLogContext()
                     .Enrich.WithProperty("project", projectName)
                     .Enrich.WithProperty("app_name", appName)
-                    .MinimumLevel.Is(configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose))
+                    .MinimumLevel.Is(minLogLevel)
                     .DestructureCommonObjects(destructurers?.Assemblies);
 
                 if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
                 {
+                    var internalLogLevel = minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
                     loggerConfiguration
-                        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                        .MinimumLevel.Override("System", LogEventLevel.Warning);
+                        .MinimumLevel.Override("Microsoft", internalLogLevel)
+                        .MinimumLevel.Override("System", internalLogLevel);
                 }
 
                 if (context.HostingEnvironment.IsDevelopment())
