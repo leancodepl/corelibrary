@@ -26,8 +26,8 @@
       ContinueOnError="ErrorAndContinue"
       WorkingDirectory="$(TargetDir)"
       Command="dotnet vstest \
-        '%(_ResolvedProjectReferencePaths.FullPath)' \
-        --logger:&quot;trx&quot; \
+        &quot;%(_ResolvedProjectReferencePaths.FullPath)&quot; \
+        --logger:trx \
         --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
         --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;"
       Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
