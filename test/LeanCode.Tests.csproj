@@ -6,10 +6,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup>
-    <LogFileName Condition="'$(LogFileName)' == ''">log.trx</LogFileName>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="**/*.cs" />
     <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;IntegrationTests/LeanCode.IntegrationTests.csproj;Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
@@ -27,10 +23,11 @@
 
   <Target Name="RunTestsWithCoverage" DependsOnTargets="Build">
     <exec
+      ContinueOnError="ErrorAndContinue"
       WorkingDirectory="$(TargetDir)"
       Command="dotnet vstest \
         '%(_ResolvedProjectReferencePaths.FullPath)' \
-        --logger:&quot;trx;LogFileName=$(LogFileName)&quot; \
+        --logger:&quot;trx&quot; \
         --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
         --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;"
       Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />

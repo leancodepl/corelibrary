@@ -69,6 +69,8 @@ jobs:
           dotnet-version: "5.0.100"
       - name: Restore
         run: dotnet restore
+      - name: Install trx2junit
+        run: dotnet tool install --global trx2junit
       - name: Build
         run: dotnet build --configuration Release --no-restore
         env:
@@ -76,8 +78,22 @@ jobs:
       - name: Test
         run: dotnet msbuild /t:RunTestsWithCoverage
         working-directory: test
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
+        if: always()
+
+      - name: Convert Test Results to jUnit
+        run: trx2junit --output TestResults $(find -name '*.trx')
+        working-directory: test
+        if: always()
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: test/TestResults/*.xml
+
       - name: Pack
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
         env:
