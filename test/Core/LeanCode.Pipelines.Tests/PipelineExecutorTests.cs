@@ -21,7 +21,6 @@ namespace LeanCode.Pipelines.Tests
 
             _ = fin.Received().SubExecuteAsync(0);
             Assert.Equal(1, result);
-            Assert.False(true);
         }
 
         [Fact]
