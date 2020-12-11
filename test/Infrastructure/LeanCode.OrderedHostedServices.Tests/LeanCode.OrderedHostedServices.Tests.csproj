@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.OrderedHostedServices/LeanCode.OrderedHostedServices.csproj" />
+  </ItemGroup>
+
+</Project>

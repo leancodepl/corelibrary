@@ -38,16 +38,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            if (useInbox)
-            {
-                services.AddHostedService<PeriodicHostedService<ConsumedMessagesCleaner>>();
-            }
-
-            if (useOutbox)
-            {
-                services.AddHostedService<PeriodicHostedService<PeriodicEventsPublisher>>();
-                services.AddHostedService<PeriodicHostedService<PublishedEventsCleaner>>();
-            }
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -56,9 +46,20 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterGeneric(typeof(StoreAndPublishEventsElement<,,>)).AsSelf();
             builder.RegisterType<EventPublisher>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<EventsStore>().AsSelf();
-            builder.RegisterType<ConsumedMessagesCleaner>().AsSelf();
-            builder.RegisterType<PeriodicEventsPublisher>().AsSelf();
-            builder.RegisterType<PublishedEventsCleaner>().AsSelf();
+
+            if (useInbox)
+            {
+                builder.RegisterType<ConsumedMessagesCleaner>().AsSelf();
+                builder.RegisterPeriodicAction<ConsumedMessagesCleaner>();
+            }
+
+            if (useOutbox)
+            {
+                builder.RegisterType<PeriodicEventsPublisher>().AsSelf();
+                builder.RegisterType<PublishedEventsCleaner>().AsSelf();
+                builder.RegisterPeriodicAction<PeriodicEventsPublisher>();
+                builder.RegisterPeriodicAction<PublishedEventsCleaner>();
+            }
 
             builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()

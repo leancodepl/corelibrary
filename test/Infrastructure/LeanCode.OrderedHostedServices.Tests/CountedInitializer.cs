@@ -1,8 +1,8 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
-namespace LeanCode.AsyncInitializer.Tests
+namespace LeanCode.OrderedHostedServices.Tests
 {
     internal class Counter
     {
@@ -11,7 +11,7 @@ namespace LeanCode.AsyncInitializer.Tests
         public int Next() => Interlocked.Increment(ref i);
     }
 
-    internal class CountedInitializer : IAsyncInitializable
+    internal class CountedInitializer : IOrderedHostedService
     {
         private readonly int order;
         private readonly Counter counter;
@@ -22,20 +22,20 @@ namespace LeanCode.AsyncInitializer.Tests
             this.counter = counter;
         }
 
-        public int? InitOrder { get; private set; }
-        public int? DeinitOrder { get; private set; }
+        public int? StartOrder { get; private set; }
+        public int? StopOrder { get; private set; }
 
-        int IAsyncInitializable.Order => order;
+        int IOrderedHostedService.Order => order;
 
-        Task IAsyncInitializable.InitializeAsync()
+        Task IHostedService.StartAsync(CancellationToken token)
         {
-            InitOrder = counter.Next();
+            StartOrder = counter.Next();
             return Task.CompletedTask;
         }
 
-        Task IAsyncInitializable.DeinitializeAsync()
+        Task IHostedService.StopAsync(CancellationToken token)
         {
-            DeinitOrder = counter.Next();
+            StopOrder = counter.Next();
             return Task.CompletedTask;
         }
     }

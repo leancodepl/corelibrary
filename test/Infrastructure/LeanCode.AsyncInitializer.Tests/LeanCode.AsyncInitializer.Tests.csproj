@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Infrastructure/LeanCode.AsyncInitializer/LeanCode.AsyncInitializer.csproj" />
-  </ItemGroup>
-
-</Project>

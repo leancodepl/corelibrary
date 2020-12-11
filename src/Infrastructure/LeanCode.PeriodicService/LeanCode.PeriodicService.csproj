@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.OrderedHostedServices/LeanCode.OrderedHostedServices.csproj" />
 
     <PackageReference Include="Autofac" />
     <PackageReference Include="Cronos" />

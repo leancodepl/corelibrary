@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Common;
 using Hangfire.Server;
-using LeanCode.AsyncInitializer;
+using LeanCode.OrderedHostedServices;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
-    public class HangfireInitializer : IAsyncInitializable
+    public class HangfireInitializer : IOrderedHostedService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireInitializer>();
 
@@ -40,7 +41,7 @@ namespace LeanCode.AsyncTasks.Hangfire
             this.timeZoneResolver = timeZoneResolver;
         }
 
-        public Task InitializeAsync()
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             logger.Information("Starting Hangfire");
             var opts = new BackgroundJobServerOptions
@@ -60,14 +61,14 @@ namespace LeanCode.AsyncTasks.Hangfire
             return Task.CompletedTask;
         }
 
-        public async Task DeinitializeAsync()
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             logger.Information("Stopping Hangfire");
 
             if (processingServer != null)
             {
                 processingServer.SendStop();
-                await processingServer.WaitForShutdownAsync(default);
+                await processingServer.WaitForShutdownAsync(cancellationToken);
                 processingServer.Dispose();
                 processingServer = null;
             }
