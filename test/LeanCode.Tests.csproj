@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <LogFileName Condition="'$(LogFileName)' == ''">log.trx</LogFileName>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" GeneratePathProperty="true">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="**/*.cs" />
@@ -16,9 +18,19 @@
       <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
     </ItemGroup>
 
+    <exec WorkingDirectory="$(TargetDir)" Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')" />
+  </Target>
+
+  <Target Name="RunTestsWithCoverage" DependsOnTargets="Build">
     <exec
-      Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot; --Blame"
-      WorkingDirectory="$(TargetDir)" />
+      ContinueOnError="ErrorAndContinue"
+      WorkingDirectory="$(TargetDir)"
+      Command="dotnet vstest \
+        &quot;%(_ResolvedProjectReferencePaths.FullPath)&quot; \
+        --logger:trx \
+        --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
+        --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;"
+      Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
   </Target>
 
 </Project>
