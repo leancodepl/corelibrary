@@ -22,11 +22,18 @@
       <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
     </ItemGroup>
 
-    <exec WorkingDirectory="$(TargetDir)" Command="
-dotnet vstest \
-@(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ') --logger:&quot;trx;LogFileName=$(LogFileName)&quot; \
---TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
---Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;" />
+    <exec WorkingDirectory="$(TargetDir)" Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')" />
+  </Target>
+
+  <Target Name="RunTestsWithCoverage" DependsOnTargets="Build">
+    <exec
+      WorkingDirectory="$(TargetDir)"
+      Command="dotnet vstest \
+        '%(_ResolvedProjectReferencePaths.FullPath)' \
+        --logger:&quot;trx;LogFileName=$(LogFileName)&quot; \
+        --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
+        --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;"
+      Condition="$([System.String]::new('%(FullPath)').Contains('test')) And '%(TargetFrameworks)' == 'net5.0'" />
   </Target>
 
 </Project>

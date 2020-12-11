@@ -10,7 +10,7 @@
           <Format>cobertura</Format>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <UseSourceLink>false</UseSourceLink>
-          <IncludeTestAssembly>true</IncludeTestAssembly>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
           <SkipAutoProps>true</SkipAutoProps>
         </Configuration>
       </DataCollector>

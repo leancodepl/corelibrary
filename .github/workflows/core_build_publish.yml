@@ -74,12 +74,10 @@ jobs:
         env:
           GIT_COMMIT: ${{ github.sha }}
       - name: Test
-        run: dotnet msbuild /t:RunTests
+        run: dotnet msbuild /t:RunTestsWithCoverage
         working-directory: test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        with:
-          directory: ./test/TestResults
       - name: Pack
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
         env:
