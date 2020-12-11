@@ -25,7 +25,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
         public StoreAndPublishEventsTests()
         {
-            dbContext = new TestDbContext();
+            dbContext = TestDbContext.Create();
             dbContext.Database.GetDbConnection().Open();
             dbContext.Database.EnsureCreated();
 

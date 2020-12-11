@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
@@ -71,7 +72,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         private async Task AssertRaisedEventsWerePeristedAndMarkedPublished()
         {
-            using var dbContext = new TestDbContext(testApp.DbConnection);
+            await using var scope = testApp.Container.BeginLifetimeScope();
+            using var dbContext = scope.Resolve<TestDbContext>();
             var raisedEvents = await dbContext.RaisedEvents
                 .OrderBy(e => e.EventType)
                 .ToListAsync();
@@ -85,7 +87,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         private async Task AssertConsumedEventsWerePersisted()
         {
-            using var dbContext = new TestDbContext(testApp.DbConnection);
+            await using var scope = testApp.Container.BeginLifetimeScope();
+            using var dbContext = scope.Resolve<TestDbContext>();
 
             var consumedMsgs = await dbContext.ConsumedMessages
                 .OrderBy(e => e.ConsumerType)
