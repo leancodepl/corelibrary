@@ -24,6 +24,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
             services.AddIdentityServer()
                 .AddInMemoryApiResources(AuthConfig.GetApiResources())
                 .AddInMemoryIdentityResources(AuthConfig.GetIdentityResources())
+                .AddInMemoryApiScopes(AuthConfig.GetApiScopes())
                 .AddInMemoryClients(AuthConfig.GetClients())
                 .AddTestUsers(AuthConfig.GetUsers())
                 .AddDeveloperSigningCredential();

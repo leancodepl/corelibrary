@@ -5,6 +5,9 @@ services:
     build:
       context: ../../../..
       dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Dockerfile
+    volumes:
+      - ../../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:
@@ -16,6 +19,7 @@ services:
       dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Dockerfile.watch
     volumes:
       - ../../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:

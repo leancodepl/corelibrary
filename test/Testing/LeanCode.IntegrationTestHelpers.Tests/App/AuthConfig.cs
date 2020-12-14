@@ -71,5 +71,16 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
                 new ApiResource("api", "API", new[] { "role" }),
             };
         }
+
+        public static List<ApiScope> GetApiScopes()
+        {
+            return new List<ApiScope>
+            {
+                new ApiScope("api", "API")
+                {
+                    UserClaims = { "role" },
+                },
+            };
+        }
     }
 }
