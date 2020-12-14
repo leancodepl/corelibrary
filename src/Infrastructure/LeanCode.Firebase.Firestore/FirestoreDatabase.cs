@@ -5,18 +5,16 @@ using FirebaseAdmin;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using Grpc.Auth;
-using Grpc.Core;
-using LeanCode.OrderedHostedServices;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.Firebase.Firestore
 {
-    public class FirestoreDatabase : IOrderedHostedService
+    public class FirestoreDatabase : IHostedService
     {
         private readonly FirebaseApp firebaseApp;
         private FirestoreDb? database;
 
         public FirestoreDb Database => database ?? throw new InvalidOperationException("The database needs to be initialized first.");
-        public int Order => 0;
 
         public FirestoreDatabase(FirebaseApp firebaseApp)
         {

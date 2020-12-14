@@ -7,7 +7,6 @@ using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.CQRS.Validation.Fluent;
-using LeanCode.OrderedHostedServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -32,8 +31,6 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
 
                 new InMemoryCacheModule(),
                 new FluentValidationModule(CQRSTypes),
-
-                new OrderedHostedServiceModule(),
 
                 new ApiModule(config),
             };

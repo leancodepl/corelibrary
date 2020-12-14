@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.OrderedHostedServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Polly;
 
 namespace LeanCode.IntegrationTestHelpers
 {
-    public class DbContextsInitializer : IOrderedHostedService
+    public class DbContextsInitializer : IHostedService
     {
         private static readonly IAsyncPolicy CreatePolicy = Policy
             .Handle<SqlException>(e => e.Number == 5177)
@@ -23,8 +23,6 @@ namespace LeanCode.IntegrationTestHelpers
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextsInitializer>();
 
         private readonly Func<IEnumerable<DbContext>> getContexts;
-
-        public int Order => int.MinValue;
 
         public DbContextsInitializer(Func<IEnumerable<DbContext>> getContexts)
         {

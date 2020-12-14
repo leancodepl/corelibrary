@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Common;
 using Hangfire.Server;
-using LeanCode.OrderedHostedServices;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
-    public class HangfireInitializer : IOrderedHostedService
+    public class HangfireInitializer : IHostedService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireInitializer>();
 
@@ -22,8 +22,6 @@ namespace LeanCode.AsyncTasks.Hangfire
         private readonly ITimeZoneResolver? timeZoneResolver;
 
         private BackgroundJobServer? processingServer;
-
-        public int Order => configuration.InitializationOrder;
 
         public HangfireInitializer(
             HangfireConfiguration configuration,

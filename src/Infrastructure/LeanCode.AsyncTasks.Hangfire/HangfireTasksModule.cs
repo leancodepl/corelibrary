@@ -3,7 +3,6 @@ using Autofac;
 using Hangfire;
 using Hangfire.SqlServer;
 using LeanCode.Components;
-using LeanCode.OrderedHostedServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AsyncTasks.Hangfire
@@ -35,7 +34,7 @@ namespace LeanCode.AsyncTasks.Hangfire
                 .AsImplementedInterfaces();
             builder.RegisterInstance(configuration);
             builder.RegisterType<AutofacJobActivator>().SingleInstance();
-            builder.RegisterOrderedHostedService<HangfireInitializer>().SingleInstance();
+            builder.RegisterType<HangfireInitializer>().AsImplementedInterfaces().SingleInstance();
 
             var storageOpts = new SqlServerStorageOptions
             {

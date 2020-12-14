@@ -6,7 +6,6 @@ using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers.Tests.App;
-using LeanCode.OrderedHostedServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +45,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
             builder.ConfigureServices(services =>
             {
                 services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>()!);
-                services.AddTransient<IOrderedHostedService, HangfireInitializer<TestDbContext>>();
+                services.AddTransient<IHostedService, HangfireInitializer<TestDbContext>>();
             });
         }
 

@@ -1,7 +1,6 @@
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.Firebase.FCM;
-using LeanCode.OrderedHostedServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -16,7 +15,6 @@ namespace LeanCode.IntegrationTests.App
         {
             Modules = new IAppModule[]
             {
-                new OrderedHostedServiceModule(),
                 new FCMModule<TestDbContext>(),
                 new ApiModule(config),
             };
