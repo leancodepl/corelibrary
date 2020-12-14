@@ -1,19 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTests.App
 {
     public static class Program
     {
         [SuppressMessage("?", "IDE0060", Justification = "`args` are required by convention.")]
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return LeanProgram
-                .BuildMinimalWebHost<Startup>()
-                .UseKestrel()
+                .BuildMinimalHost<Startup>()
                 .AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment()
                 .ConfigureDefaultLogging(
                     projectName: "integration-tests",

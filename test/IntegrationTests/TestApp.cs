@@ -28,11 +28,10 @@ namespace LeanCode.IntegrationTests
             });
         }
 
-        protected override IWebHostBuilder CreateWebHostBuilder()
+        protected override IHostBuilder CreateHostBuilder()
         {
             return LeanProgram
-                .BuildMinimalWebHost<Startup>()
-                .UseKestrel()
+                .BuildMinimalHost<Startup>()
                 .ConfigureDefaultLogging(
                     projectName: "integration-tests",
                     destructurers: new TypesCatalog(typeof(Program)))

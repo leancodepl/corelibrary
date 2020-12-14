@@ -50,11 +50,10 @@ namespace LeanCode.IntegrationTestHelpers.Tests
             });
         }
 
-        protected override IWebHostBuilder CreateWebHostBuilder()
+        protected override IHostBuilder CreateHostBuilder()
         {
             return LeanProgram
-                .BuildMinimalWebHost<Startup>()
-                .UseKestrel()
+                .BuildMinimalHost<Startup>()
                 .ConfigureDefaultLogging(
                     projectName: "test",
                     destructurers: new TypesCatalog(typeof(Program)))

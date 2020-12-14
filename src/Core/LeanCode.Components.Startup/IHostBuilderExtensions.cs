@@ -11,7 +11,7 @@ using Serilog.Formatting.Compact;
 
 namespace LeanCode.Components.Startup
 {
-    public static class IWebHostBuilderExtensions
+    public static class IHostBuilderExtensions
     {
         public const string SystemLoggersEntryName = LeanProgram.SystemLoggersEntryName;
 
@@ -24,7 +24,7 @@ namespace LeanCode.Components.Startup
 
         public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
 
-        public static IWebHostBuilder AddAppConfigurationFromAzureKeyVault(this IWebHostBuilder builder)
+        public static IHostBuilder AddAppConfigurationFromAzureKeyVault(this IHostBuilder builder)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
@@ -32,8 +32,8 @@ namespace LeanCode.Components.Startup
             });
         }
 
-        public static IWebHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
-            this IWebHostBuilder builder)
+        public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
+            this IHostBuilder builder)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
@@ -44,11 +44,11 @@ namespace LeanCode.Components.Startup
             });
         }
 
-        public static IWebHostBuilder ConfigureDefaultLogging(
-            this IWebHostBuilder builder,
+        public static IHostBuilder ConfigureDefaultLogging(
+            this IHostBuilder builder,
             string projectName,
             TypesCatalog? destructurers = null,
-            Action<WebHostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
+            Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
         {
             var entryAssembly = Assembly.GetEntryAssembly()!; // returns null only when called from unmanaged code
 
@@ -58,12 +58,12 @@ namespace LeanCode.Components.Startup
             return builder.ConfigureDefaultLogging(projectName, appName, destructurers, additionalLoggingConfiguration);
         }
 
-        public static IWebHostBuilder ConfigureDefaultLogging(
-            this IWebHostBuilder builder,
+        public static IHostBuilder ConfigureDefaultLogging(
+            this IHostBuilder builder,
             string projectName,
             string appName,
             TypesCatalog? destructurers = null,
-            Action<WebHostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
+            Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
         {
             return builder.ConfigureLogging((context, logging) =>
             {
