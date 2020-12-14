@@ -1,5 +1,6 @@
 using Autofac;
 using LeanCode.Components;
+using LeanCode.OrderedHostedServices;
 
 namespace LeanCode.Firebase.Firestore
 {
@@ -7,9 +8,8 @@ namespace LeanCode.Firebase.Firestore
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<FirestoreDatabase>()
+            builder.RegisterOrderedHostedService<FirestoreDatabase>()
                 .AsSelf()
-                .AsImplementedInterfaces()
                 .SingleInstance();
         }
     }
