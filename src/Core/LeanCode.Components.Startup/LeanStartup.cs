@@ -2,7 +2,6 @@ using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +9,7 @@ using Serilog;
 
 namespace LeanCode.Components.Startup
 {
-    public abstract class LeanStartup : IStartup
+    public abstract class LeanStartup
     {
         protected IConfiguration Configuration { get; }
         protected ILogger Logger { get; }
@@ -20,13 +19,12 @@ namespace LeanCode.Components.Startup
         public LeanStartup(IConfiguration config)
         {
             Configuration = config;
-
             Logger = Log.ForContext(GetType());
 
             Logger.Information("Configuration loaded, starting app");
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             Logger.Debug("Loading common services");
             services.AddOptions();
@@ -36,8 +34,14 @@ namespace LeanCode.Components.Startup
                 Logger.Debug("Loading services of {Component}", component.GetType());
                 component.ConfigureServices(services);
             }
+        }
 
-            return ConfigureContainer(services);
+        public virtual void ConfigureContainer(ContainerBuilder builder)
+        {
+            foreach (var component in Modules)
+            {
+                builder.RegisterModule(component);
+            }
         }
 
         public void Configure(IApplicationBuilder app)
@@ -51,19 +55,5 @@ namespace LeanCode.Components.Startup
         }
 
         protected abstract void ConfigureApp(IApplicationBuilder app);
-
-        private IServiceProvider ConfigureContainer(IServiceCollection services)
-        {
-            var builder = new ContainerBuilder();
-
-            builder.Populate(services);
-
-            foreach (var component in Modules)
-            {
-                builder.RegisterModule(component);
-            }
-
-            return builder.Build().Resolve<IServiceProvider>();
-        }
     }
 }

@@ -1,4 +1,5 @@
 using System.IO;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +14,7 @@ namespace LeanCode.Components.Startup
             where TStartup : class
         {
             return new HostBuilder()
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
