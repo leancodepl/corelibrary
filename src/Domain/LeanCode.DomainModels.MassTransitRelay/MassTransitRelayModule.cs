@@ -7,6 +7,7 @@ using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.MassTransitRelay.Simple;
+using LeanCode.OrderedHostedServices;
 using LeanCode.PeriodicService;
 using MassTransit;
 using MassTransit.AutofacIntegration;
@@ -83,8 +84,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 busConfig(cfg);
             });
 
-            builder.RegisterType<MassTransitRelayHostedService>()
-                .AsImplementedInterfaces()
+            builder.RegisterOrderedHostedService<MassTransitRelayHostedService>()
                 .SingleInstance();
         }
 
