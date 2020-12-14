@@ -12,17 +12,23 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public DbSet<ConsumedMessage> ConsumedMessages => Set<ConsumedMessage>();
         public DbSet<RaisedEvent> RaisedEvents => Set<RaisedEvent>();
 
-        public TestDbContext()
-            : base(new DbContextOptionsBuilder<TestDbContext>()
-                .UseSqlite("Filename=:memory:")
-                .Options)
+        public TestDbContext(DbContextOptions<TestDbContext> opts)
+            : base(opts)
         { }
 
-        public TestDbContext(DbConnection connection)
-            : base(new DbContextOptionsBuilder<TestDbContext>()
+        public static TestDbContext Create()
+        {
+            return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>()
+                .UseSqlite("Filename=:memory:")
+                .Options);
+        }
+
+        public static TestDbContext Create(DbConnection connection)
+        {
+            return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>()
                 .UseSqlite(connection)
-                .Options)
-        { }
+                .Options);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

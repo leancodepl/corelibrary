@@ -37,7 +37,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             {
                 var serviceResolver = Substitute.For<IPipeContextServiceResolver>();
                 serviceResolver.GetService<IConsumedMessagesContext>(null)
-                    .ReturnsForAnyArgs(_ => new TestDbContext(dbConnection));
+                    .ReturnsForAnyArgs(_ => TestDbContext.Create(dbConnection));
 
                 // we have to serialize access to database
                 cfg.UseConcurrencyLimit(1);
@@ -83,7 +83,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Does_not_consume_already_consumed_message()
         {
-            using var dbContext = new TestDbContext(dbConnection);
+            using var dbContext = TestDbContext.Create(dbConnection);
             dbContext.Add(new ConsumedMessage(MessageId, TimeProvider.Now, typeof(ReportingConsumer).FullName, typeof(TestMsg).FullName));
             await dbContext.SaveChangesAsync();
 
@@ -121,7 +121,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
         private async Task<List<ConsumedMessage>> FetchConsumedMessages()
         {
-            using var dbContext = new TestDbContext(dbConnection);
+            using var dbContext = TestDbContext.Create(dbConnection);
             return await dbContext.ConsumedMessages
                 .OrderBy(msg => msg.ConsumerType)
                 .ToListAsync();
@@ -141,7 +141,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             // await harness.Start();
 
             await dbConnection.OpenAsync();
-            using var dbContext = new TestDbContext(dbConnection);
+            using var dbContext = TestDbContext.Create(dbConnection);
             await dbContext.Database.EnsureCreatedAsync();
         }
 
