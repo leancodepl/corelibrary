@@ -18,9 +18,9 @@ The framework can be unit-tested by `cd`ing into `test` folder and calling
 dotnet msbuild /t:RunTests
 ```
 
-Moreover, there are some integration-style tests that require external services. They can be tested with `docker` and `docker-compose` tool. There is one integration-test suite currently:
+Moreover, there are some integration-style tests that require external services. They can be tested with `docker` and `docker-compose` tools. Currently there is one integration-test suite:
 
- 1. `test/LeanCode.IntegrationTests` - _real_ integration tests,
+ 1. `test/LeanCode.IntegrationTests`,
 
 It has a `docker` folder that contains necessary configuration. You can run the suite using:
 
