@@ -5,7 +5,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Test;
 using static IdentityServer4.IdentityServerConstants;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.App
+namespace LeanCode.IntegrationTests.App
 {
     public static class AuthConfig
     {

@@ -13,7 +13,7 @@ using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.App
+namespace LeanCode.IntegrationTests.App
 {
     [AuthorizeWhenHasAnyOf("user")]
     public class SampleQuery : IRemoteQuery<SampleQuery.Result?>

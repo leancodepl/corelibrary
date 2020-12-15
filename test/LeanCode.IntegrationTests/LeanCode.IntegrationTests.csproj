@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../src/Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />
+    <ProjectReference Include="../../src/Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
+    <ProjectReference Include="../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="IdentityServer4" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+</Project>

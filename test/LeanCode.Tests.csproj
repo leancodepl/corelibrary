@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="**/*.cs" />
-    <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;IntegrationTests/LeanCode.IntegrationTests.csproj;Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
+    <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;IntegrationTests/LeanCode.IntegrationTests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
 
     <ProjectReference Include="@(TestProjects)" />
   </ItemGroup>

@@ -4,7 +4,7 @@ services:
   test:
     build:
       context: ../../..
-      dockerfile: ./test/IntegrationTests/docker/Dockerfile
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile
     volumes:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
@@ -16,7 +16,7 @@ services:
   watch_test:
     build:
       context: ../../..
-      dockerfile: ./test/IntegrationTests/docker/Dockerfile.watch
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile.watch
     volumes:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget

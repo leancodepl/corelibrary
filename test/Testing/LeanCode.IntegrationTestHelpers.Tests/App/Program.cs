@@ -14,7 +14,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
                 .BuildMinimalHost<Startup>()
                 .AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment()
                 .ConfigureDefaultLogging(
-                    projectName: "test",
+                    projectName: "integration-tests",
                     destructurers: new TypesCatalog(typeof(Program)));
         }
     }

@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
-using IdentityModel.Client;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
-using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers.Tests.App;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,38 +13,26 @@ namespace LeanCode.IntegrationTestHelpers.Tests
 {
     public class TestApp : LeanCodeTestFactory<Startup>
     {
-        public override async Task InitializeAsync()
-        {
-            await base.InitializeAsync();
-        }
+        protected override ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides(Serilog.Events.LogEventLevel.Verbose, true);
 
         protected override IEnumerable<Assembly> GetTestAssemblies()
         {
             yield return typeof(Startup).Assembly;
         }
 
-        public Task<bool> AuthenticateAsync()
-        {
-            return AuthenticateAsync(new PasswordTokenRequest
-            {
-                UserName = AuthConfig.Username,
-                Password = AuthConfig.Password,
-                Scope = "profile openid api",
-
-                ClientId = "web",
-                ClientSecret = string.Empty,
-            });
-        }
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            base.ConfigureWebHost(builder);
-
+            // The order to `base` call is important - we need to open the connection before migrations,
+            // so that the DB is not dropped prematurely.
             builder.ConfigureServices(services =>
             {
-                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>()!);
-                services.AddTransient<IHostedService, HangfireInitializer<TestDbContext>>();
+                services.AddHostedService<ConnectionKeeper>();
+                services.AddTransient<DbContext>(sp => sp.GetRequiredService<TestDbContext>());
             });
+
+            base.ConfigureWebHost(builder);
+
+            builder.UseSolutionRelativeContentRoot("test/Testing/LeanCode.IntegrationTestHelpers.Tests");
         }
 
         protected override IHostBuilder CreateHostBuilder()
@@ -54,34 +40,9 @@ namespace LeanCode.IntegrationTestHelpers.Tests
             return LeanProgram
                 .BuildMinimalHost<Startup>()
                 .ConfigureDefaultLogging(
-                    projectName: "test",
+                    projectName: "integration-tests",
                     destructurers: new TypesCatalog(typeof(Program)))
                 .UseEnvironment(Environments.Development);
-        }
-    }
-
-    public class AuthenticatedTestApp : TestApp
-    {
-        public HttpQueriesExecutor Query { get; private set; } = null!;
-        public HttpCommandsExecutor Command { get; private set; } = null!;
-
-        public override async Task InitializeAsync()
-        {
-            await base.InitializeAsync();
-            if (!await AuthenticateAsync())
-            {
-                throw new Xunit.Sdk.XunitException("Authentication failed.");
-            }
-
-            Query = CreateQueriesExecutor();
-            Command = CreateCommandsExecutor();
-        }
-
-        public override async Task DisposeAsync()
-        {
-            Command = null!;
-            Query = null!;
-            await base.DisposeAsync();
         }
     }
 }

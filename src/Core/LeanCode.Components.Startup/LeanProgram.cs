@@ -15,12 +15,11 @@ namespace LeanCode.Components.Startup
         {
             return new HostBuilder()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddEnvironmentVariables();
                 })
-                .ConfigureWebHostDefaults(builder =>
+                .ConfigureWebHost(builder =>
                 {
                     builder
                         .UseKestrel((builderContext, options) =>
