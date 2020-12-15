@@ -28,7 +28,7 @@ If project requires separate, user-provided configuration (e.g. api keys, certif
 
 ASP.NET Core startup is quite involved and provides multiple injection points where different things can be configured. To unify the startup procedure we decided to provide a set of classes that simplify the process:
 
- 1. `LeanProgram`/`IWebHostBuilderExtensions` - a helper classes to build and configure `IHostBuilder`,
+ 1. `LeanProgram`/`IHostBuilderExtensions` - a helper classes to build and configure `IHostBuilder`,
  2. `LeanStartup` - extension to ASP.NET Core `Startup` that provides sensible defaults and integrates with the module-based approach to project structure.
 
 Using these classes is sufficient to run ASP.NET Core app with correct configuration.
@@ -40,13 +40,12 @@ public class Program
 {
     public static void Main()
     {
-        BuildWebHost().Run();
+        BuildHost().Run();
     }
 
-    public static IWebHost BuildWebHost()
+    public static IHost BuildHost()
     {
-        return LeanProgram.BuildMinimalWebHost<Startup>()
-            .UseKestrel()
+        return LeanProgram.BuildMinimalHost<Startup>()
             .AddAppConfigurationFromAzureKeyVault()
             .ConfigureDefaultLogging(
                 projectName: "test-project",

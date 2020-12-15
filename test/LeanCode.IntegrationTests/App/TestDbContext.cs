@@ -1,18 +1,21 @@
-using LeanCode.Firebase.FCM.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.IntegrationTests.App
 {
     public class TestDbContext : DbContext
     {
-        public DbSet<PushNotificationTokenEntity> PNTokens => Set<PushNotificationTokenEntity>();
+        public DbSet<Entity> Entities => Set<Entity>();
 
         public TestDbContext(DbContextOptions<TestDbContext> opts)
             : base(opts) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            PushNotificationTokenEntity.Configure(modelBuilder);
+            modelBuilder.Entity<Entity>(cfg =>
+            {
+                cfg.HasKey(e => e.Id);
+                cfg.Property(e => e.Value).HasMaxLength(10);
+            });
         }
     }
 }

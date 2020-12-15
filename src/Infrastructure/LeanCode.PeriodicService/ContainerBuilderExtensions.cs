@@ -1,24 +1,17 @@
 using Autofac;
 using Autofac.Builder;
-using LeanCode.OrderedHostedServices;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.PeriodicService
 {
     public static class ContainerBuilderExtensions
     {
         public static IRegistrationBuilder<PeriodicHostedService<T>, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterPeriodicAction<T>(this ContainerBuilder builder, int order)
-            where T : IPeriodicAction
-        {
-            return builder.RegisterOrderedHostedService<PeriodicHostedService<T>>()
-                .WithParameter(nameof(order), order);
-        }
-
-        public static IRegistrationBuilder<PeriodicHostedService<T>, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterPeriodicAction<T>(this ContainerBuilder builder)
             where T : IPeriodicAction
         {
-            return builder.RegisterPeriodicAction<T>(order: 0);
+            return builder.RegisterType<PeriodicHostedService<T>>()
+                .As<IHostedService>();
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using LeanCode.CQRS.Security;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.App
+namespace LeanCode.IntegrationTests.App
 {
     public class AppRoles : IRoleRegistration
     {

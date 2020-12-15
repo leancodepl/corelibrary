@@ -3,7 +3,6 @@
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
-    <ProjectReference Include="../../Infrastructure/LeanCode.OrderedHostedServices/LeanCode.OrderedHostedServices.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Correlation/LeanCode.Correlation.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.PeriodicService/LeanCode.PeriodicService.csproj" />

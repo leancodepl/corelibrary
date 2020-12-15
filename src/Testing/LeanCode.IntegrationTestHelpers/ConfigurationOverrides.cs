@@ -65,8 +65,8 @@ namespace LeanCode.IntegrationTestHelpers
                     ["ConnectionStrings:Database"] = dbConnStr,
                     ["InternalBase"] = "http://localhost",
                     ["PublicBase"] = "http://localhost",
-                    [IWebHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
-                    [IWebHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
+                    [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
+                    [IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
                 };
             }
         }

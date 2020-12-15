@@ -1,19 +1,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Dapper;
-using LeanCode.OrderedHostedServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTestHelpers
 {
-    public sealed class HangfireInitializer<TContext> : IOrderedHostedService
+    public sealed class HangfireInitializer<TContext> : IHostedService
         where TContext : DbContext
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireInitializer<TContext>>();
 
         private readonly TContext dbContext;
-
-        public int Order => int.MinValue + 1;
 
         public HangfireInitializer(TContext dbContext)
         {

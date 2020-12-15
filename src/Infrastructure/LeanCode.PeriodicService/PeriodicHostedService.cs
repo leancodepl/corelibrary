@@ -2,24 +2,21 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using LeanCode.OrderedHostedServices;
 using LeanCode.Time;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.PeriodicService
 {
-    public class PeriodicHostedService<TAction> : OrderedBackgroundService
+    public class PeriodicHostedService<TAction> : BackgroundService
         where TAction : IPeriodicAction
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PeriodicHostedService<TAction>>();
 
         private readonly ILifetimeScope scope;
 
-        public override int Order { get; }
-
-        public PeriodicHostedService(ILifetimeScope scope, int order)
+        public PeriodicHostedService(ILifetimeScope scope)
         {
             this.scope = scope;
-            Order = order;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -1,8 +1,0 @@
-FROM leancode.azurecr.io/dotnet:3.1
-
-COPY Docker.Directory.Build.props /app/Directory.Build.props
-
-# Wait for SQL Server first
-WORKDIR /app/code/test/IntegrationTests
-ENV ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS=/app/code/test/IntegrationTests
-ENTRYPOINT sleep 10 && dotnet restore && dotnet watch test

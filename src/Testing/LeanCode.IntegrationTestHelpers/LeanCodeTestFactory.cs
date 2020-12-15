@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using LeanCode.CQRS.RemoteHttp.Client;
-using LeanCode.OrderedHostedServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -86,8 +85,13 @@ namespace LeanCode.IntegrationTestHelpers
                     services.Configure<JwtBearerOptions>(
                         JwtBearerDefaults.AuthenticationScheme,
                         opts => opts.BackchannelHttpHandler = Server.CreateHandler());
+                    // Allow the host to perform shutdown a little bit longer - it will make
+                    // `DbContextsInitializer` successfully drop the database more frequently. :)
+                    services.Configure<HostOptions>(
+                            opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
 
-                    services.AddTransient<IOrderedHostedService, DbContextsInitializer>();
+                    // Registering it here will make it the first `IHostedService` in the collection
+                    services.AddTransient<IHostedService, DbContextsInitializer>();
                 });
         }
 

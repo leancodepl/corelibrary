@@ -2,6 +2,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App
 {
+    public class Entity
+    {
+        public int Id { get; set; }
+        public string? Data { get; set; }
+    }
+
     public class TestDbContext : DbContext
     {
         public DbSet<Entity> Entities => Set<Entity>();
@@ -14,7 +20,8 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
             modelBuilder.Entity<Entity>(cfg =>
             {
                 cfg.HasKey(e => e.Id);
-                cfg.Property(e => e.Value).HasMaxLength(10);
+                cfg.Property(e => e.Id).ValueGeneratedNever();
+                cfg.Property(e => e.Data);
             });
         }
     }

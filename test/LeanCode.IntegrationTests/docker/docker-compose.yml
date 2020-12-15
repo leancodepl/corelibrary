@@ -3,8 +3,11 @@ services:
   #### Tests
   test:
     build:
-      context: ../../../..
-      dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Dockerfile
+      context: ../../..
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile
+    volumes:
+      - ../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:
@@ -12,10 +15,11 @@ services:
 
   watch_test:
     build:
-      context: ../../../..
-      dockerfile: ./test/Testing/LeanCode.IntegrationTestHelpers.Tests/docker/Dockerfile.watch
+      context: ../../..
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile.watch
     volumes:
-      - ../../../..:/app/code
+      - ../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
     depends_on:

@@ -1,10 +1,8 @@
-using System;
 using System.IO;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace LeanCode.Components.Startup
 {
@@ -12,16 +10,24 @@ namespace LeanCode.Components.Startup
     {
         public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
 
-        public static IWebHostBuilder BuildMinimalWebHost<TStartup>()
+        public static IHostBuilder BuildMinimalHost<TStartup>()
             where TStartup : class
         {
-            return new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+            return new HostBuilder()
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddEnvironmentVariables();
                 })
-                .UseStartup<TStartup>();
+                .ConfigureWebHost(builder =>
+                {
+                    builder
+                        .UseKestrel((builderContext, options) =>
+                        {
+                            options.Configure(builderContext.Configuration.GetSection("Kestrel"), reloadOnChange: true);
+                        })
+                        .UseStartup<TStartup>();
+                });
         }
     }
 }

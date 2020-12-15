@@ -1,15 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.OrderedHostedServices;
 using MassTransit;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public class MassTransitRelayHostedService : IOrderedHostedService
+    public class MassTransitRelayHostedService : IHostedService
     {
         private readonly IBusControl bus;
-
-        public int Order => int.MaxValue;
 
         public MassTransitRelayHostedService(IBusControl bus)
         {
