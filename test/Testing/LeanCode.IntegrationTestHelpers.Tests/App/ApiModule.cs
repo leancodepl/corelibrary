@@ -10,13 +10,6 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
 {
     public class ApiModule : AppModule
     {
-        private readonly IConfiguration config;
-
-        public ApiModule(IConfiguration config)
-        {
-            this.config = config;
-        }
-
         public override void ConfigureServices(IServiceCollection services)
         {
             var connStr = new SqliteConnectionStringBuilder
@@ -26,6 +19,11 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
                 Cache = SqliteCacheMode.Shared,
             };
             services.AddDbContext<TestDbContext>(cfg => cfg.UseSqlite(connStr.ConnectionString));
+
+            // The order here is important - we need to open the connection before migrations,
+            // so that the DB is not dropped prematurely.
+            services.AddHostedService<ConnectionKeeper>();
+            services.AddHostedService<DbContextInitializer<TestDbContext>>();
         }
 
         protected override void Load(ContainerBuilder builder)

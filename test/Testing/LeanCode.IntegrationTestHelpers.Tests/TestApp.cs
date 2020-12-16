@@ -13,7 +13,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
 {
     public class TestApp : LeanCodeTestFactory<Startup>
     {
-        protected override ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides(Serilog.Events.LogEventLevel.Verbose, true);
+        protected override ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides(Serilog.Events.LogEventLevel.Error, false);
 
         protected override IEnumerable<Assembly> GetTestAssemblies()
         {
@@ -22,16 +22,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            // The order to `base` call is important - we need to open the connection before migrations,
-            // so that the DB is not dropped prematurely.
-            builder.ConfigureServices(services =>
-            {
-                services.AddHostedService<ConnectionKeeper>();
-                services.AddTransient<DbContext>(sp => sp.GetRequiredService<TestDbContext>());
-            });
-
             base.ConfigureWebHost(builder);
-
             builder.UseSolutionRelativeContentRoot("test/Testing/LeanCode.IntegrationTestHelpers.Tests");
         }
 
