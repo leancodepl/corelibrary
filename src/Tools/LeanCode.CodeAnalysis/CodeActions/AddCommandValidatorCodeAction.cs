@@ -47,7 +47,8 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 throw new InvalidOperationException("Cannot find parent class.");
             var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(handlerSyntax)!;
             var handlerInteface = concreteHandler.AllInterfaces
-                .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName);
+                .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName) ??
+                throw new InvalidOperationException("Cannot find handler interface implementation.");
 
             var commandName = handlerInteface.TypeArguments[1].Name;
 

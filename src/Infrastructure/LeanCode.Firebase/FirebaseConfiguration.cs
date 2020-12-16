@@ -28,7 +28,7 @@ namespace LeanCode.Firebase
                     new AppOptions()
                     {
                         Credential = GoogleCredential.FromJson(cfg),
-                        ProjectId = JObject.Parse(cfg)["project_id"].Value<string>(),
+                        ProjectId = JObject.Parse(cfg)["project_id"]?.Value<string>() ?? string.Empty,
                     },
                     name);
             }

@@ -8,7 +8,14 @@ namespace LeanCode.DomainModels.MassTransitRelay
         public static string GetFullTableName(this DbContext dbContext, Type entity)
         {
             var type = dbContext.Model.FindEntityType(entity);
-            return $"[{type.GetSchema()}].[{type.GetTableName()}]";
+            if (string.IsNullOrEmpty(type.GetSchema()))
+            {
+                return $"[{type.GetTableName()}]";
+            }
+            else
+            {
+                return $"[{type.GetSchema()}].[{type.GetTableName()}]";
+            }
         }
     }
 }
