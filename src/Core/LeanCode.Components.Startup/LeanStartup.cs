@@ -1,6 +1,4 @@
-using System;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +38,7 @@ namespace LeanCode.Components.Startup
         {
             foreach (var component in Modules)
             {
+                Logger.Debug("Loading module {Component}", component.GetType());
                 builder.RegisterModule(component);
             }
         }

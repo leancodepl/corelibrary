@@ -18,7 +18,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App
         {
             Modules = new IAppModule[]
             {
-                new ApiModule(config),
+                new ApiModule(),
                 new CQRSModule()
                     .WithCustomPipelines<Context>(CQRSTypes, c => c, q => q),
             };

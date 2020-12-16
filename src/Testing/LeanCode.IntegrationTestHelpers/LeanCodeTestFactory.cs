@@ -89,9 +89,6 @@ namespace LeanCode.IntegrationTestHelpers
                     // `DbContextsInitializer` successfully drop the database more frequently. :)
                     services.Configure<HostOptions>(
                             opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-
-                    // Registering it here will make it the first `IHostedService` in the collection
-                    services.AddTransient<IHostedService, DbContextsInitializer>();
                 });
         }
 
@@ -105,6 +102,8 @@ namespace LeanCode.IntegrationTestHelpers
 
         public virtual async Task DisposeAsync()
         {
+            var host = Services.GetRequiredService<IHost>();
+            await host.StopAsync();
             await Task.Run(() => Dispose()).ConfigureAwait(false);
         }
     }

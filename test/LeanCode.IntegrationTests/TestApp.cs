@@ -39,17 +39,6 @@ namespace LeanCode.IntegrationTests
             });
         }
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            base.ConfigureWebHost(builder);
-
-            builder.ConfigureServices(services =>
-            {
-                services.AddTransient<DbContext>(sp => sp.GetService<TestDbContext>()!);
-                services.AddTransient<IHostedService, HangfireInitializer<TestDbContext>>();
-            });
-        }
-
         protected override IHostBuilder CreateHostBuilder()
         {
             return LeanProgram
