@@ -18,11 +18,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         public bool WasPublished { get; set; }
 
-        public static RaisedEvent Create(object evt, Guid correlationId, Func<object, string> evtSerializer)
+        public static RaisedEvent Create(object evt, Guid correlationId, string serializedEvent)
         {
             var raisedEvt = new RaisedEvent
             {
-                Payload = evtSerializer(evt),
+                Payload = serializedEvent,
                 EventType = evt.GetType().FullName!,
                 CorrelationId = correlationId,
             };

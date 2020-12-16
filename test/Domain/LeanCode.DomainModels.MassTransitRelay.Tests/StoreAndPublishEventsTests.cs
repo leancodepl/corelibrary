@@ -116,7 +116,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             public RaisedEvent WrapEvent(object evt, Guid correlationId)
             {
-                return RaisedEvent.Create(evt, correlationId, _ => "mock_payload");
+                return RaisedEvent.Create(evt, correlationId, "mock_payload");
             }
         }
     }

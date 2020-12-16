@@ -36,10 +36,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.useOutbox = useOutbox;
         }
 
-        public override void ConfigureServices(IServiceCollection services)
-        {
-        }
-
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterGeneric(typeof(EventsPublisherElement<,,>)).AsSelf();
@@ -61,7 +57,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 builder.RegisterPeriodicAction<PublishedEventsCleaner>();
             }
 
-            builder.RegisterInstance(new JsonEventsSerializer(eventsCatalog))
+            builder.RegisterInstance(new NewtonsoftJsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()
                 .SingleInstance();
 

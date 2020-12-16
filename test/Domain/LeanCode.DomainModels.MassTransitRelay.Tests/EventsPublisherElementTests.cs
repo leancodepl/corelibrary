@@ -15,9 +15,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     {
         private readonly IEventPublisher publisher;
         private readonly EventsPublisherElement<TestContext, TestPayload, TestPayload> element;
-        private readonly AsyncEventsInterceptor interceptor = new AsyncEventsInterceptor();
+        private readonly AsyncEventsInterceptor interceptor = new();
 
-        private readonly TestContext testContext = new TestContext
+        private readonly TestContext testContext = new()
         {
             CorrelationId = Guid.NewGuid(),
         };
