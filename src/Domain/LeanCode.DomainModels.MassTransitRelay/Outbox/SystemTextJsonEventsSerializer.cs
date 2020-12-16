@@ -46,7 +46,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                 .Select(ass => ass.GetType(type))
                 .Where(t => t != null)
                 .FirstOrDefault()
-                ?? throw new InvalidOperationException($"Type: {type} is not defined in any of contract assemblies");
+                ?? throw new InvalidOperationException($"Type {type} is not defined in any of the provided assemblies.");
         }
     }
 }
