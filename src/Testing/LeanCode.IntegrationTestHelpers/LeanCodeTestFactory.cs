@@ -102,6 +102,8 @@ namespace LeanCode.IntegrationTestHelpers
 
         public virtual async Task DisposeAsync()
         {
+            var host = Services.GetRequiredService<IHost>();
+            await host.StopAsync();
             await Task.Run(() => Dispose()).ConfigureAwait(false);
         }
     }
