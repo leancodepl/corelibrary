@@ -22,34 +22,32 @@ namespace LeanCode.IntegrationTestHelpers
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
 
-        private readonly Func<T> getContext;
+        private readonly T context;
 
-        public DbContextInitializer(Func<T> getContext)
+        public DbContextInitializer(T context)
         {
-            this.getContext = getContext;
+            this.context = context;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await using var ctx = getContext();
-            logger.Information("Creating database for context {ContextType}", ctx.GetType());
+            logger.Information("Creating database for context {ContextType}", context.GetType());
             // HACK: should mitigate (slightly) the bug in MSSQL that prevents us from creating
             // new databases.
             // See https://github.com/Microsoft/mssql-docker/issues/344 for tracking issue.
             await CreatePolicy.ExecuteAsync(
                 async token =>
                 {
-                    await ctx.Database.EnsureDeletedAsync(token);
-                    await ctx.Database.EnsureCreatedAsync(token);
+                    await context.Database.EnsureDeletedAsync(token);
+                    await context.Database.EnsureCreatedAsync(token);
                 },
                 cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            await using var ctx = getContext();
-            logger.Information("Dropping database for context {ContextType}", ctx.GetType());
-            await ctx.Database.EnsureDeletedAsync(cancellationToken);
+            logger.Information("Dropping database for context {ContextType}", context.GetType());
+            await context.Database.EnsureDeletedAsync(cancellationToken);
         }
     }
 }
