@@ -8,10 +8,10 @@ CoreLib version is tricky. Since it is mostly used internally by us at LeanCode,
 
 Additionally, there are some rules regarding versioning itself and changes to the version number:
 
- 1. If major version of .NET Core changes, we bump major version of CoreLib,
- 2. If minor version of .NET Core changes, we bump minor version,
+ 1. Since v5, CoreLib major version is the same as .NET major version,
+ 2. Minor version is used as a major version,
  3. If CoreLib version is stable, we can't introduce breaking changes without changing version,
- 4. We allow breaking changes between minor versions,
+ 4. We allow breaking changes between minor (major) versions,
  5. If CoreLib version is under active development, we can introduce breaking changes without version bump,
  6. A single CoreLib version cannot be both stable and under active development,
  7. There is a small period of time after new CoreLib version is released when we allow all kinds of breakages (i.e. .NET Core bumps if we release during preview window).
@@ -22,14 +22,13 @@ All of the libraries that are part of the CoreLib are versioned together and req
 
 ## Supported versions
 
-Here is the list of available major versions of the library (as of 20-12-2019):
+Here is the list of available major versions of the library (as of 2020-12-16):
 
-| CoreLib | .NET Core | Under development | Stable     | Notes         |
-|---------|-----------|-------------------|------------|---------------|
-| v4.1    | 3.1       | &#x2714;          |            | LTS           |
-| v3.4    | 2.2       |                   | &#x2714;   | Not published |
-|         |           |                   |            |               |
-
-### A note on version numbers
-
-We will try to match .NET Core major version with major version of our library. Currently that is not the case since we decided to bump major version some time ago (because we had different versioning scheme that didn't really work). We will catch up with .NET Core next year, when .NET 5 comes out. We don't think that we will match minor version of .NET though. That will constraint our ability to version this sensibly too much.
+| CoreLib | .NET Core | Under development | Stable     | Notes             |
+|---------|-----------|-------------------|------------|-------------------|
+| v3.4    | 2.2       |                   | &#x2714;   | Not published     |
+| v4.1    | 3.1       |                   | &#x2714;   | Previous stable   |
+| v4.2    | 3.1       |                   | &#x2714;   | Previous stable   |
+| v5.0    | 5.0       |                   | &#x2714;   | Stable            |
+| v5.1    | 5.0       | &#x2714;          |            |                   |
+|         |           |                   |            |                   |
