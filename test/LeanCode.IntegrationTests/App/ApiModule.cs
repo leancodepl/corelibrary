@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Autofac;
 using LeanCode.Components;
+using LeanCode.IntegrationTestHelpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,9 @@ namespace LeanCode.IntegrationTests.App
 
         public override void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<DbContextInitializer<TestDbContext>>();
+            services.AddHostedService<HangfireInitializer<TestDbContext>>();
+
             services.AddMemoryCache();
 
             services.AddIdentityServer()
