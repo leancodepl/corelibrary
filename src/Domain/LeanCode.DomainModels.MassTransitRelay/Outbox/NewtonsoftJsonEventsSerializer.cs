@@ -21,7 +21,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public NewtonsoftJsonEventsSerializer(TypesCatalog typesCatalog, JsonSerializerSettings? settings)
         {
             this.typesCatalog = typesCatalog;
-            this.settings = settings ?? new JsonSerializerSettings
+            this.settings = settings ?? new()
             {
                 ContractResolver = new ContractResolver(),
             };

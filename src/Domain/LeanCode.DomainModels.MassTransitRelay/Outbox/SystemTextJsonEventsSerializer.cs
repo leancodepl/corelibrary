@@ -21,7 +21,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         public SystemTextJsonEventsSerializer(TypesCatalog typesCatalog, JsonSerializerOptions? options = null)
         {
             this.typesCatalog = typesCatalog;
-            this.options = options ?? new JsonSerializerOptions();
+            this.options = options ?? new();
         }
 
         public RaisedEvent WrapEvent(object evt, Guid correlationId)

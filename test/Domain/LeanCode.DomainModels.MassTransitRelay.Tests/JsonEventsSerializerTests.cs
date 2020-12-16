@@ -74,19 +74,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             Assert.Equal(evt, unwrapped);
         }
 
-        public record TestEvent : IDomainEvent
-        {
-            public Guid Id { get; private set; }
-            public DateTime DateOccurred { get; private set; }
-            public int Value { get; private set; }
-
-            public TestEvent(Guid id, DateTime dateOccurred, int value)
-            {
-                Id = id;
-                DateOccurred = dateOccurred;
-                Value = value;
-            }
-        }
+        public record TestEvent(Guid Id, DateTime DateOccurred, int Value) : IDomainEvent;
 
         public record TestEventWithPrivateFields : IDomainEvent
         {
