@@ -28,11 +28,13 @@ namespace LeanCode.Firebase.FCM
         }
 
         public LocalizedNotification Localize(CultureInfo culture) =>
-            new LocalizedNotification(stringLocalizer, culture);
+            new(stringLocalizer, culture);
         public LocalizedNotification Localize(string lang) =>
             Localize(CultureInfo.GetCultureInfo(lang));
         public Task SendToUserAsync(Guid userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
             SendToUserAsync(userId, message, false, cancellationToken);
+        public Task SendToUsersAsync(List<Guid> userIds, MulticastMessage message, CancellationToken cancellationToken = default) =>
+            SendToUsersAsync(userIds, message, false, cancellationToken);
         public Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
             SendAsync(message, false, cancellationToken);
         public Task SendMulticastAsync(MulticastMessage message, CancellationToken cancellationToken = default) =>
@@ -55,6 +57,25 @@ namespace LeanCode.Firebase.FCM
                 logger.Debug(
                     "Sending push notification to user {UserId} that targets {Count} devices",
                     userId, message.Tokens.Count);
+                var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+                await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
+            }
+        }
+
+        public async Task SendToUsersAsync(List<Guid> userIds, MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
+        {
+            var tokens = await tokenStore.GetTokensAsync(userIds, cancellationToken);
+            message.Tokens = tokens.SelectMany(t => t.Value).ToList();
+
+            if (message.Tokens.Count == 0)
+            {
+                logger.Information("Cannot send push to user {UserId} - no tokens", userIds);
+            }
+            else
+            {
+                logger.Debug(
+                    "Sending push notification to user {Count} users, targeting {Count} devices",
+                    userIds.Count, message.Tokens.Count);
                 var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
                 await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
             }

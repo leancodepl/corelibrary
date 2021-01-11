@@ -47,6 +47,21 @@ namespace LeanCode.Firebase.FCM.Tests
         }
 
         [FCMFact]
+        public async Task Sends_single_message_to_multiple_users()
+        {
+            var message = new MulticastMessage
+            {
+                Notification = new Notification
+                {
+                    Title = "Test title",
+                    Body = "Test body",
+                },
+            };
+
+            await client.SendToUsersAsync(new() { UserId }, message);
+        }
+
+        [FCMFact]
         public async Task Does_nothing_when_user_does_not_have_tokens()
         {
             var message = new MulticastMessage
