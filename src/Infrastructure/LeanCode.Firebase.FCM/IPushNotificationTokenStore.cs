@@ -8,6 +8,8 @@ namespace LeanCode.Firebase.FCM
     public interface IPushNotificationTokenStore
     {
         Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<Dictionary<Guid, List<string>>> GetTokensAsync(List<Guid> userIds, CancellationToken cancellationToken = default);
+
         Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default);
         Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default);
 
