@@ -58,7 +58,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             {
                 await dbContext.ExecuteAsync(
                 $@"
-                    BEGIN TRAN;
+                    BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
                     DELETE FROM {GetTokensTableName()} WHERE [Token] = @token;
@@ -67,7 +67,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     INSERT INTO {GetTokensTableName()} ([Id], [UserId], [Token], [DateCreated])
                     VALUES (@newId, @userId, @token, @now);
 
-                    COMMIT TRAN;
+                    COMMIT TRANSACTION;
                 ", new { newId = Identity.NewId(), userId, token, now = TimeProvider.Now },
                 cancellationToken: cancellationToken);
                 logger.Information("Added push notification token for user {UserId} from the store", userId);

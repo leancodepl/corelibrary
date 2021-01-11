@@ -4,4 +4,8 @@
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+
 </Project>
