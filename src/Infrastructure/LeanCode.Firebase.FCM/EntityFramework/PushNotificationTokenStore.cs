@@ -46,9 +46,9 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                 cancellationToken: cancellationToken);
             return res
                 .GroupBy(g => g.UserId)
-                    .ToDictionary(
-                        t => t.Key,
-                        t => t.Select(e => e.Token).ToList());
+                .ToDictionary(
+                    t => t.Key,
+                    t => t.Select(e => e.Token).ToList());
         }
 
         public async Task AddUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
