@@ -69,7 +69,7 @@ namespace LeanCode.Firebase.FCM
 
             if (message.Tokens.Count == 0)
             {
-                logger.Information("Cannot send push to user {UserId} - no tokens", userIds);
+                logger.Information("Cannot send push to users {UserIds} - no tokens", userIds);
             }
             else
             {
