@@ -12,7 +12,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("static const int invalid = 1", contracts);
+            Assert.Contains("static const invalid = 1", contracts);
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             Assert.Contains("Constants {", contracts);
             Assert.Contains("Constants2 {", contracts);
-            Assert.Contains("static const int value = 1", contracts);
+            Assert.Contains("static const value = 1", contracts);
         }
 
         [Fact]
@@ -34,8 +34,8 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
-            Assert.Contains("static const int invalid = 1", contracts);
-            Assert.Contains("static const int empty = 2", contracts);
+            Assert.Contains("static const invalid = 1", contracts);
+            Assert.Contains("static const empty = 2", contracts);
         }
 
         [Fact]
@@ -46,7 +46,51 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
             Assert.Contains("StaticClass {", contracts);
-            Assert.Contains("static const int someConstant = 1", contracts);
+            Assert.Contains("static const someConstant = 1", contracts);
+        }
+
+        [Fact]
+        public void String_constants_are_generated()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public static class StaticClass { public const string SomeConstant = \"TEST\"; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("StaticClass {", contracts);
+            Assert.Contains("static const someConstant = \"TEST\"", contracts);
+        }
+
+        [Fact]
+        public void Double_constants_are_generated()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public static class StaticClass { public const double SomeConstant = 1.23; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("StaticClass {", contracts);
+            Assert.Contains("static const someConstant = 1.23", contracts);
+        }
+
+        [Fact]
+        public void Float_constants_are_generated()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public static class StaticClass { public const float SomeConstant = 1.23; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("StaticClass {", contracts);
+            Assert.Contains("static const someConstant = 1.23", contracts);
+        }
+
+        [Fact]
+        public void Char_constants_are_generated()
+        {
+            var generator = CreateDartGeneratorFromNamespace("public static class StaticClass { public const char SomeConstant = 'a'; }");
+
+            var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
+
+            Assert.Contains("StaticClass {", contracts);
+            Assert.Contains("static const someConstant = \"a\"", contracts);
         }
     }
 }
