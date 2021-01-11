@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
@@ -44,6 +45,21 @@ namespace LeanCode.Firebase.FCM.Tests
             };
 
             await client.SendToUserAsync(UserId, message);
+        }
+
+        [FCMFact]
+        public async Task Sends_single_message_to_multiple_users()
+        {
+            var message = new MulticastMessage
+            {
+                Notification = new Notification
+                {
+                    Title = "Test title",
+                    Body = "Test body",
+                },
+            };
+
+            await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
         }
 
         [FCMFact]

@@ -42,6 +42,18 @@ namespace LeanCode.Firebase.FCM.Tests
             }
         }
 
+        public Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+        {
+            if (userIds.Contains(userId))
+            {
+                return Task.FromResult(new Dictionary<Guid, List<string>> { [userId] = new() { token } });
+            }
+            else
+            {
+                return Task.FromResult(new Dictionary<Guid, List<string>>());
+            }
+        }
+
         public Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
         {
             if (tokens.All(t => t == token))

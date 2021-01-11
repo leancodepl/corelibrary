@@ -14,6 +14,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
     public sealed class PushNotificationTokenStore<TDbContext> : IPushNotificationTokenStore
         where TDbContext : DbContext
     {
+        private const int MaxTokenBatchSize = IPushNotificationTokenStore.MaxTokenBatchSize;
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext>>();
 
         private readonly TDbContext dbContext;
@@ -32,13 +33,31 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             return res.AsList();
         }
 
+        public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+        {
+            if (userIds.Count > MaxTokenBatchSize)
+            {
+                throw new ArgumentException($"You can only pass at most {MaxTokenBatchSize} users in one call.", nameof(userIds));
+            }
+
+            var res = await dbContext.QueryAsync<UserToken>(
+                $"SELECT [UserId], [Token] FROM {GetTokensTableName()} WHERE [UserId] IN @userIds",
+                new { userIds },
+                cancellationToken: cancellationToken);
+            return res
+                .GroupBy(g => g.UserId)
+                .ToDictionary(
+                    t => t.Key,
+                    t => t.Select(e => e.Token).ToList());
+        }
+
         public async Task AddUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
         {
             try
             {
                 await dbContext.ExecuteAsync(
                 $@"
-                    BEGIN TRAN;
+                    BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
                     DELETE FROM {GetTokensTableName()} WHERE [Token] = @token;
@@ -47,7 +66,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     INSERT INTO {GetTokensTableName()} ([Id], [UserId], [Token], [DateCreated])
                     VALUES (@newId, @userId, @token, @now);
 
-                    COMMIT TRAN;
+                    COMMIT TRANSACTION;
                 ", new { newId = Identity.NewId(), userId, token, now = TimeProvider.Now },
                 cancellationToken: cancellationToken);
                 logger.Information("Added push notification token for user {UserId} from the store", userId);
@@ -118,6 +137,12 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             {
                 return $"[{entity.GetSchema()}].[{entity.GetTableName()}]";
             }
+        }
+
+        private readonly struct UserToken
+        {
+            public Guid UserId { get; }
+            public string Token { get; }
         }
     }
 }
