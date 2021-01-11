@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.Dart.ContractsGeneratorTestHelper
 
 namespace LeanCode.ContractsGenerator.Tests.Dart
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_ClassGeneration
     {
         [Fact]
         public void Private_class_is_not_resolved()

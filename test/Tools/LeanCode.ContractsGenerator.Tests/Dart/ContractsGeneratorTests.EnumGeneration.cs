@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.Dart.ContractsGeneratorTestHelper
 
 namespace LeanCode.ContractsGenerator.Tests.Dart
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_EnumGeneration
     {
         [Fact]
         public void Enums_have_correct_values()

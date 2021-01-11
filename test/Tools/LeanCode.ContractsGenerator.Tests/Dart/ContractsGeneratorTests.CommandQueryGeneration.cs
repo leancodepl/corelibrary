@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.Dart.ContractsGeneratorTestHelper
 
 namespace LeanCode.ContractsGenerator.Tests.Dart
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_CommandQueryGeneration
     {
         [Fact]
         public void Remote_query_contains_mapping_from_json_for_DTO()

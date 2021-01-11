@@ -32,7 +32,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
             ");
         }
 
-        public static readonly GeneratorConfiguration DefaultDartConfiguration = new GeneratorConfiguration()
+        public static readonly GeneratorConfiguration DefaultDartConfiguration = new()
         {
             Name = "Test",
             Dart = new DartConfiguration { },

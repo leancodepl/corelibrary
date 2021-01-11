@@ -1,10 +1,9 @@
-using System.Text.RegularExpressions;
 using Xunit;
 using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTestHelpers;
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_ConstantsGeneration
     {
         [Fact]
         public void Commands_error_code_is_resolved_correctly()

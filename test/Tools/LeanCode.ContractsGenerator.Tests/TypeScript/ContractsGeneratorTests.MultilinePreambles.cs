@@ -3,7 +3,7 @@ using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_MultilinePreambles
     {
         [Fact]
         public void Empty_configuration_contains_default_preambles()
