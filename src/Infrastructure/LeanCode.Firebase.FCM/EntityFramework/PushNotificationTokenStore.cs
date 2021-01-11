@@ -14,8 +14,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
     public sealed class PushNotificationTokenStore<TDbContext> : IPushNotificationTokenStore
         where TDbContext : DbContext
     {
-        private const int MaxBatchSize = 100;
-
+        private const int MaxTokenBatchSize = IPushNotificationTokenStore.MaxTokenBatchSize;
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext>>();
 
         private readonly TDbContext dbContext;
@@ -34,11 +33,11 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             return res.AsList();
         }
 
-        public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(List<Guid> userIds, CancellationToken cancellationToken = default)
+        public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
         {
-            if (userIds.Count > MaxBatchSize)
+            if (userIds.Count > MaxTokenBatchSize)
             {
-                throw new ArgumentException($"You can only pass at most {MaxBatchSize} users in one call.", nameof(userIds));
+                throw new ArgumentException($"You can only pass at most {MaxTokenBatchSize} users in one call.", nameof(userIds));
             }
 
             var res = await dbContext.QueryAsync<UserToken>(

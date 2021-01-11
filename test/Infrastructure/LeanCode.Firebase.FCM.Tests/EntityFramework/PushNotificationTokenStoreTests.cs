@@ -48,7 +48,7 @@ namespace LeanCode.Firebase.FCM.Tests.EntityFramework
             await store.AddUserTokenAsync(uid1, Token1);
             await store.AddUserTokenAsync(uid2, Token2);
 
-            var result = await store.GetTokensAsync(new List<Guid> { uid1, uid2 });
+            var result = await store.GetTokensAsync(new HashSet<Guid> { uid1, uid2 });
 
             Assert.Equal(
                 new()

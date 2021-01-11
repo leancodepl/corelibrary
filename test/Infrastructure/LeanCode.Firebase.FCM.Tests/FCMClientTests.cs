@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
@@ -58,7 +59,7 @@ namespace LeanCode.Firebase.FCM.Tests
                 },
             };
 
-            await client.SendToUsersAsync(new() { UserId }, message);
+            await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
         }
 
         [FCMFact]

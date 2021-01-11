@@ -33,7 +33,7 @@ namespace LeanCode.Firebase.FCM
             Localize(CultureInfo.GetCultureInfo(lang));
         public Task SendToUserAsync(Guid userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
             SendToUserAsync(userId, message, false, cancellationToken);
-        public Task SendToUsersAsync(List<Guid> userIds, MulticastMessage message, CancellationToken cancellationToken = default) =>
+        public Task SendToUsersAsync(IReadOnlySet<Guid> userIds, MulticastMessage message, CancellationToken cancellationToken = default) =>
             SendToUsersAsync(userIds, message, false, cancellationToken);
         public Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
             SendAsync(message, false, cancellationToken);
@@ -62,7 +62,7 @@ namespace LeanCode.Firebase.FCM
             }
         }
 
-        public async Task SendToUsersAsync(List<Guid> userIds, MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
+        public async Task SendToUsersAsync(IReadOnlySet<Guid> userIds, MulticastMessage message, bool dryRun, CancellationToken cancellationToken = default)
         {
             var tokens = await tokenStore.GetTokensAsync(userIds, cancellationToken);
             message.Tokens = tokens.SelectMany(t => t.Value).ToList();
