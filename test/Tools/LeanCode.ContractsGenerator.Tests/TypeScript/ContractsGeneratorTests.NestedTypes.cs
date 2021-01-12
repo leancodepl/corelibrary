@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTest
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_NestedTypes
     {
         [Fact]
         public void Generates_globals_if_type_has_consts()

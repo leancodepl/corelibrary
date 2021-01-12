@@ -4,7 +4,7 @@ using static LeanCode.ContractsGenerator.Tests.Dart.ContractsGeneratorTestHelper
 
 namespace LeanCode.ContractsGenerator.Tests.Dart
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_TypesGeneration
     {
         [Fact]
         public void Imports_are_generated()

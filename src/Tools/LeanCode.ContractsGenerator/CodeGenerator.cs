@@ -214,7 +214,7 @@ namespace LeanCode.ContractsGenerator
             switch (value)
             {
                 case bool v:
-                    return v.ToString().ToLower();
+                    return v.ToString().ToLowerInvariant();
 
                 case string v:
                     return '"' + v + '"';

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.Dart
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_MultilinePreambles
     {
         [Fact]
         public void Empty_configuration_contains_default_preamble()

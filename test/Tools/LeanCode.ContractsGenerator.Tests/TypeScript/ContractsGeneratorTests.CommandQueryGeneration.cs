@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTest
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_CommandQueryGeneration
     {
         [Fact]
         public void Namespace_name_with_one_element_is_resolved_correctly()

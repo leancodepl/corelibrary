@@ -51,29 +51,35 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private void GenerateHelpers()
         {
             definitionsBuilder
-                .AppendLine("List<T> _listFromJson<T>(")
-                .AppendLine("Iterable<dynamic> decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
-                .AppendLine("return decodedJson?.map((dynamic e) => itemFromJson(e as Map<String,dynamic>))?.toList()?.cast<T>(); }");
+                .AppendLine("List<T> _listFromJson<T>(Iterable<dynamic> decodedJson, T itemFromJson(Map<String, dynamic> map)) {")
+                .AppendLine("    return decodedJson")
+                .AppendLine("        ?.map((dynamic e) => itemFromJson(e as Map<String,dynamic>))")
+                .AppendLine("        ?.toList()")
+                .AppendLine("        ?.cast<T>();")
+                .AppendLine("}");
 
             definitionsBuilder
                 .AppendLine("DateTime _dateTimeFromJson(String value) {")
-                .AppendLine("return DateTime.parse('${value.substring(0, 19)} Z'); }");
+                .AppendLine("    return DateTime.parse('${value.substring(0, 19)} Z');")
+                .AppendLine("}");
 
             definitionsBuilder
                 .AppendLine("DateTime _nullableDateTimeFromJson(String value) {")
-                .AppendLine("return value == null ? null : _dateTimeFromJson(value); }");
+                .AppendLine("    return value == null ? null : _dateTimeFromJson(value);")
+                .AppendLine("}");
 
             definitionsBuilder
                 .AppendLine("double _doubleFromJson(dynamic value) {")
-                .AppendLine("if (value is double) { return value; }")
-                .AppendLine("else if (value is String) { return double.parse(value); }")
-                .AppendLine("else if (value is int) { return value.toDouble(); }")
-                .AppendLine("throw Exception('Invalid argument type ${value.runtimeType}');")
+                .AppendLine("    if (value is double) { return value; }")
+                .AppendLine("    else if (value is String) { return double.parse(value); }")
+                .AppendLine("    else if (value is int) { return value.toDouble(); }")
+                .AppendLine("    else { throw Exception('Invalid argument type ${value.runtimeType}'); }")
                 .AppendLine("}");
 
             definitionsBuilder
                 .AppendLine("double _nullableDoubleFromJson(dynamic value) {")
-                .AppendLine("return value == null ? null : _doubleFromJson(value); }");
+                .AppendLine("    return value == null ? null : _doubleFromJson(value);")
+                .AppendLine("}");
         }
 
         private void GenerateTypeNames(ClientStatement statement)
@@ -502,11 +508,11 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
                 foreach (var constant in constants)
                 {
-                    var name = char.ToLower(constant.Name[0]) + constant.Name[1..];
+                    var name = constant.Name.ToCamelCase();
 
                     definitionsBuilder
                         .AppendSpaces(level + 1)
-                        .AppendLine($"static const int {name} = {constant.Value};");
+                        .AppendLine($"static const {name} = {constant.Value};");
                 }
             }
         }
@@ -580,7 +586,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
 
         private static string TranslateIdentifier(string identifier)
         {
-            var translated = identifier.Uncapitalize();
+            var translated = identifier.ToCamelCase();
 
             if (translated == "new" || translated == "default")
             {

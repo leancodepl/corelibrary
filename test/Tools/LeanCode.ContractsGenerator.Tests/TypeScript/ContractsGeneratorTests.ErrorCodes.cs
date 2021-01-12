@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTest
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_ErrorCodes
     {
         [Fact]
         public void ErrorCodes_are_resolved_correctly_with_default_config()

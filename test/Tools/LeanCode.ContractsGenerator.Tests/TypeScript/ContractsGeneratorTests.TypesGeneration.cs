@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTest
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_TypesGeneration
     {
         [Fact]
         public void Int_is_resolved_to_number()

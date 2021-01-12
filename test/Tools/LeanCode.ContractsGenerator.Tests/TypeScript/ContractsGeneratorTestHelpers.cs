@@ -31,7 +31,7 @@ namespace LeanCode.ContractsGenerator.Tests.TypeScript
             ");
         }
 
-        public static readonly GeneratorConfiguration DefaultTypeScriptConfiguration = new GeneratorConfiguration()
+        public static readonly GeneratorConfiguration DefaultTypeScriptConfiguration = new()
         {
             Name = "Test",
             TypeScript = new TypeScriptConfiguration

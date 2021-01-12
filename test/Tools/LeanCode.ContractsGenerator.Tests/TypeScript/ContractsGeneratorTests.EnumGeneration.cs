@@ -3,7 +3,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeScript.ContractsGeneratorTest
 
 namespace LeanCode.ContractsGenerator.Tests.TypeScript
 {
-    public partial class ContractsGeneratorTests
+    public class ContractsGeneratorTests_EnumGeneration
     {
         [Fact]
         public void Simple_enum_is_generated_correctly()

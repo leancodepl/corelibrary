@@ -4,8 +4,4 @@
     <ProjectReference Include="../../../src/Tools/LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis" />
-  </ItemGroup>
-
 </Project>

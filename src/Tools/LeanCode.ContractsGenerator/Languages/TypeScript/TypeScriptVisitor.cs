@@ -140,7 +140,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
 
                 stringBuilder.Append('>');
             }
-            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLower(), out var name))
+            else if (configuration.TypeTranslations.TryGetValue(statement.Name.ToLowerInvariant(), out var name))
             {
                 stringBuilder.Append(name);
             }
@@ -216,7 +216,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = char.ToLower(statement.Name[0]) + statement.Name[1..];
+            var name = statement.Name.ToCamelCase();
 
             clientBuilder
                 .AppendSpaces(2)
@@ -250,7 +250,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
         {
             VisitInterfaceStatement(statement, level, parentName);
 
-            var name = char.ToLower(statement.Name[0]) + statement.Name[1..];
+            var name = statement.Name.ToCamelCase();
 
             clientBuilder.AppendSpaces(2)
                 .Append(name)
