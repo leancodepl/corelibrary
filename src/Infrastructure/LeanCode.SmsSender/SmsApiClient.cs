@@ -30,12 +30,13 @@ namespace LeanCode.SmsSender
             999 /* Internal system error */);
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
-        private readonly HttpClient client;
-        private readonly SmsApiConfiguration smsApiConfiguration;
 
-        public SmsApiClient(SmsApiConfiguration smsApiConfiguration, HttpClient client)
+        private readonly SmsApiConfiguration config;
+        private readonly HttpClient client;
+
+        public SmsApiClient(SmsApiConfiguration config, HttpClient client)
         {
-            this.smsApiConfiguration = smsApiConfiguration;
+            this.config = config;
             this.client = client;
         }
 
@@ -43,40 +44,37 @@ namespace LeanCode.SmsSender
         {
             logger.Verbose("Sending SMS using SMS Api");
 
-            var parameters = new Dictionary<string, string>()
+            var parameters = new Dictionary<string, string?>
             {
-                ["username"] = smsApiConfiguration.Login,
-                ["password"] = smsApiConfiguration.Password,
-                ["from"] = smsApiConfiguration.From,
                 ["format"] = "json",
-                ["encoding"] = "UTF-8",
-                ["message"] = message,
+                ["encoding"] = "UTF-8", // documentation claims it's the default anyway, but let's keep it for safety
+                ["from"] = config.From,
                 ["to"] = phoneNumber,
+                ["message"] = message,
             };
 
-            if (smsApiConfiguration.TestMode)
+            if (config.TestMode)
             {
                 parameters["test"] = "1";
             }
 
-            if (smsApiConfiguration.FastMode)
+            if (config.FastMode)
             {
                 parameters["fast"] = "1";
             }
 
-            using (var body = new FormUrlEncodedContent(parameters!))
-            using (var response = await client.PostAsync("sms.do", body, cancellationToken))
+            using var requestContent = new FormUrlEncodedContent(parameters!);
+            using var response = await client.PostAsync("sms.do", requestContent, cancellationToken);
+
+            await using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
+            try
             {
-                await using var content = await response.Content.ReadAsStreamAsync(cancellationToken);
-                try
-                {
-                    using var doc = JsonDocument.Parse(content);
-                    HandleResponse(doc.RootElement);
-                }
-                catch (Exception e) when (e is JsonException || e is KeyNotFoundException || e is FormatException)
-                {
-                    throw new SerializationException("Failed to parse error message.", e);
-                }
+                using var doc = JsonDocument.Parse(responseContent);
+                HandleResponse(doc.RootElement);
+            }
+            catch (Exception e) when (e is JsonException || e is KeyNotFoundException || e is FormatException)
+            {
+                throw new SerializationException("Failed to parse error message.", e);
             }
 
             logger.Information("SMS sent successfully");
