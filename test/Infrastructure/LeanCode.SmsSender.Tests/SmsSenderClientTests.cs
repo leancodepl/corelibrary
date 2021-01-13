@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
@@ -9,25 +8,18 @@ namespace LeanCode.SmsSender.Tests
 {
     public class SmsSenderClientTests
     {
-        private static readonly string Login = string.Empty;
-        private static readonly string Password = string.Empty;
-        private static readonly string PhoneNumber = string.Empty;
+        private static readonly string Token = Environment.GetEnvironmentVariable("SMSAPI_TOKEN");
+        private static readonly string PhoneNumber = Environment.GetEnvironmentVariable("SMSAPI_PHONENUMBERTO");
         private static readonly string Message = "SmsSender works fine";
 
-        private static readonly SmsApiConfiguration Config = new SmsApiConfiguration
+        private static readonly SmsApiConfiguration Config = new(Token, string.Empty)
         {
-            Login = Login,
-            Password = Password,
-            From = string.Empty,
             FastMode = false,
             TestMode = false,
         };
 
-        private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new SmsApiConfiguration
+        private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new(Token, Guid.NewGuid().ToString())
         {
-            Login = Login,
-            Password = Password,
-            From = Guid.NewGuid().ToString(),
             FastMode = false,
             TestMode = false,
         };
@@ -37,34 +29,46 @@ namespace LeanCode.SmsSender.Tests
 
         public SmsSenderClientTests()
         {
-            client = new SmsApiClient(
-                Config,
-                new HttpClient
-                {
-                    BaseAddress = new Uri(SmsApiClient.ApiBase),
-                });
+            client = CreateSmsApiClient(Config);
 
-            clientWithUnregisteredSender = new SmsApiClient(
-                ConfigWithUnregisteredSender,
-                new HttpClient
-                {
-                    BaseAddress = new Uri(SmsApiClient.ApiBase),
-                });
+            clientWithUnregisteredSender = CreateSmsApiClient(ConfigWithUnregisteredSender);
         }
 
-        [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
-        [Fact(Skip = "SmsApi credentials required")]
+        [SmsApiFact]
         public async Task Sends_sms_correctly()
         {
             await client.SendAsync(Message, PhoneNumber);
         }
 
-        [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
-        [Fact(Skip = "SmsApi credentials required")]
+        [SmsApiFact]
         public async Task Gets_correct_errors_when_sender_is_unregistered_in_the_API()
         {
             await Assert.ThrowsAsync<ActionException>(() =>
                 clientWithUnregisteredSender.SendAsync(Message, PhoneNumber));
+        }
+
+        private static SmsApiClient CreateSmsApiClient(SmsApiConfiguration config)
+        {
+            HttpClient client = new();
+
+            SmsApiClient.ConfigureHttpClient(config, client);
+
+            return new(config, client);
+        }
+
+        public class SmsApiFactAttribute : FactAttribute
+        {
+            public SmsApiFactAttribute()
+            {
+                if (string.IsNullOrEmpty(Token))
+                {
+                    Skip = "OAuth token not set";
+                }
+                else if (string.IsNullOrEmpty(PhoneNumber))
+                {
+                    Skip = "No recipient provided";
+                }
+            }
         }
     }
 }
