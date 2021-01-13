@@ -9,25 +9,18 @@ namespace LeanCode.SmsSender.Tests
 {
     public class SmsSenderClientTests
     {
-        private static readonly string Login = string.Empty;
-        private static readonly string Password = string.Empty;
+        private static readonly string Token = string.Empty;
         private static readonly string PhoneNumber = string.Empty;
         private static readonly string Message = "SmsSender works fine";
 
-        private static readonly SmsApiConfiguration Config = new SmsApiConfiguration
+        private static readonly SmsApiConfiguration Config = new(Token, string.Empty)
         {
-            Login = Login,
-            Password = Password,
-            From = string.Empty,
             FastMode = false,
             TestMode = false,
         };
 
-        private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new SmsApiConfiguration
+        private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new(Token, Guid.NewGuid().ToString())
         {
-            Login = Login,
-            Password = Password,
-            From = Guid.NewGuid().ToString(),
             FastMode = false,
             TestMode = false,
         };
