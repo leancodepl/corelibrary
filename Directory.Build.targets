@@ -32,7 +32,7 @@
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="4.0.0" />
 
-    <PackageReference Update="IdentityModel" Version="4.6.0" />
+    <PackageReference Update="IdentityModel" Version="5.0.0" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
     <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
