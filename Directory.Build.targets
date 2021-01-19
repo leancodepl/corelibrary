@@ -7,7 +7,7 @@
     <GoogleApisVersion>1.49.0</GoogleApisVersion>
     <HangfireVersion>1.7.19</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
-    <MassTransitVersion>7.1.2</MassTransitVersion>
+    <MassTransitVersion>7.1.3</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.8.0</CodeAnalysisVersion>
@@ -45,7 +45,7 @@
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.78" />
-    <PackageReference Update="FluentValidation" Version="9.3.0" />
+    <PackageReference Update="FluentValidation" Version="9.4.0" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
@@ -123,6 +123,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.312" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.321" />
   </ItemGroup>
 </Project>
