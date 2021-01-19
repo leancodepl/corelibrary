@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <EntityFrameworkCoreVersion>5.0.2</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.1</AspNetCoreVersion>
+    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.49.0</GoogleApisVersion>
@@ -73,7 +73,6 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
@@ -83,9 +82,9 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
-    <!-- Warning: as of 2020.12.11, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 :) -->
+    <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.1" />
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.2" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
