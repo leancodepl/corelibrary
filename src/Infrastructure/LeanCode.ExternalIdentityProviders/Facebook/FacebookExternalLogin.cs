@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using LeanCode.Facebook;
 using Microsoft.AspNetCore.Identity;
 
 namespace LeanCode.ExternalIdentityProviders.Facebook

@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.Facebook
+namespace LeanCode.ExternalIdentityProviders.Facebook
 {
     public class FacebookException : Exception
     {
