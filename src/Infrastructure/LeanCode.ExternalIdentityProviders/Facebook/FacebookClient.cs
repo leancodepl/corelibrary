@@ -12,7 +12,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
     public class FacebookClient
     {
         public const string ApiBase = "https://graph.facebook.com";
-        public const string ApiVersion = "v8.0";
+        public const string ApiVersion = "v9.0";
 
         private const string FieldsStr = "id,email,first_name,last_name";
 
