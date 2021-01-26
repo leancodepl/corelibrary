@@ -1,17 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
 namespace LeanCode.ExternalIdentityProviders.Tests
 {
-    public class ExternalLoginBaseTests
+    public class ExternalLoginTests
     {
         private readonly UserManager<User> users = UserManager.PrepareInMemory();
         private readonly ExternalLoginStub externalLogin;
 
-        public ExternalLoginBaseTests()
+        public ExternalLoginTests()
         {
             externalLogin = new ExternalLoginStub(users);
         }
@@ -201,38 +200,7 @@ namespace LeanCode.ExternalIdentityProviders.Tests
             Assert.Equal(TokenValidationError.OtherConnected, res);
         }
 
-        private async Task<Guid> AddUserAsync()
-        {
-            var id = Guid.NewGuid();
-            var user = new User
-            {
-                Id = id,
-                UserName = id.ToString("N"),
-            };
-            await users.CreateAsync(user);
-            return id;
-        }
-
-        private string AddToken()
-        {
-            var token = Guid.NewGuid().ToString("N");
-            externalLogin.KnownTokens.Add(token);
-            return token;
-        }
-
-        private class ExternalLoginStub : ExternalLoginBase<User>
-        {
-            public HashSet<string> KnownTokens { get; } = new();
-            public override string GrantType => "test";
-
-            public ExternalLoginStub(UserManager<User> userManager)
-                : base(userManager)
-            { }
-
-            protected override Task<string?> GetProviderIdAsync(string token)
-            {
-                return Task.FromResult(KnownTokens.Contains(token) ? token : null);
-            }
-        }
+        private Task<Guid> AddUserAsync() => users.AddUserAsync();
+        private string AddToken() => externalLogin.AddToken();
     }
 }
