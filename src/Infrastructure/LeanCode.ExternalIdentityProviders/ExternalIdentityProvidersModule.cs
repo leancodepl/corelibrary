@@ -23,11 +23,11 @@ namespace LeanCode.ExternalIdentityProviders
     public class ExternalIdentityProvidersModule<TUser> : AppModule
         where TUser : IdentityUser<Guid>
     {
-        private readonly Providers configuration = Providers.All;
+        private readonly Providers configuration;
 
         public ExternalIdentityProvidersModule(Providers configuration)
         {
-            if (configuration == Providers.None)
+            if ((configuration & Providers.All) == Providers.None)
             {
                 throw new ArgumentException("At least one identity provider is required.", nameof(configuration));
             }
