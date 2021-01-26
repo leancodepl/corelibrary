@@ -7,19 +7,19 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LeanCode.Facebook
+namespace LeanCode.ExternalIdentityProviders.Facebook
 {
     public class FacebookClient
     {
         public const string ApiBase = "https://graph.facebook.com";
-        public const string ApiVersion = "v8.0";
+        public const string ApiVersion = "v9.0";
 
         private const string FieldsStr = "id,email,first_name,last_name";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
         private readonly HttpClient client;
-        private readonly HMACSHA256? hmac;
+        private readonly HMACSHA256 hmac;
 
         private readonly int photoSize;
 
@@ -28,9 +28,7 @@ namespace LeanCode.Facebook
             this.client = client;
 
             photoSize = config.PhotoSize;
-            hmac = config.AppSecret is null
-                ? null
-                : new HMACSHA256(ParseKey(config.AppSecret));
+            hmac = new HMACSHA256(ParseKey(config.AppSecret));
         }
 
         public virtual async Task<JsonDocument> CallAsync(
@@ -122,21 +120,12 @@ namespace LeanCode.Facebook
 
         private string GenerateProof(string accessToken)
         {
-            if (hmac is null)
-            {
-                logger.Debug("Signing Facebook requests is disabled, skipping generating proof");
+            logger.Debug("Signing Facebook request enabled - signing request");
 
-                return string.Empty;
-            }
-            else
-            {
-                logger.Debug("Signing Facebook request enabled - signing request");
+            var bytes = ParseKey(accessToken);
+            var hash = hmac.ComputeHash(bytes);
 
-                var bytes = ParseKey(accessToken);
-                var hash = hmac.ComputeHash(bytes);
-
-                return "&appsecret_proof=" + ToHexString(hash);
-            }
+            return "&appsecret_proof=" + ToHexString(hash);
         }
 
         private static byte[] ParseKey(string v) =>

@@ -1,20 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Choose>
-    <!-- TODO: remove once StyleCop stops complaining that "Closing parenthesis should not be followed by a space" -->
-    <!-- but apparently only for records because `void M(int i) { }` is fine but `record R(int I) : B` is not-->
-    <When Condition="'$(NoWarn)' == ''">
-      <PropertyGroup>
-        <NoWarn>SA1009</NoWarn>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <NoWarn>SA1009,$(NoWarn)</NoWarn>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />

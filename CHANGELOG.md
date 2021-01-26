@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 5.1
+
+* Remove `LeanCode.Facebook`,
+* Support FB in `LeanCode.ExternalIdentityProviders`
+
 ## 5.0
 
 * Upgrade to .NET 5.0
