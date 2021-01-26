@@ -25,9 +25,6 @@ namespace LeanCode.ExternalIdentityProviders
     {
         private readonly Providers configuration = Providers.All;
 
-        public ExternalIdentityProvidersModule()
-        { }
-
         public ExternalIdentityProvidersModule(Providers configuration)
         {
             if (configuration == Providers.None)

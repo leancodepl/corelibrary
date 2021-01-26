@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using IdentityServer4.Validation;
@@ -53,6 +54,12 @@ namespace LeanCode.ExternalIdentityProviders.Tests
             Assert.True(container.IsRegistered<AppleExternalLogin<User>>());
             Assert.True(container.IsRegistered<GoogleExternalLogin<User>>());
             Assert.True(container.IsRegistered<IExtensionGrantValidator>());
+        }
+
+        [Fact]
+        public void Throws_if_no_providers_are_selected()
+        {
+            Assert.Throws<ArgumentException>(() => Prepare(Providers.None));
         }
 
         private static IContainer Prepare(Providers providers)
