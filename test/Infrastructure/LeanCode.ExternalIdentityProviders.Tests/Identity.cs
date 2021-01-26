@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,18 @@ namespace LeanCode.ExternalIdentityProviders.Tests
             services.AddSingleton<IUserStore<User>>(new UserStore<User, Role, IdentityDbContext<User, Role, Guid>, Guid>(dbContext));
             var provider = services.BuildServiceProvider();
             return provider.GetRequiredService<UserManager<User>>();
+        }
+
+        public static async Task<Guid> AddUserAsync(this UserManager<User> users)
+        {
+            var id = Guid.NewGuid();
+            var user = new User
+            {
+                Id = id,
+                UserName = id.ToString("N"),
+            };
+            await users.CreateAsync(user);
+            return id;
         }
     }
 }
