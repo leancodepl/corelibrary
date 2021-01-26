@@ -23,9 +23,15 @@ namespace LeanCode.ExternalIdentityProviders
         public async Task<bool> IsConnectedAsync(Guid userId)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
-            var logins = await userManager.GetLoginsAsync(user);
-
-            return logins.Any(l => l.LoginProvider == GrantType);
+            if (user is not null)
+            {
+                var logins = await userManager.GetLoginsAsync(user);
+                return logins.Any(l => l.LoginProvider == GrantType);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<SignInResult> TrySignInAsync(string token)
@@ -36,16 +42,18 @@ namespace LeanCode.ExternalIdentityProviders
             {
                 return new SignInResult.TokenIsInvalid();
             }
-
-            var user = await userManager.FindByLoginAsync(GrantType, providerId);
-
-            if (user is null)
-            {
-                return new SignInResult.UserDoesNotExist();
-            }
             else
             {
-                return new SignInResult.Success(user.Id);
+                var user = await userManager.FindByLoginAsync(GrantType, providerId);
+
+                if (user is null)
+                {
+                    return new SignInResult.UserDoesNotExist();
+                }
+                else
+                {
+                    return new SignInResult.Success(user.Id);
+                }
             }
         }
 
@@ -63,32 +71,43 @@ namespace LeanCode.ExternalIdentityProviders
                     "Other account is already connected with this token.",
                     TokenValidationError.OtherConnected);
             }
+            else
+            {
+                var user = await userManager.FindByIdAsync(userId.ToString());
+                if (user is null)
+                {
+                    throw new ExternalLoginException($"User with id {userId} does not exist");
+                }
+                else
+                {
+                    await userManager
+                        .AddLoginAsync(user, new(GrantType, providerId, GrantType))
+                        .EnsureIdentitySuccess();
 
-            var user = await userManager.FindByIdAsync(userId.ToString());
-
-            await userManager
-                .AddLoginAsync(user, new(GrantType, providerId, GrantType))
-                .EnsureIdentitySuccess();
-
-            Logger.Information("User {UserId} connected their account with {GrantType}", userId, GrantType);
+                    Logger.Information("User {UserId} connected their account with {GrantType}", userId, GrantType);
+                }
+            }
         }
 
         public async Task DisconnectAsync(Guid userId)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
-            var logins = await userManager.GetLoginsAsync(user);
-
-            if (logins.FirstOrDefault(l => l.LoginProvider == GrantType) is UserLoginInfo login)
+            if (user is not null)
             {
-                await userManager
-                    .RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey)
-                    .EnsureIdentitySuccess();
+                var logins = await userManager.GetLoginsAsync(user);
 
-                Logger.Information("User {UserId} disconnected their {GrantType} account", userId, GrantType);
-            }
-            else
-            {
-                Logger.Warning("User {UserId} does not have any {GrantType} account connected", userId, GrantType);
+                if (logins.FirstOrDefault(l => l.LoginProvider == GrantType) is UserLoginInfo login)
+                {
+                    await userManager
+                        .RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey)
+                        .EnsureIdentitySuccess();
+
+                    Logger.Information("User {UserId} disconnected their {GrantType} account", userId, GrantType);
+                }
+                else
+                {
+                    Logger.Warning("User {UserId} does not have any {GrantType} account connected", userId, GrantType);
+                }
             }
         }
 

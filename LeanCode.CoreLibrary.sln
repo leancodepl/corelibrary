@@ -185,6 +185,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{9285
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.IntegrationTestHelpers.Tests", "test\Testing\LeanCode.IntegrationTestHelpers.Tests\LeanCode.IntegrationTestHelpers.Tests.csproj", "{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ExternalIdentityProviders.Tests", "test\Infrastructure\LeanCode.ExternalIdentityProviders.Tests\LeanCode.ExternalIdentityProviders.Tests.csproj", "{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1122,6 +1124,18 @@ Global
 		{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D}.Release|x64.Build.0 = Release|Any CPU
 		{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D}.Release|x86.ActiveCfg = Release|Any CPU
 		{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D}.Release|x86.Build.0 = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|x64.Build.0 = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x64.ActiveCfg = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x64.Build.0 = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AFA22EA-B093-4457-ABA2-CFF96DF41350} = {7324BABF-C1F7-430D-BF76-CF9BFA559DC6}
@@ -1211,5 +1225,6 @@ Global
 		{0C787E5B-E8AA-4451-A652-A3E8B852CE34} = {9DC20510-2DB6-4B63-AAA7-C65A0B8F0157}
 		{92856887-87D8-4B67-8406-29624FC0AC6D} = {9DC20510-2DB6-4B63-AAA7-C65A0B8F0157}
 		{14AC3CBA-B8AC-4820-BF6D-C0FE295DF15D} = {92856887-87D8-4B67-8406-29624FC0AC6D}
+		{EFA1FDFD-4A08-4418-8D80-7481A0EB5B2A} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
 	EndGlobalSection
 EndGlobal
