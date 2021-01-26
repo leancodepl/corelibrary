@@ -4,7 +4,6 @@ using LeanCode.Components;
 using LeanCode.ExternalIdentityProviders.Apple;
 using LeanCode.ExternalIdentityProviders.Facebook;
 using LeanCode.ExternalIdentityProviders.Google;
-using LeanCode.Facebook;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +30,11 @@ namespace LeanCode.ExternalIdentityProviders
 
         public ExternalIdentityProvidersModule(Providers configuration)
         {
+            if (configuration == Providers.None)
+            {
+                throw new ArgumentException("At least one identity provider is required.", nameof(configuration));
+            }
+
             this.configuration = configuration;
         }
 
@@ -38,8 +42,6 @@ namespace LeanCode.ExternalIdentityProviders
         {
             if (IsEnabled(Providers.Facebook))
             {
-                builder.RegisterModule(new FacebookModule());
-
                 builder.RegisterType<FacebookExternalLogin<TUser>>().AsSelf();
                 builder.RegisterType<FacebookGrantValidator<TUser>>().AsSelf().AsImplementedInterfaces();
             }
@@ -64,7 +66,7 @@ namespace LeanCode.ExternalIdentityProviders
         {
             if (IsEnabled(Providers.Facebook))
             {
-                new FacebookModule().ConfigureServices(services);
+                services.AddHttpClient<FacebookClient>(c => c.BaseAddress = new Uri(FacebookClient.ApiBase));
             }
 
             if (IsEnabled(Providers.Apple))

@@ -2,18 +2,15 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeanCode.ExternalIdentityProviders.Facebook;
 using Xunit;
 
-namespace LeanCode.Facebook.Tests
+namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
 {
     public class FacebookClientTests
     {
-        private static readonly FacebookConfiguration Config = new FacebookConfiguration
-        {
-            PhotoSize = 200,
-            AppSecret = string.Empty, // Required for tests to work
-        };
-        private static readonly string AccessToken = string.Empty;
+        private static readonly FacebookConfiguration Config = new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? string.Empty);
+        private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? string.Empty;
 
         private readonly FacebookClient client;
 
@@ -27,8 +24,7 @@ namespace LeanCode.Facebook.Tests
                 });
         }
 
-        [SuppressMessage("?", "xUnit1004", Justification = "Requires custom data.")]
-        [Fact(Skip = "Facebook credentials required")]
+        [FacebookFact]
         public async Task Downloads_user_info_correctly()
         {
             var user = await client.GetUserInfoAsync(AccessToken);
@@ -39,6 +35,21 @@ namespace LeanCode.Facebook.Tests
             Assert.NotEmpty(user.FirstName);
             Assert.NotEmpty(user.LastName);
             Assert.NotEmpty(user.Photo);
+        }
+
+        public class FacebookFactAttribute : FactAttribute
+        {
+            public FacebookFactAttribute()
+            {
+                if (string.IsNullOrEmpty(Config.AppSecret))
+                {
+                    Skip = "API key not set";
+                }
+                else if (string.IsNullOrEmpty(AccessToken))
+                {
+                    Skip = "No token provided";
+                }
+            }
         }
     }
 }

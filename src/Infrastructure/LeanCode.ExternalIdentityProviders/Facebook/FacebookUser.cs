@@ -1,4 +1,4 @@
-namespace LeanCode.Facebook
+namespace LeanCode.ExternalIdentityProviders.Facebook
 {
     public sealed class FacebookUser
     {

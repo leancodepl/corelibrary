@@ -5,8 +5,6 @@
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
-
-    <ProjectReference Include="../LeanCode.Facebook/LeanCode.Facebook.csproj" />
   </ItemGroup>
 
   <ItemGroup>

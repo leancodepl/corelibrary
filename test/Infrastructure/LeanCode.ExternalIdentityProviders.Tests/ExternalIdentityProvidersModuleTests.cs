@@ -4,8 +4,6 @@ using IdentityServer4.Validation;
 using LeanCode.ExternalIdentityProviders.Apple;
 using LeanCode.ExternalIdentityProviders.Facebook;
 using LeanCode.ExternalIdentityProviders.Google;
-using LeanCode.Facebook;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
