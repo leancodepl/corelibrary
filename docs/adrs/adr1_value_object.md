@@ -1,6 +1,6 @@
 # How to implement value objects in our domains
 
-While modelling domains we use concept of value object. The issue is how to achieve model of value object described in DDD.
+While modelling a domain we use the concept of value objects. The issue is how to represent value objects in code, as described in DDD.
 
 ## Status
 
@@ -8,25 +8,25 @@ To be implemented (04.02.21)
 
 ## Context
 
-We see two options: Base abstract class and record.
+We see two options: base abstract class and record.
 
-We used base class before records were introduced. The issue with base class is that it forced developer to implement `GetAttributesToIncludeInEqualityCheck` method in every implemented ValueObject and always contained all the properties that were defined.
+We used base class before records were introduced. The issue with base class is that it forces developers to implement `GetAttributesToIncludeInEqualityCheck` method in every implemented `ValueObject`.
 
-When records came with C# 9.0 we decided to check how they suit our needs in regards to modeling value objects. In general, there were to differences in regards to previous option was that there were no abstract method that we need to implement (structural equality is more or less out of the box with records) and there were no marking interface or base class that clearly states that we are dealing with value object.
+When records came in C# 9.0 we decided to check how they suit our needs in regards to modeling value objects. In general, there were two differences compared to previous option: there were no abstract method that we need to implement (structural equality is more or less out of the box with records) and there were no marker interfaces or base classes that clearly state that we are dealing with a value object.
 
 ## Decision
 
-We decided to use records that will inherit from abstract record `ValueObject`. This allows us to use all the benefits of records and do not loose the benefits of clearly stating what the record represents.
+We decided to use records that will inherit from an abstract record `ValueObject`. This allows us to use all the benefits of records and do not lose the benefits of clearly stating what the record represents.
 
 ## Consequences
 
-Abstract class was removed already. We need to provide implementation of that abstract record.
+Abstract class will be removed. We need to provide implementation of that abstract record.
 
 ## Side notes
 
 ### How to use records as value objects
 
 * All properties must have `private init` setters.
-* Always remember that C# uses default value comparer (in case of arrays and collections this is reference quality).
+* Always remember that C# uses default value comparator (in case of arrays and collections this is reference equality).
 * We can use `with` only in private context. If anywhere in your codebase you can do `vo with { A = "B" }` you violated first point.
-* Use abstract base record (when it will be implemented).
+* Use the abstract base record (when it will be implemented).
