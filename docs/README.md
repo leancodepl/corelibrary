@@ -19,3 +19,5 @@ The CoreLib documentation is available here:
  1. [General](./general/README.md),
  2. [Basics](./basics/README.md),
  3. [Benchmarks](./benchmarks/README.md).
+ 4. [Domain](./domain/README.md).
+ 5. [Architecture decision records](./adrs/README.md).
