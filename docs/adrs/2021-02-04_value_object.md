@@ -4,7 +4,7 @@ While modelling a domain we use the concept of value objects. The issue is how t
 
 ## Status
 
-To be implemented (04.02.21)
+Implemented (05.02.21)
 
 ## Context
 
