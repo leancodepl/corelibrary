@@ -8,6 +8,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
 * Remove `LeanCode.Facebook`,
 * Support FB in `LeanCode.ExternalIdentityProviders`
+* Change `ValueObject` to abstract record
 
 ## 5.0
 
