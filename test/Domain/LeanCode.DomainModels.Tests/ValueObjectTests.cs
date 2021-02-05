@@ -32,7 +32,7 @@ namespace LeanCode.DomainModels.Tests
         }
 
         [Fact]
-        public void Inquality_Operator_Works_With_Nullable_Types()
+        public void Inequality_Operator_Works_With_Nullable_Types()
         {
             Assert.False(MaybeTenPLN(false) != MaybeTenPLN(false));
             Assert.False(MaybeTenPLN(true) != MaybeTenPLN(true));
@@ -58,53 +58,33 @@ namespace LeanCode.DomainModels.Tests
         }
 
         private static Money TenPLN() =>
-            new Money()
-            {
-                Amount = 10,
-                Currency = "PLN",
-            };
+            new Money(10, "PLN");
 
         private static Money TwentyPLN() =>
-            new Money()
-            {
-                Amount = 20,
-                Currency = "PLN",
-            };
+            new Money(20, "PLN");
 
         private static Money TenUSD() =>
-            new Money()
-            {
-                Amount = 10,
-                Currency = "USD",
-            };
+            new Money(10, "USD");
 
         private static Money? MaybeTenPLN(bool @null) =>
-            @null ? null : new Money()
-            {
-                Amount = 10,
-                Currency = "PLN",
-            };
+            @null ? null : new Money(10, "PLN");
 
         private static Money? MaybeTwentyPLN(bool @null) =>
-            @null ? null : new Money()
-            {
-                Amount = 20,
-                Currency = "PLN",
-            };
+            @null ? null : new Money(20, "PLN");
 
         private static Money? MaybeTenUSD(bool @null) =>
-            @null ? null : new Money()
-            {
-                Amount = 10,
-                Currency = "USD",
-            };
+            @null ? null : new Money(10, "USD");
 
-        private class Money : ValueObject<Money>
+        private record Money : ValueObject
         {
-            protected override object[] GetAttributesToIncludeInEqualityCheck() => new object[] { Amount, Currency };
+            public decimal Amount { get; private init; }
+            public string Currency { get; private init; } = string.Empty;
 
-            public decimal Amount { get; set; }
-            public string Currency { get; set; } = string.Empty;
+            public Money(decimal amount, string currency)
+            {
+                Amount = amount;
+                Currency = currency;
+            }
         }
     }
 }
