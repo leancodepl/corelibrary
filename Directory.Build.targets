@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <EntityFrameworkCoreVersion>5.0.3</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
+    <AspNetCoreVersion>5.0.3</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.49.0</GoogleApisVersion>
