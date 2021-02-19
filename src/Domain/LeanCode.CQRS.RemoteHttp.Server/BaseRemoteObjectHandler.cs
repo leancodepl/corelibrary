@@ -33,7 +33,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             if (type is null)
             {
-                Logger.Warning("Cannot retrieve type from path {Path}, type not found", request.Path);
+                Logger.Debug("Cannot retrieve type from path {Path}, type not found", request.Path);
 
                 return ExecutionResult.Skip;
             }
@@ -69,7 +69,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 result = ExecutionResult.Fail(StatusCodes.Status401Unauthorized);
 
-                Logger.Warning(
+                Logger.Debug(
                     "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
                     obj,
                     type);
@@ -84,9 +84,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     obj,
                     type);
             }
-            catch (OperationCanceledException ex)
+            catch (Exception ex)
+                when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
             {
-                Logger.Warning(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
+                Logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }
             catch (Exception ex)
@@ -98,7 +99,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
             if (result.StatusCode >= 100 && result.StatusCode < 300)
             {
-                Logger.Information("Remote object of type {Type} executed successfully", type);
+                Logger.Debug("Remote object of type {Type} executed successfully", type);
             }
 
             return result;
