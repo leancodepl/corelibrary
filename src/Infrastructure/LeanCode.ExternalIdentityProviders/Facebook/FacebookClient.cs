@@ -19,7 +19,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
         private readonly HttpClient client;
-        private readonly HMACSHA256 hmac;
+        private readonly HMACSHA256? hmac;
 
         private readonly int photoSize;
 
@@ -28,7 +28,11 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             this.client = client;
 
             photoSize = config.PhotoSize;
-            hmac = new HMACSHA256(ParseKey(config.AppSecret));
+
+            if (!string.IsNullOrEmpty(config.AppSecret))
+            {
+                hmac = new HMACSHA256(ParseKey(config.AppSecret));
+            }
         }
 
         public virtual async Task<JsonDocument> CallAsync(
@@ -120,12 +124,18 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
 
         private string GenerateProof(string accessToken)
         {
-            logger.Debug("Signing Facebook request enabled - signing request");
+            if (hmac is null)
+            {
+                logger.Error("Facebook's AppSecret is not configured, login with Facebook will fail");
+                return string.Empty;
+            }
+            else
+            {
+                var bytes = ParseKey(accessToken);
+                var hash = hmac.ComputeHash(bytes);
 
-            var bytes = ParseKey(accessToken);
-            var hash = hmac.ComputeHash(bytes);
-
-            return "&appsecret_proof=" + ToHexString(hash);
+                return "&appsecret_proof=" + ToHexString(hash);
+            }
         }
 
         private static byte[] ParseKey(string v) =>
