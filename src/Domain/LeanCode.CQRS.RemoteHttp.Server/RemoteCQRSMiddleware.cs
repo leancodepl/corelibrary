@@ -102,7 +102,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                                 result.Payload.GetType(),
                                 context.RequestAborted);
                         }
-                        catch (TaskCanceledException ex)
+                        catch (Exception ex)
+                            when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
                         {
                             logger.Warning(ex, "Failed to serialize response, request aborted");
                         }
