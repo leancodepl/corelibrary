@@ -79,7 +79,7 @@ namespace LeanCode.ViewRenderer.Razor
             var item = locator.GetItem(viewName, null);
             if (!item.Exists)
             {
-                logger.Warning("Cannot locate view {ViewName}", viewName);
+                logger.Debug("Cannot locate view {ViewName}", viewName);
                 throw new ViewNotFoundException(viewName, "Cannot locate view.");
             }
 

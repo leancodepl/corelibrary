@@ -111,10 +111,8 @@ namespace LeanCode.SendGrid
             {
                 return await renderer.RenderToStringAsync(viewName, model, cancellationToken);
             }
-            catch (ViewNotFoundException ex)
+            catch (ViewNotFoundException)
             {
-                logger.Debug(ex, "Cannot locate view {ViewName}", viewName);
-
                 return null;
             }
         }
