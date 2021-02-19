@@ -40,7 +40,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             var events = await FetchUnpublishedEventsAsync();
 
-            logger.Information("There are {EventsCount} to be published", events.Count);
+            logger.Debug("There are {EventsCount} to be published", events.Count);
 
             foreach (var evt in events)
             {
