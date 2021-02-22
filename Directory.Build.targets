@@ -4,7 +4,7 @@
     <AspNetCoreVersion>5.0.3</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
-    <GoogleApisVersion>1.49.0</GoogleApisVersion>
+    <GoogleApisVersion>1.50.0</GoogleApisVersion>
     <HangfireVersion>1.7.19</HangfireVersion>
     <IdentityServerVersion>4.1.1</IdentityServerVersion>
     <MassTransitVersion>7.1.5</MassTransitVersion>
