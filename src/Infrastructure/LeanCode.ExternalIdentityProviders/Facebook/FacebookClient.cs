@@ -14,7 +14,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
         public const string ApiBase = "https://graph.facebook.com";
         public const string ApiVersion = "v9.0";
 
-        private const string FieldsStr = "id,email,first_name,last_name";
+        private const string FieldsStr = "id,email,first_name,last_name,picture";
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
@@ -106,8 +106,9 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             var firstName = GetOptionalProperty(result, "first_name");
             var lastName = GetOptionalProperty(result, "last_name");
             var photoUrl = $"{ApiBase}/{ApiVersion}/{id}/picture?width={photoSize}&height={photoSize}";
+            var isSilhouette = GetIsSilhouette(result);
 
-            return new FacebookUser(id, email, firstName, lastName, photoUrl);
+            return new FacebookUser(id, email, firstName, lastName, photoUrl, isSilhouette);
 
             static string? GetOptionalProperty(JsonElement element, string propName)
             {
@@ -118,6 +119,20 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
                 else
                 {
                     return null;
+                }
+            }
+
+            static bool GetIsSilhouette(JsonElement element)
+            {
+                if (element.TryGetProperty("picture", out var pic) &&
+                    pic.TryGetProperty("data", out var data) &&
+                    data.TryGetProperty("is_silhouette", out var isSilhouette))
+                {
+                    return isSilhouette.GetBoolean();
+                }
+                else
+                {
+                    return false;
                 }
             }
         }

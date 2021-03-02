@@ -59,9 +59,8 @@ namespace LeanCode.ExternalIdentityProviders.Apple
                 {
                     var email = token.FindFirst("email")?.Value;
                     var emailConfirmed = token.FindFirst("email_verified")?.Value == "true";
-                    var picture = token.FindFirst("picture")?.Value;
 
-                    return new AppleTokenValidationResult.Success(new(uid, email, emailConfirmed, picture));
+                    return new AppleTokenValidationResult.Success(new(uid, email, emailConfirmed));
                 }
             }
             catch (Exception ex)
