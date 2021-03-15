@@ -45,7 +45,7 @@
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.78" />
-    <PackageReference Update="FluentValidation" Version="9.5.0" />
+    <PackageReference Update="FluentValidation" Version="9.5.2" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="Polly" Version="7.2.1" />
