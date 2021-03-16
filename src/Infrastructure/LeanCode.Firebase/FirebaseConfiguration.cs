@@ -15,20 +15,20 @@ namespace LeanCode.Firebase
             if (string.IsNullOrEmpty(cfg))
             {
                 return FirebaseApp.Create(
-                    new AppOptions()
+                    new AppOptions
                     {
-                        Credential = GoogleCredential.FromAccessToken("STUB"),
-                        ProjectId = "STUB",
+                        Credential = GoogleCredential.FromAccessToken("owner"),
+                        ProjectId = "default-project-id",
                     },
                     name);
             }
             else
             {
                 return FirebaseApp.Create(
-                    new AppOptions()
+                    new AppOptions
                     {
                         Credential = GoogleCredential.FromJson(cfg),
-                        ProjectId = JObject.Parse(cfg)["project_id"]?.Value<string>() ?? string.Empty,
+                        ProjectId = JObject.Parse(cfg)["project_id"]?.Value<string>(),
                     },
                     name);
             }
