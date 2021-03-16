@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FirebaseAdmin;
+using Google.Api.Gax;
 using Google.Cloud.Firestore;
-using Google.Cloud.Firestore.V1;
 using Grpc.Auth;
 using Microsoft.Extensions.Hosting;
 
@@ -23,14 +23,12 @@ namespace LeanCode.Firebase.Firestore
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var credentials = firebaseApp.Options.Credential;
-
-            var builder = new FirestoreClientBuilder
+            database = await new FirestoreDbBuilder
             {
-                ChannelCredentials = credentials.ToChannelCredentials(),
-            };
-            var client = await builder.BuildAsync(cancellationToken);
-            database = FirestoreDb.Create(firebaseApp.Options.ProjectId, client);
+                ChannelCredentials = firebaseApp.Options.Credential.ToChannelCredentials(),
+                ProjectId = firebaseApp.Options.ProjectId ?? Platform.Instance().ProjectId,
+                EmulatorDetection = EmulatorDetection.EmulatorOrProduction,
+            }.BuildAsync(cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
