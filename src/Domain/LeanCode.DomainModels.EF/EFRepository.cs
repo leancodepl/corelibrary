@@ -97,7 +97,7 @@ namespace LeanCode.DomainModels.EF
 
     public abstract class EFRepository<TEntity, TContext>
         : EFRepository<TEntity, Id<TEntity>, TContext>, IRepository<TEntity>
-        where TEntity : class, IAggregateRoot<Id<TEntity>>
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Id<TEntity>>
         where TContext : notnull, DbContext
     {
         public EFRepository(TContext dbContext)
