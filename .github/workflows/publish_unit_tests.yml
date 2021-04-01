@@ -2,7 +2,7 @@ name: Unit Test Results
 
 on:
   workflow_run:
-    workflows: ["core_build_publish"]
+    workflows: ["Corelibrary Build & Publish"]
     types:
       - completed
 
