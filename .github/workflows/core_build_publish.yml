@@ -6,6 +6,7 @@ on:
       - "v[0-9]+.[0-9]+"
   pull_request:
   workflow_dispatch:
+
 jobs:
   prepare:
     name: Prepare & Version
@@ -89,10 +90,19 @@ jobs:
         if: always()
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.6
-        if: always()
+        if: >
+          always() &&
+          github.event.sender.login != 'dependabot[bot]' &&
+          ( github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository )
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: test/TestResults/*.xml
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unit Test Results
+          path: test/TestResults/*.xml
 
       - name: Pack
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
