@@ -38,7 +38,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                     $@"
                     DELETE FROM {tableName} t WHERE
                     t.[DateOcurred] < @time AND t.[WasPublished] = 1",
-                    new[] { time },
+                    new { time },
                     commandTimeout: 3600,
                     cancellationToken: stoppingToken);
 

@@ -17,7 +17,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
         private static string From(ActivityContext ctx)
         {
-            // ctx.
             var carrier = new Carrier();
             var propagationCtx = new PropagationContext(ctx, default);
 
