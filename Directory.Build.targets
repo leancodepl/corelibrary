@@ -7,7 +7,7 @@
     <GoogleApisVersion>1.51.0</GoogleApisVersion>
     <HangfireVersion>1.7.20</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>7.1.5</MassTransitVersion>
+    <MassTransitVersion>7.1.7</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.9.0</CodeAnalysisVersion>
