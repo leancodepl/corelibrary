@@ -41,7 +41,7 @@
     <PackageReference Update="Google.Cloud.Firestore" Version="2.3.0" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="2.1.2" />
 
     <PackageReference Update="Cronos" Version="0.7.0" />
     <PackageReference Update="Dapper" Version="2.0.78" />
