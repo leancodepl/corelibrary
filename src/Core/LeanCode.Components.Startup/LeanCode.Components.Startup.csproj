@@ -27,6 +27,12 @@
     <PackageReference Include="Serilog.Settings.Configuration" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.Seq" />
+
+    <!--
+        Sendgrid relies on Newtonsoft.Json but on a much older version. We can bump it to our one
+        as it should really be backwards compatible.
+    -->
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
 </Project>
