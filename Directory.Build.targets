@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.4</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreVersion>5.0.5</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>5.0.4</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
@@ -32,13 +32,13 @@
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.0" />
 
-    <PackageReference Update="IdentityModel" Version="4.6.0" />
+    <PackageReference Update="IdentityModel" Version="5.1.0" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.9" />
     <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
     <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
 
     <PackageReference Update="FirebaseAdmin" Version="2.0.0" />
-    <PackageReference Update="Google.Cloud.Firestore" Version="2.3.0" />
+    <PackageReference Update="Google.Cloud.Firestore" Version="2.3.1" />
 
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
     <PackageReference Update="Microsoft.Data.SqlClient" Version="2.1.2" />
@@ -53,10 +53,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
+    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.5" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="5.0.5" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
@@ -86,7 +86,7 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.4" />
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.5" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
@@ -108,7 +108,7 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
     <PackageReference Update="NSubstitute" Version="4.2.2" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
@@ -125,6 +125,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.321" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.333" />
   </ItemGroup>
 </Project>
