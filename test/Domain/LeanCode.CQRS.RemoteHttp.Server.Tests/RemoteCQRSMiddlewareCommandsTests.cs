@@ -60,8 +60,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke();
 
-            var result = JsonConvert.DeserializeObject<CommandResult>(content);
-            Assert.True(result.WasSuccessful);
+            var result = JsonConvert.DeserializeObject<CommandResult?>(content);
+            Assert.NotNull(result);
+            Assert.True(result!.WasSuccessful);
         }
 
         [Fact]
@@ -77,8 +78,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke(content: @"{""Prop"": 999}");
 
-            var result = JsonConvert.DeserializeObject<CommandResult>(content);
-            Assert.False(result.WasSuccessful);
+            var result = JsonConvert.DeserializeObject<CommandResult?>(content);
+            Assert.NotNull(result);
+            Assert.False(result!.WasSuccessful);
             var err = Assert.Single(result.ValidationErrors);
             Assert.Equal(StubCommandExecutor.SampleError.PropertyName, err.PropertyName);
             Assert.Equal(StubCommandExecutor.SampleError.ErrorCode, err.ErrorCode);
