@@ -48,7 +48,7 @@
     <PackageReference Update="FluentValidation" Version="9.5.4" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Update="Polly" Version="7.2.1" />
+    <PackageReference Update="Polly" Version="7.2.2" />
     <PackageReference Update="Sendgrid" Version="9.22.0" />
   </ItemGroup>
 
