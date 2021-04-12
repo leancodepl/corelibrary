@@ -15,14 +15,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
         public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
         {
-            var messageId = GetMessageId(context);
-            var consumerType = GetConsumerType(next);
-
-            using (messageId)
-            using (consumerType)
-            {
-                await next.Send(context);
-            }
+            using var messageId = GetMessageId(context);
+            using var consumerType = GetConsumerType(next);
+            await next.Send(context);
         }
 
         private static IDisposable? GetMessageId(ConsumeContext ctx)

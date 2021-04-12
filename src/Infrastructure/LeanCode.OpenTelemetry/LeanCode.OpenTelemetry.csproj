@@ -9,4 +9,5 @@
     <PackageReference Include="Serilog" />
     <PackageReference Include="OpenTelemetry"/>
   </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 using GreenPipes;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
-using MassTransit.PipeConfigurators;
+using MassTransit.Registration;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
@@ -10,23 +10,22 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         where TConsumer : class
         where TMessage : class
     {
-        private readonly IPipeContextServiceResolver serviceResolver;
+        private readonly AsyncEventsInterceptor interceptor;
+        private readonly EventsStore store;
 
-        public StoreAndPublishEventsFilter(IPipeContextServiceResolver serviceResolver)
+        public StoreAndPublishEventsFilter(AsyncEventsInterceptor interceptor, EventsStore store)
         {
-            this.serviceResolver = serviceResolver;
+            this.interceptor = interceptor;
+            this.store = store;
         }
 
         public void Probe(ProbeContext context) { }
 
         public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
         {
-            var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
-            var impl = serviceResolver.GetService<EventsStore>(context);
-
             var events = await interceptor.CaptureEventsOfAsync(() => next.Send(context));
 
-            await impl.StoreAndPublishEventsAsync(
+            await store.StoreAndPublishEventsAsync(
                 events,
                 context.ConversationId,
                 new EventPublisher(context),
@@ -37,33 +36,16 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     public static class StoreAndPublishEventsFilterExtensions
     {
         public static void StoreAndPublishDomainEvents(
-            this IConsumePipeConfigurator config,
-            IPipeContextServiceResolver? serviceResolver = null)
+            this IConsumePipeConfigurator configurator,
+            IConfigurationServiceProvider provider)
         {
-            serviceResolver ??= AutofacPipeContextServiceResolver.Instance;
-            _ = new StoreAndPublishEventsFilterConfigurationObserver(config, serviceResolver);
-        }
-    }
-
-    public class StoreAndPublishEventsFilterConfigurationObserver :
-        ConfigurationObserver,
-        IConsumerConfigurationObserver
-    {
-        private readonly IPipeContextServiceResolver serviceResolver;
-
-        public StoreAndPublishEventsFilterConfigurationObserver(
-            IConsumePipeConfigurator configurator,
-            IPipeContextServiceResolver serviceResolver)
-            : base(configurator)
-        {
-            this.serviceResolver = serviceResolver;
+            configurator.UseTypedConsumeFilter<Observer>(provider);
         }
 
-        public void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator)
-            where TConsumer : class
-            where TMessage : class
+        private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
         {
-            configurator.UseFilter(new StoreAndPublishEventsFilter<TConsumer, TMessage>(serviceResolver));
+            public override void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator) =>
+                configurator.AddConsumerScopedFilter<StoreAndPublishEventsFilter<TConsumer, TMessage>, TConsumer, TMessage>(Provider);
         }
     }
 }

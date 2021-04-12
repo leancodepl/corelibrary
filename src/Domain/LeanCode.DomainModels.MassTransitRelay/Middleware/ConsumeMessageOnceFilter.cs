@@ -4,7 +4,7 @@ using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
-using MassTransit.PipeConfigurators;
+using MassTransit.Registration;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
@@ -14,11 +14,12 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         where TMessage : class
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ConsumeMessageOnceFilter<TConsumer, TMessage>>();
-        private readonly IPipeContextServiceResolver serviceResolver;
 
-        public ConsumeMessageOnceFilter(IPipeContextServiceResolver serviceResolver)
+        private readonly IConsumedMessagesContext consumedMessages;
+
+        public ConsumeMessageOnceFilter(IConsumedMessagesContext consumedMessages)
         {
-            this.serviceResolver = serviceResolver;
+            this.consumedMessages = consumedMessages;
         }
 
         public void Probe(ProbeContext context)
@@ -26,8 +27,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 
         public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
         {
-            var consumedMessages = serviceResolver.GetService<IConsumedMessagesContext>(context);
-
             var msg = ConsumedMessage.Create(context);
 
             if (await consumedMessages.ConsumedMessages
@@ -50,32 +49,15 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static void UseConsumedMessagesFiltering(
             this IConsumePipeConfigurator configurator,
-            IPipeContextServiceResolver? serviceResolver = null)
+            IConfigurationServiceProvider provider)
         {
-            serviceResolver ??= AutofacPipeContextServiceResolver.Instance;
-            _ = new ConsumeMessageOnceFilterConfigurationObserver(configurator, serviceResolver);
-        }
-    }
-
-    public class ConsumeMessageOnceFilterConfigurationObserver :
-       ConfigurationObserver,
-       IConsumerConfigurationObserver
-    {
-        private readonly IPipeContextServiceResolver serviceResolver;
-
-        public ConsumeMessageOnceFilterConfigurationObserver(
-            IConsumePipeConfigurator configurator,
-            IPipeContextServiceResolver serviceResolver)
-            : base(configurator)
-        {
-            this.serviceResolver = serviceResolver;
+            configurator.UseTypedConsumeFilter<Observer>(provider);
         }
 
-        public void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator)
-            where TConsumer : class
-            where TMessage : class
+        private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
         {
-            configurator.UseFilter(new ConsumeMessageOnceFilter<TConsumer, TMessage>(serviceResolver));
+            public override void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator) =>
+                configurator.AddConsumerScopedFilter<ConsumeMessageOnceFilter<TConsumer, TMessage>, TConsumer, TMessage>(Provider);
         }
     }
 }
