@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,16 +23,16 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task StoreAndPublishEventsAsync(
             List<IDomainEvent> events,
-            Guid correlationId,
+            Guid? conversationId,
             IEventPublisher publisher,
             CancellationToken cancellationToken = default)
         {
             if (events?.Count > 0)
             {
-                var persisted = PersistEvents(events, correlationId);
+                var persisted = PersistEvents(events, conversationId);
                 await outboxContext.SaveChangesAsync(cancellationToken);
 
-                var publishStatuses = await PublishEventsAsync(events, correlationId, publisher, cancellationToken);
+                var publishStatuses = await PublishEventsAsync(events, publisher, conversationId, cancellationToken);
                 MarkEventsAsRaised(persisted, publishStatuses);
                 await outboxContext.SaveChangesAsync(cancellationToken);
             }
@@ -41,10 +42,20 @@ namespace LeanCode.DomainModels.MassTransitRelay
             }
         }
 
-        private List<RaisedEvent> PersistEvents(List<IDomainEvent> events, Guid correlationId)
+        private List<RaisedEvent> PersistEvents(List<IDomainEvent> events, Guid? conversationId)
         {
             var evts = events
-                .Select(evt => eventsSerializer.WrapEvent(evt, correlationId))
+                .Select(evt =>
+                {
+                    var context = Activity.Current?.Context;
+                    var meta = new RaisedEventMetadata
+                    {
+                        ConversationId = conversationId,
+                        ActivityContext = context,
+                    };
+
+                    return eventsSerializer.WrapEvent(evt, meta);
+                })
                 .ToList();
 
             outboxContext.RaisedEvents.AddRange(evts);
@@ -66,29 +77,29 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         private Task<bool[]> PublishEventsAsync(
             List<IDomainEvent> events,
-            Guid correlationId,
             IEventPublisher publisher,
+            Guid? conversationId,
             CancellationToken cancellationToken)
         {
             logger.Debug("Publishing {Count} raised events", events.Count);
 
             var publishTasks = events
-                .Select(evt => PublishEventAsync(evt, correlationId, publisher, cancellationToken));
+                .Select(evt => PublishEventAsync(evt, publisher, conversationId, cancellationToken));
 
             return Task.WhenAll(publishTasks);
         }
 
         private async Task<bool> PublishEventAsync(
             IDomainEvent evt,
-            Guid correlationId,
             IEventPublisher publisher,
+            Guid? conversationId,
             CancellationToken cancellationToken)
         {
             logger.Debug("Publishing event of type {DomainEvent}", evt);
 
             try
             {
-                await publisher.PublishAsync(evt, correlationId, cancellationToken);
+                await publisher.PublishAsync(evt, conversationId, cancellationToken);
                 logger.Information("Domain event {DomainEvent} published", evt);
                 return true;
             }

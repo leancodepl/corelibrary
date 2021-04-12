@@ -11,7 +11,7 @@ using Xunit;
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 {
     /// <remarks>
-    /// Single intergration test checking if events from command handler and further
+    /// Single integration test checking if events from command handler and further
     /// event handlers (consumers) are raised
     /// </remarks>
     [Collection("EventsInterceptor")]
@@ -37,7 +37,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         private async Task PublishEvents()
         {
-            var ctx = new Context { CorrelationId = testApp.CorrelationId };
+            var ctx = new Context();
             var cmd = new TestCommand();
             await testApp.Commands.RunAsync(ctx, cmd);
         }
@@ -106,7 +106,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         private void AssertConsumed(HandledEvent evt, Type consumerType)
         {
             Assert.Equal(consumerType, evt.ConsumerType);
-            Assert.Equal(testApp.CorrelationId, evt.CorrelationId);
         }
 
         private static void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType)

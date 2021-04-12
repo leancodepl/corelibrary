@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
@@ -13,21 +14,36 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     {
         protected static readonly TypesCatalog Types = TypesCatalog.Of<BaseJsonEventsSerializerTests>();
 
-        private static readonly Guid EventId = Identity.NewId();
-        private static readonly Guid CorrelationId = Identity.NewId();
-        private static readonly DateTime DateOccurred = new(2020, 5, 7, 11, 0, 0, 0, DateTimeKind.Utc);
-
         protected abstract IRaisedEventsSerializer Serializer { get; }
+
+        private static readonly Guid EventId = Identity.NewId();
+        private static readonly Guid ConversationId = Identity.NewId();
+        private static readonly ActivityContext ActivityContext = new ActivityContext(
+            ActivityTraceId.CreateRandom(),
+            ActivitySpanId.CreateRandom(),
+            ActivityTraceFlags.None);
+        private static readonly DateTime DateOccurred = new DateTime(2020, 5, 7, 11, 0, 0, 0, DateTimeKind.Utc);
+        private readonly RaisedEventMetadata metadata;
+
+        public BaseJsonEventsSerializerTests()
+        {
+            metadata = new RaisedEventMetadata
+            {
+                ConversationId = ConversationId,
+                ActivityContext = ActivityContext,
+            };
+        }
 
         [Fact]
         public void Serializes_an_event_keeps_metadata()
         {
             var evt = new TestEvent(EventId, DateOccurred, 5);
 
-            var raised = Serializer.WrapEvent(evt, CorrelationId);
+            var raised = Serializer.WrapEvent(evt, metadata);
 
             Assert.Equal(EventId, raised.Id);
-            Assert.Equal(CorrelationId, raised.CorrelationId);
+            Assert.Equal(ConversationId, raised.Metadata.ConversationId);
+            Assert.Equal(ActivityContext, raised.Metadata.ActivityContext);
             Assert.Equal(DateOccurred, raised.DateOcurred);
             Assert.Equal(typeof(TestEvent).FullName, raised.EventType);
             Assert.False(raised.WasPublished);
@@ -39,7 +55,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var raisedEvt = new RaisedEvent(
                 EventId,
-                CorrelationId,
+                metadata,
                 DateOccurred,
                 false,
                 typeof(TestEvent).FullName,
@@ -57,7 +73,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var evt = new TestEvent(EventId, DateOccurred, 5);
 
-            var wrapped = Serializer.WrapEvent(evt, CorrelationId);
+            var wrapped = Serializer.WrapEvent(evt, metadata);
             var unwrapped = Serializer.ExtractEvent(wrapped);
 
             Assert.Equal(evt, unwrapped);
@@ -68,7 +84,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             var evt = TestEventWithPrivateFields.Create("test value");
 
-            var wrapped = Serializer.WrapEvent(evt, CorrelationId);
+            var wrapped = Serializer.WrapEvent(evt, metadata);
             var unwrapped = Serializer.ExtractEvent(wrapped);
 
             Assert.Equal(evt, unwrapped);

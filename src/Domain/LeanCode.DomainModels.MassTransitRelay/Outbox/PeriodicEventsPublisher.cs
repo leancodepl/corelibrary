@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
+using LeanCode.OpenTelemetry;
 using LeanCode.PeriodicService;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Trace;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -36,6 +39,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            using var fetchActivity = LeanCodeActivitySource.Start("outbox.fetch-unpublished");
+
             logger.Debug("Publishing unpublished events");
 
             var events = await FetchUnpublishedEventsAsync();
@@ -49,10 +54,20 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     break;
                 }
 
+                var link = fetchActivity != null ? new[] { new ActivityLink(fetchActivity.Context) } : null;
+                using var publishActivity = LeanCodeActivitySource.ActivitySource.StartActivity(
+                    "outbox.publish",
+                    ActivityKind.Internal,
+                    evt.Metadata.ActivityContext ?? default,
+                    links: link);
+
+                publishActivity?.AddTag("event.id", evt.Id.ToString());
+                publishActivity?.AddTag("event.type", evt.EventType);
+
                 try
                 {
                     var deserialized = serializer.ExtractEvent(evt);
-                    await eventPublisher.PublishAsync(deserialized, evt.Id, evt.CorrelationId, stoppingToken);
+                    await eventPublisher.PublishAsync(deserialized, evt.Id, evt.Metadata.ConversationId, stoppingToken);
 
                     evt.WasPublished = true;
                     await outboxContext.SaveChangesAsync(stoppingToken);
@@ -60,6 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 catch (Exception e)
                 {
                     logger.Warning(e, "Failed to publish event {MessageId}", evt.Id);
+                    publishActivity?.SetStatus(Status.Error);
                 }
             }
         }

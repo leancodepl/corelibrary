@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
@@ -15,7 +16,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     {
         private static readonly Guid Event1Id = Identity.NewId();
         private static readonly Guid Event2Id = Identity.NewId();
-        private static readonly Guid CorrelationId = Identity.NewId();
+        private static readonly Guid ConversationId = Identity.NewId();
 
         private readonly EventsStore impl;
         private readonly TestDbContext dbContext;
@@ -43,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Persists_events_and_marks_published_if_publish_succeeded()
         {
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -57,7 +58,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             publisher.PublishAsync(null, null).ReturnsForAnyArgs(_ => throw new Exception());
 
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
@@ -73,13 +74,33 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                 _ => throw new Exception(),
                 _ => Task.CompletedTask);
 
-            await impl.StoreAndPublishEventsAsync(domainEvents, CorrelationId, publisher);
+            await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
 
             var raisedEvents = await GetRaisedEvents();
             Assert.Collection(
                 raisedEvents,
                 evt => AssertRaisedEvent(evt, Event1Id, typeof(Event1), false),
                 evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), true));
+        }
+
+        [Fact]
+        public async Task Trace_id_and_conversation_id_are_propagated()
+        {
+            var parentTraceId = ActivityTraceId.CreateRandom();
+            var parentSpanId = ActivitySpanId.CreateRandom();
+
+            using var activity = new Activity("event_store_test");
+            activity.SetParentId(parentTraceId, parentSpanId);
+            activity.Start();
+
+            await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
+
+            var raisedEvents = await GetRaisedEvents();
+
+            Assert.Collection(
+                raisedEvents,
+                evt1 => AssertRaisedEvent(evt1, Event1Id, ConversationId, parentTraceId),
+                evt2 => AssertRaisedEvent(evt2, Event2Id, ConversationId, parentTraceId));
         }
 
         private Task<List<RaisedEvent>> GetRaisedEvents()
@@ -98,6 +119,13 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             Assert.Equal(wasPublished, evt.WasPublished);
         }
 
+        private void AssertRaisedEvent(RaisedEvent evt, Guid id, Guid conversationId, ActivityTraceId traceId)
+        {
+            Assert.Equal(id, evt.Id);
+            Assert.Equal(conversationId, evt.Metadata.ConversationId);
+            Assert.Equal(traceId, evt.Metadata.ActivityContext?.TraceId);
+        }
+
         private class Event1 : IDomainEvent
         {
             public Guid Id { get; set; }
@@ -114,9 +142,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             public object ExtractEvent(RaisedEvent evt) => throw new NotImplementedException();
 
-            public RaisedEvent WrapEvent(object evt, Guid correlationId)
+            public RaisedEvent WrapEvent(object evt, RaisedEventMetadata metadata)
             {
-                return RaisedEvent.Create(evt, correlationId, "mock_payload");
+                return RaisedEvent.Create(evt, metadata, "mock_payload");
             }
         }
     }

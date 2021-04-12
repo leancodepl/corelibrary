@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.Correlation;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
@@ -17,10 +16,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         private readonly EventsPublisherElement<TestContext, TestPayload, TestPayload> element;
         private readonly AsyncEventsInterceptor interceptor = new();
 
-        private readonly TestContext testContext = new()
-        {
-            CorrelationId = Guid.NewGuid(),
-        };
+        private readonly TestContext testContext = new();
 
         public EventsPublisherElementTests()
         {
@@ -46,9 +42,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             await element.ExecuteAsync(testContext, new TestPayload(), Next);
 
-            await publisher.Received(1).PublishAsync(evt1, testContext.CorrelationId);
-            await publisher.Received(1).PublishAsync(evt2, testContext.CorrelationId);
-            await publisher.Received(1).PublishAsync(evt3, testContext.CorrelationId);
+            await publisher.Received(1).PublishAsync(evt1, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt2, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt3, Arg.Any<Guid>());
         }
 
         [Fact]
@@ -72,8 +68,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             await element.ExecuteAsync(testContext, inp, Next);
 
-            await publisher.Received(1).PublishAsync(evt1, testContext.CorrelationId);
-            await publisher.Received(1).PublishAsync(evt3, testContext.CorrelationId);
+            await publisher.Received(1).PublishAsync(evt1, Arg.Any<Guid>());
+            await publisher.Received(1).PublishAsync(evt3, Arg.Any<Guid>());
         }
 
         [Fact]
@@ -97,10 +93,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
     public class TestPayload
     { }
 
-    public class TestContext : ICorrelationContext
+    public class TestContext : IPipelineContext
     {
-        public Guid CorrelationId { get; set; }
-        public Guid ExecutionId { get; set; }
         public IPipelineScope Scope { get; set; }
         public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
     }
