@@ -36,7 +36,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 
                 var count = await outboxContext.Self.ExecuteScalarAsync<int>(
                     $@"
-                    DELETE FROM {tableName} t WHERE
+                    DELETE t FROM {tableName} t WHERE
                     t.[DateOcurred] < @time AND t.[WasPublished] = 1",
                     new { time },
                     commandTimeout: 3600,
