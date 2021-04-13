@@ -45,22 +45,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
             await harness.Bus.Publish(new TestMsg());
             Assert.True(await consumerHarness.Consumed.Any<TestMsg>());
 
-            var evt = await AssertSingleAsync(harness.Published.SelectAsync<TestEvent>());
+            var evt = Assert.Single(harness.Published.Select<TestEvent>());
             Assert.Equal(Consumer.Event, evt.MessageObject);
-        }
-
-        private static async Task<T> AssertSingleAsync<T>(IAsyncEnumerable<T> e)
-        {
-            return await SingleAsync(e).OrTimeout(s: 1);
-
-            static async Task<T> SingleAsync(IAsyncEnumerable<T> e)
-            {
-                var enumerator = e.GetAsyncEnumerator();
-                Assert.True(await enumerator.MoveNextAsync(), "Enumerable should return one element but returned none.");
-                var value = enumerator.Current;
-                Assert.False(await enumerator.MoveNextAsync(), "Enumerable should return one element but returned more than one.");
-                return value;
-            }
         }
 
         public Task InitializeAsync() => Task.CompletedTask;
