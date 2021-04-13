@@ -14,7 +14,6 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
-
     [Collection("EventsInterceptor")]
     public class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
     {
@@ -40,10 +39,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
         [Fact]
         public async Task Publishes_event_to_the_bus()
         {
-            harness.Consumer<Consumer>();
+            var consumerHarness = harness.Consumer<Consumer>();
             await harness.Start();
 
             await harness.Bus.Publish(new TestMsg());
+            Assert.True(await consumerHarness.Consumed.Any<TestMsg>());
 
             var evt = await AssertSingleAsync(harness.Published.SelectAsync<TestEvent>());
             Assert.Equal(Consumer.Event, evt.MessageObject);
