@@ -39,8 +39,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 
                 var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
                     $@"
-                    DELETE t FROM {tableName} t
-                    WHERE t.[DateConsumed] < @time;",
+                    DELETE FROM {tableName}
+                    WHERE [DateConsumed] < @time;",
                     new { time },
                     commandTimeout: 3600,
                     cancellationToken: stoppingToken);

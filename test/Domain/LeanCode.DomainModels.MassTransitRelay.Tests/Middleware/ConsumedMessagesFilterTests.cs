@@ -7,7 +7,6 @@ using Autofac;
 using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
-using LeanCode.DomainModels.MassTransitRelay.Tests;
 using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using MassTransit;
