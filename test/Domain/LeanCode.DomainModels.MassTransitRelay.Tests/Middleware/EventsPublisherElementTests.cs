@@ -7,7 +7,7 @@ using LeanCode.Pipelines;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests
+namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
     [Collection("EventsInterceptor")]
     public class EventsPublisherElementTests

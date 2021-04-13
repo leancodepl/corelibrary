@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using GreenPipes;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
-using MassTransit.PipeConfigurators;
+using MassTransit.Registration;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
@@ -11,19 +11,17 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
         where TConsumer : class
         where TMessage : class
     {
-        private readonly IPipeContextServiceResolver serviceResolver;
+        private readonly AsyncEventsInterceptor interceptor;
 
-        public EventsPublisherFilter(IPipeContextServiceResolver serviceResolver)
+        public EventsPublisherFilter(AsyncEventsInterceptor interceptor)
         {
-            this.serviceResolver = serviceResolver;
+            this.interceptor = interceptor;
         }
 
         public void Probe(ProbeContext context) { }
 
         public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
         {
-            var interceptor = serviceResolver.GetService<AsyncEventsInterceptor>(context);
-
             var raisedEvents = await interceptor.CaptureEventsOfAsync(() => next.Send(context));
 
             var publishTasks = raisedEvents.Select(evt => context.Publish((object)evt, cfg => cfg.MessageId = evt.Id));
@@ -34,33 +32,16 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     public static class EventsPublisherFilterExtensions
     {
         public static void UseDomainEventsPublishing(
-            this IConsumePipeConfigurator config,
-            IPipeContextServiceResolver? serviceResolver = null)
+            this IConsumePipeConfigurator configurator,
+            IConfigurationServiceProvider provider)
         {
-            serviceResolver ??= AutofacPipeContextServiceResolver.Instance;
-            _ = new EventsPublisherFilterConfigurationObserver(config, serviceResolver);
-        }
-    }
-
-    public class EventsPublisherFilterConfigurationObserver :
-        ConfigurationObserver,
-        IConsumerConfigurationObserver
-    {
-        private readonly IPipeContextServiceResolver serviceResolver;
-
-        public EventsPublisherFilterConfigurationObserver(
-            IConsumePipeConfigurator configurator,
-            IPipeContextServiceResolver serviceResolver)
-            : base(configurator)
-        {
-            this.serviceResolver = serviceResolver;
+            configurator.UseTypedConsumeFilter<Observer>(provider);
         }
 
-        public void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator)
-            where TConsumer : class
-            where TMessage : class
+        private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
         {
-            configurator.UseFilter(new EventsPublisherFilter<TConsumer, TMessage>(serviceResolver));
+            public override void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator) =>
+                configurator.AddConsumerScopedFilter<EventsPublisherFilter<TConsumer, TMessage>, TConsumer, TMessage>(Provider);
         }
     }
 }

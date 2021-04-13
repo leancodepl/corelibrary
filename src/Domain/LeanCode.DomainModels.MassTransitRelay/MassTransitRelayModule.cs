@@ -95,8 +95,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
                     rcv.UseLogsCorrelation();
                     rcv.UseRetry(retryConfig =>
                         retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
-                    rcv.UseConsumedMessagesFiltering();
-                    rcv.StoreAndPublishDomainEvents();
+                    rcv.UseConsumedMessagesFiltering(context);
+                    rcv.StoreAndPublishDomainEvents(context);
 
                     rcv.ConfigureConsumers(context);
                     rcv.ConnectReceiveEndpointObservers(context);

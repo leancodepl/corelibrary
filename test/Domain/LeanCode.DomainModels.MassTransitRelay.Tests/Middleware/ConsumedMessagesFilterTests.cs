@@ -3,46 +3,48 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
+using LeanCode.DomainModels.MassTransitRelay.Tests;
 using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using MassTransit;
+using MassTransit.AutofacIntegration;
+using MassTransit.Registration;
 using MassTransit.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using NSubstitute;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests
+namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
     public class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
     {
         private static readonly Guid MessageId = Identity.NewId();
 
+        private readonly IContainer container;
         private readonly InMemoryTestHarness harness;
         private readonly DbConnection dbConnection;
 
         public ConsumedMessagesFilterTests()
         {
-            harness = new InMemoryTestHarness
-            {
-                TestTimeout = TimeSpan.FromSeconds(1),
-            };
-
             dbConnection = new SqliteConnection("Filename=:memory:");
+
+            var builder = new ContainerBuilder();
+            builder.AddMassTransitInMemoryTestHarness();
+            builder.Register(s => TestDbContext.Create(dbConnection)).As<IConsumedMessagesContext>();
+
+            container = builder.Build();
+            harness = container.Resolve<InMemoryTestHarness>();
+            harness.TestTimeout = TimeSpan.FromSeconds(1);
 
             harness.OnConfigureInMemoryBus += cfg =>
             {
-                var serviceResolver = Substitute.For<IPipeContextServiceResolver>();
-                serviceResolver.GetService<IConsumedMessagesContext>(null)
-                    .ReturnsForAnyArgs(_ => TestDbContext.Create(dbConnection));
-
                 // we have to serialize access to database
                 cfg.UseConcurrencyLimit(1);
-
-                cfg.UseConsumedMessagesFiltering(serviceResolver);
+                cfg.UseConsumedMessagesFiltering(container.Resolve<IConfigurationServiceProvider>());
             };
         }
 
@@ -149,12 +151,14 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             await harness.Stop();
             await dbConnection.CloseAsync();
+            await container.DisposeAsync();
         }
 
         public void Dispose()
         {
             harness.Dispose();
             dbConnection.Dispose();
+            container.Dispose();
         }
 
         private class TestMsg { }
