@@ -7,6 +7,7 @@ using Autofac;
 using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
+using LeanCode.DomainModels.MassTransitRelay.Tests;
 using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using MassTransit;
@@ -15,11 +16,9 @@ using MassTransit.Registration;
 using MassTransit.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests
+namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
     public class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
     {
