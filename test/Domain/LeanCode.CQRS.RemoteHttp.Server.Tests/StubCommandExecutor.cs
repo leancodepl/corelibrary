@@ -26,5 +26,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
             return Task.FromResult(CommandResult.Success);
         }
+
+        public class SampleRemoteCommand : IRemoteCommand
+        {
+            public int Prop { get; set; }
+        }
     }
 }

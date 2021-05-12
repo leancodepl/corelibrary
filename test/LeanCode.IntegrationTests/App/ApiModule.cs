@@ -24,6 +24,7 @@ namespace LeanCode.IntegrationTests.App
             services.AddHostedService<HangfireInitializer<TestDbContext>>();
 
             services.AddMemoryCache();
+            services.AddRouting();
 
             services.AddIdentityServer()
                 .AddInMemoryApiResources(AuthConfig.GetApiResources())
