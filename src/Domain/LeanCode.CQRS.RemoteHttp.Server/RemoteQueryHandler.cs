@@ -22,28 +22,26 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         public RemoteQueryHandler(
             IServiceProvider serviceProvider,
-            TypesCatalog catalog,
+            Type type,
             Func<HttpContext, TAppContext> contextTranslator,
             ISerializer serializer)
-            : base(catalog, contextTranslator, serializer)
+            : base(type, contextTranslator, serializer)
         {
             this.serviceProvider = serviceProvider;
         }
 
         protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
-            var type = obj.GetType();
-
             MethodInfo method;
 
             try
             {
-                method = MethodCache.GetOrAdd(type, GenerateMethod);
+                method = MethodCache.GetOrAdd(Type, GenerateMethod);
             }
             catch
             {
                 // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                Logger.Warning("The type {Type} is not an IRemoteQuery", type);
+                Logger.Warning("The type {Type} is not an IRemoteQuery", Type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }

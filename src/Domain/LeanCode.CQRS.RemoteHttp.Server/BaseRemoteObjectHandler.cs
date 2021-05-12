@@ -11,17 +11,17 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         private readonly Func<HttpContext, TAppContext> contextTranslator;
         private readonly ISerializer serializer;
 
-        public TypesCatalog Catalog { get; }
+        public Type Type { get; }
 
         protected Serilog.ILogger Logger { get; }
 
         public BaseRemoteObjectHandler(
-            TypesCatalog catalog,
+            Type type,
             Func<HttpContext, TAppContext> contextTranslator,
             ISerializer serializer)
         {
             Logger = Serilog.Log.ForContext(GetType());
-            Catalog = catalog;
+            Type = type;
             this.contextTranslator = contextTranslator;
             this.serializer = serializer;
         }
@@ -29,31 +29,22 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
         {
             var request = context.Request;
-            var type = ExtractType(request);
-
-            if (type is null)
-            {
-                Logger.Debug("Cannot retrieve type from path {Path}, type not found", request.Path);
-
-                return ExecutionResult.Skip;
-            }
-
             object? obj;
 
             try
             {
-                obj = await serializer.DeserializeAsync(request.Body, type, context.RequestAborted);
+                obj = await serializer.DeserializeAsync(request.Body, Type, context.RequestAborted);
             }
             catch (Exception ex)
             {
-                Logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
+                Logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", Type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
 
             if (obj is null)
             {
-                Logger.Warning("Client sent an empty object for type {Type}, ignoring", type);
+                Logger.Warning("Client sent an empty object for type {Type}, ignoring", Type);
 
                 return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
             }
@@ -72,7 +63,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 Logger.Debug(
                     "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
                     obj,
-                    type);
+                    Type);
             }
             catch (InsufficientPermissionException ex)
             {
@@ -82,40 +73,29 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     "Authorizer {Authorizer} failed to authorize the user to run {@Object} of type {Type}",
                     ex.AuthorizerName,
                     obj,
-                    type);
+                    Type);
             }
             catch (Exception ex)
                 when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
             {
-                Logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
+                Logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, Type);
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
+                Logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, Type);
 
                 result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
             }
 
             if (result.StatusCode >= 100 && result.StatusCode < 300)
             {
-                Logger.Debug("Remote object of type {Type} executed successfully", type);
+                Logger.Debug("Remote object of type {Type} executed successfully", Type);
             }
 
             return result;
         }
 
         protected abstract Task<ExecutionResult> ExecuteObjectAsync(TAppContext appContext, object obj);
-
-        private Type? ExtractType(HttpRequest request)
-        {
-            var idx = request.Path.Value!.LastIndexOf('/');
-
-            var name = idx != -1
-                ? request.Path.Value[(idx + 1)..]
-                : request.Path.Value;
-
-            return Catalog.GetType(name);
-        }
     }
 }

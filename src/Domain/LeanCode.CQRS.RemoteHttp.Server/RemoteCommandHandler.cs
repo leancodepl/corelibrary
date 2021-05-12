@@ -20,26 +20,24 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         public RemoteCommandHandler(
             IServiceProvider serviceProvider,
-            TypesCatalog catalog,
+            Type type,
             Func<HttpContext, TAppContext> contextTranslator,
             ISerializer serializer)
-            : base(catalog, contextTranslator, serializer)
+            : base(type, contextTranslator, serializer)
         {
             this.serviceProvider = serviceProvider;
         }
 
         protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
-            var type = obj.GetType();
-
-            if (!typeof(IRemoteCommand).IsAssignableFrom(type))
+            if (!typeof(IRemoteCommand).IsAssignableFrom(Type))
             {
-                Logger.Warning("The type {Type} is not an IRemoteCommand", type);
+                Logger.Warning("The type {Type} is not an IRemoteCommand", Type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
 
-            var method = MethodCache.GetOrAdd(type, MakeExecutorMethod);
+            var method = MethodCache.GetOrAdd(Type, MakeExecutorMethod);
 
             try
             {
