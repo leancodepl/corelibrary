@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
 using OpenTelemetry.Trace;
@@ -12,7 +11,7 @@ namespace LeanCode.OpenTelemetry
         public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
         {
             using var activity = LeanCodeActivitySource.ActivitySource.StartActivity("pipeline.action");
-            activity?.AddTag("object", typeof(TInput).FullName);
+            activity?.AddTag("object", input?.GetType().FullName);
 
             try
             {
