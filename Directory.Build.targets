@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.5</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.5</AspNetCoreVersion>
+    <EntityFrameworkCoreVersion>5.0.6</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>5.0.6</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.51.0</GoogleApisVersion>
@@ -22,8 +22,8 @@
     <PackageReference Update="Autofac" Version="6.2.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
 
-    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.2" />
-    <PackageReference Update="Azure.Identity" Version="1.3.0" />
+    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.1.0" />
+    <PackageReference Update="Azure.Identity" Version="1.4.0" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
@@ -86,7 +86,7 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.5" />
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.6" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
