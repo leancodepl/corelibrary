@@ -3,7 +3,6 @@
   <ItemGroup>
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
-    <ProjectReference Include="../../Core/LeanCode.Time/LeanCode.Time.csproj" />
   </ItemGroup>
 
   <ItemGroup>
