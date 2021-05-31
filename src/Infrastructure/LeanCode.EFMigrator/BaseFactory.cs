@@ -19,13 +19,16 @@ namespace LeanCode.EFMigrator
 
         public TContext CreateDbContext(string[] args)
         {
+            var connectionString = MigrationsConfig.GetConnectionString()
+                ?? throw new InvalidOperationException("Failed to find connection string.");
+
             var builder = new DbContextOptionsBuilder<TContext>()
                 .UseLoggerFactory(new ServiceCollection()
                     .AddLogging(cfg => cfg.AddConsole())
                     .BuildServiceProvider()
                     .GetRequiredService<ILoggerFactory>())
                 .UseSqlServer(
-                    MigrationsConfig.GetConnectionString(),
+                    connectionString,
                     cfg => UseAdditionalSqlServerDbContextOptions(
                         cfg.MigrationsAssembly(AssemblyName)));
 

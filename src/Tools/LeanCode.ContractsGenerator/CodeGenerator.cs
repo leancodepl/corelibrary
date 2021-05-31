@@ -183,7 +183,7 @@ namespace LeanCode.ContractsGenerator
 
             var classes = classesDeclarations
                 .Select(c => model.GetDeclaredSymbol(c))
-                .Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s)))
+                .Union(structsDeclarations.Select(s => model.GetDeclaredSymbol(s)), SymbolEqualityComparer.Default)
                 .Where(c => c is object)
                 .Cast<INamedTypeSymbol>();
             var interfaces = interfacesDeclarations

@@ -21,7 +21,6 @@ namespace LeanCode.ViewRenderer.Razor
         public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) =>
             throw new NotSupportedException();
 
-        [Obsolete("Use GetItem(string path, string fileKind) instead.")]
         public override RazorProjectItem GetItem(string path) => GetItem(path, null);
 
         public override RazorProjectItem GetItem(string path, string? fileKind)

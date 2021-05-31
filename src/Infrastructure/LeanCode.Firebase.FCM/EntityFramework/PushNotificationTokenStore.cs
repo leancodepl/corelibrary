@@ -129,14 +129,17 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         private string GetTokensTableName()
         {
             var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
-            if (string.IsNullOrEmpty(entity.GetSchema()))
+
+            if (entity is null)
             {
-                return $"[{entity.GetTableName()}]";
+                throw new InvalidOperationException("Failed to find entity type.");
             }
-            else
-            {
-                return $"[{entity.GetSchema()}].[{entity.GetTableName()}]";
-            }
+
+            var schema = entity.GetSchema();
+
+            return string.IsNullOrEmpty(schema)
+                ? $"[{entity.GetTableName()}]"
+                : $"[{schema}].[{entity.GetTableName()}]";
         }
 
         private readonly struct UserToken
