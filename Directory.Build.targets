@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.7</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.7</AspNetCoreVersion>
-    <ExtensionsVersion>5.0.0</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>6.0.0-preview.4.21253.1</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>6.0.0-preview.4.21253.5</AspNetCoreVersion>
+    <ExtensionsVersion>6.0.0-preview.4.21253.7</ExtensionsVersion>
 
     <GoogleApisVersion>1.51.0</GoogleApisVersion>
     <HangfireVersion>1.7.23</HangfireVersion>
@@ -10,7 +10,7 @@
     <MassTransitVersion>7.2.0</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>3.8.0</CodeAnalysisVersion>
+    <CodeAnalysisVersion>3.10.0</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -74,6 +74,7 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)" />
@@ -84,9 +85,8 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
-    <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.7" />
+    <!-- Warning: this package seems to be versioned like one of AspNetCore packages :) -->
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
