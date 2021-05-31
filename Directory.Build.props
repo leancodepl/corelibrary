@@ -4,9 +4,9 @@
     <Authors>LeanCode</Authors>
     <Description>LeanCode Core library</Description>
 
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>preview</LangVersion>
     <OutputType>library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
