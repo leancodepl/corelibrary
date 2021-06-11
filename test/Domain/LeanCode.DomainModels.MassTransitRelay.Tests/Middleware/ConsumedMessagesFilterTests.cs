@@ -7,7 +7,6 @@ using Autofac;
 using GreenPipes;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
-using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using MassTransit;
 using MassTransit.AutofacIntegration;
@@ -21,7 +20,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
     public class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
     {
-        private static readonly Guid MessageId = Identity.NewId();
+        private static readonly Guid MessageId = Guid.NewGuid();
 
         private readonly IContainer container;
         private readonly InMemoryTestHarness harness;
@@ -67,8 +66,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
             var consumer = harness.Consumer<FirstConsumer>();
             await harness.Start();
 
-            var msg1 = Identity.NewId();
-            var msg2 = Identity.NewId();
+            var msg1 = Guid.NewGuid();
+            var msg2 = Guid.NewGuid();
 
             await harness.Bus.Publish(new TestMsg(), ctx => ctx.MessageId = msg1);
             await harness.Bus.Publish(new TestMsg(), ctx => ctx.MessageId = msg2);

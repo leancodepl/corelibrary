@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using LeanCode.Dapper;
-using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,7 +66,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     VALUES (@newId, @userId, @token, @now);
 
                     COMMIT TRANSACTION;
-                ", new { newId = Identity.NewId(), userId, token, now = TimeProvider.Now },
+                ", new { newId = Guid.NewGuid(), userId, token, now = TimeProvider.Now },
                 cancellationToken: cancellationToken);
                 logger.Information("Added push notification token for user {UserId} from the store", userId);
             }

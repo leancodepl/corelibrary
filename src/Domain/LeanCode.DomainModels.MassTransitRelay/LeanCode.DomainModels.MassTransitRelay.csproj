@@ -8,7 +8,6 @@
     <ProjectReference Include="../../Infrastructure/LeanCode.PeriodicService/LeanCode.PeriodicService.csproj" />
 
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
-    <ProjectReference Include="../LeanCode.IdentityProvider/LeanCode.IdentityProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
