@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.IdentityProvider/LeanCode.IdentityProvider.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../LeanCode.Dapper/LeanCode.Dapper.csproj" />
     <ProjectReference Include="../LeanCode.Firebase/LeanCode.Firebase.csproj" />

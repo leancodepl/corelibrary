@@ -37,7 +37,6 @@
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
-    <ProjectReference Include="../../../src/Domain/LeanCode.IdentityProvider/LeanCode.IdentityProvider.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
   </ItemGroup>

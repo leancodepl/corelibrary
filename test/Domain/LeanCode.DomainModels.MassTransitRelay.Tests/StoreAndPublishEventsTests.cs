@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.Model;
-using LeanCode.IdentityProvider;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
@@ -14,9 +13,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 {
     public class StoreAndPublishEventsTests : IDisposable
     {
-        private static readonly Guid Event1Id = Identity.NewId();
-        private static readonly Guid Event2Id = Identity.NewId();
-        private static readonly Guid ConversationId = Identity.NewId();
+        private static readonly Guid Event1Id = Guid.NewGuid();
+        private static readonly Guid Event2Id = Guid.NewGuid();
+        private static readonly Guid ConversationId = Guid.NewGuid();
 
         private readonly EventsStore impl;
         private readonly TestDbContext dbContext;
