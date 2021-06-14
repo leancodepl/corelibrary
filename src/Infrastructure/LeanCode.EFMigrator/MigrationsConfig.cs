@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Azure.KeyVault;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace LeanCode.EFMigrator
 {
@@ -9,26 +9,8 @@ namespace LeanCode.EFMigrator
     {
         public static string ConnectionStringKey { get; set; } = "ConnectionStrings:Database";
         public static string KeyVaultUrlKey { get; set; } = "Secrets:KeyVault:VaultUrl";
-        public static string KeyVaultClientIdKey { get; set; } = "Secrets:KeyVault:ClientId";
-        public static string KeyVaultClientSecretKey { get; set; } = "Secrets:KeyVault:ClientSecret";
 
         private static string? azureKeyVaultConnectionString;
-
-        private static async Task<string> GetAzureKeyVaultAccessTokenAsync(
-            string authority, string resource, string scope)
-        {
-            var clientId = GetEnvironmentVariable(KeyVaultClientIdKey)
-                ?? throw new ArgumentNullException(KeyVaultClientIdKey);
-
-            var clientSecret = GetEnvironmentVariable(KeyVaultClientSecretKey)
-                ?? throw new ArgumentNullException(KeyVaultClientSecretKey);
-
-            var context = new AuthenticationContext(authority);
-            var credential = new ClientCredential(clientId, clientSecret);
-
-            var token = await context.AcquireTokenAsync(resource, credential);
-            return token.AccessToken;
-        }
 
         public static async Task UseConnectionStringFromAzureKeyVaultAsync()
         {
@@ -37,11 +19,10 @@ namespace LeanCode.EFMigrator
 
             var connectionStringKey = ConnectionStringKey.Replace(":", "--");
 
-            using (var client = new KeyVaultClient(GetAzureKeyVaultAccessTokenAsync))
-            {
-                var secret = await client.GetSecretAsync(keyVaultUrl, connectionStringKey);
-                azureKeyVaultConnectionString = secret.Value;
-            }
+            var client = new SecretClient(new(keyVaultUrl), new DefaultAzureCredential());
+
+            var secret = await client.GetSecretAsync(connectionStringKey);
+            azureKeyVaultConnectionString = secret.Value.Value;
         }
 
         public static string? GetConnectionString() =>
