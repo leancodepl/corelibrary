@@ -7,9 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Serilog" />
 
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="IdentityServer4" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" />
 
     <!--
         IdentityServer4 and Microsoft.Azure.KeyVault rely on Newtonsoft.Json but on a much older

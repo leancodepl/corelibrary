@@ -3,30 +3,29 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Security.KeyVault.Keys;
+using Azure.Security.KeyVault.Keys.Cryptography;
 using IdentityModel;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.WebKey;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LeanCode.IdentityServer.KeyVault
 {
-    internal class SigningService : IDisposable
+    internal class SigningService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SigningService>();
 
-        private readonly IdentityServerKeyVaultConfiguration config;
-        private readonly KeyVaultClient keyVaultClient;
-
-        private readonly SHA256 sha = SHA256.Create();
+        private readonly CryptographyClient cryptoClient;
+        private readonly KeyClient keyClient;
 
         private RsaSecurityKey? key;
 
-        public SigningService(IdentityServerKeyVaultConfiguration config)
+        public SigningService(TokenCredential credential, IdentityServerKeyVaultConfiguration config)
         {
-            this.config = config;
+            var keyUri = new Uri(config.KeyId);
 
-            keyVaultClient = new KeyVaultClient(GetTokenAsync);
+            cryptoClient = new(keyUri, credential);
+            keyClient = new(new(keyUri.GetLeftPart(UriPartial.Authority)), credential);
         }
 
         public ValueTask<RsaSecurityKey> GetKeyAsync()
@@ -49,20 +48,13 @@ namespace LeanCode.IdentityServer.KeyVault
             var hp = $"{jwt.EncodedHeader}.{jwt.EncodedPayload}";
 
             var rawBytes = Encoding.UTF8.GetBytes(hp);
-            var digest = sha.ComputeHash(rawBytes);
+            var digest = SHA256.HashData(rawBytes);
 
-            var signatureRaw = await keyVaultClient
-                .SignAsync(config.KeyId, JsonWebKeySignatureAlgorithm.RS256, digest);
+            var signatureRaw = await cryptoClient.SignAsync(SignatureAlgorithm.RS256, digest);
 
-            var signature = Base64Url.Encode(signatureRaw.Result);
+            var signature = Base64Url.Encode(signatureRaw.Signature);
 
             return $"{hp}.{signature}";
-        }
-
-        public void Dispose()
-        {
-            keyVaultClient.Dispose();
-            sha.Dispose();
         }
 
         private async Task<RsaSecurityKey> DownloadKeyAsync()
@@ -71,30 +63,12 @@ namespace LeanCode.IdentityServer.KeyVault
 
             try
             {
-                var keyResult = await keyVaultClient.GetKeyAsync(config.KeyId);
-                return key = new RsaSecurityKey(keyResult.Key.ToRSA());
+                var keyResult = await keyClient.GetKeyAsync(cryptoClient.KeyId);
+                return key = new RsaSecurityKey(keyResult.Value.Key.ToRSA());
             }
             catch (Exception ex)
             {
                 logger.Fatal(ex, "Cannot get signing key");
-
-                throw;
-            }
-        }
-
-        private async Task<string> GetTokenAsync(string authority, string resource, string scope)
-        {
-            try
-            {
-                var authCtx = new AuthenticationContext(authority);
-                var cc = new ClientCredential(config.ClientId, config.ClientSecret);
-
-                var token = await authCtx.AcquireTokenAsync(resource, cc);
-                return token.AccessToken;
-            }
-            catch (Exception ex)
-            {
-                logger.Fatal(ex, "Cannot acqure access token from Azure AD");
 
                 throw;
             }
