@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.6</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.6</AspNetCoreVersion>
+    <EntityFrameworkCoreVersion>5.0.7</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>5.0.7</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.51.0</GoogleApisVersion>
-    <HangfireVersion>1.7.22</HangfireVersion>
+    <HangfireVersion>1.7.23</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>7.1.8</MassTransitVersion>
+    <MassTransitVersion>7.2.0</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.8.0</CodeAnalysisVersion>
@@ -22,7 +22,7 @@
     <PackageReference Update="Autofac" Version="6.2.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
 
-    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.1.0" />
+    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
     <PackageReference Update="Azure.Identity" Version="1.4.0" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
@@ -34,8 +34,8 @@
 
     <PackageReference Update="IdentityModel" Version="5.1.0" />
     <PackageReference Update="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.9" />
-    <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.11.0" />
-    <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+    <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.11.1" />
+    <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
 
     <PackageReference Update="FirebaseAdmin" Version="2.1.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="2.4.0" />
@@ -43,13 +43,13 @@
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.5" />
     <PackageReference Update="Microsoft.Data.SqlClient" Version="2.1.2" />
 
-    <PackageReference Update="Cronos" Version="0.7.0" />
+    <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.90" />
     <PackageReference Update="FluentValidation" Version="9.5.4" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Update="Polly" Version="7.2.2" />
-    <PackageReference Update="Sendgrid" Version="9.23.1" />
+    <PackageReference Update="Sendgrid" Version="9.23.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,7 +86,7 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.6" />
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.7" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
@@ -109,8 +109,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210429-01" />
+    <PackageReference Update="BenchmarkDotNet" Version="0.13.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Update="NSubstitute" Version="4.2.2" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
