@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>6.0.0-preview.4.21253.1</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>6.0.0-preview.4.21253.5</AspNetCoreVersion>
-    <ExtensionsVersion>6.0.0-preview.4.21253.7</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>6.0.0-preview.5.21301.9</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>6.0.0-preview.5.21301.17</AspNetCoreVersion>
+    <ExtensionsVersion>6.0.0-preview.5.21301.5</ExtensionsVersion>
 
     <GoogleApisVersion>1.51.0</GoogleApisVersion>
     <HangfireVersion>1.7.23</HangfireVersion>
