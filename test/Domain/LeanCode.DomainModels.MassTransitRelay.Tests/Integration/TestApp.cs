@@ -11,7 +11,6 @@ using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.DomainModels.Model;
-using LeanCode.IdentityProvider;
 using LeanCode.OpenTelemetry;
 using MassTransit;
 using MassTransit.AutofacIntegration;
@@ -94,7 +93,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             Container = builder.Build();
             bus = Container.Resolve<IBusControl>();
 
-            CorrelationId = Identity.NewId();
+            CorrelationId = Guid.NewGuid();
             Commands = Container.Resolve<ICommandExecutor<Context>>();
             ActivityMonitor = Container.Resolve<IBusActivityMonitor>();
         }

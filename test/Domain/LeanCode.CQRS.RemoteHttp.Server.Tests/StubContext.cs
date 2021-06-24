@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Claims;
 using System.Text;
@@ -31,9 +30,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override ConnectionInfo Connection => throw new NotImplementedException();
         public override WebSocketManager WebSockets => throw new NotImplementedException();
         public override ClaimsPrincipal User { get; set; }
-#pragma warning disable CS8609, CS8610 // It's absurd.
-        public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-#pragma warning restore CS8609, CS8610
+        public override IDictionary<object, object?> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override void Abort() => throw new NotImplementedException();
@@ -51,7 +48,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public override QueryString QueryString { get; set; }
         public override IQueryCollection Query { get; set; }
         public override string Protocol { get; set; }
-        public override string ContentType { get; set; }
+        public override string? ContentType { get; set; }
         public override long? ContentLength { get; set; }
         public override Stream Body { get; set; }
 

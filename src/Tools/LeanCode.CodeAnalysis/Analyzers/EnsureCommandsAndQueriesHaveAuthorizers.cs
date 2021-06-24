@@ -8,11 +8,11 @@ namespace LeanCode.CodeAnalysis.Analyzers
     public class EnsureCommandsAndQueriesHaveAuthorizers : DiagnosticAnalyzer
     {
         private const string Category = "Cqrs";
-        private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization";
+        private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization.";
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
         private const string QueryTypeName = "LeanCode.CQRS.IQuery";
 
-        private static readonly DiagnosticDescriptor CommandRule = new DiagnosticDescriptor(
+        private static readonly DiagnosticDescriptor CommandRule = new(
             DiagnosticsIds.CommandsShouldHaveAuthorizers,
             "Command should be authorized",
             MessageFormat,
@@ -20,7 +20,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        private static readonly DiagnosticDescriptor QueryRule = new DiagnosticDescriptor(
+        private static readonly DiagnosticDescriptor QueryRule = new(
             DiagnosticsIds.QueriesShouldHaveAuthorizers,
             "Query should be authorized",
             MessageFormat,

@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.Model;
-using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using Xunit;
 
@@ -16,8 +15,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
         protected abstract IRaisedEventsSerializer Serializer { get; }
 
-        private static readonly Guid EventId = Identity.NewId();
-        private static readonly Guid ConversationId = Identity.NewId();
+        private static readonly Guid EventId = Guid.NewGuid();
+        private static readonly Guid ConversationId = Guid.NewGuid();
         private static readonly ActivityContext ActivityContext = new ActivityContext(
             ActivityTraceId.CreateRandom(),
             ActivitySpanId.CreateRandom(),
@@ -102,7 +101,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             private TestEventWithPrivateFields(string val)
             {
-                Id = Identity.NewId();
+                Id = Guid.NewGuid();
                 DateOccurred = TimeProvider.Now;
                 Value = val;
             }

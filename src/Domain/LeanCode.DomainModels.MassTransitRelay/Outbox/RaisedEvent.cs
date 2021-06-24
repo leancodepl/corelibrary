@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using LeanCode.DomainModels.Model;
-using LeanCode.IdentityProvider;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +34,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             }
             else
             {
-                raisedEvt.Id = Identity.NewId();
+                raisedEvt.Id = Guid.NewGuid();
                 raisedEvt.DateOcurred = TimeProvider.Now;
             }
 
