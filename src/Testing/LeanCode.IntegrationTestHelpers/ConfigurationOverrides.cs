@@ -11,34 +11,28 @@ namespace LeanCode.IntegrationTestHelpers
         public const LogEventLevel MinimumLevelDefault = LogEventLevel.Warning;
         public const bool EnableInternalLogsDefault = false;
         public const string ConnectionStringBaseDefault = "ConnectionStrings__DatabaseBase";
+        public const string ConnectionStringKeyDefault = "ConnectionStrings:Database";
 
-        private readonly LogEventLevel minimumLevel = MinimumLevelDefault;
-        private readonly bool enableInternalLogs = EnableInternalLogsDefault;
-        private readonly string connectionStringBase = ConnectionStringBaseDefault;
+        private readonly LogEventLevel minimumLevel;
+        private readonly bool enableInternalLogs;
+        private readonly string connectionStringBase;
+        private readonly string connectionStringKey;
 
-        public ConfigurationOverrides() { }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel)
-        {
-            this.minimumLevel = minimumLevel;
-        }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel, bool enableInternalLogs)
-        {
-            this.minimumLevel = minimumLevel;
-            this.enableInternalLogs = enableInternalLogs;
-        }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel, bool enableInternalLogs, string connectionStringBase)
+        public ConfigurationOverrides(
+            LogEventLevel minimumLevel = MinimumLevelDefault,
+            bool enableInternalLogs = EnableInternalLogsDefault,
+            string connectionStringBase = ConnectionStringBaseDefault,
+            string connectionStringKey = ConnectionStringKeyDefault)
         {
             this.minimumLevel = minimumLevel;
             this.enableInternalLogs = enableInternalLogs;
             this.connectionStringBase = connectionStringBase;
+            this.connectionStringKey = connectionStringKey;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new Provider(minimumLevel, enableInternalLogs, connectionStringBase);
+            return new Provider(minimumLevel, enableInternalLogs, connectionStringBase, connectionStringKey);
         }
 
         private class Provider : ConfigurationProvider
@@ -46,12 +40,18 @@ namespace LeanCode.IntegrationTestHelpers
             private readonly LogEventLevel minimumLevel;
             private readonly bool enableInternalLogs;
             private readonly string connectionStringBase;
+            private readonly string connectionStringKey;
 
-            public Provider(LogEventLevel minimumLevel, bool enableInternalLogs, string connectionStringBase)
+            public Provider(
+                LogEventLevel minimumLevel,
+                bool enableInternalLogs,
+                string connectionStringBase,
+                string connectionStringKey)
             {
                 this.minimumLevel = minimumLevel;
                 this.enableInternalLogs = enableInternalLogs;
                 this.connectionStringBase = connectionStringBase;
+                this.connectionStringKey = connectionStringKey;
             }
 
             public override void Load()
@@ -62,7 +62,7 @@ namespace LeanCode.IntegrationTestHelpers
 
                 Data = new Dictionary<string, string>
                 {
-                    ["ConnectionStrings:Database"] = dbConnStr,
+                    [connectionStringKey] = dbConnStr,
                     ["InternalBase"] = "http://localhost",
                     ["PublicBase"] = "http://localhost",
                     [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
