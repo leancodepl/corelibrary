@@ -19,15 +19,15 @@ namespace LeanCode.IntegrationTestHelpers
         private readonly string connectionStringKey;
 
         public ConfigurationOverrides(
-            LogEventLevel minimumLevel = MinimumLevelDefault,
-            bool enableInternalLogs = EnableInternalLogsDefault,
-            string connectionStringBase = ConnectionStringBaseDefault,
-            string connectionStringKey = ConnectionStringKeyDefault)
+            LogEventLevel? minimumLevel = null,
+            bool? enableInternalLogs = null,
+            string? connectionStringBase = null,
+            string? connectionStringKey = null)
         {
-            this.minimumLevel = minimumLevel;
-            this.enableInternalLogs = enableInternalLogs;
-            this.connectionStringBase = connectionStringBase;
-            this.connectionStringKey = connectionStringKey;
+            this.minimumLevel = minimumLevel ?? MinimumLevelDefault;
+            this.enableInternalLogs = enableInternalLogs ?? EnableInternalLogsDefault;
+            this.connectionStringBase = connectionStringBase ?? ConnectionStringBaseDefault;
+            this.connectionStringKey = connectionStringKey ?? ConnectionStringKeyDefault;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
