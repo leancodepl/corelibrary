@@ -1,16 +1,18 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace LeanCode.CodeAnalysis.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class EnsureCommandsAndQueriesHaveAuthorizers : DiagnosticAnalyzer
+    public class EnsureCommandsQueriesAndOperationsHaveAuthorizers : DiagnosticAnalyzer
     {
         private const string Category = "Cqrs";
         private const string MessageFormat = @"`{0}` has no authorization attributes specified. Consider adding one or use [AllowUnauthorized] to explicitly mark no authorization.";
         private const string CommandTypeName = "LeanCode.CQRS.ICommand";
         private const string QueryTypeName = "LeanCode.CQRS.IQuery";
+        private const string OperationTypeName = "LeanCode.CQRS.IOperation";
 
         private static readonly DiagnosticDescriptor CommandRule = new(
             DiagnosticsIds.CommandsShouldHaveAuthorizers,
@@ -23,6 +25,14 @@ namespace LeanCode.CodeAnalysis.Analyzers
         private static readonly DiagnosticDescriptor QueryRule = new(
             DiagnosticsIds.QueriesShouldHaveAuthorizers,
             "Query should be authorized",
+            MessageFormat,
+            Category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+        private static readonly DiagnosticDescriptor OperationRule = new(
+            DiagnosticsIds.QueriesShouldHaveAuthorizers,
+            "Operation should be authorized",
             MessageFormat,
             Category,
             DiagnosticSeverity.Error,
@@ -49,7 +59,14 @@ namespace LeanCode.CodeAnalysis.Analyzers
 
             if (!type.HasAuthorizationAttribute())
             {
-                var rule = contractType == ContractType.Command ? CommandRule : QueryRule;
+                var rule = contractType switch
+                {
+                    ContractType.Command => CommandRule,
+                    ContractType.Query => QueryRule,
+                    ContractType.Operation => OperationRule,
+                    _ => throw new InvalidOperationException("Invalid contract type"),
+                };
+
                 var diagnostic = Diagnostic.Create(rule, type.Locations[0], type.Name);
                 context.ReportDiagnostic(diagnostic);
             }
@@ -64,6 +81,10 @@ namespace LeanCode.CodeAnalysis.Analyzers
             else if (IsQuery(type))
             {
                 return ContractType.Query;
+            }
+            else if (IsOperation(type))
+            {
+                return ContractType.Operation;
             }
             else
             {
@@ -81,10 +102,16 @@ namespace LeanCode.CodeAnalysis.Analyzers
             return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(QueryTypeName) && !type.IsAbstract;
         }
 
+        private static bool IsOperation(INamedTypeSymbol type)
+        {
+            return type.TypeKind != TypeKind.Interface && type.ImplementsInterfaceOrBaseClass(OperationTypeName) && !type.IsAbstract;
+        }
+
         private enum ContractType
         {
             Query,
             Command,
+            Operation,
         }
     }
 }

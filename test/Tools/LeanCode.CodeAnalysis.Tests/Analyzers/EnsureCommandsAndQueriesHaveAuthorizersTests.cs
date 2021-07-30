@@ -51,7 +51,7 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
 
         protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
         {
-            return new EnsureCommandsAndQueriesHaveAuthorizers();
+            return new EnsureCommandsQueriesAndOperationsHaveAuthorizers();
         }
     }
 }
