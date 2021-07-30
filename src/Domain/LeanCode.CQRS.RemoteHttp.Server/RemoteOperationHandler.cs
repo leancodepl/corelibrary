@@ -11,16 +11,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.RemoteHttp.Server
 {
-    internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
+    internal sealed class RemoteOperationHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
     {
-        private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
-            .GetMethod(nameof(ExecuteQueryAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
+        private static readonly MethodInfo ExecOperationMethod = typeof(RemoteOperationHandler<TAppContext>)
+            .GetMethod(nameof(ExecuteOperationAsync), BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteOperationAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new();
         private readonly IServiceProvider serviceProvider;
 
-        public RemoteQueryHandler(
+        public RemoteOperationHandler(
             IServiceProvider serviceProvider,
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator,
@@ -30,7 +30,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serviceProvider = serviceProvider;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
         protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
             var type = obj.GetType();
@@ -43,8 +42,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch
             {
-                // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                Logger.Warning("The type {Type} is not an IRemoteQuery", type);
+                // `Single` in `GenerateMethod` will throw if the operation does not implement IRemoteOperation<>
+                Logger.Warning("The type {Type} is not an IRemoteOperation", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
@@ -64,30 +63,30 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
                 throw; // the `Throw` method above `DoesNotReturn` anyway
             }
-            catch (QueryHandlerNotFoundException)
+            catch (OperationHandlerNotFoundException)
             {
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
         }
 
-        private async Task<object?> ExecuteQueryAsync<TQuery, TResult>(
-            TAppContext appContext, object query)
-            where TQuery : IRemoteQuery<TResult>
+        private async Task<object?> ExecuteOperationAsync<TOperation, TResult>(
+            TAppContext appContext, object operation)
+            where TOperation : IRemoteOperation<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
             return await serviceProvider
-                .GetService<IQueryExecutor<TAppContext>>()!
-                .GetAsync(appContext, (TQuery)query);
+                .GetService<IOperationExecutor<TAppContext>>()!
+                .ExecuteAsync(appContext, (TOperation)operation);
         }
 
-        private static MethodInfo GenerateMethod(Type queryType)
+        private static MethodInfo GenerateMethod(Type operationType)
         {
-            return ExecQueryMethod.MakeGenericMethod(queryType, queryType
+            return ExecOperationMethod.MakeGenericMethod(operationType, operationType
                 .GetInterfaces()
                 .Single(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IRemoteQuery<>))
+                    i.GetGenericTypeDefinition() == typeof(IRemoteOperation<>))
                 .GenericTypeArguments[0]);
         }
     }

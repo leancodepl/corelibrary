@@ -69,6 +69,13 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
                 result = await commandHandler.ExecuteAsync(context);
             }
+            else if (request.Path.StartsWithSegments("/operation"))
+            {
+                var operationHandler = new RemoteOperationHandler<TAppContext>(
+                    context.RequestServices, catalog, contextTranslator, serializer);
+
+                result = await operationHandler.ExecuteAsync(context);
+            }
             else
             {
                 result = ExecutionResult.Skip;
