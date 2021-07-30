@@ -33,6 +33,18 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             : base("The server was unable to process the query because the content was malformed.") { }
     }
 
+    public class OperationNotFoundException : Exception
+    {
+        public OperationNotFoundException()
+            : base("The operation does not exist. Check if you have up-to-date contracts.") { }
+    }
+
+    public class InvalidOperationException : Exception
+    {
+        public InvalidOperationException()
+            : base("The server was unable to process the operation because the content was malformed.") { }
+    }
+
     public class CommandNotFoundException : Exception
     {
         public CommandNotFoundException()
