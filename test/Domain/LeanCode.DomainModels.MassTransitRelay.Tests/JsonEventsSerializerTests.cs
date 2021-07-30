@@ -109,7 +109,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             private TestEventWithPrivateFields()
             {
-                Value = string.Empty;
+                Value = "";
             }
         }
     }

@@ -75,7 +75,7 @@ namespace System._Time.Tests
         public void ToStringWithEmptyDateFormat()
         {
             var date = new Date(2000, 12, 31);
-            var s = date.ToString(string.Empty);
+            var s = date.ToString("");
             Assert.Equal("12/31/2000", s);
         }
 

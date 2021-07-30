@@ -581,7 +581,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
         private static string MakeName(string namespaceName, string name, int depth)
         {
             var split = namespaceName.Split('.').Reverse().Take(depth).Append(name);
-            return string.Join(string.Empty, split);
+            return string.Join("", split);
         }
 
         private static string TranslateIdentifier(string identifier)

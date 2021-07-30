@@ -73,9 +73,9 @@ namespace LeanCode.ViewRenderer.Razor
 
             public Item(string path)
             {
-                BasePath = string.Empty;
+                BasePath = "";
                 FilePath = path;
-                PhysicalPath = string.Empty;
+                PhysicalPath = "";
                 Exists = false;
             }
 

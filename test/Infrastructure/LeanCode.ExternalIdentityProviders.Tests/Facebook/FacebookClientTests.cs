@@ -9,8 +9,8 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
 {
     public class FacebookClientTests
     {
-        private static readonly FacebookConfiguration Config = new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? string.Empty);
-        private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? string.Empty;
+        private static readonly FacebookConfiguration Config = new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
+        private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? "";
 
         private readonly FacebookClient client;
 

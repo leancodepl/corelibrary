@@ -27,7 +27,7 @@ namespace LeanCode.Dapper
             {
                 try
                 {
-                    var sqlText = (string?)sql.GetValue(null) ?? string.Empty;
+                    var sqlText = (string?)sql.GetValue(null) ?? "";
 
                     // https://xkcd.com/208/
                     sqlText = Regex.Replace(sqlText, "IN @[a-zA-Z]{0,}", "IN (1)", RegexOptions.Compiled);

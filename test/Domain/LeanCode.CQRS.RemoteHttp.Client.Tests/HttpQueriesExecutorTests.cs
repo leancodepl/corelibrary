@@ -101,7 +101,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
         private static async Task TestExceptionAsync<TException>(HttpStatusCode statusCode)
             where TException : Exception
         {
-            var (exec, _) = Prepare(statusCode, string.Empty);
+            var (exec, _) = Prepare(statusCode, "");
 
             await Assert.ThrowsAsync<TException>(() => exec.GetAsync(new ExampleQuery()));
         }

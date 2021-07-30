@@ -78,7 +78,7 @@ namespace LeanCode.DomainModels.Tests
         private record Money : ValueObject
         {
             public decimal Amount { get; private init; }
-            public string Currency { get; private init; } = string.Empty;
+            public string Currency { get; private init; } = "";
 
             public Money(decimal amount, string currency)
             {

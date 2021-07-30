@@ -10,7 +10,7 @@ namespace LeanCode.ContractsGenerator.Languages.TypeScript
             "import { ClientType } from \"@leancode/cqrs-client/ClientType\";",
             "import { CQRS } from \"@leancode/cqrs-client/CQRS\";",
             "import { IRemoteCommand, IRemoteQuery } from \"@leancode/cqrs-client/ClientType\";",
-            string.Empty,
+            "",
         };
 
         public string? ContractsPreamble

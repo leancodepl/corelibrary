@@ -27,17 +27,17 @@ namespace LeanCode.ExternalIdentityProviders
                 ValidationError err = ex.TokenValidation switch
                 {
                     TokenValidationError.Invalid => new(
-                        string.Empty,
+                        "",
                         "The token is invalid.",
                         ErrorCodeInvalidToken),
 
                     TokenValidationError.OtherConnected => new(
-                        string.Empty,
+                        "",
                         "Other account is already connected with this token.",
                         ErrorCodeOtherConnected),
 
                     _ => new(
-                        string.Empty,
+                        "",
                         "Cannot perform external login.",
                         ErrorCodeOther),
                 };

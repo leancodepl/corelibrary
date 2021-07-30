@@ -12,7 +12,7 @@ namespace LeanCode.SmsSender.Tests
         private static readonly string PhoneNumber = Environment.GetEnvironmentVariable("SMSAPI_PHONENUMBERTO");
         private static readonly string Message = "SmsSender works fine";
 
-        private static readonly SmsApiConfiguration Config = new(Token, string.Empty)
+        private static readonly SmsApiConfiguration Config = new(Token, "")
         {
             FastMode = false,
             TestMode = false,

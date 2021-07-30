@@ -14,7 +14,7 @@ namespace LeanCode.ContractsGenerator
         public string ContractsRegex { get; set; } = @".*\.cs$";
         public string OutPath { get; set; } = Directory.GetCurrentDirectory();
         public string Name { get; set; } = "contracts";
-        public string AdditionalCode { get; set; } = string.Empty;
+        public string AdditionalCode { get; set; } = "";
         public string ErrorCodesName { get; set; } = "ErrorCodes";
 
         public TypeScriptConfiguration? TypeScript { get; set; }

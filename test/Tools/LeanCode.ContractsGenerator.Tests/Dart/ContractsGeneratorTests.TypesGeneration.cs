@@ -9,7 +9,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Imports_are_generated()
         {
-            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var generator = CreateDartGeneratorFromClass("");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
@@ -20,7 +20,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Part_uses_name_from_generator_configuration_for_default_preamble()
         {
-            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var generator = CreateDartGeneratorFromClass("");
             var cfg = new GeneratorConfiguration()
             {
                 Name = "Name",
@@ -37,7 +37,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void List_helper_is_generated()
         {
-            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var generator = CreateDartGeneratorFromClass("");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
@@ -47,7 +47,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void DateTime_helpers_is_generated()
         {
-            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var generator = CreateDartGeneratorFromClass("");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
@@ -58,7 +58,7 @@ namespace LeanCode.ContractsGenerator.Tests.Dart
         [Fact]
         public void Double_helpers_is_generated()
         {
-            var generator = CreateDartGeneratorFromClass(string.Empty);
+            var generator = CreateDartGeneratorFromClass("");
 
             var contracts = GetContracts(generator.Generate(DefaultDartConfiguration));
 
