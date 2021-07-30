@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>LeanCode.Components.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
+  </ItemGroup>
+
+</Project>

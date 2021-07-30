@@ -11,34 +11,42 @@ namespace LeanCode.IntegrationTestHelpers
         public const LogEventLevel MinimumLevelDefault = LogEventLevel.Warning;
         public const bool EnableInternalLogsDefault = false;
         public const string ConnectionStringBaseDefault = "ConnectionStrings__DatabaseBase";
+        public const string ConnectionStringKeyDefault = "ConnectionStrings:Database";
+        public const string InternalBaseKeyDefault = "InternalBase";
+        public const string PublicBaseKeyDefault = "PublicBase";
 
-        private readonly LogEventLevel minimumLevel = MinimumLevelDefault;
-        private readonly bool enableInternalLogs = EnableInternalLogsDefault;
-        private readonly string connectionStringBase = ConnectionStringBaseDefault;
+        private readonly LogEventLevel minimumLevel;
+        private readonly bool enableInternalLogs;
+        private readonly string connectionStringBase;
+        private readonly string connectionStringKey;
+        private readonly string internalBaseKey;
+        private readonly string publicBaseKey;
 
-        public ConfigurationOverrides() { }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel)
+        public ConfigurationOverrides(
+            LogEventLevel? minimumLevel = null,
+            bool? enableInternalLogs = null,
+            string? connectionStringBase = null,
+            string? connectionStringKey = null,
+            string? internalBaseKey = null,
+            string? publicBaseKey = null)
         {
-            this.minimumLevel = minimumLevel;
-        }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel, bool enableInternalLogs)
-        {
-            this.minimumLevel = minimumLevel;
-            this.enableInternalLogs = enableInternalLogs;
-        }
-
-        public ConfigurationOverrides(LogEventLevel minimumLevel, bool enableInternalLogs, string connectionStringBase)
-        {
-            this.minimumLevel = minimumLevel;
-            this.enableInternalLogs = enableInternalLogs;
-            this.connectionStringBase = connectionStringBase;
+            this.minimumLevel = minimumLevel ?? MinimumLevelDefault;
+            this.enableInternalLogs = enableInternalLogs ?? EnableInternalLogsDefault;
+            this.connectionStringBase = connectionStringBase ?? ConnectionStringBaseDefault;
+            this.connectionStringKey = connectionStringKey ?? ConnectionStringKeyDefault;
+            this.internalBaseKey = internalBaseKey ?? InternalBaseKeyDefault;
+            this.publicBaseKey = publicBaseKey ?? PublicBaseKeyDefault;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new Provider(minimumLevel, enableInternalLogs, connectionStringBase);
+            return new Provider(
+                minimumLevel,
+                enableInternalLogs,
+                connectionStringBase,
+                connectionStringKey,
+                internalBaseKey,
+                publicBaseKey);
         }
 
         private class Provider : ConfigurationProvider
@@ -46,12 +54,24 @@ namespace LeanCode.IntegrationTestHelpers
             private readonly LogEventLevel minimumLevel;
             private readonly bool enableInternalLogs;
             private readonly string connectionStringBase;
+            private readonly string connectionStringKey;
+            private readonly string internalBaseKey;
+            private readonly string publicBaseKey;
 
-            public Provider(LogEventLevel minimumLevel, bool enableInternalLogs, string connectionStringBase)
+            public Provider(
+                LogEventLevel minimumLevel,
+                bool enableInternalLogs,
+                string connectionStringBase,
+                string connectionStringKey,
+                string internalBaseKey,
+                string publicBaseKey)
             {
                 this.minimumLevel = minimumLevel;
                 this.enableInternalLogs = enableInternalLogs;
                 this.connectionStringBase = connectionStringBase;
+                this.connectionStringKey = connectionStringKey;
+                this.internalBaseKey = internalBaseKey;
+                this.publicBaseKey = publicBaseKey;
             }
 
             public override void Load()
@@ -62,9 +82,9 @@ namespace LeanCode.IntegrationTestHelpers
 
                 Data = new Dictionary<string, string>
                 {
-                    ["ConnectionStrings:Database"] = dbConnStr,
-                    ["InternalBase"] = "http://localhost",
-                    ["PublicBase"] = "http://localhost",
+                    [connectionStringKey] = dbConnStr,
+                    [internalBaseKey] = "http://localhost",
+                    [publicBaseKey] = "http://localhost",
                     [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
                     [IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
                 };
