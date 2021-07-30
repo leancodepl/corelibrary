@@ -20,9 +20,11 @@ namespace LeanCode.CQRS.Tests
 
     public class SampleQuery : IQuery<object>, IAuthorizerData { }
 
+    public class SampleOperation : IOperation<object>, IAuthorizerData { }
+
     public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
     {
-        public static readonly AsyncLocal<SampleCommandHandler> LastInstance = new AsyncLocal<SampleCommandHandler>();
+        public static readonly AsyncLocal<SampleCommandHandler> LastInstance = new();
 
         public AppContext Context { get; private set; }
         public SampleCommand Command { get; private set; }
@@ -44,7 +46,7 @@ namespace LeanCode.CQRS.Tests
 
     public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, object>
     {
-        public static readonly AsyncLocal<SampleQueryHandler> LastInstance = new AsyncLocal<SampleQueryHandler>();
+        public static readonly AsyncLocal<SampleQueryHandler> LastInstance = new();
 
         public AppContext Context { get; private set; }
         public SampleQuery Query { get; private set; }
@@ -64,8 +66,31 @@ namespace LeanCode.CQRS.Tests
         }
     }
 
+    public class SampleOperationHandler : IOperationHandler<AppContext, SampleOperation, object>
+    {
+        public static readonly AsyncLocal<SampleOperationHandler> LastInstance = new();
+
+        public AppContext Context { get; private set; }
+        public SampleOperation Operation { get; private set; }
+        public object Result { get; set; }
+
+        public SampleOperationHandler()
+        {
+            LastInstance.Value = this;
+        }
+
+        public Task<object> ExecuteAsync(AppContext context, SampleOperation operation)
+        {
+            Context = context;
+            Operation = operation;
+
+            return Task.FromResult(Result);
+        }
+    }
+
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
+    public class NoOHOperation : IOperation<object> { }
 
     [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
     public interface IHasSampleAuthorizer { }
@@ -75,7 +100,7 @@ namespace LeanCode.CQRS.Tests
 
     public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, IHasSampleAuthorizer
     {
-        public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new AsyncLocal<SampleAuthorizer>();
+        public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new();
 
         public AppContext AppContext { get; set; }
 
@@ -114,7 +139,7 @@ namespace LeanCode.CQRS.Tests
 
     public class SampleValidator : ICommandValidator<AppContext, SampleCommand>
     {
-        public static readonly AsyncLocal<SampleValidator> LastInstance = new AsyncLocal<SampleValidator>();
+        public static readonly AsyncLocal<SampleValidator> LastInstance = new();
 
         public AppContext AppContext { get; private set; }
         public SampleCommand Command { get; private set; }
@@ -163,6 +188,22 @@ namespace LeanCode.CQRS.Tests
         {
             Context = context;
             Query = query;
+            return Task.FromResult(Result);
+        }
+    }
+
+    public class SingleInstanceOperation : IOperation<object> { }
+
+    public class SingleInstanceOperationHandler : IOperationHandler<AppContext, SingleInstanceOperation, object>
+    {
+        public AppContext Context { get; private set; }
+        public SingleInstanceOperation Operation { get; private set; }
+        public object Result { get; set; }
+
+        public Task<object> ExecuteAsync(AppContext context, SingleInstanceOperation operation)
+        {
+            Context = context;
+            Operation = operation;
             return Task.FromResult(Result);
         }
     }

@@ -10,7 +10,7 @@ namespace LeanCode.CQRS.Default
 {
     public class CQRSModule : AppModule
     {
-        private readonly List<IModule> modules = new List<IModule>(2);
+        private readonly List<IModule> modules = new(2);
 
         public CQRSModule()
         {

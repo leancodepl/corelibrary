@@ -33,6 +33,7 @@ namespace LeanCode.CQRS.Default
             var assemblies = catalog.Assemblies.ToArray();
             builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(ICommandHandler<,>));
             builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(IQueryHandler<,,>));
+            builder.RegisterAssemblyTypes(assemblies).AsClosedTypesOf(typeof(IOperationHandler<,,>));
 
             builder.RegisterType<AutofacCommandHandlerResolver<TAppContext>>().As<ICommandHandlerResolver<TAppContext>>();
             builder.RegisterType<AutofacQueryHandlerResolver<TAppContext>>().As<IQueryHandlerResolver<TAppContext>>();
