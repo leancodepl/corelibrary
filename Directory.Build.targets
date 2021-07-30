@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>5.0.7</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreVersion>5.0.8</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>5.0.7</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
