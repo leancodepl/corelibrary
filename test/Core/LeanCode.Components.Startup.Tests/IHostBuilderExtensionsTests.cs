@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using LeanCode.Components.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -10,12 +10,12 @@ namespace LeanCode.Components.Tests
     public class IHostBuilderExtensionsTests
     {
         [Fact]
-        public void Configuring_Azure_Key_Vault_credentials_with_custom_keys_does_not_throw()
+        public void Configuring_Azure_Key_Vault_credentials_with_custom_keys_works()
         {
-            var vaultKeyOverride = "VaultKeyOverride";
-            var tenantIdKeyOverride = "TenantIdKeyOverride";
-            var clientIdKeyOverride = "ClientIdKeyOverride";
-            var clientSecretKeyOverride = "ClientSecretKeyOverride";
+            const string vaultKeyOverride = "VaultKeyOverride";
+            const string tenantIdKeyOverride = "TenantIdKeyOverride";
+            const string clientIdKeyOverride = "ClientIdKeyOverride";
+            const string clientSecretKeyOverride = "ClientSecretKeyOverride";
 
             var hostBuilder = new HostBuilder()
                 .ConfigureAppConfiguration((hostingContext, config) =>
@@ -30,6 +30,14 @@ namespace LeanCode.Components.Tests
                     tenantIdKeyOverride,
                     clientIdKeyOverride,
                     clientSecretKeyOverride);
+
+            var e = Assert.Throws<AggregateException>(() => hostBuilder.Build());
+
+            Assert.All(
+                e.InnerExceptions,
+                e => Assert.Contains(
+                    "azurekeyvault.local.lncd.pl",
+                    Assert.IsType<Azure.RequestFailedException>(e).Message));
         }
 
         private class AzureConfigOverrides : IConfigurationSource
@@ -46,7 +54,10 @@ namespace LeanCode.Components.Tests
 
         private class CustomAzureKVConfigProvider : ConfigurationProvider
         {
-            private readonly List<string> azureKVKeys;
+            private readonly string vaultKeyOverride;
+            private readonly string tenantIdKeyOverride;
+            private readonly string clientIdKeyOverride;
+            private readonly string clientSecretKeyOverride;
 
             public CustomAzureKVConfigProvider(
                 string vaultKeyOverride,
@@ -54,15 +65,21 @@ namespace LeanCode.Components.Tests
                 string clientIdKeyOverride,
                 string clientSecretKeyOverride)
             {
-                azureKVKeys = new()
-                {
-                    vaultKeyOverride, tenantIdKeyOverride, clientIdKeyOverride, clientSecretKeyOverride,
-                };
+                this.vaultKeyOverride = vaultKeyOverride;
+                this.tenantIdKeyOverride = tenantIdKeyOverride;
+                this.clientIdKeyOverride = clientIdKeyOverride;
+                this.clientSecretKeyOverride = clientSecretKeyOverride;
             }
 
             public override void Load()
             {
-                Data = azureKVKeys.ToDictionary(k => k, _ => "SomeValue");
+                Data = new Dictionary<string, string>
+                {
+                    [vaultKeyOverride] = "https://azurekeyvault.local.lncd.pl/keys/token-signing",
+                    [tenantIdKeyOverride] = Guid.Empty.ToString(),
+                    [clientIdKeyOverride] = Guid.Empty.ToString(),
+                    [clientSecretKeyOverride] = "secret",
+                };
             }
         }
     }
