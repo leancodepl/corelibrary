@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Domain.LeanCode.CQRS.Execution
+namespace LeanCode.CQRS.Execution
 {
     public interface IOperationExecutor<TAppContext>
     {

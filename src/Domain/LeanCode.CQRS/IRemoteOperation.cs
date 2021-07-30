@@ -1,4 +1,4 @@
-namespace Domain.LeanCode.CQRS
+namespace LeanCode.CQRS
 {
     public interface IRemoteOperation<out TResult> : IOperation<TResult> { }
 }

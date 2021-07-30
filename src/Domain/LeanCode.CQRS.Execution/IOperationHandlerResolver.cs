@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LeanCode.Pipelines;
 
-namespace Domain.LeanCode.CQRS.Execution
+namespace LeanCode.CQRS.Execution
 {
     public interface IOperationHandlerResolver<TAppContext>
         where TAppContext : notnull, IPipelineContext

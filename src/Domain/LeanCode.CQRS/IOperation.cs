@@ -1,4 +1,4 @@
-namespace Domain.LeanCode.CQRS
+namespace LeanCode.CQRS
 {
     /// <summary>
     /// Marker interface, do not use directly.

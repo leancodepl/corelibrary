@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Core;
@@ -24,13 +25,24 @@ namespace LeanCode.CQRS.Default
             }
         }
 
+        [Obsolete("Use `WithCustomPipelines(TypesCatalog, CommandBuilder<TAppContext>, QueryBuilder<TAppContext>, OperationBuilder<TAppContext>)` overload which also configures operations")]
         public CQRSModule WithCustomPipelines<TAppContext>(
             TypesCatalog handlersCatalog,
             CommandBuilder<TAppContext> commandBuilder,
             QueryBuilder<TAppContext> queryBuilder)
             where TAppContext : IPipelineContext
         {
-            modules.Add(new TypedCQRSModule<TAppContext>(handlersCatalog, commandBuilder, queryBuilder));
+            return WithCustomPipelines(handlersCatalog, commandBuilder, queryBuilder, o => o);
+        }
+
+        public CQRSModule WithCustomPipelines<TAppContext>(
+            TypesCatalog handlersCatalog,
+            CommandBuilder<TAppContext> commandBuilder,
+            QueryBuilder<TAppContext> queryBuilder,
+            OperationBuilder<TAppContext> operationBuilder)
+            where TAppContext : IPipelineContext
+        {
+            modules.Add(new TypedCQRSModule<TAppContext>(handlersCatalog, commandBuilder, queryBuilder, operationBuilder));
 
             return this;
         }

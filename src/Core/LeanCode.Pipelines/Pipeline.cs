@@ -32,7 +32,7 @@ namespace LeanCode.Pipelines
     public class PipelineBuilder<TContext, TInput, TOutput>
         where TContext : notnull, IPipelineContext
     {
-        private readonly List<Type> components = new List<Type>();
+        private readonly List<Type> components = new();
 
         public PipelineBuilder<TContext, TInput, TOutput> Use<TPipeline>()
             where TPipeline : class, IPipelineElement<TContext, TInput, TOutput>
