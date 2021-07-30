@@ -85,7 +85,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <!-- Warning: as of 2021.01.19, the rest of `Extension` packages is at version 5.0.0 and these two are at 5.0.1 and 5.0.2 respectively :) -->
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="5.0.8" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
