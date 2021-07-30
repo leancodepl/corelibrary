@@ -26,6 +26,8 @@
         <!-- ParametersMustBeOnSameLineOrSeparateLines -->
         <Rule Id="SA1118" Action="None"/>
         <!-- ParameterMustNotSpanMultipleLines -->
+        <Rule Id="SA1122" Action="None"/>
+        <!-- UseStringEmptyForEmptyStrings -->
         <Rule Id="SA1129" Action="None"/>
         <!-- DoNotUseDefaultValueTypeConstructor -->
 

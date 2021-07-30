@@ -67,7 +67,7 @@ namespace System._Time.Tests
         public void ToStringWithEmptyTimeFormat()
         {
             var time = new Time(23, 59, 59);
-            var s = time.ToString(string.Empty);
+            var s = time.ToString("");
             Assert.Equal("23:59:59", s);
         }
 

@@ -11,7 +11,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
     internal class ShortcircuitingJsonHandler : HttpMessageHandler
     {
         private readonly HttpStatusCode statusCode = HttpStatusCode.OK;
-        private readonly string response = string.Empty;
+        private readonly string response = "";
 
         public HttpRequestMessage? Request { get; set; }
 

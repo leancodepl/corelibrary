@@ -67,7 +67,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             ContentLength = bytes.Length;
 
             Query = new QueryCollection();
-            Protocol = string.Empty;
+            Protocol = "";
         }
 
         public override IHeaderDictionary Headers => throw new NotImplementedException();

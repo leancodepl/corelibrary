@@ -30,7 +30,7 @@ namespace LeanCode.ExternalIdentityProviders.Tests
         [Fact]
         public async Task Passing_empty_token_results_in_no_assertion_error()
         {
-            var res = await ValidateAsync(string.Empty);
+            var res = await ValidateAsync("");
 
             res.AssertInvalid("no_assertion");
         }

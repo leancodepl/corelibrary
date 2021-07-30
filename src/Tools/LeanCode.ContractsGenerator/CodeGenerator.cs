@@ -322,7 +322,7 @@ namespace LeanCode.ContractsGenerator
                         {
                             Name = type.Name,
                             ParentChain = GetTypeParentChain(type),
-                            Namespace = type is ITypeParameterSymbol ? string.Empty : GetFullNamespaceName(type.ContainingNamespace),
+                            Namespace = type is ITypeParameterSymbol ? "" : GetFullNamespaceName(type.ContainingNamespace),
                             TypeArguments = type.TypeArguments.Select(ConvertType).ToList(),
                         };
                     }
@@ -366,7 +366,7 @@ namespace LeanCode.ContractsGenerator
         {
             if (info == null)
             {
-                return string.Empty;
+                return "";
             }
             else if (info.ContainingNamespace == null || info.ContainingNamespace.IsGlobalNamespace)
             {

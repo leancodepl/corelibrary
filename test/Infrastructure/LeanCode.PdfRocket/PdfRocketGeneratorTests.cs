@@ -8,7 +8,7 @@ namespace LeanCode.PdfRocket.Tests
 {
     public class PdfRocketGeneratorTests
     {
-        private static readonly string ApiKey = Environment.GetEnvironmentVariable("PDF_ROCKET_API_KEY") ?? string.Empty;
+        private static readonly string ApiKey = Environment.GetEnvironmentVariable("PDF_ROCKET_API_KEY") ?? "";
 
         internal class PdfRocketFactAttribute : FactAttribute
         {

@@ -7,7 +7,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string Token { get; set; } = string.Empty;
+        public string Token { get; set; } = "";
         public DateTime DateCreated { get; set; }
 
         public static void Configure(ModelBuilder builder)

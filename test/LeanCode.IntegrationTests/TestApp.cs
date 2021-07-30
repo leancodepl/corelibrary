@@ -35,7 +35,7 @@ namespace LeanCode.IntegrationTests
                 Scope = "profile openid api",
 
                 ClientId = "web",
-                ClientSecret = string.Empty,
+                ClientSecret = "",
             });
         }
 

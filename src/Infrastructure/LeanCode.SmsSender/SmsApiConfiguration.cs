@@ -10,9 +10,9 @@ namespace LeanCode.SmsSender
     public class SmsApiConfiguration // TODO: change to some immutable record
     {
         public string? Token { get; set; }
-        public string Login { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string From { get; set; } = string.Empty;
+        public string Login { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string From { get; set; } = "";
         public bool FastMode { get; set; }
         public bool TestMode { get; set; }
 

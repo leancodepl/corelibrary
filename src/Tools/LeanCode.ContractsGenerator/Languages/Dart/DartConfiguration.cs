@@ -12,7 +12,7 @@ namespace LeanCode.ContractsGenerator.Languages.Dart
             "part '{0}.g.dart';",
             "abstract class IRemoteQuery<T> extends Query<T> {{}}",
             "abstract class IRemoteCommand extends Command {{}}",
-            string.Empty,
+            "",
         };
 
         public static string DefaultContractsPreamble => string.Join('\n', DefaultPreambleLines);

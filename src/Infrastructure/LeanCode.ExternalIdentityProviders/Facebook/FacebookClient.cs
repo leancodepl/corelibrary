@@ -142,7 +142,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             if (hmac is null)
             {
                 logger.Error("Facebook's AppSecret is not configured, login with Facebook will fail");
-                return string.Empty;
+                return "";
             }
             else
             {
@@ -157,7 +157,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             Encoding.ASCII.GetBytes(v);
 
         private static string ToHexString(byte[] data) =>
-            BitConverter.ToString(data).Replace("-", string.Empty).ToLower();
+            BitConverter.ToString(data).Replace("-", "").ToLower();
 
         private static string AppendProof(string uri, string accessToken, string proof)
         {
