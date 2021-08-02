@@ -49,6 +49,26 @@ public class FindDishesMatchingName : IQuery<List<DishInfoDTO>>
 
 It finds all the dishes that match the name filter (however we define the filter). It may be called anonymously and returns a list of `DishInfoDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface).
 
+### Operation
+
+The strict separation of command and query has sometimes led to awkwardness for clients consuming the API. So, the type `IOperation` was introduced to add more flexibility. Operations change the state of the system, but also allow to return some result. Operations itself are not validated, if executing operation results in executing a command, it's the developer responsibility to decide how to handle potential validation errors.
+
+```csharp
+public class PayForOrder : IOperation<PaymentTokenDTO>
+{
+    public Guid OrderId { get; set; }
+}
+
+public class PaymentTokenDTO { }
+```
+
+Potential use cases:
+
+1. Acting as a proxy for multiple commands (i.e. working on different domains) which are supposed to run at the same time and returning result, potentially making clients life's easier (one HTTP request, clean indication, that these things are connected)
+2. Running a command creating an object and immediately returning result. Note that in general our approach is command + immediate query with client generated id, but there might be reasons to violate this rule.
+3. Integration with external services that do not conform to the CQRS pattern. E.g. creating payment in a third-party api and immediately returning some result which should not be stored in our system's database.
+   1. Integration with services which combine object validation and creation steps, making it impossible to validate command separately in command validator
+
 ## Implementation
 
 Commands and queries define the API surface but they aren't the actual code that will be executed. That's the reason why there are command and query handlers.
@@ -79,12 +99,12 @@ public class CreateDishCH : ICommandHandler<AppContext, CreateDish>
 
 As you can see, the command handler is really simple - it just converts the command into new aggregate, tracking who owns the dish (`UserId` - they are the ones that have `CreateDish` permission). That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 
- 1. Keep them simple and testable, do not try to model whole flows with a single command,
- 2. Commands should rely on aggregates to gather the data (try not to use queries inside command handlers),
- 3. Commands should modify just a single aggregate (try to `AddAsync`/`UpdateAsync`/`DeleteAsync` at most once),
- 4. If the business process requires to modify multiple aggregates, try to use events and event handlers (but don't over-engineer),
- 5. If that does not help, modify/add/delete multiple aggregates,
- 6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
+1.  Keep them simple and testable, do not try to model whole flows with a single command,
+2.  Commands should rely on aggregates to gather the data (try not to use queries inside command handlers),
+3.  Commands should modify just a single aggregate (try to `AddAsync`/`UpdateAsync`/`DeleteAsync` at most once),
+4.  If the business process requires to modify multiple aggregates, try to use events and event handlers (but don't over-engineer),
+5.  If that does not help, modify/add/delete multiple aggregates,
+6.  Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
 
 #### Validation
 
@@ -156,6 +176,34 @@ public class FindDishesMatchingNameQH : IQueryHandler<AppContext, FindDishesMatc
 }
 ```
 
+### Operation handlers
+
+Operation handlers execute complex operations. They should not contain logic themselves, instead they should orchestrate
+commands, queries (and potentially other services) via `ICommandExecutor`, `IQueryExecutor` interfaces.
+
+Example operation handler:
+
+```csharp
+public class PayForOrderOH : IOperationHandler<AppContext, PayForOrder>
+{
+    private readonly IPaymentsService payments;
+
+    public PayForOrderOH(IPaymentsService payments)
+    {
+        this.payments = payments;
+    }
+
+    public async Task<PaymentTokenDTO> ExecuteAsync(AppContext context, PayForOrder command)
+    {
+        var result = await payments.CreatePaymentInExternalService(command.OrderId);
+        return new PaymentTokenDTO
+        {
+            // skip
+        };
+    }
+}
+```
+
 ### Authorization
 
 Each command and query has to be authorized or must explicitly opt-out of authorization (we enforce it using Roslyn analyzers). You can specify which authorizer to use using the `AuthorizeWhen` attribute and custom `ICustomAuthorizer`. Opting-out is done using the `AllowUnauthorized` attribute. There is a predefined authorizer that uses role- and permission-based authorization. You can specify which permissions to enforce using `AuthorizeWhenHasAnyOf` and configure the role-to-permission relationship using `IRoleRegistrations`.
@@ -222,3 +270,44 @@ Both queries and commands can (and should!) be behind authorization. By default,
 The context allows CQRS-style API to be used by different parties. The handling part does not need to know whether it is invoked by some HTTP request or just in-proc. It is infrastructure's responsibility to provide and populate context based on the protocol.
 
 This means that context is a good place to put some caller-related data (e.g. `UserId`) or inject some call-related data to the handler, based on the object payload or even HTTP headers.
+
+## Remote CQRS
+
+Previously we used MVC approach, where controllers layer was responsible for authorization and invoked corresponding
+queries/commands. Controllers quickly have began to have only `RunAsync`/`GetAsync` invocations. This led us to abandon
+controllers and switch to just two endpoints that parsed body as command/query and executed it. Finally, we decided to
+ditch ASP.NET Core MVC in favor of plain ASP.NET Core and custom middleware that does exactly that - parse body, convert
+to correct command/query and execute it. We call this **RemoteCQRS**. It is a simple, JSON-based protocol for invoking
+commands and queries. It handles POST requests to `/command` or `/query` or `/operation` API endpoints, parses the command/query name
+from the URL (full namespace + name), decodes the body (only JSON encoding is supported) and executes
+`RunAsync`/`GetAsync` for given object.
+
+Not every command/query is exposed via RemoteCQRS. There exist two marker interfaces:
+
+```cs
+public interface IRemoteCommand : ICommand { }
+public interface IRemoteQuery<TResult> : IQuery<TResult> { }
+```
+
+Commands/queries deriving from those interfaces are available via RemoteCQRS. This allows having internal
+contracts, only available from within the apps. The operation type is intended only for external use, thus all `IOperation`s
+are exposed via RemoteCQRS.
+
+RemoteCQRS request example:
+
+```
+curl -X POST \
+  https://api.local.lncd.pl/api/query/Full.Object.Namespace.Name.FindDishesMatchingName \
+  -H 'Content-Type: application/json' \
+  -d '{ "NameFilter": "sushi" }'
+```
+
+The following request will execute the previously defined query and return the results. The API may return one of the
+following HTTP Status Codes:
+
+- 200 OK - command/query succeeded
+- 400 Bad Request - request content is malformed
+- 401 Unauthorized - client is not authorized
+- 403 Forbidden - command/query authorization failed
+- 405 Method Not Allowed - request Verb is not POST
+- 422 Unprocessable Entity - command validation failed
