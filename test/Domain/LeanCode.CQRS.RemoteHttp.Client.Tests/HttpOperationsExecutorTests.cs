@@ -119,7 +119,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
         public string? Data { get; set; }
     }
 
-    public class ExampleOperation : IRemoteOperation<OperationResultDTO>
+    public class ExampleOperation : IOperation<OperationResultDTO>
     {
         public string? RequestData { get; set; }
     }

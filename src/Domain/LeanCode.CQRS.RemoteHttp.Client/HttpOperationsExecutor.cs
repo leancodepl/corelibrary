@@ -23,7 +23,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
         }
 
-        public virtual async Task<TResult> GetAsync<TResult>(IRemoteOperation<TResult> operation)
+        public virtual async Task<TResult> GetAsync<TResult>(IOperation<TResult> operation)
         {
             using var content = JsonContent.Create(operation, operation.GetType(), options: serializerOptions);
             using var response = await client.PostAsync("operation/" + operation.GetType().FullName, content);

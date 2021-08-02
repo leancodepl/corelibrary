@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     public class RemoteCQRSMiddlewareOperationsTests : BaseMiddlewareTests
     {
         public RemoteCQRSMiddlewareOperationsTests()
-            : base("operation", typeof(SampleRemoteOperation)) { }
+            : base("operation", typeof(SampleOperation)) { }
 
         [Fact]
         public async Task Passes_execution_further_if_operation_type_cannot_be_found()
@@ -25,25 +25,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
 
         [Fact]
-        public async Task Writes_NotFound_if_trying_to_execute_non_remote_operation()
-        {
-            var (status, _) = await Invoke(typeof(SampleOperation).FullName);
-            Assert.Equal(StatusCodes.Status404NotFound, status);
-        }
-
-        [Fact]
-        public async Task Does_not_call_OperationExecutor_when_executing_non_remote_operation()
-        {
-            await Invoke(typeof(SampleOperation).FullName);
-            Assert.Null(Operation.LastOperation);
-        }
-
-        [Fact]
         public async Task Deserializes_correct_operation_object()
         {
             await Invoke(content: @"{""Prop"": 12}");
 
-            var q = Assert.IsType<SampleRemoteOperation>(Operation.LastOperation);
+            var q = Assert.IsType<SampleOperation>(Operation.LastOperation);
             Assert.Equal(12, q.Prop);
         }
 
@@ -80,17 +66,15 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleOperation : IOperation<int> { }
-
-    public class SampleRemoteOperation : IRemoteOperation<int>
+    public class SampleOperation : IOperation<int>
     {
         public int Prop { get; set; }
     }
 
-    public class SampleRemoteOperation2 : IRemoteOperation<int>
+    public class SampleOperation2 : IOperation<int>
     {
         public int Prop { get; set; }
     }
 
-    public class NullReturningOperation : IRemoteOperation<object> { }
+    public class NullReturningOperation : IOperation<object> { }
 }

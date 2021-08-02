@@ -71,7 +71,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private async Task<object?> ExecuteOperationAsync<TOperation, TResult>(
             TAppContext appContext, object operation)
-            where TOperation : IRemoteOperation<TResult>
+            where TOperation : IOperation<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
@@ -86,7 +86,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 .GetInterfaces()
                 .Single(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IRemoteOperation<>))
+                    i.GetGenericTypeDefinition() == typeof(IOperation<>))
                 .GenericTypeArguments[0]);
         }
     }
