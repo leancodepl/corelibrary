@@ -44,13 +44,13 @@ namespace LeanCode.Cache.AspNet
         public Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> getValueToCache)
             where T : class
         {
-            return cache.GetOrCreate(key, _ => getValueToCache());
+            return cache.GetOrCreateAsync(key, _ => getValueToCache());
         }
 
         public Task<T> GetOrCreateAsync<T>(string key, TimeSpan duration, Func<Task<T>> getValueToCache)
             where T : class
         {
-            return cache.GetOrCreate(key, e =>
+            return cache.GetOrCreateAsync(key, e =>
             {
                 e.AbsoluteExpirationRelativeToNow = duration;
                 return getValueToCache();
