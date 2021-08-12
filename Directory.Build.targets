@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>6.0.0-preview.5.21301.9</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>6.0.0-preview.5.21301.17</AspNetCoreVersion>
-    <ExtensionsVersion>6.0.0-preview.5.21301.5</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>6.0.0-preview.7.21378.4</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>6.0.0-preview.7.21378.6</AspNetCoreVersion>
+    <ExtensionsVersion>6.0.0-preview.7.21377.19</ExtensionsVersion>
 
     <GoogleApisVersion>1.53.0</GoogleApisVersion>
     <HangfireVersion>1.7.24</HangfireVersion>
@@ -23,9 +23,9 @@
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
 
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
-    <PackageReference Update="Azure.Identity" Version="1.5.0-beta.1" />
-    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.2.0-beta.5" />
-    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.2.0-beta.5" />
+    <PackageReference Update="Azure.Identity" Version="1.5.0-beta.3" />
+    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.1" />
+    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.1" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
