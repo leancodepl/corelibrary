@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <EntityFrameworkCoreVersion>5.0.8</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>5.0.8</AspNetCoreVersion>
+    <AspNetCoreVersion>5.0.9</AspNetCoreVersion>
     <ExtensionsVersion>5.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.53.0</GoogleApisVersion>
@@ -49,7 +49,7 @@
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Update="Polly" Version="7.2.2" />
-    <PackageReference Update="Sendgrid" Version="9.24.0" />
+    <PackageReference Update="Sendgrid" Version="9.24.2" />
   </ItemGroup>
 
   <ItemGroup>
