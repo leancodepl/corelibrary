@@ -5,7 +5,7 @@ namespace LeanCode.EFMigrator
 {
     public static class MigrationsConfig
     {
-        public static string ConnectionStringKey { get; set; } = "ConnectionStrings:Database";
+        public static string ConnectionStringKey { get; set; } = "SqlServer:ConnectionString";
         public static string KeyVaultUrlKey { get; set; } = "KeyVault:VaultUrl";
 
         private static string? azureKeyVaultConnectionString;

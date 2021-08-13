@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
