@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace LeanCode.AzureIdentity;
 
-public static class DefaultLeancodeCredential
+public static class DefaultLeanCodeCredential
 {
     public static TokenCredential Create(IConfiguration configuration)
     {
