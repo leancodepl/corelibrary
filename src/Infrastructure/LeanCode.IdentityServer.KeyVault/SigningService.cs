@@ -58,7 +58,8 @@ namespace LeanCode.IdentityServer.KeyVault
 
             try
             {
-                var keyResult = await keyClient.GetKeyAsync(cryptoClient.KeyId);
+                var keyIdentifier = new KeyVaultKeyIdentifier(new Uri(cryptoClient.KeyId));
+                var keyResult = await keyClient.GetKeyAsync(keyIdentifier.Name, keyIdentifier.Version);
                 return key = new RsaSecurityKey(keyResult.Value.Key.ToRSA());
             }
             catch (Exception ex)
