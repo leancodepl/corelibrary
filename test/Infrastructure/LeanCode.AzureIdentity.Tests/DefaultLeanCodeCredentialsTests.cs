@@ -63,9 +63,10 @@ namespace LeanCode.AzureIdentity.Tests
 
         private static async Task AssertGetsTokenAsync(TokenCredential cred)
         {
-            var ex = await Record.ExceptionAsync(async () => await cred.GetTokenAsync(
+            var ex = await Record.ExceptionAsync(() => cred.GetTokenAsync(
                 new TokenRequestContext(new[] { "https://database.windows.net/.default" }), // just an arbitrary scope
-                CancellationToken.None));
+                CancellationToken.None)
+                .AsTask());
 
             Assert.Null(ex);
         }

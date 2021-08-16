@@ -48,6 +48,6 @@ namespace LeanCode.IntegrationTestHelpers.Tests
             command = app.CreateCommandsExecutor();
         }
 
-        public Task DisposeAsync() => app.DisposeAsync();
+        public Task DisposeAsync() => app.DisposeAsync().AsTask();
     }
 }

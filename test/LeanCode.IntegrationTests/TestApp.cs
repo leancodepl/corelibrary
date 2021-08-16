@@ -67,11 +67,11 @@ namespace LeanCode.IntegrationTests
             Command = CreateCommandsExecutor();
         }
 
-        public override async Task DisposeAsync()
+        public override ValueTask DisposeAsync()
         {
             Command = null!;
             Query = null!;
-            await base.DisposeAsync();
+            return base.DisposeAsync();
         }
     }
 }
