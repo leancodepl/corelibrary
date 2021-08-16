@@ -1,4 +1,4 @@
-FROM leancode.azurecr.io/dotnet:rootless-5.0
+FROM leancode.azurecr.io/dotnet:rootless-6.0
 
 COPY Docker.Directory.Build.props /app/Directory.Build.props
 

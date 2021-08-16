@@ -1,6 +1,6 @@
-using System;
 using System.Reflection;
-using Azure.Identity;
+using Azure.Core;
+using LeanCode.AzureIdentity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -15,70 +15,34 @@ namespace LeanCode.Components.Startup
     {
         public const string SystemLoggersEntryName = LeanProgram.SystemLoggersEntryName;
 
-        public const string VaultKey = "Secrets:KeyVault:VaultUrl";
-        public const string ClientIdKey = "Secrets:KeyVault:ClientId";
-        public const string ClientSecretKey = "Secrets:KeyVault:ClientSecret";
-        public const string TenantIdKey = "Secrets:KeyVault:TenantId";
+        public const string VaultUrlKey = "KeyVault:VaultUrl";
         public const string MinimumLogLevelKey = "Logging:MinimumLevel";
         public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
+        public const string SeqEndpointKey = "Logging:SeqEndpoint";
 
         public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
 
-        public static IHostBuilder AddAppConfigurationFromAzureKeyVault(this IHostBuilder builder)
-        {
-            return builder.ConfigureAppConfiguration((context, builder) =>
-            {
-                ConfigureAzureKeyVault(builder);
-            });
-        }
-
         public static IHostBuilder AddAppConfigurationFromAzureKeyVault(
             this IHostBuilder builder,
-            string vaultKeyOverride,
-            string tenantIdKeyOverride,
-            string clientIdKeyOverride,
-            string clientSecretKeyOverride)
+            TokenCredential? credential = null,
+            string? keyVaultKeyOverride = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
-                ConfigureAzureKeyVault(
-                    builder,
-                    vaultKeyOverride,
-                    tenantIdKeyOverride,
-                    clientIdKeyOverride,
-                    clientSecretKeyOverride);
-            });
-        }
-
-        public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
-            this IHostBuilder builder)
-        {
-            return builder.ConfigureAppConfiguration((context, builder) =>
-            {
-                if (!context.HostingEnvironment.IsDevelopment())
-                {
-                    ConfigureAzureKeyVault(builder);
-                }
+                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
             });
         }
 
         public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
             this IHostBuilder builder,
-            string vaultKeyOverride,
-            string tenantIdKeyOverride,
-            string clientIdKeyOverride,
-            string clientSecretKeyOverride)
+            TokenCredential? credential = null,
+            string? keyVaultKeyOverride = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
                 if (!context.HostingEnvironment.IsDevelopment())
                 {
-                    ConfigureAzureKeyVault(
-                        builder,
-                        vaultKeyOverride,
-                        tenantIdKeyOverride,
-                        clientIdKeyOverride,
-                        clientSecretKeyOverride);
+                    ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
                 }
             });
         }
@@ -125,11 +89,16 @@ namespace LeanCode.Components.Startup
                         .MinimumLevel.Override("System", internalLogLevel);
                 }
 
+                if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
+                {
+                    loggerConfiguration
+                        .WriteTo.Seq(seqEndpoint);
+                }
+
                 if (context.HostingEnvironment.IsDevelopment())
                 {
                     loggerConfiguration
-                        .WriteTo.Console()
-                        .WriteTo.Seq("http://seq");
+                        .WriteTo.Console();
                 }
                 else
                 {
@@ -146,50 +115,23 @@ namespace LeanCode.Components.Startup
             });
         }
 
-        private static void ConfigureAzureKeyVault(IConfigurationBuilder builder)
-        {
-            var configuration = builder.Build();
-
-            var vault = configuration.GetValue<string?>(VaultKey);
-            var tenantId = configuration.GetValue<string?>(TenantIdKey);
-            var clientId = configuration.GetValue<string?>(ClientIdKey);
-            var clientSecret = configuration.GetValue<string?>(ClientSecretKey);
-
-            if (vault != null && tenantId != null && clientId != null && clientSecret != null)
-            {
-                var vaultUrl = new Uri(vault);
-                var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
-            }
-            else
-            {
-                throw new ApplicationException("Application startup exception: null key vault credentials.");
-            }
-        }
-
         private static void ConfigureAzureKeyVault(
             IConfigurationBuilder builder,
-            string vaultKeyOverride,
-            string tenantIdKeyOverride,
-            string clientIdKeyOverride,
-            string clientSecretKeyOverride)
+            TokenCredential? credential,
+            string? keyVaultUrlKeyOverride)
         {
             var configuration = builder.Build();
 
-            var vault = configuration.GetValue<string?>(vaultKeyOverride);
-            var tenantId = configuration.GetValue<string?>(tenantIdKeyOverride);
-            var clientId = configuration.GetValue<string?>(clientIdKeyOverride);
-            var clientSecret = configuration.GetValue<string?>(clientSecretKeyOverride);
-
-            if (vault != null && tenantId != null && clientId != null && clientSecret != null)
+            var vault = configuration.GetValue<string?>(keyVaultUrlKeyOverride ?? VaultUrlKey);
+            if (vault != null)
             {
                 var vaultUrl = new Uri(vault);
-                var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                builder.AddAzureKeyVault(vaultUrl, clientSecretCredential);
+                credential ??= DefaultLeanCodeCredential.Create(configuration);
+                builder.AddAzureKeyVault(vaultUrl, credential);
             }
             else
             {
-                throw new ApplicationException("Application startup exception: null key vault credentials.");
+                throw new ApplicationException("Application startup exception: null key vault address.");
             }
         }
     }

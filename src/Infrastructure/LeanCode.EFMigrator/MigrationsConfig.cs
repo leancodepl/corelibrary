@@ -1,14 +1,12 @@
-using System;
-using System.Threading.Tasks;
-using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using LeanCode.AzureIdentity;
 
 namespace LeanCode.EFMigrator
 {
     public static class MigrationsConfig
     {
-        public static string ConnectionStringKey { get; set; } = "ConnectionStrings:Database";
-        public static string KeyVaultUrlKey { get; set; } = "Secrets:KeyVault:VaultUrl";
+        public static string ConnectionStringKey { get; set; } = "SqlServer:ConnectionString";
+        public static string KeyVaultUrlKey { get; set; } = "KeyVault:VaultUrl";
 
         private static string? azureKeyVaultConnectionString;
 
@@ -19,7 +17,8 @@ namespace LeanCode.EFMigrator
 
             var connectionStringKey = ConnectionStringKey.Replace(":", "--");
 
-            var client = new SecretClient(new(keyVaultUrl), new DefaultAzureCredential());
+            var credential = DefaultLeanCodeCredential.CreateFromEnvironment();
+            var client = new SecretClient(new(keyVaultUrl), credential);
 
             var secret = await client.GetSecretAsync(connectionStringKey);
             azureKeyVaultConnectionString = secret.Value.Value;

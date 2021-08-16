@@ -100,11 +100,11 @@ namespace LeanCode.IntegrationTestHelpers
             await Task.Run(() => Server.Services.ToString()).ConfigureAwait(false);
         }
 
-        public virtual async Task DisposeAsync()
+        Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
+
+        public override async ValueTask DisposeAsync()
         {
-            var host = Services.GetRequiredService<IHost>();
-            await host.StopAsync();
-            await Task.Run(() => Dispose()).ConfigureAwait(false);
+            await base.DisposeAsync();
         }
     }
 }

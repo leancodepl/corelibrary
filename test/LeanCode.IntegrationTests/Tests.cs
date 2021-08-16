@@ -21,6 +21,6 @@ namespace LeanCode.IntegrationTests
         }
 
         public Task InitializeAsync() => app.InitializeAsync();
-        public Task DisposeAsync() => app.DisposeAsync();
+        public Task DisposeAsync() => app.DisposeAsync().AsTask();
     }
 }

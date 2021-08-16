@@ -10,6 +10,7 @@ services:
       - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
     depends_on:
       - db
 
@@ -22,6 +23,7 @@ services:
       - ~/.nuget:/home/dotnet/.nuget
     environment:
       - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
     depends_on:
       - db
 
@@ -33,6 +35,8 @@ services:
       - SA_PASSWORD=Passw12#
     volumes:
       - database:/var/opt/mssql
+    ports:
+      - "1433:1433"
 
 volumes:
   database:

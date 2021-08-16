@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.AzureIdentity/LeanCode.AzureIdentity.csproj" />
   </ItemGroup>
 
   <ItemGroup>

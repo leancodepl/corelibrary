@@ -1,9 +1,6 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Azure.Core;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
 using IdentityModel;
@@ -20,12 +17,10 @@ namespace LeanCode.IdentityServer.KeyVault
 
         private RsaSecurityKey? key;
 
-        public SigningService(TokenCredential credential, IdentityServerKeyVaultConfiguration config)
+        public SigningService(KeyClient keyClient, CryptographyClient cryptoClient)
         {
-            var keyUri = new Uri(config.KeyId);
-
-            cryptoClient = new(keyUri, credential);
-            keyClient = new(new(keyUri.GetLeftPart(UriPartial.Authority)), credential);
+            this.keyClient = keyClient;
+            this.cryptoClient = cryptoClient;
         }
 
         public ValueTask<RsaSecurityKey> GetKeyAsync()
@@ -63,7 +58,8 @@ namespace LeanCode.IdentityServer.KeyVault
 
             try
             {
-                var keyResult = await keyClient.GetKeyAsync(cryptoClient.KeyId);
+                var keyIdentifier = new KeyVaultKeyIdentifier(new Uri(cryptoClient.KeyId));
+                var keyResult = await keyClient.GetKeyAsync(keyIdentifier.Name, keyIdentifier.Version);
                 return key = new RsaSecurityKey(keyResult.Value.Key.ToRSA());
             }
             catch (Exception ex)
