@@ -33,6 +33,8 @@ services:
       - SA_PASSWORD=Passw12#
     volumes:
       - database:/var/opt/mssql
+    ports:
+      - "1433:1433"
 
 volumes:
   database:

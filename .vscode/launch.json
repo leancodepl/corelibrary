@@ -36,6 +36,25 @@
       "sourceFileMap": {
         "/Views": "${workspaceRoot}/src/Example/Views"
       }
+    },
+    {
+      "name": "Attach to Integration tests - compose",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickRemoteProcess}",
+      "sourceFileMap": {
+        "/app/code": "${workspaceFolder}"
+      },
+      "requireExactSource": false,
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "docker",
+        "quoteArgs": false,
+        "pipeArgs": [
+          "exec -i corelib-integration-tests_watch_test_1"
+        ],
+        "debuggerPath": "/vsdbg/vsdbg"
+      }
     }
   ]
 }
