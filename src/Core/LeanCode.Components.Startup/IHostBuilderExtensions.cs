@@ -1,4 +1,5 @@
 using System.Reflection;
+using Azure.Core;
 using LeanCode.AzureIdentity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,28 +15,33 @@ namespace LeanCode.Components.Startup
     {
         public const string SystemLoggersEntryName = LeanProgram.SystemLoggersEntryName;
 
-        public const string VaultKey = "KeyVault:VaultUrl";
+        public const string VaultUrlKey = "KeyVault:VaultUrl";
         public const string MinimumLogLevelKey = "Logging:MinimumLevel";
         public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
 
         public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
 
-        public static IHostBuilder AddAppConfigurationFromAzureKeyVault(this IHostBuilder builder)
+        public static IHostBuilder AddAppConfigurationFromAzureKeyVault(
+            this IHostBuilder builder,
+            TokenCredential? credential = null,
+            string? keyVaultKeyOverride = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
-                ConfigureAzureKeyVault(builder);
+                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
             });
         }
 
         public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
-            this IHostBuilder builder)
+            this IHostBuilder builder,
+            TokenCredential? credential = null,
+            string? keyVaultKeyOverride = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
                 if (!context.HostingEnvironment.IsDevelopment())
                 {
-                    ConfigureAzureKeyVault(builder);
+                    ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
                 }
             });
         }
@@ -103,15 +109,18 @@ namespace LeanCode.Components.Startup
             });
         }
 
-        private static void ConfigureAzureKeyVault(IConfigurationBuilder builder)
+        private static void ConfigureAzureKeyVault(
+            IConfigurationBuilder builder,
+            TokenCredential? credential,
+            string? keyVaultUrlKeyOverride)
         {
             var configuration = builder.Build();
 
-            var vault = configuration.GetValue<string?>(VaultKey);
+            var vault = configuration.GetValue<string?>(keyVaultUrlKeyOverride ?? VaultUrlKey);
             if (vault != null)
             {
                 var vaultUrl = new Uri(vault);
-                var credential = DefaultLeanCodeCredential.Create(configuration);
+                credential ??= DefaultLeanCodeCredential.Create(configuration);
                 builder.AddAzureKeyVault(vaultUrl, credential);
             }
             else
