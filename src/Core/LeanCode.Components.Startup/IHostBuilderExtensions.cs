@@ -18,6 +18,7 @@ namespace LeanCode.Components.Startup
         public const string VaultUrlKey = "KeyVault:VaultUrl";
         public const string MinimumLogLevelKey = "Logging:MinimumLevel";
         public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
+        public const string SeqEndpointKey = "Logging:SeqEndpoint";
 
         public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
 
@@ -88,11 +89,16 @@ namespace LeanCode.Components.Startup
                         .MinimumLevel.Override("System", internalLogLevel);
                 }
 
+                if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
+                {
+                    loggerConfiguration
+                        .WriteTo.Seq(seqEndpoint);
+                }
+
                 if (context.HostingEnvironment.IsDevelopment())
                 {
                     loggerConfiguration
-                        .WriteTo.Console()
-                        .WriteTo.Seq("http://seq");
+                        .WriteTo.Console();
                 }
                 else
                 {
