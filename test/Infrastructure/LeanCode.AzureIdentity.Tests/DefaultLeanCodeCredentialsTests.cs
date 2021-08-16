@@ -43,6 +43,24 @@ namespace LeanCode.AzureIdentity.Tests
             await AssertGetsTokenAsync(cred);
         }
 
+        [Fact]
+        public void Throws_if_no_authorization_method_specified()
+        {
+            Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration()));
+        }
+
+        [Fact]
+        public void Throws_if_more_than_one_authorization_method_specified()
+        {
+            var config = new AzureCredentialConfiguration
+            {
+                UseManagedIdentity = true,
+                UseAzureCLI = true,
+            };
+
+            Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(config));
+        }
+
         private static async Task AssertGetsTokenAsync(TokenCredential cred)
         {
             var ex = await Record.ExceptionAsync(async () => await cred.GetTokenAsync(
