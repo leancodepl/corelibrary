@@ -3,7 +3,7 @@ using Xunit;
 
 namespace LeanCode.AzureIdentity.Tests
 {
-    public class DefaultLeanCodeCredentialsTests
+    public class DefaultLeanCodeCredentialsTests_Authorization
     {
         [AzureIdentityFact("Azure__UseAzureCLI")]
         public async Task Authorizes_via_cli()
@@ -41,24 +41,6 @@ namespace LeanCode.AzureIdentity.Tests
             });
 
             await AssertGetsTokenAsync(cred);
-        }
-
-        [Fact]
-        public void Throws_if_no_authorization_method_specified()
-        {
-            Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration()));
-        }
-
-        [Fact]
-        public void Throws_if_more_than_one_authorization_method_specified()
-        {
-            var config = new AzureCredentialConfiguration
-            {
-                UseManagedIdentity = true,
-                UseAzureCLI = true,
-            };
-
-            Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(config));
         }
 
         private static async Task AssertGetsTokenAsync(TokenCredential cred)
