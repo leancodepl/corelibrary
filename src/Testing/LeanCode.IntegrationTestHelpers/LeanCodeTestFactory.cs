@@ -104,8 +104,6 @@ namespace LeanCode.IntegrationTestHelpers
 
         public override async ValueTask DisposeAsync()
         {
-            var host = Services.GetRequiredService<IHost>();
-            await host.StopAsync();
             await base.DisposeAsync();
         }
     }

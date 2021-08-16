@@ -2,8 +2,8 @@ namespace LeanCode.AzureIdentity;
 
 public record AzureCredentialConfiguration
 {
-    public string? ClientId { get; init; }
     public string? TenantId { get; init; }
+    public string? ClientId { get; init; }
     public string? ClientSecret { get; init; }
     public bool UseManagedIdentity { get; init; }
     public bool UseAzureCLI { get; init; }

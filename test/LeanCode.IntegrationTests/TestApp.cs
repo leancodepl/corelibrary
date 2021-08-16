@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 using IdentityModel.Client;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
@@ -8,14 +7,27 @@ using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTests
 {
     public class TestApp : LeanCodeTestFactory<Startup>
     {
+        static TestApp()
+        {
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WAIT_FOR_DEBUGGER")))
+            {
+                Console.WriteLine("Waiting for debugger to be attached...");
+
+                while (!Debugger.IsAttached)
+                {
+                    Thread.Sleep(100);
+                }
+
+                Console.WriteLine("Debugger attached");
+            }
+        }
+
         public override async Task InitializeAsync()
         {
             await base.InitializeAsync();

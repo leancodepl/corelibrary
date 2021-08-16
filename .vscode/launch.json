@@ -38,7 +38,7 @@
       }
     },
     {
-      "name": "Attach to Integration tests - compose",
+      "name": "Attach to Integration tests",
       "type": "coreclr",
       "request": "attach",
       "processId": "${command:pickRemoteProcess}",
