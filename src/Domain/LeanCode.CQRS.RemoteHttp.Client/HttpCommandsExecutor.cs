@@ -27,16 +27,16 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
         }
 
-        public virtual async Task<CommandResult> RunAsync(IRemoteCommand command)
+        public virtual async Task<CommandResult> RunAsync(IRemoteCommand command, CancellationToken cancellationToken = default)
         {
             using var content = JsonContent.Create(command, command.GetType(), options: serializerOptions);
-            using var response = await client.PostAsync("command/" + command.GetType().FullName, content);
+            using var response = await client.PostAsync("command/" + command.GetType().FullName, content, cancellationToken);
 
             // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
             if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
             {
-                await using var responseContent = await response.Content.ReadAsStreamAsync();
-                return await ParseResultAsync(responseContent);
+                await using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
+                return await ParseResultAsync(responseContent, cancellationToken);
             }
             else
             {
@@ -45,11 +45,11 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             }
         }
 
-        private async Task<CommandResult> ParseResultAsync(Stream responseContent)
+        private async Task<CommandResult> ParseResultAsync(Stream responseContent, CancellationToken cancellationToken)
         {
             // `CommandResult` does not have default constructor and we want that to stay
 
-            using var document = await ParseDocumentAsync(responseContent);
+            using var document = await ParseDocumentAsync(responseContent, cancellationToken);
             if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
                 throw new MalformedResponseException();
@@ -91,7 +91,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             }
         }
 
-        private async Task<JsonDocument> ParseDocumentAsync(Stream responseContent)
+        private async Task<JsonDocument> ParseDocumentAsync(Stream responseContent, CancellationToken cancellationToken)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                     CommentHandling = serializerOptions.ReadCommentHandling,
                     MaxDepth = serializerOptions.MaxDepth,
                 };
-                return await JsonDocument.ParseAsync(responseContent, opts);
+                return await JsonDocument.ParseAsync(responseContent, opts, cancellationToken);
             }
             catch (Exception ex)
             {

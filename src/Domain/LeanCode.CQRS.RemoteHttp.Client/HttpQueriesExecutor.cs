@@ -23,17 +23,17 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
         }
 
-        public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query)
+        public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query, CancellationToken cancellationToken = default)
         {
             using var content = JsonContent.Create(query, query.GetType(), options: serializerOptions);
-            using var response = await client.PostAsync("query/" + query.GetType().FullName, content);
+            using var response = await client.PostAsync("query/" + query.GetType().FullName, content, cancellationToken);
 
             response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 
-            using var responseContent = await response.Content.ReadAsStreamAsync();
+            using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
             try
             {
-                return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions))!;
+                return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken))!;
             }
             catch (Exception ex)
             {
