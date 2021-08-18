@@ -9,7 +9,7 @@ services:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     environment:
-      - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
+      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#
       - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
     depends_on:
       - db
@@ -22,7 +22,7 @@ services:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     environment:
-      - ConnectionStrings__DatabaseBase=Server=db,1433;User Id=sa;Password=Passw12#
+      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#
       - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
     depends_on:
       - db
