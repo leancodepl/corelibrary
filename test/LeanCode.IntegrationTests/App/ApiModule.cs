@@ -52,7 +52,7 @@ namespace LeanCode.IntegrationTests.App
                 });
 
             services.AddDbContext<TestDbContext>(cfg =>
-                cfg.UseSqlServer(config.GetConnectionString("Database")));
+                cfg.UseSqlServer(config.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault)));
         }
 
         protected override void Load(ContainerBuilder builder)

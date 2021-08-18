@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using LeanCode.Components.Startup;
 using Microsoft.Extensions.Configuration;
 using Serilog.Events;
@@ -10,8 +8,8 @@ namespace LeanCode.IntegrationTestHelpers
     {
         public const LogEventLevel MinimumLevelDefault = LogEventLevel.Warning;
         public const bool EnableInternalLogsDefault = false;
-        public const string ConnectionStringBaseDefault = "ConnectionStrings__DatabaseBase";
-        public const string ConnectionStringKeyDefault = "ConnectionStrings:Database";
+        public const string ConnectionStringBaseDefault = "SqlServer__ConnectionStringBase";
+        public const string ConnectionStringKeyDefault = "SqlServer:ConnectionString";
         public const string InternalBaseKeyDefault = "InternalBase";
         public const string PublicBaseKeyDefault = "PublicBase";
 
