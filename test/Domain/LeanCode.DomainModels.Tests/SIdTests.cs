@@ -18,7 +18,7 @@ namespace LeanCode.DomainModels.Tests
             var expected = "entity_00000000000000000000000000000001";
 
             Assert.Equal(expected, SId<Entity>.From(expected));
-            Assert.Equal(expected, SId<Entity>.TryFrom(expected));
+            Assert.Equal(expected, SId<Entity>.FromNullable(expected));
             Assert.Equal(expected, SId<Entity>.FromGuidOrSId(expected));
             Assert.Equal(expected, SId<Entity>.FromGuidOrSId(guid.ToString()));
             Assert.Equal(expected, new SId<Entity>(guid));
@@ -50,12 +50,40 @@ namespace LeanCode.DomainModels.Tests
         }
 
         [Fact]
+        public void Checks_validity_of_sid()
+        {
+            Assert.True(SId<Entity>.IsValid("entity_00000000000000000000000000000001"));
+            Assert.False(SId<Entity>.IsValid("notentity_00000000000000000000000000000001"));
+        }
+
+        [Fact]
+        public void Equality_operators_work()
+        {
+            var same1 = SId<Entity>.From("entity_00000000000000000000000000000001");
+            var same2 = SId<Entity>.From("entity_00000000000000000000000000000001");
+            var other = SId<Entity>.From("entity_00000000000000000000000000000002");
+
+            Assert.True(same1 == same2);
+            Assert.True(same1 != other);
+            Assert.False(same1 != same2);
+            Assert.False(same1 == other);
+        }
+
+        [Fact]
         public void Throws_if_malformed_input_is_given()
         {
             Assert.Throws<FormatException>(() => SId<Entity>.From("entity_notaguid"));
             Assert.Throws<FormatException>(() => SId<Entity>.From("notentity_00000000000000000000000000000001"));
 
             Assert.False(SId<Entity>.TryParse("entity_notaguid", out _));
+            Assert.False(SId<Entity>.TryParseFromGuidOrSId("entity_notaguid", out _));
+        }
+
+        [Fact]
+        public void From_nullable_accepts_null_and_valid_sid()
+        {
+            Assert.Null(SId<Entity>.FromNullable(null));
+            Assert.Equal("entity_00000000000000000000000000000001", SId<Entity>.FromNullable("entity_00000000000000000000000000000001"));
         }
     }
 }

@@ -35,13 +35,14 @@ namespace LeanCode.DomainModels.Model
 
         public static SId<TEntity> New() => new(Guid.NewGuid());
 
-        public static SId<TEntity>? TryFrom([NotNullWhen(true)] string? id) => id is string v ? From(v) : (SId<TEntity>?)null;
+        [return: NotNullIfNotNull("id")]
+        public static SId<TEntity>? FromNullable(string? id) => id is string v ? From(v) : (SId<TEntity>?)null;
 
         public static bool TryParse(string? v, out SId<TEntity> id)
         {
             if (IsValid(v))
             {
-                id = new SId<TEntity>(v!);
+                id = new SId<TEntity>(v);
                 return true;
             }
             else
