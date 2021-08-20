@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using LeanCode.DomainModels.Serialization;
 
@@ -29,11 +30,12 @@ namespace LeanCode.DomainModels.Model
 
         public SId(Guid v)
         {
-            value = TypeName + Separator + v.ToString("N");
+            value = string.Create(null, stackalloc char[RawLength], $"{TypeName}{Separator}{v:N}");
         }
 
         public static SId<TEntity> New() => new(Guid.NewGuid());
-        public static SId<TEntity>? TryFrom(string? id) => id is string v ? From(v) : (SId<TEntity>?)null;
+
+        public static SId<TEntity>? TryFrom([NotNullWhen(true)] string? id) => id is string v ? From(v) : (SId<TEntity>?)null;
 
         public static bool TryParse(string? v, out SId<TEntity> id)
         {
@@ -77,7 +79,7 @@ namespace LeanCode.DomainModels.Model
             }
         }
 
-        public static bool TryParseFromGuidOrSId(string? v, out SId<TEntity> id)
+        public static bool TryParseFromGuidOrSId([NotNullWhen(true)] string? v, out SId<TEntity> id)
         {
             if (IsValid(v))
             {
@@ -96,7 +98,7 @@ namespace LeanCode.DomainModels.Model
             }
         }
 
-        public static bool IsValid(string? v)
+        public static bool IsValid([NotNullWhen(true)] string? v)
         {
             if (v is null)
             {
