@@ -25,7 +25,7 @@ namespace LeanCode.DomainModels.Model
 
         private SId(string v)
         {
-            value = v ?? throw new ArgumentNullException(nameof(v));
+            value = v;
         }
 
         public SId(Guid v)
