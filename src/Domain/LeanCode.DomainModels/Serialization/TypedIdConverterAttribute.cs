@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.DomainModels.Model;
@@ -8,10 +6,11 @@ namespace LeanCode.DomainModels.Serialization
 {
     internal class TypedIdConverterAttribute : JsonConverterAttribute
     {
-        private static readonly Dictionary<Type, Type> Converters = new Dictionary<Type, Type>
+        private static readonly Dictionary<Type, Type> Converters = new()
         {
             [typeof(Id<>)] = typeof(IdConverter<>),
             [typeof(IId<>)] = typeof(IIdConverter<>),
+            [typeof(SId<>)] = typeof(SIdConverter<>),
         };
 
         public override JsonConverter CreateConverter(Type typeToConvert)
@@ -63,6 +62,25 @@ namespace LeanCode.DomainModels.Serialization
             public override void Write(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
             {
                 writer.WriteNumberValue(value.Value);
+            }
+        }
+
+        private class SIdConverter<T> : JsonConverter<SId<T>>
+            where T : class, IIdentifiable<SId<T>>
+        {
+            public override SId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.GetString() is string s)
+                {
+                    return SId<T>.From(s);
+                }
+
+                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+            }
+
+            public override void Write(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
+            {
+                writer.WriteStringValue(value.Value);
             }
         }
     }

@@ -18,8 +18,8 @@ namespace LeanCode.DomainModels.Model
             Value = value;
         }
 
-        public static Id<TEntity> New() => new Id<TEntity>(Guid.NewGuid());
-        public static Id<TEntity> From(Guid id) => new Id<TEntity>(id);
+        public static Id<TEntity> New() => new(Guid.NewGuid());
+        public static Id<TEntity> From(Guid id) => new(id);
         public static Id<TEntity>? From(Guid? id) => id is Guid v ? new Id<TEntity>(v) : (Id<TEntity>?)null;
 
         public bool Equals(Id<TEntity> other) => Value.Equals(other.Value);
@@ -31,7 +31,7 @@ namespace LeanCode.DomainModels.Model
         public static bool operator ==(Id<TEntity> left, Id<TEntity> right) => left.Equals(right);
         public static bool operator !=(Id<TEntity> left, Id<TEntity> right) => !left.Equals(right);
         public static implicit operator Guid(Id<TEntity> id) => id.Value;
-        public static explicit operator Id<TEntity>(Guid id) => new Id<TEntity>(id);
+        public static explicit operator Id<TEntity>(Guid id) => new(id);
     }
 
     [DebuggerDisplay("{Value}")]
@@ -48,7 +48,7 @@ namespace LeanCode.DomainModels.Model
             Value = value;
         }
 
-        public static IId<TEntity> From(int id) => new IId<TEntity>(id);
+        public static IId<TEntity> From(int id) => new(id);
         public static IId<TEntity>? From(int? id) => id is int v ? new IId<TEntity>(v) : (IId<TEntity>?)null;
 
         public bool Equals(IId<TEntity> other) => Value.Equals(other.Value);
@@ -60,6 +60,6 @@ namespace LeanCode.DomainModels.Model
         public static bool operator ==(IId<TEntity> left, IId<TEntity> right) => left.Equals(right);
         public static bool operator !=(IId<TEntity> left, IId<TEntity> right) => !left.Equals(right);
         public static implicit operator int(IId<TEntity> id) => id.Value;
-        public static explicit operator IId<TEntity>(int id) => new IId<TEntity>(id);
+        public static explicit operator IId<TEntity>(int id) => new(id);
     }
 }
