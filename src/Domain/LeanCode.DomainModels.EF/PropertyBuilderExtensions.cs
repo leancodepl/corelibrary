@@ -28,5 +28,17 @@ namespace LeanCode.DomainModels.EF
         {
             return builder.HasConversion(IIdConverter<T>.Instance);
         }
+
+        public static PropertyBuilder<SId<T>> IsTypedId<T>(this PropertyBuilder<SId<T>> builder)
+            where T : class, IIdentifiable<SId<T>>
+        {
+            return builder.HasConversion(SIdConverter<T>.Instance);
+        }
+
+        public static PropertyBuilder<SId<T>?> IsTypedId<T>(this PropertyBuilder<SId<T>?> builder)
+            where T : class, IIdentifiable<SId<T>>
+        {
+            return builder.HasConversion(SIdConverter<T>.Instance);
+        }
     }
 }
