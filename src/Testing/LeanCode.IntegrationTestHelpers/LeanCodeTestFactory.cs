@@ -22,7 +22,7 @@ namespace LeanCode.IntegrationTestHelpers
 
         public string? CurrentUserToken { get; private set; }
 
-        public HttpClient CreateApiClient()
+        public virtual HttpClient CreateApiClient()
         {
             var apiBase = UrlHelper.Concat("http://localhost/", ApiBaseAddress);
             var client = CreateDefaultClient(new Uri(apiBase));
@@ -30,18 +30,18 @@ namespace LeanCode.IntegrationTestHelpers
             return client;
         }
 
-        public HttpClient CreateAuthClient()
+        public virtual HttpClient CreateAuthClient()
         {
             var apiBase = UrlHelper.Concat("http://localhost/", AuthBaseAddress);
             return CreateDefaultClient(new Uri(apiBase));
         }
 
-        public HttpQueriesExecutor CreateQueriesExecutor()
+        public virtual HttpQueriesExecutor CreateQueriesExecutor()
         {
             return new HttpQueriesExecutor(CreateApiClient());
         }
 
-        public HttpCommandsExecutor CreateCommandsExecutor()
+        public virtual HttpCommandsExecutor CreateCommandsExecutor()
         {
             return new HttpCommandsExecutor(CreateApiClient());
         }
