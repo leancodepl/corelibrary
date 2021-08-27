@@ -57,6 +57,12 @@ namespace LeanCode.DomainModels.Tests
         }
 
         [Fact]
+        public void Throws_when_id_is_not_a_valid_guid()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("notaguid"));
+        }
+
+        [Fact]
         public void Serializes_and_deserializes_int_id()
         {
             var id = IId<IntEntity>.From(7);
@@ -69,6 +75,12 @@ namespace LeanCode.DomainModels.Tests
         }
 
         [Fact]
+        public void Throws_when_id_is_not_a_valid_int()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("213452343243242343452"));
+        }
+
+        [Fact]
         public void Serializes_and_deserializes_long_id()
         {
             var id = LId<LongEntity>.From(922337203685477580);
@@ -78,6 +90,12 @@ namespace LeanCode.DomainModels.Tests
 
             Assert.Equal("922337203685477580", json);
             Assert.Equal(id, deserialized);
+        }
+
+        [Fact]
+        public void Throws_when_id_is_not_a_valid_long()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("21345.3452"));
         }
 
         [Fact]
