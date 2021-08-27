@@ -10,6 +10,7 @@ namespace LeanCode.DomainModels.Serialization
         {
             [typeof(Id<>)] = typeof(IdConverter<>),
             [typeof(IId<>)] = typeof(IIdConverter<>),
+            [typeof(LId<>)] = typeof(LIdConverter<>),
             [typeof(SId<>)] = typeof(SIdConverter<>),
         };
 
@@ -60,6 +61,25 @@ namespace LeanCode.DomainModels.Serialization
             }
 
             public override void Write(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
+            {
+                writer.WriteNumberValue(value.Value);
+            }
+        }
+
+        private class LIdConverter<T> : JsonConverter<LId<T>>
+            where T : class, IIdentifiable<LId<T>>
+        {
+            public override LId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TryGetInt64(out var id))
+                {
+                    return new LId<T>(id);
+                }
+
+                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+            }
+
+            public override void Write(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
             {
                 writer.WriteNumberValue(value.Value);
             }

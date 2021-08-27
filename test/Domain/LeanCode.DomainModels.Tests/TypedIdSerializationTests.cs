@@ -6,20 +6,10 @@ namespace LeanCode.DomainModels.Tests
 {
     public class TypedIdSerializationTests
     {
-        private class Entity : IIdentifiable<Id<Entity>>
-        {
-            public Id<Entity> Id { get; set; }
-        }
-
-        private class IntEntity : IIdentifiable<IId<IntEntity>>
-        {
-            public IId<IntEntity> Id { get; set; }
-        }
-
-        private class StrEntity : IIdentifiable<SId<StrEntity>>
-        {
-            public SId<StrEntity> Id { get; set; }
-        }
+        private record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+        private record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+        private record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+        private record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
 
         [IdSlug("custom")]
         private class StringOverriddenEntity : IIdentifiable<SId<StringOverriddenEntity>>
@@ -75,6 +65,18 @@ namespace LeanCode.DomainModels.Tests
             var deserialized = JsonSerializer.Deserialize<IId<IntEntity>>(json);
 
             Assert.Equal("7", json);
+            Assert.Equal(id, deserialized);
+        }
+
+        [Fact]
+        public void Serializes_and_deserializes_long_id()
+        {
+            var id = LId<LongEntity>.From(922337203685477580);
+
+            var json = JsonSerializer.Serialize(id);
+            var deserialized = JsonSerializer.Deserialize<LId<LongEntity>>(json);
+
+            Assert.Equal("922337203685477580", json);
             Assert.Equal(id, deserialized);
         }
 
