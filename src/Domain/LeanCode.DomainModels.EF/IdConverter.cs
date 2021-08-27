@@ -30,6 +30,19 @@ namespace LeanCode.DomainModels.EF
         { }
     }
 
+    public class LIdConverter<T> : ValueConverter<LId<T>, long>
+        where T : class, IIdentifiable<LId<T>>
+    {
+        public static readonly LIdConverter<T> Instance = new();
+
+        private LIdConverter()
+            : base(
+                d => d.Value,
+                d => new LId<T>(d),
+                mappingHints: null)
+        { }
+    }
+
     public class SIdConverter<T> : ValueConverter<SId<T>, string>
         where T : class, IIdentifiable<SId<T>>
     {

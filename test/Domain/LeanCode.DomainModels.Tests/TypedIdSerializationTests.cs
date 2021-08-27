@@ -77,7 +77,7 @@ namespace LeanCode.DomainModels.Tests
         [Fact]
         public void Throws_when_id_is_not_a_valid_int()
         {
-            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("213452343243242343452"));
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<IId<IntEntity>?>("213452343243242343452"));
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace LeanCode.DomainModels.Tests
         [Fact]
         public void Throws_when_id_is_not_a_valid_long()
         {
-            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("21345.3452"));
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<LId<LongEntity>?>("21345.3452"));
         }
 
         [Fact]
