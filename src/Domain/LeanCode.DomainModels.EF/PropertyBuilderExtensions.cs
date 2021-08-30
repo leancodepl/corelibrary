@@ -30,6 +30,18 @@ namespace LeanCode.DomainModels.EF
             return builder.HasConversion(IIdConverter<T>.Instance).ValueGeneratedNever();
         }
 
+        public static PropertyBuilder<LId<T>> IsTypedId<T>(this PropertyBuilder<LId<T>> builder)
+            where T : class, IIdentifiable<LId<T>>
+        {
+            return builder.HasConversion(LIdConverter<T>.Instance).ValueGeneratedNever();
+        }
+
+        public static PropertyBuilder<LId<T>?> IsTypedId<T>(this PropertyBuilder<LId<T>?> builder)
+            where T : class, IIdentifiable<LId<T>>
+        {
+            return builder.HasConversion(LIdConverter<T>.Instance).ValueGeneratedNever();
+        }
+
         public static PropertyBuilder<SId<T>> IsTypedId<T>(this PropertyBuilder<SId<T>> builder)
             where T : class, IIdentifiable<SId<T>>
         {

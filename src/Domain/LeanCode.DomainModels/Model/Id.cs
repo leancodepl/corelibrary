@@ -62,4 +62,31 @@ namespace LeanCode.DomainModels.Model
         public static implicit operator int(IId<TEntity> id) => id.Value;
         public static explicit operator IId<TEntity>(int id) => new(id);
     }
+
+    [DebuggerDisplay("{Value}")]
+    [TypedIdConverter]
+    public readonly struct LId<TEntity> : IEquatable<LId<TEntity>>, IComparable<LId<TEntity>>
+        where TEntity : class, IIdentifiable<LId<TEntity>>
+    {
+        public static readonly LId<TEntity> Empty = LId<TEntity>.From(0);
+
+        public long Value { get; }
+
+        public LId(long value)
+        {
+            Value = value;
+        }
+
+        public static LId<TEntity> From(long id) => new(id);
+        public static LId<TEntity>? From(long? id) => id is long v ? new LId<TEntity>(v) : (LId<TEntity>?)null;
+
+        public bool Equals(LId<TEntity> other) => Value.Equals(other.Value);
+        public int CompareTo(LId<TEntity> other) => Value.CompareTo(other.Value);
+        public override bool Equals(object? obj) => obj is LId<TEntity> id && Value.Equals(id.Value);
+        public override int GetHashCode() => HashCode.Combine(Value);
+        public override string? ToString() => Value.ToString();
+        public static bool operator ==(LId<TEntity> left, LId<TEntity> right) => left.Equals(right);
+        public static bool operator !=(LId<TEntity> left, LId<TEntity> right) => !left.Equals(right);
+        public static implicit operator long(LId<TEntity> id) => id.Value;
+    }
 }

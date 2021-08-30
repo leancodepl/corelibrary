@@ -6,20 +6,10 @@ namespace LeanCode.DomainModels.Tests
 {
     public class TypedIdSerializationTests
     {
-        private class Entity : IIdentifiable<Id<Entity>>
-        {
-            public Id<Entity> Id { get; set; }
-        }
-
-        private class IntEntity : IIdentifiable<IId<IntEntity>>
-        {
-            public IId<IntEntity> Id { get; set; }
-        }
-
-        private class StrEntity : IIdentifiable<SId<StrEntity>>
-        {
-            public SId<StrEntity> Id { get; set; }
-        }
+        private record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+        private record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+        private record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+        private record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
 
         [IdSlug("custom")]
         private class StringOverriddenEntity : IIdentifiable<SId<StringOverriddenEntity>>
@@ -67,6 +57,12 @@ namespace LeanCode.DomainModels.Tests
         }
 
         [Fact]
+        public void Throws_when_id_is_not_a_valid_guid()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("notaguid"));
+        }
+
+        [Fact]
         public void Serializes_and_deserializes_int_id()
         {
             var id = IId<IntEntity>.From(7);
@@ -76,6 +72,30 @@ namespace LeanCode.DomainModels.Tests
 
             Assert.Equal("7", json);
             Assert.Equal(id, deserialized);
+        }
+
+        [Fact]
+        public void Throws_when_id_is_not_a_valid_int()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<IId<IntEntity>?>("213452343243242343452"));
+        }
+
+        [Fact]
+        public void Serializes_and_deserializes_long_id()
+        {
+            var id = LId<LongEntity>.From(922337203685477580);
+
+            var json = JsonSerializer.Serialize(id);
+            var deserialized = JsonSerializer.Deserialize<LId<LongEntity>>(json);
+
+            Assert.Equal("922337203685477580", json);
+            Assert.Equal(id, deserialized);
+        }
+
+        [Fact]
+        public void Throws_when_id_is_not_a_valid_long()
+        {
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<LId<LongEntity>?>("21345.3452"));
         }
 
         [Fact]
