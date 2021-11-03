@@ -24,7 +24,7 @@ namespace LeanCode.Logging
         {
             if (httpCtx?.User.Identity?.IsAuthenticated ?? false)
             {
-                var userId = userIdClaim is not null ? httpCtx.User.FindFirstValue(userIdClaim) : httpCtx.User.Identity.Name;
+                var userId = httpCtx.User.FindFirstValue(userIdClaim ?? "sub");
 
                 if (!string.IsNullOrWhiteSpace(userId))
                 {
