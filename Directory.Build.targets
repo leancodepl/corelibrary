@@ -8,6 +8,7 @@
     <HangfireVersion>1.7.24</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>7.2.1</MassTransitVersion>
+    <SystemIdentityModelVersion>6.14.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <CodeAnalysisVersion>3.10.0</CodeAnalysisVersion>
@@ -36,8 +37,8 @@
     <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1" />
 
     <PackageReference Update="IdentityModel" Version="5.1.0" />
-    <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.11.1" />
-    <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.14.0" />
+    <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="$(SystemIdentityModelVersion)" />
+    <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="$(SystemIdentityModelVersion)" />
 
     <PackageReference Update="FirebaseAdmin" Version="2.2.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="2.4.0" />
