@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Tools/LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj" />
-  </ItemGroup>
-
-</Project>
