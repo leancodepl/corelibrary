@@ -1,17 +1,17 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>6.0.0-preview.7.21378.4</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>6.0.0-preview.7.21378.6</AspNetCoreVersion>
-    <ExtensionsVersion>6.0.0-preview.7.21377.19</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>6.0.0-rc.2.21480.5</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>6.0.0-rc.2.21480.10</AspNetCoreVersion>
+    <ExtensionsVersion>6.0.0-rc.2.21480.5</ExtensionsVersion>
 
-    <GoogleApisVersion>1.53.0</GoogleApisVersion>
+    <GoogleApisVersion>1.55.0</GoogleApisVersion>
     <HangfireVersion>1.7.27</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>7.2.4</MassTransitVersion>
     <SystemIdentityModelVersion>6.14.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>3.10.0</CodeAnalysisVersion>
+    <CodeAnalysisVersion>4.0.0-6.final</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,27 +23,27 @@
     <PackageReference Update="Autofac" Version="6.3.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
 
-    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.1.1" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
     <PackageReference Update="Azure.Identity" Version="1.5.0" />
-    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.1" />
-    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.1" />
+    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.2" />
+    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.2" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
-    <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
+    <PackageReference Update="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Update="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.3.0" />
-    <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Update="Serilog.Sinks.Console" Version="4.0.0" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1" />
 
-    <PackageReference Update="IdentityModel" Version="5.1.0" />
+    <PackageReference Update="IdentityModel" Version="5.2.0" />
     <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="$(SystemIdentityModelVersion)" />
     <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="$(SystemIdentityModelVersion)" />
 
     <PackageReference Update="FirebaseAdmin" Version="2.2.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="2.4.0" />
 
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="3.0.0" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="3.0.1" />
 
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.123" />
@@ -51,7 +51,7 @@
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Update="Polly" Version="7.2.2" />
-    <PackageReference Update="Sendgrid" Version="9.24.2" />
+    <PackageReference Update="Sendgrid" Version="9.24.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -112,7 +112,7 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Update="NSubstitute" Version="4.2.2" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
@@ -129,6 +129,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.333" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.354" />
   </ItemGroup>
 </Project>
