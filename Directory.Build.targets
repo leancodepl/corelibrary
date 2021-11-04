@@ -4,7 +4,7 @@
     <AspNetCoreVersion>6.0.0-preview.7.21378.6</AspNetCoreVersion>
     <ExtensionsVersion>6.0.0-preview.7.21377.19</ExtensionsVersion>
 
-    <GoogleApisVersion>1.53.0</GoogleApisVersion>
+    <GoogleApisVersion>1.55.0</GoogleApisVersion>
     <HangfireVersion>1.7.27</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>7.2.4</MassTransitVersion>
@@ -32,7 +32,7 @@
     <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Update="Serilog.Formatting.Compact" Version="1.1.0" />
-    <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Update="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1" />
 
