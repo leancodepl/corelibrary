@@ -9,6 +9,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <DebugType>portable</DebugType>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
