@@ -34,7 +34,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 cmd => cmd.Trace().StoreAndPublishEvents(),
                 query => query),
 
-            new MassTransitRelayModule(SearchAssemblies, SearchAssemblies, MassTransitTestRelayModule.TestBusConfigurator),
+            new TestMassTransitModule(SearchAssemblies),
             new MassTransitTestRelayModule(),
             new OpenTelemetryModule(),
         };
@@ -57,7 +57,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         {
             Log.Logger = new LoggerConfiguration().CreateLogger();
 
-            // We have to use the same in-mem database but differnet connections so that we don't have
+            // We have to use the same in-mem database but different connections so that we don't have
             // overlapping transactions but still be able to use the same data.
             var connStr = new SqliteConnectionStringBuilder
             {
@@ -75,7 +75,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             services.AddDbContext<TestDbContext>(cfg => cfg.UseSqlite(connStr.ConnectionString));
 
             var builder = new ContainerBuilder();
-            builder.Populate(services);
 
             builder.Register(c => c.Resolve<TestDbContext>())
                 .AsImplementedInterfaces()
@@ -87,9 +86,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
             foreach (var m in modules)
             {
+                m.ConfigureServices(services);
                 builder.RegisterModule(m);
             }
 
+            builder.Populate(services);
             Container = builder.Build();
             bus = Container.Resolve<IBusControl>();
 
@@ -119,6 +120,41 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             await bus.StopAsync();
             await dbConnection.CloseAsync();
             await dbConnection.DisposeAsync();
+        }
+    }
+
+    public class TestMassTransitModule : MassTransitRelayModule
+    {
+        public TestMassTransitModule(
+            TypesCatalog eventsCatalog,
+            bool useInbox = true,
+            bool useOutbox = true)
+            : base(eventsCatalog, useInbox, useOutbox)
+        { }
+
+        public override void ConfigureMassTransit(IServiceCollection services)
+        {
+            services.AddMassTransit(cfg =>
+            {
+                cfg.AddConsumers(typeof(TestApp).Assembly);
+                cfg.UsingInMemory((ctx, busCfg) =>
+                {
+                    var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
+
+                    busCfg.ReceiveEndpoint(queueName, rcv =>
+                    {
+                        rcv.UseLogsCorrelation();
+                        rcv.UseRetry(retryConfig => retryConfig.Immediate(5));
+                        rcv.UseConsumedMessagesFiltering(ctx);
+                        rcv.StoreAndPublishDomainEvents(ctx);
+
+                        rcv.ConfigureConsumers(ctx);
+                        rcv.ConnectReceiveEndpointObservers(ctx);
+                    });
+
+                    busCfg.ConnectBusObservers(ctx);
+                });
+            });
         }
     }
 }

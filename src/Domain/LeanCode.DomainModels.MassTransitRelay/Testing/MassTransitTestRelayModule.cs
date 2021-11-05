@@ -1,11 +1,6 @@
-using System;
-using System.Reflection;
 using Autofac;
-using GreenPipes;
 using LeanCode.Components;
-using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using MassTransit;
-using MassTransit.AutofacIntegration;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Testing
 {
@@ -29,27 +24,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
                 .AutoActivate()
                 .AsImplementedInterfaces()
                 .SingleInstance();
-        }
-
-        public static void TestBusConfigurator(IContainerBuilderBusConfigurator busCfg)
-        {
-            busCfg.UsingInMemory((context, config) =>
-            {
-                var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
-
-                config.ReceiveEndpoint(queueName, rcv =>
-                {
-                    rcv.UseLogsCorrelation();
-                    rcv.UseRetry(retryConfig => retryConfig.Immediate(5));
-                    rcv.UseConsumedMessagesFiltering(context);
-                    rcv.StoreAndPublishDomainEvents(context);
-
-                    rcv.ConfigureConsumers(context);
-                    rcv.ConnectReceiveEndpointObservers(context);
-                });
-
-                config.ConnectBusObservers(context);
-            });
         }
     }
 }
