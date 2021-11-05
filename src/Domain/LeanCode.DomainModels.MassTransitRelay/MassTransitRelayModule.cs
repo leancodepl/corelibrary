@@ -1,37 +1,26 @@
-using System;
-using System.Reflection;
 using Autofac;
-using GreenPipes;
 using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.MassTransitRelay.Simple;
 using LeanCode.PeriodicService;
-using MassTransit;
-using MassTransit.AutofacIntegration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
-    public class MassTransitRelayModule : AppModule
+    public abstract class MassTransitRelayModule : AppModule
     {
-        private readonly TypesCatalog consumersCatalog;
         private readonly TypesCatalog eventsCatalog;
-        private readonly Action<IContainerBuilderBusConfigurator> busConfig;
         private readonly bool useInbox;
         private readonly bool useOutbox;
 
         public MassTransitRelayModule(
-            TypesCatalog consumersCatalog,
             TypesCatalog eventsCatalog,
-            Action<IContainerBuilderBusConfigurator>? busConfig = null,
             bool useInbox = true,
             bool useOutbox = true)
         {
-            this.consumersCatalog = consumersCatalog;
             this.eventsCatalog = eventsCatalog;
-            this.busConfig = busConfig ?? DefaultBusConfigurator;
             this.useInbox = useInbox;
             this.useOutbox = useOutbox;
         }
@@ -72,38 +61,10 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 .WithParameter("useOutbox", useOutbox);
 
             builder.RegisterType<SimpleFinalizer>().AsSelf();
-
-            builder.AddMassTransit(cfg =>
-            {
-                cfg.AddConsumers(consumersCatalog.Assemblies.ToArray());
-                busConfig(cfg);
-            });
-
-            builder.RegisterType<MassTransitRelayHostedService>()
-                .AsImplementedInterfaces()
-                .SingleInstance();
         }
 
-        public static void DefaultBusConfigurator(IContainerBuilderBusConfigurator busCfg)
-        {
-            busCfg.UsingInMemory((context, config) =>
-            {
-                var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
+        public sealed void ConfigureServices(IServiceCollection services) => ConfigureMassTransit(services);
 
-                config.ReceiveEndpoint(queueName, rcv =>
-                {
-                    rcv.UseLogsCorrelation();
-                    rcv.UseRetry(retryConfig =>
-                        retryConfig.Incremental(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)));
-                    rcv.UseConsumedMessagesFiltering(context);
-                    rcv.StoreAndPublishDomainEvents(context);
-
-                    rcv.ConfigureConsumers(context);
-                    rcv.ConnectReceiveEndpointObservers(context);
-                });
-
-                config.ConnectBusObservers(context);
-            });
-        }
+        public abstract void ConfigureMassTransit(IServiceCollection services);
     }
 }
