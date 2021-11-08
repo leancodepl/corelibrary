@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
     <PackageReference Include="MassTransit" />
     <PackageReference Include="MassTransit.Autofac" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" />

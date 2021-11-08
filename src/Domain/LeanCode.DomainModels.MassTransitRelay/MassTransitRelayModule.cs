@@ -63,7 +63,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             builder.RegisterType<SimpleFinalizer>().AsSelf();
         }
 
-        public sealed void ConfigureServices(IServiceCollection services) => ConfigureMassTransit(services);
+        public sealed override void ConfigureServices(IServiceCollection services) => ConfigureMassTransit(services);
 
         public abstract void ConfigureMassTransit(IServiceCollection services);
     }
