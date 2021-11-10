@@ -17,13 +17,13 @@ namespace LeanCode.CQRS.Security
         }
 
         public async Task<TOutput> ExecuteAsync(
-            TAppContext appContext,
+            TAppContext ctx,
             TInput input,
             Func<TAppContext, TInput, Task<TOutput>> next)
         {
             var objectType = input.GetType();
             var customAuthorizers = AuthorizeWhenAttribute.GetCustomAuthorizers(objectType);
-            var user = appContext.User;
+            var user = ctx.User;
 
             if (customAuthorizers.Count > 0 && !(user?.Identity?.IsAuthenticated ?? false))
             {
@@ -42,7 +42,7 @@ namespace LeanCode.CQRS.Security
                 }
 
                 var authorized = await customAuthorizer
-                    .CheckIfAuthorizedAsync(appContext, input, customAuthorizerDefinition.CustomData);
+                    .CheckIfAuthorizedAsync(ctx, input, customAuthorizerDefinition.CustomData);
 
                 if (!authorized)
                 {
@@ -52,7 +52,7 @@ namespace LeanCode.CQRS.Security
                 }
             }
 
-            return await next(appContext, input);
+            return await next(ctx, input);
         }
     }
 

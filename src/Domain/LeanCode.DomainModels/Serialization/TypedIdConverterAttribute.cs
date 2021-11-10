@@ -4,7 +4,7 @@ using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.Serialization
 {
-    internal class TypedIdConverterAttribute : JsonConverterAttribute
+    internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     {
         private static readonly Dictionary<Type, Type> Converters = new()
         {

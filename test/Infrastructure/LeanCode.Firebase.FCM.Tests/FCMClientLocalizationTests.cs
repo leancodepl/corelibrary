@@ -10,16 +10,10 @@ namespace LeanCode.Firebase.FCM.Tests
     public class FCMClientLocalizationTests
     {
         private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pl");
-        private static readonly FirebaseMessaging Messaging;
+        private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(null, "[NULL]"));
 
         private readonly IStringLocalizer stringLocalizer;
         private readonly FCMClient client;
-
-        static FCMClientLocalizationTests()
-        {
-            var app = FirebaseConfiguration.Prepare(null, "[NULL]");
-            Messaging = FirebaseMessaging.GetMessaging(app);
-        }
 
         public FCMClientLocalizationTests()
         {

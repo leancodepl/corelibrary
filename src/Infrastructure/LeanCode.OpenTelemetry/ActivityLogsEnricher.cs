@@ -31,8 +31,14 @@ namespace LeanCode.OpenTelemetry
 
                 if (useDatadogFormat)
                 {
-                    traceId = propertyFactory.CreateProperty(traceIdKey, activity.TraceId.ToDatadogFormat().ToString());
-                    spanId = propertyFactory.CreateProperty(spanIdKey, activity.SpanId.ToDatadogFormat().ToString());
+                    var traceIdStr = activity.TraceId
+                        .ToDatadogFormat()
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var spanIdStr = activity.SpanId
+                        .ToDatadogFormat()
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    traceId = propertyFactory.CreateProperty(traceIdKey, traceIdStr);
+                    spanId = propertyFactory.CreateProperty(spanIdKey, spanIdStr);
                 }
                 else
                 {

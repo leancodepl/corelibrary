@@ -20,6 +20,7 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase
         private StreamWriter? output;
 
         [AllowNull]
+        [SuppressMessage("?", "CA2201", Justification = "Required for back compat.")]
         private StreamWriter Output
         {
             get => output ?? throw new NullReferenceException();

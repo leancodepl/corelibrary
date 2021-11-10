@@ -15,16 +15,10 @@ namespace LeanCode.Firebase.FCM.Tests
 
         private static readonly Guid UserId = Guid.NewGuid();
 
-        private static readonly FirebaseMessaging Messaging;
+        private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(Key));
 
         private readonly StubStore store;
         private readonly FCMClient client;
-
-        static FCMClientTests()
-        {
-            var app = FirebaseConfiguration.Prepare(Key);
-            Messaging = FirebaseMessaging.GetMessaging(app);
-        }
 
         public FCMClientTests()
         {

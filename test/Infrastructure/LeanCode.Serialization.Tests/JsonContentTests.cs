@@ -79,7 +79,7 @@ namespace LeanCode.Serialization.Tests
             return @$"{{""{fieldName}"":""{payload.Data}""}}";
         }
 
-        public class Payload
+        internal class Payload
         {
             public string Data { get; set; }
         }

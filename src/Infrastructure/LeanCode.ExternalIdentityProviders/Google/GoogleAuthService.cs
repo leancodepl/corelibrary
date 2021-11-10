@@ -17,6 +17,7 @@ namespace LeanCode.ExternalIdentityProviders.Google
             };
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         public async Task<GoogleTokenValidationResult> ValidateTokenAsync(string idToken)
         {
             try

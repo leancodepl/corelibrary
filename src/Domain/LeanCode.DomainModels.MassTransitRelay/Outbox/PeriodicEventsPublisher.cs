@@ -16,8 +16,8 @@ namespace LeanCode.DomainModels.MassTransitRelay
 {
     public class PeriodicEventsPublisher : IPeriodicAction
     {
+        private const int MaxEventsToFetch = 1000;
         private static readonly TimeSpan RelayPeriod = TimeSpan.FromDays(1);
-        private static readonly int MaxEventsToFetch = 1000;
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PeriodicEventsPublisher>();
         private readonly IOutboxContext outboxContext;
@@ -37,6 +37,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
             this.outboxContext = outboxContext;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var fetchActivity = LeanCodeActivitySource.Start("outbox.fetch-unpublished");

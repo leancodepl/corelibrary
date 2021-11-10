@@ -7,13 +7,14 @@ using Xunit;
 
 namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
 {
-    public class FacebookClientTests
+    public sealed class FacebookClientTests : IDisposable
     {
         private static readonly FacebookConfiguration Config = new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
         private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? "";
 
         private readonly FacebookClient client;
 
+        [SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         public FacebookClientTests()
         {
             client = new FacebookClient(
@@ -23,6 +24,8 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
                     BaseAddress = new Uri(FacebookClient.ApiBase),
                 });
         }
+
+        public void Dispose() => ((IDisposable)client).Dispose();
 
         [FacebookFact]
         public async Task Downloads_user_info_correctly()
@@ -37,7 +40,7 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
             Assert.NotEmpty(user.Photo);
         }
 
-        public class FacebookFactAttribute : FactAttribute
+        internal sealed class FacebookFactAttribute : FactAttribute
         {
             public FacebookFactAttribute()
             {

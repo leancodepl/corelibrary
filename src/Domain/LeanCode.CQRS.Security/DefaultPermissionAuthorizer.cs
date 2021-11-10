@@ -16,13 +16,13 @@ namespace LeanCode.CQRS.Security
         protected override Task<bool> CheckIfAuthorizedAsync(
             ISecurityContext appContext,
             object obj,
-            string[]? permissions = null)
+            string[]? customData = null)
         {
-            if (!appContext.User.HasPermission(registry, permissions ?? System.Array.Empty<string>()))
+            if (!appContext.User.HasPermission(registry, customData ?? System.Array.Empty<string>()))
             {
                 logger.Warning(
                     "User does not have sufficient permissions ({Permissions}) to run {@Object}",
-                    permissions, obj);
+                    customData, obj);
 
                 return Task.FromResult(false);
             }

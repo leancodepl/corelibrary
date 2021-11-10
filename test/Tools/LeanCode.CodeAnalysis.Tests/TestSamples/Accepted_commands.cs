@@ -10,7 +10,7 @@ namespace LeanCode.CodeAnalysis.Tests.Data
 
     public class SecondCommand : FirstCommand { }
 
-    [AuthorizeWhen(typeof(object))]
+    [AuthorizeWhenCustom]
     public class ThirdCommand : ICommand { }
 
     [AllowUnauthorized]

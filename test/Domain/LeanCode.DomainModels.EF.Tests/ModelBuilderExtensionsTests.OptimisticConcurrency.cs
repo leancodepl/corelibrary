@@ -94,6 +94,7 @@ namespace LeanCode.DomainModels.EF.Tests
     public class ImplicitlyImplemented : IOptimisticConcurrency
     {
         public int Id { get; set; }
+        [SuppressMessage("?", "CA1819", Justification = "Convention.")]
         public byte[] RowVersion { get; set; }
         public DateTime DateModified { get; set; }
     }
@@ -117,6 +118,7 @@ namespace LeanCode.DomainModels.EF.Tests
         private byte[] rowVersion;
 
         public int Id { get; set; }
+        [SuppressMessage("?", "CA1819", Justification = "Convention.")]
         public byte[] RowVersion { get => rowVersion; set => rowVersion = value; }
         public DateTime DateModified { get; set; }
     }
@@ -140,6 +142,7 @@ namespace LeanCode.DomainModels.EF.Tests
         private DateTime dateModified;
 
         public int Id { get; set; }
+        [SuppressMessage("?", "CA1819", Justification = "Convention.")]
         public byte[] RowVersion { get; set; }
         public DateTime DateModified { get => dateModified; set => dateModified = value; }
     }

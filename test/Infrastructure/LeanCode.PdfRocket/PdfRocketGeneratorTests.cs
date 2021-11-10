@@ -10,7 +10,7 @@ namespace LeanCode.PdfRocket.Tests
     {
         private static readonly string ApiKey = Environment.GetEnvironmentVariable("PDF_ROCKET_API_KEY") ?? "";
 
-        internal class PdfRocketFactAttribute : FactAttribute
+        internal sealed class PdfRocketFactAttribute : FactAttribute
         {
             public PdfRocketFactAttribute()
             {
@@ -23,6 +23,7 @@ namespace LeanCode.PdfRocket.Tests
 
         private readonly PdfRocketGenerator generator;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         public PdfRocketGeneratorTests()
         {
             var config = new PdfRocketConfiguration

@@ -11,6 +11,8 @@ namespace LeanCode.Dapper
     // https://github.com/kamil-mrzyglod/QueryValidator.Fody/blob/master/QueryValidator.Fody/QueryValidator.Fody/ModuleWeaver.cs
     public static class RawQueryValidator
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2100", Justification = "It does not. :)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Doesn't need to be specific.")]
         public static async Task ValidateQueriesAsync(string connectionString, params Assembly[] assemblies)
         {
             var dapperSqls = assemblies

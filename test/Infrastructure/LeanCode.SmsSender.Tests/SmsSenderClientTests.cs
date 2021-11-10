@@ -8,9 +8,10 @@ namespace LeanCode.SmsSender.Tests
 {
     public class SmsSenderClientTests
     {
+        private const string Message = "SmsSender works fine";
+
         private static readonly string Token = Environment.GetEnvironmentVariable("SMSAPI_TOKEN");
         private static readonly string PhoneNumber = Environment.GetEnvironmentVariable("SMSAPI_PHONENUMBERTO");
-        private static readonly string Message = "SmsSender works fine";
 
         private static readonly SmsApiConfiguration Config = new(Token, "")
         {
@@ -47,6 +48,7 @@ namespace LeanCode.SmsSender.Tests
                 clientWithUnregisteredSender.SendAsync(Message, PhoneNumber));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         private static SmsApiClient CreateSmsApiClient(SmsApiConfiguration config)
         {
             HttpClient client = new();
@@ -56,7 +58,7 @@ namespace LeanCode.SmsSender.Tests
             return new(config, client);
         }
 
-        public class SmsApiFactAttribute : FactAttribute
+        internal sealed class SmsApiFactAttribute : FactAttribute
         {
             public SmsApiFactAttribute()
             {

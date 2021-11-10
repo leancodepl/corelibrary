@@ -24,7 +24,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 {
-    public class TestApp : IAsyncLifetime, IDisposable
+    public sealed class TestApp : IAsyncLifetime, IDisposable
     {
         private static readonly TypesCatalog SearchAssemblies = TypesCatalog.Of<TestApp>();
         private readonly AppModule[] modules = new AppModule[]
@@ -50,7 +50,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
         public HandledEvent[] HandledEvents<TEvent>()
             where TEvent : class, IDomainEvent
         {
-            return Container.Resolve<HandledEventsReporter<TEvent>>().HandledEvents;
+            return Container.Resolve<HandledEventsReporter<TEvent>>().HandledEvents();
         }
 
         public TestApp()

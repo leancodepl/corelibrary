@@ -47,13 +47,13 @@ namespace LeanCode.PdfRocket
         }
 
         public virtual Task<Stream> GenerateFromUrlAsync(
-            string url,
+            Uri url,
             PdfOptions? options = null,
             CancellationToken cancellationToken = default)
         {
             logger.Debug("Generating PDF from URL {@URL}", url);
 
-            return GenerateAsync(url, options, cancellationToken);
+            return GenerateAsync(url.ToString(), options, cancellationToken);
         }
 
         private async Task<Stream> GenerateAsync(string source, PdfOptions? options, CancellationToken cancellationToken)
@@ -76,6 +76,7 @@ namespace LeanCode.PdfRocket
             return result;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Can't be easily fixed with current approach.")]
         private HttpContent GetContent(string source, PdfOptions? options)
         {
             var content = new MultipartFormDataContent

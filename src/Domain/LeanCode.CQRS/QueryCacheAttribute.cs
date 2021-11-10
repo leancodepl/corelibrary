@@ -4,7 +4,7 @@ using System.Reflection;
 namespace LeanCode.CQRS
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class QueryCacheAttribute : Attribute
+    public sealed class QueryCacheAttribute : Attribute
     {
         public TimeSpan Duration { get; }
 

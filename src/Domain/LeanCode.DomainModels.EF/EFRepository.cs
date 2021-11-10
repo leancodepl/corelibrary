@@ -17,7 +17,7 @@ namespace LeanCode.DomainModels.EF
         protected TContext DbContext { get; }
         protected DbSet<TEntity> DbSet { get; }
 
-        public EFRepository(TContext dbContext)
+        protected EFRepository(TContext dbContext)
         {
             DbContext = dbContext;
             DbSet = dbContext.Set<TEntity>();
@@ -77,9 +77,9 @@ namespace LeanCode.DomainModels.EF
             return SaveChangesAsync(cancellationToken);
         }
 
-        public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public virtual Task DeleteRangeAsync(IEnumerable<TEntity> entity, CancellationToken cancellationToken = default)
         {
-            DeleteRange(entities);
+            DeleteRange(entity);
             return SaveChangesAsync(cancellationToken);
         }
 
@@ -100,7 +100,7 @@ namespace LeanCode.DomainModels.EF
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Id<TEntity>>
         where TContext : notnull, DbContext
     {
-        public EFRepository(TContext dbContext)
+        protected EFRepository(TContext dbContext)
             : base(dbContext) { }
     }
 }

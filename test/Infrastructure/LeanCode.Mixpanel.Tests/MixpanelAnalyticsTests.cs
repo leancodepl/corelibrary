@@ -15,6 +15,7 @@ namespace LeanCode.Mixpanel.Tests
 
         private readonly MixpanelAnalytics analytics;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         public MixpanelAnalyticsTests()
         {
             analytics = new MixpanelAnalytics(
@@ -31,7 +32,7 @@ namespace LeanCode.Mixpanel.Tests
             await analytics.TrackAsync(Guid.NewGuid().ToString(), "ActivityCreated", "activityId", Guid.NewGuid().ToString());
         }
 
-        public class MixpanelFactAttribute : FactAttribute
+        internal sealed class MixpanelFactAttribute : FactAttribute
         {
             public MixpanelFactAttribute()
             {

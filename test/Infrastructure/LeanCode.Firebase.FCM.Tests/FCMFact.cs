@@ -2,7 +2,7 @@ using Xunit;
 
 namespace LeanCode.Firebase.FCM.Tests
 {
-    public class FCMFactAttribute : FactAttribute
+    public sealed class FCMFactAttribute : FactAttribute
     {
         public FCMFactAttribute()
         {

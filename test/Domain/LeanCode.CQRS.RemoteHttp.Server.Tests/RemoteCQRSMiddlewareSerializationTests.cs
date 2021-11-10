@@ -35,7 +35,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 
     internal class AlwaysUpperPolicy : JsonNamingPolicy
     {
-        public override string ConvertName(string name) => name.ToUpper();
+        public override string ConvertName(string name) => name.ToUpperInvariant();
     }
 
     public class SerializationTestResult

@@ -7,6 +7,8 @@ namespace LeanCode.DomainModels.Model
     /// <summary>A stronly typed id consisting of a guid prefixed with a lower-cased name of an entity.</summary>
     /// <remarks>Use <see cref="IdSlugAttribute"/> to override default entity prefix.</remarks>
     [TypedIdConverter]
+    [SuppressMessage("?", "CA1000", Justification = "The methods are expected.")]
+    [SuppressMessage("?", "CA1036", Justification = "We don't want to have easy comparison as it might be abused.")]
     public readonly struct SId<TEntity> : IEquatable<SId<TEntity>>, IComparable<SId<TEntity>>
         where TEntity : class, IIdentifiable<SId<TEntity>>
     {
@@ -116,10 +118,10 @@ namespace LeanCode.DomainModels.Model
             }
         }
 
-        public bool Equals(SId<TEntity> other) => Value.Equals(other.Value);
-        public int CompareTo(SId<TEntity> other) => Value.CompareTo(other.Value);
+        public bool Equals(SId<TEntity> other) => Value.Equals(other.Value, StringComparison.Ordinal);
+        public int CompareTo(SId<TEntity> other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override bool Equals(object? obj) => obj is SId<TEntity> id && Equals(id);
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
 
         public static bool operator ==(SId<TEntity> left, SId<TEntity> right) => left.Equals(right);
         public static bool operator !=(SId<TEntity> left, SId<TEntity> right) => !left.Equals(right);

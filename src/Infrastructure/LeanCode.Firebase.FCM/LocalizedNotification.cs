@@ -29,10 +29,20 @@ namespace LeanCode.Firebase.FCM
             return this;
         }
 
+        public LocalizedNotification RawImageUrl(Uri uri)
+        {
+            return RawImageUrl(uri.ToString());
+        }
+
         public LocalizedNotification RawImageUrl(string rawUrl)
         {
             notification.ImageUrl = rawUrl;
             return this;
+        }
+
+        public LocalizedNotification ImageUrl(Uri urlKey, params object[] arguments)
+        {
+            return ImageUrl(urlKey, arguments);
         }
 
         public LocalizedNotification ImageUrl(string urlKey, params object[] arguments)
@@ -43,6 +53,7 @@ namespace LeanCode.Firebase.FCM
 
         public Notification Build() => notification;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2225", Justification = "Exists, named `Build`.")]
         public static implicit operator Notification(LocalizedNotification n) => n.Build();
     }
 }

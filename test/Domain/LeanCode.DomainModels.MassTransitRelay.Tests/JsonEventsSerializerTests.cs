@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         private static readonly DateTime DateOccurred = new DateTime(2020, 5, 7, 11, 0, 0, 0, DateTimeKind.Utc);
         private readonly RaisedEventMetadata metadata;
 
-        public BaseJsonEventsSerializerTests()
+        protected BaseJsonEventsSerializerTests()
         {
             metadata = new RaisedEventMetadata
             {
@@ -46,7 +46,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             Assert.Equal(DateOccurred, raised.DateOcurred);
             Assert.Equal(typeof(TestEvent).FullName, raised.EventType);
             Assert.False(raised.WasPublished);
-            Assert.Contains(@"""Value"":5", raised.Payload);
+            Assert.Contains(@"""Value"":5", raised.Payload, StringComparison.Ordinal);
         }
 
         [Fact]
@@ -88,28 +88,28 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
 
             Assert.Equal(evt, unwrapped);
         }
+    }
 
-        public record TestEvent(Guid Id, DateTime DateOccurred, int Value) : IDomainEvent;
+    public record TestEvent(Guid Id, DateTime DateOccurred, int Value) : IDomainEvent;
 
-        public record TestEventWithPrivateFields : IDomainEvent
+    public record TestEventWithPrivateFields : IDomainEvent
+    {
+        public Guid Id { get; private init; }
+        public DateTime DateOccurred { get; private init; }
+        public string Value { get; private init; }
+
+        public static TestEventWithPrivateFields Create(string val) => new(val);
+
+        private TestEventWithPrivateFields(string val)
         {
-            public Guid Id { get; private init; }
-            public DateTime DateOccurred { get; private init; }
-            public string Value { get; private init; }
+            Id = Guid.NewGuid();
+            DateOccurred = TimeProvider.Now;
+            Value = val;
+        }
 
-            public static TestEventWithPrivateFields Create(string val) => new(val);
-
-            private TestEventWithPrivateFields(string val)
-            {
-                Id = Guid.NewGuid();
-                DateOccurred = TimeProvider.Now;
-                Value = val;
-            }
-
-            private TestEventWithPrivateFields()
-            {
-                Value = "";
-            }
+        private TestEventWithPrivateFields()
+        {
+            Value = "";
         }
     }
 

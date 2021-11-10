@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Benchmarks
 {
-    public class InputToOutputMiddleware
+    public static class InputToOutputMiddleware
     {
         public static async Task Invoke(HttpContext context)
         {

@@ -26,7 +26,7 @@ namespace LeanCode.Firebase.Firestore
             database = await new FirestoreDbBuilder
             {
                 ChannelCredentials = firebaseApp.Options.Credential.ToChannelCredentials(),
-                ProjectId = firebaseApp.Options.ProjectId ?? Platform.Instance().ProjectId,
+                ProjectId = firebaseApp.Options.ProjectId ?? (await Platform.InstanceAsync()).ProjectId,
                 EmulatorDetection = EmulatorDetection.EmulatorOrProduction,
             }.BuildAsync(cancellationToken);
         }

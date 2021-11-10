@@ -13,7 +13,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
             .GetMethod(nameof(ExecuteCommandAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteCommandAsync)} method.");
+            ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteCommandAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;

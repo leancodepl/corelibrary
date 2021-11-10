@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LeanCode.AzureIdentity.Tests
 {
-    public class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
+    public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     {
         [Fact]
         public void Reads_config_from_asp_net_config()

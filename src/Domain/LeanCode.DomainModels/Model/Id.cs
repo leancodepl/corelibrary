@@ -6,6 +6,8 @@ namespace LeanCode.DomainModels.Model
 {
     [DebuggerDisplay("{Value}")]
     [TypedIdConverter]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000", Justification = "The methods are expected.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1036", Justification = "We don't want to have easy comparison as it might be abused.")]
     public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEntity>>
         where TEntity : class, IIdentifiable<Id<TEntity>>
     {
@@ -30,12 +32,18 @@ namespace LeanCode.DomainModels.Model
 
         public static bool operator ==(Id<TEntity> left, Id<TEntity> right) => left.Equals(right);
         public static bool operator !=(Id<TEntity> left, Id<TEntity> right) => !left.Equals(right);
+
+        public Guid ToGuid() => Value;
         public static implicit operator Guid(Id<TEntity> id) => id.Value;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2225", Justification = "Already provided as `From`.")]
         public static explicit operator Id<TEntity>(Guid id) => new(id);
     }
 
     [DebuggerDisplay("{Value}")]
     [TypedIdConverter]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000", Justification = "The methods are expected.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1036", Justification = "We don't want to have easy comparison as it might be abused.")]
     public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<TEntity>>
         where TEntity : class, IIdentifiable<IId<TEntity>>
     {
@@ -55,16 +63,22 @@ namespace LeanCode.DomainModels.Model
         public int CompareTo(IId<TEntity> other) => Value.CompareTo(other.Value);
         public override bool Equals(object? obj) => obj is IId<TEntity> id && Value.Equals(id.Value);
         public override int GetHashCode() => HashCode.Combine(Value);
-        public override string? ToString() => Value.ToString();
+        public override string? ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
         public static bool operator ==(IId<TEntity> left, IId<TEntity> right) => left.Equals(right);
         public static bool operator !=(IId<TEntity> left, IId<TEntity> right) => !left.Equals(right);
+
+        public int ToInt32() => Value;
         public static implicit operator int(IId<TEntity> id) => id.Value;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2225", Justification = "Already provided as `From`.")]
         public static explicit operator IId<TEntity>(int id) => new(id);
     }
 
     [DebuggerDisplay("{Value}")]
     [TypedIdConverter]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000", Justification = "The methods are expected.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1036", Justification = "We don't want to have easy comparison as it might be abused.")]
     public readonly struct LId<TEntity> : IEquatable<LId<TEntity>>, IComparable<LId<TEntity>>
         where TEntity : class, IIdentifiable<LId<TEntity>>
     {
@@ -84,9 +98,14 @@ namespace LeanCode.DomainModels.Model
         public int CompareTo(LId<TEntity> other) => Value.CompareTo(other.Value);
         public override bool Equals(object? obj) => obj is LId<TEntity> id && Value.Equals(id.Value);
         public override int GetHashCode() => HashCode.Combine(Value);
-        public override string? ToString() => Value.ToString();
+        public override string? ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
         public static bool operator ==(LId<TEntity> left, LId<TEntity> right) => left.Equals(right);
         public static bool operator !=(LId<TEntity> left, LId<TEntity> right) => !left.Equals(right);
+
+        public long ToInt64() => Value;
         public static implicit operator long(LId<TEntity> id) => id.Value;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2225", Justification = "Already provided as `From`.")]
+        public static explicit operator LId<TEntity>(long id) => new(id);
     }
 }

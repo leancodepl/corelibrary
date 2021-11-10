@@ -18,9 +18,17 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 {
     public abstract class DiagnosticVerifier : IDisposable
     {
-        protected abstract DiagnosticAnalyzer GetDiagnosticAnalyzer();
+        private bool disposedValue;
 
         protected AdhocWorkspace Workspace { get; } = new AdhocWorkspace();
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected abstract DiagnosticAnalyzer GetDiagnosticAnalyzer();
 
         protected Task VerifyDiagnostics(string source, params DiagnosticResult[] expected)
         {
@@ -112,11 +120,6 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             return solution.GetProject(projectId);
         }
 
-        public void Dispose()
-        {
-            Workspace.Dispose();
-        }
-
         private static readonly MetadataReference[] CommonReferences = new[]
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -127,5 +130,18 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
             MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
         };
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Workspace.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
     }
 }

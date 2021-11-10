@@ -18,6 +18,7 @@ namespace LeanCode.IntegrationTests.App
             this.config = config;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA5404", Justification = "References don't go out of scope.")]
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddHostedService<DbContextInitializer<TestDbContext>>();
@@ -26,8 +27,8 @@ namespace LeanCode.IntegrationTests.App
             services.AddMemoryCache();
 
             services.AddIdentityServer()
-                .AddInMemoryApiResources(AuthConfig.GetApiResources())
-                .AddInMemoryIdentityResources(AuthConfig.GetIdentityResources())
+                .AddInMemoryApiResources(AuthConfig.ApiResources)
+                .AddInMemoryIdentityResources(AuthConfig.IdentityResources)
                 .AddInMemoryApiScopes(AuthConfig.GetApiScopes())
                 .AddInMemoryClients(AuthConfig.GetClients())
                 .AddTestUsers(AuthConfig.GetUsers())

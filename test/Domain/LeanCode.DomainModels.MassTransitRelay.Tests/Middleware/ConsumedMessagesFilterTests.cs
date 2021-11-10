@@ -18,7 +18,8 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
-    public class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
+    public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
     {
         private static readonly Guid MessageId = Guid.NewGuid();
 

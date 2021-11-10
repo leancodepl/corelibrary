@@ -15,7 +15,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
             .GetMethod(nameof(ExecuteQueryAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
+            ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new ConcurrentDictionary<Type, MethodInfo>();
         private readonly IServiceProvider serviceProvider;
@@ -30,6 +30,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serviceProvider = serviceProvider;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
         protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
             var type = obj.GetType();

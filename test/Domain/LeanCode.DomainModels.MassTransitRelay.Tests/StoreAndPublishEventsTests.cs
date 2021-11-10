@@ -11,7 +11,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests
 {
-    public class StoreAndPublishEventsTests : IDisposable
+    public sealed class StoreAndPublishEventsTests : IDisposable
     {
         private static readonly Guid Event1Id = Guid.NewGuid();
         private static readonly Guid Event2Id = Guid.NewGuid();
@@ -55,7 +55,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Persists_event_but_does_not_marks_published_if_publish_failed()
         {
-            publisher.PublishAsync(null, null).ReturnsForAnyArgs(_ => throw new Exception());
+            publisher.PublishAsync(null, null).ReturnsForAnyArgs(_ => throw new InvalidOperationException());
 
             await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
 
@@ -70,7 +70,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public async Task One_interupted_publish_does_not_affect_consecutive_ones()
         {
             publisher.PublishAsync(null, null).ReturnsForAnyArgs(
-                _ => throw new Exception(),
+                _ => throw new InvalidOperationException(),
                 _ => Task.CompletedTask);
 
             await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
@@ -118,7 +118,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             Assert.Equal(wasPublished, evt.WasPublished);
         }
 
-        private void AssertRaisedEvent(RaisedEvent evt, Guid id, Guid conversationId, ActivityTraceId traceId)
+        private static void AssertRaisedEvent(RaisedEvent evt, Guid id, Guid conversationId, ActivityTraceId traceId)
         {
             Assert.Equal(id, evt.Id);
             Assert.Equal(conversationId, evt.Metadata.ConversationId);

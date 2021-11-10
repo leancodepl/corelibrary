@@ -11,6 +11,7 @@ namespace LeanCode.ExternalIdentityProviders.Apple
     {
         private const string KeysCacheKey = "apple-keys";
         private static readonly TimeSpan KeysCacheTime = TimeSpan.FromHours(24);
+        private static readonly Uri AppleKeysUri = new("https://appleid.apple.com/auth/keys");
 
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<AppleIdService>();
 
@@ -29,6 +30,7 @@ namespace LeanCode.ExternalIdentityProviders.Apple
             this.memoryCache = memoryCache;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         public async Task<AppleTokenValidationResult> ValidateTokenAsync(string idToken)
         {
             var keySet = await GetAppleKeySetAsync();
@@ -81,7 +83,7 @@ namespace LeanCode.ExternalIdentityProviders.Apple
 
                     logger.Debug("Downloading Apple signing keys");
 
-                    return JsonWebKeySet.Create(await httpClient.GetStringAsync("https://appleid.apple.com/auth/keys"));
+                    return JsonWebKeySet.Create(await httpClient.GetStringAsync(AppleKeysUri));
                 });
         }
     }

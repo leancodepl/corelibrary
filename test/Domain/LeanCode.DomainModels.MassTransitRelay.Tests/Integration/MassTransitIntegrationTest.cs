@@ -103,7 +103,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
                 msg => AssertConsumedMessage(msg, typeof(Event3RetryingConsumer), typeof(Event3)));
         }
 
-        private void AssertConsumed(HandledEvent evt, Type consumerType)
+        private static void AssertConsumed(HandledEvent evt, Type consumerType)
         {
             Assert.Equal(consumerType, evt.ConsumerType);
         }

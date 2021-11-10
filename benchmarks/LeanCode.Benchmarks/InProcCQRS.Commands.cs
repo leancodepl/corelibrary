@@ -68,6 +68,7 @@ namespace LeanCode.Benchmarks
             secured.RunAsync(appContext, userCommand);
 
         [Benchmark]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Deliberate approach.")]
         public async Task<CommandResult> SecuredButFailingCommandWithSecuredPipeline()
         {
             try

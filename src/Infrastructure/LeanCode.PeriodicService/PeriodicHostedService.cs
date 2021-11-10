@@ -34,6 +34,7 @@ namespace LeanCode.PeriodicService
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
         {
             using (var innerScope = scope.BeginLifetimeScope())

@@ -10,6 +10,7 @@ namespace LeanCode.EFMigrator
 {
     public abstract class Migrator
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1819", Justification = "Convention for process arguments.")]
         protected virtual string[] Args { get; } = GetCommandLineArgs().Skip(1).ToArray();
         protected virtual string SeedPath { get; } = "Seed.sql";
 
@@ -112,6 +113,7 @@ namespace LeanCode.EFMigrator
             WriteLine($"Migration of {contextName} completed");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2100", Justification = "It does not. :)")]
         protected virtual int Seed()
         {
             int rowsAffected;

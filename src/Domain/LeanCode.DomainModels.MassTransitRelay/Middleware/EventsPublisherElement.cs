@@ -43,6 +43,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
             return Task.WhenAll(publishTasks);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         private async Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
         {
             logger.Debug("Publishing event of type {DomainEvent}", evt);

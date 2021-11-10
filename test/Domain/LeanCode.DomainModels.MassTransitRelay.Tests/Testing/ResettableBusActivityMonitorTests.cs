@@ -7,7 +7,8 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing
 {
-    public class ResettableBusActivityMonitorTests
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "Not needed in tests.")]
+    public abstract class ResettableBusActivityMonitorTests : IDisposable
     {
         private readonly ResettableBusActivityMonitor monitor = new ResettableBusActivityMonitor(TimeSpan.FromSeconds(0.2));
 
@@ -124,5 +125,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing
             var res3 = await monitor.AwaitBusInactivity(TimeSpan.FromSeconds(1));
             Assert.True(res3);
         }
+
+        public void Dispose() => ((IDisposable)monitor).Dispose();
     }
 }

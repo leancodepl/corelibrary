@@ -67,12 +67,11 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
-    [SuppressMessage(
-        "StyleCop.CSharp.NamingRules",
-        "SA1302:InterfaceNamesMustBeginWithI",
-        Justification = "Authorizers are exempt.")]
+    [SuppressMessage("?", "CA1715", Justification = "Authorizers are exempt.")]
+    [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
     public interface HasSampleAuthorizer { }
 
+    [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
     public interface IAuthorizerData { }
 
     public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, HasSampleAuthorizer
@@ -80,6 +79,7 @@ namespace LeanCode.CQRS.Tests
         public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new AsyncLocal<SampleAuthorizer>();
 
         public AppContext AppContext { get; set; }
+
         public IAuthorizerData Object { get; private set; }
         public object Data { get; private set; }
         public bool Result { get; set; }
@@ -92,11 +92,11 @@ namespace LeanCode.CQRS.Tests
         protected override Task<bool> CheckIfAuthorizedAsync(
             AppContext appContext,
             IAuthorizerData obj,
-            object additionalData)
+            object customData)
         {
             AppContext = appContext;
             Object = obj;
-            Data = additionalData;
+            Data = customData;
             return Task.FromResult(Result);
         }
     }

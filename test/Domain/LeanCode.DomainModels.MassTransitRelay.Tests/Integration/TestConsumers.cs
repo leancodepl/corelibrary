@@ -69,7 +69,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             var isRetry = IsRetry.AddOrUpdate(context.Message.Id, false, (_, __) => true);
             if (!isRetry)
             {
-                throw new Exception("This handler fails for testing purposes");
+                throw new InvalidOperationException("This handler fails for testing purposes");
             }
 
             reporter.ReportEvent(this, context);

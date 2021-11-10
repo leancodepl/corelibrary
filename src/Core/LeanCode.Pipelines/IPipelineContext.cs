@@ -16,6 +16,8 @@ namespace LeanCode.Pipelines
     {
         private IPipelineScope? scope;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1065", Justification = "Expected behavior.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
         public IPipelineScope Scope
         {
             get => scope ?? throw new NullReferenceException();
