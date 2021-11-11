@@ -187,12 +187,6 @@ namespace LeanCode.CQRS.Default.Tests.Security
         [DerivedAuthorizeWhen(DerivedAttributeParam)]
         private class DerivedAuthorizer { }
 
-        internal interface IFirstAuthorizer : ICustomAuthorizerWrapper { }
-
-        internal interface ISecondAuthorizer : ICustomAuthorizerWrapper { }
-
-        internal interface IDerivedAuthorizer : ICustomAuthorizerWrapper { }
-
         internal sealed class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
         {
             public DerivedAuthorizeWhenAttribute(string param)
@@ -207,4 +201,10 @@ namespace LeanCode.CQRS.Default.Tests.Security
                : base(authorizerType ?? typeof(object))
         { }
     }
+
+    public interface IFirstAuthorizer : ICustomAuthorizerWrapper { }
+
+    public interface ISecondAuthorizer : ICustomAuthorizerWrapper { }
+
+    public interface IDerivedAuthorizer : ICustomAuthorizerWrapper { }
 }

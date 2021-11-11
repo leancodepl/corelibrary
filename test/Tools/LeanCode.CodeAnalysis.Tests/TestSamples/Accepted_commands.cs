@@ -15,4 +15,11 @@ namespace LeanCode.CodeAnalysis.Tests.Data
 
     [AllowUnauthorized]
     public class UnauthorizedCommand : ICommand { }
+
+    public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
+    {
+        public AuthorizeWhenCustomAttribute(Type authorizerType = null)
+               : base(authorizerType ?? typeof(object))
+        { }
+    }
 }
