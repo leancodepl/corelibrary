@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.Security
 {
-    public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, HasPermissions
+    public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, IHasPermissions
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
 

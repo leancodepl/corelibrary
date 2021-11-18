@@ -67,14 +67,13 @@ namespace LeanCode.CQRS.Tests
     public class NoCHCommand : ICommand { }
     public class NoQHQuery : IQuery<object> { }
 
-    [SuppressMessage("?", "CA1715", Justification = "Authorizers are exempt.")]
     [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
-    public interface HasSampleAuthorizer { }
+    public interface IHasSampleAuthorizer { }
 
     [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
     public interface IAuthorizerData { }
 
-    public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, HasSampleAuthorizer
+    public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, IHasSampleAuthorizer
     {
         public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new AsyncLocal<SampleAuthorizer>();
 

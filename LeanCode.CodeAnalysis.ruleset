@@ -66,8 +66,6 @@
         <!-- StaticElementsMustAppearBeforeInstanceElements -->
 
 
-        <Rule Id="SA1302" Action="Info"/>
-        <!-- InterfaceNamesMustBeginWithI -->
         <Rule Id="SA1316" Action="None"/>
         <!-- TupleElementNamesShouldUseCorrectCasing -->
 
@@ -118,8 +116,5 @@
         <!-- ConstructorSummaryDocumentationMustBeginWithStandardText -->
         <Rule Id="SA1649" Action="None"/>
         <!-- FileNameMustMatchTypeName -->
-
-        <Rule Id="SA1715" Action="None"/>
-        <!-- InterfaceNamesMustBeginWithI - replaced by CA1715 -->
     </Rules>
 </RuleSet>
