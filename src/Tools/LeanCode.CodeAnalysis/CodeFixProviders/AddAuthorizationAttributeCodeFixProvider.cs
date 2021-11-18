@@ -42,6 +42,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
             var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
             var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);
             return availableAttributes
+                .Where(attr => !attr.IsAbstract)
                 .Select(attr => (attr.Name, attr.ContainingNamespace.ToString()));
         }
 
