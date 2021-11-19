@@ -12,9 +12,9 @@ namespace LeanCode.Components.Startup
         protected IConfiguration Configuration { get; }
         protected ILogger Logger { get; }
 
-        protected abstract IAppModule[] Modules { get; }
+        protected abstract IReadOnlyList<IAppModule> Modules { get; }
 
-        public LeanStartup(IConfiguration config)
+        protected LeanStartup(IConfiguration config)
         {
             Configuration = config;
             Logger = Log.ForContext(GetType());

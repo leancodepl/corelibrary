@@ -8,7 +8,7 @@ using MassTransit.Util;
 namespace LeanCode.DomainModels.MassTransitRelay.Testing
 {
 #pragma warning disable 0420
-    public class ResettableBusActivityMonitor :
+    public sealed class ResettableBusActivityMonitor :
         IBusActivityMonitor,
         IReceiveObserver,
         IConsumeObserver,
@@ -61,6 +61,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         Task IPublishObserver.PostPublish<T>(PublishContext<T> context) => Decrement(ref publishInFlight);
         Task IPublishObserver.PublishFault<T>(PublishContext<T> context, Exception exception) => Decrement(ref publishInFlight);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "We want clean API.")]
         void IDisposable.Dispose() => timer.Dispose();
 
         private Task Increment(ref int counter)

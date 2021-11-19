@@ -14,19 +14,19 @@ namespace LeanCode.CQRS.Execution
             this.resolver = resolver;
         }
 
-        public async Task<object?> ExecuteAsync(TAppContext appContext, IQuery query)
+        public async Task<object?> ExecuteAsync(TAppContext ctx, IQuery input)
         {
-            var queryType = query.GetType();
+            var queryType = input.GetType();
             var handler = resolver.FindQueryHandler(queryType);
 
             if (handler is null)
             {
-                logger.Fatal("Cannot find a handler for query {@Query}", query);
+                logger.Fatal("Cannot find a handler for query {@Query}", input);
 
                 throw new QueryHandlerNotFoundException(queryType);
             }
 
-            return await handler.ExecuteAsync(appContext, query);
+            return await handler.ExecuteAsync(ctx, input);
         }
     }
 }

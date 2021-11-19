@@ -72,6 +72,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
         }
 
         [Fact]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Can be ignored in tests.")]
         public async Task Correctly_deserializes_validation_errors_even_in_the_presence_of_custom_serialization_options()
         {
             var handler = new ShortcircuitingJsonHandler(HttpStatusCode.UnprocessableEntity, "{\"ValidationErrors\":[{\"ErrorCode\":1,\"ErrorMessage\":\"msg\",\"PropertyName\":\"prop\"}]}");
@@ -148,6 +149,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
             await Assert.ThrowsAsync<TException>(() => exec.RunAsync(new ExampleCommand()));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         private static (HttpCommandsExecutor, ShortcircuitingJsonHandler) Prepare(HttpStatusCode statusCode, string result)
         {
             var handler = new ShortcircuitingJsonHandler(statusCode, result);

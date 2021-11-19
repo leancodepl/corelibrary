@@ -17,6 +17,7 @@ namespace LeanCode.Localization.StringLocalizers
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1065", Justification = "Expected behavior.")]
         public string this[CultureInfo culture, string name]
         {
             get

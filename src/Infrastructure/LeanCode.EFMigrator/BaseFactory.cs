@@ -12,7 +12,7 @@ namespace LeanCode.EFMigrator
         where TFactory : BaseFactory<TContext, TFactory>
     {
         protected virtual string AssemblyName => typeof(TFactory).Assembly.GetName().Name
-            ?? throw new NullReferenceException();
+            ?? throw new InvalidOperationException("This type is not supported on Assembly-less runtimes.");
 
         protected virtual void UseAdditionalSqlServerDbContextOptions(SqlServerDbContextOptionsBuilder builder) { }
         protected virtual void UseAdditionalDbContextOptions(DbContextOptionsBuilder<TContext> builder) { }
@@ -35,7 +35,7 @@ namespace LeanCode.EFMigrator
             UseAdditionalDbContextOptions(builder);
 
             return (TContext?)Activator.CreateInstance(typeof(TContext), builder.Options)
-                ?? throw new NullReferenceException("Failed to create DbContext instance.");
+                ?? throw new InvalidOperationException("Failed to create DbContext instance.");
         }
     }
 }

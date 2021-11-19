@@ -55,9 +55,9 @@ namespace LeanCode.CodeAnalysis.CodeActions
             return editor.GetChangedDocument();
         }
 
-        private string StripAttributeSuffix(string name) =>
-            name.EndsWith("Attribute")
-            ? name.Substring(0, name.Length - "Attribute".Length)
+        private static string StripAttributeSuffix(string name) =>
+            name.EndsWith("Attribute", StringComparison.Ordinal)
+            ? name[..^"Attribute".Length]
             : name;
     }
 }

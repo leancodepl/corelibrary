@@ -8,7 +8,7 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace LeanCode.CodeAnalysis.CodeActions
 {
-    public class Helpers
+    public static class Helpers
     {
         private static readonly NamespaceNameComparer NamespaceComparer = new NamespaceNameComparer();
 
@@ -67,13 +67,13 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 }
                 else
                 {
-                    return x.CompareTo(y);
+                    return string.Compare(x, y, StringComparison.Ordinal);
                 }
             }
 
             private static bool IsSystem(string name)
             {
-                return name == "System" || name.StartsWith("System.");
+                return name == "System" || name.StartsWith("System.", StringComparison.Ordinal);
             }
         }
     }

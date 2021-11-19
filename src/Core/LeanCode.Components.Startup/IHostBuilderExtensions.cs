@@ -131,7 +131,7 @@ namespace LeanCode.Components.Startup
             }
             else
             {
-                throw new ApplicationException("Application startup exception: null key vault address.");
+                throw new ArgumentException("Application startup exception: null key vault address.");
             }
         }
     }

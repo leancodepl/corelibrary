@@ -35,7 +35,7 @@ public static class DefaultLeanCodeCredential
 
         return Create(config);
 
-        static string? GetEnv(string rawKey) => Environment.GetEnvironmentVariable(rawKey.Replace(":", "__"));
+        static string? GetEnv(string rawKey) => Environment.GetEnvironmentVariable(rawKey.Replace(":", "__", StringComparison.Ordinal));
     }
 
     public static TokenCredential Create(AzureCredentialConfiguration config)

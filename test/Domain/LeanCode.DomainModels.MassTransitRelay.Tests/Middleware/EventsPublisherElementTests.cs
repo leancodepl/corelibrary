@@ -64,7 +64,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
                 return Task.FromResult(input);
             }
 
-            publisher.PublishAsync(evt2, Arg.Any<Guid>()).Returns(x => throw new Exception());
+            publisher.PublishAsync(evt2, Arg.Any<Guid>()).Returns(x => throw new InvalidOperationException());
 
             await element.ExecuteAsync(testContext, inp, Next);
 

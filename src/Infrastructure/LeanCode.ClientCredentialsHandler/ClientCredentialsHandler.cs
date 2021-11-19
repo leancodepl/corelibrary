@@ -44,6 +44,7 @@ namespace LeanCode.ClientCredentialsHandler
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Disposed by parent class.")]
         public ClientCredentialsHandler(ClientCredentialsConfiguration config)
             : base(new HttpClientHandler())
         {
@@ -116,14 +117,16 @@ namespace LeanCode.ClientCredentialsHandler
                 {
                     logger.Debug("Requesting access token");
 
+                    using var request = new ClientCredentialsTokenRequest
+                    {
+                        Address = tokenEndpoint,
+                        ClientId = config.ClientId,
+                        ClientSecret = config.ClientSecret,
+                        Scope = config.Scopes,
+                    };
                     var response = await httpClient.RequestClientCredentialsTokenAsync(
-                        new ClientCredentialsTokenRequest
-                        {
-                            Address = tokenEndpoint,
-                            ClientId = config.ClientId,
-                            ClientSecret = config.ClientSecret,
-                            Scope = config.Scopes,
-                        }, cancellationToken);
+                        request,
+                        cancellationToken);
 
                     if (!response.IsError)
                     {

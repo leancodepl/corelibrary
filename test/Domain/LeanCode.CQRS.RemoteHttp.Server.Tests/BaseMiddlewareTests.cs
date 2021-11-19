@@ -24,7 +24,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         private readonly string endpoint;
         private readonly string defaultObject;
 
-        public BaseMiddlewareTests(string endpoint, Type defaultObject, ISerializer? serializer = null)
+        protected BaseMiddlewareTests(string endpoint, Type defaultObject, ISerializer? serializer = null)
         {
             this.endpoint = endpoint;
             this.defaultObject = defaultObject.FullName!;

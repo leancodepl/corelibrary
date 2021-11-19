@@ -15,7 +15,8 @@ using Xunit;
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 {
     [Collection("EventsInterceptor")]
-    public class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
+    public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
     {
         private readonly IContainer container;
         private readonly InMemoryTestHarness harness;

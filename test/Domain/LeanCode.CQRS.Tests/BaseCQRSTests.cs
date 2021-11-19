@@ -66,11 +66,11 @@ namespace LeanCode.CQRS.Tests
             ICustomAuthorizerWrapper wrapper;
             if (typeof(TData).IsAssignableTo<ICommand>())
             {
-                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(ICommand));
+                wrapper = AuthResolver.FindAuthorizer(typeof(IHasSampleAuthorizer), typeof(ICommand));
             }
             else
             {
-                wrapper = AuthResolver.FindAuthorizer(typeof(HasSampleAuthorizer), typeof(IQuery));
+                wrapper = AuthResolver.FindAuthorizer(typeof(IHasSampleAuthorizer), typeof(IQuery));
             }
 
             var underlying = SampleAuthorizer.LastInstance.Value;

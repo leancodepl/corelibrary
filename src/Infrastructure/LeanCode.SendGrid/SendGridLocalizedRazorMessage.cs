@@ -10,6 +10,7 @@ namespace LeanCode.SendGrid
         internal CultureInfo Culture { get; private set; }
 
         [JsonIgnore]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1819", Justification = "Required to preserve args convention.")]
         public object[]? SubjectFormatArgs { get; set; }
 
         public SendGridLocalizedRazorMessage(string cultureName)

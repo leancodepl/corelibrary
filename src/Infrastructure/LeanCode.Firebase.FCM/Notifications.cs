@@ -27,11 +27,13 @@ namespace LeanCode.Firebase.FCM
                 {
                     var value = prop.GetValue(data);
 
-                    if (value is object)
+                    if (value is not null)
                     {
                         if (value is Enum @enum)
                         {
-                            result.Add(prop.Name, Convert.ToInt32(@enum).ToString()!);
+                            var strValue = Convert.ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
+                                .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            result.Add(prop.Name, strValue);
                         }
                         else
                         {

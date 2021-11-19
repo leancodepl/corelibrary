@@ -15,6 +15,7 @@ namespace LeanCode.ExternalIdentityProviders.Tests
 
     public static class UserManager
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         public static UserManager<User> PrepareInMemory()
         {
             var dbContext = new IdentityDbContext<User, Role, Guid>(

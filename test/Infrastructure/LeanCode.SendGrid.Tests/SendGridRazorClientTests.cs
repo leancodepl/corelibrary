@@ -43,7 +43,7 @@ namespace LeanCode.Infrastructure.SendGrid.Tests
 
                     var rendered = $"{templateName}:\n{JsonSerializer.Serialize(model, model.GetType(), JsonOptions)}";
 
-                    return templateName.Contains(".txt")
+                    return templateName.Contains(".txt", StringComparison.Ordinal)
                         ? rendered
                         : string.Join(null, rendered
                             .Split('\n')
@@ -64,7 +64,7 @@ namespace LeanCode.Infrastructure.SendGrid.Tests
             client = new SendGridRazorClient(new SendGridClient(Options), renderer, localizer);
         }
 
-        public class SendGridFactAttribute : FactAttribute
+        internal sealed class SendGridFactAttribute : FactAttribute
         {
             public SendGridFactAttribute()
             {

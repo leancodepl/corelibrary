@@ -32,7 +32,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
             var context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
             await codeFixProvider.RegisterCodeFixesAsync(context);
 
-            actions.Sort((a, b) => a.Title.CompareTo(b.Title));
+            actions.Sort((a, b) => string.Compare(a.Title, b.Title, StringComparison.Ordinal));
 
             var actualFixTitles = actions.Select(f => f.Title);
             Assert.Equal(expectedFixes, actualFixTitles);
@@ -51,6 +51,7 @@ namespace LeanCode.CodeAnalysis.Tests.Verifiers
 
                 throw new Xunit.Sdk.XunitException(
                     string.Format(
+                        System.Globalization.CultureInfo.InvariantCulture,
                         "Fix introduced new compiler diagnostics:\r\n{0}\r\n\r\nNew document:\r\n{1}\r\n",
                         string.Join("\r\n", newCompilerDiagnostics.Select(d => d.ToString())),
                         (await document.GetSyntaxRootAsync()).ToFullString()));

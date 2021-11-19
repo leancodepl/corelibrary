@@ -57,6 +57,7 @@ namespace LeanCode.SmsSender
             this.client = client;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2234", Justification = "Could potentialy change behavior.")]
         public async Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default)
         {
             logger.Verbose("Sending SMS using SMS Api");

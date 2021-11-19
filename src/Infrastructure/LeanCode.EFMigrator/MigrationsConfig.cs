@@ -6,6 +6,7 @@ namespace LeanCode.EFMigrator
     public static class MigrationsConfig
     {
         public static string ConnectionStringKey { get; set; } = "SqlServer:ConnectionString";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1056", Justification = "It should be `string`.")]
         public static string KeyVaultUrlKey { get; set; } = "KeyVault:VaultUrl";
 
         private static string? azureKeyVaultConnectionString;
@@ -15,7 +16,7 @@ namespace LeanCode.EFMigrator
             var keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey)
                 ?? throw new ArgumentNullException(KeyVaultUrlKey);
 
-            var connectionStringKey = ConnectionStringKey.Replace(":", "--");
+            var connectionStringKey = ConnectionStringKey.Replace(":", "--", StringComparison.Ordinal);
 
             var credential = DefaultLeanCodeCredential.CreateFromEnvironment();
             var client = new SecretClient(new(keyVaultUrl), credential);
@@ -27,7 +28,7 @@ namespace LeanCode.EFMigrator
         public static string? GetConnectionString() =>
             azureKeyVaultConnectionString ?? GetEnvironmentVariable(ConnectionStringKey);
 
-        public static string DenormalizeKey(this string @this) => @this.Replace(":", "__");
+        public static string DenormalizeKey(this string @this) => @this.Replace(":", "__", StringComparison.Ordinal);
 
         private static string? GetEnvironmentVariable(string key)
         {

@@ -2,7 +2,7 @@ using Xunit;
 
 namespace LeanCode.AzureIdentity.Tests
 {
-    public class AzureIdentityFact : FactAttribute
+    public sealed class AzureIdentityFact : FactAttribute
     {
         public AzureIdentityFact(params string[] requiredEnvVariables)
         {

@@ -37,11 +37,12 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
 
         public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-        private async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizersAsync(Solution solution, Compilation compilation)
+        private static async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizersAsync(Solution solution, Compilation compilation)
         {
             var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
             var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);
             return availableAttributes
+                .Where(attr => !attr.IsAbstract)
                 .Select(attr => (attr.Name, attr.ContainingNamespace.ToString()));
         }
 

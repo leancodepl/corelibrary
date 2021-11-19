@@ -54,14 +54,14 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             {
                 result = ExecutionResult.Fail(StatusCodes.Status405MethodNotAllowed);
             }
-            else if (request.Path.StartsWithSegments("/query"))
+            else if (request.Path.StartsWithSegments("/query", StringComparison.InvariantCulture))
             {
                 var queryHandler = new RemoteQueryHandler<TAppContext>(
                     context.RequestServices, catalog, contextTranslator, serializer);
 
                 result = await queryHandler.ExecuteAsync(context);
             }
-            else if (request.Path.StartsWithSegments("/command"))
+            else if (request.Path.StartsWithSegments("/command", StringComparison.InvariantCulture))
             {
                 var commandHandler = new RemoteCommandHandler<TAppContext>(
                     context.RequestServices, catalog, contextTranslator, serializer);

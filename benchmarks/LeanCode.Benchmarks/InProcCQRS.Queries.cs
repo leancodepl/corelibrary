@@ -76,6 +76,7 @@ namespace LeanCode.Benchmarks
             secured.GetAsync(appContext, userQuery);
 
         [Benchmark]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Deliberate approach.")]
         public async Task<SampleDTO> SecuredQueryButFailingWithSecuredPipeline()
         {
             try

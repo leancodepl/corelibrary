@@ -37,7 +37,7 @@ namespace LeanCode.CodeAnalysis.Analyzers
             context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
         }
 
-        public void AnalyzeSymbol(SymbolAnalysisContext context)
+        public static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             var type = (INamedTypeSymbol)context.Symbol;
             var contractType = GetContractType(type);

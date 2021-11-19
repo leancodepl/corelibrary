@@ -75,7 +75,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
             builder.AddMassTransit(cfg =>
             {
-                cfg.AddConsumers(consumersCatalog.Assemblies);
+                cfg.AddConsumers(consumersCatalog.Assemblies.ToArray());
                 busConfig(cfg);
             });
 

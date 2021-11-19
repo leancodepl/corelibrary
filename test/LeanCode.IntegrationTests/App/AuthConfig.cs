@@ -53,24 +53,20 @@ namespace LeanCode.IntegrationTests.App
             };
         }
 
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            return new IdentityResource[]
+        public static IEnumerable<IdentityResource> IdentityResources { get; } =
+            new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
                 new IdentityResources.Phone(),
             };
-        }
 
-        public static IEnumerable<ApiResource> GetApiResources()
-        {
-            return new[]
+        public static IEnumerable<ApiResource> ApiResources { get; } =
+            new[]
             {
                 new ApiResource("api", "API", new[] { "role" }),
             };
-        }
 
         public static List<ApiScope> GetApiScopes()
         {

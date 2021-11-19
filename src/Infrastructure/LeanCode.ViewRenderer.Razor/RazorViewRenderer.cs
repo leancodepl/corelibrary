@@ -49,8 +49,7 @@ namespace LeanCode.ViewRenderer.Razor
             var compiledView = await cache.GetOrCompileAsync(viewName);
 
             var view = (BaseView?)Activator.CreateInstance(compiledView.ViewType);
-
-            _ = view ?? throw new NullReferenceException("Failed to create instance of compiled view type.");
+            _ = view ?? throw new InvalidOperationException("Failed to create instance of compiled view type.");
 
             view.ChildView = childView;
             view.Model = model;

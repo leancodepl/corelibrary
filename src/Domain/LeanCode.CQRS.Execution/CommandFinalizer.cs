@@ -15,19 +15,19 @@ namespace LeanCode.CQRS.Execution
             this.resolver = resolver;
         }
 
-        public async Task<CommandResult> ExecuteAsync(TAppContext appContext, ICommand command)
+        public async Task<CommandResult> ExecuteAsync(TAppContext ctx, ICommand input)
         {
-            var commandType = command.GetType();
+            var commandType = input.GetType();
             var handler = resolver.FindCommandHandler(commandType);
 
             if (handler is null)
             {
-                logger.Fatal("Cannot find a handler for the command {@Command}", command);
+                logger.Fatal("Cannot find a handler for the command {@Command}", input);
 
                 throw new CommandHandlerNotFoundException(commandType);
             }
 
-            await handler.ExecuteAsync(appContext, command);
+            await handler.ExecuteAsync(ctx, input);
 
             return CommandResult.Success;
         }

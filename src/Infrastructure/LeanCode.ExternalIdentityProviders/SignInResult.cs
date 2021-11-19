@@ -2,6 +2,7 @@ using System;
 
 namespace LeanCode.ExternalIdentityProviders
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "C# way for union types.")]
     public abstract record SignInResult
     {
         private SignInResult() { }

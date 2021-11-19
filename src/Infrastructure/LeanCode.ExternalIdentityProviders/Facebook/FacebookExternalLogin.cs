@@ -17,6 +17,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             this.facebookClient = facebookClient;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         protected override async Task<string?> GetProviderIdAsync(string token)
         {
             try

@@ -11,7 +11,7 @@ namespace LeanCode.Components.Startup
     {
         internal static LoggerConfiguration DestructureCommonObjects(
             this LoggerConfiguration config,
-            Assembly[]? searchAssemblies)
+            IEnumerable<Assembly>? searchAssemblies)
         {
             if (searchAssemblies != null)
             {
@@ -32,7 +32,7 @@ namespace LeanCode.Components.Startup
             return config.Enrich.WithProperty("AppName", appName);
         }
 
-        private static List<TType> SelectTypes<TType>(Assembly[] searchAssemblies)
+        private static List<TType> SelectTypes<TType>(IEnumerable<Assembly> searchAssemblies)
         {
             return searchAssemblies
                 .SelectMany(a => a.ExportedTypes)

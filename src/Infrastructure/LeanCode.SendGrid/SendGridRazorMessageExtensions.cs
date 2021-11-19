@@ -158,7 +158,8 @@ namespace LeanCode.SendGrid
             }
             else
             {
-                message.SetGlobalSubject(string.Format(subject, formatArgs));
+                var formatted = string.Format(System.Globalization.CultureInfo.InvariantCulture, subject, formatArgs);
+                message.SetGlobalSubject(formatted);
             }
 
             return message;

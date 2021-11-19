@@ -153,3 +153,6 @@ dotnet_naming_rule.everything_else_naming.symbols                  = everything_
 dotnet_naming_rule.everything_else_naming.style                    = camel_case_style
 dotnet_naming_symbols.everything_else.applicable_kinds             = *
 dotnet_naming_symbols.everything_else.applicable_accessibilities   = *
+
+dotnet_diagnostic.CA1812.severity = none
+dotnet_diagnostic.CA1724.severity = none

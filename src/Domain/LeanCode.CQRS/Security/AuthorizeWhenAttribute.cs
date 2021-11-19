@@ -6,12 +6,12 @@ using System.Reflection;
 namespace LeanCode.CQRS.Security
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
-    public class AuthorizeWhenAttribute : Attribute
+    public abstract class AuthorizeWhenAttribute : Attribute
     {
         private readonly Type authorizerType;
         private readonly object? customData;
 
-        public AuthorizeWhenAttribute(Type authorizerType, object? customData = null)
+        protected AuthorizeWhenAttribute(Type authorizerType, object? customData = null)
         {
             this.authorizerType = authorizerType;
             this.customData = customData;
@@ -25,6 +25,7 @@ namespace LeanCode.CQRS.Security
                 .ToList();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Deliberate nesting.")]
         public sealed class AuthorizerDefinition
         {
             public Type Authorizer { get; }
@@ -37,7 +38,18 @@ namespace LeanCode.CQRS.Security
             }
 
             internal static AuthorizerDefinition Create(AuthorizeWhenAttribute attr) =>
-                new AuthorizerDefinition(attr);
+                new(attr);
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
+    public abstract class AuthorizeWhenAttribute<T> : AuthorizeWhenAttribute
+    {
+        protected AuthorizeWhenAttribute(object? customData = null)
+            : base(typeof(T), customData)
+        { }
+
+        public static List<AuthorizerDefinition> GetCustomAuthorizers() =>
+            GetCustomAuthorizers(typeof(T));
     }
 }

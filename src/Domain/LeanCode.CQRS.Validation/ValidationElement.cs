@@ -17,28 +17,28 @@ namespace LeanCode.CQRS.Validation
         }
 
         public async Task<CommandResult> ExecuteAsync(
-            TAppContext appContext,
-            ICommand payload,
+            TAppContext ctx,
+            ICommand input,
             Func<TAppContext, ICommand, Task<CommandResult>> next)
         {
-            var commandType = payload.GetType();
+            var commandType = input.GetType();
             var validator = resolver.FindCommandValidator(commandType);
 
             if (validator is null)
             {
-                return await next(appContext, payload);
+                return await next(ctx, input);
             }
 
-            var result = await validator.ValidateAsync(appContext, payload);
+            var result = await validator.ValidateAsync(ctx, input);
 
             if (!result.IsValid)
             {
-                logger.Warning("Command {@Command} is not valid with result {@Result}", payload, result);
+                logger.Warning("Command {@Command} is not valid with result {@Result}", input, result);
 
                 return CommandResult.NotValid(result);
             }
 
-            return await next(appContext, payload);
+            return await next(ctx, input);
         }
     }
 

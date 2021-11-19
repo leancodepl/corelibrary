@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.ExternalIdentityProviders.Facebook
 {
-    public class FacebookClient
+    public class FacebookClient : IDisposable
     {
         public const string ApiBase = "https://graph.facebook.com";
         public const string ApiVersion = "v9.0";
@@ -22,6 +22,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
         private readonly HMACSHA256? hmac;
 
         private readonly int photoSize;
+        private bool disposedValue;
 
         public FacebookClient(FacebookConfiguration config, HttpClient client)
         {
@@ -99,6 +100,12 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             return info;
         }
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         private FacebookUser ConvertResponse(JsonElement result)
         {
             var id = result.GetProperty("id").GetString()!;
@@ -157,13 +164,28 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             Encoding.ASCII.GetBytes(v);
 
         private static string ToHexString(byte[] data) =>
-            BitConverter.ToString(data).Replace("-", "").ToLower();
+            BitConverter.ToString(data)
+                .Replace("-", "", StringComparison.Ordinal)
+                .ToLowerInvariant();
 
         private static string AppendProof(string uri, string accessToken, string proof)
         {
-            return uri.Contains("?")
+            return uri.Contains('?', StringComparison.Ordinal)
                 ? $"{ApiVersion}/{uri}&access_token={accessToken}{proof}"
                 : $"{ApiVersion}/{uri}?access_token={accessToken}{proof}";
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    hmac?.Dispose();
+                }
+
+                disposedValue = true;
+            }
         }
     }
 }

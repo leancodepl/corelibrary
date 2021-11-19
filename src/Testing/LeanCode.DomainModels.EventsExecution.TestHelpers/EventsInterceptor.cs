@@ -45,40 +45,6 @@ namespace LeanCode.UnitTests.TestHelpers
             return eventStorage;
         }
 
-        public sealed class SingleStorage<TEvent>
-            where TEvent : class, IDomainEvent
-        {
-            public bool Raised { get; private set; }
-            public TEvent? Event { get; private set; }
-
-            internal void Store(IDomainEvent @event)
-            {
-                if (@event is TEvent ev)
-                {
-                    Raised = true;
-                    Event = ev;
-                }
-            }
-        }
-
-        public sealed class AllStorage<TEvent>
-            where TEvent : class, IDomainEvent
-        {
-            private readonly List<TEvent> events = new List<TEvent>();
-
-            public bool Raised { get; private set; }
-            public IReadOnlyList<TEvent> Events => events;
-
-            internal void Store(IDomainEvent @event)
-            {
-                if (@event is TEvent ev)
-                {
-                    Raised = true;
-                    events.Add(ev);
-                }
-            }
-        }
-
         private sealed class TestDomainEventInterceptor : IDomainEventInterceptor
         {
             private readonly AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?> handlers
@@ -93,6 +59,40 @@ namespace LeanCode.UnitTests.TestHelpers
                 {
                     handler.Invoke(domainEvent);
                 }
+            }
+        }
+    }
+
+    public sealed class SingleStorage<TEvent>
+        where TEvent : class, IDomainEvent
+    {
+        public bool Raised { get; private set; }
+        public TEvent? Event { get; private set; }
+
+        internal void Store(IDomainEvent @event)
+        {
+            if (@event is TEvent ev)
+            {
+                Raised = true;
+                Event = ev;
+            }
+        }
+    }
+
+    public sealed class AllStorage<TEvent>
+        where TEvent : class, IDomainEvent
+    {
+        private readonly List<TEvent> events = new List<TEvent>();
+
+        public bool Raised { get; private set; }
+        public IReadOnlyList<TEvent> Events => events;
+
+        internal void Store(IDomainEvent @event)
+        {
+            if (@event is TEvent ev)
+            {
+                Raised = true;
+                events.Add(ev);
             }
         }
     }

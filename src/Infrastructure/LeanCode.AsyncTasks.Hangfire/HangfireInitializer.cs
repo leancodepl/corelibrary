@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.AsyncTasks.Hangfire
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1001", Justification = "Disposed by other means.")]
     public class HangfireInitializer : IHostedService
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<HangfireInitializer>();

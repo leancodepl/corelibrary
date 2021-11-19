@@ -177,26 +177,34 @@ namespace LeanCode.CQRS.Default.Tests.Security
 
         private class NoAuthorizers { }
 
-        [AuthorizeWhen(typeof(IFirstAuthorizer))]
+        [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
         private class SingleAuthorizer { }
 
-        [AuthorizeWhen(typeof(IFirstAuthorizer))]
-        [AuthorizeWhen(typeof(ISecondAuthorizer))]
+        [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
+        [AuthorizeWhenCustom(typeof(ISecondAuthorizer))]
         private class MultipleAuthorizers { }
 
         [DerivedAuthorizeWhen(DerivedAttributeParam)]
         private class DerivedAuthorizer { }
 
-        public interface IFirstAuthorizer : ICustomAuthorizerWrapper { }
-
-        public interface ISecondAuthorizer : ICustomAuthorizerWrapper { }
-
-        public interface IDerivedAuthorizer : ICustomAuthorizerWrapper { }
-
-        public class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
+        internal sealed class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
         {
             public DerivedAuthorizeWhenAttribute(string param)
-                : base(typeof(IDerivedAuthorizer), param) { }
+                : base(typeof(IDerivedAuthorizer), param)
+            { }
         }
     }
+
+    public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
+    {
+        public AuthorizeWhenCustomAttribute(Type authorizerType = null)
+               : base(authorizerType ?? typeof(object))
+        { }
+    }
+
+    public interface IFirstAuthorizer : ICustomAuthorizerWrapper { }
+
+    public interface ISecondAuthorizer : ICustomAuthorizerWrapper { }
+
+    public interface IDerivedAuthorizer : ICustomAuthorizerWrapper { }
 }

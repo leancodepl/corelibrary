@@ -50,7 +50,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     t => t.Select(e => e.Token).ToList());
         }
 
-        public async Task AddUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
+        public async Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -59,14 +59,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
-                    DELETE FROM {GetTokensTableName()} WHERE [Token] = @token;
+                    DELETE FROM {GetTokensTableName()} WHERE [Token] = @newToken;
 
                     -- And add the new token
                     INSERT INTO {GetTokensTableName()} ([Id], [UserId], [Token], [DateCreated])
-                    VALUES (@newId, @userId, @token, @now);
+                    VALUES (@newId, @userId, @newToken, @now);
 
                     COMMIT TRANSACTION;
-                ", new { newId = Guid.NewGuid(), userId, token, now = TimeProvider.Now },
+                ", new { newId = Guid.NewGuid(), userId, newToken, now = TimeProvider.Now },
                 cancellationToken: cancellationToken);
                 logger.Information("Added push notification token for user {UserId} from the store", userId);
             }
@@ -77,13 +77,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        public async Task RemoveUserTokenAsync(Guid userId, string token, CancellationToken cancellationToken = default)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+        public async Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
         {
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE [UserId] = @userId AND [Token] = @token",
-                    new { userId, token },
+                    $"DELETE FROM {GetTokensTableName()} WHERE [UserId] = @userId AND [Token] = @newToken",
+                    new { userId, newToken },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token for user {UserId} from the store", userId);
             }
@@ -93,6 +94,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         public async Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
         {
             try
@@ -109,6 +111,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
         public async Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
         {
             try

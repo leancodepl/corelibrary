@@ -146,12 +146,12 @@ namespace LeanCode.PdfRocket
         /// <summary>
         /// To use a html header on each page - a url starting with http containing the html
         /// </summary>
-        public string? HeaderUrl { get; set; }
+        public Uri? HeaderUrl { get; set; }
 
         /// <summary>
         /// To use a html footer on each page - a url starting with http containing the html
         /// </summary>
-        public string? FooterUrl { get; set; }
+        public Uri? FooterUrl { get; set; }
 
         /// <summary>
         /// Top left header text (can use replacement tags below)

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.PeriodicActions
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "Not needed for tests.")]
     public abstract class DbTestBase : IAsyncLifetime, IDisposable
     {
         protected TestDbContext DbContext { get; }

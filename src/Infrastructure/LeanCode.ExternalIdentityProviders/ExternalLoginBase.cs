@@ -13,7 +13,7 @@ namespace LeanCode.ExternalIdentityProviders
         protected Serilog.ILogger Logger { get; }
         public abstract string GrantType { get; }
 
-        public ExternalLoginBase(UserManager<TUser> userManager)
+        protected ExternalLoginBase(UserManager<TUser> userManager)
         {
             this.userManager = userManager;
 

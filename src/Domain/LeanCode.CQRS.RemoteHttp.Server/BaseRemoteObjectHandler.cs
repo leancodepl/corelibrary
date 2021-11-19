@@ -26,6 +26,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serializer = serializer;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
         public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
         {
             var request = context.Request;

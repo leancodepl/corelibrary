@@ -17,6 +17,7 @@ namespace LeanCode.IntegrationTests.App
     [AuthorizeWhenHasAnyOf("user")]
     public class SampleQuery : IRemoteQuery<SampleQuery.Result?>
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Better design.")]
         public sealed class Result
         {
             public string? Data { get; set; }
@@ -45,12 +46,15 @@ namespace LeanCode.IntegrationTests.App
         private IPipelineScope? scope;
         private ClaimsPrincipal? user;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
         IPipelineScope IPipelineContext.Scope
         {
             get => scope ?? throw new NullReferenceException();
             set => scope = value;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1065", Justification = "Expected behavior.")]
         public ClaimsPrincipal User
         {
             get => user ?? throw new NullReferenceException();

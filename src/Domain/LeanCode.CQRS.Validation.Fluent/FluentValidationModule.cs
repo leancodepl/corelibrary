@@ -19,7 +19,7 @@ namespace LeanCode.CQRS.Validation.Fluent
                 .AsImplementedInterfaces();
 
             builder
-                .RegisterAssemblyTypes(catalog.Assemblies)
+                .RegisterAssemblyTypes(catalog.Assemblies.ToArray())
                 .AsClosedTypesOf(typeof(IValidator<>))
                 .SingleInstance();
         }

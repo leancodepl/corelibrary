@@ -5,6 +5,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.Benchmarks.Pipelines
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1815", Justification = "Not needed.")]
     public struct Context : IPipelineContext
     {
         public IPipelineScope Scope { get; set; }
@@ -31,7 +32,7 @@ namespace LeanCode.Benchmarks.Pipelines
         }
     }
 
-    public class StaticScope : IPipelineScope
+    public sealed class StaticScope : IPipelineScope
     {
         private readonly PassthroughElement element = new PassthroughElement();
         private readonly Finalizer finalizer = new Finalizer();
@@ -51,7 +52,8 @@ namespace LeanCode.Benchmarks.Pipelines
         }
     }
 
-    public class StaticFactory : IPipelineFactory
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1001", Justification = "Not needed.")]
+    public sealed class StaticFactory : IPipelineFactory
     {
         private readonly StaticScope scope = new StaticScope();
         public IPipelineScope BeginScope() => scope;

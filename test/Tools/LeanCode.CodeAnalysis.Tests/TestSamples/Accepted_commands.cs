@@ -10,9 +10,16 @@ namespace LeanCode.CodeAnalysis.Tests.Data
 
     public class SecondCommand : FirstCommand { }
 
-    [AuthorizeWhen(typeof(object))]
+    [AuthorizeWhenCustom]
     public class ThirdCommand : ICommand { }
 
     [AllowUnauthorized]
     public class UnauthorizedCommand : ICommand { }
+
+    public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
+    {
+        public AuthorizeWhenCustomAttribute(Type authorizerType = null)
+               : base(authorizerType ?? typeof(object))
+        { }
+    }
 }

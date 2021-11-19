@@ -7,7 +7,7 @@ namespace LeanCode.Components
 {
     public sealed class TypesCatalog : IEquatable<TypesCatalog>
     {
-        public Assembly[] Assemblies { get; }
+        public IReadOnlyList<Assembly> Assemblies { get; }
 
         public TypesCatalog(params Assembly[] assemblies)
         {
@@ -37,7 +37,7 @@ namespace LeanCode.Components
 
         public bool Equals([AllowNull] TypesCatalog other)
         {
-            if (other is null || Assemblies.Length != other.Assemblies.Length)
+            if (other is null || Assemblies.Count != other.Assemblies.Count)
             {
                 return false;
             }

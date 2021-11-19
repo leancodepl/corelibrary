@@ -38,9 +38,9 @@ namespace LeanCode.IntegrationTests
             yield return typeof(Startup).Assembly;
         }
 
-        public Task<bool> AuthenticateAsync()
+        public async Task<bool> AuthenticateAsync()
         {
-            return AuthenticateAsync(new PasswordTokenRequest
+            using var request = new PasswordTokenRequest
             {
                 UserName = AuthConfig.Username,
                 Password = AuthConfig.Password,
@@ -48,7 +48,8 @@ namespace LeanCode.IntegrationTests
 
                 ClientId = "web",
                 ClientSecret = "",
-            });
+            };
+            return await AuthenticateAsync(request);
         }
 
         protected override IHostBuilder CreateHostBuilder()

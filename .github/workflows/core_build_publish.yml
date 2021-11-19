@@ -85,7 +85,7 @@ jobs:
         if: always()
 
       - name: Convert Test Results to jUnit
-        run: env --unset=DOTNET_ROOT find -name '*.trx' -exec trx2junit --output TestResults {} +
+        run: find -name '*.trx' -exec trx2junit --output TestResults {} +
         working-directory: test
         if: always()
       - name: Publish Unit Test Results
