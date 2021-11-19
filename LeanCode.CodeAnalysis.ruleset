@@ -7,36 +7,35 @@
         <!-- UseSimpleUsingStatementDiagnostic -->
         <Rule Id="IDE0066" Action="None"/>
         <!-- ConvertSwitchStatementToExpression -->
-        <Rule Id="IDE1006" Action="None"/>
-        <!-- NamingRule (interface with I) - we already have this rule in StyleCop -->
+
+        <Rule Id="CA1002" Action="None"/>
+        <!-- DoNotExposeGenericLists - this rule doesn't affect us -->
+        <Rule Id="CA1014" Action="None"/>
+        <!-- MarkAssembliesWithClsCompliant - we are not CLS compliant deliberately -->
+        <Rule Id="CA1019" Action="None"/>
+        <!-- DefineAccessorsForAttributeArguments - not really needed -->
+        <Rule Id="CA1030" Action="None"/>
+        <!-- UseEventsWhereAppropriate - we won't use events anyway -->
+        <Rule Id="CA1032" Action="None"/>
+        <!-- ImplementStandardExceptionConstructors - we deliberately ignore some constructors -->
+        <Rule Id="CA1062" Action="None"/>
+        <!-- ValidateArgumentsOfPublicMethods - we rely on NRT -->
+        <Rule Id="CA1303" Action="None"/>
+        <!-- DoNotPassLiteralsAsLocalizedParameters - we don't support localization in places where this is enabled -->
+        <Rule Id="CA1308" Action="None"/>
+        <!-- NormalizeStringsToUppercase - we know what we're doing -->
+        <Rule Id="CA1707" Action="None"/>
+        <!-- IdentifiersShouldNotContainUnderscores - disabling it only for tests is too painful -->
+        <Rule Id="CA1716" Action="None"/>
+        <!-- IdentifiersShouldNotMatchKeywords - we really don't care about VB.NET or C++/CLI -->
+        <Rule Id="CA1720" Action="None"/>
+        <!-- IdentifiersShouldNotContainTypeNames - we don't really care about it -->
         <Rule Id="CA1816" Action="None"/>
         <!-- DisposeMethodsShouldCallSuppressFinalize - we don't use finalizers that much -->
         <Rule Id="CA2007" Action="None"/>
         <!-- DoNotDirectlyAwaitATaskAnalyzer - we don't need that -->
-        <Rule Id="CA1707" Action="None"/>
-        <!-- IdentifiersShouldNotContainUnderscores - disabling it only for tests is too painful -->
-        <Rule Id="CA1062" Action="None"/>
-        <!-- ValidateArgumentsOfPublicMethods - we rely on NRT -->
-        <Rule Id="CA1032" Action="None"/>
-        <!-- ImplementStandardExceptionConstructors - we deliberately ignore some constructors -->
-        <Rule Id="CA1716" Action="None"/>
-        <!-- IdentifiersShouldNotMatchKeywords - we really don't care about VB.NET or C++/CLI -->
-        <Rule Id="CA1002" Action="None"/>
-        <!-- DoNotExposeGenericLists - this rule doesn't affect us -->
-        <Rule Id="CA1030" Action="None"/>
-        <!-- UseEventsWhereAppropriate - we won't use events anyway -->
-        <Rule Id="CA1308" Action="None"/>
-        <!-- NormalizeStringsToUppercase - we know what we're doing -->
-        <Rule Id="CA1720" Action="None"/>
-        <!-- IdentifiersShouldNotContainTypeNames - we don't really care about it -->
-        <Rule Id="CA1019" Action="None"/>
-        <!-- DefineAccessorsForAttributeArguments - not really needed -->
         <Rule Id="CA2234" Action="None"/>
         <!-- PassSystemUriObjectsInsteadOfStrings - most of the time it will result in an exception -->
-        <Rule Id="CA1303" Action="None"/>
-        <!-- DoNotPassLiteralsAsLocalizedParameters - we don't support localization in places where this is enabled -->
-        <Rule Id="CA1014" Action="None"/>
-        <!-- MarkAssembliesWithClsCompliant - we are not CLS compliant deliberately -->
     </Rules>
 
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
