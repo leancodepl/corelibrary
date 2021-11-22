@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.ExternalIdentityProviders.Facebook
 {
-    public class FacebookClient : IDisposable
+    public class FacebookClient
     {
         public const string ApiBase = "https://graph.facebook.com";
         public const string ApiVersion = "v9.0";
@@ -19,10 +19,8 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FacebookClient>();
 
         private readonly HttpClient client;
-        private readonly HMACSHA256? hmac;
-
         private readonly int photoSize;
-        private bool disposedValue;
+        private readonly byte[]? key;
 
         public FacebookClient(FacebookConfiguration config, HttpClient client)
         {
@@ -32,7 +30,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
 
             if (!string.IsNullOrEmpty(config.AppSecret))
             {
-                hmac = new HMACSHA256(ParseKey(config.AppSecret));
+                key = ParseKey(config.AppSecret);
             }
         }
 
@@ -100,12 +98,6 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             return info;
         }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
         private FacebookUser ConvertResponse(JsonElement result)
         {
             var id = result.GetProperty("id").GetString()!;
@@ -146,7 +138,7 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
 
         private string GenerateProof(string accessToken)
         {
-            if (hmac is null)
+            if (key is null)
             {
                 logger.Error("Facebook's AppSecret is not configured, login with Facebook will fail");
                 return "";
@@ -154,7 +146,8 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
             else
             {
                 var bytes = ParseKey(accessToken);
-                var hash = hmac.ComputeHash(bytes);
+                Span<byte> hash = stackalloc byte[32];
+                _ = HMACSHA256.HashData(key, bytes, hash);
 
                 return "&appsecret_proof=" + ToHexString(hash);
             }
@@ -163,29 +156,14 @@ namespace LeanCode.ExternalIdentityProviders.Facebook
         private static byte[] ParseKey(string v) =>
             Encoding.ASCII.GetBytes(v);
 
-        private static string ToHexString(byte[] data) =>
-            BitConverter.ToString(data)
-                .Replace("-", "", StringComparison.Ordinal)
-                .ToLowerInvariant();
+        private static string ToHexString(ReadOnlySpan<byte> data) =>
+            Convert.ToHexString(data).ToLowerInvariant();
 
         private static string AppendProof(string uri, string accessToken, string proof)
         {
             return uri.Contains('?', StringComparison.Ordinal)
                 ? $"{ApiVersion}/{uri}&access_token={accessToken}{proof}"
                 : $"{ApiVersion}/{uri}?access_token={accessToken}{proof}";
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    hmac?.Dispose();
-                }
-
-                disposedValue = true;
-            }
         }
     }
 }
