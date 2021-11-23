@@ -148,8 +148,8 @@ public class FindDishesMatchingNameQH : IQueryHandler<AppContext, FindDishesMatc
     {
         var filter = $"%{query.NameFilter.ToLower()}%";
         var results = await dbContext.QueryAsync<DishInfoDTO>(@"
-            SELECT [Id] AS [DishId], [Name] FROM [Dishes]
-            WHERE [Name] LIKE @filter",
+            SELECT ""Id"" AS ""DishId"", ""Name"" FROM ""Dishes""
+            WHERE ""Name"" LIKE @filter",
             new { filter });
         return results.AsList();
     }
