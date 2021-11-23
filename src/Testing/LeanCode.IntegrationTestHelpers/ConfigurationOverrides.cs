@@ -76,7 +76,7 @@ namespace LeanCode.IntegrationTestHelpers
             {
                 var dbName = $"integration_tests_{Guid.NewGuid():N}";
                 var rest = Environment.GetEnvironmentVariable(connectionStringBase);
-                var dbConnStr = $"Initial Catalog={dbName};" + rest;
+                var dbConnStr = $"Database={dbName};" + rest;
 
                 Data = new Dictionary<string, string>
                 {
