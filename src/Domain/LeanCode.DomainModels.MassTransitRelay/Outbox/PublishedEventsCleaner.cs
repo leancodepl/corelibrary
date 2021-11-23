@@ -19,11 +19,15 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PublishedEventsCleaner>();
         private readonly IOutboxContext outboxContext;
         private readonly string tableName;
+        private readonly string dateOccurredColumnName;
+        private readonly string wasPublishedColumnName;
 
         public PublishedEventsCleaner(IOutboxContext outboxContext)
         {
             this.outboxContext = outboxContext;
             tableName = outboxContext.Self.GetFullTableName(typeof(RaisedEvent));
+            dateOccurredColumnName = outboxContext.Self.GetColumnName(typeof(RaisedEvent), nameof(RaisedEvent.DateOcurred));
+            wasPublishedColumnName = outboxContext.Self.GetColumnName(typeof(RaisedEvent), nameof(RaisedEvent.WasPublished));
         }
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,7 +41,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                 var count = await outboxContext.Self.ExecuteScalarAsync<int>(
                     $@"
                     DELETE FROM {tableName} WHERE
-                        [DateOcurred] < @time AND [WasPublished] = 1",
+                        {dateOccurredColumnName} < @time AND {wasPublishedColumnName} = '1'",
                     new { time },
                     commandTimeout: 3600,
                     cancellationToken: stoppingToken);
