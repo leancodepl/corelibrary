@@ -8,7 +8,6 @@ using LeanCode.Dapper;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LeanCode.Firebase.FCM.EntityFramework
@@ -138,61 +137,11 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        private string GetTokensTableName()
-        {
-            var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
+        private string GetTokensTableName() =>
+            dbContext.GetFullTableName(typeof(PushNotificationTokenEntity));
 
-            if (entity is null)
-            {
-                throw new InvalidOperationException("Failed to find entity type.");
-            }
-
-            var table = entity.GetTableName();
-
-            if (table is null)
-            {
-                throw new InvalidOperationException("Entity is not mapped to database table.");
-            }
-
-            return entity.GetSchema() is string schema
-                ? $"{sqlGenerationHelper.DelimitIdentifier(schema)}.{sqlGenerationHelper.DelimitIdentifier(table)}"
-                : sqlGenerationHelper.DelimitIdentifier(table);
-        }
-
-        private string GetTokensColumnName(string propertyName)
-        {
-            var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
-
-            if (entity is null)
-            {
-                throw new InvalidOperationException("Failed to find entity type.");
-            }
-
-            var table = entity.GetTableName();
-
-            if (table is null)
-            {
-                throw new InvalidOperationException("Entity is not mapped to database table.");
-            }
-
-            var storeObject = StoreObjectIdentifier.Table(table, entity.GetSchema());
-
-            var property = entity.FindProperty(propertyName);
-
-            if (property is null)
-            {
-                throw new InvalidOperationException($"Property with name '{propertyName}' is not defined.");
-            }
-
-            var column = property.FindColumn(in storeObject);
-
-            if (column is null)
-            {
-                throw new InvalidOperationException($"Property with name '{propertyName}' is not mapped to a column.");
-            }
-
-            return sqlGenerationHelper.DelimitIdentifier(column.Name);
-        }
+        private string GetTokensColumnName(string propertyName) =>
+            dbContext.GetColumnName(typeof(PushNotificationTokenEntity), propertyName);
 
         private readonly struct UserToken
         {

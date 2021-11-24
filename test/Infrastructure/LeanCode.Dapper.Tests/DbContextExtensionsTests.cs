@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests
+namespace LeanCode.Dapper.Tests
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Allowed in tests.")]
     public class DbContextExtensionsTests
