@@ -21,11 +21,13 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
 
         private readonly IConsumedMessagesContext dbContext;
         private readonly string tableName;
+        private readonly string columnName;
 
         public ConsumedMessagesCleaner(IConsumedMessagesContext dbContext)
         {
             this.dbContext = dbContext;
             tableName = dbContext.Self.GetFullTableName(typeof(ConsumedMessage));
+            columnName = dbContext.Self.GetColumnName(typeof(ConsumedMessage), nameof(ConsumedMessage.DateConsumed));
         }
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -40,7 +42,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Inbox
                 var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
                     $@"
                     DELETE FROM {tableName}
-                    WHERE [DateConsumed] < @time;",
+                    WHERE {columnName} < @time;",
                     new { time },
                     commandTimeout: 3600,
                     cancellationToken: stoppingToken);

@@ -7,6 +7,8 @@ using Dapper;
 using LeanCode.Dapper;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LeanCode.Firebase.FCM.EntityFramework
 {
@@ -17,16 +19,19 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext>>();
 
         private readonly TDbContext dbContext;
+        private readonly ISqlGenerationHelper sqlGenerationHelper;
 
         public PushNotificationTokenStore(TDbContext dbContext)
         {
             this.dbContext = dbContext;
+
+            sqlGenerationHelper = dbContext.GetService<ISqlGenerationHelper>();
         }
 
         public async Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             var res = await dbContext.QueryAsync<string>(
-                $"SELECT [Token] FROM {GetTokensTableName()} WHERE [UserId] = @userId",
+                $"SELECT {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))} = @userId",
                 new { userId },
                 cancellationToken: cancellationToken);
             return res.AsList();
@@ -40,7 +45,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
 
             var res = await dbContext.QueryAsync<UserToken>(
-                $"SELECT [UserId], [Token] FROM {GetTokensTableName()} WHERE [UserId] IN @userIds",
+                $"SELECT {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))}, {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))} IN @userIds",
                 new { userIds },
                 cancellationToken: cancellationToken);
             return res
@@ -59,10 +64,14 @@ namespace LeanCode.Firebase.FCM.EntityFramework
                     BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
-                    DELETE FROM {GetTokensTableName()} WHERE [Token] = @newToken;
+                    DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} = @newToken;
 
                     -- And add the new token
-                    INSERT INTO {GetTokensTableName()} ([Id], [UserId], [Token], [DateCreated])
+                    INSERT INTO {GetTokensTableName()}
+                        ({GetTokensColumnName(nameof(PushNotificationTokenEntity.Id))},
+                        {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))},
+                        {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))},
+                        {GetTokensColumnName(nameof(PushNotificationTokenEntity.DateCreated))})
                     VALUES (@newId, @userId, @newToken, @now);
 
                     COMMIT TRANSACTION;
@@ -83,7 +92,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE [UserId] = @userId AND [Token] = @newToken",
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))} = @userId AND {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} = @newToken",
                     new { userId, newToken },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token for user {UserId} from the store", userId);
@@ -100,7 +109,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE [Token] = @token",
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} = @token",
                     new { token },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token from the store");
@@ -117,7 +126,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE [Token] IN @tokens",
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} IN @tokens",
                     new { tokens },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
@@ -128,21 +137,11 @@ namespace LeanCode.Firebase.FCM.EntityFramework
             }
         }
 
-        private string GetTokensTableName()
-        {
-            var entity = dbContext.Model.FindEntityType(typeof(PushNotificationTokenEntity));
+        private string GetTokensTableName() =>
+            dbContext.GetFullTableName(typeof(PushNotificationTokenEntity));
 
-            if (entity is null)
-            {
-                throw new InvalidOperationException("Failed to find entity type.");
-            }
-
-            var schema = entity.GetSchema();
-
-            return string.IsNullOrEmpty(schema)
-                ? $"[{entity.GetTableName()}]"
-                : $"[{schema}].[{entity.GetTableName()}]";
-        }
+        private string GetTokensColumnName(string propertyName) =>
+            dbContext.GetColumnName(typeof(PushNotificationTokenEntity), propertyName);
 
         private readonly struct UserToken
         {

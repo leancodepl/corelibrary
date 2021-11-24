@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests
+namespace LeanCode.Dapper.Tests
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Allowed in tests.")]
     public class DbContextExtensionsTests
@@ -10,28 +10,42 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         public void Full_table_name_is_correct_if_default_schema_is_present()
         {
             var tableName = new DefaultSchema().GetFullTableName(typeof(Entity));
-            Assert.Equal("[test].[Entities]", tableName);
+            Assert.Equal(@"""test"".""Entities""", tableName);
         }
 
         [Fact]
         public void Full_table_name_is_correct_if_explicit_schema_is_set()
         {
             var tableName = new ExplicitSchema().GetFullTableName(typeof(Entity));
-            Assert.Equal("[test2].[Entities2]", tableName);
+            Assert.Equal(@"""test2"".""Entities2""", tableName);
         }
 
         [Fact]
         public void Full_table_name_is_correct_if_no_schema_is_set()
         {
             var tableName = new NoSchema().GetFullTableName(typeof(Entity));
-            Assert.Equal("[Entities]", tableName);
+            Assert.Equal(@"""Entities""", tableName);
         }
 
         [Fact]
         public void Full_table_name_is_correct_if_schema_is_explicitly_unset()
         {
             var tableName = new ExplicitNoSchema().GetFullTableName(typeof(Entity));
-            Assert.Equal("[Entities]", tableName);
+            Assert.Equal(@"""Entities""", tableName);
+        }
+
+        [Fact]
+        public void Column_name_is_correct_if_default()
+        {
+            var columnName = new DefaultSchema().GetColumnName(typeof(Entity), nameof(Entity.Id));
+            Assert.Equal(@"""Id""", columnName);
+        }
+
+        [Fact]
+        public void Column_name_is_correct_if_explicitly_specified()
+        {
+            var columnName = new ExplicitColumnName().GetColumnName(typeof(Entity), nameof(Entity.Id));
+            Assert.Equal(@"""EntityId""", columnName);
         }
 
         private class Entity
@@ -88,6 +102,14 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                     cfg.ToTable("Entities");
                     cfg.HasKey(e => e.Id);
                 });
+            }
+        }
+
+        private class ExplicitColumnName : BaseContext
+        {
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<Entity>().Property(e => e.Id).HasColumnName("EntityId");
             }
         }
     }
