@@ -67,7 +67,6 @@ namespace LeanCode.DomainModels.Tests
     {
         public Id<DiscountCode> Id { get; set; }
 
-        byte[] IOptimisticConcurrency.RowVersion { get; set; } = null!;
         DateTime IOptimisticConcurrency.DateModified { get; set; }
     }
 
@@ -75,7 +74,6 @@ namespace LeanCode.DomainModels.Tests
     {
         public int Id { get; set; }
 
-        byte[] IOptimisticConcurrency.RowVersion { get; set; } = null!;
         DateTime IOptimisticConcurrency.DateModified { get; set; }
     }
 }

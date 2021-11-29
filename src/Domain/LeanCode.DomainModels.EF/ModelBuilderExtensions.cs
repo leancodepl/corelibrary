@@ -25,22 +25,34 @@ namespace LeanCode.DomainModels.EF
 
         public static void IsOptimisticConcurrent<TEntity>(
             this EntityTypeBuilder<TEntity> cfg,
-            bool useExplicitBackingFields = true)
+            bool useExplicitBackingFields = true,
+            bool addRowVersion = true)
             where TEntity : class, IOptimisticConcurrency
         {
-            cfg.Property(e => e.RowVersion)
-                .HasColumnName(nameof(IOptimisticConcurrency.RowVersion))
-                .ValueGeneratedOnAddOrUpdate()
-                .IsConcurrencyToken();
+            cfg.IsOptimisticConcurrent<TEntity, byte[]>(useExplicitBackingFields, addRowVersion);
+        }
+
+        public static void IsOptimisticConcurrent<TEntity, TRowVersion>(
+            this EntityTypeBuilder<TEntity> cfg,
+            bool useExplicitBackingFields = true,
+            bool addRowVersion = true)
+            where TEntity : class, IOptimisticConcurrency
+        {
+            if (addRowVersion)
+            {
+                const string rowVersion = "RowVersion";
+
+                cfg.Property<TRowVersion>(rowVersion)
+                    .HasColumnName(rowVersion)
+                    .IsRowVersion()
+                    .IsRequired();
+            }
 
             cfg.Property(e => e.DateModified)
                 .HasColumnName(nameof(IOptimisticConcurrency.DateModified));
 
             if (useExplicitBackingFields)
             {
-                cfg.Property(e => e.RowVersion)
-                    .HasField(GetBackingFieldFor<TEntity>(nameof(IOptimisticConcurrency.RowVersion)));
-
                 cfg.Property(e => e.DateModified)
                     .HasField(GetBackingFieldFor<TEntity>(nameof(IOptimisticConcurrency.DateModified)));
             }
@@ -48,10 +60,20 @@ namespace LeanCode.DomainModels.EF
 
         public static void EnableOptimisticConcurrency<TEntity>(
             this ModelBuilder builder,
-            bool useExplicitBackingFields = true)
+            bool useExplicitBackingFields = true,
+            bool addRowVersion = true)
             where TEntity : class, IOptimisticConcurrency
         {
-            builder.Entity<TEntity>().IsOptimisticConcurrent(useExplicitBackingFields);
+            builder.EnableOptimisticConcurrency<TEntity, byte[]>(useExplicitBackingFields, addRowVersion);
+        }
+
+        public static void EnableOptimisticConcurrency<TEntity, TRowVersion>(
+            this ModelBuilder builder,
+            bool useExplicitBackingFields = true,
+            bool addRowVersion = true)
+            where TEntity : class, IOptimisticConcurrency
+        {
+            builder.Entity<TEntity>().IsOptimisticConcurrent(useExplicitBackingFields, addRowVersion);
         }
 
         private static string GetBackingFieldFor<TEntity>(string fieldName)
