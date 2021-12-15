@@ -11,7 +11,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public void Passes_the_property_data_to_value()
         {
-            const string value = "Value";
+            const string Value = "Value";
             string dataPassed = null;
             object Func(IValidationContext ctx, string str)
             {
@@ -20,9 +20,9 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
 
             var validator = new TestValidator(Func);
-            validator.Validate(new SampleData { Test = value });
+            validator.Validate(new SampleData { Test = Value });
 
-            Assert.Equal(value, dataPassed);
+            Assert.Equal(Value, dataPassed);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             var obj = new object();
             object dataPassed = null;
 
-            var validator = new TestValidator((_, __) => obj, e => (dataPassed = e) != null);
+            var validator = new TestValidator((_, _) => obj, e => (dataPassed = e) != null);
             validator.Validate(new SampleData());
 
             Assert.Equal(obj, dataPassed);
@@ -57,7 +57,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public async Task Passes_the_property_data_to_value_async()
         {
-            const string value = "Value";
+            const string Value = "Value";
             string dataPassed = null;
             object Func(IValidationContext ctx, string str)
             {
@@ -66,9 +66,9 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
 
             var validator = new TestValidator(Func);
-            await validator.ValidateAsync(new SampleData { Test = value });
+            await validator.ValidateAsync(new SampleData { Test = Value });
 
-            Assert.Equal(value, dataPassed);
+            Assert.Equal(Value, dataPassed);
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             var obj = new object();
             object dataPassed = null;
 
-            var validator = new TestValidator((_, __) => obj, e => (dataPassed = e) != null);
+            var validator = new TestValidator((_, _) => obj, e => (dataPassed = e) != null);
             await validator.ValidateAsync(new SampleData());
 
             Assert.Equal(obj, dataPassed);

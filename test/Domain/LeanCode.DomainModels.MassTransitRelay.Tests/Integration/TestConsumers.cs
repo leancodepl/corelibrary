@@ -66,7 +66,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
 
         public Task Consume(ConsumeContext<Event3> context)
         {
-            var isRetry = IsRetry.AddOrUpdate(context.Message.Id, false, (_, __) => true);
+            var isRetry = IsRetry.AddOrUpdate(context.Message.Id, false, (_, _) => true);
             if (!isRetry)
             {
                 throw new InvalidOperationException("This handler fails for testing purposes");

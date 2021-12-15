@@ -118,6 +118,23 @@ dotnet_naming_style.camel_case_style.capitalization                = camel_case
 dotnet_naming_style.I_prefix_style.required_prefix                 = I
 dotnet_naming_style.I_prefix_style.capitalization                  = pascal_case
 
+dotnet_naming_style.T_prefix_style.required_prefix                 = T
+dotnet_naming_style.T_prefix_style.capitalization                  = pascal_case
+
+# Local functions are PascalCase
+dotnet_naming_rule.local_functions_should_be_pascal_case.severity  = warning
+dotnet_naming_rule.local_functions_should_be_pascal_case.symbols   = local_functions
+dotnet_naming_rule.local_functions_should_be_pascal_case.style     = pascal_case_style
+dotnet_naming_symbols.local_functions.applicable_kinds             = local_function
+
+# Use PascalCase for constant locals
+dotnet_naming_rule.constant_locals_should_be_pascal_case.severity  = warning
+dotnet_naming_rule.constant_locals_should_be_pascal_case.symbols   = constant_locals
+dotnet_naming_rule.constant_locals_should_be_pascal_case.style     = pascal_case_style
+dotnet_naming_symbols.constant_locals.applicable_kinds             = local
+dotnet_naming_symbols.constant_locals.applicable_accessibilities   = *
+dotnet_naming_symbols.constant_locals.required_modifiers           = const
+
 # Use PascalCase for constant fields
 dotnet_naming_rule.constant_fields_should_be_pascal_case.severity  = warning
 dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols   = constant_fields
@@ -125,6 +142,14 @@ dotnet_naming_rule.constant_fields_should_be_pascal_case.style     = pascal_case
 dotnet_naming_symbols.constant_fields.applicable_kinds             = field
 dotnet_naming_symbols.constant_fields.applicable_accessibilities   = *
 dotnet_naming_symbols.constant_fields.required_modifiers           = const
+
+# Use PascalCase for static readonly fields
+dotnet_naming_rule.pascal_case_for_static_ro_fields.severity       = warning
+dotnet_naming_rule.pascal_case_for_static_ro_fields.symbols        = static_ro_fields
+dotnet_naming_rule.pascal_case_for_static_ro_fields.style          = pascal_case_style
+dotnet_naming_symbols.static_ro_fields.applicable_kinds            = field
+dotnet_naming_symbols.static_ro_fields.applicable_accessibilities  = *
+dotnet_naming_symbols.static_ro_fields.required_modifiers          = static,readonly
 
 # Use PascalCase for public fields
 dotnet_naming_rule.pascal_case_for_public_fields.severity          = warning
@@ -134,11 +159,17 @@ dotnet_naming_symbols.public_fields.applicable_kinds               = field
 dotnet_naming_symbols.public_fields.applicable_accessibilities     = public
 
 # Interfaces must be PascalCase and have an I prefix
-dotnet_naming_rule.interfaces_start_with_I.severity                = suggestion
+dotnet_naming_rule.interfaces_start_with_I.severity                = warning
 dotnet_naming_rule.interfaces_start_with_I.symbols                 = any_interface
 dotnet_naming_rule.interfaces_start_with_I.style                   = I_prefix_style
 dotnet_naming_symbols.any_interface.applicable_accessibilities     = *
 dotnet_naming_symbols.any_interface.applicable_kinds               = interface
+
+# Type parameters must be PascalCase and have a T prefix
+dotnet_naming_rule.type_parameters_start_with_T.severity           = warning
+dotnet_naming_rule.type_parameters_start_with_T.symbols            = any_type_parameter
+dotnet_naming_rule.type_parameters_start_with_T.style              = T_prefix_style
+dotnet_naming_symbols.any_type_parameter.applicable_kinds          = type_parameter
 
 # Classes, structs, methods, enums, events, properties, namespaces, delegates must be PascalCase
 dotnet_naming_rule.general_naming.severity                         = warning
