@@ -40,10 +40,10 @@ namespace LeanCode.DomainModels.EF
         {
             if (addRowVersion)
             {
-                const string rowVersion = "RowVersion";
+                const string RowVersion = "RowVersion";
 
-                cfg.Property<TRowVersion>(rowVersion)
-                    .HasColumnName(rowVersion)
+                cfg.Property<TRowVersion>(RowVersion)
+                    .HasColumnName(RowVersion)
                     .IsRowVersion()
                     .IsRequired();
             }

@@ -11,7 +11,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
         [Fact]
         public async Task Passes_the_property_data_to_value()
         {
-            const string value = "Value";
+            const string Value = "Value";
             string dataPassed = null;
             Task<object> Accessor(IValidationContext ctx, string str)
             {
@@ -20,9 +20,9 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             }
 
             var validator = new TestValidator(Accessor);
-            await validator.ValidateAsync(new SampleData { Test = value });
+            await validator.ValidateAsync(new SampleData { Test = Value });
 
-            Assert.Equal(value, dataPassed);
+            Assert.Equal(Value, dataPassed);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             var obj = new object();
             object dataPassed = null;
 
-            var validator = new TestValidator((_, __) => Task.FromResult(obj), e => (dataPassed = e) != null);
+            var validator = new TestValidator((_, _) => Task.FromResult(obj), e => (dataPassed = e) != null);
             await validator.ValidateAsync(new SampleData());
 
             Assert.Equal(obj, dataPassed);
@@ -75,7 +75,7 @@ namespace LeanCode.CQRS.Validation.Fluent.Tests
             var obj = new object();
             object dataPassed = null;
 
-            var validator = new TestValidator((_, __) => Task.FromResult(obj), e => (dataPassed = e) != null);
+            var validator = new TestValidator((_, _) => Task.FromResult(obj), e => (dataPassed = e) != null);
             Assert.Throws<NotSupportedException>(() => validator.Validate(new SampleData()));
         }
 

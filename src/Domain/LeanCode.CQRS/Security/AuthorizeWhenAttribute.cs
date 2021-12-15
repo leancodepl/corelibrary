@@ -49,7 +49,9 @@ namespace LeanCode.CQRS.Security
             : base(typeof(T), customData)
         { }
 
+#pragma warning disable CA1000
         public static List<AuthorizerDefinition> GetCustomAuthorizers() =>
+#pragma warning restore CA1000
             GetCustomAuthorizers(typeof(T));
     }
 }
