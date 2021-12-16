@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -120,7 +121,18 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             TypesCatalog catalog,
             Func<HttpContext, TAppContext> contextTranslator)
         {
-            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator, new Utf8JsonSerializer());
+            return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(
+                catalog,
+                contextTranslator,
+                new Utf8JsonSerializer(
+                    new JsonSerializerOptions
+                    {
+                        Converters =
+                        {
+                            new JsonDateOnlyConverter(),
+                            new JsonTimeOnlyConverter(),
+                        },
+                    }));
         }
 
         public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
