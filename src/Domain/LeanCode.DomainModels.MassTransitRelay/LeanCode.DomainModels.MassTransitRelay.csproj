@@ -11,8 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
     <PackageReference Include="MassTransit" />
     <PackageReference Include="MassTransit.Autofac" />
+    <PackageReference Include="MassTransit.AspNetCore" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />

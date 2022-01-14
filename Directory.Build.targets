@@ -106,6 +106,8 @@
 
     <PackageReference Update="MassTransit" Version="$(MassTransitVersion)" />
     <PackageReference Update="MassTransit.Autofac" Version="$(MassTransitVersion)" />
+    <PackageReference Update="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+    <PackageReference Update="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
 
     <PackageReference Update="OpenTelemetry" Version="1.2.0-beta1" />
   </ItemGroup>
