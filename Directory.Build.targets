@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Update="Autofac" Version="6.3.0" />
-    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
 
     <PackageReference Update="Microsoft.Extensions.Azure" Version="1.1.1" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
