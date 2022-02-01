@@ -23,6 +23,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             this.typesCatalog = typesCatalog;
             this.settings = settings ?? new()
             {
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
                 ContractResolver = new ContractResolver(),
             };
         }
