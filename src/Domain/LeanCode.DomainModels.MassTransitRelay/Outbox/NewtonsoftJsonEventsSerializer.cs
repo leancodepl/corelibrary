@@ -47,23 +47,23 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
                 .FirstOrDefault()
                 ?? throw new InvalidOperationException($"Type {type} is not defined in any of the provided assemblies.");
         }
+    }
 
-        private class ContractResolver : DefaultContractResolver
+    public class ContractResolver : DefaultContractResolver
+    {
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            => MakeWriteable(base.CreateProperty(member, memberSerialization), member);
+
+        internal static JsonProperty MakeWriteable(JsonProperty jProperty, MemberInfo member)
         {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-                => MakeWriteable(base.CreateProperty(member, memberSerialization), member);
-
-            internal static JsonProperty MakeWriteable(JsonProperty jProperty, MemberInfo member)
+            if (jProperty.Writable)
             {
-                if (jProperty.Writable)
-                {
-                    return jProperty;
-                }
-                else
-                {
-                    jProperty.Writable = member is PropertyInfo pi && pi.SetMethod is object;
-                    return jProperty;
-                }
+                return jProperty;
+            }
+            else
+            {
+                jProperty.Writable = member is PropertyInfo pi && pi.SetMethod is object;
+                return jProperty;
             }
         }
     }
