@@ -5,7 +5,9 @@ namespace LeanCode.DomainModels.EF.Tests;
 public class DateTimeOnlyConverterTests
 {
     private readonly DateOnlyConverter dateConverter = new();
+    private readonly DateOnlyComparer dateComparer = new();
     private readonly TimeOnlyConverter timeConverter = new();
+    private readonly TimeOnlyComparer timeComparer = new();
 
     [Fact]
     public void DateOnly_conversion_to_DateTime_and_back_works()
@@ -32,6 +34,27 @@ public class DateTimeOnlyConverterTests
         Assert.Throws<ArgumentOutOfRangeException>(() => timeConverter.ConvertFromProvider(new TimeSpan(1, 0, 0, 0)));
     }
 
+    [Fact]
+    public void Date_comparison_behaves_correctly()
+    {
+        AssertDateEqual(new(2022, 3, 10));
+        AssertDateEqual(new(2022, 3, 11));
+        AssertDateEqual(new(2137, 2, 13));
+
+        AssertDateNotEqual(new(2022, 3, 10), new(2022, 3, 11));
+        AssertDateNotEqual(new(2022, 3, 11), new(2022, 3, 10));
+    }
+
+    [Fact]
+    public void Time_comparison_behaves_correctly()
+    {
+        AssertTimeEqual(new(22, 36, 02));
+        AssertTimeEqual(new(11, 11, 11, 999));
+
+        AssertTimeNotEqual(new(11, 11, 11), new(12, 12, 12));
+        AssertTimeNotEqual(new(12, 12, 12), new(11, 11, 11));
+    }
+
     private void AssertConvertsDate(DateOnly date, DateTime dateTime)
     {
         var toResult = dateConverter.ConvertToProvider(date);
@@ -52,5 +75,37 @@ public class DateTimeOnlyConverterTests
         var fromResult = timeConverter.ConvertFromProvider(timeSpan);
         Assert.Equal(timeSpan, toResult);
         Assert.Equal(time, fromResult);
+    }
+
+    private void AssertDateEqual(DateOnly date)
+    {
+        Assert.True(dateComparer.Equals(date, date));
+        Assert.Equal(dateComparer.GetHashCode(date), dateComparer.GetHashCode(date));
+        Assert.Equal(dateComparer.Snapshot(date), date);
+    }
+
+    private void AssertDateNotEqual(DateOnly date1, DateOnly date2)
+    {
+        Assert.False(dateComparer.Equals(date1, date2));
+        Assert.NotEqual(dateComparer.GetHashCode(date1), dateComparer.GetHashCode(date2));
+
+        Assert.Equal(dateComparer.Snapshot(date1), date1);
+        Assert.Equal(dateComparer.Snapshot(date2), date2);
+    }
+
+    private void AssertTimeEqual(TimeOnly time)
+    {
+        Assert.True(timeComparer.Equals(time, time));
+        Assert.Equal(timeComparer.GetHashCode(time), timeComparer.GetHashCode(time));
+        Assert.Equal(timeComparer.Snapshot(time), time);
+    }
+
+    private void AssertTimeNotEqual(TimeOnly time1, TimeOnly time2)
+    {
+        Assert.False(timeComparer.Equals(time1, time2));
+        Assert.NotEqual(timeComparer.GetHashCode(time1), timeComparer.GetHashCode(time2));
+
+        Assert.Equal(timeComparer.Snapshot(time1), time1);
+        Assert.Equal(timeComparer.Snapshot(time2), time2);
     }
 }
