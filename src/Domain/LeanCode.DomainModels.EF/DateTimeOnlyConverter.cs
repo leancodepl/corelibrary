@@ -34,7 +34,7 @@ public class TimeOnlyComparer : ValueComparer<TimeOnly>
 
 public static class ModelConfigurationBuilderDateTimeExtensions
 {
-    public static void RegisterDateTimeOnlyTypes(
+    public static ModelConfigurationBuilder RegisterDateTimeOnlyTypes(
         this ModelConfigurationBuilder builder,
         string? dateType = "date",
         string? timeType = "time")
@@ -52,5 +52,7 @@ public static class ModelConfigurationBuilderDateTimeExtensions
         {
             timeBuilder.HaveColumnType(timeType);
         }
+
+        return builder;
     }
 }

@@ -1,7 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Xunit;
 
 namespace LeanCode.DomainModels.EF.Tests;
 
+[SuppressMessage("?", "EF1001", Justification = "Tests.")]
 public class DateTimeOnlyConverterTests
 {
     private readonly DateOnlyConverter dateConverter = new();
@@ -53,6 +57,66 @@ public class DateTimeOnlyConverterTests
 
         AssertTimeNotEqual(new(11, 11, 11), new(12, 12, 12));
         AssertTimeNotEqual(new(12, 12, 12), new(11, 11, 11));
+    }
+
+    [Fact]
+    public void Date_convention_is_registered_properly_if_type_is_specified()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.RegisterDateTimeOnlyTypes();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(DateOnly));
+        Assert.NotNull(mapping);
+        Assert.IsType<DateOnlyConverter>(mapping.GetValueConverter());
+        Assert.Equal(typeof(DateOnlyComparer), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(DateOnly), mapping.ClrType);
+        Assert.Equal("date", mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void Date_convention_is_registered_properly_if_type_is_not_specified()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.RegisterDateTimeOnlyTypes(dateType: null);
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(DateOnly));
+        Assert.NotNull(mapping);
+        Assert.IsType<DateOnlyConverter>(mapping.GetValueConverter());
+        Assert.Equal(typeof(DateOnlyComparer), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(DateOnly), mapping.ClrType);
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void Time_convention_is_registered_properly_if_type_is_specified()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.RegisterDateTimeOnlyTypes();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(TimeOnly));
+        Assert.NotNull(mapping);
+        Assert.IsType<TimeOnlyConverter>(mapping.GetValueConverter());
+        Assert.Equal(typeof(TimeOnlyComparer), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(TimeOnly), mapping.ClrType);
+        Assert.Equal("time", mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void Time_convention_is_registered_properly_if_type_is_not_specified()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.RegisterDateTimeOnlyTypes(timeType: null);
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(TimeOnly));
+        Assert.NotNull(mapping);
+        Assert.IsType<TimeOnlyConverter>(mapping.GetValueConverter());
+        Assert.Equal(typeof(TimeOnlyComparer), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(TimeOnly), mapping.ClrType);
+        Assert.Null(mapping["Relational:ColumnType"]);
     }
 
     private void AssertConvertsDate(DateOnly date, DateTime dateTime)
@@ -107,5 +171,14 @@ public class DateTimeOnlyConverterTests
 
         Assert.Equal(timeComparer.Snapshot(time1), time1);
         Assert.Equal(timeComparer.Snapshot(time2), time2);
+    }
+
+    private class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
+    {
+        public ModelConfigurationBuilderWrapper()
+            : base(new())
+        { }
+
+        public ModelConfiguration Build() => ModelConfiguration;
     }
 }
