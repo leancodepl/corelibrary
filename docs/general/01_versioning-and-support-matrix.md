@@ -22,13 +22,15 @@ All of the libraries that are part of the CoreLib are versioned together and req
 
 ## Supported versions
 
-Here is the list of available major versions of the library (as of 2020-12-16):
+Here is the list of available major versions of the library (as of 2022-03-25):
 
 | CoreLib | .NET Core | Under development | Stable     | Notes             |
 |---------|-----------|-------------------|------------|-------------------|
-| v3.4    | 2.2       |                   | &#x2714;   | Not published     |
-| v4.1    | 3.1       |                   | &#x2714;   | Previous stable   |
-| v4.2    | 3.1       |                   | &#x2714;   | Previous stable   |
-| v5.0    | 5.0       |                   | &#x2714;   | Stable            |
-| v5.1    | 5.0       | &#x2714;          |            |                   |
+| v3.4    | 2.2       |                   |            | Not published     |
+| v4.1    | 3.1       |                   |            | Unmaintained      |
+| v4.2    | 3.1       |                   |            | Unmaintained      |
+| v5.0    | 5.0       |                   |            | Unmaintained      |
+| v5.1    | 5.0       |                   | &#x2714;   |                   |
+| v6.0    | 6.0       | &#x2714;          | &#x2714;   |                   |
+| v6.1    | 6.0       | &#x2714;          |            | Not started       |
 |         |           |                   |            |                   |
