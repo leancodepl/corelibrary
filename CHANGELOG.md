@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 6.0
+
+* Upgrade to .NET 6
+* Remove `IdentityProvider`
+* Remove `System.Time` (it is available in .NET 6)
+* Promote using Azure MSI & add LeanCode Azure default credential provider
+* Introduce `SId` & `LId`
+* Switch to OpenTracing
+* Remove LeanCode.ContractsGenerator in favor of the new [contracts generator](https://github.com/leancodepl/contractsgenerator)
+* Package bump
+
 ## 5.1
 
 * Remove `LeanCode.Facebook`,
