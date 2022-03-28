@@ -24,7 +24,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
             this.settings = settings ?? new()
             {
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-                ContractResolver = new ContractResolver(),
+                ContractResolver = new NewtonsoftJsonContractResolver(),
             };
         }
 
@@ -49,7 +49,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         }
     }
 
-    public class ContractResolver : DefaultContractResolver
+    public class NewtonsoftJsonContractResolver : DefaultContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             => MakeWriteable(base.CreateProperty(member, memberSerialization), member);
