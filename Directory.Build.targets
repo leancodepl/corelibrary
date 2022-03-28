@@ -1,17 +1,17 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>6.0.0</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>6.0.0</AspNetCoreVersion>
+    <EntityFrameworkCoreVersion>6.0.3</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>6.0.3</AspNetCoreVersion>
     <ExtensionsVersion>6.0.0</ExtensionsVersion>
 
-    <GoogleApisVersion>1.55.0</GoogleApisVersion>
-    <HangfireVersion>1.7.27</HangfireVersion>
+    <GoogleApisVersion>1.57.0</GoogleApisVersion>
+    <HangfireVersion>1.7.28</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>7.2.4</MassTransitVersion>
-    <SystemIdentityModelVersion>6.14.1</SystemIdentityModelVersion>
+    <MassTransitVersion>7.3.1</MassTransitVersion>
+    <SystemIdentityModelVersion>6.16.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>4.0.0-6.final</CodeAnalysisVersion>
+    <CodeAnalysisVersion>4.2.0-1.final</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,37 +21,37 @@
 
   <ItemGroup>
     <PackageReference Update="Autofac" Version="6.3.0" />
-    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
 
     <PackageReference Update="Microsoft.Extensions.Azure" Version="1.1.1" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
     <PackageReference Update="Azure.Identity" Version="1.5.0" />
-    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.2" />
-    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.2" />
+    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.7" />
+    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.4" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Update="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.3.0" />
-    <PackageReference Update="Serilog.Sinks.Console" Version="4.0.0" />
-    <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1" />
+    <PackageReference Update="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageReference Update="Serilog.Sinks.Seq" Version="5.1.1" />
 
-    <PackageReference Update="IdentityModel" Version="5.2.0" />
+    <PackageReference Update="IdentityModel" Version="6.0.0" />
     <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="$(SystemIdentityModelVersion)" />
     <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="$(SystemIdentityModelVersion)" />
 
-    <PackageReference Update="FirebaseAdmin" Version="2.2.0" />
-    <PackageReference Update="Google.Cloud.Firestore" Version="2.4.0" />
+    <PackageReference Update="FirebaseAdmin" Version="2.3.0" />
+    <PackageReference Update="Google.Cloud.Firestore" Version="2.5.0" />
 
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="3.0.1" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="4.1.0" />
 
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.123" />
     <PackageReference Update="FluentValidation" Version="9.5.4" />
     <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Update="Polly" Version="7.2.2" />
-    <PackageReference Update="Sendgrid" Version="9.24.4" />
+    <PackageReference Update="Polly" Version="7.2.3" />
+    <PackageReference Update="Sendgrid" Version="9.27.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,15 +70,11 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.Caching.Memory" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)" />
@@ -89,6 +85,12 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
     <!-- Warning: this package seems to be versioned like one of AspNetCore packages :) -->
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
+
+    <!-- Warning: These are not versioned separately -->
+    <PackageReference Update="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.1" />
 
     <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
@@ -109,17 +111,17 @@
     <PackageReference Update="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
     <PackageReference Update="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
 
-    <PackageReference Update="OpenTelemetry" Version="1.2.0-beta1" />
+    <PackageReference Update="OpenTelemetry" Version="1.2.0-rc3" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.1" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Update="NSubstitute" Version="4.2.2" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Update="NSubstitute" Version="4.3.0" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
-    <PackageReference Update="coverlet.collector" Version="3.1.0" />
+    <PackageReference Update="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -131,6 +133,6 @@
     <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.354" />
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.406" />
   </ItemGroup>
 </Project>
