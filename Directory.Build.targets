@@ -4,14 +4,14 @@
     <AspNetCoreVersion>6.0.3</AspNetCoreVersion>
     <ExtensionsVersion>6.0.0</ExtensionsVersion>
 
-    <GoogleApisVersion>1.56.0</GoogleApisVersion>
+    <GoogleApisVersion>1.57.0</GoogleApisVersion>
     <HangfireVersion>1.7.28</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>7.3.1</MassTransitVersion>
     <SystemIdentityModelVersion>6.16.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>4.2.0-1.final</CodeAnalysisVersion>
+    <CodeAnalysisVersion>4.2.0-2.final</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,8 +26,8 @@
     <PackageReference Update="Microsoft.Extensions.Azure" Version="1.1.1" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
     <PackageReference Update="Azure.Identity" Version="1.5.0" />
-    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0-beta.7" />
-    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0-beta.4" />
+    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.3.0" />
+    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.3.0" />
 
     <PackageReference Update="Serilog" Version="2.10.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.1.0" />
@@ -48,7 +48,6 @@
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.123" />
     <PackageReference Update="FluentValidation" Version="9.5.4" />
-    <PackageReference Update="Glob" Version="1.1.8" />
     <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Update="Polly" Version="7.2.3" />
     <PackageReference Update="Sendgrid" Version="9.27.0" />
@@ -92,7 +91,6 @@
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.1" />
 
-    <PackageReference Update="Google.Apis" Version="$(GoogleApisVersion)" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
 
     <PackageReference Update="Hangfire.Autofac" Version="2.3.1" />
