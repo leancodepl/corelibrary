@@ -16,7 +16,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
         private readonly bool useInbox;
         private readonly bool useOutbox;
 
-        public MassTransitRelayModule(
+        protected MassTransitRelayModule(
             TypesCatalog eventsCatalog,
             bool useInbox = true,
             bool useOutbox = true)

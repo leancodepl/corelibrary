@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests
 {
+    [SuppressMessage("?", "SA1127", Justification = "Keeping the constraint on the same line works better here.")]
     public class InjectLifetimeScopeFilterTests
     {
         public InjectLifetimeScopeFilterTests()
@@ -25,8 +27,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Lifetime_scope_gets_added_to_payload()
         {
+            using var lifetimeScope = new TestLifeTimeScope();
             var filter = new InjectLifetimeScopeFilter<string>();
-            var lifetimeScope = new TestLifeTimeScope();
             var context = new TestConsumeContext<string>
             {
                 AutofacServiceProvider = new Autofac.Extensions.DependencyInjection.AutofacServiceProvider(lifetimeScope),
@@ -39,8 +41,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         [Fact]
         public async Task Context_with_payload_gets_sent()
         {
+            using var lifetimeScope = new TestLifeTimeScope();
             var filter = new InjectLifetimeScopeFilter<string>();
-            var lifetimeScope = new TestLifeTimeScope();
             var context = new TestConsumeContext<string>
             {
                 AutofacServiceProvider = new Autofac.Extensions.DependencyInjection.AutofacServiceProvider(lifetimeScope),
@@ -50,7 +52,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             Assert.Equal(lifetimeScope, pipe.LifetimeScope);
         }
 
-
+#pragma warning disable CS0067
         private class TestLifeTimeScope : ILifetimeScope
         {
             public IDisposer Disposer => throw new NotImplementedException();
@@ -63,43 +65,47 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             public ILifetimeScope BeginLifetimeScope(object tag) => throw new NotImplementedException();
             public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction) => throw new NotImplementedException();
             public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction) => throw new NotImplementedException();
-            public void Dispose() => throw new NotImplementedException();
-            public ValueTask DisposeAsync() => throw new NotImplementedException();
+            public void Dispose() { }
+            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
             public object ResolveComponent(ResolveRequest request) => throw new NotImplementedException();
         }
+#pragma warning restore CS0067
 
         private class TestPipe<T> : IPipe<ConsumeContext<T>> where T : class
         {
-            public Autofac.ILifetimeScope LifetimeScope { get; set; }
+            public ILifetimeScope LifetimeScope { get; set; }
             public void Probe(ProbeContext context) => throw new NotImplementedException();
             public Task Send(ConsumeContext<T> context)
             {
-                this.LifetimeScope = (context as TestConsumeContext<T>).LifetimeScope;
+                LifetimeScope = (context as TestConsumeContext<T>).LifetimeScope;
                 return Task.CompletedTask;
             }
         }
+
         private class TestConsumeContext<T> : ConsumeContext<T> where T : class
         {
-            public Autofac.Extensions.DependencyInjection.AutofacServiceProvider AutofacServiceProvider { get; set; } 
-            public Autofac.ILifetimeScope LifetimeScope { get; set; }
             public bool TryGetPayload<T1>(out T1 payload) where T1 : class
             {
-                if (this.AutofacServiceProvider is null)
+                if (AutofacServiceProvider is null)
                 {
                     payload = null;
                     return false;
                 }
                 else
                 {
-                    payload = this.AutofacServiceProvider as T1;
+                    payload = AutofacServiceProvider as T1;
                     return true;
                 }
             }
+
             public T1 GetOrAddPayload<T1>(PayloadFactory<T1> payloadFactory) where T1 : class
             {
-                this.LifetimeScope = payloadFactory.Invoke() as ILifetimeScope;
+                LifetimeScope = payloadFactory.Invoke() as ILifetimeScope;
                 return null;
             }
+
+            public Autofac.Extensions.DependencyInjection.AutofacServiceProvider AutofacServiceProvider { get; set; }
+            public ILifetimeScope LifetimeScope { get; set; }
             public T Message => throw new NotImplementedException();
             public ReceiveContext ReceiveContext => throw new NotImplementedException();
             public Task ConsumeCompleted => throw new NotImplementedException();
