@@ -135,7 +135,7 @@ jobs:
           ZIP: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Push to Feedz
         run: |
-          find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n true '{}' ';'
+          find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n '{}' ';'
         env:
           FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
       - name: Create release
@@ -149,6 +149,6 @@ jobs:
       - name: Push to NuGet
         if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
         run: |
-          find -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n true '{}' ';'
+          find -name '*.nupkg' -exec dotnet nuget push -k "$NUGET_API_KEY" -s 'https://api.nuget.org/v3/index.json' -n '{}' ';'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
