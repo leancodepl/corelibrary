@@ -11,7 +11,8 @@
     <SystemIdentityModelVersion>6.16.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>4.1.0</CodeAnalysisVersion>
+    <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
+    <CodeAnalysisVersion>4.0.1</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
