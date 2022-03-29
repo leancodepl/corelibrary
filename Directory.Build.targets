@@ -11,7 +11,7 @@
     <SystemIdentityModelVersion>6.16.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
-    <CodeAnalysisVersion>4.2.0-2.final</CodeAnalysisVersion>
+    <CodeAnalysisVersion>4.1.0</CodeAnalysisVersion>
   </PropertyGroup>
 
   <ItemGroup>
