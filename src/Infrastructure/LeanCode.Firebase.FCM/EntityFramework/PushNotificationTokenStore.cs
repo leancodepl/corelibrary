@@ -39,14 +39,16 @@ namespace LeanCode.Firebase.FCM.EntityFramework
 
         public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
         {
+            var userIdsList = userIds.ToList();
+
             if (userIds.Count > MaxTokenBatchSize)
             {
                 throw new ArgumentException($"You can only pass at most {MaxTokenBatchSize} users in one call.", nameof(userIds));
             }
 
             var res = await dbContext.QueryAsync<UserToken>(
-                $"SELECT {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))}, {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))} IN @userIds",
-                new { userIds },
+                $"SELECT {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))}, {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.UserId))} IN @userIdsList",
+                new { userIdsList },
                 cancellationToken: cancellationToken);
             return res
                 .GroupBy(g => g.UserId)
@@ -125,11 +127,13 @@ namespace LeanCode.Firebase.FCM.EntityFramework
         {
             try
             {
+                var tokensList = tokens.ToList();
+
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} IN @tokens",
-                    new { tokens },
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PushNotificationTokenEntity.Token))} IN @tokensList",
+                    new { tokensList },
                     cancellationToken: cancellationToken);
-                logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
+                logger.Information("Removed {Count} push notification tokens from the store", tokensList.Count);
             }
             catch (Exception ex)
             {
