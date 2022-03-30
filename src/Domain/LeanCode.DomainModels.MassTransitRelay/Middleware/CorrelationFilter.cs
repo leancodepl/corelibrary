@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GreenPipes;
 using MassTransit;
-using Serilog.Context;
+using MassTransit.Configuration;
+using LogContext = Serilog.Context.LogContext;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {

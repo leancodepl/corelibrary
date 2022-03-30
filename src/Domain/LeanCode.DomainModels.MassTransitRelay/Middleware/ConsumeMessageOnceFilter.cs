@@ -1,10 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using GreenPipes;
-using LeanCode.DomainModels.MassTransitRelay.Inbox;
+﻿using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using MassTransit;
-using MassTransit.ConsumeConfigurators;
-using MassTransit.Registration;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
@@ -49,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static void UseConsumedMessagesFiltering(
             this IConsumePipeConfigurator configurator,
-            IConfigurationServiceProvider provider)
+            IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Observer>(provider);
         }

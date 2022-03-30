@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Autofac;
-using MassTransit;
-using MassTransit.BusConfigurators;
-using MassTransit.Transports;
+﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay

@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using GreenPipes;
+using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -15,14 +15,14 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
     public class AutofacPipeContextServiceResolver : IPipeContextServiceResolver
     {
-        public static readonly AutofacPipeContextServiceResolver Instance = new AutofacPipeContextServiceResolver();
+        public static readonly AutofacPipeContextServiceResolver Instance = new();
 
         public TService GetService<TService>(PipeContext pipe)
             where TService : notnull
         {
             if (pipe.TryGetPayload<ILifetimeScope>(out var scope))
             {
-                return scope.Resolve<TService>();
+                return scope!.Resolve<TService>();
             }
             else
             {

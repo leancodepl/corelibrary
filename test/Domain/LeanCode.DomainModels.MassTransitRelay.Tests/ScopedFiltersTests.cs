@@ -1,13 +1,10 @@
 using System.Collections.Concurrent;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using GreenPipes;
 using LeanCode.Components;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
 using MassTransit;
-using MassTransit.ConsumeConfigurators;
-using MassTransit.Registration;
-using MassTransit.Testing.Indicators;
+using MassTransit.Testing.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -128,7 +125,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             }
         }
 
-        private record Message();
+        private record Message;
 
         private class Filter1<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
             where TConsumer : class
@@ -157,7 +154,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             public static void UseFilter1(
                 IConsumePipeConfigurator configurator,
-                IConfigurationServiceProvider provider)
+                IServiceProvider provider)
             {
                 configurator.UseTypedConsumeFilter<Filter1Observer>(provider);
             }
@@ -193,7 +190,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             public static void UseFilter2(
                 IConsumePipeConfigurator configurator,
-                IConfigurationServiceProvider provider)
+                IServiceProvider provider)
             {
                 configurator.UseTypedConsumeFilter<Filter2Observer>(provider);
             }

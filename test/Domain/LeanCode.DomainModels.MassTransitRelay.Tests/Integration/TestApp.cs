@@ -1,10 +1,6 @@
-using System;
-using System.Data.Common;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using GreenPipes;
 using LeanCode.Components;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
@@ -13,12 +9,10 @@ using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.DomainModels.Model;
 using LeanCode.OpenTelemetry;
 using MassTransit;
-using MassTransit.AutofacIntegration;
-using MassTransit.Testing.Indicators;
+using MassTransit.Testing.Implementations;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Xunit;
 
@@ -68,7 +62,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             // The database is destroyed when the last connection to it closes, hence we need
             // to have one artificial connection to it for the duration of the test, otherwise
             // it will get dropped prematurely and the tests would fail.
-            dbConnection = new SqliteConnection(connStr.ConnectionString);
+            dbConnection = new(connStr.ConnectionString);
 
             var services = new ServiceCollection();
             services.AddLogging(cfg => cfg.AddSerilog());

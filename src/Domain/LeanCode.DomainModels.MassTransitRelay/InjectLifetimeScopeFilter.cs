@@ -1,6 +1,4 @@
-using GreenPipes;
 using MassTransit;
-using MassTransit.Registration;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
@@ -15,19 +13,19 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public Task Send(ConsumeContext<T> context, IPipe<ConsumeContext<T>> next)
         {
-            if (!context.TryGetPayload(out Autofac.Extensions.DependencyInjection.AutofacServiceProvider scopeProvider))
+            if (!context.TryGetPayload(out Autofac.Extensions.DependencyInjection.AutofacServiceProvider? scopeProvider))
             {
                 throw new InvalidOperationException("Could not find autofac service provider");
             }
 
-            context.GetOrAddPayload(() => scopeProvider.LifetimeScope);
+            context.GetOrAddPayload(() => scopeProvider!.LifetimeScope);
             return next.Send(context);
         }
     }
 
     public static class InjectLifetimeScopeFilter
     {
-        public static void UseLifetimeScopeInjection(this IConsumePipeConfigurator configurator, IConfigurationServiceProvider ctx)
+        public static void UseLifetimeScopeInjection(this IConsumePipeConfigurator configurator, IServiceProvider ctx)
         {
             DependencyInjectionFilterExtensions.UseConsumeFilter(
                 configurator,

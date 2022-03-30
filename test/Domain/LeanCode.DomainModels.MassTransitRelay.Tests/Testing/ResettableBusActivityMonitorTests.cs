@@ -1,8 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using GreenPipes.Internals.Extensions;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
 using MassTransit;
+using MassTransit.Internals;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing

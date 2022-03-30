@@ -3,7 +3,6 @@ using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
-using GreenPipes;
 using MassTransit;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             var filter = new InjectLifetimeScopeFilter<string>();
             var context = new TestConsumeContext<string>
             {
-                AutofacServiceProvider = new Autofac.Extensions.DependencyInjection.AutofacServiceProvider(lifetimeScope),
+                AutofacServiceProvider = new(lifetimeScope),
             };
             var pipe = new TestPipe<string>();
             await filter.Send(context, pipe);
@@ -45,7 +44,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             var filter = new InjectLifetimeScopeFilter<string>();
             var context = new TestConsumeContext<string>
             {
-                AutofacServiceProvider = new Autofac.Extensions.DependencyInjection.AutofacServiceProvider(lifetimeScope),
+                AutofacServiceProvider = new(lifetimeScope),
             };
             var pipe = new TestPipe<string>();
             await filter.Send(context, pipe);
@@ -77,7 +76,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             public void Probe(ProbeContext context) => throw new NotImplementedException();
             public Task Send(ConsumeContext<T> context)
             {
-                LifetimeScope = (context as TestConsumeContext<T>).LifetimeScope;
+                LifetimeScope = (context as TestConsumeContext<T>)!.LifetimeScope;
                 return Task.CompletedTask;
             }
         }
@@ -108,6 +107,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
             public ILifetimeScope LifetimeScope { get; set; }
             public T Message => throw new NotImplementedException();
             public ReceiveContext ReceiveContext => throw new NotImplementedException();
+            public SerializerContext SerializerContext => throw new NotImplementedException();
             public Task ConsumeCompleted => throw new NotImplementedException();
             public IEnumerable<string> SupportedMessageTypes => throw new NotImplementedException();
             public CancellationToken CancellationToken => throw new NotImplementedException();

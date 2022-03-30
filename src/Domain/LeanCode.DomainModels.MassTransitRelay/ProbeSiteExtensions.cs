@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using GreenPipes;
+using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
