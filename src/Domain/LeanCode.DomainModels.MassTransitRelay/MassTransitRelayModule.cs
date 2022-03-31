@@ -66,7 +66,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public sealed override void ConfigureServices(IServiceCollection services)
         {
-            services.AddMassTransitHostedService();
             ConfigureMassTransit(services);
         }
 
