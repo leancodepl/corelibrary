@@ -5,10 +5,9 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Testing
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "Not needed in tests.")]
-    public abstract class ResettableBusActivityMonitorTests : IDisposable
+    public sealed class ResettableBusActivityMonitorTests : IDisposable
     {
-        private readonly ResettableBusActivityMonitor monitor = new ResettableBusActivityMonitor(TimeSpan.FromSeconds(0.2));
+        private readonly ResettableBusActivityMonitor monitor = new(TimeSpan.FromSeconds(0.2));
 
         [Fact]
         public void Is_inactive_by_default()
