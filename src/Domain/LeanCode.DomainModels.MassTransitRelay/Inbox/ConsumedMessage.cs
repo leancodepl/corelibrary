@@ -1,5 +1,4 @@
-﻿using System;
-using LeanCode.Time;
+﻿using LeanCode.Time;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

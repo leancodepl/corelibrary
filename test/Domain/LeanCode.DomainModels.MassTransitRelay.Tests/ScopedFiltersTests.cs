@@ -103,8 +103,6 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
                     {
                         cfg.ReceiveEndpoint("queue", rcv =>
                         {
-                            rcv.UseLifetimeScopeInjection(ctx);
-
                             Filter1Observer.UseFilter1(rcv, ctx);
                             Filter2Observer.UseFilter2(rcv, ctx);
 

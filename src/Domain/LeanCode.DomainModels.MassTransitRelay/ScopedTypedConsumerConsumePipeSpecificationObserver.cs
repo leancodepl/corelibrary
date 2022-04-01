@@ -1,9 +1,7 @@
-using Autofac;
 using MassTransit;
 using MassTransit.Configuration;
 using MassTransit.DependencyInjection;
 using MassTransit.Middleware;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
 {
