@@ -7,7 +7,6 @@
     <GoogleApisVersion>1.57.0</GoogleApisVersion>
     <HangfireVersion>1.7.28</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>7.3.1</MassTransitVersion>
     <SystemIdentityModelVersion>6.16.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
@@ -105,10 +104,7 @@
     <PackageReference Update="IdentityServer4.EntityFramework.Storage" Version="$(IdentityServerVersion)" />
     <PackageReference Update="IdentityServer4.Storage" Version="$(IdentityServerVersion)" />
 
-    <PackageReference Update="MassTransit" Version="$(MassTransitVersion)" />
-    <PackageReference Update="MassTransit.Autofac" Version="$(MassTransitVersion)" />
-    <PackageReference Update="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
-    <PackageReference Update="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+    <PackageReference Update="MassTransit" Version="8.0.0" />
 
     <PackageReference Update="OpenTelemetry" Version="1.2.0-rc3" />
   </ItemGroup>

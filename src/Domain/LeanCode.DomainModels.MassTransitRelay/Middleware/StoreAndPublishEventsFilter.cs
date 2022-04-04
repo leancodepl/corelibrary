@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using GreenPipes;
-using MassTransit;
-using MassTransit.ConsumeConfigurators;
-using MassTransit.Registration;
+﻿using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware
 {
@@ -37,7 +33,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware
     {
         public static void StoreAndPublishDomainEvents(
             this IConsumePipeConfigurator configurator,
-            IConfigurationServiceProvider provider)
+            IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Observer>(provider);
         }

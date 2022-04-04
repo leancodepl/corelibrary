@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
-using GreenPipes;
+using Autofac.Extensions.DependencyInjection;
 using LeanCode.DomainModels.MassTransitRelay.Inbox;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.Time;
 using MassTransit;
-using MassTransit.AutofacIntegration;
-using MassTransit.Registration;
 using MassTransit.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
@@ -31,8 +26,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
         {
             dbConnection = new SqliteConnection("Filename=:memory:");
 
-            var builder = new ContainerBuilder();
-            builder.AddMassTransitInMemoryTestHarness();
+            var collection = new ServiceCollection();
+            collection.AddMassTransitInMemoryTestHarness();
+
+            var factory = new AutofacServiceProviderFactory();
+            var builder = factory.CreateBuilder(collection);
             builder.Register(s => TestDbContext.Create(dbConnection)).As<IConsumedMessagesContext>();
 
             container = builder.Build();
@@ -43,7 +41,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
             {
                 // we have to serialize access to database
                 cfg.UseConcurrencyLimit(1);
-                cfg.UseConsumedMessagesFiltering(container.Resolve<IConfigurationServiceProvider>());
+                cfg.UseConsumedMessagesFiltering(container.Resolve<IServiceProvider>());
             };
         }
 

@@ -5,7 +5,6 @@ using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using LeanCode.DomainModels.MassTransitRelay.Simple;
 using LeanCode.PeriodicService;
-using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.DomainModels.MassTransitRelay
@@ -66,7 +65,6 @@ namespace LeanCode.DomainModels.MassTransitRelay
 
         public sealed override void ConfigureServices(IServiceCollection services)
         {
-            services.AddMassTransitHostedService();
             ConfigureMassTransit(services);
         }
 

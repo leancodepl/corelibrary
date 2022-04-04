@@ -1,15 +1,11 @@
 #nullable enable
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Autofac;
-using GreenPipes.Internals.Extensions;
+using Autofac.Extensions.DependencyInjection;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using MassTransit;
-using MassTransit.AutofacIntegration;
-using MassTransit.Registration;
 using MassTransit.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
@@ -23,8 +19,11 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
 
         public EventsPublisherFilterTests()
         {
-            var builder = new ContainerBuilder();
-            builder.AddMassTransitInMemoryTestHarness();
+            var collection = new ServiceCollection();
+            collection.AddMassTransitInMemoryTestHarness();
+
+            var factory = new AutofacServiceProviderFactory();
+            var builder = factory.CreateBuilder(collection);
             builder.RegisterType<AsyncEventsInterceptor>().AsSelf().OnActivated(a => a.Instance.Configure()).SingleInstance();
 
             container = builder.Build();
@@ -33,7 +32,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
             harness.TestTimeout = TimeSpan.FromSeconds(1);
             harness.OnConfigureInMemoryBus += cfg =>
             {
-                cfg.UseDomainEventsPublishing(container.Resolve<IConfigurationServiceProvider>());
+                cfg.UseDomainEventsPublishing(container.Resolve<IServiceProvider>());
             };
         }
 

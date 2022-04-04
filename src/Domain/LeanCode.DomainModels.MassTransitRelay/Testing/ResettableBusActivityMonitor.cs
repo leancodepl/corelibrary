@@ -1,8 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Testing.Indicators;
+using MassTransit.Testing.Implementations;
 using MassTransit.Util;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Testing

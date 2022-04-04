@@ -1,6 +1,7 @@
 using Autofac;
 using LeanCode.Components;
 using MassTransit;
+using MassTransit.Testing.Implementations;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Testing
 {
@@ -22,7 +23,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Testing
         {
             builder.Register(c => ResettableBusActivityMonitor.CreateFor(c.Resolve<IBusControl>(), inactivityWaitTime))
                 .AutoActivate()
-                .AsImplementedInterfaces()
+                .As<IBusActivityMonitor>()
+                .AsSelf()
                 .SingleInstance();
         }
     }
