@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS
@@ -17,7 +18,13 @@ namespace LeanCode.CQRS
                 : validationErrors.ToImmutableList();
         }
 
-        public static CommandResult Success { get; } = new CommandResult(null);
+        [JsonConstructor]
+        public CommandResult(ImmutableList<ValidationError> validationErrors)
+        {
+            ValidationErrors = validationErrors;
+        }
+
+        public static CommandResult Success { get; } = new(null as IEnumerable<ValidationError>);
 
         public static CommandResult NotValid(ValidationResult validationResult)
         {
@@ -28,7 +35,7 @@ namespace LeanCode.CQRS
                     nameof(validationResult));
             }
 
-            return new CommandResult(validationResult.Errors);
+            return new(validationResult.Errors);
         }
     }
 }
