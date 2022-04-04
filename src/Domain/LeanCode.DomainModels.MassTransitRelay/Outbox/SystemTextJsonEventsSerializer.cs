@@ -1,18 +1,17 @@
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Text.Json;
 using LeanCode.Components;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
     /// <remarks>
-    /// This is not usable yet. `System.Text.Json` does not support private constructors and requires
-    /// users to add `JsonIncludeAttribute` to properties with private setters.
+    /// This is hardly usable. `System.Text.Json` does not support private constructors and requires
+    /// users to add `JsonIncludeAttribute` to properties with private setters or exposing
+    /// constructors with all properties and marking it with `JsonConstructorAttribute`.
     /// More info: https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-immutability?pivots=dotnet-5-0
-    /// TODO: try to fix in .NET 6
+    /// However, it is still more convenient than supporting different serializers.
     /// </remarks>
-    internal sealed class SystemTextJsonEventsSerializer : IRaisedEventsSerializer
+    public sealed class SystemTextJsonEventsSerializer : IRaisedEventsSerializer
     {
         private readonly TypesCatalog typesCatalog;
         private readonly ConcurrentDictionary<string, Type> deserializerCache = new();
@@ -44,8 +43,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Outbox
         {
             return typesCatalog.Assemblies
                 .Select(ass => ass.GetType(type))
-                .Where(t => t != null)
-                .FirstOrDefault()
+                .FirstOrDefault(t => t != null)
                 ?? throw new InvalidOperationException($"Type {type} is not defined in any of the provided assemblies.");
         }
     }
