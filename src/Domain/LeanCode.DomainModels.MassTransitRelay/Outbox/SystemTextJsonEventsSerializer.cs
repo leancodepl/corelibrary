@@ -5,7 +5,7 @@ using LeanCode.Components;
 namespace LeanCode.DomainModels.MassTransitRelay.Outbox
 {
     /// <remarks>
-    /// This is hardly usable. `System.Text.Json` does not support private constructors and requires
+    /// `System.Text.Json` does not support private constructors and requires
     /// users to add `JsonIncludeAttribute` to properties with private setters or exposing
     /// constructors with all properties and marking it with `JsonConstructorAttribute`.
     /// More info: https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-immutability?pivots=dotnet-5-0
