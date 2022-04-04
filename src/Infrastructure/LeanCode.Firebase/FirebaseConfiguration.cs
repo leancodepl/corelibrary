@@ -1,6 +1,6 @@
+using System.Text.Json.Nodes;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Newtonsoft.Json.Linq;
 
 namespace LeanCode.Firebase
 {
@@ -28,7 +28,7 @@ namespace LeanCode.Firebase
                     new AppOptions
                     {
                         Credential = GoogleCredential.FromJson(cfg),
-                        ProjectId = JObject.Parse(cfg)["project_id"]?.Value<string>(),
+                        ProjectId = JsonNode.Parse(cfg)?["project_id"]?.ToString(),
                     },
                     name);
             }

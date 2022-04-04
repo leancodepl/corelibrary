@@ -11,12 +11,6 @@
     <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="IdentityServer4" />
     <PackageReference Include="Microsoft.Extensions.Azure" />
-
-    <!--
-        IdentityServer4 and Microsoft.Azure.KeyVault rely on Newtonsoft.Json but on a much older
-        version. We can bump it to our one as it should really be backwards compatible.
-    -->
-    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
 </Project>

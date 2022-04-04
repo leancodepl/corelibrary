@@ -11,12 +11,6 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.analyzers" />
     <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'net6.0'" />
-
-    <!--
-        _Something_ relies on Newtonsoft.Json but on a much older version. We can bump it to our one
-        as it should really be backwards compatible.
-    -->
-    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
