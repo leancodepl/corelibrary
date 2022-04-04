@@ -11,20 +11,12 @@ namespace LeanCode.CQRS
         public ImmutableList<ValidationError> ValidationErrors { get; }
         public bool WasSuccessful => ValidationErrors.Count == 0;
 
-        public CommandResult(IEnumerable<ValidationError>? validationErrors)
-        {
-            ValidationErrors = validationErrors is null
-                ? ImmutableList.Create<ValidationError>()
-                : validationErrors.ToImmutableList();
-        }
-
-        [JsonConstructor]
         public CommandResult(ImmutableList<ValidationError> validationErrors)
         {
             ValidationErrors = validationErrors;
         }
 
-        public static CommandResult Success { get; } = new(null as IEnumerable<ValidationError>);
+        public static CommandResult Success { get; } = new(ImmutableList.Create<ValidationError>());
 
         public static CommandResult NotValid(ValidationResult validationResult)
         {
