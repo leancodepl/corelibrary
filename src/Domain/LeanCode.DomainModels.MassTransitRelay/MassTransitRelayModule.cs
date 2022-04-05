@@ -46,7 +46,7 @@ namespace LeanCode.DomainModels.MassTransitRelay
                 builder.RegisterPeriodicAction<PublishedEventsCleaner>();
             }
 
-            builder.RegisterInstance(new NewtonsoftJsonEventsSerializer(eventsCatalog))
+            builder.RegisterInstance(new SystemTextJsonEventsSerializer(eventsCatalog))
                 .AsImplementedInterfaces()
                 .SingleInstance();
 

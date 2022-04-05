@@ -79,7 +79,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         }
 
         [Fact]
-        public void Serializes_and_deserializes_events_with_private_setters_and_no_ctor_correctly()
+        public void Serializes_and_deserializes_events_with_private_setters_and_attributed_ctor_correctly()
         {
             var evt = TestEventWithPrivateFields.Create("test value");
 
@@ -111,15 +111,18 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests
         {
             Value = "";
         }
+
+        [JsonConstructor]
+        public TestEventWithPrivateFields(Guid id, DateTime dateOccurred, string value)
+        {
+            Id = id;
+            DateOccurred = dateOccurred;
+            Value = value;
+        }
     }
 
-    public sealed class NewtonsoftJsonEventsSerializerTests : BaseJsonEventsSerializerTests
+    public sealed class SystemTextJsonEventsSerializerTests : BaseJsonEventsSerializerTests
     {
-        protected override IRaisedEventsSerializer Serializer { get; } = new NewtonsoftJsonEventsSerializer(Types);
+        protected override IRaisedEventsSerializer Serializer { get; } = new SystemTextJsonEventsSerializer(Types);
     }
-
-    // public sealed class SystemTextJsonEventsSerializerTests : BaseJsonEventsSerializerTests
-    // {
-    //     protected override IRaisedEventsSerializer Serializer { get; } = new SystemTextJsonEventsSerializer(Types);
-    // }
 }

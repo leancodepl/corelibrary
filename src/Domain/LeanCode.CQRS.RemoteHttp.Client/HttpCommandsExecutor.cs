@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -63,7 +64,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
                 validationErrors.ValueKind == JsonValueKind.Array)
             {
                 var errors = validationErrors.EnumerateArray().Select(ParseError).ToList();
-                return new CommandResult(errors);
+                return new(errors.ToImmutableList());
             }
             else
             {

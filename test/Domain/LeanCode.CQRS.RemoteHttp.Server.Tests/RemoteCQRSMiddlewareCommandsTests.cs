@@ -1,7 +1,6 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
@@ -60,7 +59,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke();
 
-            var result = JsonConvert.DeserializeObject<CommandResult?>(content);
+            var result = JsonSerializer.Deserialize<CommandResult?>(content);
             Assert.NotNull(result);
             Assert.True(result!.WasSuccessful);
         }
@@ -78,7 +77,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (_, content) = await Invoke(content: @"{""Prop"": 999}");
 
-            var result = JsonConvert.DeserializeObject<CommandResult?>(content);
+            var result = JsonSerializer.Deserialize<CommandResult?>(content);
             Assert.NotNull(result);
             Assert.False(result!.WasSuccessful);
             var err = Assert.Single(result.ValidationErrors);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Validation;
@@ -42,7 +43,7 @@ namespace LeanCode.ExternalIdentityProviders
                         ErrorCodeOther),
                 };
 
-                return new CommandResult(new[] { err });
+                return new(ImmutableList.Create(err));
             }
         }
     }

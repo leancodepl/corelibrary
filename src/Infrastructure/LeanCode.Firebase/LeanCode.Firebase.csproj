@@ -2,12 +2,6 @@
 
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" />
-
-    <!--
-        FirebaseAdmin (indirectly) relies on Newtonsoft.Json but on a much older version. We can
-        bump it to our one as it should really be backwards compatible.
-    -->
-    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
 </Project>
