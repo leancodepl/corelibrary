@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.Firebase.FCM.MSSQL
+namespace LeanCode.Firebase.FCM.PostgreSql
 {
-    public class MSSQLPushNotificationTokenEntity
+    public class PgSqlPushNotificationEntity
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
@@ -11,14 +11,14 @@ namespace LeanCode.Firebase.FCM.MSSQL
 
         public static void Configure(ModelBuilder builder)
         {
-            builder.Entity<MSSQLPushNotificationTokenEntity>(c =>
+            builder.Entity<PgSqlPushNotificationEntity>(c =>
             {
-                c.HasKey(e => e.Id).IsClustered(false);
-                c.HasIndex(e => e.UserId).IsClustered(true);
+                c.HasKey(e => e.Id);
+                c.HasIndex(e => e.UserId);
                 c.HasIndex(e => e.Token).IsUnique(true);
 
                 c.Property(e => e.Id).ValueGeneratedNever();
-                c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
+                c.Property(e => e.Token).IsRequired(true);
             });
         }
     }

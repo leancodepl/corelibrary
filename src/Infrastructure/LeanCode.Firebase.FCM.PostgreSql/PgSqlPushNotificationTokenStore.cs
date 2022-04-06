@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace LeanCode.Firebase.FCM.MSSQL
+namespace LeanCode.Firebase.FCM.PostgreSql
 {
-    public sealed class MSSQLPushNotificationTokenStore<TDbContext> : IPushNotificationTokenStore
+    public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificationTokenStore
         where TDbContext : DbContext
     {
         private const int MaxTokenBatchSize = IPushNotificationTokenStore.MaxTokenBatchSize;
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MSSQLPushNotificationTokenStore<TDbContext>>();
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PgSqlPushNotificationTokenStore<TDbContext>>();
 
         private readonly TDbContext dbContext;
         private readonly ISqlGenerationHelper sqlGenerationHelper;
 
-        public MSSQLPushNotificationTokenStore(TDbContext dbContext)
+        public PgSqlPushNotificationTokenStore(TDbContext dbContext)
         {
             this.dbContext = dbContext;
 
@@ -26,7 +26,7 @@ namespace LeanCode.Firebase.FCM.MSSQL
         public async Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             var res = await dbContext.QueryAsync<string>(
-                $"SELECT {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.UserId))} = @userId",
+                $"SELECT {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = @userId",
                 new { userId },
                 cancellationToken: cancellationToken);
             return res.AsList();
@@ -39,9 +39,11 @@ namespace LeanCode.Firebase.FCM.MSSQL
                 throw new ArgumentException($"You can only pass at most {MaxTokenBatchSize} users in one call.", nameof(userIds));
             }
 
+            var userIdsList = userIds.ToList();
+
             var res = await dbContext.QueryAsync<UserToken>(
-                $"SELECT {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.UserId))}, {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.UserId))} IN @userIds",
-                new { userIds },
+                $"SELECT {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))}, {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = ANY(@userIdsList)",
+                new { userIdsList },
                 cancellationToken: cancellationToken);
             return res
                 .GroupBy(g => g.UserId)
@@ -59,14 +61,14 @@ namespace LeanCode.Firebase.FCM.MSSQL
                     BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
-                    DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} = @newToken;
+                    DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = @newToken;
 
                     -- And add the new token
                     INSERT INTO {GetTokensTableName()}
-                        ({GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Id))},
-                        {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.UserId))},
-                        {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))},
-                        {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.DateCreated))})
+                        ({GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Id))},
+                        {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))},
+                        {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))},
+                        {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.DateCreated))})
                     VALUES (@newId, @userId, @newToken, @now);
 
                     COMMIT TRANSACTION;
@@ -87,7 +89,7 @@ namespace LeanCode.Firebase.FCM.MSSQL
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.UserId))} = @userId AND {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} = @newToken",
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = @userId AND {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = @newToken",
                     new { userId, newToken },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token for user {UserId} from the store", userId);
@@ -104,7 +106,7 @@ namespace LeanCode.Firebase.FCM.MSSQL
             try
             {
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} = @token",
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = @token",
                     new { token },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed push notification token from the store");
@@ -120,9 +122,10 @@ namespace LeanCode.Firebase.FCM.MSSQL
         {
             try
             {
+                var tokensList = tokens.ToList();
                 await dbContext.ExecuteAsync(
-                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(MSSQLPushNotificationTokenEntity.Token))} IN @tokens",
-                    new { tokens },
+                    $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = ANY(@tokensList)",
+                    new { tokensList },
                     cancellationToken: cancellationToken);
                 logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
             }
@@ -133,10 +136,10 @@ namespace LeanCode.Firebase.FCM.MSSQL
         }
 
         private string GetTokensTableName() =>
-            dbContext.GetFullTableName(typeof(MSSQLPushNotificationTokenEntity));
+            dbContext.GetFullTableName(typeof(PgSqlPushNotificationEntity));
 
         private string GetTokensColumnName(string propertyName) =>
-            dbContext.GetColumnName(typeof(MSSQLPushNotificationTokenEntity), propertyName);
+            dbContext.GetColumnName(typeof(PgSqlPushNotificationEntity), propertyName);
 
         private readonly struct UserToken
         {

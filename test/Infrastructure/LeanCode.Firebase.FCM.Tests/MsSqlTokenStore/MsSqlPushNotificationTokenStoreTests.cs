@@ -1,12 +1,12 @@
-using LeanCode.Firebase.FCM.MSSQL;
+using LeanCode.Firebase.FCM.SqlServer;
 using Xunit;
 
-namespace LeanCode.Firebase.FCM.Tests.MSSQLTokenStore
+namespace LeanCode.Firebase.FCM.Tests.MsSqlTokenStore
 {
     public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
-        private MSSQLTestDbContext context = default!;
-        private MSSQLPushNotificationTokenStore<MSSQLTestDbContext> store = default!;
+        private SqliteTestDbContext context = default!;
+        private MsSqlPushNotificationTokenStore<SqliteTestDbContext> store = default!;
 
         [Fact]
         public async Task Gets_freshly_saved_token()
@@ -114,8 +114,8 @@ namespace LeanCode.Firebase.FCM.Tests.MSSQLTokenStore
 
         public async Task InitializeAsync()
         {
-            context = await MSSQLTestDbContext.CreateInMemory();
-            store = new MSSQLPushNotificationTokenStore<MSSQLTestDbContext>(context);
+            context = await SqliteTestDbContext.CreateInMemory();
+            store = new MsSqlPushNotificationTokenStore<SqliteTestDbContext>(context);
         }
 
         public async Task DisposeAsync()
