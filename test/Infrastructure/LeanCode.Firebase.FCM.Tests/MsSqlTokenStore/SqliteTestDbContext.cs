@@ -1,30 +1,28 @@
-using System;
 using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
 using Dapper;
-using LeanCode.Firebase.FCM.EntityFramework;
+using LeanCode.Firebase.FCM.SqlServer;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.Firebase.FCM.Tests.EntityFramework
+namespace LeanCode.Firebase.FCM.Tests.MsSqlTokenStore
 {
-    public class TestDbContext : DbContext
+    public class SqliteTestDbContext : DbContext
     {
         private readonly DbConnection connection;
 
-        public DbSet<PushNotificationTokenEntity> Tokens { get; set; }
+        public DbSet<MsSqlPushNotificationTokenEntity> Tokens { get; set; }
 
-        public TestDbContext(DbContextOptions<TestDbContext> options)
+        public SqliteTestDbContext(DbContextOptions<SqliteTestDbContext> options)
             : base(options)
         {
             connection = Database.GetDbConnection();
         }
 
-        public static async Task<TestDbContext> CreateInMemory()
+        public static async Task<SqliteTestDbContext> CreateInMemory()
         {
             SqlMapper.AddTypeHandler(new GuidTypeHandler());
 
-            var context = new TestDbContext(new DbContextOptionsBuilder<TestDbContext>()
+            var context = new SqliteTestDbContext(new DbContextOptionsBuilder<SqliteTestDbContext>()
                 .UseSqlite("Filename=:memory:")
                 .Options);
             await context.connection.OpenAsync();
@@ -34,7 +32,7 @@ namespace LeanCode.Firebase.FCM.Tests.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            PushNotificationTokenEntity.Configure(modelBuilder);
+            MsSqlPushNotificationTokenEntity.Configure(modelBuilder);
         }
 
         public override async ValueTask DisposeAsync()

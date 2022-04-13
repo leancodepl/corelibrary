@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Firebase.FCM.SqlServer/LeanCode.Firebase.FCM.SqlServer.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Firebase.FCM.PostgreSql/LeanCode.Firebase.FCM.PostgreSql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,8 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.Firebase.FCM.EntityFramework
+namespace LeanCode.Firebase.FCM.SqlServer
 {
-    public class PushNotificationTokenEntity
+    public class MsSqlPushNotificationTokenEntity
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
@@ -12,7 +11,7 @@ namespace LeanCode.Firebase.FCM.EntityFramework
 
         public static void Configure(ModelBuilder builder)
         {
-            builder.Entity<PushNotificationTokenEntity>(c =>
+            builder.Entity<MsSqlPushNotificationTokenEntity>(c =>
             {
                 c.HasKey(e => e.Id).IsClustered(false);
                 c.HasIndex(e => e.UserId).IsClustered(true);
