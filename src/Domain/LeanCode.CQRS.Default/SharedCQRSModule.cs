@@ -22,6 +22,7 @@ namespace LeanCode.CQRS.Default
             builder.RegisterGeneric(typeof(CacheElement<>)).AsSelf();
             builder.RegisterGeneric(typeof(CommandFinalizer<>)).AsSelf();
             builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
+            builder.RegisterGeneric(typeof(OperationFinalizer<>)).AsSelf();
 
             builder.RegisterType<RoleRegistry>().AsSelf().SingleInstance();
             builder.RegisterType<DefaultPermissionAuthorizer>().AsSelf().AsImplementedInterfaces();

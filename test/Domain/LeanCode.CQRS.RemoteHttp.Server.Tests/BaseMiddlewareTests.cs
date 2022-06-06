@@ -14,11 +14,12 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
     {
         protected const int PipelineContinued = 100;
 
-        private readonly TypesCatalog catalog = new TypesCatalog(typeof(BaseMiddlewareTests));
+        private readonly TypesCatalog catalog = new(typeof(BaseMiddlewareTests));
         private readonly IServiceProvider serviceProvider;
 
-        protected StubQueryExecutor Query { get; } = new StubQueryExecutor();
-        protected StubCommandExecutor Command { get; } = new StubCommandExecutor();
+        protected StubQueryExecutor Query { get; } = new();
+        protected StubCommandExecutor Command { get; } = new();
+        protected StubOperationExecutor Operation { get; } = new();
         protected RemoteCQRSMiddleware<AppContext> Middleware { get; }
 
         private readonly string endpoint;
@@ -32,6 +33,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
             serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(IQueryExecutor<AppContext>)).Returns(Query);
             serviceProvider.GetService(typeof(ICommandExecutor<AppContext>)).Returns(Command);
+            serviceProvider.GetService(typeof(IOperationExecutor<AppContext>)).Returns(Operation);
 
             Middleware = new RemoteCQRSMiddleware<AppContext>(
                 catalog,

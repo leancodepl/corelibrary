@@ -117,7 +117,7 @@ public class Cmd : ICommand
 
         protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
         {
-            return new EnsureCommandsAndQueriesHaveAuthorizers();
+            return new EnsureCommandsQueriesAndOperationsHaveAuthorizers();
         }
     }
 }
