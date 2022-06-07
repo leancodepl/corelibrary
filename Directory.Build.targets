@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Update="LeanCode.Contracts" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Update="Autofac" Version="6.3.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
 

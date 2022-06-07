@@ -4,6 +4,8 @@ using Autofac;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 
 namespace LeanCode.CQRS.Validation.Fluent
 {
@@ -21,7 +23,7 @@ namespace LeanCode.CQRS.Validation.Fluent
             this.componentContext = componentContext;
         }
 
-        public async Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
+        public async Task<Contracts.Validation.ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
         {
             var ctx = PrepareContext(appContext, command);
 
@@ -31,7 +33,7 @@ namespace LeanCode.CQRS.Validation.Fluent
                 .Select(MapFluentError)
                 .ToList();
 
-            return new ValidationResult(mappedResult);
+            return new(mappedResult);
         }
 
         private ValidationError MapFluentError(ValidationFailure failure)

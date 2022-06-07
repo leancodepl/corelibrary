@@ -15,7 +15,7 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
     [Shared]
     public class AddAuthorizationAttributeCodeFixProvider : CodeFixProvider
     {
-        private const string AuthorizeWhenAttribute = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
+        private const string AuthorizeWhenAttribute = "LeanCode.Contracts.Security.AuthorizeWhenAttribute";
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(
@@ -48,8 +48,8 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
 
         private static readonly (string Type, string Namespace)[] StaticAuthorizers = new[]
         {
-            ("AllowUnauthorizedAttribute", "LeanCode.CQRS.Security"),
-            ("AuthorizeWhenHasAnyOfAttribute", "LeanCode.CQRS.Security"),
+            ("AllowUnauthorizedAttribute", "LeanCode.Contracts.Security"),
+            ("AuthorizeWhenHasAnyOfAttribute", "LeanCode.Contracts.Security"),
         };
     }
 }

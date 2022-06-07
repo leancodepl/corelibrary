@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Client.Tests
@@ -120,7 +121,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
         public string? Data { get; set; }
     }
 
-    public class ExampleQuery : IRemoteQuery<ExampleDTO>
+    public class ExampleQuery : IQuery<ExampleDTO>
     {
         public string? RequestData { get; set; }
     }

@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 

@@ -278,20 +278,18 @@ queries/commands. Controllers quickly have began to have only `RunAsync`/`GetAsy
 controllers and switch to just two endpoints that parsed body as command/query and executed it. Finally, we decided to
 ditch ASP.NET Core MVC in favor of plain ASP.NET Core and custom middleware that does exactly that - parse body, convert
 to correct command/query and execute it. We call this **RemoteCQRS**. It is a simple, JSON-based protocol for invoking
-commands and queries. It handles POST requests to `/command` or `/query` or `/operation` API endpoints, parses the command/query name
-from the URL (full namespace + name), decodes the body (only JSON encoding is supported) and executes
+commands and queries. It handles POST requests to `/command` or `/query` or `/operation` API endpoints, parses the object name from the URL (full namespace + name), decodes the body (only JSON encoding is supported) and executes
 `RunAsync`/`GetAsync` for given object.
 
-Not every command/query is exposed via RemoteCQRS. There exist two marker interfaces:
+There exist three marker interfaces:
 
 ```cs
-public interface IRemoteCommand : ICommand { }
-public interface IRemoteQuery<TResult> : IQuery<TResult> { }
+public interface ICommand { }
+public interface IQuery<out TResult> { }
+public interface IOperation<out TResult> { }
 ```
 
-Commands/queries deriving from those interfaces are available via RemoteCQRS. This allows having internal
-contracts, only available from within the apps. The operation type is intended only for external use, thus all `IOperation`s
-are exposed via RemoteCQRS.
+All commands, queries and operations must derive from those interfaces and so they are available via RemoteCQRS. Interfaces for commands and queries meant for internal use only are no longer supported.
 
 RemoteCQRS request example:
 

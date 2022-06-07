@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

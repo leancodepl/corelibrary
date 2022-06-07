@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
 

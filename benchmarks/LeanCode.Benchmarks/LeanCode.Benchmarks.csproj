@@ -10,7 +10,6 @@
     <ProjectReference Include="../../src/Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
     <ProjectReference Include="../../src/Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
 
-    <ProjectReference Include="../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
@@ -23,6 +22,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="LeanCode.Contracts" />
 
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Autofac" />

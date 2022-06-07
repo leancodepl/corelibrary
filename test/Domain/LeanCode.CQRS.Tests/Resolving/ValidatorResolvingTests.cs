@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Validation;
 using Xunit;
 

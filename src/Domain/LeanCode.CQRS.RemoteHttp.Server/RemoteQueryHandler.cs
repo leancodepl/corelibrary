@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,8 +44,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch
             {
-                // `Single` in `GenerateMethod` will throw if the query does not implement IRemoteQuery<>
-                Logger.Warning("The type {Type} is not an IRemoteQuery", type);
+                // `Single` in `GenerateMethod` will throw if the query does not implement IQuery<>
+                Logger.Warning("The type {Type} is not an IQuery", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
@@ -72,7 +73,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
 
         private async Task<object?> ExecuteQueryAsync<TQuery, TResult>(
             TAppContext appContext, object query)
-            where TQuery : IRemoteQuery<TResult>
+            where TQuery : IQuery<TResult>
         {
             // TResult gets cast to object, so its necessary to await the Task.
             // ContinueWith will not propagate exceptions correctly.
@@ -87,7 +88,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                 .GetInterfaces()
                 .Single(i =>
                     i.IsConstructedGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IRemoteQuery<>))
+                    i.GetGenericTypeDefinition() == typeof(IQuery<>))
                 .GenericTypeArguments[0]);
         }
     }

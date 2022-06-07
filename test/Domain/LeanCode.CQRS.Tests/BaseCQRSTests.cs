@@ -1,5 +1,6 @@
 using Autofac;
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;

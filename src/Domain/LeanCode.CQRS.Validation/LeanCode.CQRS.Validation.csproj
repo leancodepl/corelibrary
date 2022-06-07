@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 namespace LeanCode.CodeAnalysis.Tests.TestSamples
 {

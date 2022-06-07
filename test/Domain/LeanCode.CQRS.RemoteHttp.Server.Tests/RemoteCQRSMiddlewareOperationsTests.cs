@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 

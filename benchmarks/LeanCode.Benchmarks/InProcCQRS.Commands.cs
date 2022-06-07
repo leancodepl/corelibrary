@@ -5,7 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using LeanCode.Components;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;

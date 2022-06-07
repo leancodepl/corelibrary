@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
@@ -9,6 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="Serilog" />
 
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

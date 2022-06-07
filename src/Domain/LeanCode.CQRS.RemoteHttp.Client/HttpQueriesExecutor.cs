@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {
@@ -23,7 +24,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client
             this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
         }
 
-        public virtual async Task<TResult> GetAsync<TResult>(IRemoteQuery<TResult> query, CancellationToken cancellationToken = default)
+        public virtual async Task<TResult> GetAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
         {
             using var content = JsonContent.Create(query, query.GetType(), options: serializerOptions);
             using var response = await client.PostAsync("query/" + query.GetType().FullName, content, cancellationToken);
