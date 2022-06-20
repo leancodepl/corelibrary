@@ -34,7 +34,7 @@ namespace LeanCode.Benchmarks
         {
             var builder = new ContainerBuilder();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b);
+                .WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b, b => b);
             builder.RegisterModule(module);
 
             builder.Populate(Array.Empty<ServiceDescriptor>());

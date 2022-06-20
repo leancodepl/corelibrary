@@ -102,7 +102,7 @@ namespace LeanCode.Benchmarks
 
             var benchModule = new BenchmarkModule();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(Catalog, commandBuilder, b => b);
+                .WithCustomPipelines(Catalog, commandBuilder, b => b, b => b);
 
             builder.RegisterModule(module);
             module.ConfigureServices(sc);

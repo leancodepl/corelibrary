@@ -45,7 +45,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             catch
             {
                 // `Single` in `GenerateMethod` will throw if the query does not implement IQuery<>
-                Logger.Warning("The type {Type} is not an IQuery", type);
+                Logger.Warning("The type {Type} is not an IQuery`1", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
