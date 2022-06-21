@@ -7,7 +7,7 @@ using Xunit;
 
 namespace LeanCode.CodeAnalysis.Tests.Analyzers
 {
-    public class EnsureCommandsAndQueriesHaveAuthorizersTests : DiagnosticVerifier
+    public class EnsureCommandsQueriesAndOperationsHaveAuthorizersTests : DiagnosticVerifier
     {
         [Fact]
         public async Task Commands_with_authorization_attributes_are_accepted()
@@ -20,6 +20,13 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
         public async Task Queries_with_authorization_attributes_are_accepted()
         {
             var source = await File.ReadAllTextAsync("TestSamples/Accepted_queries.cs");
+            await VerifyDiagnostics(source);
+        }
+
+        [Fact]
+        public async Task Operations_with_authorization_attributes_are_accepted()
+        {
+            var source = await File.ReadAllTextAsync("TestSamples/Accepted_operations.cs");
             await VerifyDiagnostics(source);
         }
 
@@ -44,6 +51,19 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers
             {
                 new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 4, 17),
                 new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 6, 17),
+            };
+
+            await VerifyDiagnostics(source, diags);
+        }
+
+        [Fact]
+        public async Task Operations_without_authorization_are_rejected()
+        {
+            var source = await File.ReadAllTextAsync("TestSamples/Rejected_operations.cs");
+            var diags = new[]
+            {
+                new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 4, 17),
+                new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 6, 17),
             };
 
             await VerifyDiagnostics(source, diags);

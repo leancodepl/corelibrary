@@ -20,7 +20,8 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders
         public override ImmutableArray<string> FixableDiagnosticIds { get; } =
             ImmutableArray.Create(
                 DiagnosticsIds.QueriesShouldHaveAuthorizers,
-                DiagnosticsIds.CommandsShouldHaveAuthorizers);
+                DiagnosticsIds.CommandsShouldHaveAuthorizers,
+                DiagnosticsIds.OperationsShouldHaveAuthorizers);
 
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {

@@ -31,14 +31,15 @@ namespace LeanCode.CodeAnalysis.Analyzers
             isEnabledByDefault: true);
 
         private static readonly DiagnosticDescriptor OperationRule = new(
-            DiagnosticsIds.QueriesShouldHaveAuthorizers,
+            DiagnosticsIds.OperationsShouldHaveAuthorizers,
             "Operation should be authorized",
             MessageFormat,
             Category,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(CommandRule, QueryRule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+            CommandRule, QueryRule, OperationRule);
 
         public override void Initialize(AnalysisContext context)
         {
