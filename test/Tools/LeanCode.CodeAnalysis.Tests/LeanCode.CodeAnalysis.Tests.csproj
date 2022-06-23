@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
-    <ProjectReference Include="../../../src/Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
   </ItemGroup>
@@ -17,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
   </ItemGroup>
 

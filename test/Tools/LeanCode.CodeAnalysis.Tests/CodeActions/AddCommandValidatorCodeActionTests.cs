@@ -15,7 +15,7 @@ namespace LeanCode.CodeAnalysis.Tests.CodeActions
         {
             var source = @"
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
 
@@ -31,7 +31,7 @@ namespace Test
 
             var expected = @"
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
 
@@ -61,7 +61,7 @@ namespace Test
         {
             var source = @"
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 
 namespace Test
@@ -76,7 +76,7 @@ namespace Test
 
             var expected = @"
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
 

@@ -54,6 +54,7 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 .WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1309", Justification = "Ordinal comparison would be incorrect here.")]
         private class NamespaceNameComparer : IComparer<string>
         {
             public int Compare(string x, string y)
@@ -67,13 +68,13 @@ namespace LeanCode.CodeAnalysis.CodeActions
                 }
                 else
                 {
-                    return string.Compare(x, y, StringComparison.Ordinal);
+                    return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase);
                 }
             }
 
             private static bool IsSystem(string name)
             {
-                return name == "System" || name.StartsWith("System.", StringComparison.Ordinal);
+                return name == "System" || name.StartsWith("System.", StringComparison.InvariantCultureIgnoreCase);
             }
         }
     }

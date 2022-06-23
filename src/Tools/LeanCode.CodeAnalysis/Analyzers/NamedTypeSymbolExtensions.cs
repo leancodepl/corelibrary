@@ -5,8 +5,8 @@ namespace LeanCode.CodeAnalysis.Analyzers
 {
     public static class NamedTypeSymbolExtensions
     {
-        private const string AuthorizeWhenTypeName = "LeanCode.CQRS.Security.AuthorizeWhenAttribute";
-        private const string AllowUnauthorizedTypeName = "LeanCode.CQRS.Security.AllowUnauthorizedAttribute";
+        private const string AuthorizeWhenTypeName = "LeanCode.Contracts.Security.AuthorizeWhenAttribute";
+        private const string AllowUnauthorizedTypeName = "LeanCode.Contracts.Security.AllowUnauthorizedAttribute";
 
         public static bool ImplementsInterfaceOrBaseClass(this INamedTypeSymbol typeSymbol, string type)
         {

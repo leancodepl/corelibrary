@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution

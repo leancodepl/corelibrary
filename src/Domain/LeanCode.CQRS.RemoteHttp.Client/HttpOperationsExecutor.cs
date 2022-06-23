@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.RemoteHttp.Client
 {

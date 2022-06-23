@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.CQRS/LeanCode.CQRS.csproj" />
+    <PackageReference Include="LeanCode.Contracts" />
   </ItemGroup>
 
 </Project>

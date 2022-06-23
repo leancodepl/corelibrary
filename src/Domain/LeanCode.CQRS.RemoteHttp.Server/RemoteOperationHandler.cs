@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
     {
         private static readonly MethodInfo ExecOperationMethod = typeof(RemoteOperationHandler<TAppContext>)
             .GetMethod(nameof(ExecuteOperationAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new NullReferenceException($"Failed to find {nameof(ExecuteOperationAsync)} method.");
+            ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteOperationAsync)} method.");
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new();
         private readonly IServiceProvider serviceProvider;
@@ -30,6 +31,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             this.serviceProvider = serviceProvider;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
         protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
         {
             var type = obj.GetType();
@@ -42,8 +44,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server
             }
             catch
             {
-                // `Single` in `GenerateMethod` will throw if the operation does not implement IRemoteOperation<>
-                Logger.Warning("The type {Type} is not an IRemoteOperation", type);
+                // `Single` in `GenerateMethod` will throw if the operation does not implement IOperation<>
+                Logger.Warning("The type {Type} is not an IOperation`1", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }

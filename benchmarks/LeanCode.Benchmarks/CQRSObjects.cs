@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using FluentValidation;
 using LeanCode.Components;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.Pipelines;
@@ -19,29 +20,29 @@ namespace LeanCode.Benchmarks
         public int F2 { get; set; }
     }
 
-    public class PlainQuery : IRemoteQuery<SampleDTO> { }
+    public class PlainQuery : IQuery<SampleDTO> { }
     [QueryCache(3600)]
-    public class CachedQuery : IRemoteQuery<SampleDTO> { }
+    public class CachedQuery : IQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("user")]
-    public class UserQuery : IRemoteQuery<SampleDTO> { }
+    public class UserQuery : IQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("admin")]
-    public class AdminQuery : IRemoteQuery<SampleDTO> { }
+    public class AdminQuery : IQuery<SampleDTO> { }
 
-    public class PlainCommand : IRemoteCommand { }
+    public class PlainCommand : ICommand { }
     [AuthorizeWhenHasAnyOf("user")]
-    public class UserCommand : IRemoteCommand { }
+    public class UserCommand : ICommand { }
     [AuthorizeWhenHasAnyOf("admin")]
-    public class AdminCommand : IRemoteCommand { }
-    public class ValidCommand : IRemoteCommand { }
-    public class InvalidCommand : IRemoteCommand { }
+    public class AdminCommand : ICommand { }
+    public class ValidCommand : ICommand { }
+    public class InvalidCommand : ICommand { }
 
-    public class MultipleFieldsQuery : IRemoteQuery<MultipleFieldsDTO>
+    public class MultipleFieldsQuery : IQuery<MultipleFieldsDTO>
     {
         public string F1 { get; set; }
         public int F2 { get; set; }
     }
 
-    public class MultipleFieldsCommand : IRemoteCommand
+    public class MultipleFieldsCommand : ICommand
     {
         public string F1 { get; set; }
         public int F2 { get; set; }

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Execution
@@ -14,19 +15,19 @@ namespace LeanCode.CQRS.Execution
             this.resolver = resolver;
         }
 
-        public async Task<object?> ExecuteAsync(TAppContext appContext, IOperation operation)
+        public async Task<object?> ExecuteAsync(TAppContext ctx, IOperation input)
         {
-            var operationType = operation.GetType();
+            var operationType = input.GetType();
             var handler = resolver.FindOperationHandler(operationType);
 
             if (handler is null)
             {
-                logger.Fatal("Cannot find a handler for operation {@Operation}", operation);
+                logger.Fatal("Cannot find a handler for operation {@Operation}", input);
 
                 throw new OperationHandlerNotFoundException(operationType);
             }
 
-            return await handler.ExecuteAsync(appContext, operation);
+            return await handler.ExecuteAsync(ctx, input);
         }
     }
 }

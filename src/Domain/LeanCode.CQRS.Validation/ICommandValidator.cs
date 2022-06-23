@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 
 namespace LeanCode.CQRS.Validation
 {

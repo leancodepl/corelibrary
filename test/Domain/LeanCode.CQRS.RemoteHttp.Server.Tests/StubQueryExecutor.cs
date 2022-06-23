@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests

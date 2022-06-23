@@ -22,16 +22,16 @@ namespace LeanCode.CodeAnalysis.Tests.CodeActions
         {
             var source =
 @"
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 public class Cmd : ICommand
 {}";
 
             var expected =
             @"
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 [AllowUnauthorized]
 public class Cmd : ICommand
@@ -45,7 +45,7 @@ public class Cmd : ICommand
         {
             var source =
 @"
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 public class Cmd : ICommand
 {
@@ -53,8 +53,8 @@ public class Cmd : ICommand
 
             var expected =
             @"
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 [AllowUnauthorized]
 public class Cmd : ICommand
@@ -69,8 +69,8 @@ public class Cmd : ICommand
         {
             var source =
             @"
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 public class CustomAuthorizeAttribute : AuthorizeWhenAttribute
 {
@@ -85,8 +85,8 @@ public class Cmd : ICommand
 
             var expected =
             @"
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 public class CustomAuthorizeAttribute : AuthorizeWhenAttribute
 {

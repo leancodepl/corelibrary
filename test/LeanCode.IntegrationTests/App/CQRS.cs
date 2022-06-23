@@ -4,7 +4,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.DomainModels.Model;
@@ -15,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeanCode.IntegrationTests.App
 {
     [AuthorizeWhenHasAnyOf("user")]
-    public class SampleQuery : IRemoteQuery<SampleQuery.Result?>
+    public class SampleQuery : IQuery<SampleQuery.Result?>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Better design.")]
         public sealed class Result

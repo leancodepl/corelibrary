@@ -1,5 +1,5 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.Data
 {

@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App
 {
-    public class Query : IRemoteQuery<string?>
+    public class Query : IQuery<string?>
     {
         public int Id { get; set; }
     }

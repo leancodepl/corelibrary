@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts.Security;
 
 namespace LeanCode.CQRS.Security
 {

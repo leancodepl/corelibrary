@@ -5,7 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using LeanCode.Components;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -102,7 +102,7 @@ namespace LeanCode.Benchmarks
 
             var benchModule = new BenchmarkModule();
             var module = new CQRSModule()
-                .WithCustomPipelines<SampleAppContext>(Catalog, commandBuilder, b => b);
+                .WithCustomPipelines(Catalog, commandBuilder, b => b, b => b);
 
             builder.RegisterModule(module);
             module.ConfigureServices(sc);

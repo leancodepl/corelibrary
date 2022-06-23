@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 
@@ -22,20 +23,6 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         {
             var (status, _) = await Invoke(content: "malformed body 123");
             Assert.Equal(StatusCodes.Status400BadRequest, status);
-        }
-
-        [Fact]
-        public async Task Returns_NotFound_if_trying_to_execute_non_remote_command()
-        {
-            var (status, _) = await Invoke(typeof(SampleCommand).FullName);
-            Assert.Equal(StatusCodes.Status404NotFound, status);
-        }
-
-        [Fact]
-        public async Task Does_not_call_CommandExecutor_when_executing_non_remote_query()
-        {
-            await Invoke(typeof(SampleCommand).FullName);
-            Assert.Null(Command.LastCommand);
         }
 
         [Fact]
@@ -98,12 +85,10 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         }
     }
 
-    public class SampleCommand : ICommand { }
-
-    public class SampleRemoteCommand : IRemoteCommand
+    public class SampleRemoteCommand : ICommand
     {
         public int Prop { get; set; }
     }
 
-    public class SampleRemoteCommand2 : IRemoteCommand { }
+    public class SampleRemoteCommand2 : ICommand { }
 }

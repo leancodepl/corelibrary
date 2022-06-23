@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Client.Tests
@@ -106,6 +107,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
             await Assert.ThrowsAsync<TException>(() => exec.GetAsync(new ExampleOperation()));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
         private static (HttpOperationsExecutor, ShortcircuitingJsonHandler) Prepare(HttpStatusCode statusCode, string result)
         {
             var handler = new ShortcircuitingJsonHandler(statusCode, result);

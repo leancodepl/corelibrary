@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App
 {
-    public class Command : IRemoteCommand
+    public class Command : ICommand
     {
         public int Id { get; set; }
         public string? Data { get; set; }

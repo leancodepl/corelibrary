@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.Cache
 {

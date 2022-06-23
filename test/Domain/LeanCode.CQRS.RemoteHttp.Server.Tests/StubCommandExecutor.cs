@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
 {

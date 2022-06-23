@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Wrappers

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Server.Tests
@@ -43,7 +44,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests
         public string? Result { get; set; }
     }
 
-    public class SerializationTestQuery : IRemoteQuery<SerializationTestResult>
+    public class SerializationTestQuery : IQuery<SerializationTestResult>
     {
         public string? Property { get; set; }
     }

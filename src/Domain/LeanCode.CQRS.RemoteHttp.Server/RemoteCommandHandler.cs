@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +33,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         {
             var type = obj.GetType();
 
-            if (!typeof(IRemoteCommand).IsAssignableFrom(type))
+            if (!typeof(ICommand).IsAssignableFrom(type))
             {
-                Logger.Warning("The type {Type} is not an IRemoteCommand", type);
+                Logger.Warning("The type {Type} is not an ICommand", type);
 
                 return ExecutionResult.Fail(StatusCodes.Status404NotFound);
             }
@@ -62,7 +63,7 @@ namespace LeanCode.CQRS.RemoteHttp.Server
         }
 
         private Task<CommandResult> ExecuteCommandAsync<TCommand>(TAppContext appContext, object cmd)
-            where TCommand : IRemoteCommand
+            where TCommand : ICommand
         {
             var commandExecutor = serviceProvider.GetService<ICommandExecutor<TAppContext>>()!;
 

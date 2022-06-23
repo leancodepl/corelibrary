@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Core;
 using FluentValidation;
+using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.Validation.Fluent.Tests

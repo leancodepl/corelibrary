@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
-    <ProjectReference Include="../../Domain/LeanCode.CQRS/LeanCode.CQRS.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.AsyncTasks.Hangfire/LeanCode.AsyncTasks.Hangfire.csproj" />
@@ -11,6 +10,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="LeanCode.Contracts" />
 
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />

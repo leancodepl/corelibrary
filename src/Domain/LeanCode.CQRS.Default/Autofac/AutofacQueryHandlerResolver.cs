@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Autofac;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Default.Wrappers;
 using LeanCode.CQRS.Execution;
 

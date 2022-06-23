@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.Execution
 {

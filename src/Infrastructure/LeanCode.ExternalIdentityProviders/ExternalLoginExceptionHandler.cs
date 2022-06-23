@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
-using LeanCode.CQRS;
-using LeanCode.CQRS.Validation;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 using LeanCode.Pipelines;
 
 namespace LeanCode.ExternalIdentityProviders

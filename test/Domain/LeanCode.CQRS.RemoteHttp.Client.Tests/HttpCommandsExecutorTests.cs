@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.RemoteHttp.Client.Tests
@@ -158,7 +159,7 @@ namespace LeanCode.CQRS.RemoteHttp.Client.Tests
         }
     }
 
-    public class ExampleCommand : IRemoteCommand
+    public class ExampleCommand : ICommand
     {
         public string? RequestData { get; set; }
     }

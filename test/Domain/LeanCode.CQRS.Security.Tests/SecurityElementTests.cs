@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Security.Exceptions;
 using NSubstitute;

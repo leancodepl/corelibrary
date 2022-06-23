@@ -26,7 +26,8 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration
             new CQRSModule().WithCustomPipelines<Context>(
                 SearchAssemblies,
                 cmd => cmd.Trace().StoreAndPublishEvents(),
-                query => query),
+                query => query,
+                op => op),
 
             new TestMassTransitModule(SearchAssemblies),
             new MassTransitTestRelayModule(),
