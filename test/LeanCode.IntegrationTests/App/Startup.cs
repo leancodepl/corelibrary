@@ -27,7 +27,8 @@ namespace LeanCode.IntegrationTests.App
                     .WithCustomPipelines<AppContext>(
                         CQRSTypes,
                         c => c.Secure().Validate(),
-                        q => q.Secure().Cache()),
+                        q => q.Secure().Cache(),
+                        o => o.Secure()),
 
                 new InMemoryCacheModule(),
                 new FluentValidationModule(CQRSTypes),
