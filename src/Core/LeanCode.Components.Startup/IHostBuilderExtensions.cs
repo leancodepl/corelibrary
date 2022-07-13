@@ -1,5 +1,6 @@
 using System.Reflection;
 using Azure.Core;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using LeanCode.AzureIdentity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,24 +26,26 @@ namespace LeanCode.Components.Startup
         public static IHostBuilder AddAppConfigurationFromAzureKeyVault(
             this IHostBuilder builder,
             TokenCredential? credential = null,
-            string? keyVaultKeyOverride = null)
+            string? keyVaultKeyOverride = null,
+            KeyVaultSecretManager? manager = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
-                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
+                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
             });
         }
 
         public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
             this IHostBuilder builder,
             TokenCredential? credential = null,
-            string? keyVaultKeyOverride = null)
+            string? keyVaultKeyOverride = null,
+            KeyVaultSecretManager? manager = null)
         {
             return builder.ConfigureAppConfiguration((context, builder) =>
             {
                 if (!context.HostingEnvironment.IsDevelopment())
                 {
-                    ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride);
+                    ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
                 }
             });
         }
@@ -118,7 +121,8 @@ namespace LeanCode.Components.Startup
         private static void ConfigureAzureKeyVault(
             IConfigurationBuilder builder,
             TokenCredential? credential,
-            string? keyVaultUrlKeyOverride)
+            string? keyVaultUrlKeyOverride,
+            KeyVaultSecretManager? manager)
         {
             var configuration = builder.Build();
 
@@ -127,7 +131,14 @@ namespace LeanCode.Components.Startup
             {
                 var vaultUrl = new Uri(vault);
                 credential ??= DefaultLeanCodeCredential.Create(configuration);
-                builder.AddAzureKeyVault(vaultUrl, credential);
+                if (manager is not null)
+                {
+                    builder.AddAzureKeyVault(vaultUrl, credential, manager);
+                }
+                else
+                {
+                    builder.AddAzureKeyVault(vaultUrl, credential);
+                }
             }
             else
             {
