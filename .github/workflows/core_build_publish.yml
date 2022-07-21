@@ -133,11 +133,11 @@ jobs:
           unzip "$ZIP"
         env:
           ZIP: ${{ needs.prepare.outputs.artifacts_name }}
-      - name: Push to Feedz
-        run: |
-          find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n '{}' ';'
-        env:
-          FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
+      #- name: Push to Feedz
+        #run: |
+          #find -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n '{}' ';'
+        #env:
+          #FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
       - name: Create release
         if: ${{ needs.prepare.outputs.publish_nuget == '1' }}
         uses: actions/create-release@v1
