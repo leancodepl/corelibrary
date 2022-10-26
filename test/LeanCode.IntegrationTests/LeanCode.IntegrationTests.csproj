@@ -17,8 +17,6 @@
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.MassTransitRelay/LeanCode.DomainModels.MassTransitRelay.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
-    <ProjectReference Include="../../src/Infrastructure/LeanCode.Cache/LeanCode.Cache.csproj" />
-    <ProjectReference Include="../../src/Infrastructure/LeanCode.Cache.AspNet/LeanCode.Cache.AspNet.csproj" />
     <ProjectReference Include="../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
   </ItemGroup>
 

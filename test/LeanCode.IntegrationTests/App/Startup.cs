@@ -1,4 +1,3 @@
-using LeanCode.Cache.AspNet;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.CQRS.Default;
@@ -29,7 +28,6 @@ namespace LeanCode.IntegrationTests.App
                         q => q.Secure(),
                         o => o.Secure()),
 
-                new InMemoryCacheModule(),
                 new FluentValidationModule(CQRSTypes),
 
                 new ApiModule(config),
