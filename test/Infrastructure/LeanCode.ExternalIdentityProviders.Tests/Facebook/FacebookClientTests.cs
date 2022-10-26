@@ -33,10 +33,18 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook
             var user = await client.GetUserInfoAsync(AccessToken);
 
             Assert.NotNull(user);
+
             Assert.NotEmpty(user.Id);
+
+            Assert.NotNull(user.Email);
             Assert.NotEmpty(user.Email);
+
+            Assert.NotNull(user.FirstName);
             Assert.NotEmpty(user.FirstName);
+
+            Assert.NotNull(user.LastName);
             Assert.NotEmpty(user.LastName);
+
             Assert.NotEmpty(user.Photo);
         }
 

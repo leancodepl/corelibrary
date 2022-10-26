@@ -9,7 +9,7 @@ services:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     environment:
-      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#
+      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#;Encrypt=false
       - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
     depends_on:
       - db
@@ -29,14 +29,9 @@ services:
 
   #### Infrastructure
   db:
-    image: microsoft/mssql-server-linux:latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Passw12#
-    volumes:
-      - database:/var/opt/mssql
     ports:
       - "1433:1433"
-
-volumes:
-  database:
