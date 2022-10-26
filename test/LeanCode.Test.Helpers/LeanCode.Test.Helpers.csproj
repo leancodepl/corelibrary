@@ -4,8 +4,4 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="xunit" />
-  </ItemGroup>
-
 </Project>
