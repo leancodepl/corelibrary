@@ -12,7 +12,6 @@
 
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
-    <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.RemoteHttp.Server/LeanCode.CQRS.RemoteHttp.Server.csproj" />

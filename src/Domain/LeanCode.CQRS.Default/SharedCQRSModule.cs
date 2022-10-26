@@ -1,6 +1,5 @@
 using Autofac;
 using Autofac.Features.Variance;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
@@ -19,7 +18,6 @@ namespace LeanCode.CQRS.Default
 
             builder.RegisterGeneric(typeof(CQRSSecurityElement<,,>)).AsSelf();
             builder.RegisterGeneric(typeof(ValidationElement<>)).AsSelf();
-            builder.RegisterGeneric(typeof(CacheElement<>)).AsSelf();
             builder.RegisterGeneric(typeof(CommandFinalizer<>)).AsSelf();
             builder.RegisterGeneric(typeof(QueryFinalizer<>)).AsSelf();
             builder.RegisterGeneric(typeof(OperationFinalizer<>)).AsSelf();

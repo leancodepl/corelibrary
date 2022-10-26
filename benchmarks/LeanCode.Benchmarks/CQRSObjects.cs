@@ -21,8 +21,6 @@ namespace LeanCode.Benchmarks
     }
 
     public class PlainQuery : IQuery<SampleDTO> { }
-    [QueryCache(3600)]
-    public class CachedQuery : IQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("user")]
     public class UserQuery : IQuery<SampleDTO> { }
     [AuthorizeWhenHasAnyOf("admin")]
@@ -58,7 +56,6 @@ namespace LeanCode.Benchmarks
 
     public class SampleQueryHandler
         : IQueryHandler<SampleAppContext, PlainQuery, SampleDTO>,
-          IQueryHandler<SampleAppContext, CachedQuery, SampleDTO>,
           IQueryHandler<SampleAppContext, UserQuery, SampleDTO>,
           IQueryHandler<SampleAppContext, AdminQuery, SampleDTO>
     {
@@ -66,7 +63,6 @@ namespace LeanCode.Benchmarks
         public Task<SampleDTO> ExecuteAsync(SampleAppContext context, PlainQuery query) => Result;
         public Task<SampleDTO> ExecuteAsync(SampleAppContext context, UserQuery query) => Result;
         public Task<SampleDTO> ExecuteAsync(SampleAppContext context, AdminQuery query) => Result;
-        public Task<SampleDTO> ExecuteAsync(SampleAppContext context, CachedQuery query) => Result;
     }
 
     public class MultipleFieldsQueryHandler

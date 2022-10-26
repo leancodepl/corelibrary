@@ -6,7 +6,6 @@
     <ProjectReference Include="../../Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
 
     <PackageReference Include="LeanCode.Contracts" />
-    <ProjectReference Include="../LeanCode.CQRS.Cache/LeanCode.CQRS.Cache.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
