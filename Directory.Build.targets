@@ -52,7 +52,6 @@
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.123" />
     <PackageReference Update="FluentValidation" Version="9.5.4" />
-    <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Update="Polly" Version="7.2.3" />
     <PackageReference Update="Sendgrid" Version="9.28.1" />
   </ItemGroup>
