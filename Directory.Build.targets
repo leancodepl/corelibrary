@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="LeanCode.Contracts" Version="1.0.1" />
+    <PackageReference Update="LeanCode.Contracts" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
