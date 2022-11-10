@@ -7,6 +7,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 ## 7.0
 
 * Remove Cache abstractions
+* Remove `LeanCode.AsyncTasks` and Hangfire-based implementation
 
 ## 6.1
 
