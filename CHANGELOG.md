@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 6.1
+
+* Upgrade MassTransit to v8
+* Add Operations
+* Make FCM abstraction work with PostgreSQL
+
 ## 6.0
 
 * Upgrade to .NET 6
