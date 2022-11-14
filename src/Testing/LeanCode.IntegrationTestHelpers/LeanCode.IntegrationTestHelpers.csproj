@@ -19,11 +19,6 @@
 
     <PackageReference Include="IdentityModel" />
 
-    <PackageReference Include="Hangfire.Autofac" />
-    <PackageReference Include="Hangfire.Core" />
-    <PackageReference Include="Hangfire.AspNetCore" />
-    <PackageReference Include="Hangfire.SqlServer" />
-
     <PackageReference Include="Polly" />
 
     <PackageReference Include="xunit" />
