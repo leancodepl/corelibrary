@@ -22,7 +22,6 @@ namespace LeanCode.IntegrationTests.App
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddHostedService<DbContextInitializer<TestDbContext>>();
-            services.AddHostedService<HangfireInitializer<TestDbContext>>();
 
             services.AddMemoryCache();
 

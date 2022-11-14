@@ -5,7 +5,6 @@
     <ExtensionsVersion>6.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.57.0</GoogleApisVersion>
-    <HangfireVersion>1.7.31</HangfireVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <SystemIdentityModelVersion>6.25.0</SystemIdentityModelVersion>
 
@@ -96,11 +95,6 @@
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.1" />
 
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
-
-    <PackageReference Update="Hangfire.Autofac" Version="2.3.1" />
-    <PackageReference Update="Hangfire.AspNetCore" Version="$(HangfireVersion)" />
-    <PackageReference Update="Hangfire.Core" Version="$(HangfireVersion)" />
-    <PackageReference Update="Hangfire.SqlServer" Version="$(HangfireVersion)" />
 
     <PackageReference Update="IdentityServer4" Version="$(IdentityServerVersion)" />
     <PackageReference Update="IdentityServer4.AspNetIdentity" Version="$(IdentityServerVersion)" />

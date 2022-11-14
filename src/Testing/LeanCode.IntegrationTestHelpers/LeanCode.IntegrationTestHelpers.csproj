@@ -4,7 +4,6 @@
     <ProjectReference Include="../../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
-    <ProjectReference Include="../../Infrastructure/LeanCode.AsyncTasks.Hangfire/LeanCode.AsyncTasks.Hangfire.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj" />
   </ItemGroup>
 
@@ -19,11 +18,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
 
     <PackageReference Include="IdentityModel" />
-
-    <PackageReference Include="Hangfire.Autofac" />
-    <PackageReference Include="Hangfire.Core" />
-    <PackageReference Include="Hangfire.AspNetCore" />
-    <PackageReference Include="Hangfire.SqlServer" />
 
     <PackageReference Include="Polly" />
 
