@@ -1,7 +1,5 @@
-using LeanCode.Cache.AspNet;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.RemoteHttp.Server;
 using LeanCode.CQRS.Security;
@@ -27,10 +25,9 @@ namespace LeanCode.IntegrationTests.App
                     .WithCustomPipelines<AppContext>(
                         CQRSTypes,
                         c => c.Secure().Validate(),
-                        q => q.Secure().Cache(),
+                        q => q.Secure(),
                         o => o.Secure()),
 
-                new InMemoryCacheModule(),
                 new FluentValidationModule(CQRSTypes),
 
                 new ApiModule(config),

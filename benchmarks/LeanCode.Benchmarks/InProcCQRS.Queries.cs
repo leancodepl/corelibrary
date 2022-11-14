@@ -1,12 +1,9 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
-using LeanCode.Cache.AspNet;
 using LeanCode.Components;
-using LeanCode.CQRS.Cache;
 using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -22,13 +19,11 @@ namespace LeanCode.Benchmarks
         private static readonly TypesCatalog Catalog = TypesCatalog.Of<InProcCQRS__Queries>();
 
         private readonly PlainQuery plainQuery = new PlainQuery();
-        private readonly CachedQuery cachedQuery = new CachedQuery();
         private readonly UserQuery userQuery = new UserQuery();
         private readonly AdminQuery adminQuery = new AdminQuery();
         private readonly SampleDTO stubResult = new SampleDTO();
 
         private IQueryExecutor<SampleAppContext> simple;
-        private IQueryExecutor<SampleAppContext> cached;
         private IQueryExecutor<SampleAppContext> secured;
 
         private SampleAppContext appContext;
@@ -37,7 +32,6 @@ namespace LeanCode.Benchmarks
         public void Setup()
         {
             simple = PrepareExecutor(b => b);
-            cached = PrepareExecutor(b => b.Cache(), new InMemoryCacheModule());
             secured = PrepareExecutor(b => b.Secure());
 
             appContext = new SampleAppContext
@@ -58,14 +52,6 @@ namespace LeanCode.Benchmarks
         [Benchmark(Baseline = true)]
         public Task<SampleDTO> QueryWithoutInlineObjContext() =>
             simple.GetAsync(appContext, plainQuery);
-
-        [Benchmark]
-        public Task<SampleDTO> PlainQueryWithCachedPipeline() =>
-            cached.GetAsync(appContext, cachedQuery);
-
-        [Benchmark]
-        public Task<SampleDTO> CachedQueryWithCachedPipeline() =>
-            cached.GetAsync(appContext, cachedQuery);
 
         [Benchmark]
         public Task<SampleDTO> PlainQueryWithSecuredPipeline() =>
