@@ -16,7 +16,7 @@ namespace LeanCode.DomainModels.DataAccess
         }
     }
 
-    public class EntityDoesNotExistException : ArgumentNullException
+    public class EntityDoesNotExistException : ArgumentException
     {
         public Type EntityType { get; }
         public string EntityId { get; }
