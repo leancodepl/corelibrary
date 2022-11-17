@@ -38,7 +38,7 @@ namespace LeanCode.DomainModels.Tests
             var repository = Substitute.For<IRepository<DiscountCode>>();
             repository.FindAsync(CodeId).Returns(null as DiscountCode);
 
-            await Assert.ThrowsAsync<ArgumentException>(() => repository.FindAndEnsureExistsAsync(CodeId));
+            await Assert.ThrowsAsync<EntityDoesNotExistException>(() => repository.FindAndEnsureExistsAsync(CodeId));
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace LeanCode.DomainModels.Tests
             var repository = Substitute.For<IRepository<User, int>>();
             repository.FindAsync(UserId).Returns(null as User);
 
-            await Assert.ThrowsAsync<ArgumentException>(() => repository.FindAndEnsureExistsAsync(UserId));
+            await Assert.ThrowsAsync<EntityDoesNotExistException>(() => repository.FindAndEnsureExistsAsync(UserId));
         }
     }
 
