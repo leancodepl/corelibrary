@@ -184,7 +184,7 @@ commands, queries (and potentially other services) via `ICommandExecutor`, `IQue
 Example operation handler:
 
 ```csharp
-public class PayForOrderOH : IOperationHandler<AppContext, PayForOrder>
+public class PayForOrderOH : IOperationHandler<AppContext, PayForOrder, PaymentTokenDTO>
 {
     private readonly IPaymentsService payments;
 
@@ -193,9 +193,9 @@ public class PayForOrderOH : IOperationHandler<AppContext, PayForOrder>
         this.payments = payments;
     }
 
-    public async Task<PaymentTokenDTO> ExecuteAsync(AppContext context, PayForOrder command)
+    public async Task<PaymentTokenDTO> ExecuteAsync(AppContext context, PayForOrder operation)
     {
-        var result = await payments.CreatePaymentInExternalService(command.OrderId);
+        var result = await payments.CreatePaymentInExternalService(operation.OrderId);
         return new PaymentTokenDTO
         {
             // skip
