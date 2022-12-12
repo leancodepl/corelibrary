@@ -2,7 +2,7 @@
   <PropertyGroup>
     <EntityFrameworkCoreVersion>6.0.10</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>6.0.10</AspNetCoreVersion>
-    <ExtensionsVersion>6.0.0</ExtensionsVersion>
+    <ExtensionsVersion>7.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.57.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
