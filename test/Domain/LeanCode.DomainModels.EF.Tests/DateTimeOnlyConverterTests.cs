@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.DomainModels.EF.Tests;
@@ -176,7 +177,7 @@ public class DateTimeOnlyConverterTests
     private class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
     {
         public ModelConfigurationBuilderWrapper()
-            : base(new())
+            : base(new(), new ServiceCollection().BuildServiceProvider())
         { }
 
         public ModelConfiguration Build() => ModelConfiguration;
