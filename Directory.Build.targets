@@ -90,7 +90,7 @@
 
     <!-- Warning: These are not versioned separately -->
     <PackageReference Update="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="6.0.1" />
 
