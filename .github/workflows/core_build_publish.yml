@@ -10,7 +10,7 @@ on:
 jobs:
   prepare:
     name: Prepare & Version
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
       publish_artifacts: ${{ steps.version.outputs.publish_artifacts }}
@@ -67,7 +67,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0.100"
+          dotnet-version: "7.0.100"
       - name: Restore
         run: dotnet restore
       - name: Install trx2junit
