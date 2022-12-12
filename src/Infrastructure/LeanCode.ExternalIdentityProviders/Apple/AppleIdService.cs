@@ -84,7 +84,7 @@ namespace LeanCode.ExternalIdentityProviders.Apple
                     logger.Debug("Downloading Apple signing keys");
 
                     return JsonWebKeySet.Create(await httpClient.GetStringAsync(AppleKeysUri));
-                });
+                })!;
         }
     }
 }

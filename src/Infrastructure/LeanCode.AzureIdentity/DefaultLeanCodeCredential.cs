@@ -19,7 +19,7 @@ public static class DefaultLeanCodeCredential
 
         return Create(config);
 
-        T Get<T>(string key) => configuration.GetValue<T>(key);
+        T? Get<T>(string key) => configuration.GetValue<T>(key);
     }
 
     public static TokenCredential CreateFromEnvironment()

@@ -6,6 +6,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
 ## 7.0
 
+* Upgrade to .NET 7
 * Remove Cache abstractions
 * Remove `LeanCode.AsyncTasks` and Hangfire-based implementation
 * `FindAndEnsureExistsAsync` now throws `EntityDoesNotExistException`
