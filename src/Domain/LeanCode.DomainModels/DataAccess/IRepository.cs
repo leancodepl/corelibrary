@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,10 +19,5 @@ namespace LeanCode.DomainModels.DataAccess
         void Delete(TEntity entity);
         void DeleteRange(IEnumerable<TEntity> entities);
         void Update(TEntity entity);
-
-        Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
-        Task DeleteRangeAsync(IEnumerable<TEntity> entity, CancellationToken cancellationToken = default);
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
     }
 }
