@@ -10,6 +10,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Remove Cache abstractions
 * Remove `LeanCode.AsyncTasks` and Hangfire-based implementation
 * `FindAndEnsureExistsAsync` now throws `EntityDoesNotExistException`
+* Remove `AddAsync`, `UpdateAsync`, `DeleteAsync` and `DeleteRangeAsync` from `EFRepository` and `IRepository`
 
 ## 6.1
 
