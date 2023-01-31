@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +13,7 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext) { }
 
         public override Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default) =>
-            DbSet.AsTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken)!; // TODO: remove ! when EF Core adds support for NRT
+            DbSet.AsTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
     }
 
     public sealed class SimpleEFRepository<TEntity, TContext>
@@ -28,6 +25,6 @@ namespace LeanCode.DomainModels.EF
             : base(dbContext) { }
 
         public override Task<TEntity?> FindAsync(Id<TEntity> id, CancellationToken cancellationToken = default) =>
-            DbSet.AsTracking().FirstOrDefaultAsync(e => e.Id == id, cancellationToken)!; // TODO: remove ! when EF Core adds support for NRT
+            DbSet.AsTracking().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 }
