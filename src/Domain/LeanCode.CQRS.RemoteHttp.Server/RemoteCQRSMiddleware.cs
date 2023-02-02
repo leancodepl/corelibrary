@@ -136,8 +136,9 @@ namespace LeanCode.CQRS.RemoteHttp.Server
                     {
                         Converters =
                         {
-                            new JsonDateOnlyConverter(),
-                            new JsonTimeOnlyConverter(),
+                            new JsonLaxDateOnlyConverter(),
+                            new JsonLaxTimeOnlyConverter(),
+                            new JsonLaxDateTimeOffsetConverter(),
                         },
                     }));
         }

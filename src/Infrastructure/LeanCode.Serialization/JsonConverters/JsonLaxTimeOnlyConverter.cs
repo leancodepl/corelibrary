@@ -6,13 +6,12 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Serialization;
 
-public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
+public class JsonLaxTimeOnlyConverter : JsonConverter<TimeOnly>
 {
     private static readonly UTF8Encoding encoder = new(false);
     private const int maxBufferSize = 32;
-    private readonly string format = "yyyy-MM-dd";
-
-    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    private readonly string format = "HH:mm:ss.fff";
+    public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         Span<char> source = stackalloc char[0];
 
@@ -30,16 +29,15 @@ public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
             encoder.GetChars(value, source);
         }
 
-        if (DateTime.TryParse(source ,out DateTime date))
+        if (TimeOnly.TryParse(source, out TimeOnly time))
         {
-            return DateOnly.FromDateTime(date);
+            return time;
         }
 
-        throw new JsonException("Invalid date format");
-
+        throw new JsonException("Invalid format");
     }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options) {
+    public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options) {
         Span<char> buffer = stackalloc char[maxBufferSize];
         var success = value.TryFormat(buffer, out var charsWritten, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(buffer[..charsWritten]);

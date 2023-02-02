@@ -11,17 +11,9 @@ public class JsonConvertersTests
 
     static JsonConvertersTests()
     {
-        DefaultSerializerOptions.Converters.Add(new JsonDateOnlyConverter());
-        DefaultSerializerOptions.Converters.Add(new JsonTimeOnlyConverter());
-
         LaxSerializerOptions.Converters.Add(new JsonLaxDateOnlyConverter());
-    }
-
-    [Theory]
-    [InlineData("\"2021-12-15T00:00:00Z\"")]
-    public void Throws_when_attempting_to_deserialize_DateOnly_with_time_part(string serialized)
-    {
-        Assert.Throws<FormatException>(() => JsonSerializer.Deserialize<DateOnly>(serialized, DefaultSerializerOptions));
+        LaxSerializerOptions.Converters.Add(new JsonLaxTimeOnlyConverter());
+        LaxSerializerOptions.Converters.Add(new JsonLaxDateTimeOffsetConverter());
     }
 
     [Theory]
@@ -32,6 +24,39 @@ public class JsonConvertersTests
         var date = new DateOnly(year, month, day);
 
         Assert.Equal(date, JsonSerializer.Deserialize<DateOnly>(serialized, LaxSerializerOptions));
+        Assert.Equal(reserialized, JsonSerializer.Serialize(date, LaxSerializerOptions));
+    }
+
+    [Theory]
+    [InlineData("\"2021-12-15T07:23:10.115\"", 7, 23, 10, 115, "\"07:23:10.115\"")]
+    public void Correctly_deserializes_TimeOnly_with_date_part_when_using_lax_converter(
+        string serialized, int hour, int minute, int second, int millisecond, string reserialized)
+    {
+        var time = new TimeOnly(hour, minute, second, millisecond);
+
+        Assert.Equal(time, JsonSerializer.Deserialize<TimeOnly>(serialized, LaxSerializerOptions));
+        Assert.Equal(reserialized, JsonSerializer.Serialize(time, LaxSerializerOptions));
+    }
+
+    [Theory]
+    [InlineData("\"2021-12-15T07:23:10.115Z\"", 2021, 12, 15, 7, 23, 10, 115, 0, "\"2021-12-15T07:23:10.115Z\"")]
+    public void Correctly_deserializes_DateTimeOffset_when_using_lax_converter(
+        string serialized, int year, int month, int day, int hour, int minute, int second, int millisecond, int timeSpanOffset, string reserialized)
+    {
+        var date = new DateTimeOffset(year, month, day, hour, minute, second, millisecond, new TimeSpan(timeSpanOffset,0,0));
+
+        Assert.Equal(date, JsonSerializer.Deserialize<DateTimeOffset>(serialized, LaxSerializerOptions));
+        Assert.Equal(reserialized, JsonSerializer.Serialize(date, LaxSerializerOptions));
+    }
+
+    [Theory]
+    [InlineData("\"2021-12-15T07:23:10.115+03:00\"", 2021, 12, 15, 7, 23, 10, 115, 3, "\"2021-12-15T07:23:10.115Z\"")]
+    public void Correctly_deserializes_DateTimeOffset_with_no_zero_offset_when_using_lax_converter(
+        string serialized, int year, int month, int day, int hour, int minute, int second, int millisecond, int timeSpanOffset, string reserialized)
+    {
+        var date = new DateTimeOffset(year, month, day, hour, minute, second, millisecond, new TimeSpan(timeSpanOffset,0,0));
+
+        Assert.Equal(date, JsonSerializer.Deserialize<DateTimeOffset>(serialized, LaxSerializerOptions));
         Assert.Equal(reserialized, JsonSerializer.Serialize(date, LaxSerializerOptions));
     }
 

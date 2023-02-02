@@ -6,13 +6,13 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Serialization;
 
-public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
+public class JsonLaxDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
     private static readonly UTF8Encoding encoder = new(false);
     private const int maxBufferSize = 32;
-    private readonly string format = "yyyy-MM-dd";
+    private readonly string format = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ";
 
-    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         Span<char> source = stackalloc char[0];
 
@@ -30,18 +30,18 @@ public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
             encoder.GetChars(value, source);
         }
 
-        if (DateTime.TryParse(source ,out DateTime date))
+        if (DateTimeOffset.TryParse(source, CultureInfo.InvariantCulture, out DateTimeOffset date))
         {
-            return DateOnly.FromDateTime(date);
+            return new DateTimeOffset(date.Ticks, date.Offset);
         }
 
-        throw new JsonException("Invalid date format");
-
+        throw new JsonException("Invalid format");
     }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options) {
-        Span<char> buffer = stackalloc char[maxBufferSize];
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) {
+        Span<char> buffer = stackalloc char[32];
         var success = value.TryFormat(buffer, out var charsWritten, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(buffer[..charsWritten]);
     }
+
 }
