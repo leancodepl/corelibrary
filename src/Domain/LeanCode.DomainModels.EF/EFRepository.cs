@@ -55,8 +55,6 @@ namespace LeanCode.DomainModels.EF
             {
                 oc.DateModified = TimeProvider.Now;
             }
-
-            DbSet.Update(entity);
         }
 
         public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
