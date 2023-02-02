@@ -23,7 +23,7 @@ namespace LeanCode.DomainModels.Tests
         [Fact]
         public async Task Returns_entity_when_exists()
         {
-            var repository = Substitute.For<IRepository<DiscountCode>>();
+            var repository = Substitute.For<IRepository<DiscountCode, Id<DiscountCode>>>();
             repository.FindAsync(CodeId).Returns(Code);
 
             var code = await repository.FindAndEnsureExistsAsync(CodeId);
@@ -35,7 +35,7 @@ namespace LeanCode.DomainModels.Tests
         [Fact]
         public async Task Throws_when_entity_does_not_exist()
         {
-            var repository = Substitute.For<IRepository<DiscountCode>>();
+            var repository = Substitute.For<IRepository<DiscountCode, Id<DiscountCode>>>();
             repository.FindAsync(CodeId).Returns(null as DiscountCode);
 
             await Assert.ThrowsAsync<EntityDoesNotExistException>(() => repository.FindAndEnsureExistsAsync(CodeId));
