@@ -61,13 +61,4 @@ namespace LeanCode.DomainModels.EF
 
         public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
     }
-
-    public abstract class EFRepository<TEntity, TContext>
-        : EFRepository<TEntity, Id<TEntity>, TContext>, IRepository<TEntity>
-        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<Id<TEntity>>
-        where TContext : notnull, DbContext
-    {
-        protected EFRepository(TContext dbContext)
-            : base(dbContext) { }
-    }
 }
