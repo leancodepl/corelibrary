@@ -5,9 +5,9 @@ namespace LeanCode.Time
 {
     public sealed class FixedTimeProvider : ITimeProvider
     {
-        private static readonly FixedTimeProvider SharedInstance = new ();
+        private static readonly FixedTimeProvider SharedInstance = new();
 
-        private readonly AsyncLocal<DateTimeOffset?> savedTime = new ();
+        private readonly AsyncLocal<DateTimeOffset?> savedTime = new();
 
         /// <summary>
         /// Gets the time for <b>current async context</b> as UTC <see cref="DateTime"/>.
