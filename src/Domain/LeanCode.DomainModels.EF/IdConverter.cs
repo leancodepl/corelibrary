@@ -1,4 +1,3 @@
-using System;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -52,6 +51,32 @@ namespace LeanCode.DomainModels.EF
             : base(
                 d => d.Value,
                 d => SId<T>.From(d),
+                mappingHints: null)
+        { }
+    }
+
+    public class UlidConverter<T> : ValueConverter<Ulid<T>, string>
+        where T : class, IIdentifiable<Ulid<T>>
+    {
+        public static readonly UlidConverter<T> Instance = new();
+
+        public UlidConverter()
+            : base(
+                model => model.ToString(),
+                provider => Ulid<T>.Parse(provider),
+                mappingHints: null)
+        { }
+    }
+
+    public class SUlidConverter<T> : ValueConverter<SUlid<T>, string>
+        where T : class, IIdentifiable<SUlid<T>>
+    {
+        public static readonly SUlidConverter<T> Instance = new();
+
+        public SUlidConverter()
+            : base(
+                model => model.Value,
+                provider => SUlid<T>.FromString(provider),
                 mappingHints: null)
         { }
     }
