@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using LeanCode.DomainModels.Serialization;
 
 namespace LeanCode.DomainModels.Model
@@ -14,8 +13,7 @@ namespace LeanCode.DomainModels.Model
     {
         private const int GuidLength = 32;
         private const char Separator = '_';
-        private const int MaxTypeLength = 10;
-        private static readonly string TypeName = ExtractType();
+        private static readonly string TypeName = SIdExtensions.GetPrefix<TEntity>();
 
         public static readonly int RawLength = GuidLength + 1 + TypeName.Length;
         public static readonly SId<TEntity> Empty = new(Guid.Empty);
@@ -128,40 +126,5 @@ namespace LeanCode.DomainModels.Model
 
         public override string ToString() => Value;
         public static implicit operator string(SId<TEntity> id) => id.Value;
-
-        private static string ExtractType()
-        {
-            if (IdSlugAttribute.GetSlug<TEntity>() is string v)
-            {
-                return v;
-            }
-            else
-            {
-                var typename = typeof(TEntity).Name.ToLowerInvariant();
-                if (typename.Length > MaxTypeLength)
-                {
-                    return typename[0..MaxTypeLength];
-                }
-                else
-                {
-                    return typename;
-                }
-            }
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public sealed class IdSlugAttribute : Attribute
-    {
-        public string Slug { get; }
-
-        public IdSlugAttribute(string slug)
-        {
-            Slug = slug;
-        }
-
-        public static string? GetSlug<T>() => GetSlug(typeof(T));
-        public static string? GetSlug(Type t) =>
-            t.GetCustomAttribute<IdSlugAttribute>()?.Slug;
     }
 }
