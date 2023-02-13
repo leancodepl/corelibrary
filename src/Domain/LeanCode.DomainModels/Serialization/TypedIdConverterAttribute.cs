@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.DomainModels.Model;
@@ -12,6 +13,8 @@ namespace LeanCode.DomainModels.Serialization
             [typeof(IId<>)] = typeof(IIdConverter<>),
             [typeof(LId<>)] = typeof(LIdConverter<>),
             [typeof(SId<>)] = typeof(SIdConverter<>),
+            [typeof(SUlid<>)] = typeof(SUlidConverter<>),
+            [typeof(Ulid<>)] = typeof(UlidConverter<>),
         };
 
         public override JsonConverter CreateConverter(Type typeToConvert)
@@ -101,6 +104,56 @@ namespace LeanCode.DomainModels.Serialization
             public override void Write(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
             {
                 writer.WriteStringValue(value.Value);
+            }
+        }
+
+        private class SUlidConverter<T> : JsonConverter<SUlid<T>>
+            where T : class, IIdentifiable<SUlid<T>>
+        {
+            public override bool HandleNull => false;
+
+            public override SUlid<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.GetString() is string s)
+                {
+                    return SUlid<T>.FromString(s);
+                }
+
+                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+            }
+
+            public override void Write(Utf8JsonWriter writer, SUlid<T> value, JsonSerializerOptions options)
+            {
+                writer.WriteStringValue(value.Value);
+            }
+        }
+
+        private class UlidConverter<T> : JsonConverter<Ulid<T>>
+            where T : class, IIdentifiable<Ulid<T>>
+        {
+            public override bool HandleNull => false;
+
+            public override Ulid<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                Span<char> buffer = stackalloc char[64];
+
+                try
+                {
+                    var count = reader.CopyString(buffer);
+                    return new(Ulid.Parse(buffer[..count]));
+                }
+                catch (Exception e)
+                {
+                    throw new JsonException("Failed to read input value as Ulid.", e);
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Ulid<T> value, JsonSerializerOptions options)
+            {
+                Span<char> buffer = stackalloc char[26];
+                var success = value.Value.TryWriteStringify(buffer);
+                Debug.Assert(success, "Ulid writing should always succeed.");
+                writer.WriteStringValue(buffer);
             }
         }
     }
