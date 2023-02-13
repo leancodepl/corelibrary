@@ -53,6 +53,7 @@
     <PackageReference Update="FluentValidation" Version="9.5.4" />
     <PackageReference Update="Polly" Version="7.2.3" />
     <PackageReference Update="Sendgrid" Version="9.28.1" />
+    <PackageReference Update="Ulid" Version="1.2.6" />
   </ItemGroup>
 
   <ItemGroup>
