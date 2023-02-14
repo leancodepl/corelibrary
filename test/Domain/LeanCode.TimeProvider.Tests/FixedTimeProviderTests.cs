@@ -99,7 +99,7 @@ namespace LeanCode.Time.Tests
             var fixedTime = TimeProvider.Now;
             var expectedTime = DateTime.UtcNow;
 
-            int differenceInSeconds = (int)(fixedTime - expectedTime).TotalSeconds;
+            var differenceInSeconds = (fixedTime - expectedTime).TotalSeconds;
 
             Assert.True(fixedTime == expectedTime || differenceInSeconds < 1);
         }
@@ -110,7 +110,7 @@ namespace LeanCode.Time.Tests
             var fixedTime = new DateTimeOffset(2023, 1, 14, 12, 1, 15, TimeSpan.FromHours(2));
             FixedTimeProvider.SetTo(fixedTime);
 
-            Assert.Equal(fixedTime, TimeProvider.Now);
+            Assert.Equal(fixedTime, TimeProvider.NowWithOffset);
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace LeanCode.Time.Tests
             var fixedTime = TimeProvider.NowWithOffset;
             var expectedTime = DateTimeOffset.UtcNow;
 
-            int differenceInSeconds = (int)(fixedTime - expectedTime).TotalSeconds;
+            var differenceInSeconds = (fixedTime - expectedTime).TotalSeconds;
 
             Assert.True(fixedTime == expectedTime || differenceInSeconds < 1);
         }
