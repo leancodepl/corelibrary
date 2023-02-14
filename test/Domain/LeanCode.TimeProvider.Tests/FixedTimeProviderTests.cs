@@ -123,6 +123,5 @@ namespace LeanCode.Time.Tests
 
             Assert.True(fixedTime == expectedTime || differenceInSeconds < 1);
         }
-
     }
 }
