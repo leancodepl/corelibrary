@@ -5,12 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Serialization;
 
-public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
+public class JsonLaxTimeOnlyConverter : JsonConverter<TimeOnly>
 {
     private const int MaxBufferSize = 256;
-    private const int MaxDateOnlyBufferSize = 16;
-
-    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    private const int MaxTimeOnlyBufferSize = 16;
+    private readonly string format = "HH:mm:ss.fff";
+    public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         int length;
 
@@ -32,18 +32,18 @@ public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
         int charsRead = reader.CopyString(buffer);
         Span<char> source = buffer.Slice(0, charsRead);
 
-        if (DateTime.TryParse(source, out DateTime date))
+        if (TimeOnly.TryParse(source, out TimeOnly time))
         {
-            return DateOnly.FromDateTime(date);
+            return new TimeOnly(time.Hour, time.Minute, time.Second, time.Millisecond);
         }
 
-        throw new JsonException("Invalid date format");
+        throw new JsonException("Invalid format");
     }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options)
     {
-        Span<char> buffer = stackalloc char[MaxDateOnlyBufferSize];
-        var success = value.TryFormat(buffer, out var written, "o", CultureInfo.InvariantCulture);
+        Span<char> buffer = stackalloc char[MaxTimeOnlyBufferSize];
+        var success = value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(JsonEncodedText.Encode(buffer[..written], JavaScriptEncoder.UnsafeRelaxedJsonEscaping));
     }
 }

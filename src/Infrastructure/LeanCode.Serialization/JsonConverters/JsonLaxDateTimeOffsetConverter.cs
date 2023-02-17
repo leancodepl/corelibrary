@@ -5,12 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Serialization;
 
-public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
+public class JsonLaxDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
     private const int MaxBufferSize = 256;
-    private const int MaxDateOnlyBufferSize = 16;
+    private const int MaxDateTimeOffsetBufferSize = 32;
+    private readonly string format = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffzzz";
 
-    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         int length;
 
@@ -32,18 +33,18 @@ public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
         int charsRead = reader.CopyString(buffer);
         Span<char> source = buffer.Slice(0, charsRead);
 
-        if (DateTime.TryParse(source, out DateTime date))
+        if (DateTimeOffset.TryParse(source, CultureInfo.InvariantCulture, out DateTimeOffset date))
         {
-            return DateOnly.FromDateTime(date);
+            return date.AddTicks(-(date.Ticks % TimeSpan.TicksPerMillisecond));
         }
 
-        throw new JsonException("Invalid date format");
+        throw new JsonException("Invalid format");
     }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
     {
-        Span<char> buffer = stackalloc char[MaxDateOnlyBufferSize];
-        var success = value.TryFormat(buffer, out var written, "o", CultureInfo.InvariantCulture);
+        Span<char> buffer = stackalloc char[MaxDateTimeOffsetBufferSize];
+        var success = value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(JsonEncodedText.Encode(buffer[..written], JavaScriptEncoder.UnsafeRelaxedJsonEscaping));
     }
 }
