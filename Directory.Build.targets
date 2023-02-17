@@ -121,7 +121,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)stylecop.json" />
+    <AdditionalFiles Include="$(CodeAnalysisSettingsLocation)/src/Tools/LeanCode.StyleCop/stylecop.json" />
 
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" Condition="'$(NoStyleCop)' != '1'" />
     <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.435" />
