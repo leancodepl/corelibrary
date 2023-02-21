@@ -37,4 +37,83 @@
         <Rule Id="CA2234" Action="None"/>
         <!-- PassSystemUriObjectsInsteadOfStrings - most of the time it will result in an exception -->
     </Rules>
+
+    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+        <Rule Id="SA0001" Action="None"/>
+        <!-- XmlCommentAnalysisDisabled -->
+
+
+        <Rule Id="SA1101" Action="None"/>
+        <!-- PrefixLocalCallsWithThis -->
+        <Rule Id="SA1104" Action="None"/>
+        <!-- QueryClausesSpanningMultipleLines -->
+        <Rule Id="SA1117" Action="None"/>
+        <!-- ParametersMustBeOnSameLineOrSeparateLines -->
+        <Rule Id="SA1118" Action="None"/>
+        <!-- ParameterMustNotSpanMultipleLines -->
+        <Rule Id="SA1122" Action="None"/>
+        <!-- UseStringEmptyForEmptyStrings -->
+        <Rule Id="SA1129" Action="None"/>
+        <!-- DoNotUseDefaultValueTypeConstructor -->
+
+
+        <Rule Id="SA1201" Action="None"/>
+        <!-- ElementsMustAppearInTheCorrectOrder -->
+        <Rule Id="SA1202" Action="None"/>
+        <!-- ElementsMustBeOrderedByAccess -->
+        <Rule Id="SA1204" Action="None"/>
+        <!-- StaticElementsMustAppearBeforeInstanceElements -->
+
+
+        <Rule Id="SA1316" Action="None"/>
+        <!-- TupleElementNamesShouldUseCorrectCasing -->
+
+
+        <Rule Id="SA1402" Action="None"/>
+        <!-- FileMayOnlyContainASingleType -->
+        <Rule Id="SA1407" Action="None"/>
+        <!-- ArithmeticExpressionsMustDeclarePrecedence  -->
+        <Rule Id="SA1414" Action="None"/>
+        <!-- TupleTypesInSignaturesShouldHaveElementNames  -->
+
+
+        <Rule Id="SA1502" Action="None"/>
+        <!-- ElementMustNotBeOnSingleLine -->
+        <Rule Id="SA1503" Action="Error"/>
+        <!-- BracesMustNotBeOmitted :) -->
+        <Rule Id="SA1512" Action="None"/>
+        <!-- SingleLineCommentsMustNotBeFollowedByBlankLine -->
+        <Rule Id="SA1515" Action="None"/>
+        <!-- SingleLineCommentMustBePrecededByBlankLine -->
+        <Rule Id="SA1516" Action="None"/>
+        <!-- ElementsMustBeSeparatedByBlankLine -->
+
+
+        <Rule Id="SA1600" Action="None"/>
+        <!-- ElementsMustBeDocumented -->
+        <Rule Id="SA1601" Action="None"/>
+        <!-- PartialElementsMustBeDocumented -->
+        <Rule Id="SA1602" Action="None"/>
+        <!-- EnumerationItemsMustBeDocumented -->
+        <Rule Id="SA1604" Action="None"/>
+        <!-- ElementDocumentationMustHaveSummary -->
+        <Rule Id="SA1610" Action="None"/>
+        <!-- PropertyDocumentationMustHaveValueText -->
+        <Rule Id="SA1611" Action="None"/>
+        <!-- ElementParametersMustBeDocumented -->
+        <Rule Id="SA1615" Action="None"/>
+        <!-- ElementReturnValueMustBeDocumented -->
+        <Rule Id="SA1618" Action="None"/>
+        <!-- GenericTypeParametersMustBeDocumented -->
+        <Rule Id="SA1623" Action="None"/>
+        <!-- PropertySummaryDocumentationMustMatchAccessors -->
+        <Rule Id="SA1629" Action="None"/>
+        <!-- DocumentationTextMustEndWithAPeriod -->
+        <Rule Id="SA1633" Action="None"/>
+        <!-- FileMustHaveHeader -->
+        <Rule Id="SA1642" Action="None"/>
+        <!-- ConstructorSummaryDocumentationMustBeginWithStandardText -->
+        <Rule Id="SA1649" Action="None"/>
+        <!-- FileNameMustMatchTypeName -->
+    </Rules>
 </RuleSet>
