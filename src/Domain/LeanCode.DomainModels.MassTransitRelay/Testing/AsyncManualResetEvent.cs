@@ -1,89 +1,88 @@
 using MassTransit.Internals;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Testing
+namespace LeanCode.DomainModels.MassTransitRelay.Testing;
+
+// Based on https://github.com/StephenCleary/AsyncEx/blob/master/src/Nito.AsyncEx.Coordination/AsyncManualResetEvent.cs
+public sealed class AsyncManualResetEvent
 {
-    // Based on https://github.com/StephenCleary/AsyncEx/blob/master/src/Nito.AsyncEx.Coordination/AsyncManualResetEvent.cs
-    public sealed class AsyncManualResetEvent
+    private readonly object mutex;
+    private TaskCompletionSource<ValueTuple> tcs;
+
+    public AsyncManualResetEvent(bool set)
     {
-        private readonly object mutex;
-        private TaskCompletionSource<ValueTuple> tcs;
+        mutex = new object();
+        tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        public AsyncManualResetEvent(bool set)
+        if (set)
         {
-            mutex = new object();
-            tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            if (set)
-            {
-                tcs.TrySetResult(default);
-            }
+            tcs.TrySetResult(default);
         }
+    }
 
-        public AsyncManualResetEvent()
-            : this(false)
-        { }
+    public AsyncManualResetEvent()
+        : this(false)
+    { }
 
-        public bool IsSet
-        {
-            get
-            {
-                lock (mutex)
-                {
-                    return tcs.Task.IsCompleted;
-                }
-            }
-        }
-
-        public Task WaitAsync()
+    public bool IsSet
+    {
+        get
         {
             lock (mutex)
             {
-                return tcs.Task;
+                return tcs.Task.IsCompleted;
             }
         }
+    }
 
-        public Task WaitAsync(CancellationToken cancellationToken)
+    public Task WaitAsync()
+    {
+        lock (mutex)
         {
-            var waitTask = WaitAsync();
-            if (waitTask.IsCompleted)
-            {
-                return waitTask;
-            }
-            else
-            {
-                return waitTask.OrCanceled(cancellationToken);
-            }
+            return tcs.Task;
         }
+    }
 
-        public async Task<bool> WaitAsync(TimeSpan timeout)
+    public Task WaitAsync(CancellationToken cancellationToken)
+    {
+        var waitTask = WaitAsync();
+        if (waitTask.IsCompleted)
         {
-            try
-            {
-                await WaitAsync().OrTimeout(timeout);
-                return true;
-            }
-            catch (TimeoutException)
-            {
-                return false;
-            }
+            return waitTask;
         }
-
-        public void Set()
+        else
         {
-            lock (mutex)
-            {
-                tcs.TrySetResult(default);
-            }
+            return waitTask.OrCanceled(cancellationToken);
         }
+    }
 
-        public void Reset()
+    public async Task<bool> WaitAsync(TimeSpan timeout)
+    {
+        try
         {
-            lock (mutex)
+            await WaitAsync().OrTimeout(timeout);
+            return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
+        }
+    }
+
+    public void Set()
+    {
+        lock (mutex)
+        {
+            tcs.TrySetResult(default);
+        }
+    }
+
+    public void Reset()
+    {
+        lock (mutex)
+        {
+            if (tcs.Task.IsCompleted)
             {
-                if (tcs.Task.IsCompleted)
-                {
-                    tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-                }
+                tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
             }
         }
     }

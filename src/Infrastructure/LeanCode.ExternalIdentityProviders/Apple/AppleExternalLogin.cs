@@ -2,41 +2,40 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace LeanCode.ExternalIdentityProviders.Apple
+namespace LeanCode.ExternalIdentityProviders.Apple;
+
+public class AppleExternalLogin<TUser> : ExternalLoginBase<TUser>
+    where TUser : IdentityUser<Guid>
 {
-    public class AppleExternalLogin<TUser> : ExternalLoginBase<TUser>
-        where TUser : IdentityUser<Guid>
+    private readonly AppleIdService appleAuthService;
+
+    public override string GrantType => Constants.GrantType;
+
+    public AppleExternalLogin(UserManager<TUser> userManager, AppleIdService appleAuthService)
+        : base(userManager)
     {
-        private readonly AppleIdService appleAuthService;
+        this.appleAuthService = appleAuthService;
+    }
 
-        public override string GrantType => Constants.GrantType;
-
-        public AppleExternalLogin(UserManager<TUser> userManager, AppleIdService appleAuthService)
-            : base(userManager)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    protected override async Task<string?> GetProviderIdAsync(string token)
+    {
+        try
         {
-            this.appleAuthService = appleAuthService;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
-        protected override async Task<string?> GetProviderIdAsync(string token)
-        {
-            try
+            if (await appleAuthService.ValidateTokenAsync(token) is AppleTokenValidationResult.Success success)
             {
-                if (await appleAuthService.ValidateTokenAsync(token) is AppleTokenValidationResult.Success success)
-                {
-                    return success.User.Id;
-                }
-                else
-                {
-                    return null;
-                }
+                return success.User.Id;
             }
-            catch (Exception ex)
+            else
             {
-                Logger.Debug(ex, "Cannot get Apple user info");
-
                 return null;
             }
+        }
+        catch (Exception ex)
+        {
+            Logger.Debug(ex, "Cannot get Apple user info");
+
+            return null;
         }
     }
 }

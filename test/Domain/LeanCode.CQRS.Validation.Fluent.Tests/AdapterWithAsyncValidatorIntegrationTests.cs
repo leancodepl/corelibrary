@@ -6,76 +6,75 @@ using FluentValidation;
 using LeanCode.Contracts;
 using Xunit;
 
-namespace LeanCode.CQRS.Validation.Fluent.Tests
+namespace LeanCode.CQRS.Validation.Fluent.Tests;
+
+public class AdapterWithAsyncValidatorIntegrationTests
 {
-    public class AdapterWithAsyncValidatorIntegrationTests
+    private readonly FluentValidationCommandValidatorAdapter<Context, Command> adapter;
+
+    public AdapterWithAsyncValidatorIntegrationTests()
     {
-        private readonly FluentValidationCommandValidatorAdapter<Context, Command> adapter;
+        adapter = new FluentValidationCommandValidatorAdapter<Context, Command>(
+            new Validator(),
+            new ComponentContext());
+    }
 
-        public AdapterWithAsyncValidatorIntegrationTests()
+    [Fact]
+    public async Task Invokes_async_validation()
+    {
+        // Will throw on sync invocation
+        await adapter.ValidateAsync(new Context(), new Command());
+    }
+
+    [Fact]
+    public async Task Correctly_returns_successful_result_when_data_passes()
+    {
+        var res = await adapter.ValidateAsync(
+            new Context(),
+            new Command { Data = Validator.MinValue });
+
+        Assert.True(res.IsValid);
+    }
+
+    [Fact]
+    public async Task Correctly_maps_validation_result()
+    {
+        var res = await adapter.ValidateAsync(
+            new Context(),
+            new Command { Data = Validator.MinValue - 1 });
+
+        Assert.False(res.IsValid);
+        var err = Assert.Single(res.Errors);
+        Assert.Equal(nameof(Command.Data), err.PropertyName);
+        Assert.Equal(Validator.ErrorCode, err.ErrorCode);
+        Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
+    }
+
+    private class Validator : ContextualValidator<Command>
+    {
+        public const int MinValue = 5;
+        public const int ErrorCode = 1;
+        public const string ErrorMessage = "Custom message";
+
+        public Validator()
         {
-            adapter = new FluentValidationCommandValidatorAdapter<Context, Command>(
-                new Validator(),
-                new ComponentContext());
+            RuleForAsync(c => c.Data, (ctx, v) => Task.FromResult(v))
+                .GreaterThanOrEqualTo(MinValue)
+                    .WithCode(ErrorCode)
+                    .WithMessage(ErrorMessage);
         }
+    }
 
-        [Fact]
-        public async Task Invokes_async_validation()
-        {
-            // Will throw on sync invocation
-            await adapter.ValidateAsync(new Context(), new Command());
-        }
+    private class Context { }
 
-        [Fact]
-        public async Task Correctly_returns_successful_result_when_data_passes()
-        {
-            var res = await adapter.ValidateAsync(
-                new Context(),
-                new Command { Data = Validator.MinValue });
+    private class Command : ICommand
+    {
+        public int Data { get; set; }
+    }
 
-            Assert.True(res.IsValid);
-        }
-
-        [Fact]
-        public async Task Correctly_maps_validation_result()
-        {
-            var res = await adapter.ValidateAsync(
-                new Context(),
-                new Command { Data = Validator.MinValue - 1 });
-
-            Assert.False(res.IsValid);
-            var err = Assert.Single(res.Errors);
-            Assert.Equal(nameof(Command.Data), err.PropertyName);
-            Assert.Equal(Validator.ErrorCode, err.ErrorCode);
-            Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
-        }
-
-        private class Validator : ContextualValidator<Command>
-        {
-            public const int MinValue = 5;
-            public const int ErrorCode = 1;
-            public const string ErrorMessage = "Custom message";
-
-            public Validator()
-            {
-                RuleForAsync(c => c.Data, (ctx, v) => Task.FromResult(v))
-                    .GreaterThanOrEqualTo(MinValue)
-                        .WithCode(ErrorCode)
-                        .WithMessage(ErrorMessage);
-            }
-        }
-
-        private class Context { }
-
-        private class Command : ICommand
-        {
-            public int Data { get; set; }
-        }
-
-        private class ComponentContext : IComponentContext
-        {
-            public IComponentRegistry ComponentRegistry => null;
-            public object ResolveComponent(ResolveRequest request) => null;
-        }
+    private class ComponentContext : IComponentContext
+    {
+        public IComponentRegistry ComponentRegistry => null;
+        public object ResolveComponent(ResolveRequest request) => null;
     }
 }

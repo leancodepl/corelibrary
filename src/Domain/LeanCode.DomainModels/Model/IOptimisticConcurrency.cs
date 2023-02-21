@@ -1,9 +1,8 @@
 using System;
 
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.Model;
+
+public interface IOptimisticConcurrency
 {
-    public interface IOptimisticConcurrency
-    {
-        DateTime DateModified { get; set; }
-    }
+    DateTime DateModified { get; set; }
 }

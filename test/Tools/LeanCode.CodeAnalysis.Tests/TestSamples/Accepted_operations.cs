@@ -1,18 +1,17 @@
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
-namespace LeanCode.CodeAnalysis.Tests.TestSamples
-{
-    public abstract class BaseOperation : IOperation { }
+namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
-    [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class FirstOperation : BaseOperation { }
+public abstract class BaseOperation : IOperation { }
 
-    public class SecondOperation : FirstOperation { }
+[AuthorizeWhenHasAnyOf("Sample_permission")]
+public class FirstOperation : BaseOperation { }
 
-    [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class ThirdOperation : IOperation { }
+public class SecondOperation : FirstOperation { }
 
-    [AllowUnauthorized]
-    public class UnauthorizedOperation : IOperation { }
-}
+[AuthorizeWhenHasAnyOf("Sample_permission")]
+public class ThirdOperation : IOperation { }
+
+[AllowUnauthorized]
+public class UnauthorizedOperation : IOperation { }

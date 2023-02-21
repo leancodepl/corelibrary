@@ -8,51 +8,50 @@ using LeanCode.PeriodicService;
 using LeanCode.Time;
 using OpenTelemetry.Trace;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Inbox
+namespace LeanCode.DomainModels.MassTransitRelay.Inbox;
+
+public class ConsumedMessagesCleaner : IPeriodicAction
 {
-    public class ConsumedMessagesCleaner : IPeriodicAction
+    private static readonly TimeSpan KeepTime = TimeSpan.FromDays(3);
+
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ConsumedMessagesCleaner>();
+
+    public CronExpression When { get; } = CronExpression.Parse("0 2 * * *");
+    public bool SkipFirstExecution => false;
+
+    private readonly IConsumedMessagesContext dbContext;
+    private readonly string tableName;
+    private readonly string columnName;
+
+    public ConsumedMessagesCleaner(IConsumedMessagesContext dbContext)
     {
-        private static readonly TimeSpan KeepTime = TimeSpan.FromDays(3);
+        this.dbContext = dbContext;
+        tableName = dbContext.Self.GetFullTableName(typeof(ConsumedMessage));
+        columnName = dbContext.Self.GetColumnName(typeof(ConsumedMessage), nameof(ConsumedMessage.DateConsumed));
+    }
 
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ConsumedMessagesCleaner>();
+    public async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var activity = LeanCodeActivitySource.Start("inbox.clear");
 
-        public CronExpression When { get; } = CronExpression.Parse("0 2 * * *");
-        public bool SkipFirstExecution => false;
-
-        private readonly IConsumedMessagesContext dbContext;
-        private readonly string tableName;
-        private readonly string columnName;
-
-        public ConsumedMessagesCleaner(IConsumedMessagesContext dbContext)
+        try
         {
-            this.dbContext = dbContext;
-            tableName = dbContext.Self.GetFullTableName(typeof(ConsumedMessage));
-            columnName = dbContext.Self.GetColumnName(typeof(ConsumedMessage), nameof(ConsumedMessage.DateConsumed));
-        }
+            logger.Verbose("Starting periodic message cleanup");
+            var time = TimeProvider.Now - KeepTime;
 
-        public async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            using var activity = LeanCodeActivitySource.Start("inbox.clear");
-
-            try
-            {
-                logger.Verbose("Starting periodic message cleanup");
-                var time = TimeProvider.Now - KeepTime;
-
-                var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
-                    $@"
+            var deleted = await dbContext.Self.ExecuteScalarAsync<int>(
+                $@"
                     DELETE FROM {tableName}
                     WHERE {columnName} < @time;",
-                    new { time },
-                    commandTimeout: 3600,
-                    cancellationToken: stoppingToken);
-                logger.Verbose("Deleted {Count} consumed messages", deleted);
-            }
-            catch
-            {
-                activity.SetStatus(Status.Error);
-                throw;
-            }
+                new { time },
+                commandTimeout: 3600,
+                cancellationToken: stoppingToken);
+            logger.Verbose("Deleted {Count} consumed messages", deleted);
+        }
+        catch
+        {
+            activity.SetStatus(Status.Error);
+            throw;
         }
     }
 }

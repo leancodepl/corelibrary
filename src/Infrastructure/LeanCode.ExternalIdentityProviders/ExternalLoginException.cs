@@ -1,19 +1,18 @@
 using System;
 
-namespace LeanCode.ExternalIdentityProviders
+namespace LeanCode.ExternalIdentityProviders;
+
+public class ExternalLoginException : Exception
 {
-    public class ExternalLoginException : Exception
+    public TokenValidationError? TokenValidation { get; }
+
+    public ExternalLoginException(string? message)
+        : base(message)
+    { }
+
+    public ExternalLoginException(string? message, TokenValidationError? tokenValidation)
+        : base(message)
     {
-        public TokenValidationError? TokenValidation { get; }
-
-        public ExternalLoginException(string? message)
-            : base(message)
-        { }
-
-        public ExternalLoginException(string? message, TokenValidationError? tokenValidation)
-            : base(message)
-        {
-            TokenValidation = tokenValidation;
-        }
+        TokenValidation = tokenValidation;
     }
 }

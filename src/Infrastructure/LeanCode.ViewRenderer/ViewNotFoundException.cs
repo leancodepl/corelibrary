@@ -1,15 +1,14 @@
 using System;
 
-namespace LeanCode.ViewRenderer
-{
-    public class ViewNotFoundException : Exception
-    {
-        public string? ViewName { get; }
+namespace LeanCode.ViewRenderer;
 
-        public ViewNotFoundException(string? viewName, string message)
-            : base(message)
-        {
-            ViewName = viewName;
-        }
+public class ViewNotFoundException : Exception
+{
+    public string? ViewName { get; }
+
+    public ViewNotFoundException(string? viewName, string message)
+        : base(message)
+    {
+        ViewName = viewName;
     }
 }

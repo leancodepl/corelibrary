@@ -1,36 +1,35 @@
 using System.Threading.Tasks;
 using LeanCode.Contracts.Security;
 
-namespace LeanCode.CQRS.Security
+namespace LeanCode.CQRS.Security;
+
+public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, IHasPermissions
 {
-    public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, IHasPermissions
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
+
+    private readonly RoleRegistry registry;
+
+    public DefaultPermissionAuthorizer(RoleRegistry registry)
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
+        this.registry = registry;
+    }
 
-        private readonly RoleRegistry registry;
-
-        public DefaultPermissionAuthorizer(RoleRegistry registry)
+    protected override Task<bool> CheckIfAuthorizedAsync(
+        ISecurityContext appContext,
+        object obj,
+        string[]? customData = null)
+    {
+        if (!appContext.User.HasPermission(registry, customData ?? System.Array.Empty<string>()))
         {
-            this.registry = registry;
+            logger.Warning(
+                "User does not have sufficient permissions ({Permissions}) to run {@Object}",
+                customData, obj);
+
+            return Task.FromResult(false);
         }
-
-        protected override Task<bool> CheckIfAuthorizedAsync(
-            ISecurityContext appContext,
-            object obj,
-            string[]? customData = null)
+        else
         {
-            if (!appContext.User.HasPermission(registry, customData ?? System.Array.Empty<string>()))
-            {
-                logger.Warning(
-                    "User does not have sufficient permissions ({Permissions}) to run {@Object}",
-                    customData, obj);
-
-                return Task.FromResult(false);
-            }
-            else
-            {
-                return Task.FromResult(true);
-            }
+            return Task.FromResult(true);
         }
     }
 }

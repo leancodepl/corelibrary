@@ -4,80 +4,79 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LeanCode.Firebase.FCM.Tests
+namespace LeanCode.Firebase.FCM.Tests;
+
+internal class StubStore : IPushNotificationTokenStore
 {
-    internal class StubStore : IPushNotificationTokenStore
+    private readonly Guid userId;
+    private readonly string token;
+
+    public bool AllRemoved { get; private set; }
+    public bool SingleRemoved { get; private set; }
+
+    public StubStore(Guid userId, string token)
     {
-        private readonly Guid userId;
-        private readonly string token;
+        this.userId = userId;
+        this.token = token;
+    }
 
-        public bool AllRemoved { get; private set; }
-        public bool SingleRemoved { get; private set; }
+    public Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
-        public StubStore(Guid userId, string token)
+    public Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        if (userId == this.userId)
         {
-            this.userId = userId;
-            this.token = token;
+            return Task.FromResult(new List<string> { token });
         }
-
-        public Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+        else
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new List<string>());
         }
+    }
 
-        public Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+    public Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+    {
+        if (userIds.Contains(userId))
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Dictionary<Guid, List<string>> { [userId] = new() { token } });
         }
-
-        public Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+        else
         {
-            if (userId == this.userId)
-            {
-                return Task.FromResult(new List<string> { token });
-            }
-            else
-            {
-                return Task.FromResult(new List<string>());
-            }
+            return Task.FromResult(new Dictionary<Guid, List<string>>());
         }
+    }
 
-        public Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+    public Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
+    {
+        if (tokens.All(t => t == token))
         {
-            if (userIds.Contains(userId))
-            {
-                return Task.FromResult(new Dictionary<Guid, List<string>> { [userId] = new() { token } });
-            }
-            else
-            {
-                return Task.FromResult(new Dictionary<Guid, List<string>>());
-            }
+            AllRemoved = true;
+            return Task.CompletedTask;
         }
-
-        public Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
+        else
         {
-            if (tokens.All(t => t == token))
-            {
-                AllRemoved = true;
-                return Task.CompletedTask;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            throw new KeyNotFoundException();
         }
+    }
 
-        public Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
+    public Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
+    {
+        if (token == this.token)
         {
-            if (token == this.token)
-            {
-                SingleRemoved = true;
-                return Task.CompletedTask;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            SingleRemoved = true;
+            return Task.CompletedTask;
+        }
+        else
+        {
+            throw new KeyNotFoundException();
         }
     }
 }

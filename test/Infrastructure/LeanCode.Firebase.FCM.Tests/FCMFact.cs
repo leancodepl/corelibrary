@@ -1,19 +1,18 @@
 using Xunit;
 
-namespace LeanCode.Firebase.FCM.Tests
+namespace LeanCode.Firebase.FCM.Tests;
+
+public sealed class FCMFactAttribute : FactAttribute
 {
-    public sealed class FCMFactAttribute : FactAttribute
+    public FCMFactAttribute()
     {
-        public FCMFactAttribute()
+        if (string.IsNullOrEmpty(FCMClientTests.Key))
         {
-            if (string.IsNullOrEmpty(FCMClientTests.Key))
-            {
-                Skip = "Key not set";
-            }
-            else if (string.IsNullOrEmpty(FCMClientTests.Token))
-            {
-                Skip = "No recipient token provided";
-            }
+            Skip = "Key not set";
+        }
+        else if (string.IsNullOrEmpty(FCMClientTests.Token))
+        {
+            Skip = "No recipient token provided";
         }
     }
 }

@@ -1,8 +1,7 @@
-namespace LeanCode.ExternalIdentityProviders
+namespace LeanCode.ExternalIdentityProviders;
+
+public enum TokenValidationError
 {
-    public enum TokenValidationError
-    {
-        Invalid,
-        OtherConnected,
-    }
+    Invalid,
+    OtherConnected,
 }

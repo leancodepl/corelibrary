@@ -2,24 +2,23 @@ using System.Linq;
 using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
 
-namespace LeanCode.ViewRenderer.Razor.Extensions
+namespace LeanCode.ViewRenderer.Razor.Extensions;
+
+internal class LayoutDirectivePass : RazorEngineFeatureBase, IRazorDirectiveClassifierPass
 {
-    internal class LayoutDirectivePass : RazorEngineFeatureBase, IRazorDirectiveClassifierPass
+    public int Order => 1001;
+
+    public void Execute(RazorCodeDocument codeDocument, DocumentIntermediateNode documentNode)
     {
-        public int Order => 1001;
+        var @class = documentNode.FindPrimaryClass();
 
-        public void Execute(RazorCodeDocument codeDocument, DocumentIntermediateNode documentNode)
-        {
-            var @class = documentNode.FindPrimaryClass();
+        var layout = documentNode
+            .FindDirectiveReferences(Layout.Directive)
+            .SelectMany(d => ((DirectiveIntermediateNode)d.Node).Tokens)
+            .FirstOrDefault(t => t != null);
 
-            var layout = documentNode
-                .FindDirectiveReferences(Layout.Directive)
-                .SelectMany(d => ((DirectiveIntermediateNode)d.Node).Tokens)
-                .FirstOrDefault(t => t != null);
+        var prop = new LayoutNode(layout?.Content);
 
-            var prop = new LayoutNode(layout?.Content);
-
-            @class.Children.Add(prop);
-        }
+        @class.Children.Add(prop);
     }
 }

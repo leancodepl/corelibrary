@@ -3,57 +3,56 @@ using Autofac;
 using LeanCode.Contracts;
 using Xunit;
 
-namespace LeanCode.CQRS.Tests
+namespace LeanCode.CQRS.Tests;
+
+public class CommandExecutionTests : BaseCQRSTests
 {
-    public class CommandExecutionTests : BaseCQRSTests
+    [Fact]
+    public async Task Executes_command_handler_with_correct_data()
     {
-        [Fact]
-        public async Task Executes_command_handler_with_correct_data()
-        {
-            Prepare();
+        Prepare();
 
-            var appCtx = new AppContext();
-            var cmd = new SingleInstanceCommand();
-            var handler = Container.Resolve<SingleInstanceCommandHandler>();
+        var appCtx = new AppContext();
+        var cmd = new SingleInstanceCommand();
+        var handler = Container.Resolve<SingleInstanceCommandHandler>();
 
-            var result = await CommandExecutor.RunAsync(appCtx, cmd);
+        var result = await CommandExecutor.RunAsync(appCtx, cmd);
 
-            Assert.True(result.WasSuccessful);
-            Assert.Equal(appCtx, handler.Context);
-            Assert.Equal(cmd, handler.Command);
-        }
+        Assert.True(result.WasSuccessful);
+        Assert.Equal(appCtx, handler.Context);
+        Assert.Equal(cmd, handler.Command);
+    }
 
-        [Fact]
-        public async Task Correctly_routes_data_through_pipeline_elements()
-        {
-            Prepare(
-                c => c.Use<SamplePipelineElement<ICommand, CommandResult>>());
+    [Fact]
+    public async Task Correctly_routes_data_through_pipeline_elements()
+    {
+        Prepare(
+            c => c.Use<SamplePipelineElement<ICommand, CommandResult>>());
 
-            var appCtx = new AppContext();
-            var cmd = new SampleCommand();
+        var appCtx = new AppContext();
+        var cmd = new SampleCommand();
 
-            var element = Container.Resolve<SamplePipelineElement<ICommand, CommandResult>>();
+        var element = Container.Resolve<SamplePipelineElement<ICommand, CommandResult>>();
 
-            await CommandExecutor.RunAsync(appCtx, cmd);
+        await CommandExecutor.RunAsync(appCtx, cmd);
 
-            Assert.Equal(appCtx, element.AppContext);
-            Assert.Equal(cmd, element.Data);
-        }
+        Assert.Equal(appCtx, element.AppContext);
+        Assert.Equal(cmd, element.Data);
+    }
 
-        [Fact]
-        public async Task Creates_obj_context_based_on_app_context_if_needed()
-        {
-            Prepare();
+    [Fact]
+    public async Task Creates_obj_context_based_on_app_context_if_needed()
+    {
+        Prepare();
 
-            var appCtx = new AppContext();
-            var cmd = new SingleInstanceCommand();
+        var appCtx = new AppContext();
+        var cmd = new SingleInstanceCommand();
 
-            var handler = Container.Resolve<SingleInstanceCommandHandler>();
+        var handler = Container.Resolve<SingleInstanceCommandHandler>();
 
-            await CommandExecutor.RunAsync(appCtx, cmd);
+        await CommandExecutor.RunAsync(appCtx, cmd);
 
-            Assert.Equal(appCtx, handler.Context);
-            Assert.Equal(cmd, handler.Command);
-        }
+        Assert.Equal(appCtx, handler.Context);
+        Assert.Equal(cmd, handler.Command);
     }
 }

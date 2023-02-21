@@ -5,74 +5,73 @@ using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.Firebase.FCM.Tests
+namespace LeanCode.Firebase.FCM.Tests;
+
+public class FCMClientLocalizationTests
 {
-    public class FCMClientLocalizationTests
+    private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pl");
+    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(null, "[NULL]"));
+
+    private readonly IStringLocalizer stringLocalizer;
+    private readonly FCMClient client;
+
+    public FCMClientLocalizationTests()
     {
-        private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pl");
-        private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(null, "[NULL]"));
+        stringLocalizer = Substitute.For<IStringLocalizer>();
+        client = new FCMClient(Messaging, Substitute.For<IPushNotificationTokenStore>(), stringLocalizer);
+    }
 
-        private readonly IStringLocalizer stringLocalizer;
-        private readonly FCMClient client;
+    [Fact]
+    public void Localizes_title_correctly()
+    {
+        const string Key = "TITLE";
+        const string Value = "formatted title";
+        stringLocalizer[Culture, Key].Returns(Value);
 
-        public FCMClientLocalizationTests()
-        {
-            stringLocalizer = Substitute.For<IStringLocalizer>();
-            client = new FCMClient(Messaging, Substitute.For<IPushNotificationTokenStore>(), stringLocalizer);
-        }
+        var n = client.Localize(Culture)
+            .Title(Key)
+            .Build();
 
-        [Fact]
-        public void Localizes_title_correctly()
-        {
-            const string Key = "TITLE";
-            const string Value = "formatted title";
-            stringLocalizer[Culture, Key].Returns(Value);
+        Assert.Equal(Value, n.Title);
+    }
 
-            var n = client.Localize(Culture)
-                .Title(Key)
-                .Build();
+    [Fact]
+    public void Localizes_body_correctly()
+    {
+        const string Key = "BODY";
+        const string Value = "formatted body";
+        stringLocalizer[Culture, Key].Returns(Value);
 
-            Assert.Equal(Value, n.Title);
-        }
+        var n = client.Localize(Culture)
+            .Body(Key)
+            .Build();
 
-        [Fact]
-        public void Localizes_body_correctly()
-        {
-            const string Key = "BODY";
-            const string Value = "formatted body";
-            stringLocalizer[Culture, Key].Returns(Value);
+        Assert.Equal(Value, n.Body);
+    }
 
-            var n = client.Localize(Culture)
-                .Body(Key)
-                .Build();
+    [Fact]
+    public void Localizes_ImageUrl_correctly()
+    {
+        const string Key = "URL";
+        const string Value = "formatted image url";
+        stringLocalizer[Culture, Key].Returns(Value);
 
-            Assert.Equal(Value, n.Body);
-        }
+        var n = client.Localize(Culture)
+            .ImageUrl(Key, System.Array.Empty<object>())
+            .Build();
 
-        [Fact]
-        public void Localizes_ImageUrl_correctly()
-        {
-            const string Key = "URL";
-            const string Value = "formatted image url";
-            stringLocalizer[Culture, Key].Returns(Value);
+        Assert.Equal(Value, n.ImageUrl);
+    }
 
-            var n = client.Localize(Culture)
-                .ImageUrl(Key, System.Array.Empty<object>())
-                .Build();
+    [Fact]
+    public void Does_not_localize_raw_url()
+    {
+        const string Value = "raw image url";
 
-            Assert.Equal(Value, n.ImageUrl);
-        }
+        var n = client.Localize(Culture)
+            .RawImageUrl(Value)
+            .Build();
 
-        [Fact]
-        public void Does_not_localize_raw_url()
-        {
-            const string Value = "raw image url";
-
-            var n = client.Localize(Culture)
-                .RawImageUrl(Value)
-                .Build();
-
-            Assert.Equal(Value, n.ImageUrl);
-        }
+        Assert.Equal(Value, n.ImageUrl);
     }
 }

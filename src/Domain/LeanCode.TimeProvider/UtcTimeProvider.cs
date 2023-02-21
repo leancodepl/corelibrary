@@ -1,10 +1,9 @@
 using System;
 
-namespace LeanCode.Time
+namespace LeanCode.Time;
+
+public sealed class UtcTimeProvider : ITimeProvider
 {
-    public sealed class UtcTimeProvider : ITimeProvider
-    {
-        public DateTime Now => DateTime.UtcNow;
-        public DateTimeOffset NowWithOffset => DateTimeOffset.UtcNow;
-    }
+    public DateTime Now => DateTime.UtcNow;
+    public DateTimeOffset NowWithOffset => DateTimeOffset.UtcNow;
 }

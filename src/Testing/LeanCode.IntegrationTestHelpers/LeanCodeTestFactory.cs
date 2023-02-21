@@ -11,100 +11,99 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
-namespace LeanCode.IntegrationTestHelpers
+namespace LeanCode.IntegrationTestHelpers;
+
+public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>, IAsyncLifetime
+    where TStartup : class
 {
-    public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>, IAsyncLifetime
-        where TStartup : class
+    protected virtual ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides();
+    protected virtual string ApiBaseAddress => "api/";
+    protected virtual string AuthBaseAddress => "auth/";
+
+    public string? CurrentUserToken { get; private set; }
+
+    public virtual HttpClient CreateApiClient()
     {
-        protected virtual ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides();
-        protected virtual string ApiBaseAddress => "api/";
-        protected virtual string AuthBaseAddress => "auth/";
+        var apiBase = UrlHelper.Concat("http://localhost/", ApiBaseAddress);
+        var client = CreateDefaultClient(new Uri(apiBase));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUserToken);
+        return client;
+    }
 
-        public string? CurrentUserToken { get; private set; }
+    public virtual HttpClient CreateAuthClient()
+    {
+        var apiBase = UrlHelper.Concat("http://localhost/", AuthBaseAddress);
+        return CreateDefaultClient(new Uri(apiBase));
+    }
 
-        public virtual HttpClient CreateApiClient()
+    public virtual HttpQueriesExecutor CreateQueriesExecutor()
+    {
+        return new HttpQueriesExecutor(CreateApiClient());
+    }
+
+    public virtual HttpCommandsExecutor CreateCommandsExecutor()
+    {
+        return new HttpCommandsExecutor(CreateApiClient());
+    }
+
+    public virtual async Task<bool> AuthenticateAsync(PasswordTokenRequest tokenRequest)
+    {
+        // FIXME: what if the auth server is outside of the app?
+        using var client = CreateAuthClient();
+
+        var discovery = await client.GetDiscoveryDocumentAsync();
+        if (discovery.IsError)
         {
-            var apiBase = UrlHelper.Concat("http://localhost/", ApiBaseAddress);
-            var client = CreateDefaultClient(new Uri(apiBase));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUserToken);
-            return client;
+            return false;
         }
-
-        public virtual HttpClient CreateAuthClient()
+        else
         {
-            var apiBase = UrlHelper.Concat("http://localhost/", AuthBaseAddress);
-            return CreateDefaultClient(new Uri(apiBase));
-        }
+            tokenRequest.Address = discovery.TokenEndpoint;
 
-        public virtual HttpQueriesExecutor CreateQueriesExecutor()
-        {
-            return new HttpQueriesExecutor(CreateApiClient());
-        }
-
-        public virtual HttpCommandsExecutor CreateCommandsExecutor()
-        {
-            return new HttpCommandsExecutor(CreateApiClient());
-        }
-
-        public virtual async Task<bool> AuthenticateAsync(PasswordTokenRequest tokenRequest)
-        {
-            // FIXME: what if the auth server is outside of the app?
-            using var client = CreateAuthClient();
-
-            var discovery = await client.GetDiscoveryDocumentAsync();
-            if (discovery.IsError)
+            var token = await client.RequestPasswordTokenAsync(tokenRequest);
+            if (token.IsError)
             {
                 return false;
             }
             else
             {
-                tokenRequest.Address = discovery.TokenEndpoint;
-
-                var token = await client.RequestPasswordTokenAsync(tokenRequest);
-                if (token.IsError)
-                {
-                    return false;
-                }
-                else
-                {
-                    CurrentUserToken = token.AccessToken;
-                    return true;
-                }
+                CurrentUserToken = token.AccessToken;
+                return true;
             }
         }
+    }
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder
-                .ConfigureAppConfiguration(config =>
-                {
-                    config.Add(Configuration);
-                })
-                .ConfigureServices(services =>
-                {
-                    services.Configure<JwtBearerOptions>(
-                        JwtBearerDefaults.AuthenticationScheme,
-                        opts => opts.BackchannelHttpHandler = Server.CreateHandler());
-                    // Allow the host to perform shutdown a little bit longer - it will make
-                    // `DbContextsInitializer` successfully drop the database more frequently. :)
-                    services.Configure<HostOptions>(
-                            opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-                });
-        }
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder
+            .ConfigureAppConfiguration(config =>
+            {
+                config.Add(Configuration);
+            })
+            .ConfigureServices(services =>
+            {
+                services.Configure<JwtBearerOptions>(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    opts => opts.BackchannelHttpHandler = Server.CreateHandler());
+                // Allow the host to perform shutdown a little bit longer - it will make
+                // `DbContextsInitializer` successfully drop the database more frequently. :)
+                services.Configure<HostOptions>(
+                        opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+            });
+    }
 
-        public virtual async Task InitializeAsync()
-        {
-            // Since we can't really run async variants of the Start/Stop methods of webhost
-            // (neither TestServer nor WebApplicationFactory allows that - they just Start using
-            // sync-over-async approach), we at least do that in controlled manner.
-            await Task.Run(() => Server.Services.ToString()).ConfigureAwait(false);
-        }
+    public virtual async Task InitializeAsync()
+    {
+        // Since we can't really run async variants of the Start/Stop methods of webhost
+        // (neither TestServer nor WebApplicationFactory allows that - they just Start using
+        // sync-over-async approach), we at least do that in controlled manner.
+        await Task.Run(() => Server.Services.ToString()).ConfigureAwait(false);
+    }
 
-        Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
+    Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
 
-        public override async ValueTask DisposeAsync()
-        {
-            await base.DisposeAsync();
-        }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
     }
 }

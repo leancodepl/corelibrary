@@ -1,18 +1,17 @@
 using System;
 
-namespace LeanCode.Pipelines
+namespace LeanCode.Pipelines;
+
+public interface IPipelineFactory
 {
-    public interface IPipelineFactory
-    {
-        IPipelineScope BeginScope();
-    }
+    IPipelineScope BeginScope();
+}
 
-    public interface IPipelineScope : IDisposable
-    {
-        IPipelineElement<TContext, TInput, TOutput> ResolveElement<TContext, TInput, TOutput>(Type type)
-            where TContext : notnull, IPipelineContext;
+public interface IPipelineScope : IDisposable
+{
+    IPipelineElement<TContext, TInput, TOutput> ResolveElement<TContext, TInput, TOutput>(Type type)
+        where TContext : notnull, IPipelineContext;
 
-        IPipelineFinalizer<TContext, TInput, TOutput> ResolveFinalizer<TContext, TInput, TOutput>(Type type)
-            where TContext : notnull, IPipelineContext;
-    }
+    IPipelineFinalizer<TContext, TInput, TOutput> ResolveFinalizer<TContext, TInput, TOutput>(Type type)
+        where TContext : notnull, IPipelineContext;
 }

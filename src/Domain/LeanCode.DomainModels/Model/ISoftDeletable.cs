@@ -1,7 +1,6 @@
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.Model;
+
+public interface ISoftDeletable
 {
-    public interface ISoftDeletable
-    {
-        bool IsDeleted { get; }
-    }
+    bool IsDeleted { get; }
 }

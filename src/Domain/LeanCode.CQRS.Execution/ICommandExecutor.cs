@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 
-namespace LeanCode.CQRS.Execution
+namespace LeanCode.CQRS.Execution;
+
+public interface ICommandExecutor<TAppContext>
 {
-    public interface ICommandExecutor<TAppContext>
-    {
-        Task<CommandResult> RunAsync(TAppContext appContext, ICommand command);
-    }
+    Task<CommandResult> RunAsync(TAppContext appContext, ICommand command);
 }

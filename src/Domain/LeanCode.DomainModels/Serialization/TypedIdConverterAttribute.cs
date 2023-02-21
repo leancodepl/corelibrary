@@ -2,106 +2,105 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.Serialization
+namespace LeanCode.DomainModels.Serialization;
+
+internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 {
-    internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
+    private static readonly Dictionary<Type, Type> Converters = new()
     {
-        private static readonly Dictionary<Type, Type> Converters = new()
-        {
-            [typeof(Id<>)] = typeof(IdConverter<>),
-            [typeof(IId<>)] = typeof(IIdConverter<>),
-            [typeof(LId<>)] = typeof(LIdConverter<>),
-            [typeof(SId<>)] = typeof(SIdConverter<>),
-        };
+        [typeof(Id<>)] = typeof(IdConverter<>),
+        [typeof(IId<>)] = typeof(IIdConverter<>),
+        [typeof(LId<>)] = typeof(LIdConverter<>),
+        [typeof(SId<>)] = typeof(SIdConverter<>),
+    };
 
-        public override JsonConverter CreateConverter(Type typeToConvert)
+    public override JsonConverter CreateConverter(Type typeToConvert)
+    {
+        if (!typeToConvert.IsGenericType
+            || !Converters.TryGetValue(typeToConvert.GetGenericTypeDefinition(), out var converterGenericType))
         {
-            if (!typeToConvert.IsGenericType
-                || !Converters.TryGetValue(typeToConvert.GetGenericTypeDefinition(), out var converterGenericType))
-            {
-                throw new InvalidOperationException($"{nameof(TypedIdConverterAttribute)} can only by used for strongly typed id types");
-            }
-
-            var entityType = typeToConvert.GetGenericArguments()[0];
-            var converterType = converterGenericType.MakeGenericType(entityType);
-            var converter = Activator.CreateInstance(converterType);
-            return (JsonConverter)converter!;
+            throw new InvalidOperationException($"{nameof(TypedIdConverterAttribute)} can only by used for strongly typed id types");
         }
 
-        private class IdConverter<T> : JsonConverter<Id<T>>
-            where T : class, IIdentifiable<Id<T>>
+        var entityType = typeToConvert.GetGenericArguments()[0];
+        var converterType = converterGenericType.MakeGenericType(entityType);
+        var converter = Activator.CreateInstance(converterType);
+        return (JsonConverter)converter!;
+    }
+
+    private class IdConverter<T> : JsonConverter<Id<T>>
+        where T : class, IIdentifiable<Id<T>>
+    {
+        public override Id<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            public override Id<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            if (reader.TryGetGuid(out var id))
             {
-                if (reader.TryGetGuid(out var id))
-                {
-                    return new Id<T>(id);
-                }
-
-                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+                return new Id<T>(id);
             }
 
-            public override void Write(Utf8JsonWriter writer, Id<T> value, JsonSerializerOptions options)
-            {
-                writer.WriteStringValue(value.Value);
-            }
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
         }
 
-        private class IIdConverter<T> : JsonConverter<IId<T>>
-            where T : class, IIdentifiable<IId<T>>
+        public override void Write(Utf8JsonWriter writer, Id<T> value, JsonSerializerOptions options)
         {
-            public override IId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                if (reader.TryGetInt32(out var id))
-                {
-                    return new IId<T>(id);
-                }
+            writer.WriteStringValue(value.Value);
+        }
+    }
 
-                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+    private class IIdConverter<T> : JsonConverter<IId<T>>
+        where T : class, IIdentifiable<IId<T>>
+    {
+        public override IId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TryGetInt32(out var id))
+            {
+                return new IId<T>(id);
             }
 
-            public override void Write(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
-            {
-                writer.WriteNumberValue(value.Value);
-            }
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
         }
 
-        private class LIdConverter<T> : JsonConverter<LId<T>>
-            where T : class, IIdentifiable<LId<T>>
+        public override void Write(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
         {
-            public override LId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                if (reader.TryGetInt64(out var id))
-                {
-                    return new LId<T>(id);
-                }
+            writer.WriteNumberValue(value.Value);
+        }
+    }
 
-                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+    private class LIdConverter<T> : JsonConverter<LId<T>>
+        where T : class, IIdentifiable<LId<T>>
+    {
+        public override LId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TryGetInt64(out var id))
+            {
+                return new LId<T>(id);
             }
 
-            public override void Write(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
-            {
-                writer.WriteNumberValue(value.Value);
-            }
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
         }
 
-        private class SIdConverter<T> : JsonConverter<SId<T>>
-            where T : class, IIdentifiable<SId<T>>
+        public override void Write(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
         {
-            public override SId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                if (reader.GetString() is string s)
-                {
-                    return SId<T>.From(s);
-                }
+            writer.WriteNumberValue(value.Value);
+        }
+    }
 
-                throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+    private class SIdConverter<T> : JsonConverter<SId<T>>
+        where T : class, IIdentifiable<SId<T>>
+    {
+        public override SId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.GetString() is string s)
+            {
+                return SId<T>.From(s);
             }
 
-            public override void Write(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
-            {
-                writer.WriteStringValue(value.Value);
-            }
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+        }
+
+        public override void Write(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.Value);
         }
     }
 }

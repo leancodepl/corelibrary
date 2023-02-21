@@ -1,11 +1,10 @@
 using System.Collections.Immutable;
 
-namespace LeanCode.ExternalIdentityProviders.Apple
+namespace LeanCode.ExternalIdentityProviders.Apple;
+
+public sealed record AppleIdConfiguration(ImmutableList<string> ClientIds)
 {
-    public sealed record AppleIdConfiguration(ImmutableList<string> ClientIds)
-    {
-        public AppleIdConfiguration(string clientId)
-            : this(ImmutableList.Create(clientId))
-        { }
-    }
+    public AppleIdConfiguration(string clientId)
+        : this(ImmutableList.Create(clientId))
+    { }
 }

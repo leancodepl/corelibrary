@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 
-namespace LeanCode.Mixpanel
+namespace LeanCode.Mixpanel;
+
+public interface IMixpanelEvent
 {
-    public interface IMixpanelEvent
-    {
-        string EventName { get; }
-        Dictionary<string, object> Properties { get; }
-    }
+    string EventName { get; }
+    Dictionary<string, object> Properties { get; }
 }

@@ -1,29 +1,28 @@
 using Serilog.Core;
 using Serilog.Events;
 
-namespace LeanCode.CQRS.Tests
+namespace LeanCode.CQRS.Tests;
+
+public class FakeSink : ILogEventSink
 {
-    public class FakeSink : ILogEventSink
+    private readonly List<string> messages = new();
+
+    public IReadOnlyList<string> Messages
     {
-        private readonly List<string> messages = new();
-
-        public IReadOnlyList<string> Messages
-        {
-            get
-            {
-                lock (messages)
-                {
-                    return messages.ToList();
-                }
-            }
-        }
-
-        public void Emit(LogEvent logEvent)
+        get
         {
             lock (messages)
             {
-                messages.Add(logEvent.RenderMessage());
+                return messages.ToList();
             }
+        }
+    }
+
+    public void Emit(LogEvent logEvent)
+    {
+        lock (messages)
+        {
+            messages.Add(logEvent.RenderMessage());
         }
     }
 }

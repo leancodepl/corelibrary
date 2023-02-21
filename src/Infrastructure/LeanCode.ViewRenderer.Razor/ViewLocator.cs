@@ -3,90 +3,89 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Razor.Language;
 
-namespace LeanCode.ViewRenderer.Razor
+namespace LeanCode.ViewRenderer.Razor;
+
+internal class ViewLocator : RazorProject
 {
-    internal class ViewLocator : RazorProject
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ViewLocator>();
+
+    private readonly RazorViewRendererOptions options;
+
+    public ViewLocator(RazorViewRendererOptions options)
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ViewLocator>();
+        this.options = options;
+    }
 
-        private readonly RazorViewRendererOptions options;
+    public string GetRootPath() => options.ViewLocations[0];
 
-        public ViewLocator(RazorViewRendererOptions options)
+    public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) =>
+        throw new NotSupportedException();
+
+    public override RazorProjectItem GetItem(string path) => GetItem(path, null);
+
+    public override RazorProjectItem GetItem(string path, string? fileKind)
+    {
+        if (fileKind != null)
         {
-            this.options = options;
+            logger.Warning("GetItem: `fileKind` parameter ignored: {fileKind}", fileKind);
         }
 
-        public string GetRootPath() => options.ViewLocations[0];
-
-        public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) =>
-            throw new NotSupportedException();
-
-        public override RazorProjectItem GetItem(string path) => GetItem(path, null);
-
-        public override RazorProjectItem GetItem(string path, string? fileKind)
+        if (LocateFile(GetFileName(path)) is var (basePath, fullPath, fileName))
         {
-            if (fileKind != null)
-            {
-                logger.Warning("GetItem: `fileKind` parameter ignored: {fileKind}", fileKind);
-            }
-
-            if (LocateFile(GetFileName(path)) is var (basePath, fullPath, fileName))
-            {
-                return new Item(basePath, fileName, fullPath);
-            }
-
-            return new Item(path);
+            return new Item(basePath, fileName, fullPath);
         }
 
-        private string GetFileName(string viewName) => viewName + options.Extension;
+        return new Item(path);
+    }
 
-        private (string BasePath, string FullPath, string FileName)? LocateFile(string fileName)
+    private string GetFileName(string viewName) => viewName + options.Extension;
+
+    private (string BasePath, string FullPath, string FileName)? LocateFile(string fileName)
+    {
+        foreach (var path in options.ViewLocations)
         {
-            foreach (var path in options.ViewLocations)
+            var fullPath = Path.GetFullPath(Path.Combine(path, fileName));
+
+            if (File.Exists(fullPath))
             {
-                var fullPath = Path.GetFullPath(Path.Combine(path, fileName));
-
-                if (File.Exists(fullPath))
-                {
-                    return (path, fullPath, fileName);
-                }
+                return (path, fullPath, fileName);
             }
-
-            return null;
         }
 
-        private class Item : RazorProjectItem
+        return null;
+    }
+
+    private class Item : RazorProjectItem
+    {
+        public override string BasePath { get; }
+        public override string FilePath { get; }
+        public override string PhysicalPath { get; }
+        public override bool Exists { get; }
+
+        public Item(string basePath, string filename, string fullPath)
         {
-            public override string BasePath { get; }
-            public override string FilePath { get; }
-            public override string PhysicalPath { get; }
-            public override bool Exists { get; }
+            BasePath = basePath;
+            FilePath = filename;
+            PhysicalPath = fullPath;
+            Exists = true;
+        }
 
-            public Item(string basePath, string filename, string fullPath)
+        public Item(string path)
+        {
+            BasePath = "";
+            FilePath = path;
+            PhysicalPath = "";
+            Exists = false;
+        }
+
+        public override Stream Read()
+        {
+            if (!Exists)
             {
-                BasePath = basePath;
-                FilePath = filename;
-                PhysicalPath = fullPath;
-                Exists = true;
+                throw new InvalidOperationException("File does not exist.");
             }
 
-            public Item(string path)
-            {
-                BasePath = "";
-                FilePath = path;
-                PhysicalPath = "";
-                Exists = false;
-            }
-
-            public override Stream Read()
-            {
-                if (!Exists)
-                {
-                    throw new InvalidOperationException("File does not exist.");
-                }
-
-                return File.OpenRead(PhysicalPath);
-            }
+            return File.OpenRead(PhysicalPath);
         }
     }
 }

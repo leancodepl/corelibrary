@@ -1,7 +1,6 @@
-namespace LeanCode.ExternalIdentityProviders.Facebook
+namespace LeanCode.ExternalIdentityProviders.Facebook;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string GrantType = "facebook";
-    }
+    public const string GrantType = "facebook";
 }

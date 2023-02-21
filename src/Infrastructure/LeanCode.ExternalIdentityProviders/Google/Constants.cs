@@ -1,7 +1,6 @@
-namespace LeanCode.ExternalIdentityProviders.Google
+namespace LeanCode.ExternalIdentityProviders.Google;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string GrantType = "google";
-    }
+    public const string GrantType = "google";
 }

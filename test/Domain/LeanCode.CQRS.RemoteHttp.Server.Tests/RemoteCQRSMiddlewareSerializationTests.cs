@@ -3,49 +3,48 @@ using System.Threading.Tasks;
 using LeanCode.Contracts;
 using Xunit;
 
-namespace LeanCode.CQRS.RemoteHttp.Server.Tests
+namespace LeanCode.CQRS.RemoteHttp.Server.Tests;
+
+public class RemoteCQRSMiddlewareSerializationTests : BaseMiddlewareTests
 {
-    public class RemoteCQRSMiddlewareSerializationTests : BaseMiddlewareTests
+    private static readonly JsonSerializerOptions SerializerOptions = new()
     {
-        private static readonly JsonSerializerOptions SerializerOptions = new()
-        {
-            PropertyNamingPolicy = new AlwaysUpperPolicy(),
-        };
+        PropertyNamingPolicy = new AlwaysUpperPolicy(),
+    };
 
-        public RemoteCQRSMiddlewareSerializationTests()
-            : base("query", typeof(RemoteCQRSMiddlewareTests), new Utf8JsonSerializer(SerializerOptions)) { }
+    public RemoteCQRSMiddlewareSerializationTests()
+        : base("query", typeof(RemoteCQRSMiddlewareTests), new Utf8JsonSerializer(SerializerOptions)) { }
 
-        [Fact]
-        public async Task Uses_serialization_options_when_deserializing_payload()
-        {
-            await Invoke(typeof(SerializationTestQuery).FullName, "{\"PROPERTY\": \"content\"}");
+    [Fact]
+    public async Task Uses_serialization_options_when_deserializing_payload()
+    {
+        await Invoke(typeof(SerializationTestQuery).FullName, "{\"PROPERTY\": \"content\"}");
 
-            var query = Assert.IsType<SerializationTestQuery>(Query.LastQuery);
-            Assert.Equal("content", query.Property);
-        }
-
-        [Fact]
-        public async Task Uses_serialization_options_when_serializing_result()
-        {
-            Query.NextResult = new SerializationTestResult { Result = "content" };
-            var (_, content) = await Invoke(typeof(SerializationTestQuery).FullName);
-
-            Assert.Equal("{\"RESULT\":\"content\"}", content);
-        }
+        var query = Assert.IsType<SerializationTestQuery>(Query.LastQuery);
+        Assert.Equal("content", query.Property);
     }
 
-    internal class AlwaysUpperPolicy : JsonNamingPolicy
+    [Fact]
+    public async Task Uses_serialization_options_when_serializing_result()
     {
-        public override string ConvertName(string name) => name.ToUpperInvariant();
-    }
+        Query.NextResult = new SerializationTestResult { Result = "content" };
+        var (_, content) = await Invoke(typeof(SerializationTestQuery).FullName);
 
-    public class SerializationTestResult
-    {
-        public string? Result { get; set; }
+        Assert.Equal("{\"RESULT\":\"content\"}", content);
     }
+}
 
-    public class SerializationTestQuery : IQuery<SerializationTestResult>
-    {
-        public string? Property { get; set; }
-    }
+internal class AlwaysUpperPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name) => name.ToUpperInvariant();
+}
+
+public class SerializationTestResult
+{
+    public string? Result { get; set; }
+}
+
+public class SerializationTestQuery : IQuery<SerializationTestResult>
+{
+    public string? Property { get; set; }
 }

@@ -2,26 +2,25 @@ using Autofac;
 using FluentValidation;
 using LeanCode.Components;
 
-namespace LeanCode.CQRS.Validation.Fluent
+namespace LeanCode.CQRS.Validation.Fluent;
+
+public class FluentValidationModule : AppModule
 {
-    public class FluentValidationModule : AppModule
+    private readonly TypesCatalog catalog;
+
+    public FluentValidationModule(TypesCatalog catalog)
     {
-        private readonly TypesCatalog catalog;
+        this.catalog = catalog;
+    }
 
-        public FluentValidationModule(TypesCatalog catalog)
-        {
-            this.catalog = catalog;
-        }
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterGeneric(typeof(AdapterLoader<,>))
+            .AsImplementedInterfaces();
 
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterGeneric(typeof(AdapterLoader<,>))
-                .AsImplementedInterfaces();
-
-            builder
-                .RegisterAssemblyTypes(catalog.Assemblies.ToArray())
-                .AsClosedTypesOf(typeof(IValidator<>))
-                .SingleInstance();
-        }
+        builder
+            .RegisterAssemblyTypes(catalog.Assemblies.ToArray())
+            .AsClosedTypesOf(typeof(IValidator<>))
+            .SingleInstance();
     }
 }

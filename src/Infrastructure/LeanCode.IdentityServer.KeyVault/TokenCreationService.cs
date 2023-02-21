@@ -4,26 +4,25 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 
-namespace LeanCode.IdentityServer.KeyVault
+namespace LeanCode.IdentityServer.KeyVault;
+
+internal class TokenCreationService : DefaultTokenCreationService
 {
-    internal class TokenCreationService : DefaultTokenCreationService
+    private readonly SigningService signing;
+
+    public TokenCreationService(
+        SigningService signing,
+        ISystemClock clock,
+        IKeyMaterialService keys,
+        IdentityServerOptions options,
+        ILogger<DefaultTokenCreationService> logger)
+        : base(clock, keys, options, logger)
     {
-        private readonly SigningService signing;
+        this.signing = signing;
+    }
 
-        public TokenCreationService(
-            SigningService signing,
-            ISystemClock clock,
-            IKeyMaterialService keys,
-            IdentityServerOptions options,
-            ILogger<DefaultTokenCreationService> logger)
-            : base(clock, keys, options, logger)
-        {
-            this.signing = signing;
-        }
-
-        protected override Task<string> CreateJwtAsync(JwtSecurityToken jwt)
-        {
-            return signing.SignTokenAsync(jwt);
-        }
+    protected override Task<string> CreateJwtAsync(JwtSecurityToken jwt)
+    {
+        return signing.SignTokenAsync(jwt);
     }
 }

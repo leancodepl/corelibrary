@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace LeanCode.CQRS.Security
+namespace LeanCode.CQRS.Security;
+
+public interface IRoleRegistration
 {
-    public interface IRoleRegistration
-    {
-        IEnumerable<Role> Roles { get; }
-    }
+    IEnumerable<Role> Roles { get; }
 }

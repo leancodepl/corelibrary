@@ -2,12 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Inbox
+namespace LeanCode.DomainModels.MassTransitRelay.Inbox;
+
+public interface IConsumedMessagesContext
 {
-    public interface IConsumedMessagesContext
-    {
-        DbSet<ConsumedMessage> ConsumedMessages { get; }
-        DbContext Self { get; }
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    }
+    DbSet<ConsumedMessage> ConsumedMessages { get; }
+    DbContext Self { get; }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

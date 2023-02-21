@@ -2,48 +2,47 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace LeanCode.Firebase.FCM
+namespace LeanCode.Firebase.FCM;
+
+public static class Notifications
 {
-    public static class Notifications
+    private const string TypeField = "Type";
+
+    /// <summary>
+    /// Converts POCO object to a notification data dictionary. Does not support hierarchical
+    /// data.
+    /// </summary>
+    public static Dictionary<string, string> ToNotificationData(object data)
     {
-        private const string TypeField = "Type";
+        var type = data.GetType();
 
-        /// <summary>
-        /// Converts POCO object to a notification data dictionary. Does not support hierarchical
-        /// data.
-        /// </summary>
-        public static Dictionary<string, string> ToNotificationData(object data)
+        var result = new Dictionary<string, string>()
         {
-            var type = data.GetType();
+            [TypeField] = type.Name,
+        };
 
-            var result = new Dictionary<string, string>()
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            if (prop.Name != TypeField)
             {
-                [TypeField] = type.Name,
-            };
+                var value = prop.GetValue(data);
 
-            foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (prop.Name != TypeField)
+                if (value is not null)
                 {
-                    var value = prop.GetValue(data);
-
-                    if (value is not null)
+                    if (value is Enum @enum)
                     {
-                        if (value is Enum @enum)
-                        {
-                            var strValue = Convert.ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
-                                .ToString(System.Globalization.CultureInfo.InvariantCulture);
-                            result.Add(prop.Name, strValue);
-                        }
-                        else
-                        {
-                            result.Add(prop.Name, value.ToString()!);
-                        }
+                        var strValue = Convert.ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
+                            .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        result.Add(prop.Name, strValue);
+                    }
+                    else
+                    {
+                        result.Add(prop.Name, value.ToString()!);
                     }
                 }
             }
-
-            return result;
         }
+
+        return result;
     }
 }

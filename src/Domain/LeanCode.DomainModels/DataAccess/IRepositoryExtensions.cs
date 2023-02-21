@@ -1,31 +1,30 @@
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.DataAccess
+namespace LeanCode.DomainModels.DataAccess;
+
+public static class IRepositoryExtensions
 {
-    public static class IRepositoryExtensions
+    public static async Task<TEntity> FindAndEnsureExistsAsync<TEntity, TIdentity>(
+        this IRepository<TEntity, TIdentity> repository,
+        TIdentity id,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
+        where TIdentity : notnull
     {
-        public static async Task<TEntity> FindAndEnsureExistsAsync<TEntity, TIdentity>(
-            this IRepository<TEntity, TIdentity> repository,
-            TIdentity id,
-            CancellationToken cancellationToken = default)
-            where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
-            where TIdentity : notnull
-        {
-            var entity = await repository.FindAsync(id, cancellationToken);
-            return entity ?? throw new EntityDoesNotExistException(typeof(TEntity), id.ToString());
-        }
+        var entity = await repository.FindAsync(id, cancellationToken);
+        return entity ?? throw new EntityDoesNotExistException(typeof(TEntity), id.ToString());
     }
+}
 
-    public class EntityDoesNotExistException : ArgumentException
+public class EntityDoesNotExistException : ArgumentException
+{
+    public Type EntityType { get; }
+    public string EntityId { get; }
+
+    public EntityDoesNotExistException(Type entityType, string? entityId)
+        : base($"Aggregate of type: {entityType.Name} with id: {entityId} does not exist.")
     {
-        public Type EntityType { get; }
-        public string EntityId { get; }
-
-        public EntityDoesNotExistException(Type entityType, string? entityId)
-            : base($"Aggregate of type: {entityType.Name} with id: {entityId} does not exist.")
-        {
-            EntityType = entityType;
-            EntityId = entityId ?? "";
-        }
+        EntityType = entityType;
+        EntityId = entityId ?? "";
     }
 }

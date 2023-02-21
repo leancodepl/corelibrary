@@ -1,22 +1,21 @@
 using Autofac;
 using LeanCode.Components;
 
-namespace LeanCode.ViewRenderer.Razor
+namespace LeanCode.ViewRenderer.Razor;
+
+public class RazorViewRendererModule : AppModule
 {
-    public class RazorViewRendererModule : AppModule
+    private readonly RazorViewRendererOptions opts;
+
+    public RazorViewRendererModule(RazorViewRendererOptions opts)
     {
-        private readonly RazorViewRendererOptions opts;
+        this.opts = opts;
+    }
 
-        public RazorViewRendererModule(RazorViewRendererOptions opts)
-        {
-            this.opts = opts;
-        }
-
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.Register(_ => new RazorViewRenderer(opts))
-                .As<IViewRenderer>()
-                .SingleInstance();
-        }
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.Register(_ => new RazorViewRenderer(opts))
+            .As<IViewRenderer>()
+            .SingleInstance();
     }
 }
