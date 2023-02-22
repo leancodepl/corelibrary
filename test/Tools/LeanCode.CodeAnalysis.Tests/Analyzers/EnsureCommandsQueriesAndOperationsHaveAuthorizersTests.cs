@@ -36,8 +36,8 @@ public class EnsureCommandsQueriesAndOperationsHaveAuthorizersTests : Diagnostic
         var source = await File.ReadAllTextAsync("TestSamples/Rejected_commands.cs");
         var diags = new[]
         {
-            new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 4, 17),
-            new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 6, 17),
+            new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 4, 13),
+            new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveAuthorizers, 6, 13),
         };
 
         await VerifyDiagnostics(source, diags);
@@ -49,8 +49,8 @@ public class EnsureCommandsQueriesAndOperationsHaveAuthorizersTests : Diagnostic
         var source = await File.ReadAllTextAsync("TestSamples/Rejected_queries.cs");
         var diags = new[]
         {
-            new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 4, 17),
-            new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 6, 17),
+            new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 4, 13),
+            new DiagnosticResult(DiagnosticsIds.QueriesShouldHaveAuthorizers, 6, 13),
         };
 
         await VerifyDiagnostics(source, diags);
@@ -62,8 +62,8 @@ public class EnsureCommandsQueriesAndOperationsHaveAuthorizersTests : Diagnostic
         var source = await File.ReadAllTextAsync("TestSamples/Rejected_operations.cs");
         var diags = new[]
         {
-            new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 4, 17),
-            new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 6, 17),
+            new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 4, 13),
+            new DiagnosticResult(DiagnosticsIds.OperationsShouldHaveAuthorizers, 6, 13),
         };
 
         await VerifyDiagnostics(source, diags);
