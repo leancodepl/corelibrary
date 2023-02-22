@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using LeanCode.CodeAnalysis.Analyzers;
 using LeanCode.CodeAnalysis.CodeFixProviders;
@@ -7,20 +7,20 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 
-namespace LeanCode.CodeAnalysis.Tests.CodeActions
+namespace LeanCode.CodeAnalysis.Tests.CodeActions;
+
+public class AddAuthorizationAttributeCodeActionTests : CodeFixVerifier
 {
-    public class AddAuthorizationAttributeCodeActionTests : CodeFixVerifier
+    private static readonly string[] StaticFixes = new[]
     {
-        private static readonly string[] StaticFixes = new[]
-        {
-            "Add AllowUnauthorizedAttribute",
-            "Add AuthorizeWhenHasAnyOfAttribute",
-        };
+        "Add AllowUnauthorizedAttribute",
+        "Add AuthorizeWhenHasAnyOfAttribute",
+    };
 
-        [Fact]
-        public async Task Adds_attribute()
-        {
-            var source =
+    [Fact]
+    public async Task Adds_attribute()
+    {
+        var source =
 @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
@@ -28,8 +28,8 @@ using LeanCode.Contracts.Security;
 public class Cmd : ICommand
 {}";
 
-            var expected =
-            @"
+        var expected =
+        @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -37,13 +37,13 @@ using LeanCode.Contracts.Security;
 public class Cmd : ICommand
 {}";
 
-            await VerifyCodeFix(source, expected, StaticFixes, 0);
-        }
+        await VerifyCodeFix(source, expected, StaticFixes, 0);
+    }
 
-        [Fact]
-        public async Task Adds_attribute_and_using_directive()
-        {
-            var source =
+    [Fact]
+    public async Task Adds_attribute_and_using_directive()
+    {
+        var source =
 @"
 using LeanCode.Contracts;
 
@@ -51,8 +51,8 @@ public class Cmd : ICommand
 {
 }";
 
-            var expected =
-            @"
+        var expected =
+        @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -61,14 +61,14 @@ public class Cmd : ICommand
 {
 }";
 
-            await VerifyCodeFix(source, expected, StaticFixes, 0);
-        }
+        await VerifyCodeFix(source, expected, StaticFixes, 0);
+    }
 
-        [Fact]
-        public async Task Suggests_custom_attribute()
-        {
-            var source =
-            @"
+    [Fact]
+    public async Task Suggests_custom_attribute()
+    {
+        var source =
+        @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -83,8 +83,8 @@ public class Cmd : ICommand
 {
 }";
 
-            var expected =
-            @"
+        var expected =
+        @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -100,24 +100,23 @@ public class Cmd : ICommand
 {
 }";
 
-            var fixes = new[]
-            {
-                "Add AllowUnauthorizedAttribute",
-                "Add AuthorizeWhenHasAnyOfAttribute",
-                "Add CustomAuthorizeAttribute",
-            };
-
-            await VerifyCodeFix(source, expected, fixes, 2);
-        }
-
-        protected override CodeFixProvider GetCodeFixProvider()
+        var fixes = new[]
         {
-            return new AddAuthorizationAttributeCodeFixProvider();
-        }
+            "Add AllowUnauthorizedAttribute",
+            "Add AuthorizeWhenHasAnyOfAttribute",
+            "Add CustomAuthorizeAttribute",
+        };
 
-        protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
-        {
-            return new EnsureCommandsQueriesAndOperationsHaveAuthorizers();
-        }
+        await VerifyCodeFix(source, expected, fixes, 2);
+    }
+
+    protected override CodeFixProvider GetCodeFixProvider()
+    {
+        return new AddAuthorizationAttributeCodeFixProvider();
+    }
+
+    protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
+    {
+        return new EnsureCommandsQueriesAndOperationsHaveAuthorizers();
     }
 }

@@ -1,12 +1,11 @@
 using OpenTelemetry.Trace;
 
-namespace LeanCode.OpenTelemetry
+namespace LeanCode.OpenTelemetry;
+
+public static class TracerProviderBuilderExtensions
 {
-    public static class TracerProviderBuilderExtensions
+    public static TracerProviderBuilder AddLeanCodeTelemetry(this TracerProviderBuilder builder)
     {
-        public static TracerProviderBuilder AddLeanCodeTelemetry(this TracerProviderBuilder builder)
-        {
-            return builder.AddSource(LeanCodeActivitySource.ActivitySource.Name);
-        }
+        return builder.AddSource(LeanCodeActivitySource.ActivitySource.Name);
     }
 }

@@ -1,7 +1,6 @@
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.Model;
+
+public interface IDomainEventInterceptor
 {
-    public interface IDomainEventInterceptor
-    {
-        void Intercept(IDomainEvent domainEvent);
-    }
+    void Intercept(IDomainEvent domainEvent);
 }

@@ -2,18 +2,17 @@ using System;
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 
-namespace LeanCode.CQRS.Execution
-{
-    public interface ICommandHandlerResolver<TAppContext>
-    {
-        ICommandHandlerWrapper? FindCommandHandler(Type commandType);
-    }
+namespace LeanCode.CQRS.Execution;
 
-    /// <summary>
-    /// Marker interface, do not use directly.
-    /// </summary>
-    public interface ICommandHandlerWrapper
-    {
-        Task ExecuteAsync(object context, ICommand command);
-    }
+public interface ICommandHandlerResolver<TAppContext>
+{
+    ICommandHandlerWrapper? FindCommandHandler(Type commandType);
+}
+
+/// <summary>
+/// Marker interface, do not use directly.
+/// </summary>
+public interface ICommandHandlerWrapper
+{
+    Task ExecuteAsync(object context, ICommand command);
 }

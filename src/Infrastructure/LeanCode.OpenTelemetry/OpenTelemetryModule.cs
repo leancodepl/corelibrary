@@ -1,13 +1,12 @@
 using Autofac;
 using LeanCode.Components;
 
-namespace LeanCode.OpenTelemetry
+namespace LeanCode.OpenTelemetry;
+
+public class OpenTelemetryModule : AppModule
 {
-    public class OpenTelemetryModule : AppModule
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterGeneric(typeof(TracingElement<,,>));
-        }
+        builder.RegisterGeneric(typeof(TracingElement<,,>));
     }
 }

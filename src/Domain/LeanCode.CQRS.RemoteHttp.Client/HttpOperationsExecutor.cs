@@ -2,41 +2,40 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using LeanCode.Contracts;
 
-namespace LeanCode.CQRS.RemoteHttp.Client
+namespace LeanCode.CQRS.RemoteHttp.Client;
+
+public class HttpOperationsExecutor
 {
-    public class HttpOperationsExecutor
+    private readonly HttpClient client;
+    private readonly JsonSerializerOptions? serializerOptions;
+
+    public HttpOperationsExecutor(HttpClient client)
+        : this(client, null)
+    { }
+
+    public HttpOperationsExecutor(
+        HttpClient client,
+        JsonSerializerOptions? serializerOptions)
     {
-        private readonly HttpClient client;
-        private readonly JsonSerializerOptions? serializerOptions;
+        this.client = client;
+        this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
+    }
 
-        public HttpOperationsExecutor(HttpClient client)
-            : this(client, null)
-        { }
+    public virtual async Task<TResult> GetAsync<TResult>(IOperation<TResult> operation, CancellationToken cancellationToken = default)
+    {
+        using var content = JsonContent.Create(operation, operation.GetType(), options: serializerOptions);
+        using var response = await client.PostAsync("operation/" + operation.GetType().FullName, content, cancellationToken);
 
-        public HttpOperationsExecutor(
-            HttpClient client,
-            JsonSerializerOptions? serializerOptions)
+        response.HandleCommonCQRSErrors<OperationNotFoundException, InvalidOperationException>();
+
+        using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
+        try
         {
-            this.client = client;
-            this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
+            return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken))!;
         }
-
-        public virtual async Task<TResult> GetAsync<TResult>(IOperation<TResult> operation, CancellationToken cancellationToken = default)
+        catch (Exception ex)
         {
-            using var content = JsonContent.Create(operation, operation.GetType(), options: serializerOptions);
-            using var response = await client.PostAsync("operation/" + operation.GetType().FullName, content, cancellationToken);
-
-            response.HandleCommonCQRSErrors<OperationNotFoundException, InvalidOperationException>();
-
-            using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
-            try
-            {
-                return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken))!;
-            }
-            catch (Exception ex)
-            {
-                throw new MalformedResponseException(ex);
-            }
+            throw new MalformedResponseException(ex);
         }
     }
 }

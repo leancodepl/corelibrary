@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Outbox
+namespace LeanCode.DomainModels.MassTransitRelay.Outbox;
+
+public interface IRaisedEventsSerializer
 {
-    public interface IRaisedEventsSerializer
-    {
-        object ExtractEvent(RaisedEvent evt);
-        RaisedEvent WrapEvent(object evt, RaisedEventMetadata metadata);
-    }
+    object ExtractEvent(RaisedEvent evt);
+    RaisedEvent WrapEvent(object evt, RaisedEventMetadata metadata);
 }

@@ -13,70 +13,69 @@ using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.IntegrationTests.App
+namespace LeanCode.IntegrationTests.App;
+
+[AuthorizeWhenHasAnyOf("user")]
+public class SampleQuery : IQuery<SampleQuery.Result?>
 {
-    [AuthorizeWhenHasAnyOf("user")]
-    public class SampleQuery : IQuery<SampleQuery.Result?>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Better design.")]
+    public sealed class Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Better design.")]
-        public sealed class Result
-        {
-            public string? Data { get; set; }
-        }
+        public string? Data { get; set; }
+    }
+}
+
+public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, SampleQuery.Result?>
+{
+    private readonly TestDbContext dbContext;
+
+    public SampleQueryHandler(TestDbContext dbContext)
+    {
+        this.dbContext = dbContext;
     }
 
-    public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, SampleQuery.Result?>
+    public async Task<SampleQuery.Result?> ExecuteAsync(AppContext context, SampleQuery query)
     {
-        private readonly TestDbContext dbContext;
+        // This will return `null`, but the query will be executed
+        var data = await dbContext.Entities.Select(l => l.Value).FirstOrDefaultAsync();
+        return new SampleQuery.Result { Data = $"{context.UserId}-{data}" };
+    }
+}
 
-        public SampleQueryHandler(TestDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
+public sealed class AppContext : ISecurityContext
+{
+    private IPipelineScope? scope;
+    private ClaimsPrincipal? user;
 
-        public async Task<SampleQuery.Result?> ExecuteAsync(AppContext context, SampleQuery query)
-        {
-            // This will return `null`, but the query will be executed
-            var data = await dbContext.Entities.Select(l => l.Value).FirstOrDefaultAsync();
-            return new SampleQuery.Result { Data = $"{context.UserId}-{data}" };
-        }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
+    IPipelineScope IPipelineContext.Scope
+    {
+        get => scope ?? throw new NullReferenceException();
+        set => scope = value;
     }
 
-    public sealed class AppContext : ISecurityContext
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1065", Justification = "Expected behavior.")]
+    public ClaimsPrincipal User
     {
-        private IPipelineScope? scope;
-        private ClaimsPrincipal? user;
+        get => user ?? throw new NullReferenceException();
+        set => user = value;
+    }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
-        IPipelineScope IPipelineContext.Scope
-        {
-            get => scope ?? throw new NullReferenceException();
-            set => scope = value;
-        }
+    public CancellationToken CancellationToken { get; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Expected behavior.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1065", Justification = "Expected behavior.")]
-        public ClaimsPrincipal User
-        {
-            get => user ?? throw new NullReferenceException();
-            set => user = value;
-        }
+    public Guid UserId { get; }
 
-        public CancellationToken CancellationToken { get; }
+    public AppContext(ClaimsPrincipal user, Guid userId, CancellationToken cancellationToken)
+    {
+        User = user;
+        UserId = userId;
+        CancellationToken = cancellationToken;
+    }
 
-        public Guid UserId { get; }
-
-        public AppContext(ClaimsPrincipal user, Guid userId, CancellationToken cancellationToken)
-        {
-            User = user;
-            UserId = userId;
-            CancellationToken = cancellationToken;
-        }
-
-        public static AppContext FromHttp(HttpContext context)
-        {
-            _ = Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
-            return new AppContext(context.User!, uid, context.RequestAborted);
-        }
+    public static AppContext FromHttp(HttpContext context)
+    {
+        _ = Guid.TryParse(context.User?.FindFirst("sub")?.Value, out var uid);
+        return new AppContext(context.User!, uid, context.RequestAborted);
     }
 }

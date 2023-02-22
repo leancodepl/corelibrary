@@ -3,37 +3,36 @@ using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Pipelines;
 
-namespace LeanCode.CQRS.Execution
+namespace LeanCode.CQRS.Execution;
+
+public delegate PipelineBuilder<TAppContext, ICommand, CommandResult> CommandBuilder<TAppContext>(
+    PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
+    where TAppContext : IPipelineContext;
+
+public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
+    where TAppContext : IPipelineContext
 {
-    public delegate PipelineBuilder<TAppContext, ICommand, CommandResult> CommandBuilder<TAppContext>(
-        PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
-        where TAppContext : IPipelineContext;
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CommandExecutor<TAppContext>>();
+    private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
 
-    public class CommandExecutor<TAppContext> : ICommandExecutor<TAppContext>
-        where TAppContext : IPipelineContext
+    public CommandExecutor(IPipelineFactory factory, CommandBuilder<TAppContext> config)
     {
-        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CommandExecutor<TAppContext>>();
-        private readonly PipelineExecutor<TAppContext, ICommand, CommandResult> executor;
+        var cfg = Pipeline
+            .Build<TAppContext, ICommand, CommandResult>()
+            .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
+            .Finalize<CommandFinalizer<TAppContext>>();
 
-        public CommandExecutor(IPipelineFactory factory, CommandBuilder<TAppContext> config)
+        executor = PipelineExecutor.Create(factory, cfg);
+    }
+
+    public async Task<CommandResult> RunAsync(TAppContext appContext, ICommand command)
+    {
+        var res = await executor.ExecuteAsync(appContext, command);
+        if (res.WasSuccessful)
         {
-            var cfg = Pipeline
-                .Build<TAppContext, ICommand, CommandResult>()
-                .Configure(new ConfigPipeline<TAppContext, ICommand, CommandResult>(config))
-                .Finalize<CommandFinalizer<TAppContext>>();
-
-            executor = PipelineExecutor.Create(factory, cfg);
+            logger.Information("Command {@Command} executed successfully", command);
         }
 
-        public async Task<CommandResult> RunAsync(TAppContext appContext, ICommand command)
-        {
-            var res = await executor.ExecuteAsync(appContext, command);
-            if (res.WasSuccessful)
-            {
-                logger.Information("Command {@Command} executed successfully", command);
-            }
-
-            return res;
-        }
+        return res;
     }
 }

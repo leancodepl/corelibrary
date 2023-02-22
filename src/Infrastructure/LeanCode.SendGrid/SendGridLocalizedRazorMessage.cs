@@ -2,42 +2,41 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 
-namespace LeanCode.SendGrid
+namespace LeanCode.SendGrid;
+
+public class SendGridLocalizedRazorMessage : SendGridRazorMessage
 {
-    public class SendGridLocalizedRazorMessage : SendGridRazorMessage
+    [JsonIgnore]
+    internal CultureInfo Culture { get; private set; }
+
+    [JsonIgnore]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1819", Justification = "Required to preserve args convention.")]
+    public object[]? SubjectFormatArgs { get; set; }
+
+    public SendGridLocalizedRazorMessage(string cultureName)
     {
-        [JsonIgnore]
-        internal CultureInfo Culture { get; private set; }
+        Culture = CultureInfo.GetCultureInfo(cultureName);
+    }
 
-        [JsonIgnore]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1819", Justification = "Required to preserve args convention.")]
-        public object[]? SubjectFormatArgs { get; set; }
+    public SendGridLocalizedRazorMessage(CultureInfo cultureInfo)
+    {
+        Culture = cultureInfo.IsReadOnly ? cultureInfo : CultureInfo.ReadOnly(cultureInfo);
+    }
 
-        public SendGridLocalizedRazorMessage(string cultureName)
+    public void SetGlobalSubject(string subjectKey, object[]? subjectFormatArgs)
+    {
+        SetGlobalSubject(subjectKey);
+
+        SubjectFormatArgs = subjectFormatArgs;
+    }
+
+    internal override IEnumerable<string> GetTemplateNames(string templateBaseName)
+    {
+        for (var c = Culture; c != CultureInfo.InvariantCulture; c = c.Parent)
         {
-            Culture = CultureInfo.GetCultureInfo(cultureName);
+            yield return $"{templateBaseName}.{c.Name}";
         }
 
-        public SendGridLocalizedRazorMessage(CultureInfo cultureInfo)
-        {
-            Culture = cultureInfo.IsReadOnly ? cultureInfo : CultureInfo.ReadOnly(cultureInfo);
-        }
-
-        public void SetGlobalSubject(string subjectKey, object[]? subjectFormatArgs)
-        {
-            SetGlobalSubject(subjectKey);
-
-            SubjectFormatArgs = subjectFormatArgs;
-        }
-
-        internal override IEnumerable<string> GetTemplateNames(string templateBaseName)
-        {
-            for (var c = Culture; c != CultureInfo.InvariantCulture; c = c.Parent)
-            {
-                yield return $"{templateBaseName}.{c.Name}";
-            }
-
-            yield return templateBaseName;
-        }
+        yield return templateBaseName;
     }
 }

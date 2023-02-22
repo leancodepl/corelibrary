@@ -1,10 +1,9 @@
 using System;
 
-namespace LeanCode.CQRS.Security.Exceptions
+namespace LeanCode.CQRS.Security.Exceptions;
+
+public class UnauthenticatedException : Exception
 {
-    public class UnauthenticatedException : Exception
-    {
-        public UnauthenticatedException(string message)
-            : base(message) { }
-    }
+    public UnauthenticatedException(string message)
+        : base(message) { }
 }

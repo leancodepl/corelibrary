@@ -1,10 +1,9 @@
-namespace LeanCode
+namespace LeanCode;
+
+public static class UrlHelper
 {
-    public static class UrlHelper
+    public static string Concat(string a, string b)
     {
-        public static string Concat(string a, string b)
-        {
-            return a.TrimEnd('/') + '/' + b.TrimStart('/');
-        }
+        return a.TrimEnd('/') + '/' + b.TrimStart('/');
     }
 }

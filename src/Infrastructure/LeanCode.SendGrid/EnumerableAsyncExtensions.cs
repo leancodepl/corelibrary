@@ -1,43 +1,42 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace System.Linq
+namespace System.Linq;
+
+internal static class EnumerableAsyncExtensions
 {
-    internal static class EnumerableAsyncExtensions
+    internal static async Task<T> FirstOrDefaultAsync<T>(this IAsyncEnumerable<T> source)
     {
-        internal static async Task<T> FirstOrDefaultAsync<T>(this IAsyncEnumerable<T> source)
+        await foreach (var item in source)
         {
-            await foreach (var item in source)
-            {
-                return item;
-            }
-
-            return default!;
+            return item;
         }
 
-        internal static Task<T> FirstOrDefaultAsync<T>(this IAsyncEnumerable<T> source, Predicate<T> predicate)
-        {
-            return source.WhereAsync(predicate).FirstOrDefaultAsync();
-        }
+        return default!;
+    }
 
-        internal static async IAsyncEnumerable<TResult> SelectAsync<T, TResult>(
-            this IEnumerable<T> source, Func<T, Task<TResult>> selector)
-        {
-            foreach (var item in source)
-            {
-                yield return await selector(item);
-            }
-        }
+    internal static Task<T> FirstOrDefaultAsync<T>(this IAsyncEnumerable<T> source, Predicate<T> predicate)
+    {
+        return source.WhereAsync(predicate).FirstOrDefaultAsync();
+    }
 
-        internal static async IAsyncEnumerable<T> WhereAsync<T>(
-            this IAsyncEnumerable<T> source, Predicate<T> predicate)
+    internal static async IAsyncEnumerable<TResult> SelectAsync<T, TResult>(
+        this IEnumerable<T> source, Func<T, Task<TResult>> selector)
+    {
+        foreach (var item in source)
         {
-            await foreach (var item in source)
+            yield return await selector(item);
+        }
+    }
+
+    internal static async IAsyncEnumerable<T> WhereAsync<T>(
+        this IAsyncEnumerable<T> source, Predicate<T> predicate)
+    {
+        await foreach (var item in source)
+        {
+            if (predicate(item))
             {
-                if (predicate(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
     }

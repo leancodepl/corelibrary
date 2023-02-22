@@ -1,18 +1,17 @@
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
-namespace LeanCode.CodeAnalysis.Tests.TestSamples
-{
-    public abstract class BaseQuery : IQuery { }
+namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
-    [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class FirstQuery : BaseQuery { }
+public abstract class BaseQuery : IQuery { }
 
-    public class SecondQuery : FirstQuery { }
+[AuthorizeWhenHasAnyOf("Sample_permission")]
+public class FirstQuery : BaseQuery { }
 
-    [AuthorizeWhenHasAnyOf("Sample_permission")]
-    public class ThirdQuery : IQuery { }
+public class SecondQuery : FirstQuery { }
 
-    [AllowUnauthorized]
-    public class UnauthorizedQuery : IQuery { }
-}
+[AuthorizeWhenHasAnyOf("Sample_permission")]
+public class ThirdQuery : IQuery { }
+
+[AllowUnauthorized]
+public class UnauthorizedQuery : IQuery { }

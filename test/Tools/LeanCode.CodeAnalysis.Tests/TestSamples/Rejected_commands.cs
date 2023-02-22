@@ -1,8 +1,7 @@
 using LeanCode.Contracts;
 
-namespace LeanCode.CodeAnalysis.Tests.Data
-{
-    public class FirstRejectedCommand : ICommand { }
+namespace LeanCode.CodeAnalysis.Tests.Data;
 
-    public class SecondRejectedCommand : FirstRejectedCommand { }
-}
+public class FirstRejectedCommand : ICommand { }
+
+public class SecondRejectedCommand : FirstRejectedCommand { }

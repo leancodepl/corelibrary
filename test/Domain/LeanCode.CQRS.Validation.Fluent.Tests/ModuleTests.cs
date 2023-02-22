@@ -5,43 +5,42 @@ using LeanCode.Components;
 using LeanCode.Contracts;
 using Xunit;
 
-namespace LeanCode.CQRS.Validation.Fluent.Tests
+namespace LeanCode.CQRS.Validation.Fluent.Tests;
+
+public class ModuleTests
 {
-    public class ModuleTests
+    private readonly IContainer container;
+
+    public ModuleTests()
     {
-        private readonly IContainer container;
-
-        public ModuleTests()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new FluentValidationModule(TypesCatalog.Of<ModuleTests>()));
-            container = builder.Build();
-        }
-
-        [Fact]
-        public async Task Resolves_custom_ContextualValidator_as_ICommandValidator()
-        {
-            var validator = container.Resolve<ICommandValidator<object, CustomCommand>>();
-
-            var res = await validator.ValidateAsync(new object(), new CustomCommand { Field = 0 });
-
-            var err = Assert.Single(res.Errors);
-            Assert.Equal(10, err.ErrorCode);
-        }
+        var builder = new ContainerBuilder();
+        builder.RegisterModule(new FluentValidationModule(TypesCatalog.Of<ModuleTests>()));
+        container = builder.Build();
     }
 
-    public class CustomCommand : ICommand
+    [Fact]
+    public async Task Resolves_custom_ContextualValidator_as_ICommandValidator()
     {
-        public int Field { get; set; }
-    }
+        var validator = container.Resolve<ICommandValidator<object, CustomCommand>>();
 
-    public class CustomValidator : ContextualValidator<CustomCommand>
+        var res = await validator.ValidateAsync(new object(), new CustomCommand { Field = 0 });
+
+        var err = Assert.Single(res.Errors);
+        Assert.Equal(10, err.ErrorCode);
+    }
+}
+
+public class CustomCommand : ICommand
+{
+    public int Field { get; set; }
+}
+
+public class CustomValidator : ContextualValidator<CustomCommand>
+{
+    public CustomValidator()
     {
-        public CustomValidator()
-        {
-            RuleFor(c => c.Field)
-                .GreaterThan(5)
-                    .WithCode(10);
-        }
+        RuleFor(c => c.Field)
+            .GreaterThan(5)
+                .WithCode(10);
     }
 }

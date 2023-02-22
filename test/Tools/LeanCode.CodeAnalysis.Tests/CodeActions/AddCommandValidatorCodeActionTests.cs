@@ -6,14 +6,14 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 
-namespace LeanCode.CodeAnalysis.Tests.CodeActions
+namespace LeanCode.CodeAnalysis.Tests.CodeActions;
+
+public class AddCommandValidatorCodeActionTests : CodeFixVerifier
 {
-    public class AddCommandValidatorCodeActionTests : CodeFixVerifier
+    [Fact]
+    public async Task Creates_validator()
     {
-        [Fact]
-        public async Task Creates_validator()
-        {
-            var source = @"
+        var source = @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -29,52 +29,7 @@ namespace Test
     }
 }";
 
-            var expected = @"
-using System.Threading.Tasks;
-using LeanCode.Contracts;
-using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
-
-namespace Test
-{
-    public class Context { }
-    public class Command : ICommand { }
-
-    public class CommandCV : ContextualValidator<Command>
-    {
-        public CommandCV()
-        {
-        }
-    }
-
-    public class Handler : ICommandHandler<Context, Command>
-    {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
-    }
-}";
-            var fixes = new[] { "Add CommandValidator" };
-            await VerifyCodeFix(source, expected, fixes, 0);
-        }
-
-        [Fact]
-        public async Task Creates_validator_and_namespace_if_missing()
-        {
-            var source = @"
-using System.Threading.Tasks;
-using LeanCode.Contracts;
-using LeanCode.CQRS.Execution;
-
-namespace Test
-{
-    public class Context { }
-    public class Command : ICommand { }
-    public class Handler : ICommandHandler<Context, Command>
-    {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
-    }
-}";
-
-            var expected = @"
+        var expected = @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -97,18 +52,62 @@ namespace Test
         public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
     }
 }";
-            var fixes = new[] { "Add CommandValidator" };
-            await VerifyCodeFix(source, expected, fixes, 0);
-        }
+        var fixes = new[] { "Add CommandValidator" };
+        await VerifyCodeFix(source, expected, fixes, 0);
+    }
 
-        protected override CodeFixProvider GetCodeFixProvider()
-        {
-            return new AddCommandValidatorCodeFixProvider();
-        }
+    [Fact]
+    public async Task Creates_validator_and_namespace_if_missing()
+    {
+        var source = @"
+using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.CQRS.Execution;
 
-        protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
+namespace Test
+{
+    public class Context { }
+    public class Command : ICommand { }
+    public class Handler : ICommandHandler<Context, Command>
+    {
+        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+    }
+}";
+
+        var expected = @"
+using System.Threading.Tasks;
+using LeanCode.Contracts;
+using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Validation.Fluent;
+
+namespace Test
+{
+    public class Context { }
+    public class Command : ICommand { }
+
+    public class CommandCV : ContextualValidator<Command>
+    {
+        public CommandCV()
         {
-            return new SuggestCommandsHaveValidators();
         }
+    }
+
+    public class Handler : ICommandHandler<Context, Command>
+    {
+        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+    }
+}";
+        var fixes = new[] { "Add CommandValidator" };
+        await VerifyCodeFix(source, expected, fixes, 0);
+    }
+
+    protected override CodeFixProvider GetCodeFixProvider()
+    {
+        return new AddCommandValidatorCodeFixProvider();
+    }
+
+    protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
+    {
+        return new SuggestCommandsHaveValidators();
     }
 }

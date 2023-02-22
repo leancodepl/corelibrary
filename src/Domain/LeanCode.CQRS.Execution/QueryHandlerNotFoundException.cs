@@ -1,15 +1,14 @@
 using System;
 
-namespace LeanCode.CQRS.Execution
-{
-    public class QueryHandlerNotFoundException : Exception
-    {
-        public Type QueryType { get; }
+namespace LeanCode.CQRS.Execution;
 
-        public QueryHandlerNotFoundException(Type queryType)
-            : base($"Cannot find handler for query {queryType.Name}.")
-        {
-            QueryType = queryType;
-        }
+public class QueryHandlerNotFoundException : Exception
+{
+    public Type QueryType { get; }
+
+    public QueryHandlerNotFoundException(Type queryType)
+        : base($"Cannot find handler for query {queryType.Name}.")
+    {
+        QueryType = queryType;
     }
 }

@@ -1,27 +1,26 @@
 using System;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests
+namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests;
+
+internal sealed class SampleEvent1 : IDomainEvent
 {
-    internal sealed class SampleEvent1 : IDomainEvent
-    {
-        public Guid Id { get; }
-        public DateTime DateOccurred { get; }
+    public Guid Id { get; }
+    public DateTime DateOccurred { get; }
 
-        public SampleEvent1(Guid id)
-        {
-            Id = id;
-        }
+    public SampleEvent1(Guid id)
+    {
+        Id = id;
     }
+}
 
-    internal sealed class SampleEvent2 : IDomainEvent
+internal sealed class SampleEvent2 : IDomainEvent
+{
+    public Guid Id { get; }
+    public DateTime DateOccurred { get; }
+
+    public SampleEvent2(Guid id)
     {
-        public Guid Id { get; }
-        public DateTime DateOccurred { get; }
-
-        public SampleEvent2(Guid id)
-        {
-            Id = id;
-        }
+        Id = id;
     }
 }

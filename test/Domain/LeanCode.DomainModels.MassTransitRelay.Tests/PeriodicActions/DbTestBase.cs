@@ -4,38 +4,37 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests.PeriodicActions
+namespace LeanCode.DomainModels.MassTransitRelay.Tests.PeriodicActions;
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "Not needed for tests.")]
+public abstract class DbTestBase : IAsyncLifetime, IDisposable
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "Not needed for tests.")]
-    public abstract class DbTestBase : IAsyncLifetime, IDisposable
+    protected TestDbContext DbContext { get; }
+    private readonly DbConnection dbConnection;
+
+    protected DbTestBase()
     {
-        protected TestDbContext DbContext { get; }
-        private readonly DbConnection dbConnection;
+        dbConnection = new SqliteConnection("Filename=:memory:");
+        DbContext = TestDbContext.Create(dbConnection);
+    }
 
-        protected DbTestBase()
-        {
-            dbConnection = new SqliteConnection("Filename=:memory:");
-            DbContext = TestDbContext.Create(dbConnection);
-        }
+    public async Task InitializeAsync()
+    {
+        // harness started at test level because
+        // we need to have different consumers in each test
+        // await harness.Start();
 
-        public async Task InitializeAsync()
-        {
-            // harness started at test level because
-            // we need to have different consumers in each test
-            // await harness.Start();
+        await dbConnection.OpenAsync();
+        await DbContext.Database.EnsureCreatedAsync();
+    }
 
-            await dbConnection.OpenAsync();
-            await DbContext.Database.EnsureCreatedAsync();
-        }
+    public async Task DisposeAsync()
+    {
+        await dbConnection.CloseAsync();
+        await dbConnection.DisposeAsync();
+    }
 
-        public async Task DisposeAsync()
-        {
-            await dbConnection.CloseAsync();
-            await dbConnection.DisposeAsync();
-        }
-
-        public void Dispose()
-        {
-        }
+    public void Dispose()
+    {
     }
 }

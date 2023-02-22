@@ -4,84 +4,83 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LeanCode.Serialization.Tests
+namespace LeanCode.Serialization.Tests;
+
+public class JsonContentTests
 {
-    public class JsonContentTests
+    private static readonly JsonSerializerOptions GeneralSerializerOptions = new JsonSerializerOptions();
+    private static readonly Payload SamplePayload = new Payload { Data = "abcd1234" };
+    private static readonly string SampleJson = ToJson(SamplePayload);
+
+    [Fact]
+    public async Task Correctly_serializes_the_payload_if_read_as_string()
     {
-        private static readonly JsonSerializerOptions GeneralSerializerOptions = new JsonSerializerOptions();
-        private static readonly Payload SamplePayload = new Payload { Data = "abcd1234" };
-        private static readonly string SampleJson = ToJson(SamplePayload);
+        using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
-        [Fact]
-        public async Task Correctly_serializes_the_payload_if_read_as_string()
-        {
-            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
+        var res = await content.ReadAsStringAsync();
 
-            var res = await content.ReadAsStringAsync();
+        Assert.Equal(SampleJson, res);
+    }
 
-            Assert.Equal(SampleJson, res);
-        }
+    [Fact]
+    public async Task Correctly_serializes_the_payload_if_read_as_stream()
+    {
+        using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
+        await using var res = await content.ReadAsStreamAsync();
 
-        [Fact]
-        public async Task Correctly_serializes_the_payload_if_read_as_stream()
-        {
-            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
-            await using var res = await content.ReadAsStreamAsync();
+        var data = new byte[SampleJson.Length];
+        var read = await res.ReadAsync(data);
 
-            var data = new byte[SampleJson.Length];
-            var read = await res.ReadAsync(data);
+        Assert.Equal(data.Length, read);
+        Assert.Equal(Encoding.UTF8.GetBytes(SampleJson), data);
+    }
 
-            Assert.Equal(data.Length, read);
-            Assert.Equal(Encoding.UTF8.GetBytes(SampleJson), data);
-        }
+    [Fact]
+    public async Task Correctly_serializes_the_payload_if_read_as_bytearray()
+    {
+        using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
-        [Fact]
-        public async Task Correctly_serializes_the_payload_if_read_as_bytearray()
-        {
-            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
+        var res = await content.ReadAsByteArrayAsync();
 
-            var res = await content.ReadAsByteArrayAsync();
+        Assert.Equal(SampleJson.Length, res.Length);
+        Assert.Equal(Encoding.UTF8.GetBytes(SampleJson), res);
+    }
 
-            Assert.Equal(SampleJson.Length, res.Length);
-            Assert.Equal(Encoding.UTF8.GetBytes(SampleJson), res);
-        }
+    [Fact]
+    public async Task Respects_the_serializer_options()
+    {
+        var opts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        using var content = JsonContent.Create(SamplePayload, options: opts);
 
-        [Fact]
-        public async Task Respects_the_serializer_options()
-        {
-            var opts = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            using var content = JsonContent.Create(SamplePayload, options: opts);
+        var res = await content.ReadAsStringAsync();
 
-            var res = await content.ReadAsStringAsync();
+        Assert.Equal(ToJson(SamplePayload, "data"), res);
+    }
 
-            Assert.Equal(ToJson(SamplePayload, "data"), res);
-        }
+    [Fact]
+    public void Has_correct_content_type()
+    {
+        using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
-        [Fact]
-        public void Has_correct_content_type()
-        {
-            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
+        Assert.Equal("application/json", content.Headers.ContentType.MediaType);
+        Assert.Equal("utf-8", content.Headers.ContentType.CharSet);
+    }
 
-            Assert.Equal("application/json", content.Headers.ContentType.MediaType);
-            Assert.Equal("utf-8", content.Headers.ContentType.CharSet);
-        }
+    [Fact]
+    public void Forces_chunk_encoding()
+    {
+        using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
 
-        [Fact]
-        public void Forces_chunk_encoding()
-        {
-            using var content = JsonContent.Create(SamplePayload, options: GeneralSerializerOptions);
+        Assert.Null(content.Headers.ContentLength);
+    }
 
-            Assert.Null(content.Headers.ContentLength);
-        }
+    private static string ToJson(Payload payload, string fieldName = nameof(Payload.Data))
+    {
+        return @$"{{""{fieldName}"":""{payload.Data}""}}";
+    }
 
-        private static string ToJson(Payload payload, string fieldName = nameof(Payload.Data))
-        {
-            return @$"{{""{fieldName}"":""{payload.Data}""}}";
-        }
-
-        internal class Payload
-        {
-            public string Data { get; set; }
-        }
+    internal class Payload
+    {
+        public string Data { get; set; }
     }
 }

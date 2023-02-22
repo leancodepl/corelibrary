@@ -1,25 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.Firebase.FCM.SqlServer
+namespace LeanCode.Firebase.FCM.SqlServer;
+
+public class MsSqlPushNotificationTokenEntity
 {
-    public class MsSqlPushNotificationTokenEntity
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Token { get; set; } = "";
+    public DateTime DateCreated { get; set; }
+
+    public static void Configure(ModelBuilder builder)
     {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public string Token { get; set; } = "";
-        public DateTime DateCreated { get; set; }
-
-        public static void Configure(ModelBuilder builder)
+        builder.Entity<MsSqlPushNotificationTokenEntity>(c =>
         {
-            builder.Entity<MsSqlPushNotificationTokenEntity>(c =>
-            {
-                c.HasKey(e => e.Id).IsClustered(false);
-                c.HasIndex(e => e.UserId).IsClustered(true);
-                c.HasIndex(e => e.Token).IsUnique(true);
+            c.HasKey(e => e.Id).IsClustered(false);
+            c.HasIndex(e => e.UserId).IsClustered(true);
+            c.HasIndex(e => e.Token).IsUnique(true);
 
-                c.Property(e => e.Id).ValueGeneratedNever();
-                c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
-            });
-        }
+            c.Property(e => e.Id).ValueGeneratedNever();
+            c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
+        });
     }
 }

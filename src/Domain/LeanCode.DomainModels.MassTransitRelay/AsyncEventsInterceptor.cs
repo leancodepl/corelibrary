@@ -4,42 +4,41 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.MassTransitRelay
+namespace LeanCode.DomainModels.MassTransitRelay;
+
+[SuppressMessage("?", "CA1822", Justification = "Forcing these to be instance methods makes for better design.")]
+public sealed class AsyncEventsInterceptor
 {
-    [SuppressMessage("?", "CA1822", Justification = "Forcing these to be instance methods makes for better design.")]
-    public sealed class AsyncEventsInterceptor
+    private static readonly EventInterceptor Interceptor = new EventInterceptor();
+
+    public void Configure() => DomainEvents.SetInterceptor(Interceptor);
+
+    public void Prepare() =>
+        Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
+
+    public ConcurrentQueue<IDomainEvent>? CaptureQueue()
     {
-        private static readonly EventInterceptor Interceptor = new EventInterceptor();
+        var result = Interceptor.Storage.Value;
+        Interceptor.Storage.Value = null;
+        return result;
+    }
 
-        public void Configure() => DomainEvents.SetInterceptor(Interceptor);
+    public ConcurrentQueue<IDomainEvent>? PeekQueue() => Interceptor.Storage.Value;
 
-        public void Prepare() =>
-            Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
+    private sealed class EventInterceptor : IDomainEventInterceptor
+    {
+        public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; }
+            = new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
 
-        public ConcurrentQueue<IDomainEvent>? CaptureQueue()
+        void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
         {
-            var result = Interceptor.Storage.Value;
-            Interceptor.Storage.Value = null;
-            return result;
-        }
-
-        public ConcurrentQueue<IDomainEvent>? PeekQueue() => Interceptor.Storage.Value;
-
-        private sealed class EventInterceptor : IDomainEventInterceptor
-        {
-            public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; }
-                = new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
-
-            void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
+            if (Storage.Value is null)
             {
-                if (Storage.Value is null)
-                {
-                    throw new InvalidOperationException(
-                        "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
-                }
-
-                Storage.Value.Enqueue(domainEvent);
+                throw new InvalidOperationException(
+                    "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
             }
+
+            Storage.Value.Enqueue(domainEvent);
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Outbox
+namespace LeanCode.DomainModels.MassTransitRelay.Outbox;
+
+public interface IOutboxContext
 {
-    public interface IOutboxContext
-    {
-        DbSet<RaisedEvent> RaisedEvents { get; }
-        DbContext Self { get; }
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    }
+    DbSet<RaisedEvent> RaisedEvents { get; }
+    DbContext Self { get; }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

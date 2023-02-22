@@ -1,7 +1,6 @@
-namespace LeanCode.ExternalIdentityProviders.Apple
+namespace LeanCode.ExternalIdentityProviders.Apple;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string GrantType = "apple";
-    }
+    public const string GrantType = "apple";
 }

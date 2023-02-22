@@ -1,10 +1,9 @@
 using System;
 
-namespace LeanCode.Time
+namespace LeanCode.Time;
+
+public interface ITimeProvider
 {
-    public interface ITimeProvider
-    {
-        DateTime Now { get; }
-        DateTimeOffset NowWithOffset { get; }
-    }
+    DateTime Now { get; }
+    DateTimeOffset NowWithOffset { get; }
 }

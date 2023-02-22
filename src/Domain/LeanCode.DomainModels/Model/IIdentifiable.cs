@@ -1,8 +1,7 @@
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.Model;
+
+public interface IIdentifiable<TIdentity>
+    where TIdentity : notnull
 {
-    public interface IIdentifiable<TIdentity>
-        where TIdentity : notnull
-    {
-        TIdentity Id { get; }
-    }
+    TIdentity Id { get; }
 }

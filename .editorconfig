@@ -73,6 +73,8 @@ csharp_style_pattern_local_over_anonymous_function                       = true 
 csharp_style_throw_expression                                            = true : suggestion
 csharp_style_conditional_delegate_call                                   = true : warning
 
+csharp_style_namespace_declarations                                      = file_scoped : warning
+
 csharp_prefer_braces                                                     = true : warning # I won't allow changing that :P
 
 dotnet_sort_system_directives_first                                      = true

@@ -6,87 +6,86 @@ using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.Firebase.FCM.Tests
+namespace LeanCode.Firebase.FCM.Tests;
+
+public class FCMClientTests
 {
-    public class FCMClientTests
+    public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
+    public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
+
+    private static readonly Guid UserId = Guid.NewGuid();
+
+    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(Key));
+
+    private readonly StubStore store;
+    private readonly FCMClient client;
+
+    public FCMClientTests()
     {
-        public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
-        public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
+        store = new StubStore(UserId, Token);
+        client = new FCMClient(Messaging, store, Substitute.For<IStringLocalizer>());
+    }
 
-        private static readonly Guid UserId = Guid.NewGuid();
-
-        private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(Key));
-
-        private readonly StubStore store;
-        private readonly FCMClient client;
-
-        public FCMClientTests()
+    [FCMFact]
+    public async Task Sends_single_message_to_the_user()
+    {
+        var message = new MulticastMessage
         {
-            store = new StubStore(UserId, Token);
-            client = new FCMClient(Messaging, store, Substitute.For<IStringLocalizer>());
-        }
-
-        [FCMFact]
-        public async Task Sends_single_message_to_the_user()
-        {
-            var message = new MulticastMessage
+            Notification = new Notification
             {
-                Notification = new Notification
-                {
-                    Title = "Test title",
-                    Body = "Test body",
-                },
-            };
+                Title = "Test title",
+                Body = "Test body",
+            },
+        };
 
-            await client.SendToUserAsync(UserId, message);
-        }
+        await client.SendToUserAsync(UserId, message);
+    }
 
-        [FCMFact]
-        public async Task Sends_single_message_to_multiple_users()
+    [FCMFact]
+    public async Task Sends_single_message_to_multiple_users()
+    {
+        var message = new MulticastMessage
         {
-            var message = new MulticastMessage
+            Notification = new Notification
             {
-                Notification = new Notification
-                {
-                    Title = "Test title",
-                    Body = "Test body",
-                },
-            };
+                Title = "Test title",
+                Body = "Test body",
+            },
+        };
 
-            await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
-        }
+        await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
+    }
 
-        [FCMFact]
-        public async Task Does_nothing_when_user_does_not_have_tokens()
+    [FCMFact]
+    public async Task Does_nothing_when_user_does_not_have_tokens()
+    {
+        var message = new MulticastMessage
         {
-            var message = new MulticastMessage
+            Notification = new Notification
             {
-                Notification = new Notification
-                {
-                    Title = "Test title",
-                    Body = "Test body",
-                },
-            };
+                Title = "Test title",
+                Body = "Test body",
+            },
+        };
 
-            await client.SendToUserAsync(Guid.NewGuid(), message);
-        }
+        await client.SendToUserAsync(Guid.NewGuid(), message);
+    }
 
-        [FCMFact]
-        public async Task Gets_user_tokens_when_sending_the_message()
+    [FCMFact]
+    public async Task Gets_user_tokens_when_sending_the_message()
+    {
+        var message = new MulticastMessage
         {
-            var message = new MulticastMessage
+            Notification = new Notification
             {
-                Notification = new Notification
-                {
-                    Title = "Test title",
-                    Body = "Test body",
-                },
-            };
+                Title = "Test title",
+                Body = "Test body",
+            },
+        };
 
-            await client.SendToUserAsync(UserId, message);
+        await client.SendToUserAsync(UserId, message);
 
-            var token = Assert.Single(message.Tokens);
-            Assert.Equal(Token, token);
-        }
+        var token = Assert.Single(message.Tokens);
+        Assert.Equal(Token, token);
     }
 }

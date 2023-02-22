@@ -1,10 +1,9 @@
 using System;
 
-namespace LeanCode.DomainModels.Model
+namespace LeanCode.DomainModels.Model;
+
+public interface IDomainEvent
 {
-    public interface IDomainEvent
-    {
-        Guid Id { get; }
-        DateTime DateOccurred { get; }
-    }
+    Guid Id { get; }
+    DateTime DateOccurred { get; }
 }

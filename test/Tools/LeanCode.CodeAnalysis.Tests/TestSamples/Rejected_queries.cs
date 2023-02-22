@@ -1,8 +1,7 @@
 using LeanCode.Contracts;
 
-namespace LeanCode.CodeAnalysis.Tests.TestSamples
-{
-    public class FirstRejectedQuery : IQuery { }
+namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
-    public class SecondRejectedQuery : FirstRejectedQuery { }
-}
+public class FirstRejectedQuery : IQuery { }
+
+public class SecondRejectedQuery : FirstRejectedQuery { }

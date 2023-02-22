@@ -1,13 +1,12 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
 
-namespace LeanCode.PeriodicService
+namespace LeanCode.PeriodicService;
+
+public interface IPeriodicAction
 {
-    public interface IPeriodicAction
-    {
-        CronExpression When { get; }
-        bool SkipFirstExecution { get; }
-        Task ExecuteAsync(CancellationToken stoppingToken);
-    }
+    CronExpression When { get; }
+    bool SkipFirstExecution { get; }
+    Task ExecuteAsync(CancellationToken stoppingToken);
 }

@@ -2,42 +2,41 @@ using System;
 using Microsoft.AspNetCore.Razor.Language.CodeGeneration;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
 
-namespace LeanCode.ViewRenderer.Razor.Extensions
+namespace LeanCode.ViewRenderer.Razor.Extensions;
+
+internal class LayoutNode : ExtensionIntermediateNode
 {
-    internal class LayoutNode : ExtensionIntermediateNode
+    public const string LayoutFieldName = "___Layout";
+
+    public override IntermediateNodeCollection Children => IntermediateNodeCollection.ReadOnly;
+
+    public string? LayoutName { get; }
+
+    public LayoutNode(string? layoutName)
     {
-        public const string LayoutFieldName = "___Layout";
+        LayoutName = layoutName;
+    }
 
-        public override IntermediateNodeCollection Children => IntermediateNodeCollection.ReadOnly;
+    public override void Accept(IntermediateNodeVisitor visitor) =>
+        AcceptExtensionNode(this, visitor);
 
-        public string? LayoutName { get; }
-
-        public LayoutNode(string? layoutName)
+    public override void WriteNode(CodeTarget target, CodeRenderingContext context)
+    {
+        if (string.IsNullOrEmpty(LayoutName))
         {
-            LayoutName = layoutName;
+            context.CodeWriter
+                .Write("public static readonly string ")
+                .Write(LayoutFieldName)
+                .WriteLine(" = null;");
         }
-
-        public override void Accept(IntermediateNodeVisitor visitor) =>
-            AcceptExtensionNode(this, visitor);
-
-        public override void WriteNode(CodeTarget target, CodeRenderingContext context)
+        else
         {
-            if (string.IsNullOrEmpty(LayoutName))
-            {
-                context.CodeWriter
-                    .Write("public static readonly string ")
-                    .Write(LayoutFieldName)
-                    .WriteLine(" = null;");
-            }
-            else
-            {
-                context.CodeWriter
-                    .Write("public static readonly string ")
-                    .Write(LayoutFieldName)
-                    .Write(" = \"")
-                    .Write(LayoutName)
-                    .WriteLine("\";");
-            }
+            context.CodeWriter
+                .Write("public static readonly string ")
+                .Write(LayoutFieldName)
+                .Write(" = \"")
+                .Write(LayoutName)
+                .WriteLine("\";");
         }
     }
 }

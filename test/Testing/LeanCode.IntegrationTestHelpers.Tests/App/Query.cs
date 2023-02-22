@@ -4,25 +4,24 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeanCode.IntegrationTestHelpers.Tests.App
+namespace LeanCode.IntegrationTestHelpers.Tests.App;
+
+public class Query : IQuery<string?>
 {
-    public class Query : IQuery<string?>
+    public int Id { get; set; }
+}
+
+public class QueryQH : IQueryHandler<Context, Query, string?>
+{
+    private readonly TestDbContext dbContext;
+
+    public QueryQH(TestDbContext dbContext)
     {
-        public int Id { get; set; }
+        this.dbContext = dbContext;
     }
 
-    public class QueryQH : IQueryHandler<Context, Query, string?>
+    public Task<string?> ExecuteAsync(Context context, Query query)
     {
-        private readonly TestDbContext dbContext;
-
-        public QueryQH(TestDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
-
-        public Task<string?> ExecuteAsync(Context context, Query query)
-        {
-            return dbContext.Entities.Where(e => e.Id == query.Id).Select(e => e.Data).FirstOrDefaultAsync();
-        }
+        return dbContext.Entities.Where(e => e.Id == query.Id).Select(e => e.Data).FirstOrDefaultAsync();
     }
 }

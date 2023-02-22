@@ -8,79 +8,78 @@ using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware
+namespace LeanCode.DomainModels.MassTransitRelay.Tests.Middleware;
+
+[Collection("EventsInterceptor")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
+public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
 {
-    [Collection("EventsInterceptor")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
-    public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
+    private readonly IContainer container;
+    private readonly InMemoryTestHarness harness;
+
+    public EventsPublisherFilterTests()
     {
-        private readonly IContainer container;
-        private readonly InMemoryTestHarness harness;
+        var collection = new ServiceCollection();
+        collection.AddMassTransitInMemoryTestHarness();
 
-        public EventsPublisherFilterTests()
+        var factory = new AutofacServiceProviderFactory();
+        var builder = factory.CreateBuilder(collection);
+        builder.RegisterType<AsyncEventsInterceptor>().AsSelf().OnActivated(a => a.Instance.Configure()).SingleInstance();
+
+        container = builder.Build();
+        harness = container.Resolve<InMemoryTestHarness>();
+
+        harness.TestTimeout = TimeSpan.FromSeconds(1);
+        harness.OnConfigureInMemoryBus += cfg =>
         {
-            var collection = new ServiceCollection();
-            collection.AddMassTransitInMemoryTestHarness();
+            cfg.UseDomainEventsPublishing(container.Resolve<IServiceProvider>());
+        };
+    }
 
-            var factory = new AutofacServiceProviderFactory();
-            var builder = factory.CreateBuilder(collection);
-            builder.RegisterType<AsyncEventsInterceptor>().AsSelf().OnActivated(a => a.Instance.Configure()).SingleInstance();
+    [Fact]
+    public async Task Publishes_event_to_the_bus()
+    {
+        var consumerHarness = harness.Consumer<Consumer>();
+        await harness.Start();
 
-            container = builder.Build();
-            harness = container.Resolve<InMemoryTestHarness>();
+        await harness.Bus.Publish(new TestMsg());
+        Assert.True(await consumerHarness.Consumed.Any<TestMsg>());
 
-            harness.TestTimeout = TimeSpan.FromSeconds(1);
-            harness.OnConfigureInMemoryBus += cfg =>
-            {
-                cfg.UseDomainEventsPublishing(container.Resolve<IServiceProvider>());
-            };
-        }
+        var evt = Assert.Single(harness.Published.Select<TestEvent>());
+        Assert.Equal(Consumer.Event, evt.MessageObject);
+    }
 
-        [Fact]
-        public async Task Publishes_event_to_the_bus()
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync()
+    {
+        await harness.Stop();
+        await container.DisposeAsync();
+    }
+
+    public void Dispose()
+    {
+        harness.Dispose();
+        container.Dispose();
+    }
+
+    private class TestMsg { }
+
+    private class TestEvent : IDomainEvent
+    {
+        public Guid Id { get; set; }
+
+        public DateTime DateOccurred { get; set; }
+    }
+
+    private class Consumer : IConsumer<TestMsg>
+    {
+        public static readonly TestEvent Event = new() { Id = Guid.NewGuid() };
+
+        public Task Consume(ConsumeContext<TestMsg> context)
         {
-            var consumerHarness = harness.Consumer<Consumer>();
-            await harness.Start();
-
-            await harness.Bus.Publish(new TestMsg());
-            Assert.True(await consumerHarness.Consumed.Any<TestMsg>());
-
-            var evt = Assert.Single(harness.Published.Select<TestEvent>());
-            Assert.Equal(Consumer.Event, evt.MessageObject);
-        }
-
-        public Task InitializeAsync() => Task.CompletedTask;
-
-        public async Task DisposeAsync()
-        {
-            await harness.Stop();
-            await container.DisposeAsync();
-        }
-
-        public void Dispose()
-        {
-            harness.Dispose();
-            container.Dispose();
-        }
-
-        private class TestMsg { }
-
-        private class TestEvent : IDomainEvent
-        {
-            public Guid Id { get; set; }
-
-            public DateTime DateOccurred { get; set; }
-        }
-
-        private class Consumer : IConsumer<TestMsg>
-        {
-            public static readonly TestEvent Event = new() { Id = Guid.NewGuid() };
-
-            public Task Consume(ConsumeContext<TestMsg> context)
-            {
-                DomainEvents.Raise(Event);
-                return Task.CompletedTask;
-            }
+            DomainEvents.Raise(Event);
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,4 +1,3 @@
-namespace LeanCode.DomainModels.Model
-{
-    public abstract record ValueObject;
-}
+namespace LeanCode.DomainModels.Model;
+
+public abstract record ValueObject;

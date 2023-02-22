@@ -1,12 +1,11 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 
-namespace LeanCode.Benchmarks
+namespace LeanCode.Benchmarks;
+
+internal class Program
 {
-    internal class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
-        {
-            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-        }
+        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
     }
 }

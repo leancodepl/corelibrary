@@ -2,19 +2,18 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using SendGrid.Helpers.Mail;
 
-namespace LeanCode.SendGrid
+namespace LeanCode.SendGrid;
+
+public class SendGridRazorMessage : SendGridMessage
 {
-    public class SendGridRazorMessage : SendGridMessage
+    [JsonIgnore]
+    public object? PlainTextContentModel { get; set; }
+
+    [JsonIgnore]
+    public object? HtmlContentModel { get; set; }
+
+    internal virtual IEnumerable<string> GetTemplateNames(string templateBaseName)
     {
-        [JsonIgnore]
-        public object? PlainTextContentModel { get; set; }
-
-        [JsonIgnore]
-        public object? HtmlContentModel { get; set; }
-
-        internal virtual IEnumerable<string> GetTemplateNames(string templateBaseName)
-        {
-            yield return templateBaseName;
-        }
+        yield return templateBaseName;
     }
 }

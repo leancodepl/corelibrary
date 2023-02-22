@@ -1,10 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LeanCode.SmsSender
+namespace LeanCode.SmsSender;
+
+public interface ISmsSender
 {
-    public interface ISmsSender
-    {
-        Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default);
-    }
+    Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default);
 }

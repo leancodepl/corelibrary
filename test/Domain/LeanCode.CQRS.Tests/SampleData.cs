@@ -10,216 +10,215 @@ using LeanCode.CQRS.Validation;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
 
-namespace LeanCode.CQRS.Tests
+namespace LeanCode.CQRS.Tests;
+
+public class AppContext : IPipelineContext
 {
-    public class AppContext : IPipelineContext
+    IPipelineScope IPipelineContext.Scope { get; set; }
+    public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
+}
+
+public class SampleCommand : ICommand, IAuthorizerData { }
+
+public class SampleQuery : IQuery<object>, IAuthorizerData { }
+
+public class SampleOperation : IOperation<object>, IAuthorizerData { }
+
+public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
+{
+    public static readonly AsyncLocal<SampleCommandHandler> LastInstance = new();
+
+    public AppContext Context { get; private set; }
+    public SampleCommand Command { get; private set; }
+
+    public SampleCommandHandler()
     {
-        IPipelineScope IPipelineContext.Scope { get; set; }
-        public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
+        // Hacky! :D
+        LastInstance.Value = this;
     }
 
-    public class SampleCommand : ICommand, IAuthorizerData { }
-
-    public class SampleQuery : IQuery<object>, IAuthorizerData { }
-
-    public class SampleOperation : IOperation<object>, IAuthorizerData { }
-
-    public class SampleCommandHandler : ICommandHandler<AppContext, SampleCommand>
+    public Task ExecuteAsync(AppContext context, SampleCommand command)
     {
-        public static readonly AsyncLocal<SampleCommandHandler> LastInstance = new();
+        Context = context;
+        Command = command;
 
-        public AppContext Context { get; private set; }
-        public SampleCommand Command { get; private set; }
+        return Task.CompletedTask;
+    }
+}
 
-        public SampleCommandHandler()
-        {
-            // Hacky! :D
-            LastInstance.Value = this;
-        }
+public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, object>
+{
+    public static readonly AsyncLocal<SampleQueryHandler> LastInstance = new();
 
-        public Task ExecuteAsync(AppContext context, SampleCommand command)
-        {
-            Context = context;
-            Command = command;
+    public AppContext Context { get; private set; }
+    public SampleQuery Query { get; private set; }
+    public object Result { get; set; }
 
-            return Task.CompletedTask;
-        }
+    public SampleQueryHandler()
+    {
+        LastInstance.Value = this;
     }
 
-    public class SampleQueryHandler : IQueryHandler<AppContext, SampleQuery, object>
+    public Task<object> ExecuteAsync(AppContext context, SampleQuery query)
     {
-        public static readonly AsyncLocal<SampleQueryHandler> LastInstance = new();
+        Context = context;
+        Query = query;
 
-        public AppContext Context { get; private set; }
-        public SampleQuery Query { get; private set; }
-        public object Result { get; set; }
+        return Task.FromResult(Result);
+    }
+}
 
-        public SampleQueryHandler()
-        {
-            LastInstance.Value = this;
-        }
+public class SampleOperationHandler : IOperationHandler<AppContext, SampleOperation, object>
+{
+    public static readonly AsyncLocal<SampleOperationHandler> LastInstance = new();
 
-        public Task<object> ExecuteAsync(AppContext context, SampleQuery query)
-        {
-            Context = context;
-            Query = query;
+    public AppContext Context { get; private set; }
+    public SampleOperation Operation { get; private set; }
+    public object Result { get; set; }
 
-            return Task.FromResult(Result);
-        }
+    public SampleOperationHandler()
+    {
+        LastInstance.Value = this;
     }
 
-    public class SampleOperationHandler : IOperationHandler<AppContext, SampleOperation, object>
+    public Task<object> ExecuteAsync(AppContext context, SampleOperation operation)
     {
-        public static readonly AsyncLocal<SampleOperationHandler> LastInstance = new();
+        Context = context;
+        Operation = operation;
 
-        public AppContext Context { get; private set; }
-        public SampleOperation Operation { get; private set; }
-        public object Result { get; set; }
+        return Task.FromResult(Result);
+    }
+}
 
-        public SampleOperationHandler()
-        {
-            LastInstance.Value = this;
-        }
+public class NoCHCommand : ICommand { }
+public class NoQHQuery : IQuery<object> { }
+public class NoOHOperation : IOperation<object> { }
 
-        public Task<object> ExecuteAsync(AppContext context, SampleOperation operation)
-        {
-            Context = context;
-            Operation = operation;
+[SuppressMessage("?", "CA1040", Justification = "Test interface.")]
+public interface IHasSampleAuthorizer { }
 
-            return Task.FromResult(Result);
-        }
+[SuppressMessage("?", "CA1040", Justification = "Test interface.")]
+public interface IAuthorizerData { }
+
+public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, IHasSampleAuthorizer
+{
+    public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new();
+
+    public AppContext AppContext { get; set; }
+
+    public IAuthorizerData Object { get; private set; }
+    public object Data { get; private set; }
+    public bool Result { get; set; }
+
+    public SampleAuthorizer()
+    {
+        LastInstance.Value = this;
     }
 
-    public class NoCHCommand : ICommand { }
-    public class NoQHQuery : IQuery<object> { }
-    public class NoOHOperation : IOperation<object> { }
-
-    [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
-    public interface IHasSampleAuthorizer { }
-
-    [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
-    public interface IAuthorizerData { }
-
-    public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, object>, IHasSampleAuthorizer
+    protected override Task<bool> CheckIfAuthorizedAsync(
+        AppContext appContext,
+        IAuthorizerData obj,
+        object customData)
     {
-        public static readonly AsyncLocal<SampleAuthorizer> LastInstance = new();
+        AppContext = appContext;
+        Object = obj;
+        Data = customData;
+        return Task.FromResult(Result);
+    }
+}
 
-        public AppContext AppContext { get; set; }
+public class SampleEvent : IDomainEvent
+{
+    public Guid Id { get; } = Guid.NewGuid();
+    public DateTime DateOccurred { get; } = DateTime.UtcNow;
+}
 
-        public IAuthorizerData Object { get; private set; }
-        public object Data { get; private set; }
-        public bool Result { get; set; }
+public class SampleEvent2 : IDomainEvent
+{
+    public Guid Id { get; } = Guid.NewGuid();
+    public DateTime DateOccurred { get; } = DateTime.UtcNow;
+}
 
-        public SampleAuthorizer()
-        {
-            LastInstance.Value = this;
-        }
+public class SampleValidator : ICommandValidator<AppContext, SampleCommand>
+{
+    public static readonly AsyncLocal<SampleValidator> LastInstance = new();
 
-        protected override Task<bool> CheckIfAuthorizedAsync(
-            AppContext appContext,
-            IAuthorizerData obj,
-            object customData)
-        {
-            AppContext = appContext;
-            Object = obj;
-            Data = customData;
-            return Task.FromResult(Result);
-        }
+    public AppContext AppContext { get; private set; }
+    public SampleCommand Command { get; private set; }
+
+    public ValidationResult Result { get; set; } = new ValidationResult(Array.Empty<ValidationError>());
+
+    public SampleValidator()
+    {
+        LastInstance.Value = this;
     }
 
-    public class SampleEvent : IDomainEvent
+    public Task<ValidationResult> ValidateAsync(AppContext appContext, SampleCommand command)
     {
-        public Guid Id { get; } = Guid.NewGuid();
-        public DateTime DateOccurred { get; } = DateTime.UtcNow;
+        AppContext = appContext;
+        Command = command;
+
+        return Task.FromResult(Result);
     }
+}
 
-    public class SampleEvent2 : IDomainEvent
+public class SingleInstanceCommand : ICommand { }
+
+public class SingleInstanceCommandHandler : ICommandHandler<AppContext, SingleInstanceCommand>
+{
+    public AppContext Context { get; private set; }
+    public SingleInstanceCommand Command { get; private set; }
+
+    public Task ExecuteAsync(AppContext context, SingleInstanceCommand command)
     {
-        public Guid Id { get; } = Guid.NewGuid();
-        public DateTime DateOccurred { get; } = DateTime.UtcNow;
+        Context = context;
+        Command = command;
+
+        return Task.CompletedTask;
     }
+}
 
-    public class SampleValidator : ICommandValidator<AppContext, SampleCommand>
+public class SingleInstanceQuery : IQuery<object> { }
+
+public class SingleInstanceQueryHandler : IQueryHandler<AppContext, SingleInstanceQuery, object>
+{
+    public AppContext Context { get; private set; }
+    public SingleInstanceQuery Query { get; private set; }
+    public object Result { get; set; }
+
+    public Task<object> ExecuteAsync(AppContext context, SingleInstanceQuery query)
     {
-        public static readonly AsyncLocal<SampleValidator> LastInstance = new();
-
-        public AppContext AppContext { get; private set; }
-        public SampleCommand Command { get; private set; }
-
-        public ValidationResult Result { get; set; } = new ValidationResult(Array.Empty<ValidationError>());
-
-        public SampleValidator()
-        {
-            LastInstance.Value = this;
-        }
-
-        public Task<ValidationResult> ValidateAsync(AppContext appContext, SampleCommand command)
-        {
-            AppContext = appContext;
-            Command = command;
-
-            return Task.FromResult(Result);
-        }
+        Context = context;
+        Query = query;
+        return Task.FromResult(Result);
     }
+}
 
-    public class SingleInstanceCommand : ICommand { }
+public class SingleInstanceOperation : IOperation<object> { }
 
-    public class SingleInstanceCommandHandler : ICommandHandler<AppContext, SingleInstanceCommand>
+public class SingleInstanceOperationHandler : IOperationHandler<AppContext, SingleInstanceOperation, object>
+{
+    public AppContext Context { get; private set; }
+    public SingleInstanceOperation Operation { get; private set; }
+    public object Result { get; set; }
+
+    public Task<object> ExecuteAsync(AppContext context, SingleInstanceOperation operation)
     {
-        public AppContext Context { get; private set; }
-        public SingleInstanceCommand Command { get; private set; }
-
-        public Task ExecuteAsync(AppContext context, SingleInstanceCommand command)
-        {
-            Context = context;
-            Command = command;
-
-            return Task.CompletedTask;
-        }
+        Context = context;
+        Operation = operation;
+        return Task.FromResult(Result);
     }
+}
 
-    public class SingleInstanceQuery : IQuery<object> { }
+internal class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
+{
+    public AppContext AppContext { get; set; }
+    public TObj Data { get; set; }
 
-    public class SingleInstanceQueryHandler : IQueryHandler<AppContext, SingleInstanceQuery, object>
+    public Task<TRes> ExecuteAsync(AppContext ctx, TObj input, Func<AppContext, TObj, Task<TRes>> next)
     {
-        public AppContext Context { get; private set; }
-        public SingleInstanceQuery Query { get; private set; }
-        public object Result { get; set; }
-
-        public Task<object> ExecuteAsync(AppContext context, SingleInstanceQuery query)
-        {
-            Context = context;
-            Query = query;
-            return Task.FromResult(Result);
-        }
-    }
-
-    public class SingleInstanceOperation : IOperation<object> { }
-
-    public class SingleInstanceOperationHandler : IOperationHandler<AppContext, SingleInstanceOperation, object>
-    {
-        public AppContext Context { get; private set; }
-        public SingleInstanceOperation Operation { get; private set; }
-        public object Result { get; set; }
-
-        public Task<object> ExecuteAsync(AppContext context, SingleInstanceOperation operation)
-        {
-            Context = context;
-            Operation = operation;
-            return Task.FromResult(Result);
-        }
-    }
-
-    internal class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
-    {
-        public AppContext AppContext { get; set; }
-        public TObj Data { get; set; }
-
-        public Task<TRes> ExecuteAsync(AppContext ctx, TObj input, Func<AppContext, TObj, Task<TRes>> next)
-        {
-            AppContext = ctx;
-            Data = input;
-            return next(ctx, input);
-        }
+        AppContext = ctx;
+        Data = input;
+        return next(ctx, input);
     }
 }
