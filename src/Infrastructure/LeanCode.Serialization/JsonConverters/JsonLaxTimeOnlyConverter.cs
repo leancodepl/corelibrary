@@ -10,6 +10,7 @@ public class JsonLaxTimeOnlyConverter : JsonConverter<TimeOnly>
     private const int MaxBufferSize = 256;
     private const int MaxTimeOnlyBufferSize = 16;
     private readonly string format = "HH:mm:ss.fff";
+
     public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         int length;

@@ -83,7 +83,11 @@ internal class CompiledViewsCache
             throw new ViewNotFoundException(viewName, "Cannot locate view.");
         }
 
-        logger.Information("View {ViewName} located at {ViewPath}, running real compilation", viewName, item.PhysicalPath);
+        logger.Information(
+            "View {ViewName} located at {ViewPath}, running real compilation",
+            viewName,
+            item.PhysicalPath
+        );
         return await compiler.CompileAsync(item);
     }
 }

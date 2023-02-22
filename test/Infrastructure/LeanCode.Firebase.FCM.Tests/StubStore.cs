@@ -42,7 +42,10 @@ internal class StubStore : IPushNotificationTokenStore
         }
     }
 
-    public Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+    public Task<Dictionary<Guid, List<string>>> GetTokensAsync(
+        IReadOnlySet<Guid> userIds,
+        CancellationToken cancellationToken = default
+    )
     {
         if (userIds.Contains(userId))
         {

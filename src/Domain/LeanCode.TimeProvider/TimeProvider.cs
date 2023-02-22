@@ -9,6 +9,5 @@ public static class TimeProvider
     public static DateTime Now => timeProvider.Now;
     public static DateTimeOffset NowWithOffset => timeProvider.NowWithOffset;
 
-    public static void Use(ITimeProvider newProvider) =>
-        timeProvider = newProvider;
+    public static void Use(ITimeProvider newProvider) => timeProvider = newProvider;
 }

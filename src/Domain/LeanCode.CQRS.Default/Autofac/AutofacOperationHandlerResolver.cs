@@ -44,9 +44,7 @@ internal class AutofacOperationHandlerResolver<TAppContext> : IOperationHandlerR
     {
         var types = operationType
             .GetInterfaces()
-            .Where(i =>
-                i.IsConstructedGenericType &&
-                i.GetGenericTypeDefinition() == typeof(IOperation<>))
+            .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IOperation<>))
             .Single()
             .GenericTypeArguments;
 

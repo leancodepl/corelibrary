@@ -38,7 +38,8 @@ public class FacebookClient
         string endpoint,
         string accessToken,
         bool handleError = true,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var proof = GenerateProof(accessToken);
         var uri = AppendProof(endpoint, accessToken, proof);
@@ -51,7 +52,10 @@ public class FacebookClient
             {
                 logger.Warning(
                     "Facebook Graph API returned {StatusCode} {reasonPhrase} for access token {FBAccessToken}",
-                    response.StatusCode, response.ReasonPhrase, accessToken);
+                    response.StatusCode,
+                    response.ReasonPhrase,
+                    accessToken
+                );
 
                 throw new FacebookException($"Cannot call Facebook Graph API, status: {response.StatusCode}.");
             }
@@ -68,10 +72,14 @@ public class FacebookClient
 
                     logger.Warning(
                         "User tried to use invalid access token {FBAccessToken}, Facebook returned {Code} error code with message {Message}",
-                        accessToken, code, msg);
+                        accessToken,
+                        code,
+                        msg
+                    );
 
                     throw new FacebookException(
-                        $"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}.");
+                        $"Cannot call Facebook Graph API. The call resulted in error {code} with message {msg}."
+                    );
                 }
             }
 
@@ -91,9 +99,7 @@ public class FacebookClient
 
         var info = ConvertResponse(result.RootElement);
 
-        logger.Information(
-            "Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}",
-            info.Id, info.Email);
+        logger.Information("Facebook user retrieved, user {FBUserId} has e-mail {FBEmail}", info.Id, info.Email);
 
         return info;
     }
@@ -123,9 +129,11 @@ public class FacebookClient
 
         static bool GetIsSilhouette(JsonElement element)
         {
-            if (element.TryGetProperty("picture", out var pic) &&
-                pic.TryGetProperty("data", out var data) &&
-                data.TryGetProperty("is_silhouette", out var isSilhouette))
+            if (
+                element.TryGetProperty("picture", out var pic)
+                && pic.TryGetProperty("data", out var data)
+                && data.TryGetProperty("is_silhouette", out var isSilhouette)
+            )
             {
                 return isSilhouette.GetBoolean();
             }
@@ -153,11 +161,9 @@ public class FacebookClient
         }
     }
 
-    private static byte[] ParseKey(string v) =>
-        Encoding.ASCII.GetBytes(v);
+    private static byte[] ParseKey(string v) => Encoding.ASCII.GetBytes(v);
 
-    private static string ToHexString(ReadOnlySpan<byte> data) =>
-        Convert.ToHexString(data).ToLowerInvariant();
+    private static string ToHexString(ReadOnlySpan<byte> data) => Convert.ToHexString(data).ToLowerInvariant();
 
     private static string AppendProof(string uri, string accessToken, string proof)
     {

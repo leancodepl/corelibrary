@@ -39,8 +39,6 @@ public class CustomValidator : ContextualValidator<CustomCommand>
 {
     public CustomValidator()
     {
-        RuleFor(c => c.Field)
-            .GreaterThan(5)
-                .WithCode(10);
+        RuleFor(c => c.Field).GreaterThan(5).WithCode(10);
     }
 }

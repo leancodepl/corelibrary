@@ -19,7 +19,8 @@ public class HttpOperationsExecutorTests
         Assert.NotNull(handler.Request);
         Assert.Equal(
             new Uri("http://localhost/operation/" + typeof(ExampleOperation).FullName),
-            handler.Request!.RequestUri);
+            handler.Request!.RequestUri
+        );
     }
 
     [Fact]
@@ -107,8 +108,15 @@ public class HttpOperationsExecutorTests
         await Assert.ThrowsAsync<TException>(() => exec.GetAsync(new ExampleOperation()));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
-    private static (HttpOperationsExecutor, ShortcircuitingJsonHandler) Prepare(HttpStatusCode statusCode, string result)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
+    private static (HttpOperationsExecutor, ShortcircuitingJsonHandler) Prepare(
+        HttpStatusCode statusCode,
+        string result
+    )
     {
         var handler = new ShortcircuitingJsonHandler(statusCode, result);
         var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost") };

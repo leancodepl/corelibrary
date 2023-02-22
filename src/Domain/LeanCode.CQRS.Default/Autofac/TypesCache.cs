@@ -1,7 +1,10 @@
 using System;
 using System.Reflection;
 
-using CacheDictionary = System.Collections.Concurrent.ConcurrentDictionary<System.Type, (System.Type HandlerType, System.Reflection.ConstructorInfo Constructor)>;
+using CacheDictionary = System.Collections.Concurrent.ConcurrentDictionary<
+    System.Type,
+    (System.Type HandlerType, System.Reflection.ConstructorInfo Constructor)
+>;
 
 namespace LeanCode.CQRS.Default.Autofac;
 
@@ -36,6 +39,5 @@ internal sealed class TypesCache
         };
     }
 
-    public (Type HandlerType, ConstructorInfo Constructor) Get(Type objType) =>
-        cache.GetOrAdd(objType, make);
+    public (Type HandlerType, ConstructorInfo Constructor) Get(Type objType) => cache.GetOrAdd(objType, make);
 }

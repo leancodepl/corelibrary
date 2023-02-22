@@ -18,9 +18,7 @@ public class AddCommandValidatorCodeFixProvider : CodeFixProvider
 
     public override Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        context.RegisterCodeFix(
-            new AddCommandValidatorCodeAction(context.Document, context.Span),
-            context.Diagnostics);
+        context.RegisterCodeFix(new AddCommandValidatorCodeAction(context.Document, context.Span), context.Diagnostics);
 
         return Task.CompletedTask;
     }

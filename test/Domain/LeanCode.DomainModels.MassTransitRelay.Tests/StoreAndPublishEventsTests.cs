@@ -49,7 +49,8 @@ public sealed class StoreAndPublishEventsTests : IDisposable
         Assert.Collection(
             raisedEvents,
             evt => AssertRaisedEvent(evt, Event1Id, typeof(Event1), true),
-            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), true));
+            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), true)
+        );
     }
 
     [Fact]
@@ -63,15 +64,16 @@ public sealed class StoreAndPublishEventsTests : IDisposable
         Assert.Collection(
             raisedEvents,
             evt => AssertRaisedEvent(evt, Event1Id, typeof(Event1), false),
-            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), false));
+            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), false)
+        );
     }
 
     [Fact]
     public async Task One_interupted_publish_does_not_affect_consecutive_ones()
     {
-        publisher.PublishAsync(null, null).ReturnsForAnyArgs(
-            _ => throw new InvalidOperationException(),
-            _ => Task.CompletedTask);
+        publisher
+            .PublishAsync(null, null)
+            .ReturnsForAnyArgs(_ => throw new InvalidOperationException(), _ => Task.CompletedTask);
 
         await impl.StoreAndPublishEventsAsync(domainEvents, ConversationId, publisher);
 
@@ -79,7 +81,8 @@ public sealed class StoreAndPublishEventsTests : IDisposable
         Assert.Collection(
             raisedEvents,
             evt => AssertRaisedEvent(evt, Event1Id, typeof(Event1), false),
-            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), true));
+            evt => AssertRaisedEvent(evt, Event2Id, typeof(Event2), true)
+        );
     }
 
     [Fact]
@@ -99,14 +102,13 @@ public sealed class StoreAndPublishEventsTests : IDisposable
         Assert.Collection(
             raisedEvents,
             evt1 => AssertRaisedEvent(evt1, Event1Id, ConversationId, parentTraceId),
-            evt2 => AssertRaisedEvent(evt2, Event2Id, ConversationId, parentTraceId));
+            evt2 => AssertRaisedEvent(evt2, Event2Id, ConversationId, parentTraceId)
+        );
     }
 
     private Task<List<RaisedEvent>> GetRaisedEvents()
     {
-        return dbContext.RaisedEvents
-            .OrderBy(evt => evt.EventType)
-            .ToListAsync();
+        return dbContext.RaisedEvents.OrderBy(evt => evt.EventType).ToListAsync();
     }
 
     public void Dispose() => dbContext.Dispose();

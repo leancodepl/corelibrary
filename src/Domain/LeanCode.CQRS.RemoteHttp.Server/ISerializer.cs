@@ -22,8 +22,7 @@ public sealed class Utf8JsonSerializer : ISerializer
     }
 
     public Utf8JsonSerializer()
-        : this(null)
-    { }
+        : this(null) { }
 
     public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token)
     {

@@ -45,7 +45,6 @@ public class TestApp : LeanCodeTestFactory<Startup>
             UserName = AuthConfig.Username,
             Password = AuthConfig.Password,
             Scope = "profile openid api",
-
             ClientId = "web",
             ClientSecret = "",
         };
@@ -56,9 +55,7 @@ public class TestApp : LeanCodeTestFactory<Startup>
     {
         return LeanProgram
             .BuildMinimalHost<Startup>()
-            .ConfigureDefaultLogging(
-                projectName: "test",
-                destructurers: new TypesCatalog(typeof(Program)))
+            .ConfigureDefaultLogging(projectName: "test", destructurers: new TypesCatalog(typeof(Program)))
             .UseEnvironment(Environments.Development);
     }
 }

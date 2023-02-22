@@ -21,7 +21,8 @@ public static class EventsInterceptor
         else
         {
             throw new InvalidOperationException(
-                "Cannot use EventInterceptor when other interceptor is already configured.");
+                "Cannot use EventInterceptor when other interceptor is already configured."
+            );
         }
     }
 
@@ -47,8 +48,8 @@ public static class EventsInterceptor
 
     private sealed class TestDomainEventInterceptor : IDomainEventInterceptor
     {
-        private readonly AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?> handlers
-            = new AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?>();
+        private readonly AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?> handlers =
+            new AsyncLocal<ConcurrentBag<Action<IDomainEvent>>?>();
 
         public void AddHandler(Action<IDomainEvent> func) =>
             (handlers.Value ??= new ConcurrentBag<Action<IDomainEvent>>()).Add(func);

@@ -16,7 +16,13 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
 {
     protected abstract CodeFixProvider GetCodeFixProvider();
 
-    protected async Task VerifyCodeFix(string oldSource, string newSource, string[] expectedFixes, int? fixToApply = null, bool allowNewCompilerDiagnostics = false)
+    protected async Task VerifyCodeFix(
+        string oldSource,
+        string newSource,
+        string[] expectedFixes,
+        int? fixToApply = null,
+        bool allowNewCompilerDiagnostics = false
+    )
     {
         oldSource = oldSource.Trim();
         newSource = newSource.Trim();
@@ -29,7 +35,12 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         var compilerDiagnostics = await GetCompilerDiagnostics(document);
 
         var actions = new List<CodeAction>();
-        var context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
+        var context = new CodeFixContext(
+            document,
+            analyzerDiagnostics[0],
+            (a, d) => actions.Add(a),
+            CancellationToken.None
+        );
         await codeFixProvider.RegisterCodeFixesAsync(context);
 
         actions.Sort((a, b) => string.Compare(a.Title, b.Title, StringComparison.Ordinal));
@@ -46,7 +57,13 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
 
         if (!allowNewCompilerDiagnostics && newCompilerDiagnostics.Any())
         {
-            document = document.WithSyntaxRoot(Formatter.Format(await document.GetSyntaxRootAsync(), Formatter.Annotation, document.Project.Solution.Workspace));
+            document = document.WithSyntaxRoot(
+                Formatter.Format(
+                    await document.GetSyntaxRootAsync(),
+                    Formatter.Annotation,
+                    document.Project.Solution.Workspace
+                )
+            );
             newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
 
             throw new Xunit.Sdk.XunitException(
@@ -54,7 +71,9 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
                     System.Globalization.CultureInfo.InvariantCulture,
                     "Fix introduced new compiler diagnostics:\r\n{0}\r\n\r\nNew document:\r\n{1}\r\n",
                     string.Join("\r\n", newCompilerDiagnostics.Select(d => d.ToString())),
-                    (await document.GetSyntaxRootAsync()).ToFullString()));
+                    (await document.GetSyntaxRootAsync()).ToFullString()
+                )
+            );
         }
 
         var actual = await GetStringFromDocument(document);
@@ -68,7 +87,10 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         return solution.GetDocument(document.Id);
     }
 
-    private static IEnumerable<Diagnostic> GetNewDiagnostics(IEnumerable<Diagnostic> diagnostics, IEnumerable<Diagnostic> newDiagnostics)
+    private static IEnumerable<Diagnostic> GetNewDiagnostics(
+        IEnumerable<Diagnostic> diagnostics,
+        IEnumerable<Diagnostic> newDiagnostics
+    )
     {
         var oldArray = diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
         var newArray = newDiagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();

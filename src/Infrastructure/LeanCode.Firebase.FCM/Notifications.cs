@@ -16,10 +16,7 @@ public static class Notifications
     {
         var type = data.GetType();
 
-        var result = new Dictionary<string, string>()
-        {
-            [TypeField] = type.Name,
-        };
+        var result = new Dictionary<string, string>() { [TypeField] = type.Name, };
 
         foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -31,7 +28,8 @@ public static class Notifications
                 {
                     if (value is Enum @enum)
                     {
-                        var strValue = Convert.ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
+                        var strValue = Convert
+                            .ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
                             .ToString(System.Globalization.CultureInfo.InvariantCulture);
                         result.Add(prop.Name, strValue);
                     }

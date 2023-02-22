@@ -17,17 +17,13 @@ internal class LayoutNode : ExtensionIntermediateNode
         LayoutName = layoutName;
     }
 
-    public override void Accept(IntermediateNodeVisitor visitor) =>
-        AcceptExtensionNode(this, visitor);
+    public override void Accept(IntermediateNodeVisitor visitor) => AcceptExtensionNode(this, visitor);
 
     public override void WriteNode(CodeTarget target, CodeRenderingContext context)
     {
         if (string.IsNullOrEmpty(LayoutName))
         {
-            context.CodeWriter
-                .Write("public static readonly string ")
-                .Write(LayoutFieldName)
-                .WriteLine(" = null;");
+            context.CodeWriter.Write("public static readonly string ").Write(LayoutFieldName).WriteLine(" = null;");
         }
         else
         {

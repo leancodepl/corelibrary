@@ -21,7 +21,7 @@ public class AddAuthorizationAttributeCodeActionTests : CodeFixVerifier
     public async Task Adds_attribute()
     {
         var source =
-@"
+            @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -29,7 +29,7 @@ public class Cmd : ICommand
 {}";
 
         var expected =
-        @"
+            @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -44,7 +44,7 @@ public class Cmd : ICommand
     public async Task Adds_attribute_and_using_directive()
     {
         var source =
-@"
+            @"
 using LeanCode.Contracts;
 
 public class Cmd : ICommand
@@ -52,7 +52,7 @@ public class Cmd : ICommand
 }";
 
         var expected =
-        @"
+            @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -68,7 +68,7 @@ public class Cmd : ICommand
     public async Task Suggests_custom_attribute()
     {
         var source =
-        @"
+            @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
@@ -84,7 +84,7 @@ public class Cmd : ICommand
 }";
 
         var expected =
-        @"
+            @"
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 

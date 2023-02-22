@@ -12,9 +12,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server;
 
 internal sealed class RemoteCommandHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
 {
-    private static readonly MethodInfo ExecCommandMethod = typeof(RemoteCommandHandler<TAppContext>)
-        .GetMethod(nameof(ExecuteCommandAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-        ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteCommandAsync)} method.");
+    private static readonly MethodInfo ExecCommandMethod =
+        typeof(RemoteCommandHandler<TAppContext>).GetMethod(
+            nameof(ExecuteCommandAsync),
+            BindingFlags.NonPublic | BindingFlags.Instance
+        ) ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteCommandAsync)} method.");
 
     private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new();
     private readonly IServiceProvider serviceProvider;
@@ -23,7 +25,8 @@ internal sealed class RemoteCommandHandler<TAppContext> : BaseRemoteObjectHandle
         IServiceProvider serviceProvider,
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        ISerializer serializer)
+        ISerializer serializer
+    )
         : base(catalog, contextTranslator, serializer)
     {
         this.serviceProvider = serviceProvider;

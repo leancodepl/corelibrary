@@ -20,7 +20,8 @@ public static class FirebaseConfiguration
                     Credential = GoogleCredential.FromAccessToken("owner"),
                     ProjectId = "default-project-id",
                 },
-                name);
+                name
+            );
         }
         else
         {
@@ -30,7 +31,8 @@ public static class FirebaseConfiguration
                     Credential = GoogleCredential.FromJson(cfg),
                     ProjectId = JsonNode.Parse(cfg)?["project_id"]?.ToString(),
                 },
-                name);
+                name
+            );
         }
     }
 }

@@ -10,15 +10,17 @@ public sealed class SimpleEventsExecutor
 {
     private readonly PipelineExecutor<SimplePipelineContext, Func<Task>, ValueTuple> exec;
 
-    private static ConfiguredPipeline<SimplePipelineContext, Func<Task>, ValueTuple> Classic() => Pipeline
-        .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
-        .Use<EventsPublisherElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
-        .Finalize<SimpleFinalizer>();
+    private static ConfiguredPipeline<SimplePipelineContext, Func<Task>, ValueTuple> Classic() =>
+        Pipeline
+            .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
+            .Use<EventsPublisherElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
+            .Finalize<SimpleFinalizer>();
 
-    private static ConfiguredPipeline<SimplePipelineContext, Func<Task>, ValueTuple> Outboxed() => Pipeline
-        .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
-        .Use<StoreAndPublishEventsElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
-        .Finalize<SimpleFinalizer>();
+    private static ConfiguredPipeline<SimplePipelineContext, Func<Task>, ValueTuple> Outboxed() =>
+        Pipeline
+            .Build<SimplePipelineContext, Func<Task>, ValueTuple>()
+            .Use<StoreAndPublishEventsElement<SimplePipelineContext, Func<Task>, ValueTuple>>()
+            .Finalize<SimpleFinalizer>();
 
     public SimpleEventsExecutor(IPipelineFactory factory, bool useOutbox)
     {
@@ -26,14 +28,8 @@ public sealed class SimpleEventsExecutor
         exec = PipelineExecutor.Create(factory, config);
     }
 
-    public Task HandleEventsOfAsync(
-        Func<Task> action,
-        CancellationToken cancellationToken = default)
+    public Task HandleEventsOfAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
-        return exec.ExecuteAsync(
-            new SimplePipelineContext
-            {
-                CancellationToken = cancellationToken,
-            }, action);
+        return exec.ExecuteAsync(new SimplePipelineContext { CancellationToken = cancellationToken, }, action);
     }
 }

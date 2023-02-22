@@ -37,7 +37,11 @@ public static class ProbeSiteExtensions
         }
     }
 
-    private static bool TryGetTyped<T>(IDictionary<string, object> dict, string key, [NotNullWhen(returnValue: true)] out T? value)
+    private static bool TryGetTyped<T>(
+        IDictionary<string, object> dict,
+        string key,
+        [NotNullWhen(returnValue: true)] out T? value
+    )
         where T : class
     {
         if (dict.TryGetValue(key, out var raw) && raw is T typed)

@@ -14,7 +14,10 @@ public static class BusObserverExtensions
         }
     }
 
-    public static void ConnectReceiveEndpointObservers(this IReceiveEndpointObserverConnector rcv, IBusRegistrationContext context)
+    public static void ConnectReceiveEndpointObservers(
+        this IReceiveEndpointObserverConnector rcv,
+        IBusRegistrationContext context
+    )
     {
         var recvObservers = context.GetServices<IReceiveEndpointObserver>();
         foreach (var obs in recvObservers)

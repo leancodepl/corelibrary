@@ -9,6 +9,5 @@ public class GoogleGrantValidator<TUser> : ExternalLoginGrantValidatorBase<TUser
     public override string GrantType => Constants.GrantType;
 
     public GoogleGrantValidator(GoogleExternalLogin<TUser> externalLogin)
-        : base(externalLogin)
-    { }
+        : base(externalLogin) { }
 }

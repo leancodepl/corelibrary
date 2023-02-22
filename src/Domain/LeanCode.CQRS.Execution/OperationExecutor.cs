@@ -5,7 +5,8 @@ using LeanCode.Pipelines;
 namespace LeanCode.CQRS.Execution;
 
 public delegate PipelineBuilder<TAppContext, IOperation, object?> OperationBuilder<TAppContext>(
-    PipelineBuilder<TAppContext, IOperation, object?> builder)
+    PipelineBuilder<TAppContext, IOperation, object?> builder
+)
     where TAppContext : IPipelineContext;
 
 public class OperationExecutor<TAppContext> : IOperationExecutor<TAppContext>
@@ -17,10 +18,13 @@ public class OperationExecutor<TAppContext> : IOperationExecutor<TAppContext>
 
     public OperationExecutor(IPipelineFactory factory, OperationBuilder<TAppContext> config)
     {
-        executor = PipelineExecutor.Create(factory, Pipeline
-            .Build<TAppContext, IOperation, object?>()
-            .Configure(new ConfigPipeline<TAppContext, IOperation, object?>(config))
-            .Finalize<OperationFinalizer<TAppContext>>());
+        executor = PipelineExecutor.Create(
+            factory,
+            Pipeline
+                .Build<TAppContext, IOperation, object?>()
+                .Configure(new ConfigPipeline<TAppContext, IOperation, object?>(config))
+                .Finalize<OperationFinalizer<TAppContext>>()
+        );
     }
 
     public async Task<TResult> ExecuteAsync<TResult>(TAppContext appContext, IOperation<TResult> operation)

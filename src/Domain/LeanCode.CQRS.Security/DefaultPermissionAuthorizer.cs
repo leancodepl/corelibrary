@@ -17,13 +17,16 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, ob
     protected override Task<bool> CheckIfAuthorizedAsync(
         ISecurityContext appContext,
         object obj,
-        string[]? customData = null)
+        string[]? customData = null
+    )
     {
         if (!appContext.User.HasPermission(registry, customData ?? System.Array.Empty<string>()))
         {
             logger.Warning(
                 "User does not have sufficient permissions ({Permissions}) to run {@Object}",
-                customData, obj);
+                customData,
+                obj
+            );
 
             return Task.FromResult(false);
         }

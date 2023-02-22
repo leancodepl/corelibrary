@@ -10,28 +10,34 @@ public class HttpOperationsExecutor
     private readonly JsonSerializerOptions? serializerOptions;
 
     public HttpOperationsExecutor(HttpClient client)
-        : this(client, null)
-    { }
+        : this(client, null) { }
 
-    public HttpOperationsExecutor(
-        HttpClient client,
-        JsonSerializerOptions? serializerOptions)
+    public HttpOperationsExecutor(HttpClient client, JsonSerializerOptions? serializerOptions)
     {
         this.client = client;
         this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
     }
 
-    public virtual async Task<TResult> GetAsync<TResult>(IOperation<TResult> operation, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> GetAsync<TResult>(
+        IOperation<TResult> operation,
+        CancellationToken cancellationToken = default
+    )
     {
         using var content = JsonContent.Create(operation, operation.GetType(), options: serializerOptions);
-        using var response = await client.PostAsync("operation/" + operation.GetType().FullName, content, cancellationToken);
+        using var response = await client.PostAsync(
+            "operation/" + operation.GetType().FullName,
+            content,
+            cancellationToken
+        );
 
         response.HandleCommonCQRSErrors<OperationNotFoundException, InvalidOperationException>();
 
         using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
         try
         {
-            return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken))!;
+            return (
+                await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken)
+            )!;
         }
         catch (Exception ex)
         {

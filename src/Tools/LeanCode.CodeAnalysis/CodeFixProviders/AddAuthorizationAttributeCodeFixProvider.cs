@@ -21,24 +21,32 @@ public class AddAuthorizationAttributeCodeFixProvider : CodeFixProvider
         ImmutableArray.Create(
             DiagnosticsIds.QueriesShouldHaveAuthorizers,
             DiagnosticsIds.CommandsShouldHaveAuthorizers,
-            DiagnosticsIds.OperationsShouldHaveAuthorizers);
+            DiagnosticsIds.OperationsShouldHaveAuthorizers
+        );
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var model = await context.Document.GetSemanticModelAsync();
-        var solutionAuthorizers = await GetAvailableAuthorizersAsync(context.Document.Project.Solution, model!.Compilation);
+        var solutionAuthorizers = await GetAvailableAuthorizersAsync(
+            context.Document.Project.Solution,
+            model!.Compilation
+        );
 
         foreach (var (type, ns) in StaticAuthorizers.Concat(solutionAuthorizers).Distinct())
         {
             context.RegisterCodeFix(
                 new AddAuthorizationAttributeCodeAction(context.Document, context.Span, type, ns),
-                context.Diagnostics);
+                context.Diagnostics
+            );
         }
     }
 
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-    private static async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizersAsync(Solution solution, Compilation compilation)
+    private static async Task<IEnumerable<(string Type, string Namespace)>> GetAvailableAuthorizersAsync(
+        Solution solution,
+        Compilation compilation
+    )
     {
         var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
         var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);

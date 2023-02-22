@@ -9,12 +9,9 @@ public class FCMModule : AppModule
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(c => FirebaseMessaging.GetMessaging(c.Resolve<FirebaseApp>()))
-            .AsSelf()
-            .SingleInstance();
+        builder.Register(c => FirebaseMessaging.GetMessaging(c.Resolve<FirebaseApp>())).AsSelf().SingleInstance();
 
-        builder.RegisterType<FCMClient>()
-            .AsSelf();
+        builder.RegisterType<FCMClient>().AsSelf();
     }
 }
 
@@ -24,7 +21,6 @@ public class FCMModule<TStore> : AppModule
     protected override void Load(ContainerBuilder builder)
     {
         builder.RegisterModule(new FCMModule());
-        builder.RegisterType<TStore>()
-            .AsImplementedInterfaces();
+        builder.RegisterType<TStore>().AsImplementedInterfaces();
     }
 }

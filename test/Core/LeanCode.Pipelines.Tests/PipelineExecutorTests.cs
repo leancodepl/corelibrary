@@ -119,52 +119,43 @@ public class PipelineExecutorTests
         return fin;
     }
 
-    private static Executor Prepare(
-        Finalizer fin,
-        params Element[] elements)
+    private static Executor Prepare(Finalizer fin, params Element[] elements)
     {
         var scope = Substitute.For<IPipelineScope>();
         var factory = Substitute.For<IPipelineFactory>();
 
         factory.BeginScope().Returns(scope);
 
-        scope.ResolveFinalizer<PipelineContext, int, int>(null)
-            .ReturnsForAnyArgs(fin);
+        scope.ResolveFinalizer<PipelineContext, int, int>(null).ReturnsForAnyArgs(fin);
 
         if (elements.Length > 0)
         {
-            scope.ResolveElement<PipelineContext, int, int>(null)
+            scope
+                .ResolveElement<PipelineContext, int, int>(null)
                 .ReturnsForAnyArgs(elements[0], elements.Skip(1).ToArray());
         }
 
         var cfg = new ConfiguredPipeline<PipelineContext, int, int>(
-                elements
-                .Select(e => e.GetType())
-                .ToArray(),
-                fin.GetType());
+            elements.Select(e => e.GetType()).ToArray(),
+            fin.GetType()
+        );
         return PipelineExecutor.Create(factory, cfg);
     }
 }
 
 internal static class PipelineExtensions
 {
-    public static Task<int> SubExecuteAsync(
-        this Element el,
-        int input)
+    public static Task<int> SubExecuteAsync(this Element el, int input)
     {
         return el.ExecuteAsync(Arg.Any<PipelineContext>(), input, Arg.Any<Func<PipelineContext, int, Task<int>>>());
     }
 
-    public static Task<int> SubExecuteAsync(
-        this Finalizer el,
-        int input)
+    public static Task<int> SubExecuteAsync(this Finalizer el, int input)
     {
         return el.ExecuteAsync(Arg.Any<PipelineContext>(), input);
     }
 
-    public static Task<int> SubExecuteAsync(
-        this Executor el,
-        int input)
+    public static Task<int> SubExecuteAsync(this Executor el, int input)
     {
         return el.ExecuteAsync(Arg.Any<PipelineContext>(), input);
     }

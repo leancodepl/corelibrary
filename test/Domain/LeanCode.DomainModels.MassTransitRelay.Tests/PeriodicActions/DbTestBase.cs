@@ -34,7 +34,5 @@ public abstract class DbTestBase : IAsyncLifetime, IDisposable
         await dbConnection.DisposeAsync();
     }
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

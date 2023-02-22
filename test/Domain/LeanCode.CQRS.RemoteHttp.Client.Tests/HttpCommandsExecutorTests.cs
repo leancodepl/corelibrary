@@ -20,7 +20,8 @@ public class HttpCommandsExecutorTests
         Assert.NotNull(handler.Request);
         Assert.Equal(
             new Uri("http://localhost/command/" + typeof(ExampleCommand).FullName),
-            handler.Request!.RequestUri);
+            handler.Request!.RequestUri
+        );
     }
 
     [Fact]
@@ -60,7 +61,10 @@ public class HttpCommandsExecutorTests
     [Fact]
     public async Task Correctly_deserializes_validation_errors()
     {
-        var (exec, _) = Prepare(HttpStatusCode.UnprocessableEntity, "{\"ValidationErrors\":[{\"ErrorCode\":1,\"ErrorMessage\":\"msg\",\"PropertyName\":\"prop\"}]}");
+        var (exec, _) = Prepare(
+            HttpStatusCode.UnprocessableEntity,
+            "{\"ValidationErrors\":[{\"ErrorCode\":1,\"ErrorMessage\":\"msg\",\"PropertyName\":\"prop\"}]}"
+        );
 
         var result = await exec.RunAsync(new ExampleCommand());
 
@@ -76,7 +80,10 @@ public class HttpCommandsExecutorTests
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Can be ignored in tests.")]
     public async Task Correctly_deserializes_validation_errors_even_in_the_presence_of_custom_serialization_options()
     {
-        var handler = new ShortcircuitingJsonHandler(HttpStatusCode.UnprocessableEntity, "{\"ValidationErrors\":[{\"ErrorCode\":1,\"ErrorMessage\":\"msg\",\"PropertyName\":\"prop\"}]}");
+        var handler = new ShortcircuitingJsonHandler(
+            HttpStatusCode.UnprocessableEntity,
+            "{\"ValidationErrors\":[{\"ErrorCode\":1,\"ErrorMessage\":\"msg\",\"PropertyName\":\"prop\"}]}"
+        );
         var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost") };
         var exec = new HttpCommandsExecutor(client, new JsonSerializerOptions { AllowTrailingCommas = true });
 
@@ -150,7 +157,11 @@ public class HttpCommandsExecutorTests
         await Assert.ThrowsAsync<TException>(() => exec.RunAsync(new ExampleCommand()));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
     private static (HttpCommandsExecutor, ShortcircuitingJsonHandler) Prepare(HttpStatusCode statusCode, string result)
     {
         var handler = new ShortcircuitingJsonHandler(statusCode, result);

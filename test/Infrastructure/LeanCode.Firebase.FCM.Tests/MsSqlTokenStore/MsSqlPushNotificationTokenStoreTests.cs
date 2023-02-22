@@ -53,7 +53,8 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
                 [uid1] = new() { Token1 },
                 [uid2] = new() { Token2 },
             },
-            result);
+            result
+        );
     }
 
     [Fact]

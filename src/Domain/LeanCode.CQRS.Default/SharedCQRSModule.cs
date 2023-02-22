@@ -12,9 +12,7 @@ internal class SharedCQRSModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<AutofacPipelineFactory>()
-            .As<IPipelineFactory>()
-            .SingleInstance();
+        builder.RegisterType<AutofacPipelineFactory>().As<IPipelineFactory>().SingleInstance();
 
         builder.RegisterGeneric(typeof(CQRSSecurityElement<,,>)).AsSelf();
         builder.RegisterGeneric(typeof(ValidationElement<>)).AsSelf();

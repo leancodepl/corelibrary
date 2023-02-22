@@ -23,24 +23,27 @@ public class PdfRocketGeneratorTests
 
     private readonly PdfRocketGenerator generator;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
     public PdfRocketGeneratorTests()
     {
-        var config = new PdfRocketConfiguration
-        {
-            ApiKey = ApiKey,
-        };
+        var config = new PdfRocketConfiguration { ApiKey = ApiKey, };
 
-        generator = new PdfRocketGenerator(config, null!, new HttpClient
-        {
-            BaseAddress = new Uri(PdfRocketGenerator.ApiUrl),
-        });
+        generator = new PdfRocketGenerator(
+            config,
+            null!,
+            new HttpClient { BaseAddress = new Uri(PdfRocketGenerator.ApiUrl), }
+        );
     }
 
     [PdfRocketFact]
     public async Task Converts_pdf_correctly()
     {
-        var html = @"
+        var html =
+            @"
             <html>
                 <body>
                     Some pdf content
@@ -48,11 +51,7 @@ public class PdfRocketGeneratorTests
                 </body>
             </html>";
 
-        var options = new PdfOptions
-        {
-            PageWidth = 200,
-            PageHeight = 400,
-        };
+        var options = new PdfOptions { PageWidth = 200, PageHeight = 400, };
 
         using var stream = await generator.GenerateFromHtmlAsync(html, options);
 

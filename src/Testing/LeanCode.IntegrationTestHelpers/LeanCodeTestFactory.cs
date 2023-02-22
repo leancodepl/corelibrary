@@ -84,11 +84,11 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
             {
                 services.Configure<JwtBearerOptions>(
                     JwtBearerDefaults.AuthenticationScheme,
-                    opts => opts.BackchannelHttpHandler = Server.CreateHandler());
+                    opts => opts.BackchannelHttpHandler = Server.CreateHandler()
+                );
                 // Allow the host to perform shutdown a little bit longer - it will make
                 // `DbContextsInitializer` successfully drop the database more frequently. :)
-                services.Configure<HostOptions>(
-                        opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
             });
     }
 

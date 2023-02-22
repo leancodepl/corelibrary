@@ -9,7 +9,8 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook;
 
 public sealed class FacebookClientTests : IDisposable
 {
-    private static readonly FacebookConfiguration Config = new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
+    private static readonly FacebookConfiguration Config =
+        new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
     private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? "";
 
     private readonly FacebookClient client;
@@ -17,12 +18,7 @@ public sealed class FacebookClientTests : IDisposable
     [SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
     public FacebookClientTests()
     {
-        client = new FacebookClient(
-            Config,
-            new HttpClient
-            {
-                BaseAddress = new Uri(FacebookClient.ApiBase),
-            });
+        client = new FacebookClient(Config, new HttpClient { BaseAddress = new Uri(FacebookClient.ApiBase), });
     }
 
     public void Dispose() => ((IDisposable)client).Dispose();

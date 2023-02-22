@@ -27,13 +27,14 @@ public struct DiagnosticResult : IEquatable<DiagnosticResult>
 
     public bool Equals(DiagnosticResult other)
     {
-        return Id == other.Id
-            && Line == other.Line
-            && Column == other.Column;
+        return Id == other.Id && Line == other.Line && Column == other.Column;
     }
 
     public override bool Equals(object obj) => obj is DiagnosticResult d && Equals(d);
+
     public override int GetHashCode() => HashCode.Combine(Id, Line, Column);
+
     public static bool operator ==(DiagnosticResult left, DiagnosticResult right) => left.Equals(right);
+
     public static bool operator !=(DiagnosticResult left, DiagnosticResult right) => !left.Equals(right);
 }

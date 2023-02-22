@@ -201,5 +201,6 @@ public class ExternalLoginTests
     }
 
     private Task<Guid> AddUserAsync() => users.AddUserAsync();
+
     private string AddToken() => externalLogin.AddToken();
 }

@@ -25,7 +25,8 @@ public class BaseCQRSTests
     public void Prepare(
         CommandBuilder<AppContext> cmdBuilder = null,
         QueryBuilder<AppContext> queryBuilder = null,
-        OperationBuilder<AppContext> operationBuilder = null)
+        OperationBuilder<AppContext> operationBuilder = null
+    )
     {
         cmdBuilder ??= c => c;
         queryBuilder ??= q => q;
@@ -33,7 +34,9 @@ public class BaseCQRSTests
 
         var catalog = new TypesCatalog(typeof(BaseCQRSTests));
         var builder = new ContainerBuilder();
-        builder.RegisterModule(new CQRSModule().WithCustomPipelines(catalog, cmdBuilder, queryBuilder, operationBuilder));
+        builder.RegisterModule(
+            new CQRSModule().WithCustomPipelines(catalog, cmdBuilder, queryBuilder, operationBuilder)
+        );
         builder.RegisterType<SampleAuthorizer>().AsImplementedInterfaces();
         builder.RegisterType<SampleValidator>().AsImplementedInterfaces();
         builder.RegisterType<SingleInstanceCommandHandler>().AsImplementedInterfaces().AsSelf().SingleInstance();

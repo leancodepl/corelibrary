@@ -39,14 +39,12 @@ public static class AuthConfig
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                 AllowOfflineAccess = true,
                 RequireClientSecret = false,
-
                 AllowedScopes = new List<string>
                 {
                     StandardScopes.OpenId,
                     StandardScopes.Profile,
                     StandardScopes.Email,
                     StandardScopes.Phone,
-
                     "api",
                 },
             },
@@ -63,19 +61,10 @@ public static class AuthConfig
         };
 
     public static IEnumerable<ApiResource> ApiResources { get; } =
-        new[]
-        {
-            new ApiResource("api", "API", new[] { "role" }),
-        };
+        new[] { new ApiResource("api", "API", new[] { "role" }), };
 
     public static List<ApiScope> GetApiScopes()
     {
-        return new List<ApiScope>
-        {
-            new ApiScope("api", "API")
-            {
-                UserClaims = { "role" },
-            },
-        };
+        return new List<ApiScope> { new ApiScope("api", "API") { UserClaims = { "role" }, }, };
     }
 }

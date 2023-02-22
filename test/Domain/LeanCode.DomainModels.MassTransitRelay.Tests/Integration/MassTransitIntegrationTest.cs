@@ -59,7 +59,8 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
         Assert.Collection(
             handled.OrderBy(x => x.ConsumerType.FullName),
             e => AssertConsumed(e, typeof(Event2FirstConsumer)),
-            e => AssertConsumed(e, typeof(Event2SecondConsumer)));
+            e => AssertConsumed(e, typeof(Event2SecondConsumer))
+        );
     }
 
     private void TestFailingHandlers()
@@ -74,15 +75,14 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
     {
         await using var scope = testApp.Container.BeginLifetimeScope();
         using var dbContext = scope.Resolve<TestDbContext>();
-        var raisedEvents = await dbContext.RaisedEvents
-            .OrderBy(e => e.EventType)
-            .ToListAsync();
+        var raisedEvents = await dbContext.RaisedEvents.OrderBy(e => e.EventType).ToListAsync();
 
         Assert.Collection(
             raisedEvents,
             evt => AssertRaisedEvent(evt, typeof(Event1)),
             evt => AssertRaisedEvent(evt, typeof(Event2)),
-            evt => AssertRaisedEvent(evt, typeof(Event3)));
+            evt => AssertRaisedEvent(evt, typeof(Event3))
+        );
     }
 
     private async Task AssertConsumedEventsWerePersisted()
@@ -100,7 +100,8 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
             msg => AssertConsumedMessage(msg, typeof(Event1Consumer), typeof(Event1)),
             msg => AssertConsumedMessage(msg, typeof(Event2FirstConsumer), typeof(Event2)),
             msg => AssertConsumedMessage(msg, typeof(Event2SecondConsumer), typeof(Event2)),
-            msg => AssertConsumedMessage(msg, typeof(Event3RetryingConsumer), typeof(Event3)));
+            msg => AssertConsumedMessage(msg, typeof(Event3RetryingConsumer), typeof(Event3))
+        );
     }
 
     private static void AssertConsumed(HandledEvent evt, Type consumerType)

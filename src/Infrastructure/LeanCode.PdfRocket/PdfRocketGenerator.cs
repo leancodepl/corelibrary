@@ -25,7 +25,8 @@ public class PdfRocketGenerator
     public virtual Task<Stream> GenerateFromHtmlAsync(
         string html,
         PdfOptions? options = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         logger.Debug("Generating PDF from supplied HTML document");
 
@@ -36,7 +37,8 @@ public class PdfRocketGenerator
         string templateName,
         TModel model,
         PdfOptions? options = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TModel : notnull
     {
         var html = await viewRenderer.RenderToStringAsync(templateName, model, cancellationToken);
@@ -49,7 +51,8 @@ public class PdfRocketGenerator
     public virtual Task<Stream> GenerateFromUrlAsync(
         Uri url,
         PdfOptions? options = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         logger.Debug("Generating PDF from URL {@URL}", url);
 
@@ -59,12 +62,13 @@ public class PdfRocketGenerator
     private async Task<Stream> GenerateAsync(string source, PdfOptions? options, CancellationToken cancellationToken)
     {
         using var content = GetContent(source, options);
-        using var request = new HttpRequestMessage(HttpMethod.Post, "pdf")
-        {
-            Content = content,
-        };
+        using var request = new HttpRequestMessage(HttpMethod.Post, "pdf") { Content = content, };
 
-        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await client.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
         response.EnsureSuccessStatusCode();
 
         var result = new MemoryStream();
@@ -76,7 +80,11 @@ public class PdfRocketGenerator
         return result;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Can't be easily fixed with current approach.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "Can't be easily fixed with current approach."
+    )]
     private HttpContent GetContent(string source, PdfOptions? options)
     {
         var content = new MultipartFormDataContent

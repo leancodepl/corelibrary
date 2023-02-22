@@ -55,7 +55,9 @@ public class ClientCredentialsHandler : DelegatingHandler
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request, CancellationToken cancellationToken)
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
     {
         if (AccessToken is null)
         {
@@ -124,9 +126,7 @@ public class ClientCredentialsHandler : DelegatingHandler
                     ClientSecret = config.ClientSecret,
                     Scope = config.Scopes,
                 };
-                var response = await httpClient.RequestClientCredentialsTokenAsync(
-                    request,
-                    cancellationToken);
+                var response = await httpClient.RequestClientCredentialsTokenAsync(request, cancellationToken);
 
                 if (!response.IsError)
                 {
@@ -140,7 +140,8 @@ public class ClientCredentialsHandler : DelegatingHandler
                 {
                     logger.Fatal(
                         "Cannot get access token - server rejected the request with error {Error}",
-                        response.ErrorDescription);
+                        response.ErrorDescription
+                    );
 
                     return false;
                 }

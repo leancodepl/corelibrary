@@ -5,7 +5,11 @@ using BenchmarkDotNet.Jobs;
 using LeanCode.Benchmarks.Pipelines;
 using LeanCode.Pipelines;
 using LeanCode.Pipelines.Autofac;
-using Executor = LeanCode.Pipelines.PipelineExecutor<LeanCode.Benchmarks.Pipelines.Context, LeanCode.Benchmarks.Pipelines.Input, LeanCode.Benchmarks.Pipelines.Output>;
+using Executor = LeanCode.Pipelines.PipelineExecutor<
+    LeanCode.Benchmarks.Pipelines.Context,
+    LeanCode.Benchmarks.Pipelines.Input,
+    LeanCode.Benchmarks.Pipelines.Output
+>;
 
 namespace LeanCode.Benchmarks;
 
@@ -22,11 +26,8 @@ public class PipelinesBenchmark
     [GlobalSetup]
     public void Setup()
     {
-        var emptyCfg = Pipeline.Build<Context, Input, Output>()
-            .Finalize<Finalizer>();
-        var singleCfg = Pipeline.Build<Context, Input, Output>()
-            .Use<PassthroughElement>()
-            .Finalize<Finalizer>();
+        var emptyCfg = Pipeline.Build<Context, Input, Output>().Finalize<Finalizer>();
+        var singleCfg = Pipeline.Build<Context, Input, Output>().Use<PassthroughElement>().Finalize<Finalizer>();
 
         var builder = new ContainerBuilder();
         builder.RegisterType<AutofacPipelineFactory>().AsSelf();
@@ -41,18 +42,14 @@ public class PipelinesBenchmark
     }
 
     [Benchmark(Baseline = true)]
-    public Task<Output> Empty() =>
-        emptyStatic.ExecuteAsync(new Context(), new Input());
+    public Task<Output> Empty() => emptyStatic.ExecuteAsync(new Context(), new Input());
 
     [Benchmark]
-    public Task<Output> SingleElement() =>
-        singleElementStatic.ExecuteAsync(new Context(), new Input());
+    public Task<Output> SingleElement() => singleElementStatic.ExecuteAsync(new Context(), new Input());
 
     [Benchmark]
-    public Task<Output> EmptyAutofac() =>
-        emptyAutofac.ExecuteAsync(new Context(), new Input());
+    public Task<Output> EmptyAutofac() => emptyAutofac.ExecuteAsync(new Context(), new Input());
 
     [Benchmark]
-    public Task<Output> SingleElementAutofac() =>
-        singleElementAutofac.ExecuteAsync(new Context(), new Input());
+    public Task<Output> SingleElementAutofac() => singleElementAutofac.ExecuteAsync(new Context(), new Input());
 }

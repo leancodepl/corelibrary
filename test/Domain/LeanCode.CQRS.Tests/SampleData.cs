@@ -91,7 +91,9 @@ public class SampleOperationHandler : IOperationHandler<AppContext, SampleOperat
 }
 
 public class NoCHCommand : ICommand { }
+
 public class NoQHQuery : IQuery<object> { }
+
 public class NoOHOperation : IOperation<object> { }
 
 [SuppressMessage("?", "CA1040", Justification = "Test interface.")]
@@ -115,10 +117,7 @@ public class SampleAuthorizer : CustomAuthorizer<AppContext, IAuthorizerData, ob
         LastInstance.Value = this;
     }
 
-    protected override Task<bool> CheckIfAuthorizedAsync(
-        AppContext appContext,
-        IAuthorizerData obj,
-        object customData)
+    protected override Task<bool> CheckIfAuthorizedAsync(AppContext appContext, IAuthorizerData obj, object customData)
     {
         AppContext = appContext;
         Object = obj;

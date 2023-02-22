@@ -43,20 +43,19 @@ internal class ViewCompiler
         Assembly.Load(new AssemblyName("System.Private.CoreLib")),
         Assembly.Load(new AssemblyName("System.Threading.Tasks")),
         Assembly.Load(new AssemblyName("System.Linq.Expressions")),
-
         Assembly.Load(new AssemblyName("Microsoft.CSharp")),
         Assembly.Load(new AssemblyName("System.Dynamic.Runtime")),
-
         typeof(ViewCompiler).Assembly,
         typeof(HtmlEncoder).Assembly,
         typeof(RazorCompiledItem).Assembly,
     }
-    .Distinct()
-    .Select(a => MetadataReference.CreateFromFile(a.Location))
-    .ToList();
+        .Distinct()
+        .Select(a => MetadataReference.CreateFromFile(a.Location))
+        .ToList();
 
-    private static readonly CSharpCompilationOptions Options
-        = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary);
+    private static readonly CSharpCompilationOptions Options = new CSharpCompilationOptions(
+        outputKind: OutputKind.DynamicallyLinkedLibrary
+    );
 
     private readonly RazorProjectEngine engine;
 
@@ -79,7 +78,10 @@ internal class ViewCompiler
 
         logger.Information(
             "View {ViewPath} compiled to assembly {Assembly} to type {Type}",
-            item.PhysicalPath, assembly, type);
+            item.PhysicalPath,
+            assembly,
+            type
+        );
 
         var field = type.GetField(Extensions.LayoutNode.LayoutFieldName);
 
@@ -97,7 +99,8 @@ internal class ViewCompiler
         {
             tree = CSharpSyntaxTree.ParseText(
                 SourceText.From(code),
-                CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8));
+                CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)
+            );
         }
         catch (Exception ex)
         {
@@ -116,22 +119,16 @@ internal class ViewCompiler
 
             if (!compilationResult.Success)
             {
-                var errors = compilationResult.Diagnostics
-                    .Select(d => d.GetMessage())
-                    .ToList();
+                var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
 
-                logger.Warning(
-                    "Cannot emit IL to in-memory stream for view {ViewPath}, errors:",
-                    fullPath);
+                logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
 
                 foreach (var err in errors)
                 {
                     logger.Warning("\t {Error}", err);
                 }
 
-                throw new CompilationFailedException(
-                    fullPath, errors,
-                    "Cannot compile the generated code.");
+                throw new CompilationFailedException(fullPath, errors, "Cannot compile the generated code.");
             }
 
             assemblyStream.Seek(0, SeekOrigin.Begin);
@@ -144,8 +141,7 @@ internal class ViewCompiler
             {
                 logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
 
-                throw new CompilationFailedException(
-                    fullPath, "Cannot load generated assembly.", ex);
+                throw new CompilationFailedException(fullPath, "Cannot load generated assembly.", ex);
             }
         }
     }
@@ -156,13 +152,9 @@ internal class ViewCompiler
 
         if (genResult.Diagnostics.Any(d => d.Severity == RazorDiagnosticSeverity.Error))
         {
-            var errors = genResult.Diagnostics
-                .Select(d => d.ToString())
-                .ToList();
+            var errors = genResult.Diagnostics.Select(d => d.ToString()).ToList();
 
-            logger.Warning(
-                "Cannot generate code for the view {ViewPath}, errors:",
-                item.PhysicalPath);
+            logger.Warning("Cannot generate code for the view {ViewPath}, errors:", item.PhysicalPath);
 
             foreach (var err in errors)
             {
@@ -170,18 +162,16 @@ internal class ViewCompiler
             }
 
             throw new CompilationFailedException(
-                item.PhysicalPath, errors,
-                "Cannot compile view - Razor syntax errors");
+                item.PhysicalPath,
+                errors,
+                "Cannot compile view - Razor syntax errors"
+            );
         }
         else if (genResult.Diagnostics.Count > 0)
         {
-            var diags = genResult.Diagnostics
-                .Select(d => d.ToString())
-                .ToList();
+            var diags = genResult.Diagnostics.Select(d => d.ToString()).ToList();
 
-            logger.Information(
-                "Diagnostics for {ViewPath} compilation:",
-                item.PhysicalPath);
+            logger.Information("Diagnostics for {ViewPath} compilation:", item.PhysicalPath);
 
             foreach (var diag in diags)
             {
@@ -200,17 +190,20 @@ internal class ViewCompiler
             builder =>
             {
                 builder.SetBaseType(typeof(BaseView).FullName);
-                builder.ConfigureClass((doc, @class) =>
-                {
-                    @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
-                    @class.Modifiers.Clear();
-                    @class.Modifiers.Add("public");
-                    @class.Modifiers.Add("sealed");
-                });
+                builder.ConfigureClass(
+                    (doc, @class) =>
+                    {
+                        @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
+                        @class.Modifiers.Clear();
+                        @class.Modifiers.Add("public");
+                        @class.Modifiers.Add("sealed");
+                    }
+                );
                 builder.AddDirective(Extensions.Layout.Directive);
                 builder.Features.Add(new Extensions.LayoutDirectivePass());
 
                 builder.AddDefaultImports(FilePreamble);
-            });
+            }
+        );
     }
 }

@@ -15,6 +15,7 @@ public static class Program
             .AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment()
             .ConfigureDefaultLogging(
                 projectName: "integration-tests",
-                destructurers: new TypesCatalog(typeof(Program)));
+                destructurers: new TypesCatalog(typeof(Program))
+            );
     }
 }

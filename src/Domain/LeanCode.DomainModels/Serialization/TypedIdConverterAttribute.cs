@@ -6,20 +6,25 @@ namespace LeanCode.DomainModels.Serialization;
 
 internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 {
-    private static readonly Dictionary<Type, Type> Converters = new()
-    {
-        [typeof(Id<>)] = typeof(IdConverter<>),
-        [typeof(IId<>)] = typeof(IIdConverter<>),
-        [typeof(LId<>)] = typeof(LIdConverter<>),
-        [typeof(SId<>)] = typeof(SIdConverter<>),
-    };
+    private static readonly Dictionary<Type, Type> Converters =
+        new()
+        {
+            [typeof(Id<>)] = typeof(IdConverter<>),
+            [typeof(IId<>)] = typeof(IIdConverter<>),
+            [typeof(LId<>)] = typeof(LIdConverter<>),
+            [typeof(SId<>)] = typeof(SIdConverter<>),
+        };
 
     public override JsonConverter CreateConverter(Type typeToConvert)
     {
-        if (!typeToConvert.IsGenericType
-            || !Converters.TryGetValue(typeToConvert.GetGenericTypeDefinition(), out var converterGenericType))
+        if (
+            !typeToConvert.IsGenericType
+            || !Converters.TryGetValue(typeToConvert.GetGenericTypeDefinition(), out var converterGenericType)
+        )
         {
-            throw new InvalidOperationException($"{nameof(TypedIdConverterAttribute)} can only by used for strongly typed id types");
+            throw new InvalidOperationException(
+                $"{nameof(TypedIdConverterAttribute)} can only by used for strongly typed id types"
+            );
         }
 
         var entityType = typeToConvert.GetGenericArguments()[0];

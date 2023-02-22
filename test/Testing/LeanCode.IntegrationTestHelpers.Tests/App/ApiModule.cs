@@ -26,6 +26,5 @@ public class ApiModule : AppModule
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
     }
 
-    protected override void Load(ContainerBuilder builder)
-    { }
+    protected override void Load(ContainerBuilder builder) { }
 }

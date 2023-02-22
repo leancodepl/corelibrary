@@ -17,19 +17,21 @@ public class SmsApiClient : ISmsSender
     public const string ApiBase = "https://api.smsapi.pl";
 
     private static readonly ImmutableHashSet<int> ClientErrors = ImmutableHashSet.Create(
-        101,  /* Invalid or no authorization data */
-        102,  /* Invalid login or password */
-        103,  /* Shortage of points for this user */
-        105,  /* Invalid IP address */
-        110,  /* Service is not available on this account */
+        101, /* Invalid or no authorization data */
+        102, /* Invalid login or password */
+        103, /* Shortage of points for this user */
+        105, /* Invalid IP address */
+        110, /* Service is not available on this account */
         1000, /* Action is available only for main user */
-        1001 /* Invalid action */);
+        1001 /* Invalid action */
+    );
 
     private static readonly ImmutableHashSet<int> HostErrors = ImmutableHashSet.Create(
-        8,   /* Error in request */
+        8, /* Error in request */
         201, /* Internal system error */
         666, /* Internal system error */
-        999 /* Internal system error */);
+        999 /* Internal system error */
+    );
 
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
 
@@ -47,7 +49,9 @@ public class SmsApiClient : ISmsSender
         else
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                "Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.Login}:{config.Password}")));
+                "Basic",
+                Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.Login}:{config.Password}"))
+            );
         }
     }
 
@@ -57,7 +61,11 @@ public class SmsApiClient : ISmsSender
         this.client = client;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2234", Justification = "Could potentialy change behavior.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2234",
+        Justification = "Could potentialy change behavior."
+    )]
     public async Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default)
     {
         logger.Verbose("Sending SMS using SMS Api");

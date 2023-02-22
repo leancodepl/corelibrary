@@ -17,9 +17,7 @@ public class HttpQueriesExecutorTests
         await exec.GetAsync(new ExampleQuery());
 
         Assert.NotNull(handler.Request);
-        Assert.Equal(
-            new Uri("http://localhost/query/" + typeof(ExampleQuery).FullName),
-            handler.Request!.RequestUri);
+        Assert.Equal(new Uri("http://localhost/query/" + typeof(ExampleQuery).FullName), handler.Request!.RequestUri);
     }
 
     [Fact]
@@ -107,7 +105,11 @@ public class HttpQueriesExecutorTests
         await Assert.ThrowsAsync<TException>(() => exec.GetAsync(new ExampleQuery()));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
     private static (HttpQueriesExecutor, ShortcircuitingJsonHandler) Prepare(HttpStatusCode statusCode, string result)
     {
         var handler = new ShortcircuitingJsonHandler(statusCode, result);

@@ -30,9 +30,22 @@ internal class StubContext : HttpContext
     public override ConnectionInfo Connection => throw new NotImplementedException();
     public override WebSocketManager WebSockets => throw new NotImplementedException();
     public override ClaimsPrincipal User { get; set; }
-    public override IDictionary<object, object?> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override IDictionary<object, object?> Items
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
+    public override string TraceIdentifier
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
+    public override ISession Session
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
+
     public override void Abort() => throw new NotImplementedException();
 }
 
@@ -68,10 +81,19 @@ internal class StubRequest : HttpRequest
     }
 
     public override IHeaderDictionary Headers => throw new NotImplementedException();
-    public override IRequestCookieCollection Cookies { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override IRequestCookieCollection Cookies
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
 
     public override bool HasFormContentType => throw new NotImplementedException();
-    public override IFormCollection Form { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override IFormCollection Form
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
+
     public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
@@ -96,7 +118,10 @@ internal class StubResponse : HttpResponse
     public override IHeaderDictionary Headers => throw new NotImplementedException();
     public override IResponseCookies Cookies => throw new NotImplementedException();
     public override bool HasStarted => throw new NotImplementedException();
+
     public override void OnCompleted(Func<object, Task> callback, object state) => throw new NotImplementedException();
+
     public override void OnStarting(Func<object, Task> callback, object state) => throw new NotImplementedException();
+
     public override void Redirect(string location, bool permanent) => throw new NotImplementedException();
 }

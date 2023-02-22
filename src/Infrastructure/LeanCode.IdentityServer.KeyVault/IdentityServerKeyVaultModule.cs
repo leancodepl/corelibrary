@@ -12,14 +12,16 @@ public class IdentityServerKeyVaultModule : AppModule
     {
         builder.RegisterType<KeyMaterialService>().AsImplementedInterfaces();
         builder.RegisterType<TokenCreationService>().AsImplementedInterfaces();
-        builder.Register(ctx =>
-        {
-            var factory = ctx.Resolve<IAzureClientFactory<CryptographyClient>>();
-            return new SigningService(
-                ctx.Resolve<KeyClient>(),
-                factory.CreateClient(AzureClientFactoryBuilderExtensions.TokenSigningKeyClientName));
-        })
-        .AsSelf()
-        .SingleInstance();
+        builder
+            .Register(ctx =>
+            {
+                var factory = ctx.Resolve<IAzureClientFactory<CryptographyClient>>();
+                return new SigningService(
+                    ctx.Resolve<KeyClient>(),
+                    factory.CreateClient(AzureClientFactoryBuilderExtensions.TokenSigningKeyClientName)
+                );
+            })
+            .AsSelf()
+            .SingleInstance();
     }
 }

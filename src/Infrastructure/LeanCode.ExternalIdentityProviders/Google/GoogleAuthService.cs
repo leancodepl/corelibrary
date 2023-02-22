@@ -11,13 +11,14 @@ public class GoogleAuthService
 
     public GoogleAuthService(GoogleAuthConfiguration config)
     {
-        settings = new()
-        {
-            Audience = config.ClientIds,
-        };
+        settings = new() { Audience = config.ClientIds, };
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task<GoogleTokenValidationResult> ValidateTokenAsync(string idToken)
     {
         try
@@ -25,7 +26,8 @@ public class GoogleAuthService
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
 
             return new GoogleTokenValidationResult.Success(
-                new(payload.Subject, payload.Email, payload.EmailVerified, payload.Picture));
+                new(payload.Subject, payload.Email, payload.EmailVerified, payload.Picture)
+            );
         }
         catch (Exception ex)
         {

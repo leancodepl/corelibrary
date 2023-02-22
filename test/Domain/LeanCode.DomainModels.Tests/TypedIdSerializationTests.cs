@@ -7,8 +7,11 @@ namespace LeanCode.DomainModels.Tests;
 public class TypedIdSerializationTests
 {
     private record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+
     private record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+
     private record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+
     private record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
 
     [IdSlug("custom")]

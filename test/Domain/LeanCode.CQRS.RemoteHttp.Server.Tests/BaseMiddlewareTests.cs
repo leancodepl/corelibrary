@@ -43,14 +43,16 @@ public abstract class BaseMiddlewareTests
             {
                 ctx.Response.StatusCode = PipelineContinued;
                 return Task.CompletedTask;
-            });
+            }
+        );
     }
 
     protected async Task<(int statusCode, string response)> Invoke(
         string? type = null,
         string content = "{}",
         string method = "POST",
-        ClaimsPrincipal? user = null)
+        ClaimsPrincipal? user = null
+    )
     {
         type = type ?? defaultObject;
 

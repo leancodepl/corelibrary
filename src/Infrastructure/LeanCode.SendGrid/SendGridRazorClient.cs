@@ -52,7 +52,10 @@ public class SendGridRazorClient
             try
             {
                 var body = await JsonSerializer.DeserializeAsync<SendGridResponse?>(
-                    stream, SerializerOptions, cancellationToken);
+                    stream,
+                    SerializerOptions,
+                    cancellationToken
+                );
 
                 throw new SendGridException(statusCode, body?.Errors);
             }
@@ -74,8 +77,7 @@ public class SendGridRazorClient
         {
             var viewName = plainTextModel.GetType().Name;
 
-            msg.PlainTextContent = await msg
-                .GetTemplateNames(viewName)
+            msg.PlainTextContent = await msg.GetTemplateNames(viewName)
                 .SelectAsync(name => TryRenderViewAsync(name + PlainTextModelSuffix, plainTextModel, cancellationToken))
                 .FirstOrDefaultAsync(view => view != null);
 
@@ -91,8 +93,7 @@ public class SendGridRazorClient
         {
             var viewName = htmlModel.GetType().Name;
 
-            msg.HtmlContent = await msg
-                .GetTemplateNames(viewName)
+            msg.HtmlContent = await msg.GetTemplateNames(viewName)
                 .SelectAsync(name => TryRenderViewAsync(name + HtmlModelSuffix, htmlModel, cancellationToken))
                 .FirstOrDefaultAsync(view => view != null);
 

@@ -15,7 +15,8 @@ public class IntegrationTestsConfigurationTests
         var configurationOverrides = new ConfigurationOverrides(
             connectionStringKey: customConnectionStringKey,
             internalBaseKey: customInternalBaseKey,
-            publicBaseKey: customPublicBaseKey);
+            publicBaseKey: customPublicBaseKey
+        );
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
 

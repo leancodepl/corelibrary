@@ -21,6 +21,5 @@ public class AttributeValue
     public static AttributeValue FromTuple(Tuple<string, string, bool> value) =>
         new AttributeValue(value.Item1, value.Item2, value.Item3);
 
-    public static implicit operator AttributeValue(Tuple<string, object, bool> value) =>
-        FromTuple(value);
+    public static implicit operator AttributeValue(Tuple<string, object, bool> value) => FromTuple(value);
 }

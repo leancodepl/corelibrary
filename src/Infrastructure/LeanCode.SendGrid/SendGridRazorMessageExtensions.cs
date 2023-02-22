@@ -52,7 +52,8 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithRecipients(
         this SendGridRazorMessage message,
-        List<EmailAddress> emailAddresses)
+        List<EmailAddress> emailAddresses
+    )
     {
         message.AddTos(emailAddresses);
 
@@ -61,7 +62,8 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithCarbonCopyRecipient(
         this SendGridRazorMessage message,
-        EmailAddress emailAddress)
+        EmailAddress emailAddress
+    )
     {
         message.AddCc(emailAddress);
 
@@ -71,16 +73,15 @@ public static class SendGridRazorMessageExtensions
     public static SendGridRazorMessage WithCarbonCopyRecipient(
         this SendGridRazorMessage message,
         string email,
-        string? name)
+        string? name
+    )
     {
         message.AddCc(email, name);
 
         return message;
     }
 
-    public static SendGridRazorMessage WithCarbonCopyRecipient(
-        this SendGridRazorMessage message,
-        string email)
+    public static SendGridRazorMessage WithCarbonCopyRecipient(this SendGridRazorMessage message, string email)
     {
         message.AddCc(email, null);
 
@@ -89,7 +90,8 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithCarbonCopyRecipients(
         this SendGridRazorMessage message,
-        List<EmailAddress> emailAddresses)
+        List<EmailAddress> emailAddresses
+    )
     {
         message.AddCcs(emailAddresses);
 
@@ -98,7 +100,8 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
         this SendGridRazorMessage message,
-        EmailAddress emailAddress)
+        EmailAddress emailAddress
+    )
     {
         message.AddBcc(emailAddress);
 
@@ -108,16 +111,15 @@ public static class SendGridRazorMessageExtensions
     public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
         this SendGridRazorMessage message,
         string email,
-        string? name)
+        string? name
+    )
     {
         message.AddBcc(email, name);
 
         return message;
     }
 
-    public static SendGridRazorMessage WithBlindCarbonCopyRecipient(
-        this SendGridRazorMessage message,
-        string email)
+    public static SendGridRazorMessage WithBlindCarbonCopyRecipient(this SendGridRazorMessage message, string email)
     {
         message.AddBcc(email, null);
 
@@ -126,7 +128,8 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithBlindCarbonCopyRecipients(
         this SendGridRazorMessage message,
-        List<EmailAddress> emailAddresses)
+        List<EmailAddress> emailAddresses
+    )
     {
         message.AddBccs(emailAddresses);
 
@@ -150,7 +153,8 @@ public static class SendGridRazorMessageExtensions
     public static SendGridRazorMessage WithSubject(
         this SendGridRazorMessage message,
         string subject,
-        params object[] formatArgs)
+        params object[] formatArgs
+    )
     {
         if (message is SendGridLocalizedRazorMessage localized)
         {
@@ -187,7 +191,11 @@ public static class SendGridRazorMessageExtensions
     }
 
     public static SendGridRazorMessage WithAttachment(
-        this SendGridRazorMessage message, string base64content, string fileName, string? mimeType)
+        this SendGridRazorMessage message,
+        string base64content,
+        string fileName,
+        string? mimeType
+    )
     {
         message.AddAttachment(fileName, base64content, mimeType);
 
@@ -195,7 +203,11 @@ public static class SendGridRazorMessageExtensions
     }
 
     public static async Task<SendGridRazorMessage> WithAttachmentAsync(
-        this SendGridRazorMessage message, Stream content, string fileName, string? mimeType)
+        this SendGridRazorMessage message,
+        Stream content,
+        string fileName,
+        string? mimeType
+    )
     {
         await message.AddAttachmentAsync(fileName, content, mimeType);
 
@@ -203,7 +215,11 @@ public static class SendGridRazorMessageExtensions
     }
 
     public static async Task<SendGridRazorMessage> WithAttachmentAsync(
-        this Task<SendGridRazorMessage> message, Stream content, string fileName, string? mimeType)
+        this Task<SendGridRazorMessage> message,
+        Stream content,
+        string fileName,
+        string? mimeType
+    )
     {
         return await WithAttachmentAsync(await message, content, fileName, mimeType);
     }
@@ -212,22 +228,10 @@ public static class SendGridRazorMessageExtensions
     {
         message.TrackingSettings = new TrackingSettings
         {
-            ClickTracking = new ClickTracking
-            {
-                Enable = false,
-            },
-            Ganalytics = new Ganalytics
-            {
-                Enable = false,
-            },
-            OpenTracking = new OpenTracking
-            {
-                Enable = false,
-            },
-            SubscriptionTracking = new SubscriptionTracking
-            {
-                Enable = false,
-            },
+            ClickTracking = new ClickTracking { Enable = false, },
+            Ganalytics = new Ganalytics { Enable = false, },
+            OpenTracking = new OpenTracking { Enable = false, },
+            SubscriptionTracking = new SubscriptionTracking { Enable = false, },
         };
 
         return message;

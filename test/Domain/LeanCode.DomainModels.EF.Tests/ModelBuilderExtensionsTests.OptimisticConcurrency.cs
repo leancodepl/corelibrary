@@ -15,7 +15,10 @@ public class ModelBuilderExtensionsTests_OptimisticConcurrency
         {
             var ent = db.Model.FindEntityType(typeof(ExplicitlyImplemented).FullName);
             var prop = ent.FindProperty("DateModified");
-            Assert.Equal("<LeanCode.DomainModels.Model.IOptimisticConcurrency.DateModified>k__BackingField", prop.FieldInfo.Name);
+            Assert.Equal(
+                "<LeanCode.DomainModels.Model.IOptimisticConcurrency.DateModified>k__BackingField",
+                prop.FieldInfo.Name
+            );
         }
     }
 
@@ -84,7 +87,11 @@ public class WrongDateModified : IOptimisticConcurrency
     private DateTime dateModified;
 
     public int Id { get; set; }
-    public DateTime DateModified { get => dateModified; set => dateModified = value; }
+    public DateTime DateModified
+    {
+        get => dateModified;
+        set => dateModified = value;
+    }
 }
 
 public class WrongDateModifiedContext : DbContext

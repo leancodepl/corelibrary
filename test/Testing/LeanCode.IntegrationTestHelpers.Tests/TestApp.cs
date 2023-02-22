@@ -13,7 +13,8 @@ namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides(Serilog.Events.LogEventLevel.Error, false);
+    protected override ConfigurationOverrides Configuration { get; } =
+        new ConfigurationOverrides(Serilog.Events.LogEventLevel.Error, false);
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
@@ -30,9 +31,7 @@ public class TestApp : LeanCodeTestFactory<Startup>
     {
         return LeanProgram
             .BuildMinimalHost<Startup>()
-            .ConfigureDefaultLogging(
-                projectName: "integration-tests",
-                destructurers: new TypesCatalog(typeof(Program)))
+            .ConfigureDefaultLogging(projectName: "integration-tests", destructurers: new TypesCatalog(typeof(Program)))
             .UseEnvironment(Environments.Development);
     }
 }

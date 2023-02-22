@@ -25,11 +25,14 @@ public class CQRSModule : AppModule
         }
     }
 
-    [Obsolete("Use `WithCustomPipelines(TypesCatalog, CommandBuilder<TAppContext>, QueryBuilder<TAppContext>, OperationBuilder<TAppContext>)` overload which also configures operations")]
+    [Obsolete(
+        "Use `WithCustomPipelines(TypesCatalog, CommandBuilder<TAppContext>, QueryBuilder<TAppContext>, OperationBuilder<TAppContext>)` overload which also configures operations"
+    )]
     public CQRSModule WithCustomPipelines<TAppContext>(
         TypesCatalog handlersCatalog,
         CommandBuilder<TAppContext> commandBuilder,
-        QueryBuilder<TAppContext> queryBuilder)
+        QueryBuilder<TAppContext> queryBuilder
+    )
         where TAppContext : IPipelineContext
     {
         return WithCustomPipelines(handlersCatalog, commandBuilder, queryBuilder, o => o);
@@ -39,7 +42,8 @@ public class CQRSModule : AppModule
         TypesCatalog handlersCatalog,
         CommandBuilder<TAppContext> commandBuilder,
         QueryBuilder<TAppContext> queryBuilder,
-        OperationBuilder<TAppContext> operationBuilder)
+        OperationBuilder<TAppContext> operationBuilder
+    )
         where TAppContext : IPipelineContext
     {
         modules.Add(new TypedCQRSModule<TAppContext>(handlersCatalog, commandBuilder, queryBuilder, operationBuilder));

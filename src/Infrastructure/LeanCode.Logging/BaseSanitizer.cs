@@ -13,7 +13,8 @@ public abstract class BaseSanitizer<T> : IDestructuringPolicy
     public bool TryDestructure(
         object value,
         ILogEventPropertyValueFactory propertyValueFactory,
-        [NotNullWhen(true)] out LogEventPropertyValue? result)
+        [NotNullWhen(true)] out LogEventPropertyValue? result
+    )
     {
         if (TrySanitizeInternal(value, out var newValue))
         {

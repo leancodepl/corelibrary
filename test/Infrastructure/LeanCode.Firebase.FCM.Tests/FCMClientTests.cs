@@ -15,7 +15,9 @@ public class FCMClientTests
 
     private static readonly Guid UserId = Guid.NewGuid();
 
-    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(Key));
+    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(
+        FirebaseConfiguration.Prepare(Key)
+    );
 
     private readonly StubStore store;
     private readonly FCMClient client;
@@ -31,11 +33,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification
-            {
-                Title = "Test title",
-                Body = "Test body",
-            },
+            Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
         await client.SendToUserAsync(UserId, message);
@@ -46,11 +44,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification
-            {
-                Title = "Test title",
-                Body = "Test body",
-            },
+            Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
         await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
@@ -61,11 +55,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification
-            {
-                Title = "Test title",
-                Body = "Test body",
-            },
+            Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
         await client.SendToUserAsync(Guid.NewGuid(), message);
@@ -76,11 +66,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification
-            {
-                Title = "Test title",
-                Body = "Test body",
-            },
+            Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
         await client.SendToUserAsync(UserId, message);

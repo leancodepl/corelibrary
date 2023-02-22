@@ -43,29 +43,20 @@ public class InProcCQRS__Commands
 
         appContext = new SampleAppContext
         {
-            User = new ClaimsPrincipal(new[]
-            {
-                new ClaimsIdentity(
-                    new[]
-                    {
-                        new Claim("role", "user"),
-                    },
-                    "system", "sub", "role"),
-            }),
+            User = new ClaimsPrincipal(
+                new[] { new ClaimsIdentity(new[] { new Claim("role", "user"), }, "system", "sub", "role"), }
+            ),
         };
     }
 
     [Benchmark(Baseline = true)]
-    public Task<CommandResult> CommandWithoutInlineObjContext() =>
-        simple.RunAsync(appContext, plainCommand);
+    public Task<CommandResult> CommandWithoutInlineObjContext() => simple.RunAsync(appContext, plainCommand);
 
     [Benchmark]
-    public Task<CommandResult> PlainCommandWithSecuredPipeline() =>
-        secured.RunAsync(appContext, plainCommand);
+    public Task<CommandResult> PlainCommandWithSecuredPipeline() => secured.RunAsync(appContext, plainCommand);
 
     [Benchmark]
-    public Task<CommandResult> SecuredCommandWithSecuredPipeline() =>
-        secured.RunAsync(appContext, userCommand);
+    public Task<CommandResult> SecuredCommandWithSecuredPipeline() => secured.RunAsync(appContext, userCommand);
 
     [Benchmark]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Deliberate approach.")]
@@ -82,27 +73,24 @@ public class InProcCQRS__Commands
     }
 
     [Benchmark]
-    public Task<CommandResult> PlainCommandWithValidatedPipeline() =>
-        validated.RunAsync(appContext, plainCommand);
+    public Task<CommandResult> PlainCommandWithValidatedPipeline() => validated.RunAsync(appContext, plainCommand);
 
     [Benchmark]
-    public Task<CommandResult> ValidCommandWithValidatedPipeline() =>
-        validated.RunAsync(appContext, validCommand);
+    public Task<CommandResult> ValidCommandWithValidatedPipeline() => validated.RunAsync(appContext, validCommand);
 
     [Benchmark]
-    public Task<CommandResult> InvalidCommandWithValidatedPipeline() =>
-        validated.RunAsync(appContext, invalidCommand);
+    public Task<CommandResult> InvalidCommandWithValidatedPipeline() => validated.RunAsync(appContext, invalidCommand);
 
     private static ICommandExecutor<SampleAppContext> PrepareExecutor(
         CommandBuilder<SampleAppContext> commandBuilder,
-        params AppModule[] additionalModules)
+        params AppModule[] additionalModules
+    )
     {
         var builder = new ContainerBuilder();
         var sc = new ServiceCollection();
 
         var benchModule = new BenchmarkModule();
-        var module = new CQRSModule()
-            .WithCustomPipelines(Catalog, commandBuilder, b => b, b => b);
+        var module = new CQRSModule().WithCustomPipelines(Catalog, commandBuilder, b => b, b => b);
 
         builder.RegisterModule(module);
         module.ConfigureServices(sc);

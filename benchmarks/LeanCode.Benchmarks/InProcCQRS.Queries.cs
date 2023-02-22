@@ -37,29 +37,19 @@ public class InProcCQRS__Queries
         appContext = new SampleAppContext
         {
             User = new ClaimsPrincipal(
-                new[]
-                {
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim("role", "user"),
-                        },
-                        "system", "sub", "role"),
-                }),
+                new[] { new ClaimsIdentity(new[] { new Claim("role", "user"), }, "system", "sub", "role"), }
+            ),
         };
     }
 
     [Benchmark(Baseline = true)]
-    public Task<SampleDTO> QueryWithoutInlineObjContext() =>
-        simple.GetAsync(appContext, plainQuery);
+    public Task<SampleDTO> QueryWithoutInlineObjContext() => simple.GetAsync(appContext, plainQuery);
 
     [Benchmark]
-    public Task<SampleDTO> PlainQueryWithSecuredPipeline() =>
-        secured.GetAsync(appContext, plainQuery);
+    public Task<SampleDTO> PlainQueryWithSecuredPipeline() => secured.GetAsync(appContext, plainQuery);
 
     [Benchmark]
-    public Task<SampleDTO> SecuredQueryWithSecuredPipeline() =>
-        secured.GetAsync(appContext, userQuery);
+    public Task<SampleDTO> SecuredQueryWithSecuredPipeline() => secured.GetAsync(appContext, userQuery);
 
     [Benchmark]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Deliberate approach.")]
@@ -77,14 +67,14 @@ public class InProcCQRS__Queries
 
     private static IQueryExecutor<SampleAppContext> PrepareExecutor(
         QueryBuilder<SampleAppContext> queryBuilder,
-        params AppModule[] additionalModules)
+        params AppModule[] additionalModules
+    )
     {
         var builder = new ContainerBuilder();
         var sc = new ServiceCollection();
 
         var benchModule = new BenchmarkModule();
-        var module = new CQRSModule()
-            .WithCustomPipelines(Catalog, b => b, queryBuilder, b => b);
+        var module = new CQRSModule().WithCustomPipelines(Catalog, b => b, queryBuilder, b => b);
 
         builder.RegisterModule(module);
         module.ConfigureServices(sc);

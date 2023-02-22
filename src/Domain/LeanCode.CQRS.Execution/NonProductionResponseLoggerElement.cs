@@ -22,10 +22,7 @@ public class NonProductionResponseLoggerElement<TContext, TObj, TRes> : IPipelin
         this.logger = logger;
     }
 
-    public async Task<TRes> ExecuteAsync(
-        TContext ctx,
-        TObj input,
-        Func<TContext, TObj, Task<TRes>> next)
+    public async Task<TRes> ExecuteAsync(TContext ctx, TObj input, Func<TContext, TObj, Task<TRes>> next)
     {
         var result = await next(ctx, input);
 
@@ -41,7 +38,8 @@ public class NonProductionResponseLoggerElement<TContext, TObj, TRes> : IPipelin
 public static class LogResponsesnOnNonProductionPipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, TObj, TRes> LogResponesOnNonProduction<TContext, TObj, TRes>(
-        this PipelineBuilder<TContext, TObj, TRes> builder)
+        this PipelineBuilder<TContext, TObj, TRes> builder
+    )
         where TContext : notnull, IPipelineContext
     {
         return builder.Use<NonProductionResponseLoggerElement<TContext, TObj, TRes>>();

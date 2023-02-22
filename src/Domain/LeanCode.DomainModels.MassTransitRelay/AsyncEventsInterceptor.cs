@@ -13,8 +13,7 @@ public sealed class AsyncEventsInterceptor
 
     public void Configure() => DomainEvents.SetInterceptor(Interceptor);
 
-    public void Prepare() =>
-        Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
+    public void Prepare() => Interceptor.Storage.Value = new ConcurrentQueue<IDomainEvent>();
 
     public ConcurrentQueue<IDomainEvent>? CaptureQueue()
     {
@@ -27,15 +26,16 @@ public sealed class AsyncEventsInterceptor
 
     private sealed class EventInterceptor : IDomainEventInterceptor
     {
-        public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; }
-            = new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
+        public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; } =
+            new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
 
         void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
         {
             if (Storage.Value is null)
             {
                 throw new InvalidOperationException(
-                    "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests.");
+                    "Use IEventsExecutor or RequestEventsExecutor middleware to handle per-async requests."
+                );
             }
 
             Storage.Value.Enqueue(domainEvent);

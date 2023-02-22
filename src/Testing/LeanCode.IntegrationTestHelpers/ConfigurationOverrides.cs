@@ -26,7 +26,8 @@ public class ConfigurationOverrides : IConfigurationSource
         string? connectionStringBase = null,
         string? connectionStringKey = null,
         string? internalBaseKey = null,
-        string? publicBaseKey = null)
+        string? publicBaseKey = null
+    )
     {
         this.minimumLevel = minimumLevel ?? MinimumLevelDefault;
         this.enableInternalLogs = enableInternalLogs ?? EnableInternalLogsDefault;
@@ -44,7 +45,8 @@ public class ConfigurationOverrides : IConfigurationSource
             connectionStringBase,
             connectionStringKey,
             internalBaseKey,
-            publicBaseKey);
+            publicBaseKey
+        );
     }
 
     private class Provider : ConfigurationProvider
@@ -62,7 +64,8 @@ public class ConfigurationOverrides : IConfigurationSource
             string connectionStringBase,
             string connectionStringKey,
             string internalBaseKey,
-            string publicBaseKey)
+            string publicBaseKey
+        )
         {
             this.minimumLevel = minimumLevel;
             this.enableInternalLogs = enableInternalLogs;

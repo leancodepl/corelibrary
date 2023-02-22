@@ -10,7 +10,8 @@ public static class AsyncEventsInterceptorExtensions
 {
     public static async Task<(TResult Result, List<IDomainEvent> Events)> CaptureEventsOfAsync<TResult>(
         this AsyncEventsInterceptor interceptor,
-        Func<Task<TResult>> action)
+        Func<Task<TResult>> action
+    )
     {
         interceptor.Prepare();
         var result = await action();
@@ -21,7 +22,8 @@ public static class AsyncEventsInterceptorExtensions
 
     public static async Task<List<IDomainEvent>> CaptureEventsOfAsync(
         this AsyncEventsInterceptor interceptor,
-        Func<Task> action)
+        Func<Task> action
+    )
     {
         interceptor.Prepare();
         await action();

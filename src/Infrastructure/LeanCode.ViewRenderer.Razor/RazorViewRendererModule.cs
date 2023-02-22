@@ -14,8 +14,6 @@ public class RazorViewRendererModule : AppModule
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(_ => new RazorViewRenderer(opts))
-            .As<IViewRenderer>()
-            .SingleInstance();
+        builder.Register(_ => new RazorViewRenderer(opts)).As<IViewRenderer>().SingleInstance();
     }
 }

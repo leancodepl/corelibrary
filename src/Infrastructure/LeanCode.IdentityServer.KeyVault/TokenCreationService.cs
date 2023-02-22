@@ -15,7 +15,8 @@ internal class TokenCreationService : DefaultTokenCreationService
         ISystemClock clock,
         IKeyMaterialService keys,
         IdentityServerOptions options,
-        ILogger<DefaultTokenCreationService> logger)
+        ILogger<DefaultTokenCreationService> logger
+    )
         : base(clock, keys, options, logger)
     {
         this.signing = signing;

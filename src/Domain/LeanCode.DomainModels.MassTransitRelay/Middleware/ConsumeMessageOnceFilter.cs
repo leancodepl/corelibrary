@@ -17,18 +17,26 @@ public class ConsumeMessageOnceFilter<TConsumer, TMessage> : IFilter<ConsumerCon
         this.consumedMessages = consumedMessages;
     }
 
-    public void Probe(ProbeContext context)
-    { }
+    public void Probe(ProbeContext context) { }
 
-    public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
+    public async Task Send(
+        ConsumerConsumeContext<TConsumer, TMessage> context,
+        IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next
+    )
     {
         var msg = ConsumedMessage.Create(context);
 
-        if (await consumedMessages.ConsumedMessages
-            .Where(m => m.ConsumerType == msg.ConsumerType && m.MessageId == msg.MessageId)
-            .AnyAsync())
+        if (
+            await consumedMessages.ConsumedMessages
+                .Where(m => m.ConsumerType == msg.ConsumerType && m.MessageId == msg.MessageId)
+                .AnyAsync()
+        )
         {
-            logger.Information("Message {MessageId} already consumed by {ConsumerType}", msg.MessageId, msg.ConsumerType);
+            logger.Information(
+                "Message {MessageId} already consumed by {ConsumerType}",
+                msg.MessageId,
+                msg.ConsumerType
+            );
             return;
         }
         else
@@ -44,14 +52,19 @@ public static class ConsumeMessageOnceFilterExtensions
 {
     public static void UseConsumedMessagesFiltering(
         this IConsumePipeConfigurator configurator,
-        IServiceProvider provider)
+        IServiceProvider provider
+    )
     {
         configurator.UseTypedConsumeFilter<Observer>(provider);
     }
 
     private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public override void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator) =>
-            configurator.AddConsumerScopedFilter<ConsumeMessageOnceFilter<TConsumer, TMessage>, TConsumer, TMessage>(Provider);
+        public override void ConsumerMessageConfigured<TConsumer, TMessage>(
+            IConsumerMessageConfigurator<TConsumer, TMessage> configurator
+        ) =>
+            configurator.AddConsumerScopedFilter<ConsumeMessageOnceFilter<TConsumer, TMessage>, TConsumer, TMessage>(
+                Provider
+            );
     }
 }

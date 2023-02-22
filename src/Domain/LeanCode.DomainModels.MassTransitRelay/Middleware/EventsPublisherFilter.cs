@@ -15,7 +15,10 @@ public class EventsPublisherFilter<TConsumer, TMessage> : IFilter<ConsumerConsum
 
     public void Probe(ProbeContext context) { }
 
-    public async Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
+    public async Task Send(
+        ConsumerConsumeContext<TConsumer, TMessage> context,
+        IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next
+    )
     {
         var raisedEvents = await interceptor.CaptureEventsOfAsync(() => next.Send(context));
 
@@ -26,16 +29,18 @@ public class EventsPublisherFilter<TConsumer, TMessage> : IFilter<ConsumerConsum
 
 public static class EventsPublisherFilterExtensions
 {
-    public static void UseDomainEventsPublishing(
-        this IConsumePipeConfigurator configurator,
-        IServiceProvider provider)
+    public static void UseDomainEventsPublishing(this IConsumePipeConfigurator configurator, IServiceProvider provider)
     {
         configurator.UseTypedConsumeFilter<Observer>(provider);
     }
 
     private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public override void ConsumerMessageConfigured<TConsumer, TMessage>(IConsumerMessageConfigurator<TConsumer, TMessage> configurator) =>
-            configurator.AddConsumerScopedFilter<EventsPublisherFilter<TConsumer, TMessage>, TConsumer, TMessage>(Provider);
+        public override void ConsumerMessageConfigured<TConsumer, TMessage>(
+            IConsumerMessageConfigurator<TConsumer, TMessage> configurator
+        ) =>
+            configurator.AddConsumerScopedFilter<EventsPublisherFilter<TConsumer, TMessage>, TConsumer, TMessage>(
+                Provider
+            );
     }
 }

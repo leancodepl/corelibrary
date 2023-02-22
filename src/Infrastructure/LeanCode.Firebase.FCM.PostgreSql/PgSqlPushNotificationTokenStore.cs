@@ -28,15 +28,22 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         var res = await dbContext.QueryAsync<string>(
             $"SELECT {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = @userId",
             new { userId },
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken
+        );
         return res.AsList();
     }
 
-    public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(IReadOnlySet<Guid> userIds, CancellationToken cancellationToken = default)
+    public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(
+        IReadOnlySet<Guid> userIds,
+        CancellationToken cancellationToken = default
+    )
     {
         if (userIds.Count > MaxTokenBatchSize)
         {
-            throw new ArgumentException($"You can only pass at most {MaxTokenBatchSize} users in one call.", nameof(userIds));
+            throw new ArgumentException(
+                $"You can only pass at most {MaxTokenBatchSize} users in one call.",
+                nameof(userIds)
+            );
         }
 
         var userIdsList = userIds.ToList();
@@ -44,12 +51,9 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         var res = await dbContext.QueryAsync<UserToken>(
             $"SELECT {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))}, {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = ANY(@userIdsList)",
             new { userIdsList },
-            cancellationToken: cancellationToken);
-        return res
-            .GroupBy(g => g.UserId)
-            .ToDictionary(
-                t => t.Key,
-                t => t.Select(e => e.Token).ToList());
+            cancellationToken: cancellationToken
+        );
+        return res.GroupBy(g => g.UserId).ToDictionary(t => t.Key, t => t.Select(e => e.Token).ToList());
     }
 
     public async Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
@@ -57,7 +61,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         try
         {
             await dbContext.ExecuteAsync(
-            $@"
+                $@"
                     BEGIN TRANSACTION;
 
                     -- Remove token from (possibly another) user
@@ -72,8 +76,16 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
                     VALUES (@newId, @userId, @newToken, @now);
 
                     COMMIT TRANSACTION;
-                ", new { newId = Guid.NewGuid(), userId, newToken, now = TimeProvider.Now },
-            cancellationToken: cancellationToken);
+                ",
+                new
+                {
+                    newId = Guid.NewGuid(),
+                    userId,
+                    newToken,
+                    now = TimeProvider.Now
+                },
+                cancellationToken: cancellationToken
+            );
             logger.Information("Added push notification token for user {UserId} from the store", userId);
         }
         catch (Exception ex)
@@ -83,7 +95,11 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
     {
         try
@@ -91,7 +107,8 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
             await dbContext.ExecuteAsync(
                 $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = @userId AND {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = @newToken",
                 new { userId, newToken },
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken
+            );
             logger.Information("Removed push notification token for user {UserId} from the store", userId);
         }
         catch (Exception ex)
@@ -100,7 +117,11 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         try
@@ -108,7 +129,8 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
             await dbContext.ExecuteAsync(
                 $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = @token",
                 new { token },
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken
+            );
             logger.Information("Removed push notification token from the store");
         }
         catch (Exception ex)
@@ -117,7 +139,11 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default)
     {
         try
@@ -126,7 +152,8 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
             await dbContext.ExecuteAsync(
                 $"DELETE FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} = ANY(@tokensList)",
                 new { tokensList },
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken
+            );
             logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
         }
         catch (Exception ex)
@@ -135,8 +162,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         }
     }
 
-    private string GetTokensTableName() =>
-        dbContext.GetFullTableName(typeof(PgSqlPushNotificationEntity));
+    private string GetTokensTableName() => dbContext.GetFullTableName(typeof(PgSqlPushNotificationEntity));
 
     private string GetTokensColumnName(string propertyName) =>
         dbContext.GetColumnName(typeof(PgSqlPushNotificationEntity), propertyName);

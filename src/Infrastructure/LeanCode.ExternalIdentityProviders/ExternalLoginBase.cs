@@ -69,7 +69,8 @@ public abstract class ExternalLoginBase<TUser>
         {
             throw new ExternalLoginException(
                 "Other account is already connected with this token.",
-                TokenValidationError.OtherConnected);
+                TokenValidationError.OtherConnected
+            );
         }
         else
         {
@@ -80,9 +81,7 @@ public abstract class ExternalLoginBase<TUser>
             }
             else
             {
-                await userManager
-                    .AddLoginAsync(user, new(GrantType, providerId, GrantType))
-                    .EnsureIdentitySuccess();
+                await userManager.AddLoginAsync(user, new(GrantType, providerId, GrantType)).EnsureIdentitySuccess();
 
                 Logger.Information("User {UserId} connected their account with {GrantType}", userId, GrantType);
             }

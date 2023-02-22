@@ -14,7 +14,8 @@ public class FirestoreDatabase : IHostedService
     private readonly FirebaseApp firebaseApp;
     private FirestoreDb? database;
 
-    public FirestoreDb Database => database ?? throw new InvalidOperationException("The database needs to be initialized first.");
+    public FirestoreDb Database =>
+        database ?? throw new InvalidOperationException("The database needs to be initialized first.");
 
     public FirestoreDatabase(FirebaseApp firebaseApp)
     {

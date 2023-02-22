@@ -7,7 +7,8 @@ public static class PipelineExecutor
 {
     public static PipelineExecutor<TContext, TInput, TOutput> Create<TContext, TInput, TOutput>(
         IPipelineFactory factory,
-        ConfiguredPipeline<TContext, TInput, TOutput> cfg)
+        ConfiguredPipeline<TContext, TInput, TOutput> cfg
+    )
         where TContext : notnull, IPipelineContext
     {
         return new PipelineExecutor<TContext, TInput, TOutput>(factory, cfg);
@@ -20,9 +21,7 @@ public class PipelineExecutor<TContext, TInput, TOutput>
     private readonly IPipelineFactory factory;
     private readonly Func<TContext, TInput, Task<TOutput>> exec;
 
-    public PipelineExecutor(
-        IPipelineFactory factory,
-        ConfiguredPipeline<TContext, TInput, TOutput> config)
+    public PipelineExecutor(IPipelineFactory factory, ConfiguredPipeline<TContext, TInput, TOutput> config)
     {
         this.factory = factory;
         exec = BuildPipeline(config);
@@ -38,7 +37,8 @@ public class PipelineExecutor<TContext, TInput, TOutput>
     }
 
     private static Func<TContext, TInput, Task<TOutput>> BuildPipeline(
-        ConfiguredPipeline<TContext, TInput, TOutput> config)
+        ConfiguredPipeline<TContext, TInput, TOutput> config
+    )
     {
         var app = BuildNext(config.Finalizer);
 
@@ -55,22 +55,19 @@ public class PipelineExecutor<TContext, TInput, TOutput>
         return (ctx, input) =>
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
-            return ctx.Scope
-                .ResolveFinalizer<TContext, TInput, TOutput>(finalType)
-                .ExecuteAsync(ctx, input);
+            return ctx.Scope.ResolveFinalizer<TContext, TInput, TOutput>(finalType).ExecuteAsync(ctx, input);
         };
     }
 
     private static Func<TContext, TInput, Task<TOutput>> BuildNext(
         Type pipelineType,
-        Func<TContext, TInput, Task<TOutput>> next)
+        Func<TContext, TInput, Task<TOutput>> next
+    )
     {
         return (ctx, input) =>
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
-            return ctx.Scope
-                .ResolveElement<TContext, TInput, TOutput>(pipelineType)
-                .ExecuteAsync(ctx, input, next);
+            return ctx.Scope.ResolveElement<TContext, TInput, TOutput>(pipelineType).ExecuteAsync(ctx, input, next);
         };
     }
 }

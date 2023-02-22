@@ -67,10 +67,7 @@ public class ExternalLoginGrantValidatorTests
         {
             Request = new ValidatedTokenRequest
             {
-                Raw = new System.Collections.Specialized.NameValueCollection
-                {
-                    ["assertion"] = token,
-                },
+                Raw = new System.Collections.Specialized.NameValueCollection { ["assertion"] = token, },
             },
         };
         await grantValidator.ValidateAsync(ctx);

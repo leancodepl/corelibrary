@@ -20,5 +20,10 @@ public interface IViewRenderer
     /// the (only) implementation based on Razor uses dynamic types and the object binder
     /// respects the visibility.
     /// </remarks>
-    Task RenderToStreamAsync(string viewName, object model, Stream outputStream, CancellationToken cancellationToken = default);
+    Task RenderToStreamAsync(
+        string viewName,
+        object model,
+        Stream outputStream,
+        CancellationToken cancellationToken = default
+    );
 }

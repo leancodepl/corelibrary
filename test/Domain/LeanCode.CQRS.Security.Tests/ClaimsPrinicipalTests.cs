@@ -79,7 +79,13 @@ public class ClaimsPrincipalTests
     {
         var user = CreateUser("NotExistingRole");
 
-        var hasPermission = user.HasPermission(registry, Permissions.Create, Permissions.Update, Permissions.List, Permissions.Read);
+        var hasPermission = user.HasPermission(
+            registry,
+            Permissions.Create,
+            Permissions.Update,
+            Permissions.List,
+            Permissions.Read
+        );
 
         Assert.False(hasPermission);
     }
@@ -113,14 +119,12 @@ public class ClaimsPrincipalTests
 
     private class RoleRegistration : IRoleRegistration
     {
-        public IEnumerable<Role> Roles { get; } = new Role[]
-        {
-            new Role(
-                Reg.User, Permissions.List, Permissions.Read),
-            new Role(
-                Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update),
-            new Role(
-                Reg.Contributor, Permissions.Update),
-        };
+        public IEnumerable<Role> Roles { get; } =
+            new Role[]
+            {
+                new Role(Reg.User, Permissions.List, Permissions.Read),
+                new Role(Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update),
+                new Role(Reg.Contributor, Permissions.Update),
+            };
     }
 }

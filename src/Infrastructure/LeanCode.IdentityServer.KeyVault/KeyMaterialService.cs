@@ -23,7 +23,11 @@ internal class KeyMaterialService : IKeyMaterialService
 
     public Task<SigningCredentials?> GetSigningCredentialsAsync(IEnumerable<string>? allowedAlgorithms = null)
     {
-        if (allowedAlgorithms == null || !allowedAlgorithms.Any() || allowedAlgorithms.Contains(SecurityAlgorithms.RsaSha256))
+        if (
+            allowedAlgorithms == null
+            || !allowedAlgorithms.Any()
+            || allowedAlgorithms.Contains(SecurityAlgorithms.RsaSha256)
+        )
         {
             return signing.GetSigningCredentialsAsync()!;
         }

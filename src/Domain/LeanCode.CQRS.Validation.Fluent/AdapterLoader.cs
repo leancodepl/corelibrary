@@ -24,8 +24,6 @@ internal class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppCont
 
     public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
     {
-        return adapter is null
-            ? NoError
-            : adapter.ValidateAsync(appContext, command);
+        return adapter is null ? NoError : adapter.ValidateAsync(appContext, command);
     }
 }

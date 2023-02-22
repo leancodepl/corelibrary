@@ -13,18 +13,18 @@ public class HttpQueriesExecutor
     private readonly JsonSerializerOptions? serializerOptions;
 
     public HttpQueriesExecutor(HttpClient client)
-        : this(client, null)
-    { }
+        : this(client, null) { }
 
-    public HttpQueriesExecutor(
-        HttpClient client,
-        JsonSerializerOptions? serializerOptions)
+    public HttpQueriesExecutor(HttpClient client, JsonSerializerOptions? serializerOptions)
     {
         this.client = client;
         this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
     }
 
-    public virtual async Task<TResult> GetAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> GetAsync<TResult>(
+        IQuery<TResult> query,
+        CancellationToken cancellationToken = default
+    )
     {
         using var content = JsonContent.Create(query, query.GetType(), options: serializerOptions);
         using var response = await client.PostAsync("query/" + query.GetType().FullName, content, cancellationToken);
@@ -34,7 +34,9 @@ public class HttpQueriesExecutor
         using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
         try
         {
-            return (await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken))!;
+            return (
+                await JsonSerializer.DeserializeAsync<TResult>(responseContent, serializerOptions, cancellationToken)
+            )!;
         }
         catch (Exception ex)
         {

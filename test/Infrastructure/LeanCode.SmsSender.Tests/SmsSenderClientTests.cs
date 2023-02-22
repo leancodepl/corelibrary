@@ -13,17 +13,10 @@ public class SmsSenderClientTests
     private static readonly string Token = Environment.GetEnvironmentVariable("SMSAPI_TOKEN");
     private static readonly string PhoneNumber = Environment.GetEnvironmentVariable("SMSAPI_PHONENUMBERTO");
 
-    private static readonly SmsApiConfiguration Config = new(Token, "")
-    {
-        FastMode = false,
-        TestMode = false,
-    };
+    private static readonly SmsApiConfiguration Config = new(Token, "") { FastMode = false, TestMode = false, };
 
-    private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new(Token, Guid.NewGuid().ToString())
-    {
-        FastMode = false,
-        TestMode = false,
-    };
+    private static readonly SmsApiConfiguration ConfigWithUnregisteredSender =
+        new(Token, Guid.NewGuid().ToString()) { FastMode = false, TestMode = false, };
 
     private readonly SmsApiClient client;
     private readonly SmsApiClient clientWithUnregisteredSender;
@@ -44,11 +37,14 @@ public class SmsSenderClientTests
     [SmsApiFact]
     public async Task Gets_correct_errors_when_sender_is_unregistered_in_the_API()
     {
-        await Assert.ThrowsAsync<ActionException>(() =>
-            clientWithUnregisteredSender.SendAsync(Message, PhoneNumber));
+        await Assert.ThrowsAsync<ActionException>(() => clientWithUnregisteredSender.SendAsync(Message, PhoneNumber));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
     private static SmsApiClient CreateSmsApiClient(SmsApiConfiguration config)
     {
         HttpClient client = new();

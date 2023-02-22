@@ -21,7 +21,8 @@ public class MassTransitTestRelayModule : AppModule
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(c => ResettableBusActivityMonitor.CreateFor(c.Resolve<IBusControl>(), inactivityWaitTime))
+        builder
+            .Register(c => ResettableBusActivityMonitor.CreateFor(c.Resolve<IBusControl>(), inactivityWaitTime))
             .AutoActivate()
             .As<IBusActivityMonitor>()
             .AsSelf()

@@ -21,25 +21,20 @@ public class Startup : LeanStartup
     {
         Modules = new IAppModule[]
         {
-            new CQRSModule()
-                .WithCustomPipelines<AppContext>(
-                    CQRSTypes,
-                    c => c.Secure().Validate(),
-                    q => q.Secure(),
-                    o => o.Secure()),
-
+            new CQRSModule().WithCustomPipelines<AppContext>(
+                CQRSTypes,
+                c => c.Secure().Validate(),
+                q => q.Secure(),
+                o => o.Secure()
+            ),
             new FluentValidationModule(CQRSTypes),
-
             new ApiModule(config),
         };
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        app
-            .Map("/auth", inner => inner.UseIdentityServer())
-            .Map("/api", cfg => cfg
-                .UseAuthentication()
-                .UseRemoteCQRS(CQRSTypes, AppContext.FromHttp));
+        app.Map("/auth", inner => inner.UseIdentityServer())
+            .Map("/api", cfg => cfg.UseAuthentication().UseRemoteCQRS(CQRSTypes, AppContext.FromHttp));
     }
 }

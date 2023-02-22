@@ -19,8 +19,7 @@ public class Startup : LeanStartup
         Modules = new IAppModule[]
         {
             new ApiModule(),
-            new CQRSModule()
-                .WithCustomPipelines<Context>(CQRSTypes, c => c, q => q, o => o),
+            new CQRSModule().WithCustomPipelines<Context>(CQRSTypes, c => c, q => q, o => o),
         };
     }
 

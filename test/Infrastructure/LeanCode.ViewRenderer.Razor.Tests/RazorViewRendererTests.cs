@@ -68,7 +68,8 @@ public class RazorViewRendererTests
         Assert.Equal("Hello", result);
     }
 
-    private Task<string> Render(string viewName, TestModel model = null) => renderer.RenderToStringAsync(viewName, model);
+    private Task<string> Render(string viewName, TestModel model = null) =>
+        renderer.RenderToStringAsync(viewName, model);
 }
 
 public class TestModel

@@ -30,8 +30,7 @@ public class CompilationFailedException : Exception
         Errors = errors.ToImmutableList();
     }
 
-    public CompilationFailedException(
-        string path, IReadOnlyList<string> errors, string msg, Exception innerException)
+    public CompilationFailedException(string path, IReadOnlyList<string> errors, string msg, Exception innerException)
         : base(msg, innerException)
     {
         FullPath = path;

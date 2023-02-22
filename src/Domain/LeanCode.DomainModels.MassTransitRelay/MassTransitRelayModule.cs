@@ -15,10 +15,7 @@ public abstract class MassTransitRelayModule : AppModule
     private readonly bool useInbox;
     private readonly bool useOutbox;
 
-    protected MassTransitRelayModule(
-        TypesCatalog eventsCatalog,
-        bool useInbox = true,
-        bool useOutbox = true)
+    protected MassTransitRelayModule(TypesCatalog eventsCatalog, bool useInbox = true, bool useOutbox = true)
     {
         this.eventsCatalog = eventsCatalog;
         this.useInbox = useInbox;
@@ -46,19 +43,18 @@ public abstract class MassTransitRelayModule : AppModule
             builder.RegisterPeriodicAction<PublishedEventsCleaner>();
         }
 
-        builder.RegisterInstance(new SystemTextJsonEventsSerializer(eventsCatalog))
+        builder
+            .RegisterInstance(new SystemTextJsonEventsSerializer(eventsCatalog))
             .AsImplementedInterfaces()
             .SingleInstance();
 
-        builder.RegisterType<AsyncEventsInterceptor>()
+        builder
+            .RegisterType<AsyncEventsInterceptor>()
             .AsSelf()
             .OnActivated(a => a.Instance.Configure())
             .SingleInstance();
 
-        builder.RegisterType<SimpleEventsExecutor>()
-            .AsSelf()
-            .SingleInstance()
-            .WithParameter("useOutbox", useOutbox);
+        builder.RegisterType<SimpleEventsExecutor>().AsSelf().SingleInstance().WithParameter("useOutbox", useOutbox);
 
         builder.RegisterType<SimpleFinalizer>().AsSelf();
     }

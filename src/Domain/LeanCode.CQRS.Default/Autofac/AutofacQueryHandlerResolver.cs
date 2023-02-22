@@ -42,9 +42,7 @@ internal class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<
     {
         var types = queryType
             .GetInterfaces()
-            .Where(i =>
-                i.IsConstructedGenericType &&
-                i.GetGenericTypeDefinition() == typeof(IQuery<>))
+            .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>))
             .Single()
             .GenericTypeArguments;
 

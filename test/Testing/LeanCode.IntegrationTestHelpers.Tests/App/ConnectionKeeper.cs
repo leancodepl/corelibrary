@@ -14,6 +14,8 @@ public class ConnectionKeeper : IHostedService
         this.dbContext = dbContext;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken) => dbContext.Database.OpenConnectionAsync(cancellationToken);
+    public Task StartAsync(CancellationToken cancellationToken) =>
+        dbContext.Database.OpenConnectionAsync(cancellationToken);
+
     public Task StopAsync(CancellationToken cancellationToken) => dbContext.Database.CloseConnectionAsync();
 }

@@ -18,10 +18,7 @@ public class ResponseLoggerElement<TContext, TObj, TRes> : IPipelineElement<TCon
         this.logger = logger;
     }
 
-    public async Task<TRes> ExecuteAsync(
-        TContext ctx,
-        TObj input,
-        Func<TContext, TObj, Task<TRes>> next)
+    public async Task<TRes> ExecuteAsync(TContext ctx, TObj input, Func<TContext, TObj, Task<TRes>> next)
     {
         var result = await next(ctx, input);
         logger.Information("Request executed with response {@Response}", result);
@@ -32,7 +29,8 @@ public class ResponseLoggerElement<TContext, TObj, TRes> : IPipelineElement<TCon
 public static class LogResponsesnPipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, TObj, TRes> LogRespones<TContext, TObj, TRes>(
-        this PipelineBuilder<TContext, TObj, TRes> builder)
+        this PipelineBuilder<TContext, TObj, TRes> builder
+    )
         where TContext : notnull, IPipelineContext
     {
         return builder.Use<ResponseLoggerElement<TContext, TObj, TRes>>();

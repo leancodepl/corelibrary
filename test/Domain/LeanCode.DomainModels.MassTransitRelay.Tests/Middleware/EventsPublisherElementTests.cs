@@ -90,8 +90,7 @@ public class TestEvent : IDomainEvent
     public DateTime DateOccurred { get; }
 }
 
-public class TestPayload
-{ }
+public class TestPayload { }
 
 public class TestContext : IPipelineContext
 {

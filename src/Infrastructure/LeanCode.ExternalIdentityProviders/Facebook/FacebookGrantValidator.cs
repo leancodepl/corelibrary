@@ -9,6 +9,5 @@ public class FacebookGrantValidator<TUser> : ExternalLoginGrantValidatorBase<TUs
     public override string GrantType => Constants.GrantType;
 
     public FacebookGrantValidator(FacebookExternalLogin<TUser> externalLogin)
-        : base(externalLogin)
-    { }
+        : base(externalLogin) { }
 }

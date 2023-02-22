@@ -6,6 +6,7 @@ namespace LeanCode.DomainModels.Tests;
 public class SIdTests
 {
     internal record Entity(SId<Entity> Id) : IIdentifiable<SId<Entity>>;
+
     internal record VeryLongEntity(SId<VeryLongEntity> Id) : IIdentifiable<SId<VeryLongEntity>>;
 
     [IdSlug("cus")]
@@ -83,6 +84,9 @@ public class SIdTests
     public void From_nullable_accepts_null_and_valid_sid()
     {
         Assert.Null(SId<Entity>.FromNullable(null));
-        Assert.Equal("entity_00000000000000000000000000000001", SId<Entity>.FromNullable("entity_00000000000000000000000000000001"));
+        Assert.Equal(
+            "entity_00000000000000000000000000000001",
+            SId<Entity>.FromNullable("entity_00000000000000000000000000000001")
+        );
     }
 }

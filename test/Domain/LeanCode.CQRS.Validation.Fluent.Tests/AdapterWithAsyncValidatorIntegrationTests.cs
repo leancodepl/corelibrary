@@ -16,7 +16,8 @@ public class AdapterWithAsyncValidatorIntegrationTests
     {
         adapter = new FluentValidationCommandValidatorAdapter<Context, Command>(
             new Validator(),
-            new ComponentContext());
+            new ComponentContext()
+        );
     }
 
     [Fact]
@@ -29,9 +30,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
     [Fact]
     public async Task Correctly_returns_successful_result_when_data_passes()
     {
-        var res = await adapter.ValidateAsync(
-            new Context(),
-            new Command { Data = Validator.MinValue });
+        var res = await adapter.ValidateAsync(new Context(), new Command { Data = Validator.MinValue });
 
         Assert.True(res.IsValid);
     }
@@ -39,9 +38,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
     [Fact]
     public async Task Correctly_maps_validation_result()
     {
-        var res = await adapter.ValidateAsync(
-            new Context(),
-            new Command { Data = Validator.MinValue - 1 });
+        var res = await adapter.ValidateAsync(new Context(), new Command { Data = Validator.MinValue - 1 });
 
         Assert.False(res.IsValid);
         var err = Assert.Single(res.Errors);
@@ -60,8 +57,8 @@ public class AdapterWithAsyncValidatorIntegrationTests
         {
             RuleForAsync(c => c.Data, (ctx, v) => Task.FromResult(v))
                 .GreaterThanOrEqualTo(MinValue)
-                    .WithCode(ErrorCode)
-                    .WithMessage(ErrorMessage);
+                .WithCode(ErrorCode)
+                .WithMessage(ErrorMessage);
         }
     }
 
@@ -75,6 +72,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
     private class ComponentContext : IComponentContext
     {
         public IComponentRegistry ComponentRegistry => null;
+
         public object ResolveComponent(ResolveRequest request) => null;
     }
 }

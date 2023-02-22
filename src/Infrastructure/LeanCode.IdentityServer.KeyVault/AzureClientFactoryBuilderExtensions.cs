@@ -10,10 +10,9 @@ public static class AzureClientFactoryBuilderExtensions
 
     public static IAzureClientBuilder<CryptographyClient, CryptographyClientOptions> AddIdentityServerTokenSigningKey(
         this AzureClientFactoryBuilder builder,
-        Uri keyUrl)
+        Uri keyUrl
+    )
     {
-        return builder
-            .AddCryptographyClient(keyUrl)
-            .WithName(TokenSigningKeyClientName);
+        return builder.AddCryptographyClient(keyUrl).WithName(TokenSigningKeyClientName);
     }
 }

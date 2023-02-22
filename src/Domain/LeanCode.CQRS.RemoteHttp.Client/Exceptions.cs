@@ -12,7 +12,9 @@ public class UnauthorizedException : Exception
 public class ForbiddenException : Exception
 {
     public ForbiddenException()
-        : base("Cannot execute the CQRS call because the server forbid the request. Check if you have enough privileges.") { }
+        : base(
+            "Cannot execute the CQRS call because the server forbid the request. Check if you have enough privileges."
+        ) { }
 }
 
 public class InternalServerErrorException : Exception

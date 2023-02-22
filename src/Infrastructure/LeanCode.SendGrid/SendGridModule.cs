@@ -8,10 +8,8 @@ public class SendGridModule : AppModule
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(context => new SendGridClient(context.Resolve<SendGridClientOptions>()))
-            .AsSelf();
+        builder.Register(context => new SendGridClient(context.Resolve<SendGridClientOptions>())).AsSelf();
 
-        builder.RegisterType<SendGridRazorClient>()
-            .AsSelf();
+        builder.RegisterType<SendGridRazorClient>().AsSelf();
     }
 }

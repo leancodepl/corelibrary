@@ -9,10 +9,12 @@ namespace LeanCode.SmsSender;
 public class SmsSenderModule : AppModule
 {
     public override void ConfigureServices(IServiceCollection services) =>
-        services.AddHttpClient<ISmsSender, SmsApiClient>((sp, c) =>
-        {
-            var config = sp.GetRequiredService<SmsApiConfiguration>();
+        services.AddHttpClient<ISmsSender, SmsApiClient>(
+            (sp, c) =>
+            {
+                var config = sp.GetRequiredService<SmsApiConfiguration>();
 
-            SmsApiClient.ConfigureHttpClient(config, c);
-        });
+                SmsApiClient.ConfigureHttpClient(config, c);
+            }
+        );
 }

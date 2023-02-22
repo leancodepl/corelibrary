@@ -4,8 +4,7 @@ namespace LeanCode.Firebase.FCM.Tests;
 
 public class NotificationConversionTests
 {
-    public NotificationConversionTests()
-    { }
+    public NotificationConversionTests() { }
 
     [Fact]
     public void Converts_int_enum_correctly()
