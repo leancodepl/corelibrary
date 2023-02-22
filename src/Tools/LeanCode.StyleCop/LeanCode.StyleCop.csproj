@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="stylecop.json" Pack="true" PackagePath="build" />
+  </ItemGroup>
+</Project>
