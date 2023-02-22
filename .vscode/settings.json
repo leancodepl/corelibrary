@@ -11,5 +11,10 @@
     "paket-files": true,
     "**/obj/**/en": true,
     "**/obj/**/pl": true
-  }
+  },
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vscode",
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "csharpier.csharpier-vscode",
 }
