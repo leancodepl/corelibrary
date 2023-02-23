@@ -70,6 +70,10 @@ jobs:
           dotnet-version: "7.0.100"
       - name: Restore
         run: dotnet restore
+      - name: Tool Restore
+        run: dotnet tool restore
+      - name: Check formatting
+        run: dotnet csharpier . --check
       - name: Install trx2junit
         run: dotnet tool install --global trx2junit
       - name: Build
