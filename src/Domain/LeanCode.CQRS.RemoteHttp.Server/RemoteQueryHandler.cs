@@ -14,9 +14,11 @@ namespace LeanCode.CQRS.RemoteHttp.Server;
 
 internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<TAppContext>
 {
-    private static readonly MethodInfo ExecQueryMethod = typeof(RemoteQueryHandler<TAppContext>)
-        .GetMethod(nameof(ExecuteQueryAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-        ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
+    private static readonly MethodInfo ExecQueryMethod =
+        typeof(RemoteQueryHandler<TAppContext>).GetMethod(
+            nameof(ExecuteQueryAsync),
+            BindingFlags.NonPublic | BindingFlags.Instance
+        ) ?? throw new InvalidOperationException($"Failed to find {nameof(ExecuteQueryAsync)} method.");
 
     private static readonly ConcurrentDictionary<Type, MethodInfo> MethodCache = new();
     private readonly IServiceProvider serviceProvider;
@@ -25,13 +27,18 @@ internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<
         IServiceProvider serviceProvider,
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        ISerializer serializer)
+        ISerializer serializer
+    )
         : base(catalog, contextTranslator, serializer)
     {
         this.serviceProvider = serviceProvider;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The handler is an exception boundary."
+    )]
     protected override async Task<ExecutionResult> ExecuteObjectAsync(TAppContext context, object obj)
     {
         var type = obj.GetType();
@@ -59,9 +66,7 @@ internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<
         }
         catch (TargetInvocationException ex) when (ex.InnerException != null)
         {
-            ExceptionDispatchInfo
-                .Capture(ex.InnerException)
-                .Throw();
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
 
             throw; // the `Throw` method above `DoesNotReturn` anyway
         }
@@ -71,24 +76,22 @@ internal sealed class RemoteQueryHandler<TAppContext> : BaseRemoteObjectHandler<
         }
     }
 
-    private async Task<object?> ExecuteQueryAsync<TQuery, TResult>(
-        TAppContext appContext, object query)
+    private async Task<object?> ExecuteQueryAsync<TQuery, TResult>(TAppContext appContext, object query)
         where TQuery : IQuery<TResult>
     {
         // TResult gets cast to object, so its necessary to await the Task.
         // ContinueWith will not propagate exceptions correctly.
-        return await serviceProvider
-            .GetService<IQueryExecutor<TAppContext>>()!
-            .GetAsync(appContext, (TQuery)query);
+        return await serviceProvider.GetService<IQueryExecutor<TAppContext>>()!.GetAsync(appContext, (TQuery)query);
     }
 
     private static MethodInfo GenerateMethod(Type queryType)
     {
-        return ExecQueryMethod.MakeGenericMethod(queryType, queryType
-            .GetInterfaces()
-            .Single(i =>
-                i.IsConstructedGenericType &&
-                i.GetGenericTypeDefinition() == typeof(IQuery<>))
-            .GenericTypeArguments[0]);
+        return ExecQueryMethod.MakeGenericMethod(
+            queryType,
+            queryType
+                .GetInterfaces()
+                .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>))
+                .GenericTypeArguments[0]
+        );
     }
 }

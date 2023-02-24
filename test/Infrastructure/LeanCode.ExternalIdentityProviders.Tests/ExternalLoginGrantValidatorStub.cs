@@ -5,6 +5,5 @@ internal class ExternalLoginGrantValidatorStub : ExternalLoginGrantValidatorBase
     public override string GrantType => "stub";
 
     public ExternalLoginGrantValidatorStub(ExternalLoginStub externalLogin)
-        : base(externalLogin)
-    { }
+        : base(externalLogin) { }
 }

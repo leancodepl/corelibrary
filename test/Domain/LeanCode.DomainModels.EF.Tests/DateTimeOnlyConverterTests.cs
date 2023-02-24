@@ -177,8 +177,7 @@ public class DateTimeOnlyConverterTests
     private class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
     {
         public ModelConfigurationBuilderWrapper()
-            : base(new(), new ServiceCollection().BuildServiceProvider())
-        { }
+            : base(new(), new ServiceCollection().BuildServiceProvider()) { }
 
         public ModelConfiguration Build() => ModelConfiguration;
     }

@@ -61,7 +61,8 @@ public static class LoggerEnrichmentConfigurationExtensions
         this LoggerEnrichmentConfiguration config,
         string spanIdKey = "dd.span_id",
         string traceIdKey = "dd.trace_id",
-        bool useDatadogFormat = true)
+        bool useDatadogFormat = true
+    )
     {
         return config.With(new ActivityLogsEnricher(traceIdKey, spanIdKey, useDatadogFormat));
     }

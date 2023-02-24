@@ -10,7 +10,9 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware;
 public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElement<TContext, TInput, TOutput>
     where TContext : notnull, IPipelineContext
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherElement<TContext, TInput, TOutput>>();
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<
+        EventsPublisherElement<TContext, TInput, TOutput>
+    >();
     private readonly IEventPublisher publisher;
     private readonly AsyncEventsInterceptor interceptor;
 
@@ -37,13 +39,16 @@ public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElemen
         logger.Debug("Publishing {Count} raised events", events.Count);
         var conversationId = Guid.NewGuid();
 
-        var publishTasks = events
-            .Select(evt => PublishEventAsync(evt, ctx, conversationId));
+        var publishTasks = events.Select(evt => PublishEventAsync(evt, ctx, conversationId));
 
         return Task.WhenAll(publishTasks);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     private async Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
     {
         logger.Debug("Publishing event of type {DomainEvent}", evt);
@@ -64,7 +69,8 @@ public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElemen
 public static class PipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, TInput, TOutput> PublishEvents<TContext, TInput, TOutput>(
-        this PipelineBuilder<TContext, TInput, TOutput> builder)
+        this PipelineBuilder<TContext, TInput, TOutput> builder
+    )
         where TContext : notnull, IPipelineContext
     {
         return builder.Use<EventsPublisherElement<TContext, TInput, TOutput>>();

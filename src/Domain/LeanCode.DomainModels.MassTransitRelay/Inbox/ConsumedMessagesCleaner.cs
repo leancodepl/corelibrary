@@ -45,7 +45,8 @@ public class ConsumedMessagesCleaner : IPeriodicAction
                     WHERE {columnName} < @time;",
                 new { time },
                 commandTimeout: 3600,
-                cancellationToken: stoppingToken);
+                cancellationToken: stoppingToken
+            );
             logger.Verbose("Deleted {Count} consumed messages", deleted);
         }
         catch

@@ -49,7 +49,10 @@ public abstract class DiagnosticVerifier : IDisposable
         return GetSortedDiagnosticsFromDocuments(analyzer, GetDocuments(sources));
     }
 
-    protected static async Task<List<Diagnostic>> GetSortedDiagnosticsFromDocuments(DiagnosticAnalyzer analyzer, Document[] documents)
+    protected static async Task<List<Diagnostic>> GetSortedDiagnosticsFromDocuments(
+        DiagnosticAnalyzer analyzer,
+        Document[] documents
+    )
     {
         var projects = documents.Select(d => d.Project).ToHashSet();
         var trees = (await Task.WhenAll(documents.Select(d => d.GetSyntaxTreeAsync()))).ToHashSet();
@@ -102,11 +105,13 @@ public abstract class DiagnosticVerifier : IDisposable
 
         var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
-        var solution = Workspace
-            .CurrentSolution
+        var solution = Workspace.CurrentSolution
             .AddProject(projectId, TestProjectName, TestProjectName, LanguageNames.CSharp)
             .AddMetadataReferences(projectId, CommonReferences)
-            .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            .WithProjectCompilationOptions(
+                projectId,
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            );
 
         var count = 0;
         foreach (var source in sources)

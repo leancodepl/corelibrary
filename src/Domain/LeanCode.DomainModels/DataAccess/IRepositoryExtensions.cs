@@ -7,7 +7,8 @@ public static class IRepositoryExtensions
     public static async Task<TEntity> FindAndEnsureExistsAsync<TEntity, TIdentity>(
         this IRepository<TEntity, TIdentity> repository,
         TIdentity id,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
         where TIdentity : notnull
     {

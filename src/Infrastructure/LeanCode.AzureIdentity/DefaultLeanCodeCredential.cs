@@ -30,12 +30,14 @@ public static class DefaultLeanCodeCredential
             ClientId = GetEnv(AzureCredentialConfiguration.ClientIdKey),
             ClientSecret = GetEnv(AzureCredentialConfiguration.ClientSecretKey),
             UseAzureCLI = GetEnv(AzureCredentialConfiguration.UseAzureCLIKey) is string cli && bool.Parse(cli),
-            UseManagedIdentity = GetEnv(AzureCredentialConfiguration.UseManagedIdentityKey) is string mi && bool.Parse(mi),
+            UseManagedIdentity =
+                GetEnv(AzureCredentialConfiguration.UseManagedIdentityKey) is string mi && bool.Parse(mi),
         };
 
         return Create(config);
 
-        static string? GetEnv(string rawKey) => Environment.GetEnvironmentVariable(rawKey.Replace(":", "__", StringComparison.Ordinal));
+        static string? GetEnv(string rawKey) =>
+            Environment.GetEnvironmentVariable(rawKey.Replace(":", "__", StringComparison.Ordinal));
     }
 
     public static TokenCredential Create(AzureCredentialConfiguration config)
@@ -52,9 +54,11 @@ public static class DefaultLeanCodeCredential
         }
         else
         {
-            if (string.IsNullOrEmpty(config.TenantId) ||
-                string.IsNullOrEmpty(config.ClientId) ||
-                string.IsNullOrEmpty(config.ClientSecret))
+            if (
+                string.IsNullOrEmpty(config.TenantId)
+                || string.IsNullOrEmpty(config.ClientId)
+                || string.IsNullOrEmpty(config.ClientSecret)
+            )
             {
                 throw new InvalidOperationException("Missing Azure Identity configuration.");
             }
@@ -66,13 +70,15 @@ public static class DefaultLeanCodeCredential
     private static void Validate(AzureCredentialConfiguration config)
     {
         var methodsUsed =
-            (config.UseAzureCLI ? 1 : 0) +
-            (config.UseManagedIdentity ? 1 : 0) +
-            (!string.IsNullOrWhiteSpace(config.ClientSecret) ? 1 : 0);
+            (config.UseAzureCLI ? 1 : 0)
+            + (config.UseManagedIdentity ? 1 : 0)
+            + (!string.IsNullOrWhiteSpace(config.ClientSecret) ? 1 : 0);
 
         if (methodsUsed != 1)
         {
-            throw new InvalidOperationException("You need to specify exactly one authorization method: Azure CLI, Managed Identity or Client Secret.");
+            throw new InvalidOperationException(
+                "You need to specify exactly one authorization method: Azure CLI, Managed Identity or Client Secret."
+            );
         }
     }
 }

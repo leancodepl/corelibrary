@@ -21,11 +21,7 @@ public class ScopedFiltersTests : IAsyncLifetime
         var services = new ServiceCollection();
         var builder = new ContainerBuilder();
 
-        var modules = new AppModule[]
-        {
-            new MassTransitModule(),
-            new MassTransitTestRelayModule(),
-        };
+        var modules = new AppModule[] { new MassTransitModule(), new MassTransitTestRelayModule(), };
 
         foreach (var m in modules)
         {
@@ -33,12 +29,9 @@ public class ScopedFiltersTests : IAsyncLifetime
             builder.RegisterModule(m);
         }
 
-        builder.RegisterType<TestService>()
-            .AsSelf()
-            .InstancePerLifetimeScope();
+        builder.RegisterType<TestService>().AsSelf().InstancePerLifetimeScope();
 
-        builder.RegisterInstance(interceptor)
-            .AsSelf();
+        builder.RegisterInstance(interceptor).AsSelf();
 
         builder.Populate(services);
         var container = builder.Build();
@@ -62,15 +55,9 @@ public class ScopedFiltersTests : IAsyncLifetime
 
         await activityMonitor.AwaitBusInactivity();
 
-        var (f11, f12, c1) = (
-            interceptor.GetFilter1(id1),
-            interceptor.GetFilter2(id1),
-            interceptor.GetConsumer(id1));
+        var (f11, f12, c1) = (interceptor.GetFilter1(id1), interceptor.GetFilter2(id1), interceptor.GetConsumer(id1));
 
-        var (f21, f22, c2) = (
-            interceptor.GetFilter1(id2),
-            interceptor.GetFilter2(id2),
-            interceptor.GetConsumer(id2));
+        var (f21, f22, c2) = (interceptor.GetFilter1(id2), interceptor.GetFilter2(id2), interceptor.GetConsumer(id2));
 
         Assert.NotNull(f11);
         Assert.Equal(f11, f12);
@@ -84,14 +71,13 @@ public class ScopedFiltersTests : IAsyncLifetime
     }
 
     public Task InitializeAsync() => bus.StartAsync();
+
     public Task DisposeAsync() => bus.StopAsync();
 
     private class MassTransitModule : MassTransitRelayModule
     {
         public MassTransitModule()
-            : base(TypesCatalog.Of<MassTransitModule>(), false, false)
-        {
-        }
+            : base(TypesCatalog.Of<MassTransitModule>(), false, false) { }
 
         public override void ConfigureMassTransit(IServiceCollection services)
         {
@@ -99,16 +85,21 @@ public class ScopedFiltersTests : IAsyncLifetime
             {
                 cfg.AddConsumer(typeof(Consumer));
 
-                cfg.UsingInMemory((ctx, cfg) =>
-                {
-                    cfg.ReceiveEndpoint("queue", rcv =>
+                cfg.UsingInMemory(
+                    (ctx, cfg) =>
                     {
-                        Filter1Observer.UseFilter1(rcv, ctx);
-                        Filter2Observer.UseFilter2(rcv, ctx);
+                        cfg.ReceiveEndpoint(
+                            "queue",
+                            rcv =>
+                            {
+                                Filter1Observer.UseFilter1(rcv, ctx);
+                                Filter2Observer.UseFilter2(rcv, ctx);
 
-                        rcv.ConfigureConsumers(ctx);
-                    });
-                });
+                                rcv.ConfigureConsumers(ctx);
+                            }
+                        );
+                    }
+                );
             });
         }
     }
@@ -138,10 +129,12 @@ public class ScopedFiltersTests : IAsyncLifetime
             this.interceptor = interceptor;
         }
 
-        public void Probe(ProbeContext context)
-        { }
+        public void Probe(ProbeContext context) { }
 
-        public Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
+        public Task Send(
+            ConsumerConsumeContext<TConsumer, TMessage> context,
+            IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next
+        )
         {
             interceptor.SetFilter1(context.MessageId!.Value, service.InstanceId);
             return next.Send(context);
@@ -150,15 +143,19 @@ public class ScopedFiltersTests : IAsyncLifetime
 
     private class Filter1Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public static void UseFilter1(
-            IConsumePipeConfigurator configurator,
-            IServiceProvider provider)
+        public static void UseFilter1(IConsumePipeConfigurator configurator, IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Filter1Observer>(provider);
         }
 
-        public override void ConsumerMessageConfigured<TObserverConsumer, TObserverMessage>(IConsumerMessageConfigurator<TObserverConsumer, TObserverMessage> configurator) =>
-            configurator.AddConsumerScopedFilter<Filter1<TObserverConsumer, TObserverMessage>, TObserverConsumer, TObserverMessage>(Provider);
+        public override void ConsumerMessageConfigured<TObserverConsumer, TObserverMessage>(
+            IConsumerMessageConfigurator<TObserverConsumer, TObserverMessage> configurator
+        ) =>
+            configurator.AddConsumerScopedFilter<
+                Filter1<TObserverConsumer, TObserverMessage>,
+                TObserverConsumer,
+                TObserverMessage
+            >(Provider);
     }
 
     private class Filter2<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
@@ -174,10 +171,12 @@ public class ScopedFiltersTests : IAsyncLifetime
             this.interceptor = interceptor;
         }
 
-        public void Probe(ProbeContext context)
-        { }
+        public void Probe(ProbeContext context) { }
 
-        public Task Send(ConsumerConsumeContext<TConsumer, TMessage> context, IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next)
+        public Task Send(
+            ConsumerConsumeContext<TConsumer, TMessage> context,
+            IPipe<ConsumerConsumeContext<TConsumer, TMessage>> next
+        )
         {
             interceptor.SetFilter2(context.MessageId!.Value, service.InstanceId);
             return next.Send(context);
@@ -186,15 +185,19 @@ public class ScopedFiltersTests : IAsyncLifetime
 
     private class Filter2Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public static void UseFilter2(
-            IConsumePipeConfigurator configurator,
-            IServiceProvider provider)
+        public static void UseFilter2(IConsumePipeConfigurator configurator, IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Filter2Observer>(provider);
         }
 
-        public override void ConsumerMessageConfigured<TObserverConsumer, TObserverMessage>(IConsumerMessageConfigurator<TObserverConsumer, TObserverMessage> configurator) =>
-            configurator.AddConsumerScopedFilter<Filter2<TObserverConsumer, TObserverMessage>, TObserverConsumer, TObserverMessage>(Provider);
+        public override void ConsumerMessageConfigured<TObserverConsumer, TObserverMessage>(
+            IConsumerMessageConfigurator<TObserverConsumer, TObserverMessage> configurator
+        ) =>
+            configurator.AddConsumerScopedFilter<
+                Filter2<TObserverConsumer, TObserverMessage>,
+                TObserverConsumer,
+                TObserverMessage
+            >(Provider);
     }
 
     private class Consumer : IConsumer<Message>

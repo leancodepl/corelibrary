@@ -15,17 +15,21 @@ public static class LeanProgram
     {
         return new HostBuilder()
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-            .ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                config.AddEnvironmentVariables();
-            })
+            .ConfigureAppConfiguration(
+                (hostingContext, config) =>
+                {
+                    config.AddEnvironmentVariables();
+                }
+            )
             .ConfigureWebHost(builder =>
             {
                 builder
-                    .UseKestrel((builderContext, options) =>
-                    {
-                        options.Configure(builderContext.Configuration.GetSection("Kestrel"), reloadOnChange: true);
-                    })
+                    .UseKestrel(
+                        (builderContext, options) =>
+                        {
+                            options.Configure(builderContext.Configuration.GetSection("Kestrel"), reloadOnChange: true);
+                        }
+                    )
                     .UseStartup<TStartup>();
             });
     }

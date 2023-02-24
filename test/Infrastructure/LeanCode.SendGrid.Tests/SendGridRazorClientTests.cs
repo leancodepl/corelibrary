@@ -24,10 +24,7 @@ public class SendGridRazorClientTests
         ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY"),
     };
 
-    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
-    {
-        WriteIndented = true,
-    };
+    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true, };
 
     private readonly SendGridRazorClient client;
 
@@ -35,7 +32,8 @@ public class SendGridRazorClientTests
     {
         var renderer = Substitute.For<IViewRenderer>();
 
-        renderer.RenderToStringAsync(default, default)
+        renderer
+            .RenderToStringAsync(default, default)
             .ReturnsForAnyArgs(ci =>
             {
                 var templateName = ci.Arg<string>();
@@ -45,9 +43,7 @@ public class SendGridRazorClientTests
 
                 return templateName.Contains(".txt", StringComparison.Ordinal)
                     ? rendered
-                    : string.Join(null, rendered
-                        .Split('\n')
-                        .Select(l => $"<div>{l}</div>"));
+                    : string.Join(null, rendered.Split('\n').Select(l => $"<div>{l}</div>"));
             });
 
         var localizer = Substitute.For<IStringLocalizer>();
@@ -91,7 +87,8 @@ public class SendGridRazorClientTests
             .WithAttachment(
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
                 "Attachment.txt",
-                "text/plain")
+                "text/plain"
+            )
             .WithNoTracking();
 
         await client.SendEmailAsync(msg);
@@ -109,14 +106,16 @@ public class SendGridRazorClientTests
             .WithAttachment(
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
                 "Attachment.txt",
-                "text/plain")
+                "text/plain"
+            )
             .WithNoTracking();
 
         var exception = await Assert.ThrowsAsync<SendGridException>(() => client.SendEmailAsync(msg));
 
         Assert.Contains(
             "The personalizations field is required and must have at least one personalization.",
-            exception.ErrorMessages);
+            exception.ErrorMessages
+        );
     }
 
     private class EmailTextVM

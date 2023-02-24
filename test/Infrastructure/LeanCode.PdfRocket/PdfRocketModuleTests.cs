@@ -35,12 +35,21 @@ public class PdfRocketModuleTests
 
     private class MockRenderer : IViewRenderer
     {
-        public Task RenderToStreamAsync(string viewName, object model, Stream outputStream, CancellationToken cancellationToken = default)
+        public Task RenderToStreamAsync(
+            string viewName,
+            object model,
+            Stream outputStream,
+            CancellationToken cancellationToken = default
+        )
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<string> RenderToStringAsync(string viewName, object model, CancellationToken cancellationToken = default)
+        public Task<string> RenderToStringAsync(
+            string viewName,
+            object model,
+            CancellationToken cancellationToken = default
+        )
         {
             throw new System.NotImplementedException();
         }

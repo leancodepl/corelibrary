@@ -17,7 +17,11 @@ public class GoogleExternalLogin<TUser> : ExternalLoginBase<TUser>
         this.googleAuthService = googleAuthService;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     protected override async Task<string?> GetProviderIdAsync(string token)
     {
         try

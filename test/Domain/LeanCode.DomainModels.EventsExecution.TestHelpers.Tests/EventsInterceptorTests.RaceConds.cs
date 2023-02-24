@@ -19,14 +19,19 @@ public abstract class EventsInterceptorTests_RaceCondsBase
 
     [LongRunningFact]
     public Task Clash_Async_Test1() => RunTaskTest();
+
     [LongRunningFact]
     public Task Clash_Async_Test2() => RunTaskTest();
+
     [LongRunningFact]
     public Task Clash_Async_Test3() => RunTaskTest();
+
     [LongRunningFact]
     public void Clash_Thread_Test1() => RunThreadTest();
+
     [LongRunningFact]
     public void Clash_Thread_Test2() => RunThreadTest();
+
     [LongRunningFact]
     public void Clash_Thread_Test3() => RunThreadTest();
 

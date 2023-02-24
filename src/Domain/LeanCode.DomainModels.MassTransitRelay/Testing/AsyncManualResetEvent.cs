@@ -20,8 +20,7 @@ public sealed class AsyncManualResetEvent
     }
 
     public AsyncManualResetEvent()
-        : this(false)
-    { }
+        : this(false) { }
 
     public bool IsSet
     {

@@ -9,13 +9,7 @@ public sealed class FacebookUser
     public string Photo { get; }
     public bool IsSilhouette { get; }
 
-    public FacebookUser(
-        string id,
-        string? email,
-        string? firstName,
-        string? lastName,
-        string photo,
-        bool isSilhouette)
+    public FacebookUser(string id, string? email, string? firstName, string? lastName, string photo, bool isSilhouette)
     {
         Id = id;
         Email = email;

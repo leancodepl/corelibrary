@@ -22,5 +22,6 @@ public class Tests : IAsyncLifetime
     }
 
     public Task InitializeAsync() => app.InitializeAsync();
+
     public Task DisposeAsync() => app.DisposeAsync().AsTask();
 }

@@ -17,7 +17,8 @@ public class ExternalLoginExceptionHandler<TContext> : IPipelineElement<TContext
     public async Task<CommandResult> ExecuteAsync(
         TContext ctx,
         ICommand input,
-        Func<TContext, ICommand, Task<CommandResult>> next)
+        Func<TContext, ICommand, Task<CommandResult>> next
+    )
     {
         try
         {
@@ -27,20 +28,12 @@ public class ExternalLoginExceptionHandler<TContext> : IPipelineElement<TContext
         {
             ValidationError err = ex.TokenValidation switch
             {
-                TokenValidationError.Invalid => new(
-                    "",
-                    "The token is invalid.",
-                    ErrorCodeInvalidToken),
+                TokenValidationError.Invalid => new("", "The token is invalid.", ErrorCodeInvalidToken),
 
-                TokenValidationError.OtherConnected => new(
-                    "",
-                    "Other account is already connected with this token.",
-                    ErrorCodeOtherConnected),
+                TokenValidationError.OtherConnected
+                    => new("", "Other account is already connected with this token.", ErrorCodeOtherConnected),
 
-                _ => new(
-                    "",
-                    "Cannot perform external login.",
-                    ErrorCodeOther),
+                _ => new("", "Cannot perform external login.", ErrorCodeOther),
             };
 
             return new(ImmutableList.Create(err));
@@ -51,7 +44,8 @@ public class ExternalLoginExceptionHandler<TContext> : IPipelineElement<TContext
 public static class PipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, ICommand, CommandResult> HandleExternalLoginExceptions<TContext>(
-        this PipelineBuilder<TContext, ICommand, CommandResult> builder)
+        this PipelineBuilder<TContext, ICommand, CommandResult> builder
+    )
         where TContext : IPipelineContext
     {
         return builder.Use<ExternalLoginExceptionHandler<TContext>>();

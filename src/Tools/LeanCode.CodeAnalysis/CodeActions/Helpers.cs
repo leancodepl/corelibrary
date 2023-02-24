@@ -32,8 +32,8 @@ public static class Helpers
             return;
         }
 
-        var toInsert = namespaces.SkipWhile(ns =>
-                NamespaceComparer.Compare(ns.Name.ToString(), namespaceName) < 0)
+        var toInsert = namespaces
+            .SkipWhile(ns => NamespaceComparer.Compare(ns.Name.ToString(), namespaceName) < 0)
             .FirstOrDefault();
 
         if (toInsert != null)
@@ -48,13 +48,15 @@ public static class Helpers
 
     private static SyntaxNode BuildUsing(string namespaceName)
     {
-        var name = SF.ParseName(namespaceName)
-            .WithLeadingTrivia(SF.ParseTrailingTrivia(" "));
-        return SF.UsingDirective(name)
-            .WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
+        var name = SF.ParseName(namespaceName).WithLeadingTrivia(SF.ParseTrailingTrivia(" "));
+        return SF.UsingDirective(name).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1309", Justification = "Ordinal comparison would be incorrect here.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1309",
+        Justification = "Ordinal comparison would be incorrect here."
+    )]
     private class NamespaceNameComparer : IComparer<string>
     {
         public int Compare(string x, string y)

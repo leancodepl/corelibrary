@@ -18,7 +18,9 @@ public static class ValidationContextExtensions
         }
         else
         {
-            throw new InvalidOperationException("Cannot use `AppContext` extension method outside the `ContextualValidator` class.");
+            throw new InvalidOperationException(
+                "Cannot use `AppContext` extension method outside the `ContextualValidator` class."
+            );
         }
     }
 
@@ -31,7 +33,9 @@ public static class ValidationContextExtensions
         }
         else
         {
-            throw new InvalidOperationException("Cannot use `GetService` extension method outside the `ContextualValidator` class.");
+            throw new InvalidOperationException(
+                "Cannot use `GetService` extension method outside the `ContextualValidator` class."
+            );
         }
     }
 }

@@ -20,17 +20,14 @@ public abstract class BaseJsonEventsSerializerTests
     private static readonly ActivityContext ActivityContext = new ActivityContext(
         ActivityTraceId.CreateRandom(),
         ActivitySpanId.CreateRandom(),
-        ActivityTraceFlags.None);
+        ActivityTraceFlags.None
+    );
     private static readonly DateTime DateOccurred = new DateTime(2020, 5, 7, 11, 0, 0, 0, DateTimeKind.Utc);
     private readonly RaisedEventMetadata metadata;
 
     protected BaseJsonEventsSerializerTests()
     {
-        metadata = new RaisedEventMetadata
-        {
-            ConversationId = ConversationId,
-            ActivityContext = ActivityContext,
-        };
+        metadata = new RaisedEventMetadata { ConversationId = ConversationId, ActivityContext = ActivityContext, };
     }
 
     [Fact]
@@ -58,7 +55,8 @@ public abstract class BaseJsonEventsSerializerTests
             DateOccurred,
             false,
             typeof(TestEvent).FullName,
-            @"{ ""Value"":5 }");
+            @"{ ""Value"":5 }"
+        );
 
         var evt = Serializer.ExtractEvent(raisedEvt);
 

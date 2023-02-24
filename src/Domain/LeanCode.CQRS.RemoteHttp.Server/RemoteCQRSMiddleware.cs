@@ -25,7 +25,8 @@ public sealed class RemoteCQRSMiddleware<TAppContext>
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
         ISerializer serializer,
-        RequestDelegate next)
+        RequestDelegate next
+    )
     {
         this.catalog = catalog;
         this.contextTranslator = contextTranslator;
@@ -36,7 +37,8 @@ public sealed class RemoteCQRSMiddleware<TAppContext>
     public RemoteCQRSMiddleware(
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        RequestDelegate next)
+        RequestDelegate next
+    )
     {
         this.catalog = catalog;
         this.contextTranslator = contextTranslator;
@@ -58,21 +60,33 @@ public sealed class RemoteCQRSMiddleware<TAppContext>
         else if (request.Path.StartsWithSegments("/query", StringComparison.InvariantCulture))
         {
             var queryHandler = new RemoteQueryHandler<TAppContext>(
-                context.RequestServices, catalog, contextTranslator, serializer);
+                context.RequestServices,
+                catalog,
+                contextTranslator,
+                serializer
+            );
 
             result = await queryHandler.ExecuteAsync(context);
         }
         else if (request.Path.StartsWithSegments("/command", StringComparison.InvariantCulture))
         {
             var commandHandler = new RemoteCommandHandler<TAppContext>(
-                context.RequestServices, catalog, contextTranslator, serializer);
+                context.RequestServices,
+                catalog,
+                contextTranslator,
+                serializer
+            );
 
             result = await commandHandler.ExecuteAsync(context);
         }
         else if (request.Path.StartsWithSegments("/operation", StringComparison.InvariantCulture))
         {
             var operationHandler = new RemoteOperationHandler<TAppContext>(
-                context.RequestServices, catalog, contextTranslator, serializer);
+                context.RequestServices,
+                catalog,
+                contextTranslator,
+                serializer
+            );
 
             result = await operationHandler.ExecuteAsync(context);
         }
@@ -108,7 +122,8 @@ public sealed class RemoteCQRSMiddleware<TAppContext>
                             context.Response.Body,
                             result.Payload,
                             result.Payload.GetType(),
-                            context.RequestAborted);
+                            context.RequestAborted
+                        );
                     }
                     catch (Exception ex)
                         when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
@@ -126,7 +141,8 @@ public static class RemoteCQRSMiddlewareExtensions
     public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
         this IApplicationBuilder builder,
         TypesCatalog catalog,
-        Func<HttpContext, TAppContext> contextTranslator)
+        Func<HttpContext, TAppContext> contextTranslator
+    )
     {
         return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(
             catalog,
@@ -140,14 +156,17 @@ public static class RemoteCQRSMiddlewareExtensions
                         new JsonLaxTimeOnlyConverter(),
                         new JsonLaxDateTimeOffsetConverter(),
                     },
-                }));
+                }
+            )
+        );
     }
 
     public static IApplicationBuilder UseRemoteCQRS<TAppContext>(
         this IApplicationBuilder builder,
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        ISerializer serializer)
+        ISerializer serializer
+    )
     {
         return builder.UseMiddleware<RemoteCQRSMiddleware<TAppContext>>(catalog, contextTranslator, serializer);
     }

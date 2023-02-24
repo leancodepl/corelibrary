@@ -6,11 +6,13 @@ namespace LeanCode.PeriodicService;
 
 public static class ContainerBuilderExtensions
 {
-    public static IRegistrationBuilder<PeriodicHostedService<T>, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-        RegisterPeriodicAction<T>(this ContainerBuilder builder)
+    public static IRegistrationBuilder<
+        PeriodicHostedService<T>,
+        ConcreteReflectionActivatorData,
+        SingleRegistrationStyle
+    > RegisterPeriodicAction<T>(this ContainerBuilder builder)
         where T : IPeriodicAction
     {
-        return builder.RegisterType<PeriodicHostedService<T>>()
-            .As<IHostedService>();
+        return builder.RegisterType<PeriodicHostedService<T>>().As<IHostedService>();
     }
 }

@@ -10,12 +10,14 @@ public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     public void Reads_config_from_asp_net_config()
     {
         var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>
-            {
-                [AzureCredentialConfiguration.TenantIdKey] = Guid.NewGuid().ToString(),
-                [AzureCredentialConfiguration.ClientIdKey] = Guid.NewGuid().ToString(),
-                [AzureCredentialConfiguration.ClientSecretKey] = "client_secret",
-            })
+            .AddInMemoryCollection(
+                new Dictionary<string, string>
+                {
+                    [AzureCredentialConfiguration.TenantIdKey] = Guid.NewGuid().ToString(),
+                    [AzureCredentialConfiguration.ClientIdKey] = Guid.NewGuid().ToString(),
+                    [AzureCredentialConfiguration.ClientSecretKey] = "client_secret",
+                }
+            )
             .Build();
 
         var credential = DefaultLeanCodeCredential.Create(config);
@@ -40,17 +42,15 @@ public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     [Fact]
     public void Throws_if_no_authorization_method_specified()
     {
-        Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration()));
+        Assert.Throws<InvalidOperationException>(
+            () => DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration())
+        );
     }
 
     [Fact]
     public void Throws_if_more_than_one_authorization_method_specified()
     {
-        var config = new AzureCredentialConfiguration
-        {
-            UseManagedIdentity = true,
-            UseAzureCLI = true,
-        };
+        var config = new AzureCredentialConfiguration { UseManagedIdentity = true, UseAzureCLI = true, };
 
         Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(config));
     }

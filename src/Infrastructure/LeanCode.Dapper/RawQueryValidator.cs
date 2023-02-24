@@ -42,7 +42,9 @@ public static class RawQueryValidator
             catch (SqlException e)
             {
                 throw new Exception(
-                    $"Sql server could not process sql query from `{sql.Name}` in {sql.DeclaringType?.FullName}\n{e.Message}", e);
+                    $"Sql server could not process sql query from `{sql.Name}` in {sql.DeclaringType?.FullName}\n{e.Message}",
+                    e
+                );
             }
         }
     }

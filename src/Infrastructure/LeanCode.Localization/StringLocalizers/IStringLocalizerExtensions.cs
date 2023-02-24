@@ -8,7 +8,8 @@ public static class IStringLocalizerExtensions
         this IStringLocalizer @this,
         CultureInfo culture,
         string name,
-        params object[] arguments)
+        params object[] arguments
+    )
     {
         return string.Format(culture, @this[culture, name], arguments);
     }

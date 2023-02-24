@@ -80,7 +80,9 @@ public sealed class ResettableBusActivityMonitorTests : IDisposable
             await ((IConsumeObserver)monitor).PostConsume<object>(null!);
         }
 
-        await Assert.ThrowsAsync<TimeoutException>(() => monitor.AwaitBusInactivity().OrTimeout(TimeSpan.FromSeconds(1)));
+        await Assert.ThrowsAsync<TimeoutException>(
+            () => monitor.AwaitBusInactivity().OrTimeout(TimeSpan.FromSeconds(1))
+        );
     }
 
     [Fact]

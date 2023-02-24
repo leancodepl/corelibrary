@@ -20,14 +20,17 @@ public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
         "`{0}` command should be validated",
         "Cqrs",
         DiagnosticSeverity.Info,
-        true);
+        true
+    );
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(
+            GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics
+        );
         context.RegisterSyntaxNodeAction(AnalyzeSymbol, SyntaxKind.ClassDeclaration);
     }
 
@@ -77,10 +80,7 @@ public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
         // which we don't have here.
         var classes = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
         var types = classes.Select(cl => model.GetDeclaredSymbol(cl) as ITypeSymbol);
-        return types
-            .Where(cl => cl != null)
-            .Where(cl => IsThisCommandValidator(command, cl!))
-            .Any();
+        return types.Where(cl => cl != null).Where(cl => IsThisCommandValidator(command, cl!)).Any();
     }
 
     private static bool IsThisCommandValidator(INamedTypeSymbol command, ITypeSymbol type)

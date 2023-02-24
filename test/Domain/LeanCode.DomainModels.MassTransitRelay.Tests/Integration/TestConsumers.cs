@@ -26,6 +26,7 @@ public class Event1Consumer : IConsumer<Event1>
 public class Event2FirstConsumer : IConsumer<Event2>
 {
     private readonly HandledEventsReporter<Event2> reporter;
+
     public Event2FirstConsumer(HandledEventsReporter<Event2> reporter)
     {
         this.reporter = reporter;
@@ -42,6 +43,7 @@ public class Event2FirstConsumer : IConsumer<Event2>
 public class Event2SecondConsumer : IConsumer<Event2>
 {
     private readonly HandledEventsReporter<Event2> reporter;
+
     public Event2SecondConsumer(HandledEventsReporter<Event2> reporter)
     {
         this.reporter = reporter;

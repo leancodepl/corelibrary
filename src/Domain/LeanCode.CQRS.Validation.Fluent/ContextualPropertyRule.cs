@@ -24,7 +24,8 @@ internal class ContextualPropertyRule : PropertyRule
         LambdaExpression? expression,
         Func<CascadeMode>? cascadeModeThunk,
         Type? typeToValidate,
-        Type? containerType)
+        Type? containerType
+    )
         : base(member, propertyFunc, expression, cascadeModeThunk, typeToValidate, containerType)
     {
         this.realValueFunc = realValueFunc;
@@ -39,7 +40,8 @@ internal class ContextualPropertyRule : PropertyRule
 
     public override Task<IEnumerable<ValidationFailure>> ValidateAsync(
         IValidationContext context,
-        CancellationToken cancellation)
+        CancellationToken cancellation
+    )
     {
         context.RootContextData[InstanceUnderValidationKey] = GetRealValue(context);
 
@@ -49,7 +51,8 @@ internal class ContextualPropertyRule : PropertyRule
     protected override IEnumerable<ValidationFailure> InvokePropertyValidator(
         IValidationContext context,
         IPropertyValidator validator,
-        string propertyName)
+        string propertyName
+    )
     {
         var propContext = CreatePropertyContext(context, propertyName);
 
@@ -60,7 +63,8 @@ internal class ContextualPropertyRule : PropertyRule
         IValidationContext context,
         IPropertyValidator validator,
         string propertyName,
-        CancellationToken cancellation)
+        CancellationToken cancellation
+    )
     {
         var propContext = CreatePropertyContext(context, propertyName);
 
@@ -96,7 +100,8 @@ internal class AsyncContextualPropertyRule : PropertyRule
         LambdaExpression? expression,
         Func<CascadeMode>? cascadeModeThunk,
         Type? typeToValidate,
-        Type? containerType)
+        Type? containerType
+    )
         : base(member, propertyFunc, expression, cascadeModeThunk, typeToValidate, containerType)
     {
         this.realValueFunc = realValueFunc;
@@ -109,7 +114,8 @@ internal class AsyncContextualPropertyRule : PropertyRule
 
     public override async Task<IEnumerable<ValidationFailure>> ValidateAsync(
         IValidationContext context,
-        CancellationToken cancellation)
+        CancellationToken cancellation
+    )
     {
         context.RootContextData[InstanceUnderValidationKey] = await GetRealValueAsync(context);
 
@@ -119,7 +125,8 @@ internal class AsyncContextualPropertyRule : PropertyRule
     protected override IEnumerable<ValidationFailure> InvokePropertyValidator(
         IValidationContext context,
         IPropertyValidator validator,
-        string propertyName)
+        string propertyName
+    )
     {
         var propContext = CreatePropertyContext(context, propertyName);
 
@@ -130,7 +137,8 @@ internal class AsyncContextualPropertyRule : PropertyRule
         IValidationContext context,
         IPropertyValidator validator,
         string propertyName,
-        CancellationToken cancellation)
+        CancellationToken cancellation
+    )
     {
         var propContext = CreatePropertyContext(context, propertyName);
 

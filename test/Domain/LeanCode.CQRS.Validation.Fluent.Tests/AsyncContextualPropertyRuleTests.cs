@@ -91,9 +91,7 @@ public class AsyncContextualPropertyRuleTests
     {
         public MultiValidator(Func<IValidationContext, string, Task<object>> accessor)
         {
-            RuleForAsync(d => d.Test, accessor)
-                .Must(e => true)
-                .Must(e => true);
+            RuleForAsync(d => d.Test, accessor).Must(e => true).Must(e => true);
         }
     }
 

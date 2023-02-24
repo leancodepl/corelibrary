@@ -13,12 +13,7 @@ public class DbContextInitializer<T> : IHostedService
 {
     private static readonly IAsyncPolicy CreatePolicy = Policy
         .Handle<SqlException>(e => e.Number == 5177)
-        .WaitAndRetryAsync(new[]
-        {
-            TimeSpan.FromSeconds(0.5),
-            TimeSpan.FromSeconds(1),
-            TimeSpan.FromSeconds(3),
-        });
+        .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), });
 
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
 
@@ -41,7 +36,8 @@ public class DbContextInitializer<T> : IHostedService
                 await context.Database.EnsureDeletedAsync(token);
                 await context.Database.EnsureCreatedAsync(token);
             },
-            cancellationToken);
+            cancellationToken
+        );
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

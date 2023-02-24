@@ -7,5 +7,7 @@ internal class Layout
     public const string DirectiveName = "layout";
 
     public static readonly DirectiveDescriptor Directive = DirectiveDescriptor.CreateSingleLineDirective(
-        DirectiveName, b => b.AddMemberToken());
+        DirectiveName,
+        b => b.AddMemberToken()
+    );
 }

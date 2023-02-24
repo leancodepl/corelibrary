@@ -45,14 +45,11 @@ public class ConsumedMessage
             cfg.HasKey(e => new { e.MessageId, e.ConsumerType });
             cfg.HasIndex(e => e.DateConsumed);
 
-            cfg.Property(e => e.MessageId)
-                .ValueGeneratedNever();
+            cfg.Property(e => e.MessageId).ValueGeneratedNever();
 
-            cfg.Property(e => e.ConsumerType)
-                .HasMaxLength(500);
+            cfg.Property(e => e.ConsumerType).HasMaxLength(500);
 
-            cfg.Property(e => e.MessageType)
-                .HasMaxLength(500);
+            cfg.Property(e => e.MessageType).HasMaxLength(500);
         });
     }
 }

@@ -12,9 +12,7 @@ public class StubOperationExecutor : IOperationExecutor<AppContext>
 
     public object? NextResult { get; set; }
 
-    public Task<TResult> ExecuteAsync<TResult>(
-        AppContext appContext,
-        IOperation<TResult> operation)
+    public Task<TResult> ExecuteAsync<TResult>(AppContext appContext, IOperation<TResult> operation)
     {
         LastAppContext = appContext;
         LastOperation = operation;

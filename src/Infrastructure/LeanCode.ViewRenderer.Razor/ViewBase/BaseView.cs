@@ -15,7 +15,9 @@ namespace LeanCode.ViewRenderer.Razor.ViewBase;
 public abstract class BaseView
 {
     private static readonly Encoding UTF8NoBOM = new UTF8Encoding(
-        encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+        encoderShouldEmitUTF8Identifier: false,
+        throwOnInvalidBytes: true
+    );
 
     private StreamWriter? output;
 
@@ -71,12 +73,14 @@ public abstract class BaseView
         return null; // what?
     }
 
-    protected Task<object?> RenderBodyAsync() =>
-        RenderBodyAsyncInternalAsync();
+    protected Task<object?> RenderBodyAsync() => RenderBodyAsyncInternalAsync();
 
     protected void Write(object value) => WriteTo(Output, value);
+
     protected void Write(string value) => WriteTo(Output, value);
+
     protected void Write(HelperResult result) => WriteTo(Output, result);
+
     protected void WriteTo(TextWriter writer, string value) =>
         WriteLiteralTo(writer, HtmlEncoder.Default.Encode(value));
 
@@ -96,7 +100,9 @@ public abstract class BaseView
     }
 
     protected void WriteLiteral(string value) => WriteLiteralTo(Output, value);
+
     protected void WriteLiteral(object value) => WriteLiteralTo(Output, value);
+
     protected void WriteLiteralTo(TextWriter writer, object value) => WriteLiteralTo(writer, Stringify(value));
 
     [SuppressMessage("?", "CA1822", Justification = "We need to expose certain interface.")]
@@ -110,14 +116,26 @@ public abstract class BaseView
 
     [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
     protected void WriteAttributeValue(
-        string thingy, int startPostion, object value, int endValue, int dealyo, bool yesno)
+        string thingy,
+        int startPostion,
+        object value,
+        int endValue,
+        int dealyo,
+        bool yesno
+    )
     {
         AttributeValues.Add(value.ToString());
     }
 
     [SuppressMessage("?", "IDE0060", Justification = "We need to expose certain interface.")]
     protected void BeginWriteAttribute(
-        string name, string begining, int startPosition, string ending, int endPosition, int thingy)
+        string name,
+        string begining,
+        int startPosition,
+        string ending,
+        int endPosition,
+        int thingy
+    )
     {
         Debug.Assert(string.IsNullOrEmpty(attributeEnding), $"{nameof(attributeEnding)} should not be null nor empty");
 
@@ -141,7 +159,8 @@ public abstract class BaseView
         string name,
         string leader,
         string trailer,
-        params AttributeValue[] values)
+        params AttributeValue[] values
+    )
     {
         WriteLiteralTo(writer, leader);
 
@@ -189,6 +208,5 @@ public abstract class BaseView
     }
 
     [return: NotNullIfNotNull("o")]
-    private static string? Stringify(object? o) =>
-        Convert.ToString(o, CultureInfo.InvariantCulture);
+    private static string? Stringify(object? o) => Convert.ToString(o, CultureInfo.InvariantCulture);
 }

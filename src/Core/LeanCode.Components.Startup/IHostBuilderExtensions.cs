@@ -27,38 +27,46 @@ public static class IHostBuilderExtensions
         this IHostBuilder builder,
         TokenCredential? credential = null,
         string? keyVaultKeyOverride = null,
-        KeyVaultSecretManager? manager = null)
+        KeyVaultSecretManager? manager = null
+    )
     {
-        return builder.ConfigureAppConfiguration((context, builder) =>
-        {
-            ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
-        });
+        return builder.ConfigureAppConfiguration(
+            (context, builder) =>
+            {
+                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
+            }
+        );
     }
 
     public static IHostBuilder AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment(
         this IHostBuilder builder,
         TokenCredential? credential = null,
         string? keyVaultKeyOverride = null,
-        KeyVaultSecretManager? manager = null)
+        KeyVaultSecretManager? manager = null
+    )
     {
-        return builder.ConfigureAppConfiguration((context, builder) =>
-        {
-            if (!context.HostingEnvironment.IsDevelopment())
+        return builder.ConfigureAppConfiguration(
+            (context, builder) =>
             {
-                ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
+                if (!context.HostingEnvironment.IsDevelopment())
+                {
+                    ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
+                }
             }
-        });
+        );
     }
 
     public static IHostBuilder ConfigureDefaultLogging(
         this IHostBuilder builder,
         string projectName,
         TypesCatalog? destructurers = null,
-        Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
+        Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null
+    )
     {
         var entryAssembly = Assembly.GetEntryAssembly()!; // returns null only when called from unmanaged code
 
-        var appName = entryAssembly.GetName().Name
+        var appName =
+            entryAssembly.GetName().Name
             ?? throw new InvalidOperationException("Failed to read entry assembly's simple name.");
 
         return builder.ConfigureDefaultLogging(projectName, appName, destructurers, additionalLoggingConfiguration);
@@ -69,60 +77,62 @@ public static class IHostBuilderExtensions
         string projectName,
         string appName,
         TypesCatalog? destructurers = null,
-        Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null)
+        Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null
+    )
     {
-        return builder.ConfigureLogging((context, logging) =>
-        {
-            var configuration = context.Configuration;
-            var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
-
-            var loggerConfiguration = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("project", projectName)
-                .Enrich.WithProperty("app_name", appName)
-                .MinimumLevel.Is(minLogLevel)
-                .DestructureCommonObjects(destructurers?.Assemblies);
-
-            if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+        return builder.ConfigureLogging(
+            (context, logging) =>
             {
-                var internalLogLevel = minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
-                loggerConfiguration
-                    .MinimumLevel.Override("Microsoft", internalLogLevel)
-                    .MinimumLevel.Override("System", internalLogLevel);
+                var configuration = context.Configuration;
+                var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
+
+                var loggerConfiguration = new LoggerConfiguration().ReadFrom
+                    .Configuration(configuration)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("project", projectName)
+                    .Enrich.WithProperty("app_name", appName)
+                    .MinimumLevel.Is(minLogLevel)
+                    .DestructureCommonObjects(destructurers?.Assemblies);
+
+                if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+                {
+                    var internalLogLevel =
+                        minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
+                    loggerConfiguration.MinimumLevel
+                        .Override("Microsoft", internalLogLevel)
+                        .MinimumLevel.Override("System", internalLogLevel);
+                }
+
+                if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
+                {
+                    loggerConfiguration.WriteTo.Seq(seqEndpoint);
+                }
+
+                if (context.HostingEnvironment.IsDevelopment())
+                {
+                    loggerConfiguration.WriteTo.Console();
+                }
+                else
+                {
+                    loggerConfiguration.WriteTo.Console(new RenderedCompactJsonFormatter());
+                }
+
+                additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
+
+                Log.Logger = loggerConfiguration.CreateLogger();
+
+                logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
+                logging.AddSerilog();
             }
-
-            if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
-            {
-                loggerConfiguration
-                    .WriteTo.Seq(seqEndpoint);
-            }
-
-            if (context.HostingEnvironment.IsDevelopment())
-            {
-                loggerConfiguration
-                    .WriteTo.Console();
-            }
-            else
-            {
-                loggerConfiguration
-                    .WriteTo.Console(new RenderedCompactJsonFormatter());
-            }
-
-            additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
-
-            Log.Logger = loggerConfiguration.CreateLogger();
-
-            logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
-            logging.AddSerilog();
-        });
+        );
     }
 
     private static void ConfigureAzureKeyVault(
         IConfigurationBuilder builder,
         TokenCredential? credential,
         string? keyVaultUrlKeyOverride,
-        KeyVaultSecretManager? manager)
+        KeyVaultSecretManager? manager
+    )
     {
         var configuration = builder.Build();
 

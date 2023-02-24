@@ -18,7 +18,8 @@ internal abstract class BaseRemoteObjectHandler<TAppContext>
     public BaseRemoteObjectHandler(
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        ISerializer serializer)
+        ISerializer serializer
+    )
     {
         Logger = Serilog.Log.ForContext(GetType());
         Catalog = catalog;
@@ -26,7 +27,11 @@ internal abstract class BaseRemoteObjectHandler<TAppContext>
         this.serializer = serializer;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The handler is an exception boundary."
+    )]
     public async Task<ExecutionResult> ExecuteAsync(HttpContext context)
     {
         var request = context.Request;
@@ -73,7 +78,8 @@ internal abstract class BaseRemoteObjectHandler<TAppContext>
             Logger.Debug(
                 "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
                 obj,
-                type);
+                type
+            );
         }
         catch (InsufficientPermissionException ex)
         {
@@ -83,10 +89,10 @@ internal abstract class BaseRemoteObjectHandler<TAppContext>
                 "Authorizer {Authorizer} failed to authorize the user to run {@Object} of type {Type}",
                 ex.AuthorizerName,
                 obj,
-                type);
+                type
+            );
         }
-        catch (Exception ex)
-            when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
+        catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
             Logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
             result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
@@ -112,9 +118,7 @@ internal abstract class BaseRemoteObjectHandler<TAppContext>
     {
         var idx = request.Path.Value!.LastIndexOf('/');
 
-        var name = idx != -1
-            ? request.Path.Value[(idx + 1)..]
-            : request.Path.Value;
+        var name = idx != -1 ? request.Path.Value[(idx + 1)..] : request.Path.Value;
 
         return Catalog.GetType(name);
     }

@@ -11,8 +11,7 @@ internal class ExternalLoginStub : ExternalLoginBase<User>
     public override string GrantType => "test";
 
     public ExternalLoginStub(UserManager<User> userManager)
-        : base(userManager)
-    { }
+        : base(userManager) { }
 
     public string AddToken()
     {

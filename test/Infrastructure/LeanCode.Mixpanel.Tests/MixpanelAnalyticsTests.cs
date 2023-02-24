@@ -15,21 +15,28 @@ public class MixpanelAnalyticsTests
 
     private readonly MixpanelAnalytics analytics;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "References don't go out of scope."
+    )]
     public MixpanelAnalyticsTests()
     {
         analytics = new MixpanelAnalytics(
-            new HttpClient
-            {
-                BaseAddress = new Uri("https://api.mixpanel.com"),
-            },
-            Configuration);
+            new HttpClient { BaseAddress = new Uri("https://api.mixpanel.com"), },
+            Configuration
+        );
     }
 
     [MixpanelFact]
     public async Task Track_works()
     {
-        await analytics.TrackAsync(Guid.NewGuid().ToString(), "ActivityCreated", "activityId", Guid.NewGuid().ToString());
+        await analytics.TrackAsync(
+            Guid.NewGuid().ToString(),
+            "ActivityCreated",
+            "activityId",
+            Guid.NewGuid().ToString()
+        );
     }
 
     internal sealed class MixpanelFactAttribute : FactAttribute

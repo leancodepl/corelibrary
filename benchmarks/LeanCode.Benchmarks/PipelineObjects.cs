@@ -13,20 +13,19 @@ public struct Context : IPipelineContext
 }
 
 public struct Input { }
+
 public struct Output { }
 
 public class Finalizer : IPipelineFinalizer<Context, Input, Output>
 {
     private readonly Task<Output> result = Task.FromResult(new Output());
+
     public Task<Output> ExecuteAsync(Context ctx, Input input) => result;
 }
 
 public class PassthroughElement : IPipelineElement<Context, Input, Output>
 {
-    public Task<Output> ExecuteAsync(
-        Context ctx,
-        Input input,
-        Func<Context, Input, Task<Output>> next)
+    public Task<Output> ExecuteAsync(Context ctx, Input input, Func<Context, Input, Task<Output>> next)
     {
         return next(ctx, input);
     }
@@ -56,5 +55,6 @@ public sealed class StaticScope : IPipelineScope
 public sealed class StaticFactory : IPipelineFactory
 {
     private readonly StaticScope scope = new StaticScope();
+
     public IPipelineScope BeginScope() => scope;
 }

@@ -27,7 +27,10 @@ public class PublishedEventsCleaner : IPeriodicAction
         this.outboxContext = outboxContext;
         tableName = outboxContext.Self.GetFullTableName(typeof(RaisedEvent));
         dateOccurredColumnName = outboxContext.Self.GetColumnName(typeof(RaisedEvent), nameof(RaisedEvent.DateOcurred));
-        wasPublishedColumnName = outboxContext.Self.GetColumnName(typeof(RaisedEvent), nameof(RaisedEvent.WasPublished));
+        wasPublishedColumnName = outboxContext.Self.GetColumnName(
+            typeof(RaisedEvent),
+            nameof(RaisedEvent.WasPublished)
+        );
     }
 
     public async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,7 +47,8 @@ public class PublishedEventsCleaner : IPeriodicAction
                         {dateOccurredColumnName} < @time AND {wasPublishedColumnName} = '1'",
                 new { time },
                 commandTimeout: 3600,
-                cancellationToken: stoppingToken);
+                cancellationToken: stoppingToken
+            );
 
             logger.Verbose("Removed {Count} raised and published events", count);
         }

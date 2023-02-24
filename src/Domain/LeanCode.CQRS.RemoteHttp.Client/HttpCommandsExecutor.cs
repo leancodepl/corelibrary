@@ -18,12 +18,9 @@ public class HttpCommandsExecutor
     private readonly JsonSerializerOptions serializerOptions;
 
     public HttpCommandsExecutor(HttpClient client)
-        : this(client, null)
-    { }
+        : this(client, null) { }
 
-    public HttpCommandsExecutor(
-        HttpClient client,
-        JsonSerializerOptions? serializerOptions)
+    public HttpCommandsExecutor(HttpClient client, JsonSerializerOptions? serializerOptions)
     {
         this.client = client;
         this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
@@ -32,7 +29,11 @@ public class HttpCommandsExecutor
     public virtual async Task<CommandResult> RunAsync(ICommand command, CancellationToken cancellationToken = default)
     {
         using var content = JsonContent.Create(command, command.GetType(), options: serializerOptions);
-        using var response = await client.PostAsync("command/" + command.GetType().FullName, content, cancellationToken);
+        using var response = await client.PostAsync(
+            "command/" + command.GetType().FullName,
+            content,
+            cancellationToken
+        );
 
         // Handle before HandleCommonCQRSErrors 'cause it will treat the 422 as "other error"
         if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
@@ -56,13 +57,17 @@ public class HttpCommandsExecutor
         {
             throw new MalformedResponseException();
         }
-        else if (document.RootElement.TryGetProperty(nameof(CommandResult.WasSuccessful), out var wasSuccessful) &&
-            wasSuccessful.GetBoolean())
+        else if (
+            document.RootElement.TryGetProperty(nameof(CommandResult.WasSuccessful), out var wasSuccessful)
+            && wasSuccessful.GetBoolean()
+        )
         {
             return CommandResult.Success;
         }
-        else if (document.RootElement.TryGetProperty(nameof(CommandResult.ValidationErrors), out var validationErrors) &&
-            validationErrors.ValueKind == JsonValueKind.Array)
+        else if (
+            document.RootElement.TryGetProperty(nameof(CommandResult.ValidationErrors), out var validationErrors)
+            && validationErrors.ValueKind == JsonValueKind.Array
+        )
         {
             var errors = validationErrors.EnumerateArray().Select(ParseError).ToList();
             return new(errors.ToImmutableList());
@@ -75,17 +80,16 @@ public class HttpCommandsExecutor
 
     private ValidationError ParseError(JsonElement el)
     {
-        if (el.TryGetProperty(nameof(ValidationError.ErrorCode), out var errCode) &&
-            el.TryGetProperty(nameof(ValidationError.ErrorMessage), out var errMsg) &&
-            el.TryGetProperty(nameof(ValidationError.PropertyName), out var propName) &&
-            errCode.ValueKind == JsonValueKind.Number &&
-            errMsg.ValueKind == JsonValueKind.String &&
-            propName.ValueKind == JsonValueKind.String)
+        if (
+            el.TryGetProperty(nameof(ValidationError.ErrorCode), out var errCode)
+            && el.TryGetProperty(nameof(ValidationError.ErrorMessage), out var errMsg)
+            && el.TryGetProperty(nameof(ValidationError.PropertyName), out var propName)
+            && errCode.ValueKind == JsonValueKind.Number
+            && errMsg.ValueKind == JsonValueKind.String
+            && propName.ValueKind == JsonValueKind.String
+        )
         {
-            return new ValidationError(
-                propName.GetString() ?? "",
-                errMsg.GetString() ?? "",
-                errCode.GetInt32());
+            return new ValidationError(propName.GetString() ?? "", errMsg.GetString() ?? "", errCode.GetInt32());
         }
         else
         {

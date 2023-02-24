@@ -36,6 +36,5 @@ internal class AutofacCommandHandlerResolver<TAppContext> : ICommandHandlerResol
         }
     }
 
-    private static Type[] GetTypes(Type commandType) =>
-        new[] { AppContextType, commandType };
+    private static Type[] GetTypes(Type commandType) => new[] { AppContextType, commandType };
 }

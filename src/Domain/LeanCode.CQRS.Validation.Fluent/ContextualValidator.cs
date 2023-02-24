@@ -10,13 +10,15 @@ public class ContextualValidator<T> : AbstractValidator<T>
 {
     public IRuleBuilderInitial<T, TValue> RuleFor<TProperty, TValue>(
         Expression<Func<T, TProperty>> expression,
-        Func<IValidationContext, TProperty, TValue> realValueAccessor)
+        Func<IValidationContext, TProperty, TValue> realValueAccessor
+    )
     {
         var member = expression.GetMember();
 
-        var compiled = member is null || ValidatorOptions.Global.DisableAccessorCache
-            ? expression.Compile()
-            : AccessorCache<T>.GetCachedAccessor(member, expression);
+        var compiled =
+            member is null || ValidatorOptions.Global.DisableAccessorCache
+                ? expression.Compile()
+                : AccessorCache<T>.GetCachedAccessor(member, expression);
 
         var rule = new ContextualPropertyRule(
             member,
@@ -25,7 +27,8 @@ public class ContextualValidator<T> : AbstractValidator<T>
             expression,
             () => CascadeMode,
             typeof(TValue),
-            typeof(T));
+            typeof(T)
+        );
 
         AddRule(rule);
 
@@ -34,13 +37,15 @@ public class ContextualValidator<T> : AbstractValidator<T>
 
     public IRuleBuilderInitial<T, TValue> RuleForAsync<TProperty, TValue>(
         Expression<Func<T, TProperty>> expression,
-        Func<IValidationContext, TProperty, Task<TValue>> realValueAccessor)
+        Func<IValidationContext, TProperty, Task<TValue>> realValueAccessor
+    )
     {
         var member = expression.GetMember();
 
-        var compiled = member is null || ValidatorOptions.Global.DisableAccessorCache
-            ? expression.Compile()
-            : AccessorCache<T>.GetCachedAccessor(member, expression);
+        var compiled =
+            member is null || ValidatorOptions.Global.DisableAccessorCache
+                ? expression.Compile()
+                : AccessorCache<T>.GetCachedAccessor(member, expression);
 
         var rule = new AsyncContextualPropertyRule(
             member,
@@ -49,7 +54,8 @@ public class ContextualValidator<T> : AbstractValidator<T>
             expression,
             () => CascadeMode,
             typeof(TValue),
-            typeof(T));
+            typeof(T)
+        );
 
         AddRule(rule);
 

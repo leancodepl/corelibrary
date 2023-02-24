@@ -21,11 +21,7 @@ public class CommandCH : ICommandHandler<Context, Command>
 
     public Task ExecuteAsync(Context context, Command command)
     {
-        dbContext.Entities.Add(new Entity
-        {
-            Id = command.Id,
-            Data = command.Data,
-        });
+        dbContext.Entities.Add(new Entity { Id = command.Id, Data = command.Data, });
         return dbContext.SaveChangesAsync();
     }
 }

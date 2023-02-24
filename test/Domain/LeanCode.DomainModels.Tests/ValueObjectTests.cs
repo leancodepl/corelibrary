@@ -57,23 +57,17 @@ public class ValueObjectTests
         Assert.False(TenPLN().GetHashCode() == TenUSD().GetHashCode());
     }
 
-    private static Money TenPLN() =>
-        new Money(10, "PLN");
+    private static Money TenPLN() => new Money(10, "PLN");
 
-    private static Money TwentyPLN() =>
-        new Money(20, "PLN");
+    private static Money TwentyPLN() => new Money(20, "PLN");
 
-    private static Money TenUSD() =>
-        new Money(10, "USD");
+    private static Money TenUSD() => new Money(10, "USD");
 
-    private static Money? MaybeTenPLN(bool @null) =>
-        @null ? null : new Money(10, "PLN");
+    private static Money? MaybeTenPLN(bool @null) => @null ? null : new Money(10, "PLN");
 
-    private static Money? MaybeTwentyPLN(bool @null) =>
-        @null ? null : new Money(20, "PLN");
+    private static Money? MaybeTwentyPLN(bool @null) => @null ? null : new Money(20, "PLN");
 
-    private static Money? MaybeTenUSD(bool @null) =>
-        @null ? null : new Money(10, "USD");
+    private static Money? MaybeTenUSD(bool @null) => @null ? null : new Money(10, "USD");
 
     private record Money : ValueObject
     {

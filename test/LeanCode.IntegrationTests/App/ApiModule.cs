@@ -18,14 +18,19 @@ public class ApiModule : AppModule
         this.config = config;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA5404", Justification = "References don't go out of scope.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA5404",
+        Justification = "References don't go out of scope."
+    )]
     public override void ConfigureServices(IServiceCollection services)
     {
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
 
         services.AddMemoryCache();
 
-        services.AddIdentityServer()
+        services
+            .AddIdentityServer()
             .AddInMemoryApiResources(AuthConfig.ApiResources)
             .AddInMemoryIdentityResources(AuthConfig.IdentityResources)
             .AddInMemoryApiScopes(AuthConfig.GetApiScopes())
@@ -35,8 +40,8 @@ public class ApiModule : AppModule
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-        services.AddAuthentication(
-            options =>
+        services
+            .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,8 +56,9 @@ public class ApiModule : AppModule
                 cfg.TokenValidationParameters.RoleClaimType = "role";
             });
 
-        services.AddDbContext<TestDbContext>(cfg =>
-            cfg.UseSqlServer(config.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault)));
+        services.AddDbContext<TestDbContext>(
+            cfg => cfg.UseSqlServer(config.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault))
+        );
     }
 
     protected override void Load(ContainerBuilder builder)

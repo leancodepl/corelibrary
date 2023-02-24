@@ -20,7 +20,8 @@ public class ValidationElement<TAppContext> : IPipelineElement<TAppContext, ICom
     public async Task<CommandResult> ExecuteAsync(
         TAppContext ctx,
         ICommand input,
-        Func<TAppContext, ICommand, Task<CommandResult>> next)
+        Func<TAppContext, ICommand, Task<CommandResult>> next
+    )
     {
         var commandType = input.GetType();
         var validator = resolver.FindCommandValidator(commandType);
@@ -46,7 +47,8 @@ public class ValidationElement<TAppContext> : IPipelineElement<TAppContext, ICom
 public static class PipelineBuilderExtensions
 {
     public static PipelineBuilder<TAppContext, ICommand, CommandResult> Validate<TAppContext>(
-        this PipelineBuilder<TAppContext, ICommand, CommandResult> builder)
+        this PipelineBuilder<TAppContext, ICommand, CommandResult> builder
+    )
         where TAppContext : IPipelineContext
     {
         return builder.Use<ValidationElement<TAppContext>>();

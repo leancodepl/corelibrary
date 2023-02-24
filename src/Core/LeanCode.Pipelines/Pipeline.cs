@@ -26,8 +26,9 @@ public class ConfiguredPipeline<TContext, TInput, TOutput>
 }
 
 public delegate PipelineBuilder<TContext, TInput, TOutput> ConfigPipeline<TContext, TInput, TOutput>(
-    PipelineBuilder<TContext, TInput, TOutput> builder)
-        where TContext : notnull, IPipelineContext;
+    PipelineBuilder<TContext, TInput, TOutput> builder
+)
+    where TContext : notnull, IPipelineContext;
 
 public class PipelineBuilder<TContext, TInput, TOutput>
     where TContext : notnull, IPipelineContext
@@ -41,8 +42,7 @@ public class PipelineBuilder<TContext, TInput, TOutput>
         return this;
     }
 
-    public PipelineBuilder<TContext, TInput, TOutput> Configure(
-        ConfigPipeline<TContext, TInput, TOutput> config)
+    public PipelineBuilder<TContext, TInput, TOutput> Configure(ConfigPipeline<TContext, TInput, TOutput> config)
     {
         return config(this);
     }
@@ -50,8 +50,6 @@ public class PipelineBuilder<TContext, TInput, TOutput>
     public ConfiguredPipeline<TContext, TInput, TOutput> Finalize<TPipeline>()
         where TPipeline : class, IPipelineFinalizer<TContext, TInput, TOutput>
     {
-        return new ConfiguredPipeline<TContext, TInput, TOutput>(
-            components,
-            typeof(TPipeline));
+        return new ConfiguredPipeline<TContext, TInput, TOutput>(components, typeof(TPipeline));
     }
 }

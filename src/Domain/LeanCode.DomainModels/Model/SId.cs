@@ -62,7 +62,9 @@ public readonly struct SId<TEntity> : IEquatable<SId<TEntity>>, IComparable<SId<
         }
         else
         {
-            throw new FormatException($"The id has invalid format. It should look like {TypeName}{Separator}(random id).");
+            throw new FormatException(
+                $"The id has invalid format. It should look like {TypeName}{Separator}(random id)."
+            );
         }
     }
 
@@ -110,23 +112,27 @@ public readonly struct SId<TEntity> : IEquatable<SId<TEntity>>, IComparable<SId<
         else
         {
             var span = v.AsSpan();
-            return
-                span.Length == RawLength &&
-                span.StartsWith(TypeName) &&
-                span[TypeName.Length] == Separator &&
-                Guid.TryParseExact(span[(TypeName.Length + 1)..], "N", out _);
+            return span.Length == RawLength
+                && span.StartsWith(TypeName)
+                && span[TypeName.Length] == Separator
+                && Guid.TryParseExact(span[(TypeName.Length + 1)..], "N", out _);
         }
     }
 
     public bool Equals(SId<TEntity> other) => Value.Equals(other.Value, StringComparison.Ordinal);
+
     public int CompareTo(SId<TEntity> other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
+
     public override bool Equals(object? obj) => obj is SId<TEntity> id && Equals(id);
+
     public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
 
     public static bool operator ==(SId<TEntity> left, SId<TEntity> right) => left.Equals(right);
+
     public static bool operator !=(SId<TEntity> left, SId<TEntity> right) => !left.Equals(right);
 
     public override string ToString() => Value;
+
     public static implicit operator string(SId<TEntity> id) => id.Value;
 
     private static string ExtractType()
@@ -161,6 +167,6 @@ public sealed class IdSlugAttribute : Attribute
     }
 
     public static string? GetSlug<T>() => GetSlug(typeof(T));
-    public static string? GetSlug(Type t) =>
-        t.GetCustomAttribute<IdSlugAttribute>()?.Slug;
+
+    public static string? GetSlug(Type t) => t.GetCustomAttribute<IdSlugAttribute>()?.Slug;
 }

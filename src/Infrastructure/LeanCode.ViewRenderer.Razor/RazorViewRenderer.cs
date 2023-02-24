@@ -22,7 +22,8 @@ internal class RazorViewRenderer : IViewRenderer
         string viewName,
         object model,
         Stream outputStream,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         logger.Debug("Rendering view {ViewName}", viewName);
 
@@ -34,7 +35,8 @@ internal class RazorViewRenderer : IViewRenderer
     public async Task<string> RenderToStringAsync(
         string viewName,
         object model,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         using (var ms = new MemoryStream())
         {
@@ -44,7 +46,13 @@ internal class RazorViewRenderer : IViewRenderer
         }
     }
 
-    private async Task RenderAsync(Stream outputStream, string viewName, object model, BaseView? childView, int childSize)
+    private async Task RenderAsync(
+        Stream outputStream,
+        string viewName,
+        object model,
+        BaseView? childView,
+        int childSize
+    )
     {
         var compiledView = await cache.GetOrCompileAsync(viewName);
 
@@ -64,12 +72,7 @@ internal class RazorViewRenderer : IViewRenderer
         {
             logger.Debug("View {ViewName} has a layout {Layout}, delegating work", viewName, compiledView.Layout);
 
-            await RenderAsync(
-                outputStream,
-                compiledView.Layout,
-                model,
-                view,
-                childSize + compiledView.ProjectedSize);
+            await RenderAsync(outputStream, compiledView.Layout, model, view, childSize + compiledView.ProjectedSize);
         }
     }
 }

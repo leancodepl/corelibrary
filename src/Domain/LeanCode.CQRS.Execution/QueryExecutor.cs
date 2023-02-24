@@ -7,7 +7,8 @@ using LeanCode.Pipelines;
 namespace LeanCode.CQRS.Execution;
 
 public delegate PipelineBuilder<TAppContext, IQuery, object?> QueryBuilder<TAppContext>(
-    PipelineBuilder<TAppContext, IQuery, object?> builder)
+    PipelineBuilder<TAppContext, IQuery, object?> builder
+)
     where TAppContext : IPipelineContext;
 
 public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
@@ -19,10 +20,13 @@ public class QueryExecutor<TAppContext> : IQueryExecutor<TAppContext>
 
     public QueryExecutor(IPipelineFactory factory, QueryBuilder<TAppContext> config)
     {
-        executor = PipelineExecutor.Create(factory, Pipeline
-            .Build<TAppContext, IQuery, object?>()
-            .Configure(new ConfigPipeline<TAppContext, IQuery, object?>(config))
-            .Finalize<QueryFinalizer<TAppContext>>());
+        executor = PipelineExecutor.Create(
+            factory,
+            Pipeline
+                .Build<TAppContext, IQuery, object?>()
+                .Configure(new ConfigPipeline<TAppContext, IQuery, object?>(config))
+                .Finalize<QueryFinalizer<TAppContext>>()
+        );
     }
 
     public async Task<TResult> GetAsync<TResult>(TAppContext appContext, IQuery<TResult> query)

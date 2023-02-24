@@ -6,8 +6,7 @@ namespace LeanCode.DomainModels.MassTransitRelay.Middleware;
 
 public class CorrelationFilter : IFilter<ConsumeContext>
 {
-    public void Probe(ProbeContext context)
-    { }
+    public void Probe(ProbeContext context) { }
 
     public async Task Send(ConsumeContext context, IPipe<ConsumeContext> next)
     {
@@ -18,9 +17,7 @@ public class CorrelationFilter : IFilter<ConsumeContext>
 
     private static IDisposable? GetMessageId(ConsumeContext ctx)
     {
-        return ctx.MessageId is Guid messageId ?
-            LogContext.PushProperty("MessageId", messageId) :
-            null;
+        return ctx.MessageId is Guid messageId ? LogContext.PushProperty("MessageId", messageId) : null;
     }
 
     private static IDisposable? GetConsumerType(IPipe<ConsumeContext> next)

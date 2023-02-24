@@ -29,7 +29,8 @@ public abstract class ExternalLoginGrantValidatorBase<TUser, TExternalLogin> : I
         {
             context.Result = new GrantValidationResult(
                 TokenRequestErrors.InvalidGrant,
-                GrantValidationErrors.NoAssertion);
+                GrantValidationErrors.NoAssertion
+            );
 
             return;
         }
@@ -38,13 +39,9 @@ public abstract class ExternalLoginGrantValidatorBase<TUser, TExternalLogin> : I
         {
             SignInResult.Success s => new(s.UserId.ToString(), GrantType),
 
-            SignInResult.UserDoesNotExist => new(
-                TokenRequestErrors.InvalidGrant,
-                GrantValidationErrors.NoUser),
+            SignInResult.UserDoesNotExist => new(TokenRequestErrors.InvalidGrant, GrantValidationErrors.NoUser),
 
-            SignInResult.TokenIsInvalid => new(
-                TokenRequestErrors.InvalidGrant,
-                GrantValidationErrors.InvalidAssertion),
+            SignInResult.TokenIsInvalid => new(TokenRequestErrors.InvalidGrant, GrantValidationErrors.InvalidAssertion),
 
             var o => throw new ExternalLoginException($"Unexpected SignInResult of type {o.GetType().Name}."),
         };

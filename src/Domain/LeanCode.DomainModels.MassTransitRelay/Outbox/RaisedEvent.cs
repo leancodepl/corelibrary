@@ -42,7 +42,14 @@ public sealed class RaisedEvent
     }
 
     // For tests
-    public RaisedEvent(Guid id, RaisedEventMetadata metadata, DateTime dateOcurred, bool wasPublished, string eventType, string payload)
+    public RaisedEvent(
+        Guid id,
+        RaisedEventMetadata metadata,
+        DateTime dateOcurred,
+        bool wasPublished,
+        string eventType,
+        string payload
+    )
     {
         Id = id;
         Metadata = metadata;
@@ -65,17 +72,17 @@ public sealed class RaisedEvent
         {
             cfg.HasKey(e => e.Id).IsClustered(false);
             cfg.HasIndex(e => new { e.DateOcurred, e.WasPublished }).IsClustered(true);
-            cfg.OwnsOne(e => e.Metadata, inner =>
-            {
-                inner.Property(e => e.ActivityContext)
-                    .HasConversion(new ActivityContextEFConverter());
-            });
+            cfg.OwnsOne(
+                e => e.Metadata,
+                inner =>
+                {
+                    inner.Property(e => e.ActivityContext).HasConversion(new ActivityContextEFConverter());
+                }
+            );
 
-            cfg.Property(e => e.Id)
-                .ValueGeneratedNever();
+            cfg.Property(e => e.Id).ValueGeneratedNever();
 
-            cfg.Property(e => e.EventType)
-                .HasMaxLength(MaxEventTypeLength);
+            cfg.Property(e => e.EventType).HasMaxLength(MaxEventTypeLength);
         });
     }
 }

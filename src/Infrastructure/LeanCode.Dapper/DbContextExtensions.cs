@@ -16,12 +16,14 @@ namespace LeanCode.Dapper;
 [SuppressMessage(
     "StyleCop.CSharp.LayoutRules",
     "SA1507:CodeMustNotContainMultipleBlankLinesInARow",
-    Justification = "Grouping of the methods improves readability.")]
+    Justification = "Grouping of the methods improves readability."
+)]
 public static class DbContextDapperExtensions
 {
     public static async Task<TResult> WithConnectionAsync<TResult>(
         this DbContext context,
-        Func<DbConnection, Task<TResult>> call)
+        Func<DbConnection, Task<TResult>> call
+    )
     {
         await context.Database.OpenConnectionAsync();
         var conn = context.Database.GetDbConnection();
@@ -35,12 +37,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.ExecuteAsync(cmd));
     }
-
 
     public static Task<T> ExecuteScalarAsync<T>(
         this DbContext context,
@@ -49,12 +58,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.ExecuteScalarAsync<T>(cmd));
     }
-
 
     public static Task<IEnumerable<TResult>> QueryAsync<TResult>(
         this DbContext context,
@@ -63,9 +79,17 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryAsync<TResult>(cmd));
     }
 
@@ -79,9 +103,18 @@ public static class DbContextDapperExtensions
         int? commandTimeout = null,
         CommandType? commandType = null,
         CommandFlags commandFlags = CommandFlags.Buffered,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, commandFlags, cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            commandFlags,
+            cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryAsync(cmd, map, splitOn));
     }
 
@@ -92,12 +125,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryAsync(cmd));
     }
-
 
     public static Task<TResult> QuerySingleOrDefaultAsync<TResult>(
         this DbContext context,
@@ -106,9 +146,17 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QuerySingleOrDefaultAsync<TResult>(cmd));
     }
 
@@ -119,12 +167,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QuerySingleOrDefaultAsync(cmd));
     }
-
 
     public static Task<TResult> QuerySingleAsync<TResult>(
         this DbContext context,
@@ -133,9 +188,17 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QuerySingleAsync<TResult>(cmd));
     }
 
@@ -146,12 +209,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QuerySingleAsync(cmd));
     }
-
 
     public static Task<TResult> QueryFirstOrDefaultAsync<TResult>(
         this DbContext context,
@@ -160,9 +230,17 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryFirstOrDefaultAsync<TResult>(cmd));
     }
 
@@ -173,12 +251,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryFirstOrDefaultAsync(cmd));
     }
-
 
     public static Task<TResult> QueryFirstAsync<TResult>(
         this DbContext context,
@@ -187,9 +272,17 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryFirstAsync<TResult>(cmd));
     }
 
@@ -200,12 +293,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryFirstAsync(cmd));
     }
-
 
     public static Task<SqlMapper.GridReader> QueryMultipleAsync(
         this DbContext context,
@@ -214,12 +314,19 @@ public static class DbContextDapperExtensions
         IDbTransaction? transaction = null,
         int? commandTimeout = null,
         CommandType? commandType = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
-        var cmd = new CommandDefinition(sql, param, transaction, commandTimeout, commandType, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(
+            sql,
+            param,
+            transaction,
+            commandTimeout,
+            commandType,
+            cancellationToken: cancellationToken
+        );
         return context.WithConnectionAsync(conn => conn.QueryMultipleAsync(cmd));
     }
-
 
     public static string GetFullTableName(this DbContext dbContext, Type entity)
     {

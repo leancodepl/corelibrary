@@ -28,8 +28,7 @@ public class OperationExecutionTests : BaseCQRSTests
     [Fact]
     public async Task Correctly_routes_data_through_pipeline_elements()
     {
-        Prepare(
-            operationBuilder: c => c.Use<SamplePipelineElement<IOperation, object>>());
+        Prepare(operationBuilder: c => c.Use<SamplePipelineElement<IOperation, object>>());
 
         var appCtx = new AppContext();
         var operation = new SampleOperation();

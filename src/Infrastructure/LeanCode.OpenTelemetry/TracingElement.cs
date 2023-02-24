@@ -28,7 +28,8 @@ public class TracingElement<TContext, TInput, TOutput> : IPipelineElement<TConte
 public static class PipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, TInput, TOutput> Trace<TContext, TInput, TOutput>(
-        this PipelineBuilder<TContext, TInput, TOutput> builder)
+        this PipelineBuilder<TContext, TInput, TOutput> builder
+    )
         where TContext : IPipelineContext
     {
         return builder.Use<TracingElement<TContext, TInput, TOutput>>();

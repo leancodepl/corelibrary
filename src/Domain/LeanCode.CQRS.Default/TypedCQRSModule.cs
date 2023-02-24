@@ -20,7 +20,8 @@ internal class TypedCQRSModule<TAppContext> : Module
         TypesCatalog catalog,
         CommandBuilder<TAppContext> cmdBuilder,
         QueryBuilder<TAppContext> queryBuilder,
-        OperationBuilder<TAppContext> operationBuilder)
+        OperationBuilder<TAppContext> operationBuilder
+    )
     {
         this.catalog = catalog;
         this.cmdBuilder = cmdBuilder;
@@ -37,28 +38,24 @@ internal class TypedCQRSModule<TAppContext> : Module
 
         builder.RegisterType<AutofacCommandHandlerResolver<TAppContext>>().As<ICommandHandlerResolver<TAppContext>>();
         builder.RegisterType<AutofacQueryHandlerResolver<TAppContext>>().As<IQueryHandlerResolver<TAppContext>>();
-        builder.RegisterType<AutofacOperationHandlerResolver<TAppContext>>().As<IOperationHandlerResolver<TAppContext>>();
+        builder
+            .RegisterType<AutofacOperationHandlerResolver<TAppContext>>()
+            .As<IOperationHandlerResolver<TAppContext>>();
         builder.RegisterType<AutofacAuthorizerResolver<TAppContext>>().As<IAuthorizerResolver<TAppContext>>();
         builder.RegisterType<AutofacValidatorResolver<TAppContext>>().As<ICommandValidatorResolver<TAppContext>>();
 
-        builder.Register(c =>
-            new CommandExecutor<TAppContext>(
-                c.Resolve<IPipelineFactory>(),
-                cmdBuilder))
+        builder
+            .Register(c => new CommandExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), cmdBuilder))
             .As<ICommandExecutor<TAppContext>>()
             .SingleInstance();
 
-        builder.Register(c =>
-            new QueryExecutor<TAppContext>(
-                c.Resolve<IPipelineFactory>(),
-                queryBuilder))
+        builder
+            .Register(c => new QueryExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), queryBuilder))
             .As<IQueryExecutor<TAppContext>>()
             .SingleInstance();
 
-        builder.Register(c =>
-            new OperationExecutor<TAppContext>(
-                c.Resolve<IPipelineFactory>(),
-                operationBuilder))
+        builder
+            .Register(c => new OperationExecutor<TAppContext>(c.Resolve<IPipelineFactory>(), operationBuilder))
             .As<IOperationExecutor<TAppContext>>()
             .SingleInstance();
     }

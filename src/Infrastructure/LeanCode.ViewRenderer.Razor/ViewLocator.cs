@@ -18,8 +18,7 @@ internal class ViewLocator : RazorProject
 
     public string GetRootPath() => options.ViewLocations[0];
 
-    public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) =>
-        throw new NotSupportedException();
+    public override IEnumerable<RazorProjectItem> EnumerateItems(string basePath) => throw new NotSupportedException();
 
     public override RazorProjectItem GetItem(string path) => GetItem(path, null);
 

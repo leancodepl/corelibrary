@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.EF;
 
-public sealed class SimpleEFRepository<TEntity, TIdentity, TContext>
-    : EFRepository<TEntity, TIdentity, TContext>
+public sealed class SimpleEFRepository<TEntity, TIdentity, TContext> : EFRepository<TEntity, TIdentity, TContext>
     where TEntity : class, IAggregateRoot<TIdentity>
     where TIdentity : notnull, IEquatable<TIdentity>
     where TContext : notnull, DbContext

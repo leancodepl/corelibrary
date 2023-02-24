@@ -10,7 +10,9 @@ namespace LeanCode.Firebase.FCM.Tests;
 public class FCMClientLocalizationTests
 {
     private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("pl");
-    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(FirebaseConfiguration.Prepare(null, "[NULL]"));
+    private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(
+        FirebaseConfiguration.Prepare(null, "[NULL]")
+    );
 
     private readonly IStringLocalizer stringLocalizer;
     private readonly FCMClient client;
@@ -28,9 +30,7 @@ public class FCMClientLocalizationTests
         const string Value = "formatted title";
         stringLocalizer[Culture, Key].Returns(Value);
 
-        var n = client.Localize(Culture)
-            .Title(Key)
-            .Build();
+        var n = client.Localize(Culture).Title(Key).Build();
 
         Assert.Equal(Value, n.Title);
     }
@@ -42,9 +42,7 @@ public class FCMClientLocalizationTests
         const string Value = "formatted body";
         stringLocalizer[Culture, Key].Returns(Value);
 
-        var n = client.Localize(Culture)
-            .Body(Key)
-            .Build();
+        var n = client.Localize(Culture).Body(Key).Build();
 
         Assert.Equal(Value, n.Body);
     }
@@ -56,9 +54,7 @@ public class FCMClientLocalizationTests
         const string Value = "formatted image url";
         stringLocalizer[Culture, Key].Returns(Value);
 
-        var n = client.Localize(Culture)
-            .ImageUrl(Key, System.Array.Empty<object>())
-            .Build();
+        var n = client.Localize(Culture).ImageUrl(Key, System.Array.Empty<object>()).Build();
 
         Assert.Equal(Value, n.ImageUrl);
     }
@@ -68,9 +64,7 @@ public class FCMClientLocalizationTests
     {
         const string Value = "raw image url";
 
-        var n = client.Localize(Culture)
-            .RawImageUrl(Value)
-            .Build();
+        var n = client.Localize(Culture).RawImageUrl(Value).Build();
 
         Assert.Equal(Value, n.ImageUrl);
     }

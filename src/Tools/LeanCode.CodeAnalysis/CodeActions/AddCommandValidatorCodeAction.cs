@@ -43,12 +43,15 @@ public class AddCommandValidatorCodeAction : CodeAction
         }
 
         var handlerSyntax =
-            root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>() ??
-            throw new InvalidOperationException("Cannot find parent class.");
-        var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(handlerSyntax, cancellationToken: cancellationToken)!;
-        var handlerInteface = concreteHandler.AllInterfaces
-            .FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName) ??
-            throw new InvalidOperationException("Cannot find handler interface implementation.");
+            root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>()
+            ?? throw new InvalidOperationException("Cannot find parent class.");
+        var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(
+            handlerSyntax,
+            cancellationToken: cancellationToken
+        )!;
+        var handlerInteface =
+            concreteHandler.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName)
+            ?? throw new InvalidOperationException("Cannot find handler interface implementation.");
 
         var commandName = handlerInteface.TypeArguments[1].Name;
 
@@ -69,21 +72,20 @@ public class AddCommandValidatorCodeAction : CodeAction
         var name = commandName + "CV";
 
         var baseValidatorName = SF.GenericName(ValidatorType)
-                            .WithTypeArgumentList(
-                                SF.TypeArgumentList(SF.SingletonSeparatedList<TypeSyntax>(
-                                    SF.IdentifierName(commandName))));
+            .WithTypeArgumentList(
+                SF.TypeArgumentList(SF.SingletonSeparatedList<TypeSyntax>(SF.IdentifierName(commandName)))
+            );
 
         var validator = SF.ClassDeclaration(name)
             .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
-            .WithBaseList(
-                SF.BaseList(
-                    SF.SingletonSeparatedList<BaseTypeSyntax>(
-                        SF.SimpleBaseType(baseValidatorName))))
+            .WithBaseList(SF.BaseList(SF.SingletonSeparatedList<BaseTypeSyntax>(SF.SimpleBaseType(baseValidatorName))))
             .WithMembers(
                 SF.SingletonList<MemberDeclarationSyntax>(
                     SF.ConstructorDeclaration(SF.Identifier(name))
                         .WithModifiers(SF.TokenList(SF.Token(SyntaxKind.PublicKeyword)))
-                        .WithBody(SF.Block())));
+                        .WithBody(SF.Block())
+                )
+            );
 
         return (validator, baseValidatorName);
     }

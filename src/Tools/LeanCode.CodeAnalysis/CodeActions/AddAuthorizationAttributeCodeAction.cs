@@ -25,7 +25,8 @@ public class AddAuthorizationAttributeCodeAction : CodeAction
         Document document,
         TextSpan classSpan,
         string authorizationAttribute,
-        string authorizationAttributeNamespace)
+        string authorizationAttributeNamespace
+    )
     {
         this.document = document;
         this.classSpan = classSpan;
@@ -43,7 +44,8 @@ public class AddAuthorizationAttributeCodeAction : CodeAction
             ?? throw new InvalidOperationException("Cannot find parent class.");
 
         var authorizer = SF.Attribute(SF.ParseName(StripAttributeSuffix(authorizationAttribute)));
-        var list = SF.AttributeList(SF.SingletonSeparatedList(authorizer)).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
+        var list = SF.AttributeList(SF.SingletonSeparatedList(authorizer))
+            .WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
 
         editor.AddAttribute(classDeclaration, list);
 
@@ -56,7 +58,5 @@ public class AddAuthorizationAttributeCodeAction : CodeAction
     }
 
     private static string StripAttributeSuffix(string name) =>
-        name.EndsWith("Attribute", StringComparison.Ordinal)
-        ? name[..^"Attribute".Length]
-        : name;
+        name.EndsWith("Attribute", StringComparison.Ordinal) ? name[..^"Attribute".Length] : name;
 }

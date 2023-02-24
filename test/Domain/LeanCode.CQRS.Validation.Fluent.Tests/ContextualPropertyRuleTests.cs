@@ -142,9 +142,7 @@ public class ContextualPropertyRuleTests
     {
         public MultiValidator(Func<IValidationContext, string, object> accessor)
         {
-            RuleFor(d => d.Test, accessor)
-                .Must(_ => true)
-                .Must(_ => true);
+            RuleFor(d => d.Test, accessor).Must(_ => true).Must(_ => true);
         }
     }
 

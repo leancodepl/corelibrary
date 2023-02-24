@@ -11,7 +11,8 @@ internal static class SerilogExtensions
 {
     internal static LoggerConfiguration DestructureCommonObjects(
         this LoggerConfiguration config,
-        IEnumerable<Assembly>? searchAssemblies)
+        IEnumerable<Assembly>? searchAssemblies
+    )
     {
         if (searchAssemblies != null)
         {
@@ -25,9 +26,7 @@ internal static class SerilogExtensions
     }
 
     [Obsolete]
-    internal static LoggerConfiguration EnrichWithAppName(
-        this LoggerConfiguration config,
-        string appName)
+    internal static LoggerConfiguration EnrichWithAppName(this LoggerConfiguration config, string appName)
     {
         return config.Enrich.WithProperty("AppName", appName);
     }
@@ -36,10 +35,7 @@ internal static class SerilogExtensions
     {
         return searchAssemblies
             .SelectMany(a => a.ExportedTypes)
-            .Where(t =>
-                typeof(TType).IsAssignableFrom(t) &&
-                t.IsPublic &&
-                t.GetConstructor(Type.EmptyTypes) != null)
+            .Where(t => typeof(TType).IsAssignableFrom(t) && t.IsPublic && t.GetConstructor(Type.EmptyTypes) != null)
             .Select(Activator.CreateInstance)
             .Cast<TType>()
             .ToList()!;

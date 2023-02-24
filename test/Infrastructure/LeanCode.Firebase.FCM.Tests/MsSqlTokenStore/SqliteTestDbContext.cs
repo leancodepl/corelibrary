@@ -22,9 +22,9 @@ public class SqliteTestDbContext : DbContext
     {
         SqlMapper.AddTypeHandler(new GuidTypeHandler());
 
-        var context = new SqliteTestDbContext(new DbContextOptionsBuilder<SqliteTestDbContext>()
-            .UseSqlite("Filename=:memory:")
-            .Options);
+        var context = new SqliteTestDbContext(
+            new DbContextOptionsBuilder<SqliteTestDbContext>().UseSqlite("Filename=:memory:").Options
+        );
         await context.connection.OpenAsync();
         await context.Database.EnsureCreatedAsync();
         return context;
@@ -45,6 +45,7 @@ public class SqliteTestDbContext : DbContext
     private class GuidTypeHandler : SqlMapper.TypeHandler<Guid>
     {
         public override void SetValue(IDbDataParameter parameter, Guid guid) => parameter.Value = guid.ToString();
+
         public override Guid Parse(object value) => Guid.Parse((string)value);
     }
 }

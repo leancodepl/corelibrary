@@ -10,7 +10,11 @@ namespace LeanCode.EFMigrator;
 
 public abstract class Migrator
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1819", Justification = "Convention for process arguments.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1819",
+        Justification = "Convention for process arguments."
+    )]
     protected virtual string[] Args { get; } = GetCommandLineArgs().Skip(1).ToArray();
     protected virtual string SeedPath { get; } = "Seed.sql";
 

@@ -47,8 +47,7 @@ public abstract class LeanStartup
     {
         ConfigureApp(app);
 
-        var appLifetime = app.ApplicationServices
-            .GetRequiredService<IHostApplicationLifetime>();
+        var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
 
         appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
     }

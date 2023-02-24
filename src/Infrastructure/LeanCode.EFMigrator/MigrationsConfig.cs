@@ -6,6 +6,7 @@ namespace LeanCode.EFMigrator;
 public static class MigrationsConfig
 {
     public static string ConnectionStringKey { get; set; } = "SqlServer:ConnectionString";
+
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1056", Justification = "It should be `string`.")]
     public static string KeyVaultUrlKey { get; set; } = "KeyVault:VaultUrl";
 
@@ -13,8 +14,7 @@ public static class MigrationsConfig
 
     public static async Task UseConnectionStringFromAzureKeyVaultAsync()
     {
-        var keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey)
-            ?? throw new ArgumentNullException(KeyVaultUrlKey);
+        var keyVaultUrl = GetEnvironmentVariable(KeyVaultUrlKey) ?? throw new ArgumentNullException(KeyVaultUrlKey);
 
         var connectionStringKey = ConnectionStringKey.Replace(":", "--", StringComparison.Ordinal);
 

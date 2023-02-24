@@ -11,6 +11,5 @@ public sealed class LocalizationConfiguration
         ResourceSource = resourceSource;
     }
 
-    public static LocalizationConfiguration For<T>() =>
-        new LocalizationConfiguration(typeof(T));
+    public static LocalizationConfiguration For<T>() => new LocalizationConfiguration(typeof(T));
 }

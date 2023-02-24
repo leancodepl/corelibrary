@@ -42,10 +42,16 @@ public static class NamedTypeSymbolExtensions
     public static bool HasAuthorizationAttribute(this INamedTypeSymbol type)
     {
         var attributes = type.GetAttributes();
-        if (attributes.Any(attr =>
-            attr.AttributeClass is object &&
-            (attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName) ||
-            attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName))))
+        if (
+            attributes.Any(
+                attr =>
+                    attr.AttributeClass is object
+                    && (
+                        attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName)
+                        || attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)
+                    )
+            )
+        )
         {
             return true;
         }

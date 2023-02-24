@@ -21,7 +21,9 @@ internal static class EnumerableAsyncExtensions
     }
 
     internal static async IAsyncEnumerable<TResult> SelectAsync<T, TResult>(
-        this IEnumerable<T> source, Func<T, Task<TResult>> selector)
+        this IEnumerable<T> source,
+        Func<T, Task<TResult>> selector
+    )
     {
         foreach (var item in source)
         {
@@ -29,8 +31,7 @@ internal static class EnumerableAsyncExtensions
         }
     }
 
-    internal static async IAsyncEnumerable<T> WhereAsync<T>(
-        this IAsyncEnumerable<T> source, Predicate<T> predicate)
+    internal static async IAsyncEnumerable<T> WhereAsync<T>(this IAsyncEnumerable<T> source, Predicate<T> predicate)
     {
         await foreach (var item in source)
         {

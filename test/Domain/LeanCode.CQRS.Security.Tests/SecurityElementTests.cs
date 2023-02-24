@@ -25,8 +25,7 @@ public class DefaultAuthorizerTests
     {
         authorizerResolver = Substitute.For<IAuthorizerResolver<ISecurityContext>>();
 
-        element = new CQRSSecurityElement<ISecurityContext, object, object>(
-            authorizerResolver);
+        element = new CQRSSecurityElement<ISecurityContext, object, object>(authorizerResolver);
 
         context = Substitute.For<ISecurityContext>();
         context.User.Returns(new ClaimsPrincipal(new ClaimsIdentity("TEST")));
@@ -38,8 +37,7 @@ public class DefaultAuthorizerTests
         firstAuthorizer.UnderlyingAuthorizer.Returns(firstAuthorizer.GetType());
         firstAuthorizer.CheckIfAuthorizedAsync(context, Arg.Any<object>(), Arg.Any<object>()).Returns(isPositive);
 
-        authorizerResolver.FindAuthorizer(
-            typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
+        authorizerResolver.FindAuthorizer(typeof(IFirstAuthorizer), Arg.Any<Type>()).Returns(firstAuthorizer);
     }
 
     private void SetUpSecondAuthorizer(bool isPositive)
@@ -62,9 +60,7 @@ public class DefaultAuthorizerTests
 
     private Task Authorize(object payload)
     {
-        return element.ExecuteAsync(
-            context, payload,
-            (ctx, i) => Task.FromResult<object>(null));
+        return element.ExecuteAsync(context, payload, (ctx, i) => Task.FromResult<object>(null));
     }
 
     [Fact]
@@ -100,7 +96,10 @@ public class DefaultAuthorizerTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Object_with_multiple_authorizers_authorizes_accordingly(bool isFirstAuthorizerPositive, bool isSecondAuthorizerPositive)
+    public async Task Object_with_multiple_authorizers_authorizes_accordingly(
+        bool isFirstAuthorizerPositive,
+        bool isSecondAuthorizerPositive
+    )
     {
         var obj = new MultipleAuthorizers();
         SetUpFirstAuthorizer(isFirstAuthorizerPositive);
@@ -191,16 +190,14 @@ public class DefaultAuthorizerTests
     internal sealed class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
     {
         public DerivedAuthorizeWhenAttribute(string param)
-            : base(typeof(IDerivedAuthorizer), param)
-        { }
+            : base(typeof(IDerivedAuthorizer), param) { }
     }
 }
 
 public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
 {
     public AuthorizeWhenCustomAttribute(Type authorizerType = null)
-           : base(authorizerType ?? typeof(object))
-    { }
+        : base(authorizerType ?? typeof(object)) { }
 }
 
 public interface IFirstAuthorizer : ICustomAuthorizerWrapper { }

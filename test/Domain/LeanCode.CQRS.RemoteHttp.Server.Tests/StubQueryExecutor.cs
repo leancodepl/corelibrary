@@ -12,9 +12,7 @@ public class StubQueryExecutor : IQueryExecutor<AppContext>
 
     public object? NextResult { get; set; }
 
-    public Task<TResult> GetAsync<TResult>(
-        AppContext appContext,
-        IQuery<TResult> query)
+    public Task<TResult> GetAsync<TResult>(AppContext appContext, IQuery<TResult> query)
     {
         LastAppContext = appContext;
         LastQuery = query;

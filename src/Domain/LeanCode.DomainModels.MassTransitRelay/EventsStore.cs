@@ -25,7 +25,8 @@ public class EventsStore
         List<IDomainEvent> events,
         Guid? conversationId,
         IEventPublisher publisher,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         if (events?.Count > 0)
         {
@@ -48,11 +49,7 @@ public class EventsStore
             .Select(evt =>
             {
                 var context = Activity.Current?.Context;
-                var meta = new RaisedEventMetadata
-                {
-                    ConversationId = conversationId,
-                    ActivityContext = context,
-                };
+                var meta = new RaisedEventMetadata { ConversationId = conversationId, ActivityContext = context, };
 
                 return eventsSerializer.WrapEvent(evt, meta);
             })
@@ -79,22 +76,27 @@ public class EventsStore
         List<IDomainEvent> events,
         IEventPublisher publisher,
         Guid? conversationId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         logger.Debug("Publishing {Count} raised events", events.Count);
 
-        var publishTasks = events
-            .Select(evt => PublishEventAsync(evt, publisher, conversationId, cancellationToken));
+        var publishTasks = events.Select(evt => PublishEventAsync(evt, publisher, conversationId, cancellationToken));
 
         return Task.WhenAll(publishTasks);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     private async Task<bool> PublishEventAsync(
         IDomainEvent evt,
         IEventPublisher publisher,
         Guid? conversationId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         logger.Debug("Publishing event of type {DomainEvent}", evt);
 

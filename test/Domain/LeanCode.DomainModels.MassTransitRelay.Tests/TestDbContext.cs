@@ -13,21 +13,16 @@ public class TestDbContext : DbContext, IConsumedMessagesContext, IOutboxContext
     public DbSet<RaisedEvent> RaisedEvents => Set<RaisedEvent>();
 
     public TestDbContext(DbContextOptions<TestDbContext> opts)
-        : base(opts)
-    { }
+        : base(opts) { }
 
     public static TestDbContext Create()
     {
-        return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>()
-            .UseSqlite("Filename=:memory:")
-            .Options);
+        return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>().UseSqlite("Filename=:memory:").Options);
     }
 
     public static TestDbContext Create(DbConnection connection)
     {
-        return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>()
-            .UseSqlite(connection)
-            .Options);
+        return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>().UseSqlite(connection).Options);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

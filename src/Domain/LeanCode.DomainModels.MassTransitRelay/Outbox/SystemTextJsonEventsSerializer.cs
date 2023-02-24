@@ -41,9 +41,7 @@ public sealed class SystemTextJsonEventsSerializer : IRaisedEventsSerializer
 
     private Type GetEventType(string type)
     {
-        return typesCatalog.Assemblies
-            .Select(ass => ass.GetType(type))
-            .FirstOrDefault(t => t != null)
+        return typesCatalog.Assemblies.Select(ass => ass.GetType(type)).FirstOrDefault(t => t != null)
             ?? throw new InvalidOperationException($"Type {type} is not defined in any of the provided assemblies.");
     }
 }

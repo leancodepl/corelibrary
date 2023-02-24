@@ -11,14 +11,8 @@ public class IRepositoryExtensionsTests
 {
     private const int UserId = 1;
     private static readonly Id<DiscountCode> CodeId = Id<DiscountCode>.New();
-    private static readonly DiscountCode Code = new DiscountCode
-    {
-        Id = CodeId,
-    };
-    private static readonly User User = new User
-    {
-        Id = UserId,
-    };
+    private static readonly DiscountCode Code = new DiscountCode { Id = CodeId, };
+    private static readonly User User = new User { Id = UserId, };
 
     [Fact]
     public async Task Returns_entity_when_exists()

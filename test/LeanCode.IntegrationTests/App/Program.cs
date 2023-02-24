@@ -13,8 +13,6 @@ public static class Program
         return LeanProgram
             .BuildMinimalHost<Startup>()
             .AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment()
-            .ConfigureDefaultLogging(
-                projectName: "test",
-                destructurers: new TypesCatalog(typeof(Program)));
+            .ConfigureDefaultLogging(projectName: "test", destructurers: new TypesCatalog(typeof(Program)));
     }
 }

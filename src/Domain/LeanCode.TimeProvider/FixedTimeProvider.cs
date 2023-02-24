@@ -36,7 +36,8 @@ public sealed class FixedTimeProvider : ITimeProvider
         if (time.Kind == DateTimeKind.Local)
         {
             throw new InvalidOperationException(
-                "Cannot assign local DateTime, use SetTo(DateTimeOffset) overload with correct offset instead.");
+                "Cannot assign local DateTime, use SetTo(DateTimeOffset) overload with correct offset instead."
+            );
         }
 
         TimeProvider.Use(SharedInstance);

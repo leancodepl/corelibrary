@@ -11,28 +11,23 @@ public sealed class TypesCatalog : IEquatable<TypesCatalog>
 
     public TypesCatalog(params Assembly[] assemblies)
     {
-        Assemblies = assemblies
-            .Distinct()
-            .ToArray();
+        Assemblies = assemblies.Distinct().ToArray();
     }
 
     public TypesCatalog(params Type[] types)
     {
-        Assemblies = types
-            .Select(t => t.Assembly)
-            .Distinct()
-            .ToArray();
+        Assemblies = types.Select(t => t.Assembly).Distinct().ToArray();
     }
 
     public static TypesCatalog Of<T1>() => new TypesCatalog(typeof(T1));
+
     public static TypesCatalog Of<T1, T2>() => new TypesCatalog(typeof(T1), typeof(T2));
+
     public static TypesCatalog Of<T1, T2, T3>() => new TypesCatalog(typeof(T1), typeof(T2), typeof(T3));
 
     public Type? GetType(string name)
     {
-        return Assemblies
-            .Select(a => a.GetType(name))
-            .FirstOrDefault(t => t != null);
+        return Assemblies.Select(a => a.GetType(name)).FirstOrDefault(t => t != null);
     }
 
     public bool Equals([AllowNull] TypesCatalog other)
@@ -59,6 +54,5 @@ public sealed class TypesCatalog : IEquatable<TypesCatalog>
         return hc.ToHashCode();
     }
 
-    public TypesCatalog Merge(TypesCatalog other) =>
-        new TypesCatalog(Assemblies.Union(other.Assemblies).ToArray());
+    public TypesCatalog Merge(TypesCatalog other) => new TypesCatalog(Assemblies.Union(other.Assemblies).ToArray());
 }

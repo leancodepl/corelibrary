@@ -8,10 +8,7 @@ public class DefaultLeanCodeCredentialsTests_Authorization
     [AzureIdentityFact("Azure__UseAzureCLI")]
     public async Task Authorizes_via_cli()
     {
-        var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration
-        {
-            UseAzureCLI = true,
-        });
+        var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration { UseAzureCLI = true, });
 
         await AssertGetsTokenAsync(cred);
     }
@@ -35,20 +32,21 @@ public class DefaultLeanCodeCredentialsTests_Authorization
     [AzureIdentityFact("Azure__UseManagedIdentity")]
     public async Task Authorizes_via_managed_identity()
     {
-        var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration
-        {
-            UseManagedIdentity = true,
-        });
+        var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration { UseManagedIdentity = true, });
 
         await AssertGetsTokenAsync(cred);
     }
 
     private static async Task AssertGetsTokenAsync(TokenCredential cred)
     {
-        var ex = await Record.ExceptionAsync(() => cred.GetTokenAsync(
-            new TokenRequestContext(new[] { "https://database.windows.net/.default" }), // just an arbitrary scope
-            CancellationToken.None)
-            .AsTask());
+        var ex = await Record.ExceptionAsync(
+            () =>
+                cred.GetTokenAsync(
+                        new TokenRequestContext(new[] { "https://database.windows.net/.default" }), // just an arbitrary scope
+                        CancellationToken.None
+                    )
+                    .AsTask()
+        );
 
         Assert.Null(ex);
     }

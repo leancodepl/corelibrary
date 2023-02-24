@@ -45,7 +45,9 @@ public class JsonLaxDateOnlyConverterTests
 
     [Theory]
     [InlineData("\"2021-12-15T00:00:00.000Z\"")]
-    public void Correctly_deserializes_DateOnly_with_time_part_and_zero_offset_formated_as_Z_using_lax_converter(string serialized)
+    public void Correctly_deserializes_DateOnly_with_time_part_and_zero_offset_formated_as_Z_using_lax_converter(
+        string serialized
+    )
     {
         Assert.Equal(SampleDateOnly, JsonSerializer.Deserialize<DateOnly>(serialized, LaxSerializerOptions));
     }

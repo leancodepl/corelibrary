@@ -28,8 +28,7 @@ public class QueryExecutionTests : BaseCQRSTests
     [Fact]
     public async Task Correctly_routes_data_through_pipeline_elements()
     {
-        Prepare(
-            queryBuilder: c => c.Use<SamplePipelineElement<IQuery, object>>());
+        Prepare(queryBuilder: c => c.Use<SamplePipelineElement<IQuery, object>>());
 
         var appCtx = new AppContext();
         var query = new SampleQuery();

@@ -11,10 +11,7 @@ public class StoreAndPublishEventsElement<TContext, TInput, TOutput> : IPipeline
     private readonly EventsStore impl;
     private readonly AsyncEventsInterceptor interceptor;
 
-    public StoreAndPublishEventsElement(
-        IEventPublisher publisher,
-        EventsStore impl,
-        AsyncEventsInterceptor interceptor)
+    public StoreAndPublishEventsElement(IEventPublisher publisher, EventsStore impl, AsyncEventsInterceptor interceptor)
     {
         this.impl = impl;
         this.interceptor = interceptor;
@@ -34,7 +31,8 @@ public class StoreAndPublishEventsElement<TContext, TInput, TOutput> : IPipeline
 public static class StoreAndPublishPipelineBuilderExtensions
 {
     public static PipelineBuilder<TContext, TInput, TOutput> StoreAndPublishEvents<TContext, TInput, TOutput>(
-        this PipelineBuilder<TContext, TInput, TOutput> builder)
+        this PipelineBuilder<TContext, TInput, TOutput> builder
+    )
         where TContext : notnull, IPipelineContext
     {
         return builder.Use<StoreAndPublishEventsElement<TContext, TInput, TOutput>>();

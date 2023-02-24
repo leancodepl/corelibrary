@@ -75,15 +75,28 @@ public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
         Assert.Single(consumer.Consumed.Select<TestMsg>(msg => msg.Context.MessageId == msg2));
 
         var consumedMessages = await FetchConsumedMessages();
-        Assert.Contains(consumedMessages, msg => msg.MessageId == msg1 && msg.ConsumerType == typeof(FirstConsumer).FullName);
-        Assert.Contains(consumedMessages, msg => msg.MessageId == msg2 && msg.ConsumerType == typeof(FirstConsumer).FullName);
+        Assert.Contains(
+            consumedMessages,
+            msg => msg.MessageId == msg1 && msg.ConsumerType == typeof(FirstConsumer).FullName
+        );
+        Assert.Contains(
+            consumedMessages,
+            msg => msg.MessageId == msg2 && msg.ConsumerType == typeof(FirstConsumer).FullName
+        );
     }
 
     [Fact]
     public async Task Does_not_consume_already_consumed_message()
     {
         using var dbContext = TestDbContext.Create(dbConnection);
-        dbContext.Add(new ConsumedMessage(MessageId, TimeProvider.Now, typeof(ReportingConsumer).FullName, typeof(TestMsg).FullName));
+        dbContext.Add(
+            new ConsumedMessage(
+                MessageId,
+                TimeProvider.Now,
+                typeof(ReportingConsumer).FullName,
+                typeof(TestMsg).FullName
+            )
+        );
         await dbContext.SaveChangesAsync();
 
         var consumer = new ReportingConsumer();
@@ -115,15 +128,14 @@ public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
         Assert.Collection(
             consumedMessages,
             m => AssertConsumedMessage(m, typeof(FirstConsumer), typeof(TestMsg), MessageId),
-            m => AssertConsumedMessage(m, typeof(SecondConsumer), typeof(TestMsg), MessageId));
+            m => AssertConsumedMessage(m, typeof(SecondConsumer), typeof(TestMsg), MessageId)
+        );
     }
 
     private async Task<List<ConsumedMessage>> FetchConsumedMessages()
     {
         using var dbContext = TestDbContext.Create(dbConnection);
-        return await dbContext.ConsumedMessages
-            .OrderBy(msg => msg.ConsumerType)
-            .ToListAsync();
+        return await dbContext.ConsumedMessages.OrderBy(msg => msg.ConsumerType).ToListAsync();
     }
 
     private static void AssertConsumedMessage(ConsumedMessage msg, Type consumerType, Type messageType, Guid messageId)

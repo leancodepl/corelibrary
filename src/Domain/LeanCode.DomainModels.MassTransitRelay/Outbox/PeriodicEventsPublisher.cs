@@ -30,14 +30,19 @@ public class PeriodicEventsPublisher : IPeriodicAction
     public PeriodicEventsPublisher(
         IOutboxContext outboxContext,
         IEventPublisher eventPublisher,
-        IRaisedEventsSerializer serializer)
+        IRaisedEventsSerializer serializer
+    )
     {
         this.eventPublisher = eventPublisher;
         this.serializer = serializer;
         this.outboxContext = outboxContext;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var fetchActivity = LeanCodeActivitySource.Start("outbox.fetch-unpublished");
@@ -60,7 +65,8 @@ public class PeriodicEventsPublisher : IPeriodicAction
                 "outbox.publish",
                 ActivityKind.Internal,
                 evt.Metadata.ActivityContext ?? default,
-                links: link);
+                links: link
+            );
 
             publishActivity?.AddTag("event.id", evt.Id.ToString());
             publishActivity?.AddTag("event.type", evt.EventType);

@@ -16,7 +16,8 @@ public class LocalizationModule : AppModule
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(c => new ResourceManagerStringLocalizer(config))
+        builder
+            .Register(c => new ResourceManagerStringLocalizer(config))
             .AsSelf()
             .AsImplementedInterfaces()
             .SingleInstance();

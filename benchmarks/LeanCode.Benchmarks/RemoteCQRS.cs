@@ -33,46 +33,38 @@ public class RemoteCQRS
     public void Setup()
     {
         var builder = new ContainerBuilder();
-        var module = new CQRSModule()
-            .WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b, b => b);
+        var module = new CQRSModule().WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b, b => b);
         builder.RegisterModule(module);
 
         builder.Populate(Array.Empty<ServiceDescriptor>());
         var container = builder.Build();
 
         middleware = new RemoteCQRSMiddleware<SampleAppContext>(
-            Catalog, _ => appContext,
+            Catalog,
+            _ => appContext,
             null,
-            _ => Task.CompletedTask);
+            _ => Task.CompletedTask
+        );
         serviceProvider = container.Resolve<IServiceProvider>();
 
         empty = GetContent(new SampleDTO());
-        multipleFields = GetContent(new MultipleFieldsCommand
-        {
-            F1 = "test field",
-            F2 = 123,
-        });
+        multipleFields = GetContent(new MultipleFieldsCommand { F1 = "test field", F2 = 123, });
     }
 
     [Benchmark(Baseline = true)]
-    public Task SimpleMiddleware() =>
-        InputToOutputMiddleware.Invoke(PrepareQuery(true));
+    public Task SimpleMiddleware() => InputToOutputMiddleware.Invoke(PrepareQuery(true));
 
     [Benchmark]
-    public Task EmptyQuery() =>
-        middleware.InvokeAsync(PrepareQuery(false));
+    public Task EmptyQuery() => middleware.InvokeAsync(PrepareQuery(false));
 
     [Benchmark]
-    public Task EmptyCommand() =>
-        middleware.InvokeAsync(PrepareCommand(false));
+    public Task EmptyCommand() => middleware.InvokeAsync(PrepareCommand(false));
 
     [Benchmark]
-    public Task MultipleFieldsQuery() =>
-        middleware.InvokeAsync(PrepareQuery(true));
+    public Task MultipleFieldsQuery() => middleware.InvokeAsync(PrepareQuery(true));
 
     [Benchmark]
-    public Task MultipleFieldsCommand() =>
-        middleware.InvokeAsync(PrepareCommand(true));
+    public Task MultipleFieldsCommand() => middleware.InvokeAsync(PrepareCommand(true));
 
     private static byte[] GetContent(object obj)
     {
@@ -100,10 +92,7 @@ public class RemoteCQRS
 
     private HttpContext PrepareQuery(bool multi)
     {
-        var context = new DefaultHttpContext
-        {
-            RequestServices = serviceProvider,
-        };
+        var context = new DefaultHttpContext { RequestServices = serviceProvider, };
         context.Request.Method = HttpMethods.Post;
         context.Request.ContentType = "application/json";
         if (multi)

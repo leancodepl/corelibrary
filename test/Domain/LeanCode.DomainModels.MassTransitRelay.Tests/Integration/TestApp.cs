@@ -27,8 +27,8 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
             SearchAssemblies,
             cmd => cmd.Trace().StoreAndPublishEvents(),
             query => query,
-            op => op),
-
+            op => op
+        ),
         new TestMassTransitModule(SearchAssemblies),
         new MassTransitTestRelayModule(),
         new OpenTelemetryModule(),
@@ -71,13 +71,9 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
         var builder = new ContainerBuilder();
 
-        builder.Register(c => c.Resolve<TestDbContext>())
-            .AsImplementedInterfaces()
-            .InstancePerLifetimeScope();
+        builder.Register(c => c.Resolve<TestDbContext>()).AsImplementedInterfaces().InstancePerLifetimeScope();
 
-        builder.RegisterGeneric(typeof(HandledEventsReporter<>))
-            .AsSelf()
-            .SingleInstance();
+        builder.RegisterGeneric(typeof(HandledEventsReporter<>)).AsSelf().SingleInstance();
 
         foreach (var m in modules)
         {
@@ -120,35 +116,36 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
 public class TestMassTransitModule : MassTransitRelayModule
 {
-    public TestMassTransitModule(
-        TypesCatalog eventsCatalog,
-        bool useInbox = true,
-        bool useOutbox = true)
-        : base(eventsCatalog, useInbox, useOutbox)
-    { }
+    public TestMassTransitModule(TypesCatalog eventsCatalog, bool useInbox = true, bool useOutbox = true)
+        : base(eventsCatalog, useInbox, useOutbox) { }
 
     public override void ConfigureMassTransit(IServiceCollection services)
     {
         services.AddMassTransit(cfg =>
         {
             cfg.AddConsumers(typeof(TestApp).Assembly);
-            cfg.UsingInMemory((ctx, busCfg) =>
-            {
-                var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
-
-                busCfg.ReceiveEndpoint(queueName, rcv =>
+            cfg.UsingInMemory(
+                (ctx, busCfg) =>
                 {
-                    rcv.UseLogsCorrelation();
-                    rcv.UseRetry(retryConfig => retryConfig.Immediate(5));
-                    rcv.UseConsumedMessagesFiltering(ctx);
-                    rcv.StoreAndPublishDomainEvents(ctx);
+                    var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
 
-                    rcv.ConfigureConsumers(ctx);
-                    rcv.ConnectReceiveEndpointObservers(ctx);
-                });
+                    busCfg.ReceiveEndpoint(
+                        queueName,
+                        rcv =>
+                        {
+                            rcv.UseLogsCorrelation();
+                            rcv.UseRetry(retryConfig => retryConfig.Immediate(5));
+                            rcv.UseConsumedMessagesFiltering(ctx);
+                            rcv.StoreAndPublishDomainEvents(ctx);
 
-                busCfg.ConnectBusObservers(ctx);
-            });
+                            rcv.ConfigureConsumers(ctx);
+                            rcv.ConnectReceiveEndpointObservers(ctx);
+                        }
+                    );
+
+                    busCfg.ConnectBusObservers(ctx);
+                }
+            );
         });
     }
 }

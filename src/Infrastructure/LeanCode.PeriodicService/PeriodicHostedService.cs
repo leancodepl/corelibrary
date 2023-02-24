@@ -34,7 +34,11 @@ public class PeriodicHostedService<TAction> : BackgroundService
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
         using (var innerScope = scope.BeginLifetimeScope())
@@ -59,7 +63,9 @@ public class PeriodicHostedService<TAction> : BackgroundService
     private static TimeSpan CalculateDelay(IPeriodicAction action)
     {
         var now = TimeProvider.Now;
-        var next = action.When.GetNextOccurrence(now, false) ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");
+        var next =
+            action.When.GetNextOccurrence(now, false)
+            ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");
         return next - now;
     }
 }

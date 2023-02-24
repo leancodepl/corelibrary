@@ -10,14 +10,17 @@ public static class UserIdLogsCorrelationMiddleware
 {
     public static IApplicationBuilder UseUserIdLogsCorrelation(
         this IApplicationBuilder builder,
-        string? userIdClaim = null)
+        string? userIdClaim = null
+    )
     {
-        return builder.Use(async (httpCtx, next) =>
-        {
-            using var userId = UserId(httpCtx, userIdClaim);
+        return builder.Use(
+            async (httpCtx, next) =>
+            {
+                using var userId = UserId(httpCtx, userIdClaim);
 
-            await next();
-        });
+                await next();
+            }
+        );
     }
 
     private static IDisposable? UserId(HttpContext httpCtx, string? userIdClaim)

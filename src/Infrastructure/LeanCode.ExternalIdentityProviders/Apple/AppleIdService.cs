@@ -30,7 +30,11 @@ public class AppleIdService
         this.memoryCache = memoryCache;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     public async Task<AppleTokenValidationResult> ValidateTokenAsync(string idToken)
     {
         var keySet = await GetAppleKeySetAsync();
@@ -51,9 +55,7 @@ public class AppleIdService
 
             if (string.IsNullOrEmpty(uid))
             {
-                logger.Warning(
-                    "Cannot validate AppleId token {Token} - it does not contain sub claim",
-                    idToken);
+                logger.Warning("Cannot validate AppleId token {Token} - it does not contain sub claim", idToken);
 
                 return new AppleTokenValidationResult.Failure();
             }
@@ -84,6 +86,7 @@ public class AppleIdService
                 logger.Debug("Downloading Apple signing keys");
 
                 return JsonWebKeySet.Create(await httpClient.GetStringAsync(AppleKeysUri));
-            })!;
+            }
+        )!;
     }
 }

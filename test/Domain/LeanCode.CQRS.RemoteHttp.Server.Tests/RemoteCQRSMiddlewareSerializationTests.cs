@@ -7,10 +7,8 @@ namespace LeanCode.CQRS.RemoteHttp.Server.Tests;
 
 public class RemoteCQRSMiddlewareSerializationTests : BaseMiddlewareTests
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = new AlwaysUpperPolicy(),
-    };
+    private static readonly JsonSerializerOptions SerializerOptions =
+        new() { PropertyNamingPolicy = new AlwaysUpperPolicy(), };
 
     public RemoteCQRSMiddlewareSerializationTests()
         : base("query", typeof(RemoteCQRSMiddlewareTests), new Utf8JsonSerializer(SerializerOptions)) { }

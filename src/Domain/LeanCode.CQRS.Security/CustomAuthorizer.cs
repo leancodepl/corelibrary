@@ -22,8 +22,7 @@ public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData> : ICus
     public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object obj, object? customData) =>
         CheckIfAuthorizedInternalAsync(appContext, (TObject)obj, customData);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(
-        TAppContext appContext, TObject obj, TCustomData? customData);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, TObject obj, TCustomData? customData);
 
     private Task<bool> CheckIfAuthorizedInternalAsync(TAppContext appContext, TObject obj, object? customData)
     {
@@ -31,7 +30,8 @@ public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData> : ICus
         {
             throw new ArgumentException(
                 $"{GetType()} requires {typeof(TCustomData)} as custom data.",
-                nameof(customData));
+                nameof(customData)
+            );
         }
 
         return CheckIfAuthorizedAsync(appContext, obj, (TCustomData?)customData);

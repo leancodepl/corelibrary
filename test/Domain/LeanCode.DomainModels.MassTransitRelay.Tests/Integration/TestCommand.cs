@@ -8,9 +8,7 @@ using LeanCode.DomainModels.Model;
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
 
 [AllowUnauthorized]
-public class TestCommand : ICommand
-{
-}
+public class TestCommand : ICommand { }
 
 public class TestCommandHandler : ICommandHandler<Context, TestCommand>
 {

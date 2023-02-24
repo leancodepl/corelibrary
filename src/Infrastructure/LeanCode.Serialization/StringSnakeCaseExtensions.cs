@@ -21,7 +21,7 @@ public static class StringSnakeCaseExtensions
         var sb = new StringBuilder(s.Length * 2);
         var state = SnakeCaseState.Start;
 
-        for (var i = 0; i < s.Length;)
+        for (var i = 0; i < s.Length; )
         {
             var rune = Rune.GetRuneAt(s, i);
 

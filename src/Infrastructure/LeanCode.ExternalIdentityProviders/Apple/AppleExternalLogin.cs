@@ -17,7 +17,11 @@ public class AppleExternalLogin<TUser> : ExternalLoginBase<TUser>
         this.appleAuthService = appleAuthService;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "The method is an exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
     protected override async Task<string?> GetProviderIdAsync(string token)
     {
         try

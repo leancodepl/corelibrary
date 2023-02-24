@@ -24,7 +24,11 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
 
         var factory = new AutofacServiceProviderFactory();
         var builder = factory.CreateBuilder(collection);
-        builder.RegisterType<AsyncEventsInterceptor>().AsSelf().OnActivated(a => a.Instance.Configure()).SingleInstance();
+        builder
+            .RegisterType<AsyncEventsInterceptor>()
+            .AsSelf()
+            .OnActivated(a => a.Instance.Configure())
+            .SingleInstance();
 
         container = builder.Build();
         harness = container.Resolve<InMemoryTestHarness>();

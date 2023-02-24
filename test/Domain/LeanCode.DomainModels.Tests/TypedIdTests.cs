@@ -6,7 +6,9 @@ namespace LeanCode.DomainModels.Tests;
 public class TypedIdTests
 {
     private record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+
     private record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+
     private record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
 
     [Fact]

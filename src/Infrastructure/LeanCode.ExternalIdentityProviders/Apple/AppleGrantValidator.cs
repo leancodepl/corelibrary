@@ -9,6 +9,5 @@ public class AppleGrantValidator<TUser> : ExternalLoginGrantValidatorBase<TUser,
     public override string GrantType => Constants.GrantType;
 
     public AppleGrantValidator(AppleExternalLogin<TUser> externalLogin)
-        : base(externalLogin)
-    { }
+        : base(externalLogin) { }
 }

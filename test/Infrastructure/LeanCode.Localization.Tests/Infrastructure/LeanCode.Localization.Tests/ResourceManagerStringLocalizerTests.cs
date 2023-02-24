@@ -11,8 +11,9 @@ public class ResourceManagerStringLocalizerTests
 
     public ResourceManagerStringLocalizerTests()
     {
-        stringLocalizer = new ResourceManagerStringLocalizer(new LocalizationConfiguration(
-            resourceSource: typeof(ResourceManagerStringLocalizerTests)));
+        stringLocalizer = new ResourceManagerStringLocalizer(
+            new LocalizationConfiguration(resourceSource: typeof(ResourceManagerStringLocalizerTests))
+        );
     }
 
     [Fact]

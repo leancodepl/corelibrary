@@ -7,15 +7,13 @@ public class ViewLocatorTests
 {
     private static readonly RazorViewRendererOptions BothDefault = new RazorViewRendererOptions(
         "./Views/A",
-        "./Views/B");
+        "./Views/B"
+    );
 
     private static readonly RazorViewRendererOptions BothTXT = new RazorViewRendererOptions(
         ".cstxt",
-        new[]
-        {
-            "./Views/A",
-            "./Views/B",
-        });
+        new[] { "./Views/A", "./Views/B", }
+    );
 
     [Fact]
     public void Returns_non_existing_item_if_view_cannot_be_located()

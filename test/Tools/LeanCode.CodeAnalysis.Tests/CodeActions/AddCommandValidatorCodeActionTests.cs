@@ -13,7 +13,8 @@ public class AddCommandValidatorCodeActionTests : CodeFixVerifier
     [Fact]
     public async Task Creates_validator()
     {
-        var source = @"
+        var source =
+            @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -29,7 +30,8 @@ namespace Test
     }
 }";
 
-        var expected = @"
+        var expected =
+            @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -59,7 +61,8 @@ namespace Test
     [Fact]
     public async Task Creates_validator_and_namespace_if_missing()
     {
-        var source = @"
+        var source =
+            @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -74,7 +77,8 @@ namespace Test
     }
 }";
 
-        var expected = @"
+        var expected =
+            @"
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
