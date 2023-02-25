@@ -1,8 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using LeanCode.DomainModels.Model;
 
-namespace LeanCode.DomainModels.Serialization;
+namespace LeanCode.DomainModels.Model;
 
 internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 {
