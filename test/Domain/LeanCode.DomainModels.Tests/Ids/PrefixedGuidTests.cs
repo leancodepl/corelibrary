@@ -17,10 +17,10 @@ public class PrefixedGuidIdTests
     private static readonly Guid TPG1Guid = Guid.ParseExact("0ba5ef95394b4d089cb1f47f3ebe41b3", "N");
 
     [Fact]
-    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRefTypedId` as generic parameter.")]
+    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IPrefixedTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IRefTypedId<string, TestPrefixedGuidId>), new TestPrefixedGuidId());
+        Assert.IsAssignableFrom(typeof(IPrefixedTypedId<string, TestPrefixedGuidId>), new TestPrefixedGuidId());
     }
 
     [Fact]

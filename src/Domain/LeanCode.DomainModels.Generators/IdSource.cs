@@ -49,7 +49,7 @@ namespace {data.Namespace}
 
     [JsonConverter(typeof(StringTypedIdConverter<{data.TypeName}>))]
     [DebuggerDisplay(""{{Value}}"")]
-    public readonly partial record struct {data.TypeName} : IRefTypedId<string, {data.TypeName}>
+    public readonly partial record struct {data.TypeName} : IPrefixedTypedId<string, {data.TypeName}>
     {{
         private const int ValueLength = {valueLength};
         private const char Separator = '_';
@@ -153,7 +153,7 @@ namespace {data.Namespace}
 
     [JsonConverter(typeof({converterPrefix}TypedIdConverter<{data.TypeName}>))]
     [DebuggerDisplay(""{{Value}}"")]
-    public readonly partial record struct {data.TypeName} : IStructTypedId<{backingType}, {data.TypeName}>
+    public readonly partial record struct {data.TypeName} : IRawTypedId<{backingType}, {data.TypeName}>
     {{
         public static readonly {data.TypeName} Empty = new({defaultValue});
 

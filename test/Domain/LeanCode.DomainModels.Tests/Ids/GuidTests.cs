@@ -15,10 +15,10 @@ public class GuidIdTests
     private static readonly Guid Guid3 = Guid.Parse("ed5b3714-1a2f-4469-a709-ecf37fe791ca");
 
     [Fact]
-    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IStructTypedId` as generic parameter.")]
+    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IStructTypedId<Guid, TestGuidId>), new TestGuidId());
+        Assert.IsAssignableFrom(typeof(IRawTypedId<Guid, TestGuidId>), new TestGuidId());
     }
 
     [Fact]

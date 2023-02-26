@@ -11,10 +11,10 @@ public readonly partial record struct TestLongId;
 public class LongIdTests
 {
     [Fact]
-    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IStructTypedId` as generic parameter.")]
+    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IStructTypedId<long, TestLongId>), new TestLongId());
+        Assert.IsAssignableFrom(typeof(IRawTypedId<long, TestLongId>), new TestLongId());
     }
 
     [Fact]

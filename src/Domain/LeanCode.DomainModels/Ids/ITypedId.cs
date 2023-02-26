@@ -4,9 +4,9 @@ namespace LeanCode.DomainModels.Ids;
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public interface IRefTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<TSelf>
+public interface IPrefixedTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<TSelf>
     where TBacking : class
-    where TSelf : struct, IRefTypedId<TBacking, TSelf>
+    where TSelf : struct, IPrefixedTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
     bool IsEmpty { get; }
@@ -21,9 +21,9 @@ public interface IRefTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<T
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public interface IStructTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<TSelf>
+public interface IRawTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<TSelf>
     where TBacking : struct
-    where TSelf : struct, IStructTypedId<TBacking, TSelf>
+    where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
     bool IsEmpty { get; }

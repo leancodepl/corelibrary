@@ -5,7 +5,7 @@ namespace LeanCode.DomainModels.Ids;
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class StringTypedIdConverter<TId> : JsonConverter<TId>
-    where TId : struct, IRefTypedId<string, TId>
+    where TId : struct, IPrefixedTypedId<string, TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetString());
@@ -16,7 +16,7 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class IntTypedIdConverter<TId> : JsonConverter<TId>
-    where TId : struct, IStructTypedId<int, TId>
+    where TId : struct, IRawTypedId<int, TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetInt32());
@@ -27,7 +27,7 @@ public class IntTypedIdConverter<TId> : JsonConverter<TId>
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class LongTypedIdConverter<TId> : JsonConverter<TId>
-    where TId : struct, IStructTypedId<long, TId>
+    where TId : struct, IRawTypedId<long, TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetInt64());
@@ -38,7 +38,7 @@ public class LongTypedIdConverter<TId> : JsonConverter<TId>
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class GuidTypedIdConverter<TId> : JsonConverter<TId>
-    where TId : struct, IStructTypedId<Guid, TId>
+    where TId : struct, IRawTypedId<Guid, TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetGuid());
