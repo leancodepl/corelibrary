@@ -50,7 +50,7 @@ namespace {data.Namespace}
 
     [JsonConverter(typeof(StringTypedIdConverter<{data.TypeName}>))]
     [DebuggerDisplay(""{{Value}}"")]
-    public readonly partial record struct {data.TypeName} : IPrefixedTypedId<string, {data.TypeName}>
+    public readonly partial record struct {data.TypeName} : IPrefixedTypedId<{data.TypeName}>
     {{
         private const int ValueLength = {valueLength};
         private const char Separator = '_';

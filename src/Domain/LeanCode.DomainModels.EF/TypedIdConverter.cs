@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeanCode.DomainModels.EF;
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public class PrefixedTypedIdConverter<TBacking, TId> : ValueConverter<TId, TBacking>
-    where TBacking : class
-    where TId : struct, IPrefixedTypedId<TBacking, TId>
+public class PrefixedTypedIdConverter<TId> : ValueConverter<TId, string>
+    where TId : struct, IPrefixedTypedId<TId>
 {
-    public static readonly PrefixedTypedIdConverter<TBacking, TId> Instance = new();
+    public static readonly PrefixedTypedIdConverter<TId> Instance = new();
 
     private PrefixedTypedIdConverter()
         : base(d => d.Value, TId.FromDatabase, mappingHints: null) { }

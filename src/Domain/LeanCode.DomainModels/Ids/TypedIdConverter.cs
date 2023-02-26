@@ -5,7 +5,7 @@ namespace LeanCode.DomainModels.Ids;
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class StringTypedIdConverter<TId> : JsonConverter<TId>
-    where TId : struct, IPrefixedTypedId<string, TId>
+    where TId : struct, IPrefixedTypedId<TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetString());

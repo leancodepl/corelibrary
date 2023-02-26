@@ -78,20 +78,20 @@ public static class PropertyBuilderExtensions
     }
 
     public static PropertyBuilder<TId> IsTypedId<TId>(this PropertyBuilder<TId> builder)
-        where TId : struct, IPrefixedTypedId<string, TId>
+        where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
-            .HasConversion(PrefixedTypedIdConverter<string, TId>.Instance)
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
             .HasMaxLength(TId.RawLength)
             .IsFixedLength()
             .ValueGeneratedNever();
     }
 
     public static PropertyBuilder<TId?> IsTypedId<TId>(this PropertyBuilder<TId?> builder)
-        where TId : struct, IPrefixedTypedId<string, TId>
+        where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
-            .HasConversion(PrefixedTypedIdConverter<string, TId>.Instance)
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
             .HasMaxLength(TId.RawLength)
             .IsFixedLength()
             .ValueGeneratedNever();
