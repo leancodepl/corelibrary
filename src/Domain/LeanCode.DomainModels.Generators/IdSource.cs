@@ -44,6 +44,7 @@ namespace {data.Namespace}
     using global::System;
     using global::System.Diagnostics;
     using global::System.Diagnostics.CodeAnalysis;
+    using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
 
@@ -55,7 +56,7 @@ namespace {data.Namespace}
         private const char Separator = '_';
         private const string TypePrefix = ""{prefix}"";
 
-        public const int RawLength = ValueLength + 1 + {prefix.Length};
+        public static int RawLength {{ get; }} = ValueLength + 1 + {prefix.Length};
         public static readonly {data.TypeName} Empty = new({defaultValue});
 
         private readonly string? value;
@@ -114,6 +115,8 @@ namespace {data.Namespace}
             }}
         }}
 
+        public static Expression<Func<string, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
+
         public bool Equals({data.TypeName} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({data.TypeName} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
@@ -148,6 +151,7 @@ namespace {data.Namespace}
     using global::System.Diagnostics;
     using global::System.Diagnostics.CodeAnalysis;
     using global::System.Globalization;
+    using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
 
@@ -196,6 +200,8 @@ namespace {data.Namespace}
         {{
             return v is not null;
         }}
+
+        public static Expression<Func<{backingType}, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
 
         public bool Equals({data.TypeName} other) => Value == other.Value;
         public int CompareTo({data.TypeName} other) => Value.CompareTo(other.Value);

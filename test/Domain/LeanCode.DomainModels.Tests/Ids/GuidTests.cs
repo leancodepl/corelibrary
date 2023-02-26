@@ -139,4 +139,10 @@ public class GuidIdTests
 
         Assert.Equal("\"" + Guid1 + "\"", json);
     }
+
+    [Fact]
+    public void FromDatabase_converts_data_as_Parse()
+    {
+        Assert.Equal(TestGuidId.FromDatabase.Compile().Invoke(Guid1), TestGuidId.Parse(Guid1));
+    }
 }

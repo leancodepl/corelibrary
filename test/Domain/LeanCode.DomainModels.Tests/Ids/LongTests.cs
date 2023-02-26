@@ -130,4 +130,10 @@ public class LongIdTests
 
         Assert.Equal("1234", json);
     }
+
+    [Fact]
+    public void FromDatabase_converts_data_as_Parse()
+    {
+        Assert.Equal(TestLongId.FromDatabase.Compile().Invoke(1), TestLongId.Parse(1));
+    }
 }

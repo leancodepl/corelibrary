@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -58,6 +59,40 @@ public static class PropertyBuilderExtensions
         return builder
             .HasConversion(SIdConverter<T>.Instance)
             .HasMaxLength(SId<T>.RawLength)
+            .IsFixedLength()
+            .ValueGeneratedNever();
+    }
+
+    public static PropertyBuilder<TId> IsTypedId<TBacking, TId>(this PropertyBuilder<TId> builder)
+        where TBacking : struct
+        where TId : struct, IRawTypedId<TBacking, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<TBacking, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsTypedId<TBacking, TId>(this PropertyBuilder<TId?> builder)
+        where TBacking : struct
+        where TId : struct, IRawTypedId<TBacking, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<TBacking, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IPrefixedTypedId<string, TId>
+    {
+        return builder
+            .HasConversion(PrefixedTypedIdConverter<string, TId>.Instance)
+            .HasMaxLength(TId.RawLength)
+            .IsFixedLength()
+            .ValueGeneratedNever();
+    }
+
+    public static PropertyBuilder<TId?> IsTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IPrefixedTypedId<string, TId>
+    {
+        return builder
+            .HasConversion(PrefixedTypedIdConverter<string, TId>.Instance)
+            .HasMaxLength(TId.RawLength)
             .IsFixedLength()
             .ValueGeneratedNever();
     }

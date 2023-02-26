@@ -17,6 +17,9 @@ public interface IPrefixedTypedId<TBacking, TSelf> : IEquatable<TSelf>, ICompara
     public static abstract TSelf? ParseNullable(TBacking? id);
     public static abstract bool TryParse([NotNullWhen(true)] TBacking? v, out TSelf id);
     public static abstract bool IsValid([NotNullWhen(true)] TBacking? v);
+
+    public static abstract System.Linq.Expressions.Expression<Func<TBacking, TSelf>> FromDatabase { get; }
+    public static abstract int RawLength { get; }
 }
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
@@ -34,4 +37,6 @@ public interface IRawTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<T
     public static abstract TSelf? ParseNullable(TBacking? id);
     public static abstract bool TryParse([NotNullWhen(true)] TBacking? v, out TSelf id);
     public static abstract bool IsValid([NotNullWhen(true)] TBacking? v);
+
+    public static abstract System.Linq.Expressions.Expression<Func<TBacking, TSelf>> FromDatabase { get; }
 }

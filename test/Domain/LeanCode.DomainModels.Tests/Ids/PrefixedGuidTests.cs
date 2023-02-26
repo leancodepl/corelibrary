@@ -184,4 +184,16 @@ public class PrefixedGuidIdTests
         Assert.StartsWith("tpg_", rnd.Value, StringComparison.OrdinalIgnoreCase);
         Assert.True(Guid.TryParse(rnd.Value[4..], out _));
     }
+
+    [Fact]
+    public void FromDatabase_converts_data_as_Parse()
+    {
+        Assert.Equal(TestPrefixedGuidId.FromDatabase.Compile().Invoke(TPG1), TestPrefixedGuidId.Parse(TPG1));
+    }
+
+    [Fact]
+    public void RawLength_is_correct()
+    {
+        Assert.Equal(TestPrefixedGuidId.RawLength, TPG1.Length);
+    }
 }

@@ -130,4 +130,10 @@ public class IntIdTests
 
         Assert.Equal("1234", json);
     }
+
+    [Fact]
+    public void FromDatabase_converts_data_as_Parse()
+    {
+        Assert.Equal(TestIntId.FromDatabase.Compile().Invoke(1), TestIntId.Parse(1));
+    }
 }
