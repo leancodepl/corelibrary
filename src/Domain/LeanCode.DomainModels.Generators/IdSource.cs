@@ -140,6 +140,7 @@ namespace {data.Namespace}
         string toStringParam
     )
     {
+        randomValueGenerator = data.CustomGenerator ?? randomValueGenerator;
         var randomFactory = randomValueGenerator is not null
             ? $@"public static {data.TypeName} New() => new({randomValueGenerator});"
             : "";
