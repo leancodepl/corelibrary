@@ -18,6 +18,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Rework `JsonLaxDateOnlyConverter` to read into a stack-allocated span instead of heap-allocating strings
 * Add `JsonLaxTimeOnlyConverter` and `JsonLaxDateTimeOffsetConverter`
 * Extract `StyleCop` out of `CodeAnalysis`
+* Add source-generated IDs
 
 ## 6.1
 
