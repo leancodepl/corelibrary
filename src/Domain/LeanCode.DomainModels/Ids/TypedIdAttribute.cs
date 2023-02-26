@@ -3,6 +3,9 @@ namespace LeanCode.DomainModels.Ids;
 /// <summary>
 /// The format of the ID that will be generated.
 /// </summary>
+/// <remarks>
+/// See <see href="../../../../docs/domain/ids.md">documentation</see> for more details.
+/// </remarks>
 public enum TypedIdFormat : int
 {
     /// <summary>
@@ -32,6 +35,9 @@ public enum TypedIdFormat : int
 /// that will be generated during compilation and that can be used as a ID for
 /// <see cref="Model.IIdentifiable{TIdentity}" /> and <see cref="Model.IAggregateRoot{TIdentity}" />.
 /// </summary>
+/// <remarks>
+/// See <see href="../../../../docs/domain/ids.md">documentation</see> for more details.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
 public sealed class TypedIdAttribute : Attribute
 {
