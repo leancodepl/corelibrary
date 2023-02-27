@@ -86,6 +86,11 @@ public class LongIdTests
         Assert.False(new TestLongId(1) >= new TestLongId(2));
         Assert.True(new TestLongId(2) >= new TestLongId(2));
         Assert.True(new TestLongId(3) >= new TestLongId(2));
+
+        Assert.True(new TestLongId(2) == new TestLongId(2));
+        Assert.False(new TestLongId(3) == new TestLongId(2));
+        Assert.True(new TestLongId(3) != new TestLongId(2));
+        Assert.False(new TestLongId(3) != new TestLongId(3));
     }
 
     [Fact]

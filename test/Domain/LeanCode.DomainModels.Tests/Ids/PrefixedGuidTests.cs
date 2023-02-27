@@ -125,6 +125,11 @@ public class PrefixedGuidIdTests
         Assert.False(TestPrefixedGuidId.Parse(TPG1) >= TestPrefixedGuidId.Parse(TPG2));
         Assert.True(TestPrefixedGuidId.Parse(TPG2) >= TestPrefixedGuidId.Parse(TPG2));
         Assert.True(TestPrefixedGuidId.Parse(TPG3) >= TestPrefixedGuidId.Parse(TPG2));
+
+        Assert.True(TestPrefixedGuidId.Parse(TPG1) == TestPrefixedGuidId.Parse(TPG1));
+        Assert.False(TestPrefixedGuidId.Parse(TPG1) == TestPrefixedGuidId.Parse(TPG2));
+        Assert.True(TestPrefixedGuidId.Parse(TPG1) != TestPrefixedGuidId.Parse(TPG2));
+        Assert.False(TestPrefixedGuidId.Parse(TPG1) != TestPrefixedGuidId.Parse(TPG1));
     }
 
     [Fact]

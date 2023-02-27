@@ -1,4 +1,5 @@
 using LeanCode.DomainModels.Ids;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LeanCode.DomainModels.EF;
@@ -9,7 +10,7 @@ public class PrefixedTypedIdConverter<TId> : ValueConverter<TId, string>
 {
     public static readonly PrefixedTypedIdConverter<TId> Instance = new();
 
-    private PrefixedTypedIdConverter()
+    public PrefixedTypedIdConverter()
         : base(d => d.Value, TId.FromDatabase, mappingHints: null) { }
 }
 
@@ -20,6 +21,23 @@ public class RawTypedIdConverter<TBacking, TId> : ValueConverter<TId, TBacking>
 {
     public static readonly RawTypedIdConverter<TBacking, TId> Instance = new();
 
-    private RawTypedIdConverter()
+    public RawTypedIdConverter()
         : base(d => d.Value, TId.FromDatabase, mappingHints: null) { }
+}
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class PrefixedTypedIdComparer<TId> : ValueComparer<TId>
+    where TId : struct, IPrefixedTypedId<TId>
+{
+    public PrefixedTypedIdComparer()
+        : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
+}
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class RawTypedIdComparer<TBacking, TId> : ValueComparer<TId>
+    where TBacking : struct
+    where TId : struct, IRawTypedId<TBacking, TId>
+{
+    public RawTypedIdComparer()
+        : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
 }

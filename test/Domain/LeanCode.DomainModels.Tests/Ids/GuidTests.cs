@@ -95,6 +95,11 @@ public class GuidIdTests
         Assert.False(new TestGuidId(Guid1) >= new TestGuidId(Guid2));
         Assert.True(new TestGuidId(Guid2) >= new TestGuidId(Guid2));
         Assert.True(new TestGuidId(Guid3) >= new TestGuidId(Guid2));
+
+        Assert.True(new TestGuidId(Guid1) == new TestGuidId(Guid1));
+        Assert.False(new TestGuidId(Guid1) == new TestGuidId(Guid2));
+        Assert.True(new TestGuidId(Guid1) != new TestGuidId(Guid2));
+        Assert.False(new TestGuidId(Guid1) != new TestGuidId(Guid1));
     }
 
     [Fact]

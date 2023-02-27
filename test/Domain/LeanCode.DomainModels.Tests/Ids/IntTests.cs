@@ -86,6 +86,11 @@ public class IntIdTests
         Assert.False(new TestIntId(1) >= new TestIntId(2));
         Assert.True(new TestIntId(2) >= new TestIntId(2));
         Assert.True(new TestIntId(3) >= new TestIntId(2));
+
+        Assert.True(new TestIntId(2) == new TestIntId(2));
+        Assert.False(new TestIntId(3) == new TestIntId(2));
+        Assert.True(new TestIntId(3) != new TestIntId(2));
+        Assert.False(new TestIntId(3) != new TestIntId(3));
     }
 
     [Fact]
@@ -132,8 +137,9 @@ public class IntIdTests
     }
 
     [Fact]
-    public void FromDatabase_converts_data_as_Parse()
+    public void Database_expressions_work()
     {
         Assert.Equal(TestIntId.FromDatabase.Compile().Invoke(1), TestIntId.Parse(1));
+        Assert.True(TestIntId.DatabaseEquals.Compile().Invoke(new(1), new(1)));
     }
 }

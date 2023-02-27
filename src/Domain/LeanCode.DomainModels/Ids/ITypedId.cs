@@ -14,6 +14,9 @@ public interface IPrefixedTypedId<TSelf> : IEquatable<TSelf>, IComparable<TSelf>
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static abstract System.Linq.Expressions.Expression<Func<string, TSelf>> FromDatabase { get; }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static abstract System.Linq.Expressions.Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
@@ -27,4 +30,7 @@ public interface IRawTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<T
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static abstract System.Linq.Expressions.Expression<Func<TBacking, TSelf>> FromDatabase { get; }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static abstract System.Linq.Expressions.Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
