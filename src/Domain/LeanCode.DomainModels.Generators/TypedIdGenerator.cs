@@ -15,7 +15,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
         new(
             "LNCD0005",
             "Typed id must be `readonly partial record struct`",
-            @"`{0}` is invalid. For typed id source to be generated it must be `readonly partial record struct`.",
+            @"`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
             "Domain",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true
