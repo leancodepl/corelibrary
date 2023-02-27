@@ -43,8 +43,9 @@ namespace {data.Namespace}
 {{
     #pragma warning disable CS8019
     using global::System;
-    using global::System.Diagnostics;
+    using global::System.ComponentModel;
     using global::System.Diagnostics.CodeAnalysis;
+    using global::System.Diagnostics;
     using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
@@ -117,6 +118,7 @@ namespace {data.Namespace}
             }}
         }}
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static Expression<Func<string, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
 
         public bool Equals({data.TypeName} other) => Value.Equals(other.Value, StringComparison.Ordinal);
@@ -152,8 +154,9 @@ namespace {data.Namespace}
 {{
     #pragma warning disable CS8019
     using global::System;
-    using global::System.Diagnostics;
+    using global::System.ComponentModel;
     using global::System.Diagnostics.CodeAnalysis;
+    using global::System.Diagnostics;
     using global::System.Globalization;
     using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
@@ -206,6 +209,7 @@ namespace {data.Namespace}
             return v is not null;
         }}
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static Expression<Func<{backingType}, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
 
         public bool Equals({data.TypeName} other) => Value == other.Value;
