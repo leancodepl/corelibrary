@@ -107,6 +107,70 @@ public class TypedIdConverterTests
         Assert.IsType<PrefixedTypedIdConverter<PrefixedGuidId>>(mapping.GetValueConverter());
         Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedGuidId>), mapping["ValueComparerType"]);
         Assert.Equal(typeof(PrefixedGuidId), mapping.ClrType);
+        Assert.Equal(mapping.GetMaxLength(), PrefixedGuidId.RawLength);
+        Assert.Equal(mapping["Relational:IsFixedLength"], true);
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void OptionalRawInt_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<IntId?>().AreIntTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(IntId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<RawTypedIdConverter<int, IntId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(RawTypedIdComparer<int, IntId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(IntId?), mapping.ClrType);
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void OptionalRawLong_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<LongId?>().AreLongTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(LongId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<RawTypedIdConverter<long, LongId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(RawTypedIdComparer<long, LongId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(LongId?), mapping.ClrType);
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void OptionalRawGuid_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<GuidId?>().AreGuidTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(GuidId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<RawTypedIdConverter<Guid, GuidId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(RawTypedIdComparer<Guid, GuidId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(GuidId?), mapping.ClrType);
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void OptionalPrefixedGuid_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<PrefixedGuidId?>().ArePrefixedTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(PrefixedGuidId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<PrefixedTypedIdConverter<PrefixedGuidId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedGuidId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(PrefixedGuidId?), mapping.ClrType);
+        Assert.Equal(mapping.GetMaxLength(), PrefixedGuidId.RawLength);
+        Assert.Equal(mapping["Relational:IsFixedLength"], true);
         Assert.Null(mapping["Relational:ColumnType"]);
     }
 
