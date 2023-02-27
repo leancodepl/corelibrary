@@ -59,7 +59,7 @@ namespace {data.Namespace}
         private const char Separator = '_';
         private const string TypePrefix = ""{prefix}"";
 
-        public static int RawLength {{ get; }} = ValueLength + 1 + {prefix.Length};
+        public static int RawLength {{ get; }} = {valueLength + 1 + prefix.Length};
         public static readonly {data.TypeName} Empty = new({defaultValue});
 
         private readonly string? value;
