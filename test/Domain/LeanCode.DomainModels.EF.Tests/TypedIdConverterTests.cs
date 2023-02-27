@@ -1,20 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using LeanCode.DomainModels.Ids;
 using Xunit;
 
 namespace LeanCode.DomainModels.EF.Tests;
-
-[TypedId(TypedIdFormat.RawInt)]
-public readonly partial record struct IntId;
-
-[TypedId(TypedIdFormat.RawLong)]
-public readonly partial record struct LongId;
-
-[TypedId(TypedIdFormat.RawGuid)]
-public readonly partial record struct GuidId;
-
-[TypedId(TypedIdFormat.PrefixedGuid)]
-public readonly partial record struct PrefixedGuidId;
 
 [SuppressMessage("?", "EF1001", Justification = "Tests.")]
 public class TypedIdConverterTests

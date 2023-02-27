@@ -63,21 +63,43 @@ public static class PropertyBuilderExtensions
             .ValueGeneratedNever();
     }
 
-    public static PropertyBuilder<TId> IsTypedId<TBacking, TId>(this PropertyBuilder<TId> builder)
-        where TBacking : struct
-        where TId : struct, IRawTypedId<TBacking, TId>
+    public static PropertyBuilder<TId> IsIntTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<int, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<TBacking, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
     }
 
-    public static PropertyBuilder<TId?> IsTypedId<TBacking, TId>(this PropertyBuilder<TId?> builder)
-        where TBacking : struct
-        where TId : struct, IRawTypedId<TBacking, TId>
+    public static PropertyBuilder<TId?> IsIntTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<int, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<TBacking, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
     }
 
-    public static PropertyBuilder<TId> IsTypedId<TId>(this PropertyBuilder<TId> builder)
+    public static PropertyBuilder<TId> IsLongTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<long, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsLongTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<long, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsGuidTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<Guid, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsGuidTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<Guid, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsPrefixedTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
@@ -87,7 +109,7 @@ public static class PropertyBuilderExtensions
             .ValueGeneratedNever();
     }
 
-    public static PropertyBuilder<TId?> IsTypedId<TId>(this PropertyBuilder<TId?> builder)
+    public static PropertyBuilder<TId?> IsPrefixedTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
