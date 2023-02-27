@@ -12,9 +12,6 @@ public readonly partial record struct NormalPrefixWithId;
 [TypedId(TypedIdFormat.PrefixedGuid)]
 public readonly partial record struct NormalPrefixWithoutIdAtTheEnd;
 
-[TypedId(TypedIdFormat.PrefixedGuid, CustomGenerator = "Guid.Parse(\"f71f9628-3b07-43fd-abcd-4c641d280f39\")")]
-public readonly partial record struct CustomGenerator;
-
 public class PrefixedGuidVariationsTests
 {
     [Fact]
@@ -37,14 +34,5 @@ public class PrefixedGuidVariationsTests
             NormalPrefixWithoutIdAtTheEnd.New().Value,
             StringComparison.Ordinal
         );
-    }
-
-    [Fact]
-    public void Custom_generator_uses_the_expression_specified_as_New_generator()
-    {
-        Assert.Equal("customgenerator_f71f96283b0743fdabcd4c641d280f39", CustomGenerator.New().Value);
-        Assert.Equal("customgenerator_f71f96283b0743fdabcd4c641d280f39", CustomGenerator.New().Value);
-        Assert.Equal("customgenerator_f71f96283b0743fdabcd4c641d280f39", CustomGenerator.New().Value);
-        Assert.Equal("customgenerator_f71f96283b0743fdabcd4c641d280f39", CustomGenerator.New().Value);
     }
 }

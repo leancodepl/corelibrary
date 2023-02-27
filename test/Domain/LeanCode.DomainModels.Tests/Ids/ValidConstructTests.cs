@@ -29,7 +29,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawInt, CustomGenerator = "5")]
+            [TypedId(TypedIdFormat.RawInt, SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -38,7 +38,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", CustomGenerator = "5")]
+            [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -69,7 +69,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawLong, CustomGenerator = "5")]
+            [TypedId(TypedIdFormat.RawLong, SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -78,7 +78,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", CustomGenerator = "5")]
+            [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -109,7 +109,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawGuid, CustomGenerator = "global::System.Guid.Empty")]
+            [TypedId(TypedIdFormat.RawGuid, SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -118,7 +118,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", CustomGenerator = "global::System.Guid.Empty")]
+            [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -149,7 +149,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid, CustomGenerator = "global::System.Guid.Empty")]
+            [TypedId(TypedIdFormat.PrefixedGuid, SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );
@@ -158,7 +158,7 @@ public class ValidConstructTests
             """
             using LeanCode.DomainModels.Ids;
             namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", CustomGenerator = "global::System.Guid.Empty")]
+            [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true)]
             public readonly partial record struct Id;
         """
         );

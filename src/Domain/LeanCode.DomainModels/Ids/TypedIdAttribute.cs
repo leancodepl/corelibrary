@@ -42,8 +42,8 @@ public enum TypedIdFormat : int
 public sealed class TypedIdAttribute : Attribute
 {
     /// <summary>
-    /// The format of the ID. <c>Prefixed</c> formats will respect <see cref="CustomPrefix" /> and
-    /// <see cref="CustomGenerator" />. <c>Raw</c> formats will ignore them.
+    /// The format of the ID. <c>Prefixed</c> formats will respect <see cref="CustomPrefix" />.  <c>Raw</c> formats will
+    /// ignore them.
     /// </summary>
     public TypedIdFormat Format { get; }
 
@@ -56,9 +56,9 @@ public sealed class TypedIdAttribute : Attribute
     public string? CustomPrefix { get; set; }
 
     /// <summary>
-    /// Custom generator for the prefixed IDs.
+    /// If <c>true</c>, the generated class will not provide `New` factory method by default.
     /// </summary>
-    public string? CustomGenerator { get; set; }
+    public bool SkipRandomGenerator { get; set; }
 
     public TypedIdAttribute(TypedIdFormat format)
     {

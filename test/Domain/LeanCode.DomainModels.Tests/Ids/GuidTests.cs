@@ -8,9 +8,6 @@ namespace LeanCode.DomainModels.Tests.Ids;
 [TypedId(TypedIdFormat.RawGuid)]
 public readonly partial record struct TestGuidId;
 
-[TypedId(TypedIdFormat.RawGuid, CustomGenerator = "Guid.Parse(\"f71f9628-3b07-43fd-abcd-4c641d280f39\")")]
-public readonly partial record struct CustomGenGuidId;
-
 public class GuidIdTests
 {
     private static readonly Guid Guid1 = Guid.Parse("0ba5ef95-394b-4d08-9cb1-f47f3ebe41b3");
@@ -154,12 +151,5 @@ public class GuidIdTests
     {
         var rnd = TestGuidId.New();
         Assert.NotEqual(rnd.Value, Guid.Empty);
-    }
-
-    [Fact]
-    public void New_generates_ID_using_generator_if_provided()
-    {
-        var rnd = CustomGenGuidId.New();
-        Assert.Equal(Guid.Parse("f71f9628-3b07-43fd-abcd-4c641d280f39"), rnd.Value);
     }
 }

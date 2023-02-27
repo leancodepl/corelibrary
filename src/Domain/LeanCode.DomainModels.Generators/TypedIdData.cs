@@ -8,7 +8,7 @@ public sealed class TypedIdData
     public string Namespace { get; }
     public string TypeName { get; }
     public string? CustomPrefix { get; }
-    public string? CustomGenerator { get; }
+    public bool SkipRandomGenerator { get; }
     public bool IsValid { get; }
     public Location? Location { get; }
 
@@ -17,7 +17,7 @@ public sealed class TypedIdData
         string @namespace,
         string typeName,
         string? customSlug,
-        string? customGenerator,
+        bool skipRandomGenerator,
         bool isValid,
         Location? location
     )
@@ -26,7 +26,7 @@ public sealed class TypedIdData
         Namespace = @namespace;
         TypeName = typeName;
         CustomPrefix = customSlug;
-        CustomGenerator = customGenerator;
+        SkipRandomGenerator = skipRandomGenerator;
         IsValid = isValid;
         Location = location;
     }

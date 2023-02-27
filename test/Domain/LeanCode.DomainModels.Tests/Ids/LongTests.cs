@@ -8,9 +8,6 @@ namespace LeanCode.DomainModels.Tests.Ids;
 [TypedId(TypedIdFormat.RawLong)]
 public readonly partial record struct TestLongId;
 
-[TypedId(TypedIdFormat.RawLong, CustomGenerator = "5")]
-public readonly partial record struct CustomGenLongId;
-
 public class LongIdTests
 {
     [Fact]
@@ -138,12 +135,5 @@ public class LongIdTests
     public void FromDatabase_converts_data_as_Parse()
     {
         Assert.Equal(TestLongId.FromDatabase.Compile().Invoke(1), TestLongId.Parse(1));
-    }
-
-    [Fact]
-    public void New_generates_ID_using_generator_if_provided()
-    {
-        var rnd = CustomGenLongId.New();
-        Assert.Equal(5, rnd.Value);
     }
 }

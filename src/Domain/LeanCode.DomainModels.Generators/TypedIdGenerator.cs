@@ -9,7 +9,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
 {
     private const string AttributeName = "LeanCode.DomainModels.Ids.TypedIdAttribute";
     private const string CustomPrefixField = "CustomPrefix";
-    private const string CustomGeneratorField = "CustomGenerator";
+    private const string SkipRandomGeneratorField = "SkipRandomGenerator";
 
     private static readonly DiagnosticDescriptor InvalidTypeRule =
         new(
@@ -34,8 +34,8 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                     CultureInfo.InvariantCulture
                 );
                 var customPrefix = attribute.NamedArguments.FirstOrDefault(a => a.Key == CustomPrefixField).Value.Value;
-                var customGenerator = attribute.NamedArguments
-                    .FirstOrDefault(a => a.Key == CustomGeneratorField)
+                var skipRandomGenerator = attribute.NamedArguments
+                    .FirstOrDefault(a => a.Key == SkipRandomGeneratorField)
                     .Value.Value;
                 var isValid = IsValidSyntaxNode(n.TargetNode);
                 return new TypedIdData(
@@ -43,7 +43,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                     n.TargetSymbol.ContainingNamespace.ToDisplayString(),
                     n.TargetSymbol.Name,
                     (string?)customPrefix,
-                    (string?)customGenerator,
+                    skipRandomGenerator is true,
                     isValid,
                     !isValid ? n.TargetNode.GetLocation() : null
                 );

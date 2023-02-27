@@ -73,14 +73,13 @@ The format of the ID can be configured using:
    c) `RawGuid` - uses `Guid` as the underlying type; works as a wrapper over `Guid`; can generate new ID at runtime using `Guid.NewGuid`;
    d) `PrefixedGuid` - uses `string` as the underlying type; it is represented as a `(prefix)_(guid)` string that can be generated at runtime; by default `(prefix)` is a lowercase class name with `id` at the end removed;
 2. `CustomPrefix` - for `Prefixed*` formats, you can configure what prefix it uses (if you e.g. want to use a shorter one),
-3. `CustomGenerator` - allows specifying different code to generate the random value for ID; you can use it to add `New` for `Raw` formats.
+3. `SkipRandomGenerator` - setting this to `true` will skip generating `New` factory method (for `Prefixed` types only).
 
 Example:
 
 ```cs
-[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "user", CustomGenerator = "Guid.Parse(\"f71f9628-3b07-43fd-abcd-4c641d280f39\")")]
+[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "user")]
 public readonly partial record struct VeryLongUserId;
 
-// The `VeryLongUserId` will have format `user_(guid)`
-// `New` will always generate `user_f71f96283b0743fdabcd4c641d280f39`.
+// The `VeryLongUserId` will have format `user_(guid)`, with `New` using `Guid.NewGuid` as random source.
 ```
