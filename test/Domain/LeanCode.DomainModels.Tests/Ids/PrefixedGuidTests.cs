@@ -191,9 +191,16 @@ public class PrefixedGuidIdTests
     }
 
     [Fact]
-    public void FromDatabase_converts_data_as_Parse()
+    public void Database_expressions_work()
     {
-        Assert.Equal(TestPrefixedGuidId.FromDatabase.Compile().Invoke(TPG1), TestPrefixedGuidId.Parse(TPG1));
+        DatabaseExpressionsWork<TestPrefixedGuidId>();
+
+        static void DatabaseExpressionsWork<T>()
+            where T : struct, IPrefixedTypedId<T>
+        {
+            Assert.Equal(T.FromDatabase.Compile().Invoke(TPG1), T.Parse(TPG1));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPG1), T.Parse(TPG1)));
+        }
     }
 
     [Fact]

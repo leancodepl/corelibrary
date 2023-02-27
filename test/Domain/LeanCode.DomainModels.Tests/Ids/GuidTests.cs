@@ -146,9 +146,17 @@ public class GuidIdTests
     }
 
     [Fact]
-    public void FromDatabase_converts_data_as_Parse()
+    public void Database_expressions_work()
     {
-        Assert.Equal(TestGuidId.FromDatabase.Compile().Invoke(Guid1), TestGuidId.Parse(Guid1));
+        DatabaseExpressionsWork<TestGuidId>();
+
+        static void DatabaseExpressionsWork<T>()
+            where T : struct, IRawTypedId<Guid, T>
+        {
+            var guid = Guid.NewGuid();
+            Assert.Equal(T.FromDatabase.Compile().Invoke(guid), T.Parse(guid));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(guid), T.Parse(guid)));
+        }
     }
 
     [Fact]

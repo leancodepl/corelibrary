@@ -139,7 +139,13 @@ public class IntIdTests
     [Fact]
     public void Database_expressions_work()
     {
-        Assert.Equal(TestIntId.FromDatabase.Compile().Invoke(1), TestIntId.Parse(1));
-        Assert.True(TestIntId.DatabaseEquals.Compile().Invoke(new(1), new(1)));
+        DatabaseExpressionsWork<TestIntId>();
+
+        static void DatabaseExpressionsWork<T>()
+            where T : struct, IRawTypedId<int, T>
+        {
+            Assert.Equal(T.FromDatabase.Compile().Invoke(1), T.Parse(1));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(1), T.Parse(1)));
+        }
     }
 }

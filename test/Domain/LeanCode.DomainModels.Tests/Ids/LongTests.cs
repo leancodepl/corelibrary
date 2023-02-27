@@ -137,8 +137,15 @@ public class LongIdTests
     }
 
     [Fact]
-    public void FromDatabase_converts_data_as_Parse()
+    public void Database_expressions_work()
     {
-        Assert.Equal(TestLongId.FromDatabase.Compile().Invoke(1), TestLongId.Parse(1));
+        DatabaseExpressionsWork<TestLongId>();
+
+        static void DatabaseExpressionsWork<T>()
+            where T : struct, IRawTypedId<long, T>
+        {
+            Assert.Equal(T.FromDatabase.Compile().Invoke(1), T.Parse(1));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(1), T.Parse(1)));
+        }
     }
 }

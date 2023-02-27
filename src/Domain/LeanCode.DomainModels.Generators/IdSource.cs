@@ -121,11 +121,6 @@ namespace {data.Namespace}
             }}
         }}
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Expression<Func<string, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Expression<Func<{data.TypeName}, {data.TypeName}, bool>> DatabaseEquals {{ get; }} = (a, b) => a == b;
-
         public bool Equals({data.TypeName} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({data.TypeName} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
@@ -136,6 +131,9 @@ namespace {data.Namespace}
         public static bool operator <=({data.TypeName} a, {data.TypeName} b) => a.CompareTo(b) <= 0;
         public static bool operator >({data.TypeName} a, {data.TypeName} b) => a.CompareTo(b) > 0;
         public static bool operator >=({data.TypeName} a, {data.TypeName} b) => a.CompareTo(b) >= 0;
+
+        static Expression<Func<string, {data.TypeName}>> IPrefixedTypedId<{data.TypeName}>.FromDatabase {{ get; }} = d => Parse(d);
+        static Expression<Func<{data.TypeName}, {data.TypeName}, bool>> IPrefixedTypedId<{data.TypeName}>.DatabaseEquals {{ get; }} = (a, b) => a == b;
     }}
 }}";
     }
@@ -214,11 +212,6 @@ namespace {data.Namespace}
             return v is not null;
         }}
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Expression<Func<{backingType}, {data.TypeName}>> FromDatabase {{ get; }} = d => Parse(d);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Expression<Func<{data.TypeName}, {data.TypeName}, bool>> DatabaseEquals {{ get; }} = (a, b) => a == b;
-
         public bool Equals({data.TypeName} other) => Value == other.Value;
         public int CompareTo({data.TypeName} other) => Value.CompareTo(other.Value);
         public override int GetHashCode() => Value.GetHashCode();
@@ -229,6 +222,9 @@ namespace {data.Namespace}
         public static bool operator <=({data.TypeName} a, {data.TypeName} b) => a.Value <= b.Value;
         public static bool operator >({data.TypeName} a, {data.TypeName} b) => a.Value > b.Value;
         public static bool operator >=({data.TypeName} a, {data.TypeName} b) => a.Value >= b.Value;
+
+        static Expression<Func<{backingType}, {data.TypeName}>> IRawTypedId<{backingType}, {data.TypeName}>.FromDatabase {{ get; }} = d => Parse(d);
+        static Expression<Func<{data.TypeName}, {data.TypeName}, bool>> IRawTypedId<{backingType}, {data.TypeName}>.DatabaseEquals {{ get; }} = (a, b) => a == b;
     }}
 }}";
     }
