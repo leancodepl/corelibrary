@@ -38,7 +38,7 @@ public enum TypedIdFormat : int
 /// <remarks>
 /// See <see href="../../../../docs/domain/ids.md">documentation</see> for more details.
 /// </remarks>
-[AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
 public sealed class TypedIdAttribute : Attribute
 {
     /// <summary>
