@@ -41,12 +41,14 @@ internal static class IdSource
 #nullable enable
 namespace {data.Namespace}
 {{
+    #pragma warning disable CS8019
     using global::System;
     using global::System.Diagnostics;
     using global::System.Diagnostics.CodeAnalysis;
     using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
+    #pragma warning restore CS8019
 
     [JsonConverter(typeof(StringTypedIdConverter<{data.TypeName}>))]
     [DebuggerDisplay(""{{Value}}"")]
@@ -148,6 +150,7 @@ namespace {data.Namespace}
 #nullable enable
 namespace {data.Namespace}
 {{
+    #pragma warning disable CS8019
     using global::System;
     using global::System.Diagnostics;
     using global::System.Diagnostics.CodeAnalysis;
@@ -155,6 +158,7 @@ namespace {data.Namespace}
     using global::System.Linq.Expressions;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
+    #pragma warning restore CS8019
 
     [JsonConverter(typeof({converterPrefix}TypedIdConverter<{data.TypeName}>))]
     [DebuggerDisplay(""{{Value}}"")]
