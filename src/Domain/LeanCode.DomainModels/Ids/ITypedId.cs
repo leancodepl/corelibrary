@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 
 namespace LeanCode.DomainModels.Ids;
 
@@ -13,10 +14,10 @@ public interface IPrefixedTypedId<TSelf> : IEquatable<TSelf>, IComparable<TSelf>
     public static abstract TSelf Parse(string? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract System.Linq.Expressions.Expression<Func<string, TSelf>> FromDatabase { get; }
+    public static abstract Expression<Func<string, TSelf>> FromDatabase { get; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract System.Linq.Expressions.Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
+    public static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
@@ -29,8 +30,8 @@ public interface IRawTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<T
     public static abstract TSelf Parse(TBacking? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract System.Linq.Expressions.Expression<Func<TBacking, TSelf>> FromDatabase { get; }
+    public static abstract Expression<Func<TBacking, TSelf>> FromDatabase { get; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract System.Linq.Expressions.Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
+    public static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
