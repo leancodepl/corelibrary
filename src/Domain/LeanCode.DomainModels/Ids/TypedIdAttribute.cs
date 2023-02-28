@@ -14,12 +14,12 @@ public enum TypedIdFormat : int
     RawInt = 0,
 
     /// <summary>
-    /// Raw <see cref="long" />, without prefix. It's backing type is <see cref="int" />.
+    /// Raw <see cref="long" />, without prefix. It's backing type is <see cref="long" />.
     /// </summary>
     RawLong = 1,
 
     /// <summary>
-    /// Raw <see cref="Guid" />, without prefix. It's backing type is <see cref="int" />.
+    /// Raw <see cref="Guid" />, without prefix. It's backing type is <see cref="Guid" />.
     /// </summary>
     RawGuid = 2,
 
