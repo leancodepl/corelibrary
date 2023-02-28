@@ -18,25 +18,25 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App.Ref" Version="7.0.0" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
 
-    <EmbeddedResource Include="$(NuGetPackageRoot)\microsoft.netcore.app.ref\7.0.0\ref\net7.0\System.Linq.dll">
+    <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/net7.0/System.Linq.dll">
       <LogicalName>System.Linq</LogicalName>
-      <Link>Resources\System.Linq.dll</Link>
+      <Link>Resources/System.Linq.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(NuGetPackageRoot)\microsoft.netcore.app.ref\7.0.0\ref\net7.0\System.Linq.Expressions.dll">
+    <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/net7.0/System.Linq.Expressions.dll">
       <LogicalName>System.Linq.Expressions</LogicalName>
-      <Link>Resources\System.Linq.Expressions.dll</Link>
+      <Link>Resources/System.Linq.Expressions.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(NuGetPackageRoot)\microsoft.netcore.app.ref\7.0.0\ref\net7.0\System.Memory.dll">
+    <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/net7.0/System.Memory.dll">
       <LogicalName>System.Memory</LogicalName>
-      <Link>Resources\System.Memory.dll</Link>
+      <Link>Resources/System.Memory.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(NuGetPackageRoot)\microsoft.netcore.app.ref\7.0.0\ref\net7.0\System.Runtime.dll">
+    <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/net7.0/System.Runtime.dll">
       <LogicalName>System.Runtime</LogicalName>
-      <Link>Resources\System.Runtime.dll</Link>
+      <Link>Resources/System.Runtime.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(NuGetPackageRoot)\microsoft.netcore.app.ref\7.0.0\ref\net7.0\System.Text.Json.dll">
+    <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/net7.0/System.Text.Json.dll">
       <LogicalName>System.Text.Json</LogicalName>
-      <Link>Resources\System.Text.Json.dll</Link>
+      <Link>Resources/System.Text.Json.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
 
