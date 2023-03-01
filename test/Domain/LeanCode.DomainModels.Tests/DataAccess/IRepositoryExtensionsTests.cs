@@ -5,7 +5,7 @@ using LeanCode.DomainModels.Model;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.DomainModels.Tests;
+namespace LeanCode.DomainModels.Tests.DataAccess;
 
 public class IRepositoryExtensionsTests
 {

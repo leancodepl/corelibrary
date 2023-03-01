@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -58,6 +59,62 @@ public static class PropertyBuilderExtensions
         return builder
             .HasConversion(SIdConverter<T>.Instance)
             .HasMaxLength(SId<T>.RawLength)
+            .IsFixedLength()
+            .ValueGeneratedNever();
+    }
+
+    public static PropertyBuilder<TId> IsIntTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<int, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsIntTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<int, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsLongTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<long, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsLongTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<long, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsGuidTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawTypedId<Guid, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId?> IsGuidTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawTypedId<Guid, TId>
+    {
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsPrefixedTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IPrefixedTypedId<TId>
+    {
+        return builder
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
+            .HasMaxLength(TId.RawLength)
+            .IsFixedLength()
+            .ValueGeneratedNever();
+    }
+
+    public static PropertyBuilder<TId?> IsPrefixedTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IPrefixedTypedId<TId>
+    {
+        return builder
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
+            .HasMaxLength(TId.RawLength)
             .IsFixedLength()
             .ValueGeneratedNever();
     }

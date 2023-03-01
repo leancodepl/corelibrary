@@ -1,7 +1,7 @@
 using LeanCode.DomainModels.Model;
 using Xunit;
 
-namespace LeanCode.DomainModels.Tests;
+namespace LeanCode.DomainModels.Tests.Model;
 
 public class SIdTests
 {

@@ -1,7 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.DomainModels.EF.Tests;
@@ -172,13 +169,5 @@ public class DateTimeOnlyConverterTests
 
         Assert.Equal(timeComparer.Snapshot(time1), time1);
         Assert.Equal(timeComparer.Snapshot(time2), time2);
-    }
-
-    private class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
-    {
-        public ModelConfigurationBuilderWrapper()
-            : base(new(), new ServiceCollection().BuildServiceProvider()) { }
-
-        public ModelConfiguration Build() => ModelConfiguration;
     }
 }
