@@ -53,12 +53,17 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 
         public override Id<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return Read(ref reader, typeToConvert, options);
+            if (reader.GetString() is string s && Guid.TryParse(s, out var id))
+            {
+                return new(id);
+            }
+
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
         }
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, Id<T> value, JsonSerializerOptions options)
         {
-            Write(writer, value, options);
+            writer.WritePropertyName(value.ToString());
         }
     }
 
@@ -92,7 +97,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.ToString());
+            writer.WritePropertyName(value.ToString());
         }
     }
 
@@ -103,7 +108,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         {
             if (reader.TryGetInt64(out var id))
             {
-                return new LId<T>(id);
+                return new(id);
             }
 
             throw new JsonException($"Could not deserialize {typeToConvert.Name}");
@@ -126,7 +131,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.ToString());
+            writer.WritePropertyName(value.ToString());
         }
     }
 
@@ -155,7 +160,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
         {
-            Write(writer, value, options);
+            writer.WritePropertyName(value.Value);
         }
     }
 }

@@ -17,7 +17,7 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
         Read(ref reader, typeToConvert, options);
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
-        Write(writer, value, options);
+        writer.WritePropertyName(value.Value);
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -36,7 +36,7 @@ public class IntTypedIdConverter<TId> : JsonConverter<TId>
             : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
-        writer.WriteStringValue(value.ToString());
+        writer.WritePropertyName(value.ToString()!);
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -55,7 +55,7 @@ public class LongTypedIdConverter<TId> : JsonConverter<TId>
             : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
-        writer.WriteStringValue(value.ToString());
+        writer.WritePropertyName(value.ToString()!);
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -69,8 +69,10 @@ public class GuidTypedIdConverter<TId> : JsonConverter<TId>
         writer.WriteStringValue(value.Value);
 
     public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-        Read(ref reader, typeToConvert, options);
+        reader.GetString() is string s && Guid.TryParse(s, out var id)
+            ? TId.Parse(id)
+            : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
-        Write(writer, value, options);
+        writer.WritePropertyName(value.ToString()!);
 }
