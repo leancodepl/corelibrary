@@ -49,6 +49,17 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         {
             writer.WriteStringValue(value.Value);
         }
+
+
+        public override Id<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return Read(ref reader, typeToConvert, options);
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, Id<T> value, JsonSerializerOptions options)
+        {
+            Write(writer, value, options);
+        }
     }
 
     private class IIdConverter<T> : JsonConverter<IId<T>>
@@ -58,7 +69,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         {
             if (reader.TryGetInt32(out var id))
             {
-                return new IId<T>(id);
+                return new(id);
             }
 
             throw new JsonException($"Could not deserialize {typeToConvert.Name}");
@@ -67,6 +78,21 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         public override void Write(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
         {
             writer.WriteNumberValue(value.Value);
+        }
+
+        public override IId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.GetString() is string s && int.TryParse(s, out var id))
+            {
+                return new(id);
+            }
+
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
         }
     }
 
@@ -87,6 +113,21 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         {
             writer.WriteNumberValue(value.Value);
         }
+
+        public override LId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.GetString() is string s && long.TryParse(s, out var id))
+            {
+                return new(id);
+            }
+
+            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
     }
 
     private class SIdConverter<T> : JsonConverter<SId<T>>
@@ -105,6 +146,16 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
         public override void Write(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.Value);
+        }
+
+        public override SId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return Read(ref reader, typeToConvert, options);
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, SId<T> value, JsonSerializerOptions options)
+        {
+            Write(writer, value, options);
         }
     }
 }
