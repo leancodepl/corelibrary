@@ -103,8 +103,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
                 span = reader.ValueSpan;
             }
 
-            if (span.Length == MaxEscapedGuidLength
-                && Utf8Parser.TryParse(span, out Guid tmp, out _, 'D'))
+            if (span.Length == MaxEscapedGuidLength && Utf8Parser.TryParse(span, out Guid tmp, out _, 'D'))
             {
                 value = tmp;
                 return true;
