@@ -1,5 +1,7 @@
 using System.Buffers;
 using System.Buffers.Text;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -116,6 +118,8 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     private class IIdConverter<T> : JsonConverter<IId<T>>
         where T : class, IIdentifiable<IId<T>>
     {
+        private static readonly int SpanSize = int.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+
         public override IId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TryGetInt32(out var id))
@@ -137,23 +141,30 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             JsonSerializerOptions options
         )
         {
-            if (reader.GetString() is string s && int.TryParse(s, out var id))
-            {
-                return new(id);
-            }
+            Span<char> buffer = stackalloc char[SpanSize];
 
-            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+            var count = reader.CopyString(buffer);
+
+            return new(int.Parse(buffer[..count], CultureInfo.InvariantCulture));
         }
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, IId<T> value, JsonSerializerOptions options)
         {
-            writer.WritePropertyName(value.ToString());
+            Span<char> buffer = stackalloc char[SpanSize];
+
+            var success = value.Value.TryFormat(buffer, out var charsWritten, provider: CultureInfo.InvariantCulture);
+
+            Debug.Assert(success);
+
+            writer.WritePropertyName(buffer[..charsWritten]);
         }
     }
 
     private class LIdConverter<T> : JsonConverter<LId<T>>
         where T : class, IIdentifiable<LId<T>>
     {
+        private static readonly int SpanSize = long.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+
         public override LId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TryGetInt64(out var id))
@@ -175,17 +186,22 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             JsonSerializerOptions options
         )
         {
-            if (reader.GetString() is string s && long.TryParse(s, out var id))
-            {
-                return new(id);
-            }
+            Span<char> buffer = stackalloc char[SpanSize];
 
-            throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+            var count = reader.CopyString(buffer);
+
+            return new(long.Parse(buffer[..count], CultureInfo.InvariantCulture));
         }
 
         public override void WriteAsPropertyName(Utf8JsonWriter writer, LId<T> value, JsonSerializerOptions options)
         {
-            writer.WritePropertyName(value.ToString());
+            Span<char> buffer = stackalloc char[SpanSize];
+
+            var success = value.Value.TryFormat(buffer, out var charsWritten, provider: CultureInfo.InvariantCulture);
+
+            Debug.Assert(success);
+
+            writer.WritePropertyName(buffer[..charsWritten]);
         }
     }
 
