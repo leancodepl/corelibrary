@@ -26,7 +26,7 @@ public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEn
 
     public static Id<TEntity> From(Guid id) => new(id);
 
-    public static Id<TEntity>? From(Guid? id) => id is Guid v ? new Id<TEntity>(v) : (Id<TEntity>?)null;
+    public static Id<TEntity>? From(Guid? id) => id is Guid v ? new Id<TEntity>(v) : null;
 
     public bool Equals(Id<TEntity> other) => Value.Equals(other.Value);
 
@@ -36,7 +36,7 @@ public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEn
 
     public override int GetHashCode() => HashCode.Combine(Value);
 
-    public override string? ToString() => Value.ToString();
+    public override string ToString() => Value.ToString();
 
     public static bool operator ==(Id<TEntity> left, Id<TEntity> right) => left.Equals(right);
 
@@ -72,7 +72,7 @@ public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<
 
     public static IId<TEntity> From(int id) => new(id);
 
-    public static IId<TEntity>? From(int? id) => id is int v ? new IId<TEntity>(v) : (IId<TEntity>?)null;
+    public static IId<TEntity>? From(int? id) => id is int v ? new IId<TEntity>(v) : null;
 
     public bool Equals(IId<TEntity> other) => Value.Equals(other.Value);
 
@@ -82,7 +82,7 @@ public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<
 
     public override int GetHashCode() => HashCode.Combine(Value);
 
-    public override string? ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     public static bool operator ==(IId<TEntity> left, IId<TEntity> right) => left.Equals(right);
 
@@ -107,7 +107,7 @@ public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<
 public readonly struct LId<TEntity> : IEquatable<LId<TEntity>>, IComparable<LId<TEntity>>
     where TEntity : class, IIdentifiable<LId<TEntity>>
 {
-    public static readonly LId<TEntity> Empty = LId<TEntity>.From(0);
+    public static readonly LId<TEntity> Empty = From(0);
 
     public long Value { get; }
 
@@ -118,7 +118,7 @@ public readonly struct LId<TEntity> : IEquatable<LId<TEntity>>, IComparable<LId<
 
     public static LId<TEntity> From(long id) => new(id);
 
-    public static LId<TEntity>? From(long? id) => id is long v ? new LId<TEntity>(v) : (LId<TEntity>?)null;
+    public static LId<TEntity>? From(long? id) => id is long v ? new LId<TEntity>(v) : null;
 
     public bool Equals(LId<TEntity> other) => Value.Equals(other.Value);
 
@@ -128,7 +128,7 @@ public readonly struct LId<TEntity> : IEquatable<LId<TEntity>>, IComparable<LId<
 
     public override int GetHashCode() => HashCode.Combine(Value);
 
-    public override string? ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    public override string ToString() => Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     public static bool operator ==(LId<TEntity> left, LId<TEntity> right) => left.Equals(right);
 
