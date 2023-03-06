@@ -12,6 +12,12 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteStringValue(value.Value);
+
+    public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        Read(ref reader, typeToConvert, options);
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        Write(writer, value, options);
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -23,6 +29,14 @@ public class IntTypedIdConverter<TId> : JsonConverter<TId>
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteNumberValue(value.Value);
+
+    public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.GetString() is string s && int.TryParse(s, out var id)
+            ? TId.Parse(id)
+            : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.ToString());
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -34,6 +48,14 @@ public class LongTypedIdConverter<TId> : JsonConverter<TId>
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteNumberValue(value.Value);
+
+    public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.GetString() is string s && long.TryParse(s, out var id)
+            ? TId.Parse(id)
+            : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.ToString());
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -45,4 +67,10 @@ public class GuidTypedIdConverter<TId> : JsonConverter<TId>
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteStringValue(value.Value);
+
+    public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        Read(ref reader, typeToConvert, options);
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        Write(writer, value, options);
 }
