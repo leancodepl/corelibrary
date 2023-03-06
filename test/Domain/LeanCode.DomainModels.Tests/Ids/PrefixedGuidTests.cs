@@ -185,7 +185,7 @@ public class PrefixedGuidIdTests
     public void The_type_can_be_serialized_and_deserialized_as_dictionary_key_from_JSON()
     {
         var value = TestPrefixedGuidId.Parse(TPG1);
-        var dict = new Dictionary<TestPrefixedGuidId, int> {[value] = 1};
+        var dict = new Dictionary<TestPrefixedGuidId, int> { [value] = 1 };
 
         var json = JsonSerializer.Serialize(dict);
         var deserialized = JsonSerializer.Deserialize<Dictionary<TestPrefixedGuidId, int>>(json);

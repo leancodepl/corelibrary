@@ -50,8 +50,11 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             writer.WriteStringValue(value.Value);
         }
 
-
-        public override Id<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Id<T> ReadAsPropertyName(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             if (reader.GetString() is string s && Guid.TryParse(s, out var id))
             {
@@ -85,7 +88,11 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             writer.WriteNumberValue(value.Value);
         }
 
-        public override IId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IId<T> ReadAsPropertyName(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             if (reader.GetString() is string s && int.TryParse(s, out var id))
             {
@@ -119,7 +126,11 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             writer.WriteNumberValue(value.Value);
         }
 
-        public override LId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override LId<T> ReadAsPropertyName(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             if (reader.GetString() is string s && long.TryParse(s, out var id))
             {
@@ -153,7 +164,11 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
             writer.WriteStringValue(value.Value);
         }
 
-        public override SId<T> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SId<T> ReadAsPropertyName(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             return Read(ref reader, typeToConvert, options);
         }

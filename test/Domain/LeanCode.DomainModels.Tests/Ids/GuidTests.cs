@@ -149,7 +149,7 @@ public class GuidIdTests
     public void The_type_can_be_serialized_and_deserialized_as_dictionary_key_from_JSON()
     {
         var value = new TestGuidId(Guid1);
-        var dict = new Dictionary<TestGuidId, int> {[value] = 1};
+        var dict = new Dictionary<TestGuidId, int> { [value] = 1 };
 
         var json = JsonSerializer.Serialize(dict);
         var deserialized = JsonSerializer.Deserialize<Dictionary<TestGuidId, int>>(json);
