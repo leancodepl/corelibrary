@@ -77,7 +77,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 
         private bool TryGetGuidCore(ref Utf8JsonReader reader, out Guid value)
         {
-            scoped ReadOnlySpan<byte> span;
+            ReadOnlySpan<byte> span = stackalloc byte[0];
 
             if (reader.HasValueSequence)
             {
