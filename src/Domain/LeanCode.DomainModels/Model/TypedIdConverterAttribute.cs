@@ -117,7 +117,8 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     private class IIdConverter<T> : JsonConverter<IId<T>>
         where T : class, IIdentifiable<IId<T>>
     {
-        private static readonly int SpanSize = int.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+        // The longest possible int string is 11 characters long.
+        private const int SpanSize = 11;
 
         public override IId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -162,7 +163,8 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     private class LIdConverter<T> : JsonConverter<LId<T>>
         where T : class, IIdentifiable<LId<T>>
     {
-        private static readonly int SpanSize = long.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+        // The longest possible long string is 20 characters long.
+        private const int SpanSize = 20;
 
         public override LId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

@@ -31,7 +31,8 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
 public class IntTypedIdConverter<TId> : JsonConverter<TId>
     where TId : struct, IRawTypedId<int, TId>
 {
-    private static readonly int SpanSize = int.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+    // The longest possible int string is 11 characters long.
+    private const int SpanSize = 11;
 
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetInt32());
@@ -64,7 +65,8 @@ public class IntTypedIdConverter<TId> : JsonConverter<TId>
 public class LongTypedIdConverter<TId> : JsonConverter<TId>
     where TId : struct, IRawTypedId<long, TId>
 {
-    private static readonly int SpanSize = long.MinValue.ToString(CultureInfo.InvariantCulture).Length;
+    // The longest possible long string is 20 characters long.
+    private const int SpanSize = 20;
 
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetInt64());
