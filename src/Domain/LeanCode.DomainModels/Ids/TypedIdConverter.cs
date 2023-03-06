@@ -1,3 +1,5 @@
+using System.Buffers;
+using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -73,21 +75,62 @@ public class LongTypedIdConverter<TId> : JsonConverter<TId>
 public class GuidTypedIdConverter<TId> : JsonConverter<TId>
     where TId : struct, IRawTypedId<Guid, TId>
 {
+    private const int MaxEscapedGuidLength = 36;
+
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         TId.Parse(reader.GetGuid());
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteStringValue(value.Value);
 
-    public override TId ReadAsPropertyName(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options
-    ) =>
-        reader.GetString() is string s && Guid.TryParse(s, out var id)
-            ? TId.Parse(id)
-            : throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+    public override TId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (TryGetGuidCore(ref reader, out var id))
+        {
+            return TId.Parse(id);
+        }
+
+        throw new JsonException($"Could not deserialize {typeToConvert.Name}");
+    }
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WritePropertyName(value.ToString()!);
+
+    private bool TryGetGuidCore(ref Utf8JsonReader reader, out Guid value)
+    {
+        scoped ReadOnlySpan<byte> span;
+
+        if (reader.HasValueSequence)
+        {
+            long sequenceLength = reader.ValueSequence.Length;
+            if (sequenceLength > MaxEscapedGuidLength)
+            {
+                value = default;
+                return false;
+            }
+
+            Span<byte> stackSpan = stackalloc byte[MaxEscapedGuidLength];
+            reader.ValueSequence.CopyTo(stackSpan);
+            span = stackSpan[..(int)sequenceLength];
+        }
+        else
+        {
+            if (reader.ValueSpan.Length > MaxEscapedGuidLength)
+            {
+                value = default;
+                return false;
+            }
+
+            span = reader.ValueSpan;
+        }
+
+        if (span.Length == MaxEscapedGuidLength && Utf8Parser.TryParse(span, out Guid tmp, out _, 'D'))
+        {
+            value = tmp;
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
 }
