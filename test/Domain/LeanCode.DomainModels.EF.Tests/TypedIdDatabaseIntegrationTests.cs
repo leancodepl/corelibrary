@@ -45,7 +45,7 @@ public class TypedIdDatabaseIntegrationTests
         Assert.Equal(a.H, b.H);
     }
 
-    private class TestDbContext : DbContext
+    private sealed class TestDbContext : DbContext
     {
         private readonly bool useConventions;
 
@@ -103,7 +103,7 @@ public class TypedIdDatabaseIntegrationTests
         }
     }
 
-    private record Entity
+    private sealed record Entity
     {
         public IntId A { get; set; }
         public LongId B { get; set; }
