@@ -6,7 +6,7 @@ using LeanCode.Contracts.Validation;
 
 namespace LeanCode.CQRS.Validation.Fluent;
 
-internal class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+internal sealed class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
     where TAppContext : notnull
     where TCommand : ICommand
 {
