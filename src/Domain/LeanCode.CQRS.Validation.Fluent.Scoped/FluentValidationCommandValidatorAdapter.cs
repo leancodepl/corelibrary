@@ -14,12 +14,10 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
     where TAppContext : notnull
 {
     private readonly IValidator fluentValidator;
-    private readonly IComponentContext componentContext;
 
-    public FluentValidationCommandValidatorAdapter(IValidator fluentValidator, IComponentContext componentContext)
+    public FluentValidationCommandValidatorAdapter(IValidator fluentValidator)
     {
         this.fluentValidator = fluentValidator;
-        this.componentContext = componentContext;
     }
 
     public async Task<Contracts.Validation.ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
@@ -40,16 +38,13 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
         return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0);
     }
 
-    private ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
+    private static ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
     {
         var ctx = new ValidationContext<TCommand>(
             command,
             new PropertyChain(),
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
         );
-
-        ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;
-        ctx.RootContextData[ValidationContextExtensions.ComponentContextKey] = componentContext;
 
         return ctx;
     }
