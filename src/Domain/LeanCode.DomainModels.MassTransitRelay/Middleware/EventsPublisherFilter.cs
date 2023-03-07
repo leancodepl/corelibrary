@@ -34,7 +34,7 @@ public static class EventsPublisherFilterExtensions
         configurator.UseTypedConsumeFilter<Observer>(provider);
     }
 
-    private class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
+    private sealed class Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
         public override void ConsumerMessageConfigured<TConsumer, TMessage>(
             IConsumerMessageConfigurator<TConsumer, TMessage> configurator

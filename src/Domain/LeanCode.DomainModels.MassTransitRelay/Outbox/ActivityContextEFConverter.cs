@@ -56,7 +56,7 @@ public class ActivityContextEFConverter : ValueConverter<ActivityContext, string
     // OpenTelemetry implementation for .NET does not have separate ActivityContext serializer.
     // Instead serialization is very tightly coupled with the process of enriching other payloads with 'traceparent' and 'tracestate' headers,
     // so conversion is done in such clumsy way
-    private class Carrier
+    private sealed class Carrier
     {
         public string Value { get; set; } = null!;
     }
