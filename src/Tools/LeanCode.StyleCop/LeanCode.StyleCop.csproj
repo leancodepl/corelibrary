@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None" />
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="None"  Version="1.1.118"/>
   </ItemGroup>
 
   <ItemGroup>
