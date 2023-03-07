@@ -130,7 +130,7 @@ public class ContextualPropertyRuleTests
         Assert.Equal(1, calledCount);
     }
 
-    private class TestValidator : ContextualValidator<SampleData>
+    private sealed class TestValidator : ContextualValidator<SampleData>
     {
         public TestValidator(Func<IValidationContext, string, object> accessor, Func<object, bool> must = null)
         {
@@ -138,7 +138,7 @@ public class ContextualPropertyRuleTests
         }
     }
 
-    private class MultiValidator : ContextualValidator<SampleData>
+    private sealed class MultiValidator : ContextualValidator<SampleData>
     {
         public MultiValidator(Func<IValidationContext, string, object> accessor)
         {
@@ -146,7 +146,7 @@ public class ContextualPropertyRuleTests
         }
     }
 
-    private class SampleData
+    private sealed class SampleData
     {
         public string Test { get; set; }
     }

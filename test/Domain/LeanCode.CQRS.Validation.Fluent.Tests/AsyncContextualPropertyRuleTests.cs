@@ -79,7 +79,7 @@ public class AsyncContextualPropertyRuleTests
         Assert.Throws<NotSupportedException>(() => validator.Validate(new SampleData()));
     }
 
-    private class TestValidator : ContextualValidator<SampleData>
+    private sealed class TestValidator : ContextualValidator<SampleData>
     {
         public TestValidator(Func<IValidationContext, string, Task<object>> accessor, Func<object, bool> must = null)
         {
@@ -87,7 +87,7 @@ public class AsyncContextualPropertyRuleTests
         }
     }
 
-    private class MultiValidator : ContextualValidator<SampleData>
+    private sealed class MultiValidator : ContextualValidator<SampleData>
     {
         public MultiValidator(Func<IValidationContext, string, Task<object>> accessor)
         {
@@ -95,7 +95,7 @@ public class AsyncContextualPropertyRuleTests
         }
     }
 
-    private class SampleData
+    private sealed class SampleData
     {
         public string Test { get; set; }
     }

@@ -47,7 +47,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
         Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
     }
 
-    private class Validator : ContextualValidator<Command>
+    private sealed class Validator : ContextualValidator<Command>
     {
         public const int MinValue = 5;
         public const int ErrorCode = 1;
@@ -62,14 +62,14 @@ public class AdapterWithAsyncValidatorIntegrationTests
         }
     }
 
-    private class Context { }
+    private sealed class Context { }
 
-    private class Command : ICommand
+    private sealed class Command : ICommand
     {
         public int Data { get; set; }
     }
 
-    private class ComponentContext : IComponentContext
+    private sealed class ComponentContext : IComponentContext
     {
         public IComponentRegistry ComponentRegistry => null;
 
