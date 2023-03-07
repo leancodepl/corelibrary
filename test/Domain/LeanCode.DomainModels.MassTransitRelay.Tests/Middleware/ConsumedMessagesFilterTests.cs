@@ -170,9 +170,9 @@ public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
         container.Dispose();
     }
 
-    private class TestMsg { }
+    private sealed class TestMsg { }
 
-    private class FirstConsumer : IConsumer<TestMsg>
+    private sealed class FirstConsumer : IConsumer<TestMsg>
     {
         public Task Consume(ConsumeContext<TestMsg> context)
         {
@@ -180,7 +180,7 @@ public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
         }
     }
 
-    private class SecondConsumer : IConsumer<TestMsg>
+    private sealed class SecondConsumer : IConsumer<TestMsg>
     {
         public Task Consume(ConsumeContext<TestMsg> context)
         {
@@ -188,7 +188,7 @@ public sealed class ConsumedMessagesFilterTests : IAsyncLifetime, IDisposable
         }
     }
 
-    private class ReportingConsumer : IConsumer<TestMsg>
+    private sealed class ReportingConsumer : IConsumer<TestMsg>
     {
         public bool Consumed { get; private set; }
 

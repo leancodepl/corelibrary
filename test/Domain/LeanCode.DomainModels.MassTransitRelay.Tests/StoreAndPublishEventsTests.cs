@@ -127,19 +127,19 @@ public sealed class StoreAndPublishEventsTests : IDisposable
         Assert.Equal(traceId, evt.Metadata.ActivityContext?.TraceId);
     }
 
-    private class Event1 : IDomainEvent
+    private sealed class Event1 : IDomainEvent
     {
         public Guid Id { get; set; }
         public DateTime DateOccurred { get; set; }
     }
 
-    private class Event2 : IDomainEvent
+    private sealed class Event2 : IDomainEvent
     {
         public Guid Id { get; set; }
         public DateTime DateOccurred { get; set; }
     }
 
-    private class MockSerializer : IRaisedEventsSerializer
+    private sealed class MockSerializer : IRaisedEventsSerializer
     {
         public object ExtractEvent(RaisedEvent evt) => throw new NotImplementedException();
 
