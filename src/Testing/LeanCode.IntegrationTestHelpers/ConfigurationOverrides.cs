@@ -81,7 +81,7 @@ public class ConfigurationOverrides : IConfigurationSource
             var rest = Environment.GetEnvironmentVariable(connectionStringBase);
             var dbConnStr = $"Database={dbName};" + rest;
 
-            Data = new Dictionary<string, string>
+            Data = new Dictionary<string, string?>
             {
                 [connectionStringKey] = dbConnStr,
                 [internalBaseKey] = "http://localhost",
