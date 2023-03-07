@@ -20,8 +20,8 @@ public class IntegrationTestsConfigurationTests
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
 
-        Assert.NotEmpty(config.GetValue<string>(customConnectionStringKey));
-        Assert.NotEmpty(config.GetValue<string>(customInternalBaseKey));
-        Assert.NotEmpty(config.GetValue<string>(customPublicBaseKey));
+        Assert.NotEmpty(config.GetValue<string>(customConnectionStringKey) ?? string.Empty);
+        Assert.NotEmpty(config.GetValue<string>(customInternalBaseKey) ?? string.Empty);
+        Assert.NotEmpty(config.GetValue<string>(customPublicBaseKey) ?? string.Empty);
     }
 }
