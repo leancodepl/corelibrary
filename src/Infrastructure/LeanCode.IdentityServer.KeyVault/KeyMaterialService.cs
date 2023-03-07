@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LeanCode.IdentityServer.KeyVault;
 
-internal class KeyMaterialService : IKeyMaterialService
+internal sealed class KeyMaterialService : IKeyMaterialService
 {
     private readonly SigningService signing;
 
