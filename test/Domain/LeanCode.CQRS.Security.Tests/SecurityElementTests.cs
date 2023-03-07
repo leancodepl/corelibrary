@@ -175,17 +175,17 @@ public class DefaultAuthorizerTests
         await Authorize(obj);
     }
 
-    private class NoAuthorizers { }
+    private sealed class NoAuthorizers { }
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
-    private class SingleAuthorizer { }
+    private sealed class SingleAuthorizer { }
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
     [AuthorizeWhenCustom(typeof(ISecondAuthorizer))]
-    private class MultipleAuthorizers { }
+    private sealed class MultipleAuthorizers { }
 
     [DerivedAuthorizeWhen(DerivedAttributeParam)]
-    private class DerivedAuthorizer { }
+    private sealed class DerivedAuthorizer { }
 
     internal sealed class DerivedAuthorizeWhenAttribute : AuthorizeWhenAttribute
     {
