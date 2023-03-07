@@ -6,16 +6,16 @@ namespace LeanCode.DomainModels.Tests.Model;
 
 public class TypedIdSerializationTests
 {
-    private record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+    private sealed record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
 
-    private record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+    private sealed record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
 
-    private record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+    private sealed record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
 
-    private record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
+    private sealed record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
 
     [IdSlug("custom")]
-    private class StringOverriddenEntity : IIdentifiable<SId<StringOverriddenEntity>>
+    private sealed class StringOverriddenEntity : IIdentifiable<SId<StringOverriddenEntity>>
     {
         public SId<StringOverriddenEntity> Id { get; set; }
     }
