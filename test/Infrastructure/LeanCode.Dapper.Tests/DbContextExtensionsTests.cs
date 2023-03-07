@@ -48,7 +48,7 @@ public class DbContextExtensionsTests
         Assert.Equal(@"""EntityId""", columnName);
     }
 
-    private class Entity
+    private sealed class Entity
     {
         public int Id { get; set; }
     }
@@ -63,7 +63,7 @@ public class DbContextExtensionsTests
         }
     }
 
-    private class DefaultSchema : BaseContext
+    private sealed class DefaultSchema : BaseContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,7 +72,7 @@ public class DbContextExtensionsTests
         }
     }
 
-    private class ExplicitSchema : BaseContext
+    private sealed class ExplicitSchema : BaseContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -85,7 +85,7 @@ public class DbContextExtensionsTests
         }
     }
 
-    private class NoSchema : BaseContext
+    private sealed class NoSchema : BaseContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -93,7 +93,7 @@ public class DbContextExtensionsTests
         }
     }
 
-    private class ExplicitNoSchema : BaseContext
+    private sealed class ExplicitNoSchema : BaseContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -105,7 +105,7 @@ public class DbContextExtensionsTests
         }
     }
 
-    private class ExplicitColumnName : BaseContext
+    private sealed class ExplicitColumnName : BaseContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
