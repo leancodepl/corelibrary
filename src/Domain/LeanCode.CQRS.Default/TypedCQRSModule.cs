@@ -8,7 +8,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default;
 
-internal class TypedCQRSModule<TAppContext> : Module
+internal sealed class TypedCQRSModule<TAppContext> : Module
     where TAppContext : IPipelineContext
 {
     private readonly TypesCatalog catalog;

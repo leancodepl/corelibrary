@@ -5,7 +5,7 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Wrappers;
 
-internal class CommandValidatorWrapper<TAppContext, TCommand> : ICommandValidatorWrapper
+internal sealed class CommandValidatorWrapper<TAppContext, TCommand> : ICommandValidatorWrapper
     where TAppContext : notnull
     where TCommand : ICommand
 {

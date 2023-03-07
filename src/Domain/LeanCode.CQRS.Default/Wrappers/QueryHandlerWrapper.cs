@@ -4,7 +4,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Wrappers;
 
-internal class QueryHandlerWrapper<TAppContext, TQuery, TResult> : IQueryHandlerWrapper
+internal sealed class QueryHandlerWrapper<TAppContext, TQuery, TResult> : IQueryHandlerWrapper
     where TQuery : IQuery<TResult>
 {
     private readonly IQueryHandler<TAppContext, TQuery, TResult> handler;

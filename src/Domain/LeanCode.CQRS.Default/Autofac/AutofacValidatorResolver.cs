@@ -5,7 +5,7 @@ using LeanCode.CQRS.Validation;
 
 namespace LeanCode.CQRS.Default.Autofac;
 
-internal class AutofacValidatorResolver<TAppContext> : ICommandValidatorResolver<TAppContext>
+internal sealed class AutofacValidatorResolver<TAppContext> : ICommandValidatorResolver<TAppContext>
     where TAppContext : notnull
 {
     private static readonly Type AppContextType = typeof(TAppContext);

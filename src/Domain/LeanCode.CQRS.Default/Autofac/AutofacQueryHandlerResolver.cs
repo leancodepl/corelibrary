@@ -7,7 +7,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Autofac;
 
-internal class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
+internal sealed class AutofacQueryHandlerResolver<TAppContext> : IQueryHandlerResolver<TAppContext>
 {
     private static readonly Type AppContextType = typeof(TAppContext);
 

@@ -8,7 +8,7 @@ using LeanCode.Pipelines.Autofac;
 
 namespace LeanCode.CQRS.Default;
 
-internal class SharedCQRSModule : Module
+internal sealed class SharedCQRSModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
