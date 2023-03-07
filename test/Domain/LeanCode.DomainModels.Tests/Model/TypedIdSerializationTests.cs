@@ -60,6 +60,22 @@ public class TypedIdSerializationTests
     }
 
     [Fact]
+    public void Serializes_and_deserializes_id_as_dictionary_keys()
+    {
+        var idString = "00000000-0000-0000-0000-000000000001";
+        var id = Id<Entity>.From(Guid.Parse(idString));
+
+        var dict = new Dictionary<Id<Entity>, int> { [id] = 1 };
+        var expectedJson = "{\"00000000-0000-0000-0000-000000000001\":1}";
+
+        var json = JsonSerializer.Serialize(dict);
+        var deserialized = JsonSerializer.Deserialize<Dictionary<Id<Entity>, int>>(json);
+
+        Assert.Equal(expectedJson, json);
+        Assert.Equal(dict, deserialized);
+    }
+
+    [Fact]
     public void Throws_when_id_is_not_a_valid_guid()
     {
         Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<Id<Entity>?>("notaguid"));
@@ -75,6 +91,21 @@ public class TypedIdSerializationTests
 
         Assert.Equal("7", json);
         Assert.Equal(id, deserialized);
+    }
+
+    [Fact]
+    public void Serializes_and_deserializes_int_id_as_dictionary_keys()
+    {
+        var id = IId<IntEntity>.From(7);
+
+        var dict = new Dictionary<IId<IntEntity>, int> { [id] = 1 };
+        var expectedJson = "{\"7\":1}";
+
+        var json = JsonSerializer.Serialize(dict);
+        var deserialized = JsonSerializer.Deserialize<Dictionary<IId<IntEntity>, int>>(json);
+
+        Assert.Equal(expectedJson, json);
+        Assert.Equal(dict, deserialized);
     }
 
     [Fact]
@@ -96,6 +127,21 @@ public class TypedIdSerializationTests
     }
 
     [Fact]
+    public void Serializes_and_deserializes_long_id_as_dictionary_keys()
+    {
+        var id = LId<LongEntity>.From(922337203685477580);
+
+        var dict = new Dictionary<LId<LongEntity>, int> { [id] = 1 };
+        var expectedJson = "{\"922337203685477580\":1}";
+
+        var json = JsonSerializer.Serialize(dict);
+        var deserialized = JsonSerializer.Deserialize<Dictionary<LId<LongEntity>, int>>(json);
+
+        Assert.Equal(expectedJson, json);
+        Assert.Equal(dict, deserialized);
+    }
+
+    [Fact]
     public void Throws_when_id_is_not_a_valid_long()
     {
         Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<LId<LongEntity>?>("21345.3452"));
@@ -114,6 +160,22 @@ public class TypedIdSerializationTests
 
         Assert.Equal(expectedJson, json);
         Assert.Equal(id, deserialized);
+    }
+
+    [Fact]
+    public void Serializes_and_deserializes_sid_as_dictionary_keys()
+    {
+        var guid = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        var id = new SId<StrEntity>(guid);
+
+        var dict = new Dictionary<SId<StrEntity>, int> { [id] = 1 };
+        var expectedJson = "{\"strentity_00000000000000000000000000000001\":1}";
+
+        var json = JsonSerializer.Serialize(dict);
+        var deserialized = JsonSerializer.Deserialize<Dictionary<SId<StrEntity>, int>>(json);
+
+        Assert.Equal(expectedJson, json);
+        Assert.Equal(dict, deserialized);
     }
 
     [Fact]
