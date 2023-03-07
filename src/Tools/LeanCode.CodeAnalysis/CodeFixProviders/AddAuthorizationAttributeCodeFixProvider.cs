@@ -49,6 +49,10 @@ public class AddAuthorizationAttributeCodeFixProvider : CodeFixProvider
     )
     {
         var baseAttribute = compilation.GetTypeByMetadataName(AuthorizeWhenAttribute);
+
+        if (baseAttribute is null)
+            return Enumerable.Empty<(string Type, string Namespace)>();
+
         var availableAttributes = await SymbolFinder.FindDerivedClassesAsync(baseAttribute, solution);
         return availableAttributes
             .Where(attr => !attr.IsAbstract)
