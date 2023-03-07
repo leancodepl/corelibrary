@@ -57,7 +57,7 @@ public static class Helpers
         "CA1309",
         Justification = "Ordinal comparison would be incorrect here."
     )]
-    private class NamespaceNameComparer : IComparer<string>
+    private sealed class NamespaceNameComparer : IComparer<string>
     {
         public int Compare(string x, string y)
         {
