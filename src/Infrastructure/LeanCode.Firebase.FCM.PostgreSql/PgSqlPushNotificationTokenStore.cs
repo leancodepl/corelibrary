@@ -154,7 +154,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
                 new { tokensList },
                 cancellationToken: cancellationToken
             );
-            logger.Information("Removed {Count} push notification tokens from the store", tokens.Count());
+            logger.Information("Removed {Count} push notification tokens from the store", tokensList.Count);
         }
         catch (Exception ex)
         {
