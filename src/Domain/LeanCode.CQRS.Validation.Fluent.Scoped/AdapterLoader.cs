@@ -21,13 +21,9 @@ internal sealed class AdapterLoader<TAppContext, TCommand> : ICommandValidator<T
 
     public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
     {
-        IValidator<TCommand> val;
+        var val = ctx.ResolveOptional<IValidator<TCommand>>(new TypedParameter(typeof(TAppContext), appContext));
 
-        try
-        {
-            val = ctx.Resolve<IValidator<TCommand>>(new TypedParameter(typeof(TAppContext), appContext));
-        }
-        catch (ComponentNotRegisteredException)
+        if (val is null)
         {
             return NoError;
         }
