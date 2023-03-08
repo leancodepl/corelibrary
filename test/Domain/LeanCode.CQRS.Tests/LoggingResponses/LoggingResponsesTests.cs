@@ -60,7 +60,7 @@ public class LoggingResponsesTests
         var result = await element.ExecuteAsync(appCtx, Response, (ctx, obj) => Task.FromResult<object>(obj));
 
         Assert.Single(fakeSink.Messages);
-        Assert.Contains(result.ToString(), fakeSink.Messages[0]);
+        Assert.Contains(result.ToString(), fakeSink.Messages[0], StringComparison.Ordinal);
     }
 
     [Fact]
