@@ -1,6 +1,6 @@
 namespace LeanCode.ExternalIdentityProviders.Tests;
 
-internal class ExternalLoginGrantValidatorStub : ExternalLoginGrantValidatorBase<User, ExternalLoginStub>
+internal sealed class ExternalLoginGrantValidatorStub : ExternalLoginGrantValidatorBase<User, ExternalLoginStub>
 {
     public override string GrantType => "stub";
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LeanCode.ExternalIdentityProviders.Tests;
 
-internal class ExternalLoginStub : ExternalLoginBase<User>
+internal sealed class ExternalLoginStub : ExternalLoginBase<User>
 {
     public HashSet<string> KnownTokens { get; } = new();
     public override string GrantType => "test";
