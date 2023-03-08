@@ -32,7 +32,7 @@ public class RemoteCQRSMiddlewareSerializationTests : BaseMiddlewareTests
     }
 }
 
-internal class AlwaysUpperPolicy : JsonNamingPolicy
+internal sealed class AlwaysUpperPolicy : JsonNamingPolicy
 {
     public override string ConvertName(string name) => name.ToUpperInvariant();
 }
