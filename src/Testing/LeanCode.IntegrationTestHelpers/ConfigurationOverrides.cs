@@ -49,7 +49,7 @@ public class ConfigurationOverrides : IConfigurationSource
         );
     }
 
-    private class Provider : ConfigurationProvider
+    private sealed class Provider : ConfigurationProvider
     {
         private readonly LogEventLevel minimumLevel;
         private readonly bool enableInternalLogs;
