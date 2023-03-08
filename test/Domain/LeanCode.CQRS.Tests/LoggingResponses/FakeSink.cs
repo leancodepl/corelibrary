@@ -1,3 +1,4 @@
+using System.Globalization;
 using Serilog.Core;
 using Serilog.Events;
 
@@ -22,7 +23,7 @@ public class FakeSink : ILogEventSink
     {
         lock (messages)
         {
-            messages.Add(logEvent.RenderMessage());
+            messages.Add(logEvent.RenderMessage(CultureInfo.InvariantCulture));
         }
     }
 }
