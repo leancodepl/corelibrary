@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.Firebase.FCM.Tests;
 
-internal class StubStore : IPushNotificationTokenStore
+internal sealed class StubStore : IPushNotificationTokenStore
 {
     private readonly Guid userId;
     private readonly string token;
