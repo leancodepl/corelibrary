@@ -2,7 +2,7 @@ using BenchmarkDotNet.Running;
 
 namespace LeanCode.Benchmarks;
 
-internal class Program
+internal sealed class Program
 {
     private static void Main(string[] args)
     {
