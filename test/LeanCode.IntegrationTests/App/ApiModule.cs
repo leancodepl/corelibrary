@@ -48,7 +48,7 @@ public class ApiModule : AppModule
             })
             .AddJwtBearer(cfg =>
             {
-                cfg.Authority = UrlHelper.Concat(config.GetValue<string>("InternalBase"), "auth");
+                cfg.Authority = UrlHelper.Concat(config.GetValue<string>("InternalBase") ?? "", "auth");
                 cfg.TokenValidationParameters.ValidateAudience = false;
                 cfg.TokenValidationParameters.ValidateIssuer = false;
                 cfg.RequireHttpsMetadata = false;
