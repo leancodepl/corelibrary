@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -119,7 +120,9 @@ internal class ViewCompiler
 
             if (!compilationResult.Success)
             {
-                var errors = compilationResult.Diagnostics.Select(d => d.GetMessage()).ToList();
+                var errors = compilationResult.Diagnostics
+                    .Select(d => d.GetMessage(CultureInfo.InvariantCulture))
+                    .ToList();
 
                 logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
 

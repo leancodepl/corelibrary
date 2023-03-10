@@ -8,7 +8,7 @@ using LeanCode.Pipelines;
 
 namespace LeanCode.CQRS.Default.Autofac;
 
-internal class AutofacOperationHandlerResolver<TAppContext> : IOperationHandlerResolver<TAppContext>
+internal sealed class AutofacOperationHandlerResolver<TAppContext> : IOperationHandlerResolver<TAppContext>
     where TAppContext : notnull, IPipelineContext
 {
     private static readonly Type AppContextType = typeof(TAppContext);

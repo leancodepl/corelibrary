@@ -67,16 +67,16 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
         container.Dispose();
     }
 
-    private class TestMsg { }
+    private sealed class TestMsg { }
 
-    private class TestEvent : IDomainEvent
+    private sealed class TestEvent : IDomainEvent
     {
         public Guid Id { get; set; }
 
         public DateTime DateOccurred { get; set; }
     }
 
-    private class Consumer : IConsumer<TestMsg>
+    private sealed class Consumer : IConsumer<TestMsg>
     {
         public static readonly TestEvent Event = new() { Id = Guid.NewGuid() };
 

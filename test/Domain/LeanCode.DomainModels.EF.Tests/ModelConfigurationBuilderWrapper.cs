@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LeanCode.DomainModels.EF.Tests;
 
 [SuppressMessage("?", "EF1001", Justification = "Tests.")]
-internal class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
+internal sealed class ModelConfigurationBuilderWrapper : ModelConfigurationBuilder
 {
     public ModelConfigurationBuilderWrapper()
         : base(new(), new ServiceCollection().BuildServiceProvider()) { }

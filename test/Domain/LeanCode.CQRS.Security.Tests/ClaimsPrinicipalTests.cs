@@ -117,7 +117,7 @@ public class ClaimsPrincipalTests
         return new ClaimsPrincipal(new ClaimsIdentity(claims));
     }
 
-    private class RoleRegistration : IRoleRegistration
+    private sealed class RoleRegistration : IRoleRegistration
     {
         public IEnumerable<Role> Roles { get; } =
             new Role[]

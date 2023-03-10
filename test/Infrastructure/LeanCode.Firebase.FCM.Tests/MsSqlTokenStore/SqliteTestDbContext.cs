@@ -42,7 +42,7 @@ public class SqliteTestDbContext : DbContext
     }
 
     // Required to make tests work in SQLite that assumes `Guid == string`
-    private class GuidTypeHandler : SqlMapper.TypeHandler<Guid>
+    private sealed class GuidTypeHandler : SqlMapper.TypeHandler<Guid>
     {
         public override void SetValue(IDbDataParameter parameter, Guid guid) => parameter.Value = guid.ToString();
 

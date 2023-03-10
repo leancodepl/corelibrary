@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LeanCode.IdentityServer.KeyVault;
 
-internal class KeyMaterialService : IKeyMaterialService
+internal sealed class KeyMaterialService : IKeyMaterialService
 {
     private readonly SigningService signing;
 
@@ -23,11 +23,9 @@ internal class KeyMaterialService : IKeyMaterialService
 
     public Task<SigningCredentials?> GetSigningCredentialsAsync(IEnumerable<string>? allowedAlgorithms = null)
     {
-        if (
-            allowedAlgorithms == null
-            || !allowedAlgorithms.Any()
-            || allowedAlgorithms.Contains(SecurityAlgorithms.RsaSha256)
-        )
+        var isAllowed = allowedAlgorithms?.Any() ?? false;
+
+        if (!isAllowed || allowedAlgorithms!.Contains(SecurityAlgorithms.RsaSha256))
         {
             return signing.GetSigningCredentialsAsync()!;
         }

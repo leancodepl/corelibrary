@@ -79,7 +79,7 @@ public class JsonContentTests
         return @$"{{""{fieldName}"":""{payload.Data}""}}";
     }
 
-    internal class Payload
+    internal sealed class Payload
     {
         public string Data { get; set; }
     }

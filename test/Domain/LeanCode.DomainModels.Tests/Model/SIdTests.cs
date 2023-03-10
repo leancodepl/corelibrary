@@ -5,12 +5,12 @@ namespace LeanCode.DomainModels.Tests.Model;
 
 public class SIdTests
 {
-    internal record Entity(SId<Entity> Id) : IIdentifiable<SId<Entity>>;
+    internal sealed record Entity(SId<Entity> Id) : IIdentifiable<SId<Entity>>;
 
-    internal record VeryLongEntity(SId<VeryLongEntity> Id) : IIdentifiable<SId<VeryLongEntity>>;
+    internal sealed record VeryLongEntity(SId<VeryLongEntity> Id) : IIdentifiable<SId<VeryLongEntity>>;
 
     [IdSlug("cus")]
-    internal record CustomEntity(SId<CustomEntity> Id) : IIdentifiable<SId<CustomEntity>>;
+    internal sealed record CustomEntity(SId<CustomEntity> Id) : IIdentifiable<SId<CustomEntity>>;
 
     [Fact]
     public void Parses_and_stringifies_correctly()

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LeanCode.IdentityServer.KeyVault;
 
-internal class TokenCreationService : DefaultTokenCreationService
+internal sealed class TokenCreationService : DefaultTokenCreationService
 {
     private readonly SigningService signing;
 

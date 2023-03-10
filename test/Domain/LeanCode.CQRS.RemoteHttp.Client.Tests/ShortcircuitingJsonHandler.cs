@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.RemoteHttp.Client.Tests;
 
-internal class ShortcircuitingJsonHandler : HttpMessageHandler
+internal sealed class ShortcircuitingJsonHandler : HttpMessageHandler
 {
     private readonly HttpStatusCode statusCode = HttpStatusCode.OK;
     private readonly string response = "";

@@ -25,7 +25,7 @@ public class Tests : IAsyncLifetime
     [Fact]
     public void Test_services_order_is_correct()
     {
-        var hostedServices = app.Services.GetRequiredService<IEnumerable<IHostedService>>();
+        var hostedServices = app.Services.GetRequiredService<IEnumerable<IHostedService>>().ToList();
         Assert.IsType<ConnectionKeeper>(hostedServices.FirstOrDefault());
         Assert.IsType<DbContextInitializer<TestDbContext>>(hostedServices.Skip(1).FirstOrDefault());
     }

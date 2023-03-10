@@ -1,11 +1,11 @@
 namespace LeanCode.SendGrid;
 
-internal class SendGridResponse
+internal sealed class SendGridResponse
 {
     public SendGridError[]? Errors { get; set; }
 }
 
-internal class SendGridError
+internal sealed class SendGridError
 {
     public string? Message { get; set; }
 }

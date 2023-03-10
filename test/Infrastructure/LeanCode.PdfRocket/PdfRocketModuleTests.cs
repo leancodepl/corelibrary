@@ -33,7 +33,7 @@ public class PdfRocketModuleTests
         Assert.True(succ);
     }
 
-    private class MockRenderer : IViewRenderer
+    private sealed class MockRenderer : IViewRenderer
     {
         public Task RenderToStreamAsync(
             string viewName,

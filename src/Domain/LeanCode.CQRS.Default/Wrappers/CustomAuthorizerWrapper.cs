@@ -4,7 +4,7 @@ using LeanCode.CQRS.Security;
 
 namespace LeanCode.CQRS.Default.Wrappers;
 
-internal class CustomAuthorizerWrapper<TAppContext> : ICustomAuthorizerWrapper
+internal sealed class CustomAuthorizerWrapper<TAppContext> : ICustomAuthorizerWrapper
     where TAppContext : notnull
 {
     private readonly ICustomAuthorizer<TAppContext> authorizer;

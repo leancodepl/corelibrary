@@ -5,7 +5,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.Default.Autofac;
 
-internal class AutofacCommandHandlerResolver<TAppContext> : ICommandHandlerResolver<TAppContext>
+internal sealed class AutofacCommandHandlerResolver<TAppContext> : ICommandHandlerResolver<TAppContext>
 {
     private static readonly Type AppContextType = typeof(TAppContext);
 

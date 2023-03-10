@@ -69,7 +69,7 @@ public class ValueObjectTests
 
     private static Money? MaybeTenUSD(bool @null) => @null ? null : new Money(10, "USD");
 
-    private record Money : ValueObject
+    private sealed record Money : ValueObject
     {
         public decimal Amount { get; private init; }
         public string Currency { get; private init; } = "";

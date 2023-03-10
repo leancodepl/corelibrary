@@ -74,7 +74,7 @@ public class ScopedFiltersTests : IAsyncLifetime
 
     public Task DisposeAsync() => bus.StopAsync();
 
-    private class MassTransitModule : MassTransitRelayModule
+    private sealed class MassTransitModule : MassTransitRelayModule
     {
         public MassTransitModule()
             : base(TypesCatalog.Of<MassTransitModule>(), false, false) { }
@@ -104,7 +104,7 @@ public class ScopedFiltersTests : IAsyncLifetime
         }
     }
 
-    private class TestService
+    private sealed class TestService
     {
         public Guid InstanceId { get; }
 
@@ -114,9 +114,9 @@ public class ScopedFiltersTests : IAsyncLifetime
         }
     }
 
-    private record Message;
+    private sealed record Message;
 
-    private class Filter1<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
+    private sealed class Filter1<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
         where TConsumer : class
         where TMessage : class
     {
@@ -141,7 +141,7 @@ public class ScopedFiltersTests : IAsyncLifetime
         }
     }
 
-    private class Filter1Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
+    private sealed class Filter1Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
         public static void UseFilter1(IConsumePipeConfigurator configurator, IServiceProvider provider)
         {
@@ -158,7 +158,7 @@ public class ScopedFiltersTests : IAsyncLifetime
             >(Provider);
     }
 
-    private class Filter2<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
+    private sealed class Filter2<TConsumer, TMessage> : IFilter<ConsumerConsumeContext<TConsumer, TMessage>>
         where TConsumer : class
         where TMessage : class
     {
@@ -183,7 +183,7 @@ public class ScopedFiltersTests : IAsyncLifetime
         }
     }
 
-    private class Filter2Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
+    private sealed class Filter2Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
         public static void UseFilter2(IConsumePipeConfigurator configurator, IServiceProvider provider)
         {
@@ -200,7 +200,7 @@ public class ScopedFiltersTests : IAsyncLifetime
             >(Provider);
     }
 
-    private class Consumer : IConsumer<Message>
+    private sealed class Consumer : IConsumer<Message>
     {
         private readonly TestService service;
         private readonly Interceptor interceptor;
@@ -218,7 +218,7 @@ public class ScopedFiltersTests : IAsyncLifetime
         }
     }
 
-    private class Interceptor
+    private sealed class Interceptor
     {
         public ConcurrentDictionary<string, Guid> Data { get; } = new();
 

@@ -209,7 +209,7 @@ public class SingleInstanceOperationHandler : IOperationHandler<AppContext, Sing
     }
 }
 
-internal class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
+internal sealed class SamplePipelineElement<TObj, TRes> : IPipelineElement<AppContext, TObj, TRes>
 {
     public AppContext AppContext { get; set; }
     public TObj Data { get; set; }

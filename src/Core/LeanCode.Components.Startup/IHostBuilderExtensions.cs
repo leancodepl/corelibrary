@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using Azure.Core;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
@@ -110,7 +111,7 @@ public static class IHostBuilderExtensions
 
                 if (context.HostingEnvironment.IsDevelopment())
                 {
-                    loggerConfiguration.WriteTo.Console();
+                    loggerConfiguration.WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
                 }
                 else
                 {

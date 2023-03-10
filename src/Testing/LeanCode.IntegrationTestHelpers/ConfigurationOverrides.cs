@@ -49,7 +49,7 @@ public class ConfigurationOverrides : IConfigurationSource
         );
     }
 
-    private class Provider : ConfigurationProvider
+    private sealed class Provider : ConfigurationProvider
     {
         private readonly LogEventLevel minimumLevel;
         private readonly bool enableInternalLogs;
@@ -81,7 +81,7 @@ public class ConfigurationOverrides : IConfigurationSource
             var rest = Environment.GetEnvironmentVariable(connectionStringBase);
             var dbConnStr = $"Database={dbName};" + rest;
 
-            Data = new Dictionary<string, string>
+            Data = new Dictionary<string, string?>
             {
                 [connectionStringKey] = dbConnStr,
                 [internalBaseKey] = "http://localhost",

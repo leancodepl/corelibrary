@@ -118,12 +118,12 @@ public class SendGridRazorClientTests
         );
     }
 
-    private class EmailTextVM
+    private sealed class EmailTextVM
     {
         public string Value { get; set; } = "Text";
     }
 
-    private class EmailHtmlVM
+    private sealed class EmailHtmlVM
     {
         public string Value { get; set; } = "Html";
     }

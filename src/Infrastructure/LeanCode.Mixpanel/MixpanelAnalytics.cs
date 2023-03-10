@@ -220,7 +220,7 @@ public class MixpanelAnalytics
     }
 }
 
-internal class MixpanelResponse
+internal sealed class MixpanelResponse
 {
     public const int Success = 1;
     public const int Failure = 0;

@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LeanCode.IdentityServer.KeyVault;
 
-internal class SigningService
+internal sealed class SigningService
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SigningService>();
 

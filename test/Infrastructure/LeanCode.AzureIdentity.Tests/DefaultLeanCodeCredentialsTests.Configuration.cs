@@ -11,7 +11,7 @@ public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     {
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(
-                new Dictionary<string, string>
+                new Dictionary<string, string?>
                 {
                     [AzureCredentialConfiguration.TenantIdKey] = Guid.NewGuid().ToString(),
                     [AzureCredentialConfiguration.ClientIdKey] = Guid.NewGuid().ToString(),
