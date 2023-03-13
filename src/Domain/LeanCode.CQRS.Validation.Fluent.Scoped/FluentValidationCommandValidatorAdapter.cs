@@ -22,7 +22,7 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
 
     public async Task<Contracts.Validation.ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
     {
-        var ctx = PrepareContext(appContext, command);
+        var ctx = PrepareContext(command);
 
         var fluentValidationResult = await fluentValidator.ValidateAsync(ctx);
 
@@ -38,14 +38,12 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
         return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0);
     }
 
-    private static ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
+    private static ValidationContext<TCommand> PrepareContext(TCommand command)
     {
-        var ctx = new ValidationContext<TCommand>(
+        return new ValidationContext<TCommand>(
             command,
             new PropertyChain(),
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
         );
-
-        return ctx;
     }
 }
