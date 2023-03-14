@@ -24,12 +24,15 @@ public class StoreAndPublishEventsFilter<TConsumer, TMessage> : IFilter<Consumer
     {
         var events = await interceptor.CaptureEventsOfAsync(() => next.Send(context));
 
-        await store.StoreAndPublishEventsAsync(
-            events,
-            context.ConversationId,
-            new EventPublisher(context),
-            context.CancellationToken
-        );
+        if (context.GetRedeliveryCount() == 0)
+        {
+            await store.StoreAndPublishEventsAsync(
+                events,
+                context.ConversationId,
+                new EventPublisher(context),
+                context.CancellationToken
+            );
+        }
     }
 }
 

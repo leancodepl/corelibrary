@@ -30,6 +30,7 @@ public class ConsumeMessageOnceFilter<TConsumer, TMessage> : IFilter<ConsumerCon
             await consumedMessages.ConsumedMessages
                 .Where(m => m.ConsumerType == msg.ConsumerType && m.MessageId == msg.MessageId)
                 .AnyAsync()
+            && context.GetRedeliveryCount() == 0
         )
         {
             logger.Information(
@@ -43,7 +44,10 @@ public class ConsumeMessageOnceFilter<TConsumer, TMessage> : IFilter<ConsumerCon
         {
             consumedMessages.ConsumedMessages.Add(msg);
             await next.Send(context);
-            await consumedMessages.SaveChangesAsync(context.CancellationToken);
+            if (context.GetRedeliveryCount() == 0)
+            {
+                await consumedMessages.SaveChangesAsync(context.CancellationToken);
+            }
         }
     }
 }
