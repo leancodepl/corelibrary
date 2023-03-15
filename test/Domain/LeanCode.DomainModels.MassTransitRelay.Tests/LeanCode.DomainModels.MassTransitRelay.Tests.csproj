@@ -8,6 +8,7 @@
     <ProjectReference Include="../../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
 
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
   </ItemGroup>
 
   <ItemGroup>
