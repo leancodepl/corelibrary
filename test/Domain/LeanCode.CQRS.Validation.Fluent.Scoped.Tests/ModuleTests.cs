@@ -107,7 +107,7 @@ public class CustomValidatorTakingExternalDependency : AbstractValidator<CustomC
 
 public class ExternalDependency
 {
-    public int Number = 13;
+    public int Number { get; set; } = 13;
 }
 
 public class CustomCommandWithFloat : ICommand
@@ -125,7 +125,7 @@ public class CustomValidatorTakingTAppContext : AbstractValidator<CustomCommandW
 
 public class AppCtx
 {
-    public string Message = "test";
+    public string Message { get; set; } = "test";
 }
 
 public class CustomCommandWithoutCustomValidator : ICommand
