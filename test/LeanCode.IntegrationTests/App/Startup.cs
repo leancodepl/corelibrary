@@ -30,6 +30,8 @@ public class Startup : LeanStartup
             new FluentValidationModule(CQRSTypes),
             new ApiModule(config),
         };
+
+        CloseAndFlushLogger = false;
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)

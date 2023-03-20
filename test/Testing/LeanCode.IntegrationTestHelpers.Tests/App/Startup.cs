@@ -21,6 +21,8 @@ public class Startup : LeanStartup
             new ApiModule(),
             new CQRSModule().WithCustomPipelines<Context>(CQRSTypes, c => c, q => q, o => o),
         };
+
+        CloseAndFlushLogger = false;
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)
