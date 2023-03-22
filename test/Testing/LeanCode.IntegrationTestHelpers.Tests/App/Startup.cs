@@ -14,15 +14,13 @@ public class Startup : LeanStartup
     protected override IAppModule[] Modules { get; }
 
     public Startup(IConfiguration config)
-        : base(config)
+        : base(config, false)
     {
         Modules = new IAppModule[]
         {
             new ApiModule(),
             new CQRSModule().WithCustomPipelines<Context>(CQRSTypes, c => c, q => q, o => o),
         };
-
-        CloseAndFlushLogger = false;
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)

@@ -17,7 +17,7 @@ public class Startup : LeanStartup
     protected override IAppModule[] Modules { get; }
 
     public Startup(IConfiguration config)
-        : base(config)
+        : base(config, false)
     {
         Modules = new IAppModule[]
         {
@@ -30,8 +30,6 @@ public class Startup : LeanStartup
             new FluentValidationModule(CQRSTypes),
             new ApiModule(config),
         };
-
-        CloseAndFlushLogger = false;
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)

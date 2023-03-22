@@ -23,6 +23,12 @@ public abstract class LeanStartup
         Logger.Information("Configuration loaded, starting app");
     }
 
+    protected LeanStartup(IConfiguration config, bool closeAndFlushLogger)
+        : this(config)
+    {
+        this.CloseAndFlushLogger = closeAndFlushLogger;
+    }
+
     public virtual void ConfigureServices(IServiceCollection services)
     {
         Logger.Debug("Loading common services");
