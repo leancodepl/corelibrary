@@ -13,8 +13,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } =
-        new ConfigurationOverrides(Serilog.Events.LogEventLevel.Error, false);
+    protected override ConfigurationOverrides Configuration { get; } = ConfigurationOverrides.CreateBuilder().Build();
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {

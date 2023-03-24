@@ -21,3 +21,4 @@ The CoreLib documentation is available here:
  3. [Benchmarks](./benchmarks/README.md).
  4. [Domain](./domain/README.md).
  5. [Architecture decision records](./adrs/README.md).
+ 6. [Integration tests](./integrationTests/README.md).
