@@ -44,10 +44,26 @@ public class ConfigurationOverridesTests
         Assert.NotNull(configuration["SqlServer:FirstConnectionString"]);
         Assert.NotNull(configuration["SqlServer:SecondConnectionString"]);
 
-        Assert.StartsWith(expectedFirstPartOfConnectionString1, configuration["SqlServer:FirstConnectionString"]);
-        Assert.StartsWith(expectedFirstPartOfConnectionString2, configuration["SqlServer:SecondConnectionString"]);
+        Assert.StartsWith(
+            expectedFirstPartOfConnectionString1,
+            configuration["SqlServer:FirstConnectionString"],
+            System.StringComparison.Ordinal
+        );
+        Assert.StartsWith(
+            expectedFirstPartOfConnectionString2,
+            configuration["SqlServer:SecondConnectionString"],
+            System.StringComparison.Ordinal
+        );
 
-        Assert.EndsWith(expectedSecondPartOfConnectionString1, configuration["SqlServer:FirstConnectionString"]);
-        Assert.EndsWith(expectedSecondPartOfConnectionString2, configuration["SqlServer:SecondConnectionString"]);
+        Assert.EndsWith(
+            expectedSecondPartOfConnectionString1,
+            configuration["SqlServer:FirstConnectionString"],
+            System.StringComparison.Ordinal
+        );
+        Assert.EndsWith(
+            expectedSecondPartOfConnectionString2,
+            configuration["SqlServer:SecondConnectionString"],
+            System.StringComparison.Ordinal
+        );
     }
 }
