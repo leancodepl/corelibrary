@@ -12,12 +12,10 @@ public class IntegrationTestsConfigurationTests
         var customInternalBaseKey = "CustomInternalBaseKey";
         var customPublicBaseKey = "CustomPublicBaseKey";
 
-        var configurationOverrides = ConfigurationOverrides
-            .CreateBuilder()
+        var configurationOverrides = new ConfigurationOverrides()
             .AddConnectionString(customConnectionStringKey, "CustomConnectionStringValue")
-            .AddValue(customInternalBaseKey, "CustomInternalBaseValue")
-            .AddValue(customPublicBaseKey, "CustomPublicBaseValue")
-            .Build();
+            .Add(customInternalBaseKey, "CustomInternalBaseValue")
+            .Add(customPublicBaseKey, "CustomPublicBaseValue");
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
 

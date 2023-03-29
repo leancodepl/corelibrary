@@ -13,7 +13,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } = ConfigurationOverrides.CreateBuilder().Build();
+    protected override ConfigurationOverrides Configuration { get; } = new();
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
