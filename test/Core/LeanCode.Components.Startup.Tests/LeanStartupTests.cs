@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Xunit;
 
 namespace LeanCode.Startup.Tests;
@@ -24,16 +24,7 @@ public class LeanStartupTests
 
         await host.WaitForShutdownAsync();
 
-        var logger = host.Services.GetService<ILogger<TestStartupWithTrueParameter>>();
-
-        var isSinkClosed =
-            !logger.IsEnabled(LogLevel.Debug)
-            && !logger.IsEnabled(LogLevel.Information)
-            && !logger.IsEnabled(LogLevel.Warning)
-            && !logger.IsEnabled(LogLevel.Error)
-            && !logger.IsEnabled(LogLevel.Critical);
-
-        Assert.True(isSinkClosed);
+        Assert.Same(Log.Logger, Serilog.Core.Logger.None);
     }
 
     [Fact]
@@ -51,16 +42,7 @@ public class LeanStartupTests
 
         await host.WaitForShutdownAsync();
 
-        var logger = host.Services.GetService<ILogger<TestStartupWithFalseParameter>>();
-
-        var isSinkClosed =
-            !logger.IsEnabled(LogLevel.Debug)
-            && !logger.IsEnabled(LogLevel.Information)
-            && !logger.IsEnabled(LogLevel.Warning)
-            && !logger.IsEnabled(LogLevel.Error)
-            && !logger.IsEnabled(LogLevel.Critical);
-
-        Assert.False(isSinkClosed);
+        Assert.NotSame(Log.Logger, Serilog.Core.Logger.None);
     }
 }
 
@@ -69,9 +51,9 @@ public class TestStartupWithTrueParameter : LeanStartup
     protected override IReadOnlyList<IAppModule> Modules { get; }
 
     public TestStartupWithTrueParameter(IConfiguration config)
-        : base(config, true)
+        : base(config)
     {
-        Modules = new IAppModule[] { };
+        Modules = Array.Empty<IAppModule>();
     }
 
     protected override void ConfigureApp(IApplicationBuilder app) { }
@@ -80,11 +62,12 @@ public class TestStartupWithTrueParameter : LeanStartup
 public class TestStartupWithFalseParameter : LeanStartup
 {
     protected override IReadOnlyList<IAppModule> Modules { get; }
+    protected override bool CloseAndFlushLogger { get; }
 
     public TestStartupWithFalseParameter(IConfiguration config)
-        : base(config, false)
+        : base(config)
     {
-        Modules = new IAppModule[] { };
+        Modules = Array.Empty<IAppModule>();
     }
 
     protected override void ConfigureApp(IApplicationBuilder app) { }

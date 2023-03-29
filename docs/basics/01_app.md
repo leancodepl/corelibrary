@@ -93,3 +93,4 @@ public class Startup : LeanStartup
  1. Don't use `appsettings.json` - use environment variables,
  2. Don't use `user secrets` - there are other, more docker-friendly approaches,
  3. Don't structure configuration according to module configs, it will be unmaintainable. Use some kind of mapping.
+ 4. If you are using `LeanStartup` in integration tests you may want to set `CloseAndFlushLogger` property to false, because by default `LeanStartup` forces `Log.CloseAndFlush` when the application stops.

@@ -11,7 +11,7 @@ public abstract class LeanStartup
 {
     protected IConfiguration Configuration { get; }
     protected ILogger Logger { get; }
-    protected bool CloseAndFlushLogger { get; set; } = true;
+    protected virtual bool CloseAndFlushLogger { get; } = true;
 
     protected abstract IReadOnlyList<IAppModule> Modules { get; }
 
@@ -21,12 +21,6 @@ public abstract class LeanStartup
         Logger = Log.ForContext(GetType());
 
         Logger.Information("Configuration loaded, starting app");
-    }
-
-    protected LeanStartup(IConfiguration config, bool closeAndFlushLogger)
-        : this(config)
-    {
-        this.CloseAndFlushLogger = closeAndFlushLogger;
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
@@ -56,7 +50,7 @@ public abstract class LeanStartup
 
         var appLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
 
-        if (CloseAndFlushLogger == true)
+        if (CloseAndFlushLogger)
         {
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
         }
