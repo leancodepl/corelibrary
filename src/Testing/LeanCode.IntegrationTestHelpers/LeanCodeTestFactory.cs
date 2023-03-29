@@ -16,7 +16,7 @@ namespace LeanCode.IntegrationTestHelpers;
 public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>, IAsyncLifetime
     where TStartup : class
 {
-    protected virtual ConfigurationOverrides Configuration { get; } = ConfigurationOverrides.CreateBuilder().Build();
+    protected virtual ConfigurationOverrides Configuration { get; } = new();
     protected virtual string ApiBaseAddress => "api/";
     protected virtual string AuthBaseAddress => "auth/";
 
