@@ -15,6 +15,7 @@ public class Startup : LeanStartup
     private static readonly TypesCatalog CQRSTypes = TypesCatalog.Of<ApiModule>();
 
     protected override IAppModule[] Modules { get; }
+    protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)
         : base(config)
