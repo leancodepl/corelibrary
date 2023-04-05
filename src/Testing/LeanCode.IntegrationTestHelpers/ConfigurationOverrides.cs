@@ -29,12 +29,12 @@ public class ConfigurationOverrides : IConfigurationSource
         string varName = "Database"
     )
     {
-        var connectionString = OverrideDatabaseConnectionString(dbPrefix, sourceEnv, varName);
+        var connectionString = GenerateConnectionString(dbPrefix, sourceEnv, varName);
         data[key] = connectionString;
         return this;
     }
 
-    public static string OverrideDatabaseConnectionString(
+    public static string GenerateConnectionString(
         string dbPrefix,
         string sourceEnv = ConnectionStringBaseDefault,
         string varName = "Database"
