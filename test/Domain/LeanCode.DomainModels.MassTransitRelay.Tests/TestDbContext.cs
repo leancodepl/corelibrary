@@ -1,17 +1,10 @@
 using System.Data.Common;
-using System.Threading;
-using System.Threading.Tasks;
-using LeanCode.DomainModels.MassTransitRelay.Inbox;
-using LeanCode.DomainModels.MassTransitRelay.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests;
 
-public class TestDbContext : DbContext, IConsumedMessagesContext, IOutboxContext
+public class TestDbContext : DbContext
 {
-    public DbSet<ConsumedMessage> ConsumedMessages => Set<ConsumedMessage>();
-    public DbSet<RaisedEvent> RaisedEvents => Set<RaisedEvent>();
-
     public TestDbContext(DbContextOptions<TestDbContext> opts)
         : base(opts) { }
 
@@ -25,11 +18,7 @@ public class TestDbContext : DbContext, IConsumedMessagesContext, IOutboxContext
         return new TestDbContext(new DbContextOptionsBuilder<TestDbContext>().UseSqlite(connection).Options);
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        ConsumedMessage.Configure(modelBuilder);
-        RaisedEvent.Configure(modelBuilder);
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) { }
 
     public DbContext Self => this;
 }

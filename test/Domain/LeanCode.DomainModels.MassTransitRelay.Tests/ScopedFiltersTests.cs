@@ -76,9 +76,6 @@ public class ScopedFiltersTests : IAsyncLifetime
 
     private sealed class MassTransitModule : MassTransitRelayModule
     {
-        public MassTransitModule()
-            : base(TypesCatalog.Of<MassTransitModule>(), false, false) { }
-
         public override void ConfigureMassTransit(IServiceCollection services)
         {
             services.AddMassTransit(cfg =>
