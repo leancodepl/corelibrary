@@ -116,8 +116,6 @@ public class TestMassTransitModule : MassTransitRelayModule
 {
     public override void ConfigureMassTransit(IServiceCollection services)
     {
-        "asdf".AsSpan();
-
         services.AddMassTransit(cfg =>
         {
             cfg.AddConsumers(typeof(TestApp).Assembly);
