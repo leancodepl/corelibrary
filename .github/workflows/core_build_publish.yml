@@ -8,6 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
+  event_file:
+    name: "Event File"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: Event File
+        path: ${{ github.event_path }}
   prepare:
     name: Prepare & Version
     runs-on: ubuntu-latest
@@ -88,15 +97,16 @@ jobs:
         working-directory: test
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         if: always()
 
       - name: Convert Test Results to jUnit
         run: find -name '*.trx' -exec trx2junit --output TestResults {} +
         working-directory: test
         if: always()
+
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: >
           always() &&
           github.event.sender.login != 'dependabot[bot]' &&
@@ -104,6 +114,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: test/TestResults/*.xml
+
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v2

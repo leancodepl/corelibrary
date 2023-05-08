@@ -5,6 +5,7 @@ on:
     workflows: ["Corelibrary Build & Publish"]
     types:
       - completed
+permissions: {}
 
 jobs:
   unit-test-results:
@@ -15,6 +16,10 @@ jobs:
          github.event.sender.login == 'dependabot[bot]' ||
          github.event.workflow_run.head_repository.full_name != github.repository
       )
+
+    permissions:
+      checks: write
+      pull-requests: write
 
     steps:
       - name: Download Artifacts
@@ -54,7 +59,7 @@ jobs:
           done
 
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
           files: "artifacts/*/**/*.xml"
