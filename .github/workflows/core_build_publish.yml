@@ -50,10 +50,10 @@ jobs:
             exit 1
           fi
 
-          echo "::set-output name=version::${VERSION}"
-          echo "::set-output name=publish_artifacts::${PUBLISH_ARTIFACTS}"
-          echo "::set-output name=publish_nuget::${PUBLISH_NUGET}"
-          echo "::set-output name=artifacts_name::${ARTIFACTS_NAME}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "publish_artifacts=${PUBLISH_ARTIFACTS}" >> $GITHUB_OUTPUT
+          echo "publish_nuget=${PUBLISH_NUGET}" >> $GITHUB_OUTPUT
+          echo "artifacts_name=${ARTIFACTS_NAME}" >> $GITHUB_OUTPUT
   build:
     name: Build
     runs-on: ubuntu-latest
