@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
+using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using MassTransit;
 
@@ -8,73 +7,98 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
 
 public class Event1Consumer : IConsumer<Event1>
 {
-    private readonly HandledEventsReporter<Event1> reporter;
+    private readonly TestDbContext dbContext;
 
-    public Event1Consumer(HandledEventsReporter<Event1> reporter)
+    public Event1Consumer(TestDbContext dbContext)
     {
-        this.reporter = reporter;
+        this.dbContext = dbContext;
     }
 
     public Task Consume(ConsumeContext<Event1> context)
     {
-        reporter.ReportEvent(this, context);
-        DomainEvents.Raise(new Event2());
+        var correlationId = context.Message.CorrelationId;
+
+        DomainEvents.Raise(new Event2(correlationId));
+        HandledLog.Report(dbContext, correlationId, nameof(Event1Consumer));
         return Task.CompletedTask;
     }
 }
 
 public class Event2FirstConsumer : IConsumer<Event2>
 {
-    private readonly HandledEventsReporter<Event2> reporter;
+    private readonly TestDbContext dbContext;
 
-    public Event2FirstConsumer(HandledEventsReporter<Event2> reporter)
+    public Event2FirstConsumer(TestDbContext dbContext)
     {
-        this.reporter = reporter;
+        this.dbContext = dbContext;
     }
 
     public Task Consume(ConsumeContext<Event2> context)
     {
-        DomainEvents.Raise(new Event3());
-        reporter.ReportEvent(this, context);
+        var correlationId = context.Message.CorrelationId;
+        DomainEvents.Raise(new Event3(correlationId));
+        HandledLog.Report(dbContext, correlationId, nameof(Event2FirstConsumer));
         return Task.CompletedTask;
     }
 }
 
 public class Event2SecondConsumer : IConsumer<Event2>
 {
-    private readonly HandledEventsReporter<Event2> reporter;
+    private readonly TestDbContext dbContext;
 
-    public Event2SecondConsumer(HandledEventsReporter<Event2> reporter)
+    public Event2SecondConsumer(TestDbContext dbContext)
     {
-        this.reporter = reporter;
+        this.dbContext = dbContext;
     }
 
     public Task Consume(ConsumeContext<Event2> context)
     {
-        reporter.ReportEvent(this, context);
+        var correlationId = context.Message.CorrelationId;
+        HandledLog.Report(dbContext, correlationId, nameof(Event2SecondConsumer));
         return Task.CompletedTask;
     }
 }
 
-public class Event3RetryingConsumer : IConsumer<Event3>
+public class Event2RetryingConsumer : IConsumer<Event2>
 {
+    private readonly TestDbContext dbContext;
     private static readonly ConcurrentDictionary<Guid, bool> IsRetry = new ConcurrentDictionary<Guid, bool>();
-    private readonly HandledEventsReporter<Event3> reporter;
 
-    public Event3RetryingConsumer(HandledEventsReporter<Event3> reporter)
+    public Event2RetryingConsumer(TestDbContext dbContext)
     {
-        this.reporter = reporter;
+        this.dbContext = dbContext;
     }
 
-    public Task Consume(ConsumeContext<Event3> context)
+    public Task Consume(ConsumeContext<Event2> context)
     {
+        HandledLog.Report(dbContext, context.Message.CorrelationId, nameof(Event2RetryingConsumer));
+
         var isRetry = IsRetry.AddOrUpdate(context.Message.Id, false, (_, _) => true);
         if (!isRetry)
         {
             throw new InvalidOperationException("This handler fails for testing purposes");
         }
 
-        reporter.ReportEvent(this, context);
         return Task.CompletedTask;
+    }
+}
+
+public class DefaultConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer>
+    where TConsumer : class, IConsumer
+{
+    private readonly IServiceProvider serviceProvider;
+
+    public DefaultConsumerDefinition(IServiceProvider serviceProvider)
+    {
+        this.serviceProvider = serviceProvider;
+    }
+
+    protected override void ConfigureConsumer(
+        IReceiveEndpointConfigurator endpointConfigurator,
+        IConsumerConfigurator<TConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.UseRetry(r => r.Immediate(1));
+        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(serviceProvider);
+        endpointConfigurator.UseDomainEventsPublishing(serviceProvider);
     }
 }

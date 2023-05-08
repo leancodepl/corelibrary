@@ -1,4 +1,3 @@
-using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using LeanCode.Components;
@@ -6,13 +5,15 @@ using LeanCode.CQRS.Default;
 using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
-using LeanCode.DomainModels.Model;
 using LeanCode.OpenTelemetry;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
+using MassTransit.Testing;
 using MassTransit.Testing.Implementations;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Xunit;
 
@@ -37,16 +38,10 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
     private readonly IBusControl bus;
     private readonly SqliteConnection dbConnection;
 
-    public Guid CorrelationId { get; }
     public IContainer Container { get; }
     public ICommandExecutor<Context> Commands { get; }
     public IBusActivityMonitor ActivityMonitor { get; }
-
-    public HandledEvent[] HandledEvents<TEvent>()
-        where TEvent : class, IDomainEvent
-    {
-        return Container.Resolve<HandledEventsReporter<TEvent>>().HandledEvents();
-    }
+    public ITestHarness Harness => Container.Resolve<ITestHarness>();
 
     public TestApp()
     {
@@ -71,8 +66,6 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric(typeof(HandledEventsReporter<>)).AsSelf().SingleInstance();
-
         foreach (var m in modules)
         {
             m.ConfigureServices(services);
@@ -83,7 +76,6 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         Container = builder.Build();
         bus = Container.Resolve<IBusControl>();
 
-        CorrelationId = Guid.NewGuid();
         Commands = Container.Resolve<ICommandExecutor<Context>>();
         ActivityMonitor = Container.Resolve<IBusActivityMonitor>();
     }
@@ -102,10 +94,19 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         await dbContext.Database.EnsureCreatedAsync();
 
         await bus.StartAsync();
+
+        // Start outbox outside of .net host
+        var outbox = Container.Resolve<IEnumerable<IHostedService>>()
+            .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
+        await outbox.StartAsync(default);
     }
 
     public async Task DisposeAsync()
     {
+        var outbox = Container.Resolve<IEnumerable<IHostedService>>()
+            .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
+        await outbox.StopAsync(default);
+
         await bus.StopAsync();
         await dbConnection.CloseAsync();
         await dbConnection.DisposeAsync();
@@ -116,25 +117,23 @@ public class TestMassTransitModule : MassTransitRelayModule
 {
     public override void ConfigureMassTransit(IServiceCollection services)
     {
-        services.AddMassTransit(cfg =>
+        services.AddOptions<OutboxDeliveryServiceOptions>()
+            .Configure(opts => opts.QueryDelay = TimeSpan.FromSeconds(1));
+
+        services.AddMassTransitTestHarness(cfg =>
         {
-            cfg.AddConsumers(typeof(TestApp).Assembly);
+            cfg.AddConsumersWithDefaultConfiguration(new[] { typeof(TestApp).Assembly }, typeof(DefaultConsumerDefinition<>));
+
+            cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
+            {
+                outboxCfg.UseSqlite();
+                outboxCfg.UseBusOutbox();
+            });
+
             cfg.UsingInMemory(
                 (ctx, busCfg) =>
                 {
-                    var queueName = Assembly.GetEntryAssembly()!.GetName().Name;
-
-                    busCfg.ReceiveEndpoint(
-                        queueName,
-                        rcv =>
-                        {
-                            rcv.UseLogsCorrelation();
-                            rcv.UseRetry(retryConfig => retryConfig.Immediate(5));
-                            rcv.ConfigureConsumers(ctx);
-                            rcv.ConnectReceiveEndpointObservers(ctx);
-                        }
-                    );
-
+                    busCfg.ConfigureEndpoints(ctx);
                     busCfg.ConnectBusObservers(ctx);
                 }
             );
