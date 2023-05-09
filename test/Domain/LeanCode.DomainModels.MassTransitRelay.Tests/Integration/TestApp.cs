@@ -93,23 +93,12 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         using var dbContext = scope.Resolve<TestDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
 
-        await bus.StartAsync();
-
-        // Start outbox outside of .net host
-        var outbox = Container
-            .Resolve<IEnumerable<IHostedService>>()
-            .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
-        await outbox.StartAsync(default);
+        await Harness.Start();
     }
 
     public async Task DisposeAsync()
     {
-        var outbox = Container
-            .Resolve<IEnumerable<IHostedService>>()
-            .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
-        await outbox.StopAsync(default);
-
-        await bus.StopAsync();
+        await Harness.Stop();
         await dbConnection.CloseAsync();
         await dbConnection.DisposeAsync();
     }
