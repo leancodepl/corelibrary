@@ -96,14 +96,16 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         await bus.StartAsync();
 
         // Start outbox outside of .net host
-        var outbox = Container.Resolve<IEnumerable<IHostedService>>()
+        var outbox = Container
+            .Resolve<IEnumerable<IHostedService>>()
             .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
         await outbox.StartAsync(default);
     }
 
     public async Task DisposeAsync()
     {
-        var outbox = Container.Resolve<IEnumerable<IHostedService>>()
+        var outbox = Container
+            .Resolve<IEnumerable<IHostedService>>()
             .Single(hs => hs is BusOutboxDeliveryService<TestDbContext>);
         await outbox.StopAsync(default);
 
@@ -117,12 +119,16 @@ public class TestMassTransitModule : MassTransitRelayModule
 {
     public override void ConfigureMassTransit(IServiceCollection services)
     {
-        services.AddOptions<OutboxDeliveryServiceOptions>()
+        services
+            .AddOptions<OutboxDeliveryServiceOptions>()
             .Configure(opts => opts.QueryDelay = TimeSpan.FromSeconds(1));
 
         services.AddMassTransitTestHarness(cfg =>
         {
-            cfg.AddConsumersWithDefaultConfiguration(new[] { typeof(TestApp).Assembly }, typeof(DefaultConsumerDefinition<>));
+            cfg.AddConsumersWithDefaultConfiguration(
+                new[] { typeof(TestApp).Assembly },
+                typeof(DefaultConsumerDefinition<>)
+            );
 
             cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
             {

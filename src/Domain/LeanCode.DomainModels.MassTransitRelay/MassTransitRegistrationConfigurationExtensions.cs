@@ -20,9 +20,7 @@ public static class MassTransitRegistrationConfigurationExtensions
             .FindTypes(assemblies, RegistrationMetadata.IsConsumerOrDefinition)
             .GetAwaiter()
             .GetResult();
-        var types = result
-            .FindTypes(TypeClassification.Closed | TypeClassification.Concrete)
-            .ToArray();
+        var types = result.FindTypes(TypeClassification.Closed | TypeClassification.Concrete).ToArray();
         configurator.AddConsumersWithDefaultConfiguration(types, defaultDefinition);
     }
 
@@ -43,10 +41,7 @@ public static class MassTransitRegistrationConfigurationExtensions
         {
             if (item.DefinitionType is null)
             {
-                configurator.AddConsumer(
-                    item.ConsumerType,
-                    defaultDefinition.MakeGenericType(item.ConsumerType)
-                );
+                configurator.AddConsumer(item.ConsumerType, defaultDefinition.MakeGenericType(item.ConsumerType));
             }
             else
             {

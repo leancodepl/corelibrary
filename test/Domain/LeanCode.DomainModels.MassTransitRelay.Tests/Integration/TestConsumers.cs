@@ -95,7 +95,8 @@ public class DefaultConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer
 
     protected override void ConfigureConsumer(
         IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<TConsumer> consumerConfigurator)
+        IConsumerConfigurator<TConsumer> consumerConfigurator
+    )
     {
         endpointConfigurator.UseRetry(r => r.Immediate(1));
         endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(serviceProvider);
