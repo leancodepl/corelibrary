@@ -19,16 +19,16 @@ public abstract class MassTransitRelayModule : AppModule
             .SingleInstance();
     }
 
-    public sealed override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        services
-            .AddOptions<MassTransitHostOptions>()
-            .Configure(opts =>
-            {
-                opts.WaitUntilStarted = true;
-            });
+        services.AddOptions<MassTransitHostOptions>().Configure(ConfigureMassTransitHostOptions);
 
         ConfigureMassTransit(services);
+    }
+
+    protected virtual void ConfigureMassTransitHostOptions(MassTransitHostOptions options)
+    {
+        options.WaitUntilStarted = true;
     }
 
     public abstract void ConfigureMassTransit(IServiceCollection services);
