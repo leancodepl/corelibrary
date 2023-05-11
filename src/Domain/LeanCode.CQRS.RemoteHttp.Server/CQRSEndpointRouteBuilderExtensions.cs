@@ -15,8 +15,9 @@ public static class CQRSEndpointRouteBuilderExtensions
         ISerializer serializer)
     where TAppContext : class, IPipelineContext
     {
-        var handlerBuilder = new ObjectHandlerBuilder<TAppContext>(contextTranslator, serializer);
-        var endpointDataSource = new CQRSEndpointsDataSource<TAppContext>(path, catalog, handlerBuilder);
+        var requestDelegate = new CQRSRequestDelegate<TAppContext>(serializer, contextTranslator);
+        var executorFactory = new ObjectExecutorFactory<TAppContext>();
+        var endpointDataSource = new CQRSEndpointsDataSource<TAppContext>(path, catalog, requestDelegate, executorFactory);
 
         builder.DataSources.Add(endpointDataSource);
     }

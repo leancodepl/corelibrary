@@ -4,7 +4,7 @@ using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.RemoteHttp.Server;
 
-public static class ObjectsFinder
+public static class AssemblyScanner
 {
     public static IEnumerable<CQRSObjectMetadata> FindCqrsObjects(TypesCatalog catalog)
     {

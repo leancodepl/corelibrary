@@ -1,88 +1,28 @@
-using LeanCode.Contracts;
-using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security.Exceptions;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace LeanCode.CQRS.RemoteHttp.Server;
 
-public class ObjectHandlerBuilder<TContext>
-    where TContext : IPipelineContext
-{
-    private readonly ISerializer serializer;
-    private readonly Func<HttpContext, TContext> contextTranslator;
-
-    public ObjectHandlerBuilder(Func<HttpContext, TContext> contextTranslator, ISerializer serializer)
-    {
-        this.contextTranslator = contextTranslator;
-        this.serializer = serializer;
-    }
-
-    public RequestDelegate Query<TQuery>()
-        where TQuery : IQuery
-    {
-        throw new InvalidOperationException();
-    }
-
-    public RequestDelegate Operation<TOperation>()
-        where TOperation : IQuery
-    {
-        throw new InvalidOperationException();
-    }
-
-    public RequestDelegate Command<TCommand>()
-        where TCommand : ICommand
-    {
-        return new ObjectHandler<TContext, TCommand>(serializer, contextTranslator, Handle).Handle;
-
-        async Task<ExecutionResult> Handle(HttpContext httpContext, TContext context, TCommand command)
-        {
-            try
-            {
-                var executor = httpContext.RequestServices.GetRequiredService<ICommandExecutor<TContext>>();
-
-                var cmdResult = await executor.RunAsync(context, command);
-
-                if (cmdResult.WasSuccessful)
-                {
-                    return ExecutionResult.Success(cmdResult);
-                }
-                else
-                {
-                    return ExecutionResult.Success(cmdResult, StatusCodes.Status422UnprocessableEntity);
-                }
-            }
-            catch (CommandHandlerNotFoundException)
-            {
-                return ExecutionResult.Fail(StatusCodes.Status404NotFound);
-            }
-        }
-    }
-}
-
-public class ObjectHandler<TContext, TObject>
+public class CQRSRequestDelegate<TContext>
     where TContext : IPipelineContext
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
-    private readonly ILogger logger = Log.ForContext<ObjectHandler<TContext, TObject>>();
+    private readonly ILogger logger = Log.ForContext<CQRSRequestDelegate<TContext>>();
 
     private readonly ISerializer serializer;
     private readonly Func<HttpContext, TContext> contextTranslator;
-    private readonly Func<HttpContext, TContext, TObject, Task<ExecutionResult>> executor;
 
-    internal ObjectHandler(
+    internal CQRSRequestDelegate(
         ISerializer serializer,
-        Func<HttpContext, TContext> contextTranslator,
-        Func<HttpContext, TContext, TObject, Task<ExecutionResult>> executor)
+        Func<HttpContext, TContext> contextTranslator)
     {
         this.serializer = serializer;
         this.contextTranslator = contextTranslator;
-        this.executor = executor;
     }
 
-    public async Task Handle(HttpContext context)
+    public async Task HandleAsync(HttpContext context)
     {
         var result = await ExecuteObjectAsync(context);
         await ExecuteResultAsync(result, context, null!);
@@ -90,23 +30,26 @@ public class ObjectHandler<TContext, TObject>
 
     private async Task<ExecutionResult> ExecuteObjectAsync(HttpContext context)
     {
-        var type = typeof(TObject);
-        TObject? obj;
+        var cqrsEndpoint = context.GetEndpoint()?.Metadata.GetMetadata<CQRSEndpointMetadata>()
+            ?? throw new InvalidOperationException();
+
+        var objectType = cqrsEndpoint.ObjectMetadata.ObjectType;
+        object? obj;
 
         try
         {
-            obj = (TObject?)await serializer.DeserializeAsync(context.Request.Body, type, context.RequestAborted);
+            obj = await serializer.DeserializeAsync(context.Request.Body, objectType, context.RequestAborted);
         }
         catch (Exception ex)
         {
-            logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", type);
+            logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
 
             return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
         }
 
         if (obj is null)
         {
-            logger.Warning("Client sent an empty object for type {Type}, ignoring", type);
+            logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
 
             return ExecutionResult.Fail(StatusCodes.Status400BadRequest);
         }
@@ -116,7 +59,8 @@ public class ObjectHandler<TContext, TObject>
 
         try
         {
-            result = await executor(context, appContext, obj);
+            var payload = new CQRSPayload(obj, appContext);
+            result = await cqrsEndpoint.Executor(context.RequestServices, payload);
         }
         catch (UnauthenticatedException)
         {
@@ -125,7 +69,7 @@ public class ObjectHandler<TContext, TObject>
             logger.Debug(
                 "Unauthenticated user requested {@Object} of type {Type}, which requires authorization",
                 obj,
-                type
+                objectType
             );
         }
         catch (InsufficientPermissionException ex)
@@ -136,24 +80,24 @@ public class ObjectHandler<TContext, TObject>
                 "Authorizer {Authorizer} failed to authorize the user to run {@Object} of type {Type}",
                 ex.AuthorizerName,
                 obj,
-                type
+                objectType
             );
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
-            logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, type);
+            logger.Debug(ex, "Cannot execute object {@Object} of type {Type}, request was aborted", obj, objectType);
             result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, type);
+            logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
 
             result = ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
         }
 
         if (result.StatusCode >= 100 && result.StatusCode < 300)
         {
-            logger.Debug("Remote object of type {Type} executed successfully", type);
+            logger.Debug("Remote object of type {Type} executed successfully", objectType);
         }
 
         return result;
