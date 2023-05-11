@@ -1,4 +1,3 @@
-using System.Reflection;
 using LeanCode.Components;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
@@ -9,25 +8,27 @@ using Microsoft.Extensions.Primitives;
 
 namespace LeanCode.CQRS.RemoteHttp.Server;
 
-public class CQRSEndpointsDataSource<TContext> : EndpointDataSource
+internal class CQRSEndpointsDataSource<TContext> : EndpointDataSource
 where TContext : IPipelineContext
 {
-    private static readonly MethodInfo CommandBuilder = typeof(ObjectHandlerBuilder<TContext>).GetMethod("Command")!;
-    private static readonly MethodInfo QueryBuilder = typeof(ObjectHandlerBuilder<TContext>).GetMethod("Query")!;
-    private static readonly MethodInfo OperationBuilder = typeof(ObjectHandlerBuilder<TContext>).GetMethod("Operation")!;
-
     private readonly RoutePattern basePath;
     private readonly TypesCatalog catalog;
-    private readonly ObjectHandlerBuilder<TContext> handlerBuilder;
+    private readonly CQRSRequestDelegate<TContext> requestDelegate;
+    private readonly IObjectExecutorFactory executorFactory;
 
     public override IChangeToken GetChangeToken() => NullChangeToken.Singleton;
     public override IReadOnlyList<Endpoint> Endpoints { get; }
 
-    public CQRSEndpointsDataSource(string basePath, TypesCatalog catalog, ObjectHandlerBuilder<TContext> handlerBuilder)
+    public CQRSEndpointsDataSource(
+        string basePath,
+        TypesCatalog catalog,
+        CQRSRequestDelegate<TContext> requestDelegate,
+        IObjectExecutorFactory executorFactory)
     {
-        this.basePath = RoutePatternFactory.Pattern(basePath);
+        this.basePath = RoutePatternFactory.Parse(basePath);
         this.catalog = catalog;
-        this.handlerBuilder = handlerBuilder;
+        this.requestDelegate = requestDelegate;
+        this.executorFactory = executorFactory;
 
         Endpoints = BuildEndpoints();
     }
@@ -36,14 +37,20 @@ where TContext : IPipelineContext
     {
         var result = new List<Endpoint>();
 
-        foreach (var obj in ObjectsFinder.FindCqrsObjects(catalog))
+        foreach (var obj in AssemblyScanner.FindCqrsObjects(catalog))
         {
             var builder = new RouteEndpointBuilder(
-                MakeHandler(obj),
-                ObjectRoute(obj),
-                0);
-
-            builder.DisplayName = obj.ObjectType.FullName;
+                requestDelegate.HandleAsync,
+                RouteFor(obj),
+                0)
+            {
+                DisplayName = $"{obj.ObjectKind} {obj.ObjectType.FullName}",
+                Metadata =
+                {
+                    new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj)),
+                    new HttpMethodMetadata(new [] { HttpMethods.Post })
+                }
+            };
 
             result.Add(builder.Build());
         }
@@ -51,19 +58,18 @@ where TContext : IPipelineContext
         return result;
     }
 
-    private RoutePattern ObjectRoute(CQRSObjectMetadata obj)
+    private RoutePattern RouteFor(CQRSObjectMetadata obj)
     {
-        var commandPrefix = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("command"));
-        var typePart = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(obj.ObjectType.FullName!));
+        var kindSegment = obj.ObjectKind switch
+        {
+            CQRSObjectKind.Command => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("command")),
+            CQRSObjectKind.Query => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("query")),
+            CQRSObjectKind.Operation => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("operation")),
+            _ => throw new InvalidOperationException()
+        };
 
-        var path = RoutePatternFactory.Pattern(commandPrefix, typePart);
-
+        var typeSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(obj.ObjectType.FullName!));
+        var path = RoutePatternFactory.Pattern(kindSegment, typeSegment);
         return RoutePatternFactory.Combine(basePath, path);
-    }
-
-    private RequestDelegate MakeHandler(CQRSObjectMetadata @object)
-    {
-        var builderMethod = CommandBuilder.MakeGenericMethod(@object.ObjectType);
-        return (RequestDelegate)builderMethod.Invoke(handlerBuilder, Array.Empty<object?>())!;
     }
 }
