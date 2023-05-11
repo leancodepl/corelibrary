@@ -12,12 +12,18 @@ public static class CQRSEndpointRouteBuilderExtensions
         string path,
         TypesCatalog catalog,
         Func<HttpContext, TAppContext> contextTranslator,
-        ISerializer serializer)
-    where TAppContext : class, IPipelineContext
+        ISerializer serializer
+    )
+        where TAppContext : class, IPipelineContext
     {
         var requestDelegate = new CQRSRequestDelegate<TAppContext>(serializer, contextTranslator);
         var executorFactory = new ObjectExecutorFactory<TAppContext>();
-        var endpointDataSource = new CQRSEndpointsDataSource<TAppContext>(path, catalog, requestDelegate, executorFactory);
+        var endpointDataSource = new CQRSEndpointsDataSource<TAppContext>(
+            path,
+            catalog,
+            requestDelegate,
+            executorFactory
+        );
 
         builder.DataSources.Add(endpointDataSource);
     }

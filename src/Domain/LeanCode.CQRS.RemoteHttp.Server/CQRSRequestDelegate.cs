@@ -14,9 +14,7 @@ public class CQRSRequestDelegate<TContext>
     private readonly ISerializer serializer;
     private readonly Func<HttpContext, TContext> contextTranslator;
 
-    internal CQRSRequestDelegate(
-        ISerializer serializer,
-        Func<HttpContext, TContext> contextTranslator)
+    internal CQRSRequestDelegate(ISerializer serializer, Func<HttpContext, TContext> contextTranslator)
     {
         this.serializer = serializer;
         this.contextTranslator = contextTranslator;
@@ -25,13 +23,21 @@ public class CQRSRequestDelegate<TContext>
     public async Task HandleAsync(HttpContext context)
     {
         var result = await ExecuteObjectAsync(context);
-        await ExecuteResultAsync(result, context, null!);
+        await ExecuteResultAsync(result, context);
     }
 
     private async Task<ExecutionResult> ExecuteObjectAsync(HttpContext context)
     {
-        var cqrsEndpoint = context.GetEndpoint()?.Metadata.GetMetadata<CQRSEndpointMetadata>()
-            ?? throw new InvalidOperationException();
+        var cqrsEndpoint = context.GetEndpoint()?.Metadata.GetMetadata<CQRSEndpointMetadata>();
+
+        if (cqrsEndpoint is null)
+        {
+            logger.Error(
+                "Request path {Path} does not contain CQRSEndpointMetadata, cannot execute",
+                context.Request.Path
+            );
+            return ExecutionResult.Fail(StatusCodes.Status500InternalServerError);
+        }
 
         var objectType = cqrsEndpoint.ObjectMetadata.ObjectType;
         object? obj;
@@ -103,38 +109,31 @@ public class CQRSRequestDelegate<TContext>
         return result;
     }
 
-    private async Task ExecuteResultAsync(ExecutionResult result, HttpContext context, RequestDelegate next)
+    private async Task ExecuteResultAsync(ExecutionResult result, HttpContext context)
     {
-        if (result.Skipped)
+        context.Response.StatusCode = result.StatusCode;
+        if (result.Succeeded)
         {
-            await next(context);
-        }
-        else
-        {
-            context.Response.StatusCode = result.StatusCode;
-            if (result.Succeeded)
+            context.Response.ContentType = "application/json";
+            if (result.Payload is null)
             {
-                context.Response.ContentType = "application/json";
-                if (result.Payload is null)
+                await context.Response.Body.WriteAsync(NullString);
+            }
+            else
+            {
+                try
                 {
-                    await context.Response.Body.WriteAsync(NullString);
+                    await serializer.SerializeAsync(
+                        context.Response.Body,
+                        result.Payload,
+                        result.Payload.GetType(),
+                        context.RequestAborted
+                    );
                 }
-                else
+                catch (Exception ex)
+                    when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
                 {
-                    try
-                    {
-                        await serializer.SerializeAsync(
-                            context.Response.Body,
-                            result.Payload,
-                            result.Payload.GetType(),
-                            context.RequestAborted
-                        );
-                    }
-                    catch (Exception ex)
-                        when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
-                    {
-                        logger.Warning(ex, "Failed to serialize response, request aborted");
-                    }
+                    logger.Warning(ex, "Failed to serialize response, request aborted");
                 }
             }
         }

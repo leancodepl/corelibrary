@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 namespace LeanCode.CQRS.RemoteHttp.Server;
 
 internal class CQRSEndpointsDataSource<TContext> : EndpointDataSource
-where TContext : IPipelineContext
+    where TContext : IPipelineContext
 {
     private readonly RoutePattern basePath;
     private readonly TypesCatalog catalog;
@@ -17,13 +17,15 @@ where TContext : IPipelineContext
     private readonly IObjectExecutorFactory executorFactory;
 
     public override IChangeToken GetChangeToken() => NullChangeToken.Singleton;
+
     public override IReadOnlyList<Endpoint> Endpoints { get; }
 
     public CQRSEndpointsDataSource(
         string basePath,
         TypesCatalog catalog,
         CQRSRequestDelegate<TContext> requestDelegate,
-        IObjectExecutorFactory executorFactory)
+        IObjectExecutorFactory executorFactory
+    )
     {
         this.basePath = RoutePatternFactory.Parse(basePath);
         this.catalog = catalog;
@@ -39,16 +41,13 @@ where TContext : IPipelineContext
 
         foreach (var obj in AssemblyScanner.FindCqrsObjects(catalog))
         {
-            var builder = new RouteEndpointBuilder(
-                requestDelegate.HandleAsync,
-                RouteFor(obj),
-                0)
+            var builder = new RouteEndpointBuilder(requestDelegate.HandleAsync, RouteFor(obj), 0)
             {
                 DisplayName = $"{obj.ObjectKind} {obj.ObjectType.FullName}",
                 Metadata =
                 {
                     new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj)),
-                    new HttpMethodMetadata(new [] { HttpMethods.Post })
+                    new HttpMethodMetadata(new[] { HttpMethods.Post })
                 }
             };
 
@@ -65,7 +64,7 @@ where TContext : IPipelineContext
             CQRSObjectKind.Command => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("command")),
             CQRSObjectKind.Query => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("query")),
             CQRSObjectKind.Operation => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("operation")),
-            _ => throw new InvalidOperationException()
+            _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}")
         };
 
         var typeSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(obj.ObjectType.FullName!));

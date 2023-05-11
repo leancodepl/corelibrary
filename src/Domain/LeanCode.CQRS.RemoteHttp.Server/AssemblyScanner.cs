@@ -33,6 +33,7 @@ public static class AssemblyScanner
     }
 
     private static bool ImplementsGenericType(TypeInfo type, Type implementedType) =>
-        type.ImplementedInterfaces.Any(i =>
-            i.IsConstructedGenericType && i.GetGenericTypeDefinition() == implementedType);
+        type.ImplementedInterfaces.Any(
+            i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == implementedType
+        );
 }

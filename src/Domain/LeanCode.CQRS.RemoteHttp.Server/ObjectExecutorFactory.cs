@@ -17,39 +17,49 @@ internal interface IObjectExecutorFactory
 internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
     where TContext : IPipelineContext
 {
-    private static readonly MethodInfo ExecuteCommandMethod =
-        typeof(ObjectExecutorFactory<TContext>).GetMethod(nameof(ExecuteCommandAsync), BindingFlags.Static | BindingFlags.NonPublic)!;
+    private static readonly MethodInfo ExecuteCommandMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+        nameof(ExecuteCommandAsync),
+        BindingFlags.Static | BindingFlags.NonPublic
+    )!;
 
-    private static readonly MethodInfo ExecuteQueryMethod =
-        typeof(ObjectExecutorFactory<TContext>).GetMethod(nameof(ExecuteQueryAsync), BindingFlags.Static | BindingFlags.NonPublic)!;
+    private static readonly MethodInfo ExecuteQueryMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+        nameof(ExecuteQueryAsync),
+        BindingFlags.Static | BindingFlags.NonPublic
+    )!;
 
-    private static readonly MethodInfo ExecuteOperationMethod =
-        typeof(ObjectExecutorFactory<TContext>).GetMethod(nameof(ExecuteOperationAsync), BindingFlags.Static | BindingFlags.NonPublic)!;
+    private static readonly MethodInfo ExecuteOperationMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+        nameof(ExecuteOperationAsync),
+        BindingFlags.Static | BindingFlags.NonPublic
+    )!;
 
     public ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object)
     {
         return @object.ObjectKind switch
         {
-            CQRSObjectKind.Command => ExecuteCommandMethod
-                .MakeGenericMethod(@object.ObjectType)
-                .CreateDelegate<ObjectExecutor>(),
-            CQRSObjectKind.Query => ExecuteQueryMethod
-                .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IQuery<>)))
-                .CreateDelegate<ObjectExecutor>(),
-            CQRSObjectKind.Operation => ExecuteOperationMethod
-                .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IOperation<>)))
-                .CreateDelegate<ObjectExecutor>(),
+            CQRSObjectKind.Command
+                => ExecuteCommandMethod.MakeGenericMethod(@object.ObjectType).CreateDelegate<ObjectExecutor>(),
+            CQRSObjectKind.Query
+                => ExecuteQueryMethod
+                    .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IQuery<>)))
+                    .CreateDelegate<ObjectExecutor>(),
+            CQRSObjectKind.Operation
+                => ExecuteOperationMethod
+                    .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IOperation<>)))
+                    .CreateDelegate<ObjectExecutor>(),
             _ => throw new InvalidOperationException($"Unexpected object kind: {@object.ObjectKind}")
         };
 
-        Type GetResultType(Type interfaceType) => @object.ObjectType
-            .GetInterfaces()
-            .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == interfaceType)
-            .GenericTypeArguments
-            .First();
+        Type GetResultType(Type interfaceType) =>
+            @object.ObjectType
+                .GetInterfaces()
+                .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == interfaceType)
+                .GenericTypeArguments.First();
     }
 
-    private static async Task<ExecutionResult> ExecuteOperationAsync<TOperation, TResult>(IServiceProvider sp, CQRSPayload payload)
+    private static async Task<ExecutionResult> ExecuteOperationAsync<TOperation, TResult>(
+        IServiceProvider sp,
+        CQRSPayload payload
+    )
         where TOperation : IOperation<TResult>
     {
         var context = (TContext)payload.Context;
@@ -58,7 +68,7 @@ internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
         try
         {
             var executor = sp.GetRequiredService<IOperationExecutor<TContext>>();
-            var result =  await executor.ExecuteAsync(context, operation);
+            var result = await executor.ExecuteAsync(context, operation);
 
             return ExecutionResult.Success(result);
         }
@@ -68,7 +78,10 @@ internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
         }
     }
 
-    private static async Task<ExecutionResult> ExecuteQueryAsync<TQuery, TResult>(IServiceProvider sp, CQRSPayload payload)
+    private static async Task<ExecutionResult> ExecuteQueryAsync<TQuery, TResult>(
+        IServiceProvider sp,
+        CQRSPayload payload
+    )
         where TQuery : IQuery<TResult>
     {
         var context = (TContext)payload.Context;
@@ -76,7 +89,7 @@ internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
         try
         {
             var executor = sp.GetRequiredService<IQueryExecutor<TContext>>();
-            var result =  await executor.GetAsync(context, query);
+            var result = await executor.GetAsync(context, query);
 
             return ExecutionResult.Success(result);
         }
