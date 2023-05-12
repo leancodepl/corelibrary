@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
-public static class CQRSRequestFinalizer
+internal static class CQRSPipelineFinalizer
 {
     public static async Task HandleAsync(HttpContext context)
     {
