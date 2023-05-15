@@ -35,7 +35,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
                 DisplayName = $"{obj.ObjectKind} {obj.ObjectType.FullName}",
                 Metadata =
                 {
-                    new CQRSEndpointMetadata(obj.ObjectType, obj.ObjectKind, executorFactory.CreateExecutorFor(obj)),
+                    new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj)),
                     new HttpMethodMetadata(new[] { HttpMethods.Post })
                 }
             };

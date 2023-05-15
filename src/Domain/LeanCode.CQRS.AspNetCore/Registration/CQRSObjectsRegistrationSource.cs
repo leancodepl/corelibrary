@@ -5,14 +5,14 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.CQRS.AspNetCore.Registration;
 
-internal class CQRSHandlersRegistrationSource
+internal class CQRSObjectsRegistrationSource
 {
     private readonly TypesCatalog contractsCatalog;
     private readonly TypesCatalog handlersCatalog;
 
     public IEnumerable<CQRSObjectMetadata> Objects { get; }
 
-    public CQRSHandlersRegistrationSource(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    public CQRSObjectsRegistrationSource(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         this.contractsCatalog = contractsCatalog;
         this.handlersCatalog = handlersCatalog;

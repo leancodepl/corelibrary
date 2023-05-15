@@ -4,14 +4,12 @@ public delegate Task<object?> ObjectExecutor(IServiceProvider serviceProvider, C
 
 public class CQRSEndpointMetadata
 {
-    public CQRSObjectKind ObjectKind { get; }
-    public Type ObjectType { get; }
+    public CQRSObjectMetadata ObjectMetadata { get; }
     public ObjectExecutor ObjectExecutor { get; }
 
-    public CQRSEndpointMetadata(Type objectType, CQRSObjectKind objectKind, ObjectExecutor objectExecutor)
+    public CQRSEndpointMetadata(CQRSObjectMetadata objectMetadata, ObjectExecutor objectExecutor)
     {
-        ObjectKind = objectKind;
-        ObjectType = objectType;
+        ObjectMetadata = objectMetadata;
         ObjectExecutor = objectExecutor;
     }
 }
