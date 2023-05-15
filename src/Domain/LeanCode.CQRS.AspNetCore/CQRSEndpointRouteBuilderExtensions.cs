@@ -55,7 +55,7 @@ public class CQRSEndpointsBuilder
         RequestDelegate PreparePipeline(Action<IApplicationBuilder> pipelineCfg)
         {
             var applicationBuilder = routeBuilder.CreateApplicationBuilder();
-            applicationBuilder.UseMiddleware<CQRSPipelineStart>(contextTranslator);
+            applicationBuilder.UseMiddleware<CQRSRequestSerializer>(contextTranslator);
             pipelineCfg(applicationBuilder);
             applicationBuilder.Run(CQRSPipelineFinalizer.HandleAsync);
             return applicationBuilder.Build();

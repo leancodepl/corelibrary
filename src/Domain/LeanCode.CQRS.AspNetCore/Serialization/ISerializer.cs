@@ -1,6 +1,7 @@
 using System.Text.Json;
+using LeanCode.Serialization;
 
-namespace LeanCode.CQRS.AspNetCore;
+namespace LeanCode.CQRS.AspNetCore.Serialization;
 
 public interface ISerializer
 {
@@ -10,6 +11,16 @@ public interface ISerializer
 
 public sealed class Utf8JsonSerializer : ISerializer
 {
+    public static readonly JsonSerializerOptions DefaultOptions = new()
+    {
+        Converters =
+        {
+            new JsonLaxDateOnlyConverter(),
+            new JsonLaxTimeOnlyConverter(),
+            new JsonLaxDateTimeOffsetConverter(),
+        },
+    };
+
     private readonly JsonSerializerOptions? options;
 
     public Utf8JsonSerializer(JsonSerializerOptions? options)
