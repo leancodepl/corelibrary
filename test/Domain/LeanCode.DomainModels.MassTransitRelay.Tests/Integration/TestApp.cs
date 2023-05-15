@@ -1,8 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using LeanCode.Components;
-using LeanCode.CQRS.Default;
-using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.MassTransitRelay.Testing;
 using LeanCode.OpenTelemetry;
@@ -21,15 +19,15 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
 
 public sealed class TestApp : IAsyncLifetime, IDisposable
 {
-    private static readonly TypesCatalog SearchAssemblies = TypesCatalog.Of<TestApp>();
     private readonly AppModule[] modules = new AppModule[]
     {
-        new CQRSModule().WithCustomPipelines<Context>(
-            SearchAssemblies,
-            cmd => cmd.Trace().CommitDatabaseTransaction().Using<TestDbContext>().PublishEvents(),
-            query => query,
-            op => op
-        ),
+        // TODO: restore
+        // new CQRSModule().WithCustomPipelines<Context>(
+        //     SearchAssemblies,
+        //     cmd => cmd.Trace().StoreAndPublishEvents(),
+        //     query => query,
+        //     op => op
+        // ),
         new TestMassTransitModule(),
         new MassTransitTestRelayModule(),
         new OpenTelemetryModule(),
@@ -38,8 +36,9 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
     private readonly IBusControl bus;
     private readonly SqliteConnection dbConnection;
 
+    public Guid CorrelationId { get; }
     public IContainer Container { get; }
-    public ICommandExecutor<Context> Commands { get; }
+    // public ICommandExecutor<Context> Commands { get; }
     public IBusActivityMonitor ActivityMonitor { get; }
     public ITestHarness Harness => Container.Resolve<ITestHarness>();
 
@@ -76,7 +75,8 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         Container = builder.Build();
         bus = Container.Resolve<IBusControl>();
 
-        Commands = Container.Resolve<ICommandExecutor<Context>>();
+        CorrelationId = Guid.NewGuid();
+        // Commands = Container.Resolve<ICommandExecutor<Context>>();
         ActivityMonitor = Container.Resolve<IBusActivityMonitor>();
     }
 
