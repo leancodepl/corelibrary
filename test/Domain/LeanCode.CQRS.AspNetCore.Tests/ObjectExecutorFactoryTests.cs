@@ -22,8 +22,15 @@ public class ObjectExecutorFactoryTests
         var cmd = new Command();
         var ctx = new Context();
 
-        var executorMethod =
-            executorFactory.CreateExecutorFor(new CQRSObjectMetadata(typeof(Command), CQRSObjectKind.Command));
+        var executorMethod = executorFactory.CreateExecutorFor(
+            new CQRSObjectMetadata(
+                CQRSObjectKind.Command,
+                typeof(Command),
+                typeof(CommandHandler),
+                typeof(CommandResult),
+                typeof(Context)
+            )
+        );
         var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, cmd));
 
         Assert.Same(cmd, commandHandler.ReceivedCommand);
@@ -40,8 +47,15 @@ public class ObjectExecutorFactoryTests
         var query = new Query();
         var ctx = new Context();
 
-        var executorMethod =
-            executorFactory.CreateExecutorFor(new CQRSObjectMetadata(typeof(Query), CQRSObjectKind.Query));
+        var executorMethod = executorFactory.CreateExecutorFor(
+            new CQRSObjectMetadata(
+                CQRSObjectKind.Query,
+                typeof(Query),
+                typeof(QueryResult),
+                typeof(QueryHandler),
+                typeof(Context)
+            )
+        );
         var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, query));
 
         Assert.Same(query, queryHandler.ReceivedQuery);
@@ -58,8 +72,15 @@ public class ObjectExecutorFactoryTests
         var operation = new Operation();
         var ctx = new Context();
 
-        var executorMethod =
-            executorFactory.CreateExecutorFor(new CQRSObjectMetadata(typeof(Operation), CQRSObjectKind.Operation));
+        var executorMethod = executorFactory.CreateExecutorFor(
+            new CQRSObjectMetadata(
+                CQRSObjectKind.Operation,
+                typeof(Operation),
+                typeof(OperationResult),
+                typeof(OperationHandler),
+                typeof(Context)
+            )
+        );
         var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, operation));
 
         Assert.Same(operation, operationHandler.ReceivedOperation);
@@ -69,10 +90,15 @@ public class ObjectExecutorFactoryTests
     }
 
     private class Context { }
+
     private class Command : ICommand { }
+
     private class Query : IQuery<QueryResult> { }
+
     private class QueryResult { }
+
     private class Operation : IOperation<OperationResult> { }
+
     private class OperationResult { }
 
     private class CommandHandler : ICommandHandler<Context, Command>

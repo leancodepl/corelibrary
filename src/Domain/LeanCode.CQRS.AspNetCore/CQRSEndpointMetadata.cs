@@ -8,14 +8,10 @@ public class CQRSEndpointMetadata
     public Type ObjectType { get; }
     public ObjectExecutor ObjectExecutor { get; }
 
-    public CQRSEndpointMetadata(
-        Type objectType,
-        CQRSObjectKind objectKind,
-        ObjectExecutor objectExecutor)
+    public CQRSEndpointMetadata(Type objectType, CQRSObjectKind objectKind, ObjectExecutor objectExecutor)
     {
         ObjectKind = objectKind;
         ObjectType = objectType;
         ObjectExecutor = objectExecutor;
     }
 }
-

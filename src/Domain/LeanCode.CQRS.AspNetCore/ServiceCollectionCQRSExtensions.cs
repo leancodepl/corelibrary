@@ -9,13 +9,18 @@ namespace LeanCode.CQRS.AspNetCore;
 
 public static class ServiceCollectionCQRSExtensions
 {
-    public static CQRSServicesBuilder AddCQRS(this IServiceCollection serviceCollection, TypesCatalog handlersCatalog)
+    public static CQRSServicesBuilder AddCQRS(
+        this IServiceCollection serviceCollection,
+        TypesCatalog contractsCatalog,
+        TypesCatalog handlersCatalog
+    )
     {
         serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
 
-        serviceCollection.RegisterGenericTypes(handlersCatalog, typeof(ICommandHandler<,>), ServiceLifetime.Transient);
-        serviceCollection.RegisterGenericTypes(handlersCatalog, typeof(IQueryHandler<,,>), ServiceLifetime.Transient);
-        serviceCollection.RegisterGenericTypes(handlersCatalog, typeof(IOperationHandler<,,>), ServiceLifetime.Transient);
+        var objectsSource = new CQRSHandlersRegistrationSource(contractsCatalog, handlersCatalog);
+
+        serviceCollection.AddSingleton(objectsSource);
+        serviceCollection.AddCQRSHandlers(objectsSource.Objects);
 
         return new CQRSServicesBuilder(serviceCollection);
     }

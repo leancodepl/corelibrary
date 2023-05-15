@@ -4,6 +4,7 @@ using LeanCode.CQRS.AspNetCore.Registration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore;
 
@@ -15,10 +16,16 @@ public static class CQRSEndpointRouteBuilderExtensions
         Action<CQRSEndpointsBuilder> config
     )
     {
+        var cqrsHandlers =
+            builder.ServiceProvider.GetService<CQRSHandlersRegistrationSource>()
+            ?? throw new InvalidOperationException(
+                "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first"
+            );
+
         var dataSource = new CQRSEndpointsDataSource(path);
         builder.DataSources.Add(dataSource);
 
-        config(new CQRSEndpointsBuilder(builder, dataSource));
+        config(new CQRSEndpointsBuilder(builder, dataSource, cqrsHandlers));
     }
 }
 
@@ -26,21 +33,27 @@ public class CQRSEndpointsBuilder
 {
     private readonly IEndpointRouteBuilder routeBuilder;
     private readonly CQRSEndpointsDataSource dataSource;
+    private readonly CQRSHandlersRegistrationSource cqrsHandlersSource;
 
-    internal CQRSEndpointsBuilder(IEndpointRouteBuilder routeBuilder, CQRSEndpointsDataSource dataSource)
+    internal CQRSEndpointsBuilder(
+        IEndpointRouteBuilder routeBuilder,
+        CQRSEndpointsDataSource dataSource,
+        CQRSHandlersRegistrationSource cqrsHandlersSource
+    )
     {
         this.routeBuilder = routeBuilder;
         this.dataSource = dataSource;
+        this.cqrsHandlersSource = cqrsHandlersSource;
     }
 
     public CQRSEndpointsBuilder WithPipelines<TContext>(
-        TypesCatalog contractsCatalog,
         Func<HttpContext, TContext> contextTranslator,
         Action<IApplicationBuilder> commandsPipeline,
         Action<IApplicationBuilder> queriesPipeline,
-        Action<IApplicationBuilder> operationsPipeline)
+        Action<IApplicationBuilder> operationsPipeline
+    )
     {
-        var objects = AssemblyScanner.FindCqrsObjects(contractsCatalog);
+        var objects = cqrsHandlersSource.Objects.Where(obj => obj.ContextType == typeof(TContext));
 
         dataSource.AddEndpointsFor(
             objects,
@@ -48,7 +61,7 @@ public class CQRSEndpointsBuilder
             commandsPipeline: PreparePipeline(commandsPipeline),
             queriesPipeline: PreparePipeline(queriesPipeline),
             operationsPipeline: PreparePipeline(operationsPipeline)
-            );
+        );
 
         return this;
 
