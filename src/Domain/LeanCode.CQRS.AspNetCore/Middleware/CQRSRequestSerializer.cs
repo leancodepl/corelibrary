@@ -1,19 +1,20 @@
+using LeanCode.CQRS.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
-internal class CQRSPipelineStart
+internal class CQRSRequestSerializer
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
-    private readonly ILogger logger = Log.ForContext<CQRSPipelineStart>();
+    private readonly ILogger logger = Log.ForContext<CQRSRequestSerializer>();
 
     private readonly ISerializer serializer;
     private readonly Func<HttpContext, object> contextTranslator;
     private readonly RequestDelegate next;
 
-    public CQRSPipelineStart(
+    public CQRSRequestSerializer(
         Func<HttpContext, object> contextTranslator,
         ISerializer serializer,
         RequestDelegate next)

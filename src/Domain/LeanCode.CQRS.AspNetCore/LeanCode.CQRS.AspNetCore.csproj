@@ -2,7 +2,8 @@
 
     <ItemGroup>
       <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
-      <ProjectReference Include="..\..\Core\LeanCode.Components\LeanCode.Components.csproj" />
+      <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+      <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
     </ItemGroup>
 
     <ItemGroup>

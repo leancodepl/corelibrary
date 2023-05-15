@@ -23,13 +23,13 @@ public static class ServiceCollectionRegistrationExtensions
             .Select(type => new
             {
                 Type = type,
-                ImplementedInterfaces = GetImplementedGenericTypes(type, genericType),
+                ImplementedServices = GetImplementedGenericTypes(type, genericType),
             })
-            .Where(t => t.ImplementedInterfaces.Any());
+            .Where(t => t.ImplementedServices.Any());
 
         foreach (var type in implementationTypes)
         {
-            var services = type.ImplementedInterfaces.Select(s => new ServiceDescriptor(s, type.Type, lifetime));
+            var services = type.ImplementedServices.Select(s => new ServiceDescriptor(s, type.Type, lifetime));
             serviceCollection.Add(services);
         }
 
@@ -38,8 +38,18 @@ public static class ServiceCollectionRegistrationExtensions
 
     private static IEnumerable<Type> GetImplementedGenericTypes(Type type, Type genericType)
     {
-        return type.GetInterfaces()
+        return type.GetInterfaces().Concat(GetBaseTypes(type))
             .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == genericType);
+    }
+
+    private static IEnumerable<Type> GetBaseTypes(Type type)
+    {
+        var baseType = type.BaseType;
+        while (baseType is not null)
+        {
+            yield return baseType;
+            baseType = baseType.BaseType;
+        }
     }
 
     private static bool IsOpenGeneric(this Type type)
