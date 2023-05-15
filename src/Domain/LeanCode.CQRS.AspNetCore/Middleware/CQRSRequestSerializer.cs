@@ -29,13 +29,14 @@ internal class CQRSRequestSerializer
     {
         var cqrsEndpoint = httpContext.GetCQRSEndpoint();
 
+        var objectType = cqrsEndpoint.ObjectMetadata.ObjectType;
         object? obj;
 
         try
         {
             obj = await serializer.DeserializeAsync(
                 httpContext.Request.Body,
-                cqrsEndpoint.ObjectType,
+                objectType,
                 httpContext.RequestAborted
             );
         }
@@ -44,7 +45,7 @@ internal class CQRSRequestSerializer
             logger.Warning(
                 ex,
                 "Cannot deserialize object body from the request stream for type {Type}",
-                cqrsEndpoint.ObjectType
+                objectType
             );
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return;
@@ -52,7 +53,7 @@ internal class CQRSRequestSerializer
 
         if (obj is null)
         {
-            logger.Warning("Client sent an empty object for type {Type}, ignoring", cqrsEndpoint.ObjectType);
+            logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return;
         }
@@ -66,7 +67,7 @@ internal class CQRSRequestSerializer
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, cqrsEndpoint.ObjectType);
+            logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             return;
         }
@@ -87,7 +88,7 @@ internal class CQRSRequestSerializer
                 await serializer.SerializeAsync(
                     httpContext.Response.Body,
                     result,
-                    result.GetType(),
+                    cqrsEndpoint.ObjectMetadata.ResultType,
                     httpContext.RequestAborted
                 );
             }

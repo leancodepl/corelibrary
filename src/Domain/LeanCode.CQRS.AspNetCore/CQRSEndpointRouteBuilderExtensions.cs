@@ -17,7 +17,7 @@ public static class CQRSEndpointRouteBuilderExtensions
     )
     {
         var cqrsHandlers =
-            builder.ServiceProvider.GetService<CQRSHandlersRegistrationSource>()
+            builder.ServiceProvider.GetService<CQRSObjectsRegistrationSource>()
             ?? throw new InvalidOperationException(
                 "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first"
             );
@@ -33,17 +33,17 @@ public class CQRSEndpointsBuilder
 {
     private readonly IEndpointRouteBuilder routeBuilder;
     private readonly CQRSEndpointsDataSource dataSource;
-    private readonly CQRSHandlersRegistrationSource cqrsHandlersSource;
+    private readonly CQRSObjectsRegistrationSource cqrsObjectsSource;
 
     internal CQRSEndpointsBuilder(
         IEndpointRouteBuilder routeBuilder,
         CQRSEndpointsDataSource dataSource,
-        CQRSHandlersRegistrationSource cqrsHandlersSource
+        CQRSObjectsRegistrationSource cqrsObjectsSource
     )
     {
         this.routeBuilder = routeBuilder;
         this.dataSource = dataSource;
-        this.cqrsHandlersSource = cqrsHandlersSource;
+        this.cqrsObjectsSource = cqrsObjectsSource;
     }
 
     public CQRSEndpointsBuilder WithPipelines<TContext>(
@@ -53,7 +53,7 @@ public class CQRSEndpointsBuilder
         Action<IApplicationBuilder> operationsPipeline
     )
     {
-        var objects = cqrsHandlersSource.Objects.Where(obj => obj.ContextType == typeof(TContext));
+        var objects = cqrsObjectsSource.Objects.Where(obj => obj.ContextType == typeof(TContext));
 
         dataSource.AddEndpointsFor(
             objects,
