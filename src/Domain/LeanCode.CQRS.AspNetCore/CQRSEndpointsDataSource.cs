@@ -25,7 +25,8 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
         IObjectExecutorFactory executorFactory,
         RequestDelegate commandsPipeline,
         RequestDelegate queriesPipeline,
-        RequestDelegate operationsPipeline)
+        RequestDelegate operationsPipeline
+    )
     {
         foreach (var obj in objects)
         {

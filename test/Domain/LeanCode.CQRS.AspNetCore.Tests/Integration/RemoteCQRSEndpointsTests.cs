@@ -33,15 +33,16 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
                     .ConfigureServices(services =>
                     {
                         services.AddRouting();
-                        services.AddCQRS(handlersCatalog);
+                        services.AddCQRS(contractsCatalog, handlersCatalog);
                     })
                     .Configure(app =>
                     {
                         app.UseRouting();
                         app.UseEndpoints(e =>
                         {
-                            e.MapRemoteCqrs("/cqrs", cqrs => cqrs
-                                .WithPipelines(contractsCatalog, TestContext.FromHttp, q => { }, c => { }, o => { })
+                            e.MapRemoteCqrs(
+                                "/cqrs",
+                                cqrs => cqrs.WithPipelines(TestContext.FromHttp, q => { }, c => { }, o => { })
                             );
                         });
                     });
@@ -61,7 +62,7 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_PUT()
     {
         var (_, statusCode) = await SendAsync(
-            "/cqrs/command/LeanCode.CQRS.RemoteHttp.Server.Tests.SampleRemoteCommand",
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             method: HttpMethod.Put
         );
 
@@ -72,7 +73,7 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_GET()
     {
         var (_, statusCode) = await SendAsync(
-            "/cqrs/command/LeanCode.CQRS.RemoteHttp.Server.Tests.SampleRemoteCommand",
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             method: HttpMethod.Get
         );
 
@@ -106,7 +107,7 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
         //     .Returns(CommandResult.NotValid(new ValidationResult(returnedErrors)));
 
         var (body, statusCode) = await SendAsync(
-            "/cqrs/command/LeanCode.CQRS.RemoteHttp.Server.Tests.SampleRemoteCommand"
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand"
         );
         var result = JsonSerializer.Deserialize<CommandResult?>(body);
 
@@ -134,7 +135,7 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
     public async Task Returns_BadRequest_if_failed_to_deserialize_object()
     {
         var (_, statusCode) = await SendAsync(
-            "/cqrs/command/LeanCode.CQRS.RemoteHttp.Server.Tests.SampleRemoteCommand",
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             "{ malformed json }"
         );
         Assert.Equal(HttpStatusCode.BadRequest, statusCode);

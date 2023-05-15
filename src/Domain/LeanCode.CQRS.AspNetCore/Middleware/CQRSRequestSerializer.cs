@@ -17,7 +17,8 @@ internal class CQRSRequestSerializer
     public CQRSRequestSerializer(
         Func<HttpContext, object> contextTranslator,
         ISerializer serializer,
-        RequestDelegate next)
+        RequestDelegate next
+    )
     {
         this.serializer = serializer;
         this.contextTranslator = contextTranslator;
@@ -32,11 +33,19 @@ internal class CQRSRequestSerializer
 
         try
         {
-            obj = await serializer.DeserializeAsync(httpContext.Request.Body, cqrsEndpoint.ObjectType, httpContext.RequestAborted);
+            obj = await serializer.DeserializeAsync(
+                httpContext.Request.Body,
+                cqrsEndpoint.ObjectType,
+                httpContext.RequestAborted
+            );
         }
         catch (Exception ex)
         {
-            logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", cqrsEndpoint.ObjectType);
+            logger.Warning(
+                ex,
+                "Cannot deserialize object body from the request stream for type {Type}",
+                cqrsEndpoint.ObjectType
+            );
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return;
         }
