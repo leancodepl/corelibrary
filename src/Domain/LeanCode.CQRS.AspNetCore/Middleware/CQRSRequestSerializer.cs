@@ -72,10 +72,22 @@ internal class CQRSRequestSerializer
             return;
         }
 
+        await SerializeResultAsync(httpContext, cqrsEndpoint);
+    }
+
+    private async Task SerializeResultAsync(HttpContext httpContext, CQRSEndpointMetadata cqrsEndpoint)
+    {
+        var payload = httpContext.GetCQRSRequestPayload();
+
+        if (!payload.HasResult)
+        {
+            return;
+        }
+
+        var result = payload.Result;
+
         httpContext.Response.StatusCode = StatusCodes.Status200OK;
         httpContext.Response.ContentType = "application/json";
-
-        var result = httpContext.GetCQRSRequestPayload().Result;
 
         if (result is null)
         {
