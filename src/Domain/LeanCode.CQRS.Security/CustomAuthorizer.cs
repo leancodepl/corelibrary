@@ -1,30 +1,29 @@
-using System;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security;
 
-public interface ICustomAuthorizer<in TAppContext>
+public interface ICustomAuthorizer
 {
-    Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object obj, object? customData);
+    Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, object obj, object? customData);
 }
 
-public abstract class CustomAuthorizer<TAppContext, TObject> : ICustomAuthorizer<TAppContext>
+public abstract class CustomAuthorizer<TObject> : ICustomAuthorizer
 {
-    public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object obj, object? customData) =>
-        CheckIfAuthorizedAsync(appContext, (TObject)obj);
+    public Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, object obj, object? customData) =>
+        CheckIfAuthorizedAsync(httpContext, (TObject)obj);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, TObject obj);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, TObject obj);
 }
 
-public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData> : ICustomAuthorizer<TAppContext>
+public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
     where TCustomData : class
 {
-    public Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, object obj, object? customData) =>
-        CheckIfAuthorizedInternalAsync(appContext, (TObject)obj, customData);
+    public Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, object obj, object? customData) =>
+        CheckIfAuthorizedInternalAsync(httpContext, (TObject)obj, customData);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(TAppContext appContext, TObject obj, TCustomData? customData);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, TObject obj, TCustomData? customData);
 
-    private Task<bool> CheckIfAuthorizedInternalAsync(TAppContext appContext, TObject obj, object? customData)
+    private Task<bool> CheckIfAuthorizedInternalAsync(HttpContext httpContext, TObject obj, object? customData)
     {
         if (!(customData is null || customData is TCustomData))
         {
@@ -34,6 +33,6 @@ public abstract class CustomAuthorizer<TAppContext, TObject, TCustomData> : ICus
             );
         }
 
-        return CheckIfAuthorizedAsync(appContext, obj, (TCustomData?)customData);
+        return CheckIfAuthorizedAsync(httpContext, obj, (TCustomData?)customData);
     }
 }
