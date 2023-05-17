@@ -10,7 +10,7 @@ Let's imagine a simple project management app where users can create projects wh
 
 ## Aggregates
 
-Let's start with a really basic model for the project aggregate.
+Let's start with a simple model for the project aggregate.
 
 ```csharp
 public class Project : IAggregateRoot<SId<Project>>
@@ -37,10 +37,10 @@ public class Project : IAggregateRoot<SId<Project>>
 }
 ```
 
-As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `SId<Project>` - it is a special type present in the core library which is basically a Guid prefixed with a class name. In this case, the Id of the Project will look somewhat like the following: `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
-The `Project` also has a list of `Tasks`. Notice that there are two lists containing tasks of a project - the `Tasks` one is a readonly interface of the `tasks` which contents can be changed by the class.
+As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `SId<Project>` - it is a special type present in the core library which is basically a Guid prefixed with a class name. In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
+The `Project` also has a list of `Tasks`. Notice that there are two lists containing tasks of a project - the `Tasks` one is a readonly interface for the `tasks` which contents can be changed by the class.
 
-Let's follow with a class representing representing a task belonging to a project:
+Let's follow with a class representing a task belonging to a project:
 
 ```csharp
 public class Task : IIdentifiable<SId<Task>>
@@ -75,7 +75,7 @@ public class Task : IIdentifiable<SId<Task>>
 }
 ```
 
-Notice that a task is not an aggregate root - it can only be accessed through the project to which the task belong.
+Notice that a task is not an aggregate root - it can only be accessed through the project to which it belongs.
 
 Likewise, let's create a class representing an user which can be assigned to a task:
 
@@ -170,9 +170,9 @@ Notice that these added methods can and will throw an exception if a project doe
 
 ## Rasing domain events
 
-The domain events make an important part of DDD. It is through the use of domain events that an aggregate might communicate with the rest of the system. We will see how to add an event which can be raised from an aggregate.
+The domain events make an important part of DDD. It is through the use of domain events that an aggregate might communicate with the rest of the system. We will see how to raise an event from the aggregate.
 
-Let's imagine that we want to send an email to a user after that user has been assigned to a task. We will modify `AssignUserToTask` method from the `Project` class:
+Let's imagine that we want to perform some action after a user has been assigned to a task. We will modify `AssignUserToTask` method from the `Project` class:
 
 ```csharp
 public class Project : IIdentifiable<SId<Project>>
@@ -187,4 +187,4 @@ public class Project : IIdentifiable<SId<Project>>
 }
 ```
 
-`UserAssignedToTask` has to implement `IDomainEvent` interface. After being raised, the event can be handled by the matching `IConsumer`. To read more about events, see [handling events](./0X_handling_events). <!-- TODO: add final name of the handling events file -->
+`UserAssignedToTask` has to implement `IDomainEvent` interface. After being raised, the event can be handled by the matching `IConsumer` to perform wanted action. To read more about events, see [handling events](./0X_handling_events). <!-- TODO: add final name of the handling events file -->
