@@ -106,7 +106,7 @@ Notice that the `User` class is an aggregate root - the user represents a standa
 
 ## Adding logic
 
-So far, only the structure of objects has been defined but business domain objects usually has some set of behaviors which they can perform. In this section we will see how a logic can be added to the aggregates.
+So far, only the structure of objects has been defined but business domain objects usually has some set of behaviors which they can execute. In this section we will see how a logic can be added to the aggregates.
 
 Let's start with a simple example of adding a few methods to the `Task` class:
 
@@ -140,7 +140,7 @@ public class Task : IIdentifiable<SId<Task>>
 Remember that the only way to access a task is to go through the relevant project which is the aggregate root. Because of this we will add some methods to the `Project` class which will allow us to interact with the tasks:
 
 ```csharp
-public class Project : IIdentifiable<SId<Project>>
+public class Project : IAggregateRoot<SId<Project>>
 {
     . . .
 
@@ -175,7 +175,7 @@ The domain events make an important part of DDD. It is through the use of domain
 Let's imagine that we want to perform some action after a user has been assigned to a task. We will modify `AssignUserToTask` method from the `Project` class:
 
 ```csharp
-public class Project : IIdentifiable<SId<Project>>
+public class Project : IAggregateRoot<SId<Project>>
 {
     . . .
 
