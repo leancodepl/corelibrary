@@ -2,7 +2,7 @@
 
 ## Intro
 
-Aggregates, as defined by Domain Driven Design, are clusters of related objects which can be treated as a single domain entity. One of these objects is distinguished as an aggregate root. Every object of an aggregate must be accessed through the aggregate root. This guide will present how to create a simple aggregate using LeanCode Core Library.
+Aggregates, as defined by Domain Driven Design, are clusters of related objects which can be treated as a single domain entity. One of these objects is distinguished as an aggregate root. Every object of an aggregate must be accessed through the aggregate root. This guide will present how to create a simple aggregate using LeanCode CoreLibrary.
 
 ## Scenario
 
@@ -37,7 +37,7 @@ public class Project : IAggregateRoot<SId<Project>>
 }
 ```
 
-As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `SId<Project>` - it is a special type present in the core library which is basically a Guid prefixed with a class name. In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
+As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `SId<Project>` - it is a special type present in the CoreLibrary which is basically a Guid prefixed with a class name. In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
 The `Project` also has a list of `Tasks`. Notice that there are two lists containing tasks of a project - the `Tasks` one is a readonly interface for the `tasks` which contents can be changed by the class.
 
 Let's follow with a class representing a task belonging to a project:
