@@ -63,7 +63,7 @@ internal class CQRSObjectsRegistrationSource
         return resultObjects;
     }
 
-    private bool ValidateContractType(TypeInfo type)
+    private static bool ValidateContractType(TypeInfo type)
     {
         var implementedContractInterfaces = type.ImplementedInterfaces.Where(
             i => IsGenericType(i, typeof(IQuery<>)) || i == typeof(ICommand) || IsGenericType(i, typeof(IOperation<>))
@@ -129,11 +129,6 @@ internal class CQRSObjectsRegistrationSource
     private static bool IsOperation(TypeInfo type)
     {
         return ImplementsGenericType(type, typeof(IOperation));
-    }
-
-    private static bool IsQueryHandler(TypeInfo type)
-    {
-        return ImplementsGenericType(type, typeof(IQueryHandler<,,>));
     }
 
     private static bool ImplementsGenericType(TypeInfo type, Type implementedType) =>
