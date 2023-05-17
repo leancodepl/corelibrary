@@ -77,7 +77,7 @@ public class Task : IIdentifiable<SId<Task>>
 
 Notice that a task is not an aggregate root - it can only be accessed through the project to which it belongs.
 
-Likewise, let's create a class representing an user which can be assigned to a task:
+Likewise, let's create a class representing a user which can be assigned to a task:
 
 ```csharp
 public class User : IAggregateRoot<SId<User>>
