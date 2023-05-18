@@ -2,7 +2,7 @@
 
 ## Intro
 
-Aggregates, as defined by Domain Driven Design, are clusters of related objects which can be treated as a single domain entity. One of these objects is distinguished as an aggregate root. Every object of an aggregate must be accessed through the aggregate root. This guide will present how to create a simple aggregate using LeanCode CoreLibrary.
+Aggregates, as defined by Domain Driven Design, are clusters of related objects which can be treated as a single domain entity. One of these objects is distinguished as an aggregate root. Every object of an aggregate must be accessed through the aggregate root. This guide will present how to create a simple aggregate using the LeanCode CoreLibrary.
 
 ## Scenario
 
@@ -88,11 +88,11 @@ public class User : IAggregateRoot<SId<User>>
 
     DateTime IOptimisticConcurrency.DateModified { get; set; }
 
-    private Task() { }
+    private User() { }
 
-    public static Task Create(string name, string email)
+    public static User Create(string name, string email)
     {
-        return new Task
+        return new User
         {
             Id = SId<User>.New(),
             Name = name,
@@ -143,6 +143,11 @@ Remember that the only way to access a task is to go through the relevant projec
 public class Project : IAggregateRoot<SId<Project>>
 {
     . . .
+
+    public void AddTasks(IEnumerable<string> taskNames)
+    {
+        this.tasks.AddRange(taskNames.Select(tn => Task.Create(this, tn)));
+    }
 
     public void EditTask(SId<Task> taskId, string name)
     {

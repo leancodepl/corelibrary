@@ -6,11 +6,11 @@ public class User : IAggregateRoot<SId<User>>
 
     DateTime IOptimisticConcurrency.DateModified { get; set; }
 
-    private Task() { }
+    private User() { }
 
-    public static Task Create(string name, string email)
+    public static User Create(string name, string email)
     {
-        return new Task
+        return new User
         {
             Id = SId<User>.New(),
             Name = name,
