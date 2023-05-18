@@ -1,35 +1,34 @@
-using System.Threading.Tasks;
 using Autofac;
-using Autofac.Core.Registration;
 using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Validation.Fluent.Scoped;
 
-internal sealed class AdapterLoader<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
-    where TAppContext : notnull
+internal sealed class AdapterLoader<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
 {
+    private readonly IServiceProvider serviceProvider;
     private static readonly Task<ValidationResult> NoError = Task.FromResult(new ValidationResult(null));
-    private IComponentContext ctx;
 
-    public AdapterLoader(IComponentContext ctx)
+    public AdapterLoader(IServiceProvider serviceProvider)
     {
-        this.ctx = ctx;
+        this.serviceProvider = serviceProvider;
     }
 
-    public Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
+    public Task<ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command)
     {
-        var val = ctx.ResolveOptional<IValidator<TCommand>>(new TypedParameter(typeof(TAppContext), appContext));
+        var val = serviceProvider.GetService<IValidator<TCommand>>();
 
         if (val is null)
         {
             return NoError;
         }
 
-        var adapter = new FluentValidationCommandValidatorAdapter<TAppContext, TCommand>(val);
+        var adapter = new FluentValidationCommandValidatorAdapter<TCommand>(val);
 
-        return adapter.ValidateAsync(appContext, command);
+        return adapter.ValidateAsync(httpContext, command);
     }
 }

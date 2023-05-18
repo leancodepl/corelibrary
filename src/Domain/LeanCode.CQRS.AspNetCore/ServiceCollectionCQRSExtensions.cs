@@ -3,6 +3,7 @@ using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Security;
+using LeanCode.CQRS.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -26,6 +27,7 @@ public static class ServiceCollectionCQRSExtensions
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<CQRSSecurityMiddleware>();
+        serviceCollection.AddScoped<ICommandValidatorResolver, ServiceProviderValidatorResolver>();
 
         return new CQRSServicesBuilder(serviceCollection);
     }

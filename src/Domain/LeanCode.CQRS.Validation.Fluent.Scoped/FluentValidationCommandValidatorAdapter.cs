@@ -1,17 +1,14 @@
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Validation.Fluent.Scoped;
 
-public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
-    where TAppContext : notnull
 {
     private readonly IValidator fluentValidator;
 
@@ -20,7 +17,7 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
         this.fluentValidator = fluentValidator;
     }
 
-    public async Task<Contracts.Validation.ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
+    public async Task<Contracts.Validation.ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command)
     {
         var ctx = PrepareContext(command);
 

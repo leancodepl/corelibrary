@@ -5,6 +5,7 @@
       <ProjectReference Include="../LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
       <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
       <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
+      <ProjectReference Include="..\LeanCode.CQRS.Validation\LeanCode.CQRS.Validation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

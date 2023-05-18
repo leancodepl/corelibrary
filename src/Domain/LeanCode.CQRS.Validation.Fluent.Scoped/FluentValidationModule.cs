@@ -15,11 +15,6 @@ public class FluentValidationModule : AppModule
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterGeneric(typeof(AdapterLoader<,>)).AsImplementedInterfaces();
 
-        builder
-            .RegisterAssemblyTypes(catalog.Assemblies.ToArray())
-            .AsClosedTypesOf(typeof(IValidator<>))
-            .InstancePerLifetimeScope();
     }
 }

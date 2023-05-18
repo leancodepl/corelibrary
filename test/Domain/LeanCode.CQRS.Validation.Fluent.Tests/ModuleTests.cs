@@ -3,27 +3,29 @@ using Autofac;
 using FluentValidation;
 using LeanCode.Components;
 using LeanCode.Contracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.CQRS.Validation.Fluent.Tests;
 
 public class ModuleTests
 {
-    private readonly IContainer container;
+    private readonly IServiceProvider container;
 
     public ModuleTests()
     {
-        var builder = new ContainerBuilder();
-        builder.RegisterModule(new FluentValidationModule(TypesCatalog.Of<ModuleTests>()));
-        container = builder.Build();
+        var builder = new ServiceCollection();
+        builder.AddFluentValidation(TypesCatalog.Of<ModuleTests>());
+        container = builder.BuildServiceProvider();
     }
 
     [Fact]
     public async Task Resolves_custom_ContextualValidator_as_ICommandValidator()
     {
-        var validator = container.Resolve<ICommandValidator<object, CustomCommand>>();
+        var validator = container.GetRequiredService<ICommandValidator<CustomCommand>>();
 
-        var res = await validator.ValidateAsync(new object(), new CustomCommand { Field = 0 });
+        var res = await validator.ValidateAsync(new DefaultHttpContext(), new CustomCommand { Field = 0 });
 
         var err = Assert.Single(res.Errors);
         Assert.Equal(10, err.ErrorCode);
