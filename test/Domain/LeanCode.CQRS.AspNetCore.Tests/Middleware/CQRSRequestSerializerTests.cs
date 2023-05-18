@@ -19,8 +19,7 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
         CQRSObjectKind.Query,
         typeof(Query),
         typeof(QueryResult),
-        typeof(IgnoreType),
-        typeof(Context)
+        typeof(IgnoreType)
     );
 
     private readonly IHost host;
@@ -44,7 +43,7 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
                     })
                     .Configure(app =>
                     {
-                        app.UseMiddleware<CQRSRequestSerializer>(Context.FromHttp);
+                        app.UseMiddleware<CQRSRequestSerializer>();
                         app.Run(ctx => pipeline(ctx));
                     });
             })
@@ -134,25 +133,18 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
         var query = new Query();
         SetDeserializerResult<Query>(query);
 
-        object? interceptedContext = null;
         object? interceptedPayload = null!;
 
         pipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
-            interceptedContext = payload.Context;
             interceptedPayload = payload.Payload;
             return Task.CompletedTask;
         };
 
-        await SendAsync(ctx =>
-        {
-            ctx.Request.Headers[Context.HeaderName] = "header-value";
-        });
+        await SendAsync();
 
         Assert.Equal(query, interceptedPayload);
-        var context = Assert.IsType<Context>(interceptedContext);
-        Assert.Equal("header-value", context.HeaderValue);
     }
 
     private Task<HttpContext> SendAsync(Action<HttpContext>? config = null)
@@ -188,20 +180,6 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
             payload.SetResult(obj);
             return Task.CompletedTask;
         };
-    }
-
-    private class Context
-    {
-        public const string HeaderName = "x-custom-header";
-
-        public string? HeaderValue { get; }
-
-        public Context(string? headerValue)
-        {
-            HeaderValue = headerValue;
-        }
-
-        public static Context FromHttp(HttpContext context) => new(context.Request.Headers[HeaderName]);
     }
 
     private class Query : IQuery<QueryResult> { }

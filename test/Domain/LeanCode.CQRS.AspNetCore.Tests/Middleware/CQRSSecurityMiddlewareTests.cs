@@ -121,8 +121,8 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
             CQRSObjectKind.Command,
             payload.GetType(),
             typeof(CommandResult),
-            typeof(IgnoreType),
-            typeof(Context));
+            typeof(IgnoreType)
+        );
 
         var endpointMetadata = new CQRSEndpointMetadata(cqrsMetadata, (_, __) => Task.FromResult<object?>(null));
 
@@ -137,7 +137,7 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 
             ctx.Request.Method = "POST";
             ctx.SetEndpoint(endpoint);
-            ctx.SetCQRSRequestPayload(new Context(), payload);
+            ctx.SetCQRSRequestPayload(payload);
         });
     }
 
@@ -146,7 +146,6 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         authorizer.CheckIfAuthorizedAsync(null!, null!, null).ReturnsForAnyArgs(result);
     }
 
-    private class Context { }
     private class NoAuthorization : ICommand { }
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer), SingleAuthorizerCustomData)]

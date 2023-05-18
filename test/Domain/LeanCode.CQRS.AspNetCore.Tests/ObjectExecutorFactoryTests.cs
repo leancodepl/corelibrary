@@ -1,5 +1,7 @@
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
@@ -7,11 +9,11 @@ namespace LeanCode.CQRS.AspNetCore.Tests;
 public class ObjectExecutorFactoryTests
 {
     private readonly MockServiceProvider mockServiceProvider = new();
-    private readonly ObjectExecutorFactory<Context> executorFactory;
+    private readonly ObjectExecutorFactory executorFactory;
 
     public ObjectExecutorFactoryTests()
     {
-        executorFactory = new ObjectExecutorFactory<Context>();
+        executorFactory = new ObjectExecutorFactory();
     }
 
     [Fact]
@@ -20,18 +22,17 @@ public class ObjectExecutorFactoryTests
         var commandHandler = mockServiceProvider.CommandHandler;
 
         var cmd = new Command();
-        var ctx = new Context();
+        var ctx = MockHttpContext();
 
         var executorMethod = executorFactory.CreateExecutorFor(
             new CQRSObjectMetadata(
                 CQRSObjectKind.Command,
                 typeof(Command),
-                typeof(CommandHandler),
                 typeof(CommandResult),
-                typeof(Context)
+                typeof(CommandHandler)
             )
         );
-        var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, cmd));
+        var result = await executorMethod(ctx, new CQRSRequestPayload(cmd));
 
         Assert.Same(cmd, commandHandler.ReceivedCommand);
         Assert.Same(ctx, commandHandler.ReceivedContext);
@@ -45,18 +46,15 @@ public class ObjectExecutorFactoryTests
         var queryHandler = mockServiceProvider.QueryHandler;
 
         var query = new Query();
-        var ctx = new Context();
+        var ctx = MockHttpContext();
 
         var executorMethod = executorFactory.CreateExecutorFor(
             new CQRSObjectMetadata(
                 CQRSObjectKind.Query,
                 typeof(Query),
                 typeof(QueryResult),
-                typeof(QueryHandler),
-                typeof(Context)
-            )
-        );
-        var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, query));
+                typeof(QueryHandler)));
+        var result = await executorMethod(ctx, new CQRSRequestPayload(query));
 
         Assert.Same(query, queryHandler.ReceivedQuery);
         Assert.Same(ctx, queryHandler.ReceivedContext);
@@ -70,18 +68,17 @@ public class ObjectExecutorFactoryTests
         var operationHandler = mockServiceProvider.OperationHandler;
 
         var operation = new Operation();
-        var ctx = new Context();
+        var ctx = MockHttpContext();
 
         var executorMethod = executorFactory.CreateExecutorFor(
             new CQRSObjectMetadata(
                 CQRSObjectKind.Operation,
                 typeof(Operation),
                 typeof(OperationResult),
-                typeof(OperationHandler),
-                typeof(Context)
+                typeof(OperationHandler)
             )
         );
-        var result = await executorMethod(mockServiceProvider, new CQRSRequestPayload(ctx, operation));
+        var result = await executorMethod(ctx, new CQRSRequestPayload(operation));
 
         Assert.Same(operation, operationHandler.ReceivedOperation);
         Assert.Same(ctx, operationHandler.ReceivedContext);
@@ -89,7 +86,12 @@ public class ObjectExecutorFactoryTests
         Assert.Same(operationHandler.ReturnedResult, operationResult);
     }
 
-    private class Context { }
+    private HttpContext MockHttpContext()
+    {
+        var context = Substitute.For<HttpContext>();
+        context.RequestServices.Returns(mockServiceProvider);
+        return context;
+    }
 
     private class Command : ICommand { }
 
@@ -101,12 +103,12 @@ public class ObjectExecutorFactoryTests
 
     private class OperationResult { }
 
-    private class CommandHandler : ICommandHandler<Context, Command>
+    private class CommandHandler : ICommandHandler<Command>
     {
-        public Context? ReceivedContext { get; private set; }
+        public HttpContext? ReceivedContext { get; private set; }
         public Command? ReceivedCommand { get; private set; }
 
-        public Task ExecuteAsync(Context context, Command command)
+        public Task ExecuteAsync(HttpContext context, Command command)
         {
             ReceivedContext = context;
             ReceivedCommand = command;
@@ -115,13 +117,13 @@ public class ObjectExecutorFactoryTests
         }
     }
 
-    private class QueryHandler : IQueryHandler<Context, Query, QueryResult>
+    private class QueryHandler : IQueryHandler<Query, QueryResult>
     {
-        public Context? ReceivedContext { get; private set; }
+        public HttpContext? ReceivedContext { get; private set; }
         public Query? ReceivedQuery { get; private set; }
         public QueryResult ReturnedResult { get; } = new QueryResult();
 
-        public Task<QueryResult> ExecuteAsync(Context context, Query query)
+        public Task<QueryResult> ExecuteAsync(HttpContext context, Query query)
         {
             ReceivedContext = context;
             ReceivedQuery = query;
@@ -130,13 +132,14 @@ public class ObjectExecutorFactoryTests
         }
     }
 
-    private class OperationHandler : IOperationHandler<Context, Operation, OperationResult>
+    private class OperationHandler : IOperationHandler<Operation, OperationResult>
     {
-        public Context? ReceivedContext { get; private set; }
+        public HttpContext? ReceivedContext { get; private set; }
         public Operation? ReceivedOperation { get; private set; }
         public OperationResult ReturnedResult { get; } = new OperationResult();
 
-        public Task<OperationResult> ExecuteAsync(Context context, Operation operation)
+
+        public Task<OperationResult> ExecuteAsync(HttpContext context, Operation operation)
         {
             ReceivedContext = context;
             ReceivedOperation = operation;
@@ -153,15 +156,15 @@ public class ObjectExecutorFactoryTests
 
         public object? GetService(Type type)
         {
-            if (type == typeof(ICommandHandler<Context, Command>))
+            if (type == typeof(ICommandHandler<Command>))
             {
                 return CommandHandler;
             }
-            else if (type == typeof(IQueryHandler<Context, Query, QueryResult>))
+            else if (type == typeof(IQueryHandler<Query, QueryResult>))
             {
                 return QueryHandler;
             }
-            else if (type == typeof(IOperationHandler<Context, Operation, OperationResult>))
+            else if (type == typeof(IOperationHandler<Operation, OperationResult>))
             {
                 return OperationHandler;
             }

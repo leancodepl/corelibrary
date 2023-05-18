@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Http;
+
 namespace LeanCode.CQRS.AspNetCore;
 
-public delegate Task<object?> ObjectExecutor(IServiceProvider serviceProvider, CQRSRequestPayload payload);
+public delegate Task<object?> ObjectExecutor(HttpContext httpContext, CQRSRequestPayload payload);
 
 public class CQRSEndpointMetadata
 {

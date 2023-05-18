@@ -53,8 +53,7 @@ internal class CQRSObjectsRegistrationSource
                 handler.ObjectKind,
                 objectType: contract,
                 resultType: handler.ResultType,
-                handlerType: handler.HandlerType,
-                contextType: handler.ContextType
+                handlerType: handler.HandlerType
             );
 
             resultObjects.Add(metadata);
@@ -75,41 +74,38 @@ internal class CQRSObjectsRegistrationSource
     private static IEnumerable<HandlerDefinition> EnumerateHandledObjects(TypeInfo t)
     {
         var handledQueries = t.ImplementedInterfaces
-            .Where(qh => IsGenericType(qh, typeof(IQueryHandler<,,>)))
+            .Where(qh => IsGenericType(qh, typeof(IQueryHandler<,>)))
             .Select(
                 qh =>
                     new HandlerDefinition(
                         CQRSObjectKind.Query,
                         t,
                         qh.GenericTypeArguments[0],
-                        qh.GenericTypeArguments[1],
-                        qh.GenericTypeArguments[2]
+                        qh.GenericTypeArguments[1]
                     )
             );
 
         var handledCommands = t.ImplementedInterfaces
-            .Where(ch => IsGenericType(ch, typeof(ICommandHandler<,>)))
+            .Where(ch => IsGenericType(ch, typeof(ICommandHandler<>)))
             .Select(
                 ch =>
                     new HandlerDefinition(
                         CQRSObjectKind.Command,
                         t,
                         ch.GenericTypeArguments[0],
-                        ch.GenericTypeArguments[1],
                         typeof(ICommand)
                     )
             );
 
         var handledOperations = t.ImplementedInterfaces
-            .Where(oh => IsGenericType(oh, typeof(IOperationHandler<,,>)))
+            .Where(oh => IsGenericType(oh, typeof(IOperationHandler<,>)))
             .Select(
                 oh =>
                     new HandlerDefinition(
                         CQRSObjectKind.Operation,
                         t,
                         oh.GenericTypeArguments[0],
-                        oh.GenericTypeArguments[1],
-                        oh.GenericTypeArguments[2]
+                        oh.GenericTypeArguments[1]
                     )
             );
 
@@ -145,21 +141,18 @@ internal class CQRSObjectsRegistrationSource
     {
         public CQRSObjectKind ObjectKind { get; }
         public Type HandlerType { get; }
-        public Type ContextType { get; }
         public Type ObjectType { get; }
         public Type ResultType { get; }
 
         public HandlerDefinition(
             CQRSObjectKind objectKind,
             Type handlerType,
-            Type contextType,
             Type objectType,
             Type resultType
         )
         {
             ObjectKind = objectKind;
             HandlerType = handlerType;
-            ContextType = contextType;
             ObjectType = objectType;
             ResultType = resultType;
         }

@@ -16,8 +16,8 @@ public static class HttpContextExtensions
         return httpContext.Features.GetRequiredFeature<CQRSRequestPayload>();
     }
 
-    public static void SetCQRSRequestPayload(this HttpContext httpContext, object context, object payload)
+    public static void SetCQRSRequestPayload(this HttpContext httpContext, object payload)
     {
-        httpContext.Features.Set(new CQRSRequestPayload(context, payload));
+        httpContext.Features.Set(new CQRSRequestPayload(payload));
     }
 }

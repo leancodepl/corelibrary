@@ -1,4 +1,3 @@
-using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;
