@@ -13,11 +13,7 @@ public class Project : IAggregateRoot<SId<Project>>
 
     public static Project Create(string name)
     {
-        return new Project
-        {
-            Id = SId<Project>.New(),
-            Name = name,
-        };
+        return new Project { Id = SId<Project>.New(), Name = name, };
     }
 
     public void EditTask(SId<Task> taskId, string name)
@@ -28,7 +24,7 @@ public class Project : IAggregateRoot<SId<Project>>
     public void AssignUserToTask(SId<Task> taskId, SId<User> userId)
     {
         tasks.Single(t => t.Id == taskId).AssignUser(userId);
-        DomainEvents.Raise(new UserAssignedToTask(SId<Task> taskId, SId<User> userId));
+        DomainEvents.Raise(new UserAssignedToTask(SId < Task > taskId, SId < User > userId));
     }
 
     public void UnassignUserFromTask(SId<Task> taskId)
