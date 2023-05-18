@@ -1,8 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using FValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace LeanCode.CQRS.Validation.Fluent.Testing;
@@ -17,16 +14,10 @@ public class OverrideContextValidator<T> : IValidator<T>
         set => inner.CascadeMode = value;
     }
 
-    public IComponentContext Components
+    public HttpContext HttpContext
     {
-        get => (IComponentContext)BaseContext.RootContextData[ValidationContextExtensions.ComponentContextKey];
-        set => BaseContext.RootContextData[ValidationContextExtensions.ComponentContextKey] = value;
-    }
-
-    public object AppContext
-    {
-        get => BaseContext.RootContextData[ValidationContextExtensions.AppContextKey];
-        set => BaseContext.RootContextData[ValidationContextExtensions.AppContextKey] = value;
+        get => (HttpContext)BaseContext.RootContextData[ValidationContextExtensions.HttpContextKey];
+        set => BaseContext.RootContextData[ValidationContextExtensions.HttpContextKey] = value;
     }
 
     public ValidationContext<T> BaseContext { get; }
