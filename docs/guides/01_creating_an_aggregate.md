@@ -170,7 +170,7 @@ Notice that these added methods can and will throw an exception if a project doe
 
 ## Rasing domain events
 
-The domain events make an important part of DDD. It is through the use of domain events that an aggregate might communicate with the rest of the system. We will see how to raise an event from the aggregate.
+The domain events make an important part of DDD. It is through the use of domain events that an aggregate may communicate with the rest of the system. In this section we will see how to raise an event from an aggregate.
 
 Let's imagine that we want to perform some action after a user has been assigned to a task. We will modify `AssignUserToTask` method from the `Project` class:
 
