@@ -144,6 +144,11 @@ public class Project : IAggregateRoot<SId<Project>>
 {
     . . .
 
+    public void AddTasks(IEnumerable<Task> tasks)
+    {
+        this.tasks.AddRange(tasks);
+    }
+
     public void EditTask(SId<Task> taskId, string name)
     {
         tasks.Single(t => t.Id == taskId).Edit(name);
