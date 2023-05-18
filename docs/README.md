@@ -24,7 +24,7 @@ The CoreLib documentation is available here:
 
 ## Domain Driven Design
 
-LeanCode Core Library is strongly based on concepts of Domain Driven Design. If you are not familiar with this approach to developing software please check out the following books:
+LeanCode Core Library is strongly based on concepts of Domain Driven Design. If you are not familiar with this approach to developing software, you can check these books:
 
 1. Domain-Driven Design: Tackling Complexity in the Heart of Software, Eric Evans
 2. Implementing Domain-Driven Design, Vaughn Vernon
