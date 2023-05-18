@@ -9,7 +9,7 @@ internal static class CQRSPipelineFinalizer
         var cqrsEndpoint = context.GetCQRSEndpoint();
         var payload = context.GetCQRSRequestPayload();
 
-        var result = await cqrsEndpoint.ObjectExecutor(context.RequestServices, payload);
+        var result = await cqrsEndpoint.ObjectExecutor(context, payload);
 
         payload.SetResult(result);
     }

@@ -1,4 +1,3 @@
-using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +12,7 @@ public static class CQRSEndpointRouteBuilderExtensions
     public static void MapRemoteCqrs(
         this IEndpointRouteBuilder builder,
         string path,
-        Action<CQRSEndpointsBuilder> config
+        Action<CQRSPipelineBuilder> config
     )
     {
         var cqrsHandlers =
@@ -22,56 +21,39 @@ public static class CQRSEndpointRouteBuilderExtensions
                 "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first"
             );
 
-        var dataSource = new CQRSEndpointsDataSource(path);
-        builder.DataSources.Add(dataSource);
+        var pipelineBuilder = new CQRSPipelineBuilder(builder);
+        config(pipelineBuilder);
 
-        config(new CQRSEndpointsBuilder(builder, dataSource, cqrsHandlers));
+        var dataSource = new CQRSEndpointsDataSource(path, new ObjectExecutorFactory());
+        dataSource.AddEndpointsFor(
+            cqrsHandlers.Objects,
+            commandsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Commands),
+            queriesPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Queries),
+            operationsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Operations)
+        );
+        builder.DataSources.Add(dataSource);
     }
 }
 
-public class CQRSEndpointsBuilder
+public class CQRSPipelineBuilder
 {
-    private readonly IEndpointRouteBuilder routeBuilder;
-    private readonly CQRSEndpointsDataSource dataSource;
-    private readonly CQRSObjectsRegistrationSource cqrsObjectsSource;
+    public Action<IApplicationBuilder> Commands { get; set; } = app => { };
+    public Action<IApplicationBuilder> Queries { get; set; } = app => { };
+    public Action<IApplicationBuilder> Operations { get; set; } = app => { };
 
-    internal CQRSEndpointsBuilder(
-        IEndpointRouteBuilder routeBuilder,
-        CQRSEndpointsDataSource dataSource,
-        CQRSObjectsRegistrationSource cqrsObjectsSource
-    )
+    private readonly IEndpointRouteBuilder routeBuilder;
+
+    internal CQRSPipelineBuilder(IEndpointRouteBuilder routeBuilder)
     {
         this.routeBuilder = routeBuilder;
-        this.dataSource = dataSource;
-        this.cqrsObjectsSource = cqrsObjectsSource;
     }
 
-    public CQRSEndpointsBuilder WithPipelines<TContext>(
-        Func<HttpContext, TContext> contextTranslator,
-        Action<IApplicationBuilder> commandsPipeline,
-        Action<IApplicationBuilder> queriesPipeline,
-        Action<IApplicationBuilder> operationsPipeline
-    )
+    internal RequestDelegate PreparePipeline(Action<IApplicationBuilder> pipelineCfg)
     {
-        var objects = cqrsObjectsSource.Objects.Where(obj => obj.ContextType == typeof(TContext));
-
-        dataSource.AddEndpointsFor(
-            objects,
-            new ObjectExecutorFactory<TContext>(),
-            commandsPipeline: PreparePipeline(commandsPipeline),
-            queriesPipeline: PreparePipeline(queriesPipeline),
-            operationsPipeline: PreparePipeline(operationsPipeline)
-        );
-
-        return this;
-
-        RequestDelegate PreparePipeline(Action<IApplicationBuilder> pipelineCfg)
-        {
-            var applicationBuilder = routeBuilder.CreateApplicationBuilder();
-            applicationBuilder.UseMiddleware<CQRSRequestSerializer>(contextTranslator);
-            pipelineCfg(applicationBuilder);
-            applicationBuilder.Run(CQRSPipelineFinalizer.HandleAsync);
-            return applicationBuilder.Build();
-        }
+        var applicationBuilder = routeBuilder.CreateApplicationBuilder();
+        applicationBuilder.UseMiddleware<CQRSRequestSerializer>();
+        pipelineCfg(applicationBuilder);
+        applicationBuilder.Run(CQRSPipelineFinalizer.HandleAsync);
+        return applicationBuilder.Build();
     }
 }

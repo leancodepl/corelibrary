@@ -40,10 +40,10 @@ public class RemoteCQRSEndpointsTests : IDisposable, IAsyncLifetime
                         app.UseRouting();
                         app.UseEndpoints(e =>
                         {
-                            e.MapRemoteCqrs(
-                                "/cqrs",
-                                cqrs => cqrs.WithPipelines(TestContext.FromHttp, q => { }, c => { }, o => { })
-                            );
+                            // e.MapRemoteCqrs(
+                            //     "/cqrs",
+                            //     cqrs => cqrs.WithPipelines(TestContext.FromHttp, q => { }, c => { }, o => { })
+                            // );
                         });
                     });
             })

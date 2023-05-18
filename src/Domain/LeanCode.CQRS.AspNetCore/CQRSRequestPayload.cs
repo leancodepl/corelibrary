@@ -2,7 +2,6 @@ namespace LeanCode.CQRS.AspNetCore;
 
 public class CQRSRequestPayload
 {
-    public object Context { get; }
     public object Payload { get; }
 
     /// <summary>
@@ -12,9 +11,8 @@ public class CQRSRequestPayload
     public bool HasResult { get; private set; }
     public object? Result { get; private set; }
 
-    public CQRSRequestPayload(object context, object payload)
+    public CQRSRequestPayload(object payload)
     {
-        Context = context;
         Payload = payload;
     }
 

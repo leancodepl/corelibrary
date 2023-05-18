@@ -11,17 +11,14 @@ internal class CQRSRequestSerializer
     private readonly ILogger logger = Log.ForContext<CQRSRequestSerializer>();
 
     private readonly ISerializer serializer;
-    private readonly Func<HttpContext, object> contextTranslator;
     private readonly RequestDelegate next;
 
     public CQRSRequestSerializer(
-        Func<HttpContext, object> contextTranslator,
         ISerializer serializer,
         RequestDelegate next
     )
     {
         this.serializer = serializer;
-        this.contextTranslator = contextTranslator;
         this.next = next;
     }
 
@@ -58,8 +55,7 @@ internal class CQRSRequestSerializer
             return;
         }
 
-        var context = contextTranslator(httpContext);
-        httpContext.SetCQRSRequestPayload(context, obj);
+        httpContext.SetCQRSRequestPayload(obj);
 
         try
         {

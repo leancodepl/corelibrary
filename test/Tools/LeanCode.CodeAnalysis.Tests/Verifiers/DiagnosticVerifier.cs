@@ -129,7 +129,7 @@ public abstract class DiagnosticVerifier : IDisposable
     {
         MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),
-        MetadataReference.CreateFromFile(typeof(ICommandHandler<,>).Assembly.Location),
+        MetadataReference.CreateFromFile(typeof(ICommandHandler<>).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(ContextualValidator<>).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(AbstractValidator<>).Assembly.Location),
         MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),

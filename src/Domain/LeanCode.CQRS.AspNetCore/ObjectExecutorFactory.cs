@@ -1,6 +1,7 @@
 using System.Reflection;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore;
@@ -10,19 +11,19 @@ internal interface IObjectExecutorFactory
     ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object);
 }
 
-internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
+internal class ObjectExecutorFactory : IObjectExecutorFactory
 {
-    private static readonly MethodInfo ExecuteCommandMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+    private static readonly MethodInfo ExecuteCommandMethod = typeof(ObjectExecutorFactory).GetMethod(
         nameof(ExecuteCommandAsync),
         BindingFlags.Static | BindingFlags.NonPublic
     )!;
 
-    private static readonly MethodInfo ExecuteQueryMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+    private static readonly MethodInfo ExecuteQueryMethod = typeof(ObjectExecutorFactory).GetMethod(
         nameof(ExecuteQueryAsync),
         BindingFlags.Static | BindingFlags.NonPublic
     )!;
 
-    private static readonly MethodInfo ExecuteOperationMethod = typeof(ObjectExecutorFactory<TContext>).GetMethod(
+    private static readonly MethodInfo ExecuteOperationMethod = typeof(ObjectExecutorFactory).GetMethod(
         nameof(ExecuteOperationAsync),
         BindingFlags.Static | BindingFlags.NonPublic
     )!;
@@ -52,39 +53,38 @@ internal class ObjectExecutorFactory<TContext> : IObjectExecutorFactory
     }
 
     private static async Task<object?> ExecuteOperationAsync<TOperation, TResult>(
-        IServiceProvider sp,
+        HttpContext httpContext,
         CQRSRequestPayload payload
     )
         where TOperation : IOperation<TResult>
     {
-        var context = (TContext)payload.Context;
         var operation = (TOperation)payload.Payload;
 
-        var handler = sp.GetRequiredService<IOperationHandler<TContext, TOperation, TResult>>();
-        return await handler.ExecuteAsync(context, operation);
+        var handler = httpContext.RequestServices.GetRequiredService<IOperationHandler<TOperation, TResult>>();
+        return await handler.ExecuteAsync(httpContext, operation);
     }
 
     private static async Task<object?> ExecuteQueryAsync<TQuery, TResult>(
-        IServiceProvider sp,
+        HttpContext httpContext,
         CQRSRequestPayload payload
     )
         where TQuery : IQuery<TResult>
     {
-        var context = (TContext)payload.Context;
         var query = (TQuery)payload.Payload;
 
-        var handler = sp.GetRequiredService<IQueryHandler<TContext, TQuery, TResult>>();
-        return await handler.ExecuteAsync(context, query);
+        var handler = httpContext.RequestServices.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+        return await handler.ExecuteAsync(httpContext, query);
     }
 
-    private static async Task<object?> ExecuteCommandAsync<TCommand>(IServiceProvider sp, CQRSRequestPayload payload)
+    private static async Task<object?> ExecuteCommandAsync<TCommand>(
+        HttpContext httpContext,
+        CQRSRequestPayload payload)
         where TCommand : ICommand
     {
-        var context = (TContext)payload.Context;
         var command = (TCommand)payload.Payload;
 
-        var handler = sp.GetRequiredService<ICommandHandler<TContext, TCommand>>();
-        await handler.ExecuteAsync(context, command);
+        var handler = httpContext.RequestServices.GetRequiredService<ICommandHandler<TCommand>>();
+        await handler.ExecuteAsync(httpContext, command);
 
         return CommandResult.Success;
     }

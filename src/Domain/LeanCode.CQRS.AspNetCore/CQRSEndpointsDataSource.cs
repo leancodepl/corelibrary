@@ -8,6 +8,7 @@ namespace LeanCode.CQRS.AspNetCore;
 
 internal class CQRSEndpointsDataSource : EndpointDataSource
 {
+    private readonly IObjectExecutorFactory executorFactory;
     private readonly RoutePattern basePath;
     private readonly List<Endpoint> endpoints = new();
 
@@ -15,14 +16,14 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
 
     public override IReadOnlyList<Endpoint> Endpoints => endpoints;
 
-    public CQRSEndpointsDataSource(string basePath)
+    public CQRSEndpointsDataSource(string basePath, IObjectExecutorFactory executorFactory)
     {
+        this.executorFactory = executorFactory;
         this.basePath = RoutePatternFactory.Parse(basePath);
     }
 
     public void AddEndpointsFor(
         IEnumerable<CQRSObjectMetadata> objects,
-        IObjectExecutorFactory executorFactory,
         RequestDelegate commandsPipeline,
         RequestDelegate queriesPipeline,
         RequestDelegate operationsPipeline
