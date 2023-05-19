@@ -1,5 +1,6 @@
-using Autofac;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.ViewRenderer.Razor;
 
@@ -12,8 +13,8 @@ public class RazorViewRendererModule : AppModule
         this.opts = opts;
     }
 
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.Register(_ => new RazorViewRenderer(opts)).As<IViewRenderer>().SingleInstance();
+        services.TryAddSingleton<IViewRenderer>(_ => new RazorViewRenderer(opts));
     }
 }

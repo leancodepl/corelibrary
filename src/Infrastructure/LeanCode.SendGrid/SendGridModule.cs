@@ -1,15 +1,16 @@
-using Autofac;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SendGrid;
 
 namespace LeanCode.SendGrid;
 
 public class SendGridModule : AppModule
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.Register(context => new SendGridClient(context.Resolve<SendGridClientOptions>())).AsSelf();
+        services.TryAddTransient(s => new SendGridClient(s.GetRequiredService<SendGridClientOptions>()));
 
-        builder.RegisterType<SendGridRazorClient>().AsSelf();
+        services.TryAddTransient<SendGridRazorClient>();
     }
 }

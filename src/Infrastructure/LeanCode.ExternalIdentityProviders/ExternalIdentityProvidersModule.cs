@@ -1,11 +1,10 @@
-using System;
-using Autofac;
 using LeanCode.Components;
 using LeanCode.ExternalIdentityProviders.Apple;
 using LeanCode.ExternalIdentityProviders.Facebook;
 using LeanCode.ExternalIdentityProviders.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.ExternalIdentityProviders;
 
@@ -35,41 +34,32 @@ public class ExternalIdentityProvidersModule<TUser> : AppModule
         this.configuration = configuration;
     }
 
-    protected override void Load(ContainerBuilder builder)
-    {
-        if (IsEnabled(Providers.Facebook))
-        {
-            builder.RegisterType<FacebookExternalLogin<TUser>>().AsSelf();
-            builder.RegisterType<FacebookGrantValidator<TUser>>().AsSelf().AsImplementedInterfaces();
-        }
-
-        if (IsEnabled(Providers.Apple))
-        {
-            builder.RegisterType<AppleExternalLogin<TUser>>().AsSelf();
-            builder.RegisterType<AppleGrantValidator<TUser>>().AsSelf().AsImplementedInterfaces();
-        }
-
-        if (IsEnabled(Providers.Google))
-        {
-            builder.RegisterType<GoogleAuthService>().AsSelf();
-            builder.RegisterType<GoogleExternalLogin<TUser>>().AsSelf();
-            builder.RegisterType<GoogleGrantValidator<TUser>>().AsSelf().AsImplementedInterfaces();
-        }
-
-        builder.RegisterGeneric(typeof(ExternalLoginExceptionHandler<>)).AsSelf();
-    }
-
     public override void ConfigureServices(IServiceCollection services)
     {
         if (IsEnabled(Providers.Facebook))
         {
             services.AddHttpClient<FacebookClient>(c => c.BaseAddress = new Uri(FacebookClient.ApiBase));
+
+            services.TryAddTransient<FacebookExternalLogin<TUser>>();
+            services.TryRegisterWithImplementedInterfaces<FacebookGrantValidator<TUser>>();
         }
 
         if (IsEnabled(Providers.Apple))
         {
             services.AddHttpClient<AppleIdService>();
+
+            services.TryAddTransient<AppleExternalLogin<TUser>>();
+            services.TryRegisterWithImplementedInterfaces<AppleGrantValidator<TUser>>();
         }
+
+        if (IsEnabled(Providers.Google))
+        {
+            services.TryAddTransient<GoogleAuthService>();
+            services.TryAddTransient<GoogleExternalLogin<TUser>>();
+            services.TryRegisterWithImplementedInterfaces<GoogleGrantValidator<TUser>>();
+        }
+
+        services.TryAddTransient(typeof(ExternalLoginExceptionHandler<>));
     }
 
     private bool IsEnabled(Providers provider) => configuration.HasFlag(provider);

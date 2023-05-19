@@ -1,7 +1,6 @@
-using Autofac;
-using Autofac.Core;
 using LeanCode.Components;
 using LeanCode.Localization.StringLocalizers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Localization;
 
@@ -14,12 +13,11 @@ public class LocalizationModule : AppModule
         this.config = config;
     }
 
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder
-            .Register(c => new ResourceManagerStringLocalizer(config))
-            .AsSelf()
-            .AsImplementedInterfaces()
-            .SingleInstance();
+        services.TryRegisterWithImplementedInterfaces<ResourceManagerStringLocalizer>(
+            _ => new ResourceManagerStringLocalizer(config),
+            ServiceLifetime.Singleton
+        );
     }
 }
