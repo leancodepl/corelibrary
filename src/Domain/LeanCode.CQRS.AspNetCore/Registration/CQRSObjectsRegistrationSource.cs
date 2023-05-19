@@ -93,7 +93,7 @@ internal class CQRSObjectsRegistrationSource
                         CQRSObjectKind.Command,
                         t,
                         ch.GenericTypeArguments[0],
-                        typeof(ICommand)
+                        typeof(CommandResult)
                     )
             );
 

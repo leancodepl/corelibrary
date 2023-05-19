@@ -43,7 +43,7 @@ public class CQRSSecurityMiddleware
 
             var authorized = await customAuthorizer.CheckIfAuthorizedAsync(
                 context,
-                payload,
+                payload.Payload,
                 customAuthorizerDefinition.CustomData
             );
 

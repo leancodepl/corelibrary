@@ -47,13 +47,3 @@ public class CQRSValidationMiddleware
         await next(httpContext);
     }
 }
-
-public static class PipelineBuilderExtensions
-{
-    public static IApplicationBuilder Validate(
-        this IApplicationBuilder builder
-    )
-    {
-        return builder.UseMiddleware<CQRSValidationMiddleware>();
-    }
-}
