@@ -49,11 +49,8 @@ public class ObjectExecutorFactoryTests
         var ctx = MockHttpContext();
 
         var executorMethod = executorFactory.CreateExecutorFor(
-            new CQRSObjectMetadata(
-                CQRSObjectKind.Query,
-                typeof(Query),
-                typeof(QueryResult),
-                typeof(QueryHandler)));
+            new CQRSObjectMetadata(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(QueryHandler))
+        );
         var result = await executorMethod(ctx, new CQRSRequestPayload(query));
 
         Assert.Same(query, queryHandler.ReceivedQuery);
@@ -137,7 +134,6 @@ public class ObjectExecutorFactoryTests
         public HttpContext? ReceivedContext { get; private set; }
         public Operation? ReceivedOperation { get; private set; }
         public OperationResult ReturnedResult { get; } = new OperationResult();
-
 
         public Task<OperationResult> ExecuteAsync(HttpContext context, Operation operation)
         {

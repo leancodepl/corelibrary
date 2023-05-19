@@ -54,7 +54,8 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     {
         var (body, statusCode) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
-            @"{ ""FailValidation"": true }");
+            @"{ ""FailValidation"": true }"
+        );
 
         var commandResult = JsonSerializer.Deserialize<CommandResult>(body);
 
@@ -83,7 +84,8 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     {
         var (_, statusCode) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
-            isAuthenticated: false);
+            isAuthenticated: false
+        );
 
         Assert.Equal(HttpStatusCode.Unauthorized, statusCode);
     }
@@ -93,7 +95,8 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     {
         var (_, statusCode) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
-            @"{ ""FailAuthorization"": true }");
+            @"{ ""FailAuthorization"": true }"
+        );
 
         Assert.Equal(HttpStatusCode.Forbidden, statusCode);
     }
@@ -102,7 +105,8 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     public async Task Returns_InternalServerError_if_something_fails()
     {
         var (_, statusCode) = await SendAsync(
-            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestFailingCommand");
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestFailingCommand"
+        );
 
         Assert.Equal(HttpStatusCode.InternalServerError, statusCode);
     }

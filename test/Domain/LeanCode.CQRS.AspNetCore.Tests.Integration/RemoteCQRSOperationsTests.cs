@@ -63,7 +63,8 @@ public class RemoteCQRSOperationsTests : RemoteCQRSTestsBase
     {
         var (_, statusCode) = await SendAsync(
             "/cqrs/operation/LeanCode.CQRS.AspNetCore.Tests.Integration.TestOperation",
-            isAuthenticated: false);
+            isAuthenticated: false
+        );
 
         Assert.Equal(HttpStatusCode.Unauthorized, statusCode);
     }
@@ -73,7 +74,8 @@ public class RemoteCQRSOperationsTests : RemoteCQRSTestsBase
     {
         var (_, statusCode) = await SendAsync(
             "/cqrs/operation/LeanCode.CQRS.AspNetCore.Tests.Integration.TestOperation",
-            @"{ ""FailAuthorization"": true }");
+            @"{ ""FailAuthorization"": true }"
+        );
 
         Assert.Equal(HttpStatusCode.Forbidden, statusCode);
     }

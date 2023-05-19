@@ -13,10 +13,7 @@ internal class CQRSRequestSerializer
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSRequestSerializer(
-        ISerializer serializer,
-        RequestDelegate next
-    )
+    public CQRSRequestSerializer(ISerializer serializer, RequestDelegate next)
     {
         this.serializer = serializer;
         this.next = next;
@@ -31,19 +28,11 @@ internal class CQRSRequestSerializer
 
         try
         {
-            obj = await serializer.DeserializeAsync(
-                httpContext.Request.Body,
-                objectType,
-                httpContext.RequestAborted
-            );
+            obj = await serializer.DeserializeAsync(httpContext.Request.Body, objectType, httpContext.RequestAborted);
         }
         catch (Exception ex)
         {
-            logger.Warning(
-                ex,
-                "Cannot deserialize object body from the request stream for type {Type}",
-                objectType
-            );
+            logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             return;
         }

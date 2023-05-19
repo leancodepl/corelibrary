@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -32,16 +31,5 @@ public class NonProductionResponseLoggerMiddleware
         {
             logger.Information("Request executed with response {@Response}", payload.Result);
         }
-
-    }
-}
-
-public static class LogResponsesOnNonProductionPipelineBuilderExtensions
-{
-    public static IApplicationBuilder LogCQRSResponsesOnNonProduction<TContext, TObj, TRes>(
-        this IApplicationBuilder builder
-    )
-    {
-        return builder.UseMiddleware<NonProductionResponseLoggerMiddleware>();
     }
 }

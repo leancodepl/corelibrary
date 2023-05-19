@@ -38,6 +38,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
     public Guid CorrelationId { get; }
     public IContainer Container { get; }
+
     // public ICommandExecutor<Context> Commands { get; }
     public IBusActivityMonitor ActivityMonitor { get; }
     public ITestHarness Harness => Container.Resolve<ITestHarness>();

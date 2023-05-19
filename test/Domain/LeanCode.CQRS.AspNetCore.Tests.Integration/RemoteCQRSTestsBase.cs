@@ -40,12 +40,15 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         app.Use(MockAuthorization);
                         app.UseEndpoints(ep =>
                         {
-                            ep.MapRemoteCqrs("/cqrs", cqrs =>
-                            {
-                                cqrs.Queries = q => q.Secure();
-                                cqrs.Commands = c => c.Secure().Validate();
-                                cqrs.Operations = o => o.Secure();
-                            });
+                            ep.MapRemoteCqrs(
+                                "/cqrs",
+                                cqrs =>
+                                {
+                                    cqrs.Queries = q => q.Secure();
+                                    cqrs.Commands = c => c.Secure().Validate();
+                                    cqrs.Operations = o => o.Secure();
+                                }
+                            );
                         });
                     });
             })
@@ -56,8 +59,10 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
 
     private static Task MockAuthorization(HttpContext httpContext, RequestDelegate next)
     {
-        if (httpContext.Request.Headers.TryGetValue(IsAuthenticatedHeader, out var isAuthenticated) &&
-            isAuthenticated == bool.TrueString)
+        if (
+            httpContext.Request.Headers.TryGetValue(IsAuthenticatedHeader, out var isAuthenticated)
+            && isAuthenticated == bool.TrueString
+        )
         {
             httpContext.User = new ClaimsPrincipal(new ClaimsIdentity("Test Identity"));
         }
@@ -87,7 +92,6 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
         var responseBody = await response.Content.ReadAsStringAsync();
         return (responseBody, response.StatusCode);
     }
-
 
     public void Dispose()
     {

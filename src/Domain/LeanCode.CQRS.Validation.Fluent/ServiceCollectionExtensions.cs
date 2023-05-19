@@ -8,7 +8,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddFluentValidation(
         this IServiceCollection serviceCollection,
-        TypesCatalog catalog)
+        TypesCatalog catalog
+    )
     {
         serviceCollection.AddScoped(typeof(ICommandValidator<>), typeof(AdapterLoader<>));
         serviceCollection.RegisterGenericTypes(catalog, typeof(IValidator<>), ServiceLifetime.Singleton);

@@ -7,12 +7,7 @@ public class CQRSObjectMetadata
     public Type ResultType { get; }
     public Type HandlerType { get; }
 
-    internal CQRSObjectMetadata(
-        CQRSObjectKind objectKind,
-        Type objectType,
-        Type resultType,
-        Type handlerType
-    )
+    internal CQRSObjectMetadata(CQRSObjectKind objectKind, Type objectType, Type resultType, Type handlerType)
     {
         ObjectKind = objectKind;
         ObjectType = objectType;

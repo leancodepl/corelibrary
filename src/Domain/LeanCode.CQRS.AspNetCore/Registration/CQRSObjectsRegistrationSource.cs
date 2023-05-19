@@ -89,12 +89,7 @@ internal class CQRSObjectsRegistrationSource
             .Where(ch => IsGenericType(ch, typeof(ICommandHandler<>)))
             .Select(
                 ch =>
-                    new HandlerDefinition(
-                        CQRSObjectKind.Command,
-                        t,
-                        ch.GenericTypeArguments[0],
-                        typeof(CommandResult)
-                    )
+                    new HandlerDefinition(CQRSObjectKind.Command, t, ch.GenericTypeArguments[0], typeof(CommandResult))
             );
 
         var handledOperations = t.ImplementedInterfaces
@@ -144,12 +139,7 @@ internal class CQRSObjectsRegistrationSource
         public Type ObjectType { get; }
         public Type ResultType { get; }
 
-        public HandlerDefinition(
-            CQRSObjectKind objectKind,
-            Type handlerType,
-            Type objectType,
-            Type resultType
-        )
+        public HandlerDefinition(CQRSObjectKind objectKind, Type handlerType, Type objectType, Type resultType)
         {
             ObjectKind = objectKind;
             HandlerType = handlerType;

@@ -1,6 +1,5 @@
 using LeanCode.Contracts;
 using LeanCode.CQRS.Validation;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
@@ -18,9 +17,7 @@ public class CQRSValidationMiddleware
         this.next = next;
     }
 
-    public async Task InvokeAsync(
-        HttpContext httpContext
-    )
+    public async Task InvokeAsync(HttpContext httpContext)
     {
         var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
         var payload = httpContext.GetCQRSRequestPayload();
