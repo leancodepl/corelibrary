@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using Autofac;
 using LeanCode.Components;
 using LeanCode.IntegrationTestHelpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,10 +58,7 @@ public class ApiModule : AppModule
         services.AddDbContext<TestDbContext>(
             cfg => cfg.UseSqlServer(config.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault))
         );
-    }
 
-    protected override void Load(ContainerBuilder builder)
-    {
-        builder.RegisterType<AppRoles>().AsImplementedInterfaces();
+        services.TryRegisterWithImplementedInterfaces<AppRoles>();
     }
 }

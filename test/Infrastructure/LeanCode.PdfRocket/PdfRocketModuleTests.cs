@@ -1,8 +1,4 @@
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
+using LeanCode.Components;
 using LeanCode.ViewRenderer;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -14,23 +10,20 @@ public class PdfRocketModuleTests
     [Fact]
     public void Registers_pdf_rocket_client_correctly()
     {
-        var builder = new ContainerBuilder();
         var services = new ServiceCollection();
 
         var module = new PdfRocketModule();
-        builder.RegisterModule(module);
         module.ConfigureServices(services);
-        builder.Populate(services);
 
         var config = new PdfRocketConfiguration { ApiKey = "api_key" };
-        builder.RegisterInstance(config).AsSelf();
-        builder.RegisterType<MockRenderer>().AsImplementedInterfaces();
+        services.AddSingleton(config);
+        services.TryRegisterWithImplementedInterfaces<MockRenderer>();
 
-        var container = builder.Build();
+        var serviceProvider = services.BuildServiceProvider();
 
-        var succ = container.TryResolve<PdfRocketGenerator>(out _);
+        var pdfRocketGenerator = serviceProvider.GetService<PdfRocketGenerator>();
 
-        Assert.True(succ);
+        Assert.NotNull(pdfRocketGenerator);
     }
 
     private sealed class MockRenderer : IViewRenderer

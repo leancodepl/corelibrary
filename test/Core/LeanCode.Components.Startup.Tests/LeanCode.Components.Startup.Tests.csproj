@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>LeanCode.Components.Tests</RootNamespace>
+    <RootNamespace>LeanCode.Components.Startup.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

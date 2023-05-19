@@ -7,9 +7,4 @@
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.AzureIdentity/LeanCode.AzureIdentity.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
-  </ItemGroup>
-
 </Project>
