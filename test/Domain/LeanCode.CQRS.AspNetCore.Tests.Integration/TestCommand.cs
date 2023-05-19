@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
 
 [CustomAuthorizeWhen]
-public class TestCommand : ICommand
+public class TestCommand : ICommand, ICustomAuthorizerParams
 {
     public bool FailValidation { get; set; }
     public bool FailAuthorization { get; set; }
@@ -34,5 +34,15 @@ public class TestCommandHandler : ICommandHandler<TestCommand>
     public Task ExecuteAsync(HttpContext context, TestCommand command)
     {
         return Task.CompletedTask;
+    }
+}
+
+public class TestFailingCommand : ICommand { }
+
+public class FailingCommandHandler : ICommandHandler<TestFailingCommand>
+{
+    public Task ExecuteAsync(HttpContext context, TestFailingCommand command)
+    {
+        throw new InvalidOperationException("This handler fails");
     }
 }

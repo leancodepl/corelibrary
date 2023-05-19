@@ -42,7 +42,9 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         {
                             ep.MapRemoteCqrs("/cqrs", cqrs =>
                             {
+                                cqrs.Queries = q => q.Secure();
                                 cqrs.Commands = c => c.Secure().Validate();
+                                cqrs.Operations = o => o.Secure();
                             });
                         });
                     });
