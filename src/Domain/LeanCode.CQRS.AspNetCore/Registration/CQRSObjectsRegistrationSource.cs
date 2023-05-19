@@ -124,7 +124,7 @@ internal class CQRSObjectsRegistrationSource
 
     private static bool IsOperation(TypeInfo type)
     {
-        return ImplementsGenericType(type, typeof(IOperation));
+        return ImplementsGenericType(type, typeof(IOperation<>));
     }
 
     private static bool ImplementsGenericType(TypeInfo type, Type implementedType) =>

@@ -1,18 +1,6 @@
 using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text.Json;
-using LeanCode.Components;
 using LeanCode.Contracts;
-using LeanCode.CQRS.AspNetCore.Middleware;
-using LeanCode.CQRS.Security;
-using LeanCode.CQRS.Validation.Fluent;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
@@ -22,8 +10,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_NotFound_for_non_existing_command()
     {
-        var (_, statusCode) = await SendAsync("/cqrs/commands/LeanCode.NotAValidCommand");
-
+        var (_, statusCode) = await SendAsync("/cqrs/command/LeanCode.NotAValidCommand");
         Assert.Equal(HttpStatusCode.NotFound, statusCode);
     }
 
@@ -109,5 +96,14 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
             @"{ ""FailAuthorization"": true }");
 
         Assert.Equal(HttpStatusCode.Forbidden, statusCode);
+    }
+
+    [Fact]
+    public async Task Returns_InternalServerError_if_something_fails()
+    {
+        var (_, statusCode) = await SendAsync(
+            "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestFailingCommand");
+
+        Assert.Equal(HttpStatusCode.InternalServerError, statusCode);
     }
 }
