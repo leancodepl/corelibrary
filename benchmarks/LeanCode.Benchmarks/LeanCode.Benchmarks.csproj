@@ -23,8 +23,6 @@
     <PackageReference Include="LeanCode.Contracts" />
 
     <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Autofac" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
