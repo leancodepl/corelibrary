@@ -15,12 +15,8 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
 {
-    private static readonly CQRSObjectMetadata QueryMetadata = new(
-        CQRSObjectKind.Query,
-        typeof(Query),
-        typeof(QueryResult),
-        typeof(IgnoreType)
-    );
+    private static readonly CQRSObjectMetadata QueryMetadata =
+        new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
 
     private readonly IHost host;
     private readonly TestServer server;
@@ -85,7 +81,9 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
 
         Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
         Assert.Equal("application/json", httpContext.Response.ContentType);
-        await serializer.Received().SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+        await serializer
+            .Received()
+            .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -101,7 +99,9 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
 
         Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
         Assert.Equal("application/json", httpContext.Response.ContentType);
-        await serializer.Received().SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+        await serializer
+            .Received()
+            .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -161,8 +161,7 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
 
     private void SetDeserializerResult<TResult>(object? obj)
     {
-        serializer.DeserializeAsync(Arg.Any<Stream>(), typeof(TResult), Arg.Any<CancellationToken>())
-            .Returns(obj);
+        serializer.DeserializeAsync(Arg.Any<Stream>(), typeof(TResult), Arg.Any<CancellationToken>()).Returns(obj);
     }
 
     private void SetDeserializerResult<TResult>(Exception ex)
@@ -183,8 +182,11 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
     }
 
     private class Query : IQuery<QueryResult> { }
+
     private class QueryResult { }
+
     private class QueryRuntimeResult : QueryResult { }
+
     private class IgnoreType { }
 
     public void Dispose()

@@ -13,8 +13,5 @@ public class FluentValidationModule : AppModule
         this.catalog = catalog;
     }
 
-    protected override void Load(ContainerBuilder builder)
-    {
-
-    }
+    protected override void Load(ContainerBuilder builder) { }
 }

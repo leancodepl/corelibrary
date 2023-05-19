@@ -103,7 +103,8 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
     public async Task Throws_if_object_authorizer_is_not_implemented()
     {
         await Assert.ThrowsAsync<CustomAuthorizerNotFoundException>(
-            () => SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser()));
+            () => SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser())
+        );
     }
 
     [Fact]
@@ -160,7 +161,9 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 
     // Public, so that NSubstitute could mock it
     public interface IFirstAuthorizer { }
+
     public interface ISecondAuthorizer { }
+
     public interface INotImplementedAuthorizer { }
 
     private sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
@@ -172,7 +175,9 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
     private class IgnoreType { }
 
     public Task InitializeAsync() => host.StartAsync();
+
     public Task DisposeAsync() => host.StopAsync();
+
     public void Dispose()
     {
         server.Dispose();

@@ -78,7 +78,8 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
 
     private static async Task<object?> ExecuteCommandAsync<TCommand>(
         HttpContext httpContext,
-        CQRSRequestPayload payload)
+        CQRSRequestPayload payload
+    )
         where TCommand : ICommand
     {
         var command = (TCommand)payload.Payload;

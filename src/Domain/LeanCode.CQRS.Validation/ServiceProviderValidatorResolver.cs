@@ -9,10 +9,11 @@ namespace LeanCode.CQRS.Validation;
 
 public class ServiceProviderValidatorResolver : ICommandValidatorResolver
 {
-    private static readonly MethodInfo ResolveValidatorMethod = typeof(ServiceProviderValidatorResolver).GetMethod(
-        nameof(ResolveValidator),
-        BindingFlags.Static | BindingFlags.NonPublic)
-        ?? throw new InvalidOperationException("Cannot get ResolveValidator method");
+    private static readonly MethodInfo ResolveValidatorMethod =
+        typeof(ServiceProviderValidatorResolver).GetMethod(
+            nameof(ResolveValidator),
+            BindingFlags.Static | BindingFlags.NonPublic
+        ) ?? throw new InvalidOperationException("Cannot get ResolveValidator method");
 
     private static readonly ConcurrentDictionary<Type, Func<IServiceProvider, ICommandValidatorWrapper?>> FactoryCache =
         new();
@@ -32,7 +33,8 @@ public class ServiceProviderValidatorResolver : ICommandValidatorResolver
 
     private static Func<IServiceProvider, ICommandValidatorWrapper?> ResolveValidatorFactory(Type commandType)
     {
-        return ResolveValidatorMethod.MakeGenericMethod(commandType)
+        return ResolveValidatorMethod
+            .MakeGenericMethod(commandType)
             .CreateDelegate<Func<IServiceProvider, ICommandValidatorWrapper?>>();
     }
 
@@ -40,9 +42,7 @@ public class ServiceProviderValidatorResolver : ICommandValidatorResolver
         where TCommand : ICommand
     {
         var validator = sp.GetService<ICommandValidator<TCommand>>();
-        return validator is not null
-            ? new CommandValidatorWrapper<TCommand>(validator)
-            : null;
+        return validator is not null ? new CommandValidatorWrapper<TCommand>(validator) : null;
     }
 }
 

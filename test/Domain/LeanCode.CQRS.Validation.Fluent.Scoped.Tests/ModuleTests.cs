@@ -37,7 +37,10 @@ public class ModuleTests
     {
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithoutCustomValidator>>();
 
-        var res = await validator.ValidateAsync(new DefaultHttpContext(), new CustomCommandWithoutCustomValidator { Field = 0 });
+        var res = await validator.ValidateAsync(
+            new DefaultHttpContext(),
+            new CustomCommandWithoutCustomValidator { Field = 0 }
+        );
 
         Assert.NotNull(validator);
         Assert.Empty(res.Errors);
@@ -48,7 +51,10 @@ public class ModuleTests
     {
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithString>>();
 
-        var res = await validator.ValidateAsync(new DefaultHttpContext(), new CustomCommandWithString { Field = "test" });
+        var res = await validator.ValidateAsync(
+            new DefaultHttpContext(),
+            new CustomCommandWithString { Field = "test" }
+        );
 
         var err = Assert.Single(res.Errors);
         Assert.Equal(13, err.ErrorCode);

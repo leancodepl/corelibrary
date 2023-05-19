@@ -49,10 +49,11 @@ public class CQRSSecurityMiddleware
 
             if (!authorized)
             {
-                logger.Warning("User is not authorized for {ObjectType}, authorizer {AuthorizerType} did not pass",
+                logger.Warning(
+                    "User is not authorized for {ObjectType}, authorizer {AuthorizerType} did not pass",
                     cqrsMetadata.ObjectType.FullName,
                     customAuthorizer.GetType().FullName
-                    );
+                );
 
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return;

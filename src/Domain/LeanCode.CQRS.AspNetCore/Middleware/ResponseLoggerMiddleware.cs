@@ -25,13 +25,3 @@ public class ResponseLoggerMiddleware
         logger.Information("Request executed with response {@Response}", result);
     }
 }
-
-public static class LogResponsesPipelineBuilderExtensions
-{
-    public static IApplicationBuilder LogCQRSResponses(
-        this IApplicationBuilder builder
-    )
-    {
-        return builder.UseMiddleware<ResponseLoggerMiddleware>();
-    }
-}

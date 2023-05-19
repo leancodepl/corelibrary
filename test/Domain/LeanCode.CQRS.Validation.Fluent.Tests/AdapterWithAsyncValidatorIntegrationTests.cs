@@ -15,9 +15,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
 
     public AdapterWithAsyncValidatorIntegrationTests()
     {
-        adapter = new FluentValidationCommandValidatorAdapter<Command>(
-            new Validator()
-        );
+        adapter = new FluentValidationCommandValidatorAdapter<Command>(new Validator());
     }
 
     [Fact]

@@ -22,6 +22,5 @@ public class CustomAuthorizer : CustomAuthorizer<ICustomAuthorizerParams>, ICust
 public class CustomAuthorizeWhenAttribute : AuthorizeWhenAttribute
 {
     public CustomAuthorizeWhenAttribute()
-        : base(typeof(ICustomAuthorizer))
-    { }
+        : base(typeof(ICustomAuthorizer)) { }
 }
