@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
-using Autofac;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using LeanCode.Benchmarks.Pipelines;
 using LeanCode.Pipelines;
-using LeanCode.Pipelines.Autofac;
+using LeanCode.Pipelines.MicrosoftDI;
+using Microsoft.Extensions.DependencyInjection;
 using Executor = LeanCode.Pipelines.PipelineExecutor<
     LeanCode.Benchmarks.Pipelines.Context,
     LeanCode.Benchmarks.Pipelines.Input,
@@ -20,8 +19,8 @@ public class PipelinesBenchmark
 {
     private Executor emptyStatic;
     private Executor singleElementStatic;
-    private Executor emptyAutofac;
-    private Executor singleElementAutofac;
+    private Executor emptyMicrosoftDI;
+    private Executor singleElementMicrosoftDI;
 
     [GlobalSetup]
     public void Setup()
@@ -29,16 +28,19 @@ public class PipelinesBenchmark
         var emptyCfg = Pipeline.Build<Context, Input, Output>().Finalize<Finalizer>();
         var singleCfg = Pipeline.Build<Context, Input, Output>().Use<PassthroughElement>().Finalize<Finalizer>();
 
-        var builder = new ContainerBuilder();
-        builder.RegisterType<AutofacPipelineFactory>().AsSelf();
-        builder.RegisterType<Finalizer>().AsSelf().SingleInstance();
-        builder.RegisterType<PassthroughElement>().AsSelf().SingleInstance();
-        var container = builder.Build();
+        var services = new ServiceCollection();
+        services.AddTransient<MicrosoftDIPipelineFactory>();
+        services.AddSingleton<Finalizer>();
+        services.AddSingleton<PassthroughElement>();
+        var serviceProvider = services.BuildServiceProvider();
 
         emptyStatic = new Executor(new StaticFactory(), emptyCfg);
         singleElementStatic = new Executor(new StaticFactory(), singleCfg);
-        emptyAutofac = new Executor(container.Resolve<AutofacPipelineFactory>(), emptyCfg);
-        singleElementAutofac = new Executor(container.Resolve<AutofacPipelineFactory>(), singleCfg);
+        emptyMicrosoftDI = new Executor(serviceProvider.GetRequiredService<MicrosoftDIPipelineFactory>(), emptyCfg);
+        singleElementMicrosoftDI = new Executor(
+            serviceProvider.GetRequiredService<MicrosoftDIPipelineFactory>(),
+            singleCfg
+        );
     }
 
     [Benchmark(Baseline = true)]
@@ -48,8 +50,8 @@ public class PipelinesBenchmark
     public Task<Output> SingleElement() => singleElementStatic.ExecuteAsync(new Context(), new Input());
 
     [Benchmark]
-    public Task<Output> EmptyAutofac() => emptyAutofac.ExecuteAsync(new Context(), new Input());
+    public Task<Output> EmptyMicrosoftDI() => emptyMicrosoftDI.ExecuteAsync(new Context(), new Input());
 
     [Benchmark]
-    public Task<Output> SingleElementAutofac() => singleElementAutofac.ExecuteAsync(new Context(), new Input());
+    public Task<Output> SingleElementMicrosoftDI() => singleElementMicrosoftDI.ExecuteAsync(new Context(), new Input());
 }

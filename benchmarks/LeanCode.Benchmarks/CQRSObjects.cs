@@ -1,8 +1,4 @@
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
 using FluentValidation;
 using LeanCode.Components;
 using LeanCode.Contracts;
@@ -10,6 +6,7 @@ using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.Pipelines;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Benchmarks;
 
@@ -121,8 +118,8 @@ public class AppRoles : IRoleRegistration
 
 public class BenchmarkModule : AppModule
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.RegisterType<AppRoles>().AsImplementedInterfaces();
+        services.TryRegisterWithImplementedInterfaces<AppRoles>();
     }
 }

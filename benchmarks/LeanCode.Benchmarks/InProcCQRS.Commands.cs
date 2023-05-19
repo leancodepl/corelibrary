@@ -1,7 +1,4 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using LeanCode.Components;
@@ -86,27 +83,22 @@ public class InProcCQRS__Commands
         params AppModule[] additionalModules
     )
     {
-        var builder = new ContainerBuilder();
-        var sc = new ServiceCollection();
+        var services = new ServiceCollection();
 
         var benchModule = new BenchmarkModule();
         var module = new CQRSModule().WithCustomPipelines(Catalog, commandBuilder, b => b, b => b);
 
-        builder.RegisterModule(module);
-        module.ConfigureServices(sc);
-        builder.RegisterModule(benchModule);
-        benchModule.ConfigureServices(sc);
+        module.ConfigureServices(services);
+        benchModule.ConfigureServices(services);
 
         foreach (var mod in additionalModules)
         {
-            builder.RegisterModule(mod);
-            mod.ConfigureServices(sc);
+            mod.ConfigureServices(services);
         }
 
-        builder.Populate(sc);
-        var container = builder.Build();
+        var serviceProvider = services.BuildServiceProvider();
 
-        var commandExecutor = container.Resolve<ICommandExecutor<SampleAppContext>>();
+        var commandExecutor = serviceProvider.GetRequiredService<ICommandExecutor<SampleAppContext>>();
         return commandExecutor;
     }
 }

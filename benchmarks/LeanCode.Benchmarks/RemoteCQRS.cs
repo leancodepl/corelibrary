@@ -1,9 +1,4 @@
-using System;
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using LeanCode.Components;
@@ -32,12 +27,10 @@ public class RemoteCQRS
     [GlobalSetup]
     public void Setup()
     {
-        var builder = new ContainerBuilder();
+        var services = new ServiceCollection();
         var module = new CQRSModule().WithCustomPipelines<SampleAppContext>(Catalog, b => b, b => b, b => b);
-        builder.RegisterModule(module);
 
-        builder.Populate(Array.Empty<ServiceDescriptor>());
-        var container = builder.Build();
+        module.ConfigureServices(services);
 
         middleware = new RemoteCQRSMiddleware<SampleAppContext>(
             Catalog,
@@ -45,7 +38,7 @@ public class RemoteCQRS
             null,
             _ => Task.CompletedTask
         );
-        serviceProvider = container.Resolve<IServiceProvider>();
+        serviceProvider = services.BuildServiceProvider();
 
         empty = GetContent(new SampleDTO());
         multipleFields = GetContent(new MultipleFieldsCommand { F1 = "test field", F2 = 123, });
