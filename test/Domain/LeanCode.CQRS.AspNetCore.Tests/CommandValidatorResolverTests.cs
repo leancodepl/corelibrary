@@ -19,8 +19,7 @@ public class CommandValidatorResolverTests
         serviceProvider = Substitute.For<IServiceProvider>();
         resolver = new CommandValidatorResolver(serviceProvider);
 
-        serviceProvider.GetService(typeof(ICommandValidator<CommandWithValidator>))
-            .Returns(validator);
+        serviceProvider.GetService(typeof(ICommandValidator<CommandWithValidator>)).Returns(validator);
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class CommandValidatorResolverTests
         Assert.True(result.IsValid);
     }
 
-
     public class CommandWithValidator : ICommand { }
+
     public class CommandWithoutValidator : ICommand { }
 }

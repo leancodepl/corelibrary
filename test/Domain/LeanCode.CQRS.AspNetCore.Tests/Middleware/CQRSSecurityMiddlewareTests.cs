@@ -46,7 +46,8 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
                         app.UseMiddleware<CQRSSecurityMiddleware>();
                         app.Run(ctx =>
                         {
-                            ctx.Response.StatusCode = StatusCodes.Status200OK;
+                            var payload = ctx.GetCQRSRequestPayload();
+                            payload.SetResult(ExecutionResult.Success(null));
                             return Task.CompletedTask;
                         });
                     });
@@ -60,14 +61,14 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
     public async Task Does_not_require_user_authentication_if_object_does_not_have_authorizers()
     {
         var httpContext = await SendPayloadAsync(new NoAuthorization());
-        Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
+        AssertExecutionResult(httpContext, StatusCodes.Status200OK);
     }
 
     [Fact]
-    public async Task Returns_401NotAuthenticated_if_object_has_authorizers_and_user_is_not_authenticated()
+    public async Task Returns_401Unauthorized_if_object_has_authorizers_and_user_is_not_authenticated()
     {
-        var httpContext = await SendPayloadAsync(new NoAuthorization());
-        Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
+        var httpContext = await SendPayloadAsync(new SingleAuthorizer());
+        AssertExecutionResult(httpContext, StatusCodes.Status401Unauthorized);
     }
 
     [Theory]
@@ -80,7 +81,7 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         var httpContext = await SendPayloadAsync(new SingleAuthorizer(), AuthenticatedUser());
 
         var expectedCode = isPositive ? StatusCodes.Status200OK : StatusCodes.Status403Forbidden;
-        Assert.Equal(expectedCode, httpContext.Response.StatusCode);
+        AssertExecutionResult(httpContext, expectedCode);
     }
 
     [Theory]
@@ -96,7 +97,7 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         var httpContext = await SendPayloadAsync(new MultipleAuthorizers(), AuthenticatedUser());
 
         var expectedCode = firstPositive && secondPositive ? StatusCodes.Status200OK : StatusCodes.Status403Forbidden;
-        Assert.Equal(expectedCode, httpContext.Response.StatusCode);
+        AssertExecutionResult(httpContext, expectedCode);
     }
 
     [Fact]
@@ -113,7 +114,9 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         var cmd = new SingleAuthorizer();
         var httpContext = await SendPayloadAsync(cmd, AuthenticatedUser());
 
-        await firstAuthorizer.Received().CheckIfAuthorizedAsync(httpContext, cmd, SingleAuthorizerCustomData);
+        await firstAuthorizer
+            .Received()
+            .CheckIfAuthorizedAsync(Arg.Any<HttpContext>(), cmd, SingleAuthorizerCustomData);
     }
 
     private Task<HttpContext> SendPayloadAsync(object payload, ClaimsPrincipal? user = null)
@@ -140,6 +143,14 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
             ctx.SetEndpoint(endpoint);
             ctx.SetCQRSRequestPayload(payload);
         });
+    }
+
+    private static void AssertExecutionResult(HttpContext context, int statusCode)
+    {
+        var result = context.GetCQRSRequestPayload().Result;
+
+        Assert.NotNull(result);
+        Assert.Equal(statusCode, result.Value.StatusCode);
     }
 
     private static void SetAuthorizationResultAsync(ICustomAuthorizer authorizer, bool result)
