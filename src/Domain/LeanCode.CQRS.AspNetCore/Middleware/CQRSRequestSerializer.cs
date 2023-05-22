@@ -64,35 +64,38 @@ internal class CQRSRequestSerializer
     {
         var payload = httpContext.GetCQRSRequestPayload();
 
-        if (!payload.HasResult)
+        if (payload.Result is null)
         {
+            logger.Warning("CQRS execution ended with no result");
             return;
         }
 
-        var result = payload.Result;
+        var result = payload.Result.Value;
 
-        httpContext.Response.StatusCode = StatusCodes.Status200OK;
-        httpContext.Response.ContentType = "application/json";
-
-        if (result is null)
+        httpContext.Response.StatusCode = result.StatusCode;
+        if (result.Succeeded)
         {
-            await httpContext.Response.Body.WriteAsync(NullString);
-        }
-        else
-        {
-            try
+            httpContext.Response.ContentType = "application/json";
+            if (result.Payload is null)
             {
-                await serializer.SerializeAsync(
-                    httpContext.Response.Body,
-                    result,
-                    cqrsEndpoint.ObjectMetadata.ResultType,
-                    httpContext.RequestAborted
-                );
+                await httpContext.Response.Body.WriteAsync(NullString);
             }
-            catch (Exception ex)
-                when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
+            else
             {
-                logger.Warning(ex, "Failed to serialize response, request aborted");
+                try
+                {
+                    await serializer.SerializeAsync(
+                        httpContext.Response.Body,
+                        result.Payload,
+                        cqrsEndpoint.ObjectMetadata.ResultType,
+                        httpContext.RequestAborted
+                    );
+                }
+                catch (Exception ex)
+                    when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
+                {
+                    logger.Warning(ex, "Failed to serialize response, request aborted");
+                }
             }
         }
     }

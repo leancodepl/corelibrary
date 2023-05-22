@@ -75,7 +75,7 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
         var queryResult = new QueryResult();
 
         SetDeserializerResult<Query>(query);
-        SetPipelineResult(queryResult);
+        SetPipelineResultSuccess(queryResult);
 
         var httpContext = await SendAsync();
 
@@ -87,13 +87,46 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
     }
 
     [Fact]
+    public async Task Allows_for_custom_result_code_for_execution_success()
+    {
+        var query = new Query();
+        var queryResult = new QueryResult();
+
+        SetDeserializerResult<Query>(query);
+        SetPipelineResultSuccess(queryResult, StatusCodes.Status202Accepted);
+
+        var httpContext = await SendAsync();
+
+        Assert.Equal(StatusCodes.Status202Accepted, httpContext.Response.StatusCode);
+        Assert.Equal("application/json", httpContext.Response.ContentType);
+        await serializer
+            .Received()
+            .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Returns_failure_code_and_does_not_serialize_result_for_failure()
+    {
+        var query = new Query();
+
+        SetDeserializerResult<Query>(query);
+        SetPipelineResultFailure(StatusCodes.Status418ImATeapot);
+
+        var httpContext = await SendAsync();
+
+        Assert.Equal(StatusCodes.Status418ImATeapot, httpContext.Response.StatusCode);
+        Assert.Null(httpContext.Response.ContentType);
+        await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(default!, default!, default!, default!);
+    }
+
+    [Fact]
     public async Task Enforces_serialized_response_type_according_to_cqrs_metadata()
     {
         var query = new Query();
         var queryResult = new QueryRuntimeResult();
 
         SetDeserializerResult<Query>(query);
-        SetPipelineResult(queryResult);
+        SetPipelineResultSuccess(queryResult);
 
         var httpContext = await SendAsync();
 
@@ -171,12 +204,22 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
         result.Throws(ex);
     }
 
-    private void SetPipelineResult(object? obj)
+    private void SetPipelineResultSuccess(object? obj, int code = 200)
     {
         pipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
-            payload.SetResult(obj);
+            payload.SetResult(ExecutionResult.Success(obj, code));
+            return Task.CompletedTask;
+        };
+    }
+
+    private void SetPipelineResultFailure(int code)
+    {
+        pipeline = ctx =>
+        {
+            var payload = ctx.GetCQRSRequestPayload();
+            payload.SetResult(ExecutionResult.Fail(code));
             return Task.CompletedTask;
         };
     }

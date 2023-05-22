@@ -27,7 +27,7 @@ public class CQRSSecurityMiddleware
         {
             logger.Warning("The current user is not authenticated and the object requires authorization");
 
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            payload.SetResult(ExecutionResult.Fail(StatusCodes.Status401Unauthorized));
             return;
         }
 
@@ -55,7 +55,7 @@ public class CQRSSecurityMiddleware
                     customAuthorizer.GetType().FullName
                 );
 
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                payload.SetResult(ExecutionResult.Fail(StatusCodes.Status403Forbidden));
                 return;
             }
         }

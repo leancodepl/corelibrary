@@ -11,6 +11,6 @@ internal static class CQRSPipelineFinalizer
 
         var result = await cqrsEndpoint.ObjectExecutor(context, payload);
 
-        payload.SetResult(result);
+        payload.SetResult(ExecutionResult.Success(result));
     }
 }
