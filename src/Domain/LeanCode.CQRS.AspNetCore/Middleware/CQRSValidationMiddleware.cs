@@ -8,16 +8,14 @@ public class CQRSValidationMiddleware
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSValidationMiddleware>();
 
-    private readonly ICommandValidatorResolver resolver;
     private readonly RequestDelegate next;
 
-    public CQRSValidationMiddleware(ICommandValidatorResolver resolver, RequestDelegate next)
+    public CQRSValidationMiddleware(RequestDelegate next)
     {
-        this.resolver = resolver;
         this.next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver)
     {
         var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
         var payload = httpContext.GetCQRSRequestPayload();
