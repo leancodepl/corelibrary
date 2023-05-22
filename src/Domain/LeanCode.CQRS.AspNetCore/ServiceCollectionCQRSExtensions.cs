@@ -27,7 +27,7 @@ public static class ServiceCollectionCQRSExtensions
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<CQRSSecurityMiddleware>();
-        serviceCollection.AddScoped<ICommandValidatorResolver, ServiceProviderValidatorResolver>();
+        serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
 
         return new CQRSServicesBuilder(serviceCollection);
     }

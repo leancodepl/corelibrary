@@ -15,7 +15,7 @@ public static class IApplicationBuilderCQRSExtensions
         return builder.UseMiddleware<CQRSSecurityMiddleware>();
     }
 
-    public static IApplicationBuilder LogCQRSResponsesOnNonProduction<TContext, TObj, TRes>(
+    public static IApplicationBuilder LogCQRSResponsesOnNonProduction(
         this IApplicationBuilder builder
     )
     {

@@ -2,15 +2,16 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
+using LeanCode.CQRS.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.CQRS.Validation;
+namespace LeanCode.CQRS.AspNetCore;
 
-public class ServiceProviderValidatorResolver : ICommandValidatorResolver
+public class CommandValidatorResolver : ICommandValidatorResolver
 {
     private static readonly MethodInfo ResolveValidatorMethod =
-        typeof(ServiceProviderValidatorResolver).GetMethod(
+        typeof(CommandValidatorResolver).GetMethod(
             nameof(ResolveValidator),
             BindingFlags.Static | BindingFlags.NonPublic
         ) ?? throw new InvalidOperationException("Cannot get ResolveValidator method");
@@ -20,7 +21,7 @@ public class ServiceProviderValidatorResolver : ICommandValidatorResolver
 
     private readonly IServiceProvider serviceProvider;
 
-    public ServiceProviderValidatorResolver(IServiceProvider serviceProvider)
+    public CommandValidatorResolver(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
     }
