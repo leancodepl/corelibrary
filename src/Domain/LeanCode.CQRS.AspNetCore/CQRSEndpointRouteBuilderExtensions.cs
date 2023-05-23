@@ -26,7 +26,7 @@ public static class CQRSEndpointRouteBuilderExtensions
 
         var dataSource = new CQRSEndpointsDataSource(path, new ObjectExecutorFactory());
         dataSource.AddEndpointsFor(
-            cqrsHandlers.Objects,
+            cqrsHandlers.Objects.Where(pipelineBuilder.ObjectsFilter),
             commandsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Commands),
             queriesPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Queries),
             operationsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Operations)
@@ -37,6 +37,8 @@ public static class CQRSEndpointRouteBuilderExtensions
 
 public class CQRSPipelineBuilder
 {
+    public Func<CQRSObjectMetadata, bool> ObjectsFilter { get; set; } = _ => true;
+
     public Action<IApplicationBuilder> Commands { get; set; } = app => { };
     public Action<IApplicationBuilder> Queries { get; set; } = app => { };
     public Action<IApplicationBuilder> Operations { get; set; } = app => { };
