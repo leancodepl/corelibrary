@@ -60,7 +60,9 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
     {
         var operation = (TOperation)payload.Payload;
 
-        var handler = httpContext.RequestServices.GetRequiredService<IOperationHandler<TOperation, TResult>>();
+        var handler =
+            httpContext.RequestServices.GetService<IOperationHandler<TOperation, TResult>>()
+            ?? throw new OperationHandlerNotFoundException(typeof(TOperation));
         return await handler.ExecuteAsync(httpContext, operation);
     }
 
@@ -72,7 +74,9 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
     {
         var query = (TQuery)payload.Payload;
 
-        var handler = httpContext.RequestServices.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+        var handler =
+            httpContext.RequestServices.GetService<IQueryHandler<TQuery, TResult>>()
+            ?? throw new QueryHandlerNotFoundException(typeof(TQuery));
         return await handler.ExecuteAsync(httpContext, query);
     }
 
@@ -84,7 +88,9 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
     {
         var command = (TCommand)payload.Payload;
 
-        var handler = httpContext.RequestServices.GetRequiredService<ICommandHandler<TCommand>>();
+        var handler =
+            httpContext.RequestServices.GetService<ICommandHandler<TCommand>>()
+            ?? throw new CommandHandlerNotFoundException(typeof(TCommand));
         await handler.ExecuteAsync(httpContext, command);
 
         return CommandResult.Success;
