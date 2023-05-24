@@ -5,6 +5,7 @@ using Autofac.Core;
 using FluentValidation;
 using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
@@ -12,6 +13,8 @@ namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
 public class AdapterWithAsyncValidatorIntegrationTests
 {
     private readonly FluentValidationCommandValidatorAdapter<Command> adapter;
+
+    private static HttpContext MockHttpContext() => Substitute.For<HttpContext>();
 
     public AdapterWithAsyncValidatorIntegrationTests()
     {
@@ -22,13 +25,13 @@ public class AdapterWithAsyncValidatorIntegrationTests
     public async Task Invokes_async_validation()
     {
         // Will throw on sync invocation
-        await adapter.ValidateAsync(new DefaultHttpContext(), new Command());
+        await adapter.ValidateAsync(MockHttpContext(), new Command());
     }
 
     [Fact]
     public async Task Correctly_returns_successful_result_when_data_passes()
     {
-        var res = await adapter.ValidateAsync(new DefaultHttpContext(), new Command { Data = Validator.MinValue });
+        var res = await adapter.ValidateAsync(MockHttpContext(), new Command { Data = Validator.MinValue });
 
         Assert.True(res.IsValid);
     }
@@ -36,7 +39,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
     [Fact]
     public async Task Correctly_maps_validation_result()
     {
-        var res = await adapter.ValidateAsync(new DefaultHttpContext(), new Command { Data = Validator.MinValue - 1 });
+        var res = await adapter.ValidateAsync(MockHttpContext(), new Command { Data = Validator.MinValue - 1 });
 
         Assert.False(res.IsValid);
         var err = Assert.Single(res.Errors);
