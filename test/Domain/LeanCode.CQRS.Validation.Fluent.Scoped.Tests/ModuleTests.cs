@@ -5,6 +5,7 @@ using LeanCode.Components;
 using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
@@ -12,6 +13,8 @@ namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
 public class ModuleTests
 {
     private readonly IServiceProvider serviceProvider;
+
+    private static HttpContext MockHttpContext() => Substitute.For<HttpContext>();
 
     public ModuleTests()
     {
@@ -26,7 +29,7 @@ public class ModuleTests
     {
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithInt>>();
 
-        var res = await validator.ValidateAsync(new DefaultHttpContext(), new CustomCommandWithInt { Field = 0 });
+        var res = await validator.ValidateAsync(MockHttpContext(), new CustomCommandWithInt { Field = 0 });
 
         var err = Assert.Single(res.Errors);
         Assert.Equal(10, err.ErrorCode);
@@ -38,7 +41,7 @@ public class ModuleTests
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithoutCustomValidator>>();
 
         var res = await validator.ValidateAsync(
-            new DefaultHttpContext(),
+            MockHttpContext(),
             new CustomCommandWithoutCustomValidator { Field = 0 }
         );
 
@@ -51,10 +54,7 @@ public class ModuleTests
     {
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithString>>();
 
-        var res = await validator.ValidateAsync(
-            new DefaultHttpContext(),
-            new CustomCommandWithString { Field = "test" }
-        );
+        var res = await validator.ValidateAsync(MockHttpContext(), new CustomCommandWithString { Field = "test" });
 
         var err = Assert.Single(res.Errors);
         Assert.Equal(13, err.ErrorCode);
@@ -63,7 +63,7 @@ public class ModuleTests
     [Fact(Skip = "Not supported yet")]
     public async Task Resolves_command_validator_taking_AppCtx_as_a_ctor_parameterAsync()
     {
-        var appContext = new DefaultHttpContext();
+        var appContext = MockHttpContext();
 
         var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithFloat>>();
 
