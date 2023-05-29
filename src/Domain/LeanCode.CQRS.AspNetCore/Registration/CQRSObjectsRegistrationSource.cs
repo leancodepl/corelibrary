@@ -17,10 +17,10 @@ internal class CQRSObjectsRegistrationSource
         this.contractsCatalog = contractsCatalog;
         this.handlersCatalog = handlersCatalog;
 
-        Objects = FindCqrsObjects();
+        Objects = FindCQRSObjects();
     }
 
-    private IEnumerable<CQRSObjectMetadata> FindCqrsObjects()
+    private IEnumerable<CQRSObjectMetadata> FindCQRSObjects()
     {
         var contracts = contractsCatalog.Assemblies
             .SelectMany(a => a.DefinedTypes)
