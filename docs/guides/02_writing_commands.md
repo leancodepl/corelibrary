@@ -219,7 +219,7 @@ public class AddTasksToProjectCH : ICommandHandler<CoreContext, AddTasksToProjec
     public async Task ExecuteAsync(CoreContext context, AddTasksToProject command)
     {
         var project = await projects.FindAndEnsureExistsAsync(command.ProjectId, context.CancellationToken);
-        project.AddTasks(command.Tasks.Select(t => Task.Create(t.Name)));
+        project.AddTasks(command.Tasks.Select(t => t.Name));
 
         projects.Update(project);
 
