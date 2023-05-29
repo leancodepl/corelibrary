@@ -127,7 +127,7 @@ public class Task : IIdentifiable<SId<Task>>
 
     public void UnassignUser()
     {
-        AssignUser = null;
+        AssignedUser = null;
     }
 
     public void ChangeStatus(TaskStatus status)
