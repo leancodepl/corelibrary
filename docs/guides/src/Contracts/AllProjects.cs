@@ -1,7 +1,7 @@
 [AllowUnauthorized]
 public class AllProjects : IQuery<List<ProjectDTO>>
 {
-    public bool SortByDescending { get; set; }
+    public bool SortByNameDescending { get; set; }
 }
 
 public class ProjectDTO

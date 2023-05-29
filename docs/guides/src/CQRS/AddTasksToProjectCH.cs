@@ -16,7 +16,7 @@ public class AddTasksToProjectCV : ContextualValidator<AddTasksToProject>
             .WithMessage("A project with given Id does not exist.");
     }
 
-    private Task<ValidationResult> CheckProjectExistsAsync(IValidationContext ctx, AddTasksToProject command)
+    private Task<bool> CheckProjectExistsAsync(IValidationContext ctx, AddTasksToProject command)
     {
         if (!SId<Project>.TryParse(command.ProjectId, out var projectId))
         {

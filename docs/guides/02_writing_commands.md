@@ -2,7 +2,7 @@
 
 ## Intro
 
-Interacting with systems based with Core Library is based on a Command Query Responsibility Segregation (CQRS) principle. As such, there are two main types of actions which can be performed in the system: command, and query [^1]. In this guide we will focus on the former. A command is used the change the state of the system but it does not yield any results - it can be treated as write-only action.
+Interacting with systems based with Core Library is based on a Command Query Responsibility Segregation ([CQRS](../basics/02_cqrs.md)) principle. As such, there are two main types of actions which can be performed in the system: command, and [query](./03_writing_queries.md) [^1]. In this guide we will focus on the former. A command is used the change the state of the system but it does not yield any results - it can be treated as write-only action.
 
 Each command consists of three parts:
 
@@ -67,7 +67,7 @@ A validator for a command should inherit from `ContextualValidator<T>` where `T`
 > **Info :information_source:**
 > A command validator and handler are usually put in a single file with a `CH` suffix, e.g. `CreateProjectCH.cs`.
 
-Finally, we arrive at a command handler which is a part which actually executes the command. For the `CreateProject` command, a handler may look like this:
+Finally, we arrive at a command handler that is a part which actually executes the command. For the `CreateProject` command, a handler may look like this:
 
 ```csharp
 public class CreateProjectCH : ICommandHandler<CoreContext, CreateProject>
@@ -170,7 +170,7 @@ public class AddTasksToProjectCV : ContextualValidator<AddTasksToProject>
             .WithMessage("A project with given Id does not exist.");
     }
 
-    private Task<ValidationResult> CheckProjectExistsAsync(
+    private Task<bool> CheckProjectExistsAsync(
         IValidationContext ctx,
         AddTasksToProject command
     )
