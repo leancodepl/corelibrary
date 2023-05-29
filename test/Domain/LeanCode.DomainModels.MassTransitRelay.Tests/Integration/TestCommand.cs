@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
-using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Security;
 using LeanCode.DomainModels.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
 
@@ -13,7 +11,9 @@ public class TestCommand : ICommand
     public Guid CorrelationId { get; set; }
 }
 
-public class TestCommandHandler : ICommandHandler<Context, TestCommand>
+public class TestCommandHandler
+// : ICommandHandler<TestCommand>
+// TODO: handled in other PR
 {
     private readonly TestDbContext dbContext;
 
@@ -22,7 +22,7 @@ public class TestCommandHandler : ICommandHandler<Context, TestCommand>
         this.dbContext = dbContext;
     }
 
-    public Task ExecuteAsync(Context context, TestCommand command)
+    public Task ExecuteAsync(HttpContext context, TestCommand command)
     {
         DomainEvents.Raise(new Event1(command.CorrelationId));
         HandledLog.Report(dbContext, command.CorrelationId, nameof(TestCommandHandler));

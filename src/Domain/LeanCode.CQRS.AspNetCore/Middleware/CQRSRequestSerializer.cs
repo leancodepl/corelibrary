@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -19,6 +20,7 @@ internal class CQRSRequestSerializer
         this.next = next;
     }
 
+    [SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
     public async Task InvokeAsync(HttpContext httpContext)
     {
         var cqrsEndpoint = httpContext.GetCQRSEndpoint();

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 
+[SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
 public class ObjectExecutorFactoryTests
 {
     private readonly ObjectExecutorFactory executorFactory;
@@ -107,7 +109,7 @@ public class ObjectExecutorFactoryTests
         var executorMethod = executorFactory.CreateExecutorFor(queryMetadata);
 
         await Assert.ThrowsAsync<QueryHandlerNotFoundException>(
-            () => executorMethod(ctx, new CQRSRequestPayload(queryHandler))
+            () => executorMethod(ctx, new CQRSRequestPayload(query))
         );
     }
 

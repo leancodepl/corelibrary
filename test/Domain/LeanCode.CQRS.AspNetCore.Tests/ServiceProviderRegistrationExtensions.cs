@@ -7,15 +7,15 @@ namespace LeanCode.CQRS.AspNetCore.Tests;
 
 internal interface IGenericService<T> { }
 
-internal class Type1 { }
+internal sealed class Type1 { }
 
-internal class Type2 { }
+internal sealed class Type2 { }
 
-internal class Type3 { }
+internal sealed class Type3 { }
 
-internal class Type1Type2Service : IGenericService<Type1>, IGenericService<Type2> { }
+internal sealed class Type1Type2Service : IGenericService<Type1>, IGenericService<Type2> { }
 
-internal class Type3Service : IGenericService<Type3> { }
+internal sealed class Type3Service : IGenericService<Type3> { }
 
 public class ServiceCollectionRegistrationExtensionsTests
 {
