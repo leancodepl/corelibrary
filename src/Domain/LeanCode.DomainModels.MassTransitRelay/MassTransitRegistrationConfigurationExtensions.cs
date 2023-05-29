@@ -39,14 +39,10 @@ public static class MassTransitRegistrationConfigurationExtensions
             select new { ConsumerType = c, DefinitionType = d };
         foreach (var item in enumerable)
         {
-            if (item.DefinitionType is null)
-            {
-                configurator.AddConsumer(item.ConsumerType, defaultDefinition.MakeGenericType(item.ConsumerType));
-            }
-            else
-            {
-                configurator.AddConsumer(item.ConsumerType, item.DefinitionType);
-            }
+            configurator.AddConsumer(
+                item.ConsumerType,
+                item.DefinitionType ?? defaultDefinition.MakeGenericType(item.ConsumerType)
+            );
         }
     }
 }

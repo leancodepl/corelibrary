@@ -43,9 +43,9 @@ public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElemen
 
     private Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
     {
-        logger.Debug("Publishing event of type {DomainEvent}", evt);
+        logger.Debug("Publishing event of type {DomainEvent}", evt.GetType());
         return publishEndpoint.Publish(
-            (object)evt,
+            (object)evt, // Cast is necessary to publish the event as it's type, not an `IDomainEvent`
             publishCtx =>
             {
                 publishCtx.MessageId = evt.Id;
