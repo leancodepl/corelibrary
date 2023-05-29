@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Validation;
@@ -7,6 +8,7 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 
+[SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
 public class CommandValidatorResolverTests
 {
     private readonly ICommandValidator<CommandWithValidator> validator;

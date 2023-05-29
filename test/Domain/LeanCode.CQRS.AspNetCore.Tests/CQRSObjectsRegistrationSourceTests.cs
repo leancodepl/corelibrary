@@ -64,8 +64,7 @@ public class CQRSObjectsRegistrationSourceTests
         return new CQRSObjectsRegistrationSource(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
-        ).Objects
-            .ToList();
+        ).Objects.ToList();
         // This will find more types, filtering for better readability
     }
 

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Serialization;
@@ -13,7 +14,8 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
-public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
+[SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
+public sealed class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
 {
     private static readonly CQRSObjectMetadata QueryMetadata =
         new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
@@ -224,13 +226,13 @@ public class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
         };
     }
 
-    private class Query : IQuery<QueryResult> { }
+    public class Query : IQuery<QueryResult> { }
 
-    private class QueryResult { }
+    public class QueryResult { }
 
-    private class QueryRuntimeResult : QueryResult { }
+    public class QueryRuntimeResult : QueryResult { }
 
-    private class IgnoreType { }
+    public class IgnoreType { }
 
     public void Dispose()
     {

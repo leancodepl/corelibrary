@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
@@ -14,7 +15,9 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
-public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
+[SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
+[SuppressMessage(category: "?", "CA1040", Justification = "Empty marker interfaces")]
+public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 {
     private const string SingleAuthorizerCustomData = nameof(SingleAuthorizerCustomData);
 
@@ -158,17 +161,17 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         authorizer.CheckIfAuthorizedAsync(null!, null!, null).ReturnsForAnyArgs(result);
     }
 
-    private class NoAuthorization : ICommand { }
+    public class NoAuthorization : ICommand { }
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer), SingleAuthorizerCustomData)]
-    private class SingleAuthorizer : ICommand { }
+    public class SingleAuthorizer : ICommand { }
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
     [AuthorizeWhenCustom(typeof(ISecondAuthorizer))]
-    private class MultipleAuthorizers : ICommand { }
+    public class MultipleAuthorizers : ICommand { }
 
     [AuthorizeWhenCustom(typeof(INotImplementedAuthorizer))]
-    private class NotImplementedAuthorizer { }
+    private sealed class NotImplementedAuthorizer { }
 
     // Public, so that NSubstitute could mock it
     public interface IFirstAuthorizer { }
@@ -177,13 +180,13 @@ public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 
     public interface INotImplementedAuthorizer { }
 
-    private sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
+    public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
     {
         public AuthorizeWhenCustomAttribute(Type authorizerType, object? customData = null)
             : base(authorizerType, customData) { }
     }
 
-    private class IgnoreType { }
+    public class IgnoreType { }
 
     public Task InitializeAsync() => host.StartAsync();
 

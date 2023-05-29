@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
@@ -13,16 +14,16 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
-public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
+[SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
+public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private readonly IHost host;
     private readonly TestServer server;
-    private readonly ICommandValidatorResolver validatorResolver;
     private readonly ICommandValidatorWrapper validator;
 
     public CQRSValidationMiddlewareTests()
     {
-        validatorResolver = Substitute.For<ICommandValidatorResolver>();
+        var validatorResolver = Substitute.For<ICommandValidatorResolver>();
         validator = Substitute.For<ICommandValidatorWrapper>();
 
         validatorResolver.FindCommandValidator(typeof(UnvalidatedCommand)).Returns(null as ICommandValidatorWrapper);
@@ -89,7 +90,7 @@ public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
         validator.ValidateAsync(Arg.Any<HttpContext>(), command).Returns(result);
     }
 
-    private void AssertCommandResultSuccess(HttpContext httpContext)
+    private static void AssertCommandResultSuccess(HttpContext httpContext)
     {
         var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
         var commandResult = Assert.IsType<CommandResult>(rawResult);
@@ -98,7 +99,7 @@ public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
         Assert.Empty(commandResult.ValidationErrors);
     }
 
-    private void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
+    private static void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
     {
         var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
         var commandResult = Assert.IsType<CommandResult>(rawResult);
@@ -128,11 +129,11 @@ public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
         });
     }
 
-    private class UnvalidatedCommand : ICommand { }
+    public class UnvalidatedCommand : ICommand { }
 
-    private class ValidatedCommand : ICommand { }
+    public class ValidatedCommand : ICommand { }
 
-    private class IgnoreType { }
+    public class IgnoreType { }
 
     public void Dispose()
     {
