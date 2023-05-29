@@ -1,5 +1,6 @@
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
+using LeanCode.CQRS.Execution;
 using LeanCode.DomainModels.Model;
 using Microsoft.AspNetCore.Http;
 
@@ -11,9 +12,7 @@ public class TestCommand : ICommand
     public Guid CorrelationId { get; set; }
 }
 
-public class TestCommandHandler
-// : ICommandHandler<TestCommand>
-// TODO: handled in other PR
+public class TestCommandHandler : ICommandHandler<TestCommand>
 {
     private readonly TestDbContext dbContext;
 

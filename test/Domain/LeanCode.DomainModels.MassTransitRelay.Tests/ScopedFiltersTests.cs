@@ -10,34 +10,44 @@ using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests;
 
-public class ScopedFiltersTests : IAsyncLifetime
+public class ScopedFiltersTests : IAsyncLifetime, IDisposable
 {
     private readonly IBusControl bus;
     private readonly IBusActivityMonitor activityMonitor;
     private readonly Interceptor interceptor = new();
+    private readonly ServiceProvider serviceProvider;
 
     public ScopedFiltersTests()
     {
         var services = new ServiceCollection();
-        var builder = new ContainerBuilder();
 
-        var modules = new AppModule[] { new MassTransitModule(), new MassTransitTestRelayModule(), };
-
-        foreach (var m in modules)
+        services.AddMassTransit(cfg =>
         {
-            m.ConfigureServices(services);
-            builder.RegisterModule(m);
-        }
+            cfg.AddConsumer(typeof(Consumer));
 
-        builder.RegisterType<TestService>().AsSelf().InstancePerLifetimeScope();
+            cfg.UsingInMemory(
+                (ctx, cfg) =>
+                {
+                    cfg.ReceiveEndpoint(
+                        "queue",
+                        rcv =>
+                        {
+                            Filter1Observer.UseFilter1(rcv, ctx);
+                            Filter2Observer.UseFilter2(rcv, ctx);
 
-        builder.RegisterInstance(interceptor).AsSelf();
+                            rcv.ConfigureConsumers(ctx);
+                        }
+                    );
+                }
+            );
+        });
+        services.AddBusActivityMonitor();
+        services.AddScoped<TestService>();
+        services.AddSingleton(interceptor);
 
-        builder.Populate(services);
-        var container = builder.Build();
-        bus = container.Resolve<IBusControl>();
-
-        activityMonitor = container.Resolve<IBusActivityMonitor>();
+        serviceProvider = services.BuildServiceProvider();
+        bus = serviceProvider.GetRequiredService<IBusControl>();
+        activityMonitor = serviceProvider.GetRequiredService<IBusActivityMonitor>();
     }
 
     [Fact]
@@ -73,33 +83,6 @@ public class ScopedFiltersTests : IAsyncLifetime
     public Task InitializeAsync() => bus.StartAsync();
 
     public Task DisposeAsync() => bus.StopAsync();
-
-    private sealed class MassTransitModule : MassTransitRelayModule
-    {
-        public override void ConfigureMassTransit(IServiceCollection services)
-        {
-            services.AddMassTransit(cfg =>
-            {
-                cfg.AddConsumer(typeof(Consumer));
-
-                cfg.UsingInMemory(
-                    (ctx, cfg) =>
-                    {
-                        cfg.ReceiveEndpoint(
-                            "queue",
-                            rcv =>
-                            {
-                                Filter1Observer.UseFilter1(rcv, ctx);
-                                Filter2Observer.UseFilter2(rcv, ctx);
-
-                                rcv.ConfigureConsumers(ctx);
-                            }
-                        );
-                    }
-                );
-            });
-        }
-    }
 
     private sealed class TestService
     {
@@ -249,4 +232,6 @@ public class ScopedFiltersTests : IAsyncLifetime
             return Data.TryGetValue($"{messageId}_consumer", out var value) ? value : null;
         }
     }
+
+    public void Dispose() => serviceProvider.Dispose();
 }
