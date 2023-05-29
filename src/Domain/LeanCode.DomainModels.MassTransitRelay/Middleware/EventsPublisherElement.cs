@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LeanCode.DomainModels.Model;
 using LeanCode.Pipelines;
+using MassTransit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Middleware;
 
@@ -13,13 +10,13 @@ public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElemen
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<
         EventsPublisherElement<TContext, TInput, TOutput>
     >();
-    private readonly IEventPublisher publisher;
+    private readonly IPublishEndpoint publishEndpoint;
     private readonly AsyncEventsInterceptor interceptor;
 
-    public EventsPublisherElement(IEventPublisher publisher, AsyncEventsInterceptor interceptor)
+    public EventsPublisherElement(IPublishEndpoint publishEndpoint, AsyncEventsInterceptor interceptor)
     {
+        this.publishEndpoint = publishEndpoint;
         this.interceptor = interceptor;
-        this.publisher = publisher;
     }
 
     public async Task<TOutput> ExecuteAsync(TContext ctx, TInput input, Func<TContext, TInput, Task<TOutput>> next)
@@ -44,25 +41,18 @@ public class EventsPublisherElement<TContext, TInput, TOutput> : IPipelineElemen
         return Task.WhenAll(publishTasks);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "?",
-        "CA1031",
-        Justification = "The method is an exception boundary."
-    )]
-    private async Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
+    private Task PublishEventAsync(IDomainEvent evt, TContext ctx, Guid conversationId)
     {
-        logger.Debug("Publishing event of type {DomainEvent}", evt);
-
-        try
-        {
-            await publisher.PublishAsync(evt, conversationId, ctx.CancellationToken);
-        }
-        catch (Exception e)
-        {
-            logger.Fatal(e, "Could not publish event {@DomainEvent}", evt);
-        }
-
-        logger.Information("Domain event {DomainEvent} published", evt);
+        logger.Debug("Publishing event of type {DomainEvent}", evt.GetType());
+        return publishEndpoint.Publish(
+            (object)evt, // Cast is necessary to publish the event as it's type, not an `IDomainEvent`
+            publishCtx =>
+            {
+                publishCtx.MessageId = evt.Id;
+                publishCtx.ConversationId = conversationId;
+            },
+            ctx.CancellationToken
+        );
     }
 }
 

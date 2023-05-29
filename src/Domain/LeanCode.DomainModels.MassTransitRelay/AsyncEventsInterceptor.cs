@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.MassTransitRelay;
@@ -26,8 +24,7 @@ public sealed class AsyncEventsInterceptor
 
     private sealed class EventInterceptor : IDomainEventInterceptor
     {
-        public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; } =
-            new AsyncLocal<ConcurrentQueue<IDomainEvent>?>();
+        public AsyncLocal<ConcurrentQueue<IDomainEvent>?> Storage { get; } = new();
 
         void IDomainEventInterceptor.Intercept(IDomainEvent domainEvent)
         {
