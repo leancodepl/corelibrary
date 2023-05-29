@@ -13,7 +13,7 @@ public class SuggestCommandsHaveValidatorsTests : DiagnosticVerifier
     public async Task Ignores_commands_with_validators_reports_not_validated()
     {
         var source = await File.ReadAllTextAsync("TestSamples/Command_validation.cs");
-        var diag = new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveValidators, 20, 13);
+        var diag = new DiagnosticResult(DiagnosticsIds.CommandsShouldHaveValidators, 18, 13);
         await VerifyDiagnostics(source, diag);
     }
 

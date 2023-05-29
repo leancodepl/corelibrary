@@ -11,7 +11,7 @@ namespace LeanCode.CodeAnalysis.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
 {
-    private const string HandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler`2";
+    private const string HandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler`1";
     private const string ValidatorTypeName = "FluentValidation.IValidator`1";
 
     private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
@@ -63,7 +63,7 @@ public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
         }
 
         var typeArgs = handler.TypeArguments;
-        if (typeArgs.Length > 1 && typeArgs[1] is INamedTypeSymbol cmdType)
+        if (typeArgs is [INamedTypeSymbol cmdType])
         {
             commandType = cmdType;
             return true;
