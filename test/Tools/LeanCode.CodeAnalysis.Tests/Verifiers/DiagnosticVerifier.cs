@@ -134,6 +134,9 @@ public abstract class DiagnosticVerifier : IDisposable
         MetadataReference.CreateFromFile(typeof(AbstractValidator<>).Assembly.Location),
         MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
         MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
+        MetadataReference.CreateFromFile(
+            Assembly.Load("Microsoft.AspNetCore.Http.Abstractions, Version=7.0.0.0").Location
+        ),
     };
 
     protected virtual void Dispose(bool disposing)

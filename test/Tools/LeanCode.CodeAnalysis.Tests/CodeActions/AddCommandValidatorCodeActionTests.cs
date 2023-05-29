@@ -19,14 +19,14 @@ using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
-    public class Context { }
     public class Command : ICommand { }
-    public class Handler : ICommandHandler<Context, Command>
+    public class Handler : ICommandHandler<Command>
     {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+        public Task ExecuteAsync(HttpContext ctx, Command cmd) => Task.CompletedTask;
     }
 }";
 
@@ -36,10 +36,10 @@ using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
-    public class Context { }
     public class Command : ICommand { }
 
     public class CommandCV : ContextualValidator<Command>
@@ -49,9 +49,9 @@ namespace Test
         }
     }
 
-    public class Handler : ICommandHandler<Context, Command>
+    public class Handler : ICommandHandler<Command>
     {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+        public Task ExecuteAsync(HttpContext ctx, Command cmd) => Task.CompletedTask;
     }
 }";
         var fixes = new[] { "Add CommandValidator" };
@@ -66,14 +66,14 @@ namespace Test
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
-    public class Context { }
     public class Command : ICommand { }
-    public class Handler : ICommandHandler<Context, Command>
+    public class Handler : ICommandHandler<Command>
     {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+        public Task ExecuteAsync(HttpContext ctx, Command cmd) => Task.CompletedTask;
     }
 }";
 
@@ -83,10 +83,10 @@ using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
-    public class Context { }
     public class Command : ICommand { }
 
     public class CommandCV : ContextualValidator<Command>
@@ -96,9 +96,9 @@ namespace Test
         }
     }
 
-    public class Handler : ICommandHandler<Context, Command>
+    public class Handler : ICommandHandler<Command>
     {
-        public Task ExecuteAsync(Context ctx, Command cmd) => Task.CompletedTask;
+        public Task ExecuteAsync(HttpContext ctx, Command cmd) => Task.CompletedTask;
     }
 }";
         var fixes = new[] { "Add CommandValidator" };

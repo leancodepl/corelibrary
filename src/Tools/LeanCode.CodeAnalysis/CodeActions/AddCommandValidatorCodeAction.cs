@@ -16,7 +16,7 @@ namespace LeanCode.CodeAnalysis.CodeActions;
 
 public class AddCommandValidatorCodeAction : CodeAction
 {
-    private const string HandlerFullTypeName = "LeanCode.CQRS.Execution.ICommandHandler`2";
+    private const string HandlerFullTypeName = "LeanCode.CQRS.Execution.ICommandHandler`1";
     private const string ValidatorType = "ContextualValidator";
     private const string ValidatorNamespace = "LeanCode.CQRS.Validation.Fluent";
 
@@ -53,7 +53,7 @@ public class AddCommandValidatorCodeAction : CodeAction
             concreteHandler.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName)
             ?? throw new InvalidOperationException("Cannot find handler interface implementation.");
 
-        var commandName = handlerInteface.TypeArguments[1].Name;
+        var commandName = handlerInteface.TypeArguments[0].Name;
 
         var (validator, baseValidatorName) = BuildValidator(commandName);
 
