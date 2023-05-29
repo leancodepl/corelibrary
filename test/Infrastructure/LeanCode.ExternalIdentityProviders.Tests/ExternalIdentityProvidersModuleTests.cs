@@ -17,8 +17,7 @@ public class ExternalIdentityProvidersModuleTests
 
         Assert.NotNull(services.GetService<FacebookClient>());
         Assert.NotNull(services.GetService<FacebookExternalLogin<User>>());
-        Assert.NotNull(services.GetService<FacebookGrantValidator<User>>());
-        Assert.NotNull(services.GetService<IExtensionGrantValidator>());
+        AssertExtensionGrantValidatorRegistered<FacebookGrantValidator<User>>(services);
     }
 
     [Fact]
@@ -28,8 +27,7 @@ public class ExternalIdentityProvidersModuleTests
 
         Assert.NotNull(services.GetService<AppleIdService>());
         Assert.NotNull(services.GetService<AppleExternalLogin<User>>());
-        Assert.NotNull(services.GetService<AppleGrantValidator<User>>());
-        Assert.NotNull(services.GetService<IExtensionGrantValidator>());
+        AssertExtensionGrantValidatorRegistered<AppleGrantValidator<User>>(services);
     }
 
     [Fact]
@@ -39,8 +37,7 @@ public class ExternalIdentityProvidersModuleTests
 
         Assert.NotNull(services.GetService<GoogleAuthService>());
         Assert.NotNull(services.GetService<GoogleExternalLogin<User>>());
-        Assert.NotNull(services.GetService<GoogleGrantValidator<User>>());
-        Assert.NotNull(services.GetService<IExtensionGrantValidator>());
+        AssertExtensionGrantValidatorRegistered<GoogleGrantValidator<User>>(services);
     }
 
     [Fact]
@@ -51,13 +48,30 @@ public class ExternalIdentityProvidersModuleTests
         Assert.Null(services.GetService<FacebookExternalLogin<User>>());
         Assert.NotNull(services.GetService<AppleExternalLogin<User>>());
         Assert.NotNull(services.GetService<GoogleExternalLogin<User>>());
-        Assert.NotNull(services.GetService<IExtensionGrantValidator>());
+
+        AssertExtensionGrantValidatorRegistered<AppleGrantValidator<User>>(services);
+        AssertExtensionGrantValidatorRegistered<GoogleGrantValidator<User>>(services);
+        AssertExtensionGrantValidatorNotRegistered<FacebookGrantValidator<User>>(services);
     }
 
     [Fact]
     public void Throws_if_no_providers_are_selected()
     {
         Assert.Throws<ArgumentException>(() => Prepare(Providers.None));
+    }
+
+    private static void AssertExtensionGrantValidatorRegistered<TService>(IServiceProvider sp)
+        where TService : IExtensionGrantValidator
+    {
+        var validators = sp.GetServices<IExtensionGrantValidator>();
+        Assert.Contains(validators, v => v is TService);
+    }
+
+    private static void AssertExtensionGrantValidatorNotRegistered<TService>(IServiceProvider sp)
+        where TService : IExtensionGrantValidator
+    {
+        var validators = sp.GetServices<IExtensionGrantValidator>();
+        Assert.DoesNotContain(validators, v => v is TService);
     }
 
     private static IServiceProvider Prepare(Providers providers)

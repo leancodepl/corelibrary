@@ -120,6 +120,6 @@ public class BenchmarkModule : AppModule
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.TryRegisterWithImplementedInterfaces<AppRoles>();
+        services.AddSingleton<IRoleRegistration, AppRoles>();
     }
 }

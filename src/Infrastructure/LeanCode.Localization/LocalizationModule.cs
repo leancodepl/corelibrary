@@ -15,9 +15,6 @@ public class LocalizationModule : AppModule
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.TryRegisterWithImplementedInterfaces<ResourceManagerStringLocalizer>(
-            _ => new ResourceManagerStringLocalizer(config),
-            ServiceLifetime.Singleton
-        );
+        services.AddSingleton<IStringLocalizer>(new ResourceManagerStringLocalizer(config));
     }
 }

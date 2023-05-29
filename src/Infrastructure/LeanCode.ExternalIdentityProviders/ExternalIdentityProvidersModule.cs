@@ -1,3 +1,4 @@
+using IdentityServer4.Validation;
 using LeanCode.Components;
 using LeanCode.ExternalIdentityProviders.Apple;
 using LeanCode.ExternalIdentityProviders.Facebook;
@@ -41,7 +42,9 @@ public class ExternalIdentityProvidersModule<TUser> : AppModule
             services.AddHttpClient<FacebookClient>(c => c.BaseAddress = new Uri(FacebookClient.ApiBase));
 
             services.TryAddTransient<FacebookExternalLogin<TUser>>();
-            services.TryRegisterWithImplementedInterfaces<FacebookGrantValidator<TUser>>();
+            services.TryAddEnumerable(
+                ServiceDescriptor.Transient<IExtensionGrantValidator, FacebookGrantValidator<TUser>>()
+            );
         }
 
         if (IsEnabled(Providers.Apple))
@@ -49,14 +52,18 @@ public class ExternalIdentityProvidersModule<TUser> : AppModule
             services.AddHttpClient<AppleIdService>();
 
             services.TryAddTransient<AppleExternalLogin<TUser>>();
-            services.TryRegisterWithImplementedInterfaces<AppleGrantValidator<TUser>>();
+            services.TryAddEnumerable(
+                ServiceDescriptor.Transient<IExtensionGrantValidator, AppleGrantValidator<TUser>>()
+            );
         }
 
         if (IsEnabled(Providers.Google))
         {
             services.TryAddTransient<GoogleAuthService>();
             services.TryAddTransient<GoogleExternalLogin<TUser>>();
-            services.TryRegisterWithImplementedInterfaces<GoogleGrantValidator<TUser>>();
+            services.TryAddEnumerable(
+                ServiceDescriptor.Transient<IExtensionGrantValidator, GoogleGrantValidator<TUser>>()
+            );
         }
 
         services.TryAddTransient(typeof(ExternalLoginExceptionHandler<>));

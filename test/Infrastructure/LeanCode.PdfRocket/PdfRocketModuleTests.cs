@@ -17,7 +17,7 @@ public class PdfRocketModuleTests
 
         var config = new PdfRocketConfiguration { ApiKey = "api_key" };
         services.AddSingleton(config);
-        services.TryRegisterWithImplementedInterfaces<MockRenderer>();
+        services.AddSingleton<IViewRenderer, MockRenderer>();
 
         var serviceProvider = services.BuildServiceProvider();
 

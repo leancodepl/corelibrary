@@ -1,5 +1,6 @@
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
+using IdentityServer4.Services;
 using LeanCode.Components;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +12,8 @@ public class IdentityServerKeyVaultModule : AppModule
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.TryRegisterWithImplementedInterfaces<KeyMaterialService>();
-        services.TryRegisterWithImplementedInterfaces<TokenCreationService>();
+        services.TryAddTransient<IKeyMaterialService, KeyMaterialService>();
+        services.TryAddSingleton<ITokenCreationService, TokenCreationService>();
         services.TryAddSingleton(
             ctx =>
                 new SigningService(

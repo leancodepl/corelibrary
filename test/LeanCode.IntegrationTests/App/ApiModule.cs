@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using LeanCode.Components;
+using LeanCode.CQRS.Security;
 using LeanCode.IntegrationTestHelpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,6 @@ public class ApiModule : AppModule
             cfg => cfg.UseSqlServer(config.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault))
         );
 
-        services.TryRegisterWithImplementedInterfaces<AppRoles>();
+        services.AddSingleton<IRoleRegistration, AppRoles>();
     }
 }
