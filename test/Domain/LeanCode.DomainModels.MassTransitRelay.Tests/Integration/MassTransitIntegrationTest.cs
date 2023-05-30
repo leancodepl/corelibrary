@@ -76,8 +76,9 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
 
     private async Task WaitForConsumers()
     {
-        // 5 because of the retries + inactivity timeout + some buffer
-        var result = await testApp.ActivityMonitor.AwaitBusInactivity(TimeSpan.FromSeconds(10));
-        Assert.True(result, "The bus did not stabilize.");
+        // There appears to be some hole in the test harness when tested with outbox.
+        // Even though the bus has stabilized, harness does not see the messages published.
+        // Resorting to harness inactivity which will takes more time, but is not flaky.
+        await testApp.Harness.InactivityTask;
     }
 }
