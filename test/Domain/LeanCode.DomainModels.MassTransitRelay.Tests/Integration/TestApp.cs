@@ -78,6 +78,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
         Commands = Container.Resolve<ICommandExecutor<Context>>();
         ActivityMonitor = Container.Resolve<IBusActivityMonitor>();
+        Harness.TestInactivityTimeout = TimeSpan.FromSeconds(0.5);
     }
 
     public void Dispose()
