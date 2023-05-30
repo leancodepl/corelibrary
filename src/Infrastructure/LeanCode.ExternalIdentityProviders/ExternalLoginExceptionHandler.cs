@@ -1,28 +1,36 @@
-using System;
 using System.Collections.Immutable;
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
-using LeanCode.Pipelines;
+using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.ExternalIdentityProviders;
 
-public class ExternalLoginExceptionHandler<TContext> : IPipelineElement<TContext, ICommand, CommandResult>
-    where TContext : notnull, IPipelineContext
+public class ExternalLoginExceptionHandler
 {
+    private readonly RequestDelegate next;
     public const int ErrorCodeInvalidToken = 10000;
     public const int ErrorCodeOtherConnected = 10001;
     public const int ErrorCodeOther = 10002;
 
-    public async Task<CommandResult> ExecuteAsync(
-        TContext ctx,
-        ICommand input,
-        Func<TContext, ICommand, Task<CommandResult>> next
-    )
+    public ExternalLoginExceptionHandler(RequestDelegate next)
     {
+        this.next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext httpContext)
+    {
+        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+
+        if (cqrsMetadata.ObjectKind != CQRSObjectKind.Command)
+        {
+            throw new InvalidOperationException("ExternalLoginExceptionHandler may be only used for commands.");
+        }
+
         try
         {
-            return await next(ctx, input);
+            await next(httpContext);
         }
         catch (ExternalLoginException ex)
         {
@@ -36,18 +44,18 @@ public class ExternalLoginExceptionHandler<TContext> : IPipelineElement<TContext
                 _ => new("", "Cannot perform external login.", ErrorCodeOther),
             };
 
-            return new(ImmutableList.Create(err));
+            var result = new CommandResult(ImmutableList.Create(err));
+            httpContext
+                .GetCQRSRequestPayload()
+                .SetResult(ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity));
         }
     }
 }
 
-public static class PipelineBuilderExtensions
+public static class IApplicationBuilderExtensions
 {
-    public static PipelineBuilder<TContext, ICommand, CommandResult> HandleExternalLoginExceptions<TContext>(
-        this PipelineBuilder<TContext, ICommand, CommandResult> builder
-    )
-        where TContext : IPipelineContext
+    public static IApplicationBuilder HandleExternalLoginExceptions(this IApplicationBuilder builder)
     {
-        return builder.Use<ExternalLoginExceptionHandler<TContext>>();
+        return builder.UseMiddleware<ExternalLoginExceptionHandler>();
     }
 }
