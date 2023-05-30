@@ -58,7 +58,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
                         cfg.AddRouting();
                         cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
                         cfg.AddMassTransitTestHarness(ConfigureMassTransit);
-                        cfg.AddCQRSMassTransitIntegration();
+                        cfg.AddAsyncEventsInterceptor();
                         cfg.AddBusActivityMonitor();
                         cfg.AddOptions<OutboxDeliveryServiceOptions>()
                             .Configure(opts => opts.QueryDelay = TimeSpan.FromSeconds(1));
