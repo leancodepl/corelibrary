@@ -65,8 +65,6 @@ public class ExternalIdentityProvidersModule<TUser> : AppModule
                 ServiceDescriptor.Transient<IExtensionGrantValidator, GoogleGrantValidator<TUser>>()
             );
         }
-
-        services.TryAddTransient(typeof(ExternalLoginExceptionHandler<>));
     }
 
     private bool IsEnabled(Providers provider) => configuration.HasFlag(provider);
