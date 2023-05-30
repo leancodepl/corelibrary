@@ -1,16 +1,20 @@
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
 using IdentityServer4.Services;
-using LeanCode.Components;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.IdentityServer.KeyVault;
 
-public class IdentityServerKeyVaultModule : AppModule
+public static class IdentityServerKeyVaultServiceCollectionExtensions
 {
-    public override void ConfigureServices(IServiceCollection services)
+    private const string TokenSigningKeyClientName = "identityserver.tokensigning";
+
+    public static IServiceCollection AddIdentityServerKeyVaultTokenSigning(
+        this IServiceCollection services,
+        Uri signingKeyUrl
+    )
     {
         services.TryAddTransient<IKeyMaterialService, KeyMaterialService>();
         services.TryAddSingleton<ITokenCreationService, TokenCreationService>();
@@ -19,8 +23,15 @@ public class IdentityServerKeyVaultModule : AppModule
                 new SigningService(
                     ctx.GetRequiredService<KeyClient>(),
                     ctx.GetRequiredService<IAzureClientFactory<CryptographyClient>>()
-                        .CreateClient(AzureClientFactoryBuilderExtensions.TokenSigningKeyClientName)
+                        .CreateClient(TokenSigningKeyClientName)
                 )
         );
+
+        services.AddAzureClients(cfg =>
+        {
+            cfg.AddCryptographyClient(signingKeyUrl).WithName(TokenSigningKeyClientName);
+        });
+
+        return services;
     }
 }
