@@ -1,5 +1,3 @@
-using System;
-using Autofac;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 

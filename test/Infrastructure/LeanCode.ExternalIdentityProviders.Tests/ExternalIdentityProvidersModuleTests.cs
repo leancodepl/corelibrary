@@ -1,10 +1,8 @@
-using System;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using IdentityServer4.Validation;
 using LeanCode.ExternalIdentityProviders.Apple;
 using LeanCode.ExternalIdentityProviders.Facebook;
 using LeanCode.ExternalIdentityProviders.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -15,45 +13,45 @@ public class ExternalIdentityProvidersModuleTests
     [Fact]
     public void Facebook_is_registered()
     {
-        var container = Prepare(Providers.Facebook);
+        var services = Prepare(Providers.Facebook);
 
-        Assert.True(container.IsRegistered<FacebookClient>());
-        Assert.True(container.IsRegistered<FacebookExternalLogin<User>>());
-        Assert.True(container.IsRegistered<FacebookGrantValidator<User>>());
-        Assert.True(container.IsRegistered<IExtensionGrantValidator>());
+        Assert.NotNull(services.GetService<FacebookClient>());
+        Assert.NotNull(services.GetService<FacebookExternalLogin<User>>());
+        AssertExtensionGrantValidatorRegistered<FacebookGrantValidator<User>>(services);
     }
 
     [Fact]
     public void Apple_is_registered()
     {
-        var container = Prepare(Providers.Apple);
+        var services = Prepare(Providers.Apple);
 
-        Assert.True(container.IsRegistered<AppleIdService>());
-        Assert.True(container.IsRegistered<AppleExternalLogin<User>>());
-        Assert.True(container.IsRegistered<AppleGrantValidator<User>>());
-        Assert.True(container.IsRegistered<IExtensionGrantValidator>());
+        Assert.NotNull(services.GetService<AppleIdService>());
+        Assert.NotNull(services.GetService<AppleExternalLogin<User>>());
+        AssertExtensionGrantValidatorRegistered<AppleGrantValidator<User>>(services);
     }
 
     [Fact]
     public void Google_is_registered()
     {
-        var container = Prepare(Providers.Google);
+        var services = Prepare(Providers.Google);
 
-        Assert.True(container.IsRegistered<GoogleAuthService>());
-        Assert.True(container.IsRegistered<GoogleExternalLogin<User>>());
-        Assert.True(container.IsRegistered<GoogleGrantValidator<User>>());
-        Assert.True(container.IsRegistered<IExtensionGrantValidator>());
+        Assert.NotNull(services.GetService<GoogleAuthService>());
+        Assert.NotNull(services.GetService<GoogleExternalLogin<User>>());
+        AssertExtensionGrantValidatorRegistered<GoogleGrantValidator<User>>(services);
     }
 
     [Fact]
     public void Registers_only_selected_providers()
     {
-        var container = Prepare(Providers.Apple | Providers.Google);
+        var services = Prepare(Providers.Apple | Providers.Google);
 
-        Assert.False(container.IsRegistered<FacebookExternalLogin<User>>());
-        Assert.True(container.IsRegistered<AppleExternalLogin<User>>());
-        Assert.True(container.IsRegistered<GoogleExternalLogin<User>>());
-        Assert.True(container.IsRegistered<IExtensionGrantValidator>());
+        Assert.Null(services.GetService<FacebookExternalLogin<User>>());
+        Assert.NotNull(services.GetService<AppleExternalLogin<User>>());
+        Assert.NotNull(services.GetService<GoogleExternalLogin<User>>());
+
+        AssertExtensionGrantValidatorRegistered<AppleGrantValidator<User>>(services);
+        AssertExtensionGrantValidatorRegistered<GoogleGrantValidator<User>>(services);
+        AssertExtensionGrantValidatorNotRegistered<FacebookGrantValidator<User>>(services);
     }
 
     [Fact]
@@ -62,16 +60,34 @@ public class ExternalIdentityProvidersModuleTests
         Assert.Throws<ArgumentException>(() => Prepare(Providers.None));
     }
 
-    private static IContainer Prepare(Providers providers)
+    private static void AssertExtensionGrantValidatorRegistered<TService>(IServiceProvider sp)
+        where TService : IExtensionGrantValidator
     {
-        var builder = new ContainerBuilder();
+        var validators = sp.GetServices<IExtensionGrantValidator>();
+        Assert.Contains(validators, v => v is TService);
+    }
+
+    private static void AssertExtensionGrantValidatorNotRegistered<TService>(IServiceProvider sp)
+        where TService : IExtensionGrantValidator
+    {
+        var validators = sp.GetServices<IExtensionGrantValidator>();
+        Assert.DoesNotContain(validators, v => v is TService);
+    }
+
+    private static IServiceProvider Prepare(Providers providers)
+    {
         var services = new ServiceCollection();
         var module = new ExternalIdentityProvidersModule<User>(providers);
 
-        builder.RegisterModule(module);
-        module.ConfigureServices(services);
-        builder.Populate(services);
+        services.AddMemoryCache();
+        services.AddTransient<UserManager<User>>(s => UserManager.PrepareInMemory());
 
-        return builder.Build();
+        services.AddSingleton<FacebookConfiguration>(new FacebookConfiguration(""));
+        services.AddSingleton<GoogleAuthConfiguration>(new GoogleAuthConfiguration(""));
+        services.AddSingleton<AppleIdConfiguration>(new AppleIdConfiguration(""));
+
+        module.ConfigureServices(services);
+
+        return services.BuildServiceProvider();
     }
 }

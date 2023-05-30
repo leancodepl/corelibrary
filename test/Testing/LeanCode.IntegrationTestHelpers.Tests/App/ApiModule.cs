@@ -1,9 +1,6 @@
-using System;
-using Autofac;
 using LeanCode.Components;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App;
@@ -25,6 +22,4 @@ public class ApiModule : AppModule
         services.AddHostedService<ConnectionKeeper>();
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
     }
-
-    protected override void Load(ContainerBuilder builder) { }
 }

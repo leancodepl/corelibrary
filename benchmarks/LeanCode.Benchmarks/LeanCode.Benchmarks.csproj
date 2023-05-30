@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../../src/Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
-    <ProjectReference Include="../../src/Core/LeanCode.Pipelines.Autofac/LeanCode.Pipelines.Autofac.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Pipelines.MicrosoftDI/LeanCode.Pipelines.MicrosoftDI.csproj" />
 
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
@@ -23,8 +23,6 @@
     <PackageReference Include="LeanCode.Contracts" />
 
     <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Autofac" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 

@@ -1,12 +1,13 @@
-using Autofac;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.OpenTelemetry;
 
 public class OpenTelemetryModule : AppModule
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.RegisterGeneric(typeof(TracingElement<,,>));
+        services.TryAddTransient(typeof(TracingElement<,,>));
     }
 }

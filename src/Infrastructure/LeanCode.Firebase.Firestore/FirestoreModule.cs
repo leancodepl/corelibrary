@@ -1,12 +1,15 @@
-using Autofac;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.Firebase.Firestore;
 
 public class FirestoreModule : AppModule
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.RegisterType<FirestoreDatabase>().AsSelf().AsImplementedInterfaces().SingleInstance();
+        services.TryAddSingleton<FirestoreDatabase>();
+        services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<FirestoreDatabase>());
     }
 }

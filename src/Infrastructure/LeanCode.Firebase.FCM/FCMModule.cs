@@ -1,26 +1,27 @@
-using Autofac;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.Firebase.FCM;
 
 public class FCMModule : AppModule
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.Register(c => FirebaseMessaging.GetMessaging(c.Resolve<FirebaseApp>())).AsSelf().SingleInstance();
+        services.TryAddSingleton(s => FirebaseMessaging.GetMessaging(s.GetRequiredService<FirebaseApp>()));
 
-        builder.RegisterType<FCMClient>().AsSelf();
+        services.TryAddTransient<FCMClient>();
     }
 }
 
 public class FCMModule<TStore> : AppModule
     where TStore : class, IPushNotificationTokenStore
 {
-    protected override void Load(ContainerBuilder builder)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        builder.RegisterModule(new FCMModule());
-        builder.RegisterType<TStore>().AsImplementedInterfaces();
+        (new FCMModule()).ConfigureServices(services);
+        services.TryAddTransient(typeof(TStore));
     }
 }
