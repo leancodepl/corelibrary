@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
   </ItemGroup>
 
