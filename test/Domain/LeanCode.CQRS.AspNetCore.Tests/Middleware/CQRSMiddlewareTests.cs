@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Serialization;
+using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

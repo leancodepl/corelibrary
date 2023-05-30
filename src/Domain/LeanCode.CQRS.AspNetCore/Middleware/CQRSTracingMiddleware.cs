@@ -1,3 +1,4 @@
+using LeanCode.CQRS.Execution;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 using OpenTelemetry.Trace;
