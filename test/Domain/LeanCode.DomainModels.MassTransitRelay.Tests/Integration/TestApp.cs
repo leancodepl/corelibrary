@@ -84,6 +84,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
             .Build();
 
         server = host.GetTestServer();
+        Harness.TestInactivityTimeout = TimeSpan.FromSeconds(0.5);
     }
 
     private static void ConfigureMassTransit(IBusRegistrationConfigurator cfg)
