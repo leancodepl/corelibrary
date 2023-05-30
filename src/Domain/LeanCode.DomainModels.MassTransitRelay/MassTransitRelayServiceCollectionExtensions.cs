@@ -2,19 +2,19 @@ using LeanCode.DomainModels.MassTransitRelay.Testing;
 using MassTransit;
 using MassTransit.Testing.Implementations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LeanCode.DomainModels.MassTransitRelay;
 
 public static class MassTransitRelayServiceCollectionExtensions
 {
-    public static void AddCQRSMassTransitIntegration(
+    public static IServiceCollection AddCQRSMassTransitIntegration(
         this IServiceCollection services,
+        Action<IBusRegistrationConfigurator> busCfg,
         Action<MassTransitHostOptions>? hostCfg = null
     )
     {
-        var interceptor = new AsyncEventsInterceptor();
-        interceptor.Configure();
-        services.AddSingleton(interceptor);
+        services.AddAsyncEventsInterceptor();
 
         hostCfg ??= opts =>
         {
@@ -22,6 +22,18 @@ public static class MassTransitRelayServiceCollectionExtensions
         };
 
         services.AddOptions<MassTransitHostOptions>().Configure(hostCfg);
+        services.AddMassTransit(busCfg);
+
+        return services;
+    }
+
+    public static IServiceCollection AddAsyncEventsInterceptor(this IServiceCollection services)
+    {
+        var interceptor = new AsyncEventsInterceptor();
+        interceptor.Configure();
+        services.AddSingleton(interceptor);
+
+        return services;
     }
 
     public static void AddBusActivityMonitor(this IServiceCollection services, TimeSpan? inactivityWaitTime = null)
