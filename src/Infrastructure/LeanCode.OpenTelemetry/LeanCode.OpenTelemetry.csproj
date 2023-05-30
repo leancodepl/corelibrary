@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog" />
-    <PackageReference Include="OpenTelemetry"/>
+    <PackageReference Include="OpenTelemetry" />
   </ItemGroup>
 
 </Project>

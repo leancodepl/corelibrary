@@ -1,4 +1,5 @@
 using LeanCode.CQRS.AspNetCore.Middleware;
+using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Builder;
 
 namespace LeanCode.CQRS.AspNetCore;
@@ -23,5 +24,10 @@ public static class IApplicationBuilderCQRSExtensions
     public static IApplicationBuilder LogCQRSResponses(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<ResponseLoggerMiddleware>();
+    }
+
+    public static IApplicationBuilder CQRSTrace(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<CQRSTracingMiddleware>();
     }
 }
