@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace LeanCode.CQRS.AspNetCore;
+namespace LeanCode.CQRS.Execution;
 
 public delegate Task<object?> ObjectExecutor(HttpContext httpContext, CQRSRequestPayload payload);
 

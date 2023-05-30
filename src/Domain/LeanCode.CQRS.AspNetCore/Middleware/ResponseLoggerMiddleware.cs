@@ -1,3 +1,4 @@
+using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;

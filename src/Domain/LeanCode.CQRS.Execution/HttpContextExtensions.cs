@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace LeanCode.CQRS.AspNetCore;
+namespace LeanCode.CQRS.Execution;
 
 public static class HttpContextExtensions
 {

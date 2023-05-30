@@ -1,4 +1,4 @@
-namespace LeanCode.CQRS.AspNetCore;
+namespace LeanCode.CQRS.Execution;
 
 public struct ExecutionResult
 {

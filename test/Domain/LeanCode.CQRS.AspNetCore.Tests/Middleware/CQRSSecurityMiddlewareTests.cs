@@ -3,6 +3,7 @@ using System.Security.Claims;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Middleware;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
