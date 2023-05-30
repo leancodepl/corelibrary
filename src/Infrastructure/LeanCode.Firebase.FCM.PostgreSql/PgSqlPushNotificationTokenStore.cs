@@ -2,8 +2,6 @@ using Dapper;
 using LeanCode.Dapper;
 using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LeanCode.Firebase.FCM.PostgreSql;
 
@@ -14,13 +12,10 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PgSqlPushNotificationTokenStore<TDbContext>>();
 
     private readonly TDbContext dbContext;
-    private readonly ISqlGenerationHelper sqlGenerationHelper;
 
     public PgSqlPushNotificationTokenStore(TDbContext dbContext)
     {
         this.dbContext = dbContext;
-
-        sqlGenerationHelper = dbContext.GetService<ISqlGenerationHelper>();
     }
 
     public async Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
