@@ -3,10 +3,10 @@
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" />
     <PackageReference Include="Google.Cloud.Firestore" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.Firebase/LeanCode.Firebase.csproj" />
   </ItemGroup>
 

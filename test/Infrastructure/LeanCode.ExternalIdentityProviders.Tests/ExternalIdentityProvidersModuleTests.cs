@@ -54,9 +54,7 @@ public class ExternalIdentityProvidersModuleTests
     {
         var services = Prepare(cfg =>
         {
-            cfg
-                .AddApple(new AppleIdConfiguration(""))
-                .AddGoogle(new GoogleAuthConfiguration(""));
+            cfg.AddApple(new AppleIdConfiguration("")).AddGoogle(new GoogleAuthConfiguration(""));
         });
 
         Assert.Null(services.GetService<FacebookExternalLogin<User>>());

@@ -12,7 +12,8 @@ public static class ExternalIdentityProvidersServiceCollectionExtensions
 {
     public static IServiceCollection AddExternalIdentityProviders<TUser>(
         this IServiceCollection services,
-        Action<ExternalIdentityProviderBuilder<TUser>> config)
+        Action<ExternalIdentityProviderBuilder<TUser>> config
+    )
         where TUser : IdentityUser<Guid>
     {
         services.TryAddTransient(typeof(ExternalLoginExceptionHandler<>));
@@ -57,9 +58,7 @@ public class ExternalIdentityProviderBuilder<TUser>
         services.AddSingleton(config);
         services.TryAddTransient<GoogleAuthService>();
         services.TryAddTransient<GoogleExternalLogin<TUser>>();
-        services.TryAddEnumerable(
-            ServiceDescriptor.Transient<IExtensionGrantValidator, GoogleGrantValidator<TUser>>()
-        );
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IExtensionGrantValidator, GoogleGrantValidator<TUser>>());
 
         return this;
     }
@@ -71,9 +70,7 @@ public class ExternalIdentityProviderBuilder<TUser>
         services.AddSingleton(config);
         services.AddHttpClient<AppleIdService>();
         services.TryAddTransient<AppleExternalLogin<TUser>>();
-        services.TryAddEnumerable(
-            ServiceDescriptor.Transient<IExtensionGrantValidator, AppleGrantValidator<TUser>>()
-        );
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IExtensionGrantValidator, AppleGrantValidator<TUser>>());
 
         return this;
     }
@@ -83,7 +80,8 @@ public class ExternalIdentityProviderBuilder<TUser>
         if (!anyProviderRegistered)
         {
             throw new InvalidOperationException(
-                "No identity providers were registered, ensure you've added one via AddApple(...), AddGoogle(...), AddFacebook(...) methods");
+                "No identity providers were registered, ensure you've added one via AddApple(...), AddGoogle(...), AddFacebook(...) methods"
+            );
         }
     }
 }
