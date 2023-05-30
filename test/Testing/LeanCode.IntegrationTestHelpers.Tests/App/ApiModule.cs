@@ -1,4 +1,5 @@
 using LeanCode.Components;
+using LeanCode.CQRS.AspNetCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,5 +22,7 @@ public class ApiModule : AppModule
         // so that the DB is not dropped prematurely.
         services.AddHostedService<ConnectionKeeper>();
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
+        services.AddRouting();
+        services.AddCQRS(TypesCatalog.Of<Command>(), TypesCatalog.Of<CommandCH>());
     }
 }

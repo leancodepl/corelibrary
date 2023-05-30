@@ -1,5 +1,6 @@
 using LeanCode.Components;
 using LeanCode.Components.Startup;
+using LeanCode.CQRS.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
@@ -15,17 +16,12 @@ public class Startup : LeanStartup
     public Startup(IConfiguration config)
         : base(config)
     {
-        Modules = new IAppModule[]
-        {
-            new ApiModule(),
-            // TODO: restore
-            // new CQRSModule().WithCustomPipelines<Context>(CQRSTypes, c => c, q => q, o => o),
-        };
+        Modules = new IAppModule[] { new ApiModule(), };
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        // TODO: restore
-        // app.Map("/api", x => x.UseRemoteCQRS(CQRSTypes, c => new Context()));
+        app.UseRouting();
+        app.UseEndpoints(e => e.MapRemoteCqrs("/api", cqrs => { }));
     }
 }
