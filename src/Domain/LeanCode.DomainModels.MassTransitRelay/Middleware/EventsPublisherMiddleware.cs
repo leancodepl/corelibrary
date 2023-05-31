@@ -1,5 +1,4 @@
 using LeanCode.DomainModels.Model;
-using LeanCode.Pipelines;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 
