@@ -5,16 +5,16 @@ using Serilog;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
-internal class CQRSRequestSerializer
+internal class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
-    private readonly ILogger logger = Log.ForContext<CQRSRequestSerializer>();
+    private readonly ILogger logger = Log.ForContext<CQRSMiddleware>();
 
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSRequestSerializer(ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(ISerializer serializer, RequestDelegate next)
     {
         this.serializer = serializer;
         this.next = next;
