@@ -1,0 +1,5 @@
+FROM leancode.azurecr.io/traefik-proxy
+
+RUN chmod 0644 /certs/local.lncd.pl.cert /certs/local.lncd.pl.key
+
+COPY dynamic.toml /config/dynamic/main.toml

@@ -1,0 +1,8 @@
+* text=auto
+*.cs    diff=csharp
+*.java  diff=java
+*.jpg   binary
+*.png   binary
+*.gif   binary
+*.pdf   diff=astextplain
+*.PDF   diff=astextplain

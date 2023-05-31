@@ -1,0 +1,25 @@
+[http]
+  [http.routers]
+    [http.routers.local]
+      entryPoints = ["web", "websecure"]
+      service = "local"
+      rule = "Host(`web.local.lncd.pl`) || Host(`cms.local.lncd.pl`) || Host(`admin.local.lncd.pl`)"
+      priority = 99
+      [http.routers.local.tls]
+    [http.routers.traefik]
+      rule = "Host(`traefik.local.lncd.pl`)"
+      service = "api@internal"
+      [http.routers.traefik.tls]
+[http.services]
+  [http.services.local.loadBalancer]
+    [[http.services.local.loadBalancer.servers]]
+      url = "http://host.docker.internal:40111/"
+[tls]
+  [[tls.certificates]]
+    certFile = "/certs/local.lncd.pl.crt"
+    keyFile = "/certs/local.lncd.pl.key"
+  [tls.stores]
+    [tls.stores.default]
+    [tls.stores.default.defaultCertificate]
+        certFile = "/certs/local.lncd.pl.crt"
+        keyFile = "/certs/local.lncd.pl.key"

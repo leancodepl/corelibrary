@@ -1,0 +1,11 @@
+.git/
+**/bin
+**/obj
+.vscode/
+.gitignore
+.gitattributes
+infrastructure/
+**/node_modules
+
+**/tempkey.rsa
+**/tempkey.jwk

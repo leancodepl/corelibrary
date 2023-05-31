@@ -1,0 +1,27 @@
+[global]
+  checkNewVersion = true
+  sendAnonymousUsage = false
+[log]
+  level = "DEBUG"
+[api]
+  dashboard = true
+  insecure = true
+  debug = true
+
+[provieders]
+  [providers.docker]
+    exposedByDefault = true
+  [providers.file]
+    directory = "/config/dynamic"
+    watch = true
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http]
+      [entryPoints.web.http.redirections]
+        [entryPoints.web.http.redirections.entryPoint]
+          to = ":443"
+          scheme = "https"
+  [entryPoints.websecure]
+    address = ":443"

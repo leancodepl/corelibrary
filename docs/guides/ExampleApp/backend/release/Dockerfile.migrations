@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+WORKDIR /app
+COPY src/Apps/ExampleApp.Migrations/deploy .
+
+ENTRYPOINT ["dotnet", "ExampleApp.Migrations.dll", "migrate"]

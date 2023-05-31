@@ -1,0 +1,39 @@
+apiVersion: k3d.io/v1alpha3
+kind: Simple
+name: exampleapp
+image: rancher/k3s:v1.23.3-k3s1
+servers: 1
+agents: 0
+kubeAPI:
+  host: "exampleapp-cluster.local.lncd.pl"
+  hostIP: "127.0.0.1"
+  hostPort: "6445"
+ports:
+  - port: 80:80
+    nodeFilters:
+      - loadbalancer
+  - port: 443:443
+    nodeFilters:
+      - loadbalancer
+  - port: 1433:1433
+    nodeFilters:
+      - loadbalancer
+  - port: 10000:10000
+    nodeFilters:
+      - loadbalancer
+registries:
+  create:
+    name: k3d-exampleapp-registry.local.lncd.pl
+    host: "0.0.0.0"
+    hostPort: "21345"
+options:
+  k3d:
+    wait: true
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+  kubeconfig:
+    updateDefaultKubeconfig: true 
+    switchCurrentContext: true

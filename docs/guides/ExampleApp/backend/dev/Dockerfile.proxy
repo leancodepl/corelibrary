@@ -1,0 +1,8 @@
+FROM traefik
+
+COPY proxy/local.lncd.pl.crt /certs/local.lncd.pl.crt
+COPY proxy/local.lncd.pl.key /certs/local.lncd.pl.key
+COPY proxy/config.toml /config/config.toml
+COPY proxy/dynamic.toml /config/dynamic/main.toml
+
+CMD ["--configFile=/config/config.toml"]

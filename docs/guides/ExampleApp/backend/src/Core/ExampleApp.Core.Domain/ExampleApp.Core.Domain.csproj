@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>ExampleApp.Core.Domain</AssemblyName>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LeanCode.DomainModels" />
+    <PackageReference Include="LeanCode.TimeProvider" />
+  </ItemGroup>
+
+</Project>

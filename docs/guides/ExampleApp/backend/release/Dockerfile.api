@@ -1,0 +1,10 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+ENV ASPNETCORE_URLS=http://*:80
+ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+EXPOSE 80
+
+WORKDIR /app
+COPY src/Apps/ExampleApp.Api/deploy .
+
+ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]

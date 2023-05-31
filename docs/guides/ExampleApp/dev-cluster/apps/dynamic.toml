@@ -1,0 +1,29 @@
+[http]
+  [http.routers]
+    [http.routers.local]
+      entryPoints = ["web", "websecure"]
+      service = "local"
+      rule = "Host(`web.local.lncd.pl`)"
+      priority = 99
+      [http.routers.local.tls]
+    [http.routers.traefik]
+      rule = "Host(`traefik.local.lncd.pl`)"
+      service = "api@internal"
+      [http.routers.traefik.tls]
+[http.services]
+  [http.services.local.loadBalancer]
+    [[http.services.local.loadBalancer.servers]]
+      url = "http://host.k3d.internal:40112/"
+
+[http.middlewares]
+  [http.middlewares.redirecthttps.redirectScheme]
+    scheme = "https"
+[tls]
+  [[tls.certificates]]
+    certFile = "/certs/local.lncd.pl.cert"
+    keyFile = "/certs/local.lncd.pl.key"
+  [tls.stores]
+    [tls.stores.default]
+    [tls.stores.default.defaultCertificate]
+        certFile = "/certs/local.lncd.pl.cert"
+        keyFile = "/certs/local.lncd.pl.key"

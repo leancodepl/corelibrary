@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>ExampleApp.Api</AssemblyName>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Templates/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Remove="Templates/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Core/ExampleApp.Core.Services/ExampleApp.Core.Services.csproj" />
+
+    <PackageReference Include="Azure.Storage.Blobs" />
+
+    <PackageReference Include="IdentityServer4" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" />
+    <PackageReference Include="IdentityServer4.EntityFramework" />
+
+    <PackageReference Include="LeanCode.Cache.AspNet" />
+    <PackageReference Include="LeanCode.ClientCredentialsHandler" />
+    <PackageReference Include="LeanCode.Components.Startup" />
+    <PackageReference Include="LeanCode.OpenTelemetry" />
+    <PackageReference Include="LeanCode.CQRS.Default" />
+    <PackageReference Include="LeanCode.CQRS.RemoteHttp.Server" />
+    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" />
+    <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" />
+    <PackageReference Include="LeanCode.IdentityServer.KeyVault" />
+    <PackageReference Include="LeanCode.Logging" />
+    <PackageReference Include="LeanCode.Localization" />
+    <PackageReference Include="LeanCode.UrlHelper" />
+    <PackageReference Include="LeanCode.ViewRenderer.Razor" />
+
+    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
+
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+
+  </ItemGroup>
+
+</Project>

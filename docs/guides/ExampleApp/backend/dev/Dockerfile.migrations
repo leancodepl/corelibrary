@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip procps \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+
+RUN groupadd --gid 1000 dotnet \
+    && useradd -s /bin/bash --uid 1000 --gid 1000 -m dotnet
+RUN mkdir /app && chown dotnet:dotnet /app
+USER dotnet
+
+ENV PATH="$PATH:/home/dotnet/.dotnet/tools"
+RUN dotnet tool install -g dotnet-ef --version '6.0.0-*'
+
+ARG APP_VERSION
+
+ENV ENVTYPE=Docker
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV APP_VERSION=${APP_VERSION}
+
+COPY --chown=dotnet config /app/config
+COPY --chown=dotnet out/migrations /app/bin
+
+WORKDIR /app/bin
+ENTRYPOINT /app/config/migrate.sh
