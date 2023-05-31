@@ -15,7 +15,7 @@ using Xunit;
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public sealed class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
+public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private static readonly CQRSObjectMetadata QueryMetadata =
         new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
@@ -25,7 +25,7 @@ public sealed class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
     private readonly ISerializer serializer;
     private RequestDelegate pipeline;
 
-    public CQRSRequestSerializerTests()
+    public CQRSMiddlewareTests()
     {
         serializer = Substitute.For<ISerializer>();
         pipeline = ctx => Task.CompletedTask;
@@ -41,7 +41,7 @@ public sealed class CQRSRequestSerializerTests : IDisposable, IAsyncLifetime
                     })
                     .Configure(app =>
                     {
-                        app.UseMiddleware<CQRSRequestSerializer>();
+                        app.UseMiddleware<CQRSMiddleware>();
                         app.Run(ctx => pipeline(ctx));
                     });
             })

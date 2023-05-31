@@ -18,7 +18,7 @@ public static class CQRSEndpointRouteBuilderExtensions
         var cqrsHandlers =
             builder.ServiceProvider.GetService<CQRSObjectsRegistrationSource>()
             ?? throw new InvalidOperationException(
-                "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first"
+                "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first."
             );
 
         var pipelineBuilder = new CQRSPipelineBuilder(builder);
@@ -53,7 +53,7 @@ public class CQRSPipelineBuilder
     internal RequestDelegate PreparePipeline(Action<IApplicationBuilder> pipelineCfg)
     {
         var applicationBuilder = routeBuilder.CreateApplicationBuilder();
-        applicationBuilder.UseMiddleware<CQRSRequestSerializer>();
+        applicationBuilder.UseMiddleware<CQRSMiddleware>();
         pipelineCfg(applicationBuilder);
         applicationBuilder.Run(CQRSPipelineFinalizer.HandleAsync);
         return applicationBuilder.Build();
