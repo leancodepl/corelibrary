@@ -211,7 +211,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
         pipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
-            payload.SetResult(ExecutionResult.Success(obj, code));
+            payload.SetResult(ExecutionResult.WithPayload(obj, code));
             return Task.CompletedTask;
         };
     }
@@ -221,7 +221,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
         pipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
-            payload.SetResult(ExecutionResult.Fail(code));
+            payload.SetResult(ExecutionResult.Empty(code));
             return Task.CompletedTask;
         };
     }

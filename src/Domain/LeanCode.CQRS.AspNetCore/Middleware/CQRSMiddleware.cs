@@ -75,7 +75,8 @@ internal class CQRSMiddleware
         var result = payload.Result.Value;
 
         httpContext.Response.StatusCode = result.StatusCode;
-        if (result.Succeeded)
+
+        if (result.HasPayload)
         {
             httpContext.Response.ContentType = "application/json";
             if (result.Payload is null)

@@ -50,7 +50,7 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
                         app.Run(ctx =>
                         {
                             var payload = ctx.GetCQRSRequestPayload();
-                            payload.SetResult(ExecutionResult.Success(null));
+                            payload.SetResult(ExecutionResult.WithPayload(null));
                             return Task.CompletedTask;
                         });
                     });
