@@ -2,26 +2,21 @@ namespace LeanCode.CQRS.AspNetCore;
 
 public struct ExecutionResult
 {
-    public ExecutionStatus Status { get; private set; }
     public int StatusCode { get; private set; }
+
+    /// <remarks>
+    /// Indicates that result should be written in http response, however <see cref="Payload"/> may still be a null value.
+    /// </remarks>
+    public bool HasPayload { get; private set; }
     public object? Payload { get; private set; }
 
-    public bool Failed => Status == ExecutionStatus.Failed;
-    public bool Succeeded => Status == ExecutionStatus.Succeeded;
+    public static ExecutionResult Empty(int code) => new() { StatusCode = code, };
 
-    public static ExecutionResult Fail(int code) => new() { Status = ExecutionStatus.Failed, StatusCode = code, };
-
-    public static ExecutionResult Success(object? payload, int code = 200) =>
+    public static ExecutionResult WithPayload(object? payload, int code = 200) =>
         new()
         {
-            Status = ExecutionStatus.Succeeded,
             StatusCode = code,
+            HasPayload = true,
             Payload = payload,
         };
-
-    public enum ExecutionStatus
-    {
-        Failed,
-        Succeeded,
-    }
 }

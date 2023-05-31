@@ -35,7 +35,7 @@ public class CQRSValidationMiddleware
             {
                 logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
                 var commandResult = CommandResult.NotValid(result);
-                payload.SetResult(ExecutionResult.Success(commandResult, StatusCodes.Status422UnprocessableEntity));
+                payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
                 return;
             }
         }

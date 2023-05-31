@@ -44,7 +44,7 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
                         app.Run(ctx =>
                         {
                             var payload = ctx.GetCQRSRequestPayload();
-                            payload.SetResult(ExecutionResult.Success(CommandResult.Success));
+                            payload.SetResult(ExecutionResult.WithPayload(CommandResult.Success));
                             return Task.CompletedTask;
                         });
                     });
