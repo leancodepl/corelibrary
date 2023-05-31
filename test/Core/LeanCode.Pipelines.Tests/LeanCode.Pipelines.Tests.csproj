@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Core/LeanCode.Pipelines/LeanCode.Pipelines.csproj" />
-  </ItemGroup>
-
-</Project>
