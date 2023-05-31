@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Serilog" />
     <PackageReference Include="OpenTelemetry" />
   </ItemGroup>

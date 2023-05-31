@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
-    <ProjectReference Include="../../Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj" />
-    <ProjectReference Include="../../Infrastructure/LeanCode.PeriodicService/LeanCode.PeriodicService.csproj" />
-
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+      
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
   </ItemGroup>
 </Project>
