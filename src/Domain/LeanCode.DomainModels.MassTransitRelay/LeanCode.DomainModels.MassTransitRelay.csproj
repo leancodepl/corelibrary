@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Infrastructure/LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
     <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-      
+
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Serilog" />
   </ItemGroup>
 </Project>
