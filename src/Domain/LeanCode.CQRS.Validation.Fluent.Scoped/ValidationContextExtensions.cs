@@ -17,7 +17,7 @@ public static class ValidationContextExtensions
         else
         {
             throw new InvalidOperationException(
-                "`HttpContext` is not available in validation context. Ensure you are calling the validator through FluentValidationCommandValidatorAdapter"
+                "`HttpContext` is not available in validation context. Ensure you are calling the validator through FluentValidationCommandValidatorAdapter."
             );
         }
     }
