@@ -47,13 +47,9 @@ public class AllProjectsQH : IQueryHandler<CoreContext, AllProjects, List<Projec
         this.dbContext = dbContext;
     }
 
-    public async Task<List<ProjectDTO>> ExecuteAsync(CoreContext context, AllProjects query)
+    public Task<List<ProjectDTO>> ExecuteAsync(CoreContext context, AllProjects query)
     {
-        var q = dbContext.Projects.Select(p => new ProjectDTO
-        {
-            Id = p.Id,
-            Name = p.Name,
-        });
+        var q = dbContext.Projects.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, });
 
         q = query.SortByNameDescending ? q.OrderByDescending(p => p.Name) : q.OrderBy(p => p.Name);
 
