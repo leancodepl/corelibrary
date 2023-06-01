@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Core;
 using FluentValidation;
+using FluentValidation.Results;
 using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
@@ -48,6 +45,27 @@ public class AdapterWithAsyncValidatorIntegrationTests
         Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
     }
 
+    [Fact]
+    public async Task Passes_http_context_to_validation_context()
+    {
+        var validator = Substitute.For<IValidator>();
+        var httpContext = MockHttpContext();
+        var command = new Command();
+        var adapter = new FluentValidationCommandValidatorAdapter<Command>(validator);
+
+        HttpContext interceptedHttpContext = null;
+        _ = validator
+            .ValidateAsync(
+                Arg.Do((IValidationContext ctx) => interceptedHttpContext = ctx.HttpContext()),
+                Arg.Any<CancellationToken>()
+            )
+            .Returns(new ValidationResult());
+
+        await adapter.ValidateAsync(httpContext, command);
+
+        Assert.Equal(httpContext, interceptedHttpContext);
+    }
+
     private class Validator : AbstractValidator<Command>
     {
         public const int MinValue = 5;
@@ -60,17 +78,8 @@ public class AdapterWithAsyncValidatorIntegrationTests
         }
     }
 
-    private class Context { }
-
     private class Command : ICommand
     {
         public int Data { get; set; }
-    }
-
-    private class ComponentContext : IComponentContext
-    {
-        public IComponentRegistry ComponentRegistry => null;
-
-        public object ResolveComponent(ResolveRequest request) => null;
     }
 }
