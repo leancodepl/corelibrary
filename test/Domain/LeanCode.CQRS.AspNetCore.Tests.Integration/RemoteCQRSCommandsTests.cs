@@ -59,7 +59,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
 
         var commandResult = JsonSerializer.Deserialize<CommandResult>(body);
 
-        // Assert.Equal(HttpStatusCode.UnprocessableEntity, statusCode);
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, statusCode);
         Assert.NotNull(commandResult);
 
         Assert.False(commandResult!.WasSuccessful);
