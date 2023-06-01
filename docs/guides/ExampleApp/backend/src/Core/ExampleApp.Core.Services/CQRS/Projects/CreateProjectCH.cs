@@ -1,3 +1,13 @@
+using ExampleApp.Core.Contracts.Projects;
+using ExampleApp.Core.Domain.Projects;
+using FluentValidation;
+using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.DomainModels.DataAccess;
+using LeanCode.DomainModels.Model;
+
+namespace ExampleApp.Core.Services.CQRS.Projects;
+
 public class CreateProjectCV : ContextualValidator<CreateProject>
 {
     public CreateProjectCV()
@@ -27,5 +37,7 @@ public class CreateProjectCH : ICommandHandler<CoreContext, CreateProject>
         projects.Add(project);
 
         logger.Information("Project {ProjectId} added", project.Id);
+
+        return Task.CompletedTask;
     }
 }

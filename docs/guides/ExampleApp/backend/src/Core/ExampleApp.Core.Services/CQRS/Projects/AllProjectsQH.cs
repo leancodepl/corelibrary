@@ -1,3 +1,10 @@
+using ExampleApp.Core.Contracts.Projects;
+using ExampleApp.Core.Services.DataAccess;
+using LeanCode.CQRS.Execution;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExampleApp.Core.Services.CQRS.Projects;
+
 public class AllProjectsQH : IQueryHandler<CoreContext, AllProjects, List<ProjectDTO>>
 {
     private readonly CoreDbContext dbContext;
@@ -7,7 +14,7 @@ public class AllProjectsQH : IQueryHandler<CoreContext, AllProjects, List<Projec
         this.dbContext = dbContext;
     }
 
-    public async Task<List<ProjectDTO>> ExecuteAsync(CoreContext context, AllProjects query)
+    public Task<List<ProjectDTO>> ExecuteAsync(CoreContext context, AllProjects query)
     {
         var q = dbContext.Projects.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, });
 

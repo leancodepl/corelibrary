@@ -8,10 +8,7 @@ namespace ExampleApp.IntegrationTests.Example
         [Fact]
         public async Task Example_test()
         {
-            var result = await App.Command.RunAsync(new ExampleCommand
-            {
-                Arg = "foo",
-            });
+            var result = await App.Command.RunAsync(new AddProject { Name = "Project", });
 
             Assert.True(result.WasSuccessful);
         }

@@ -1,7 +1,9 @@
 using Autofac;
 using ExampleApp.Core.Services.DataAccess;
 using ExampleApp.Core.Services.DataAccess.Entities;
+using ExampleApp.Core.Services.DataAccess.Repositories;
 using LeanCode.Components;
+using LeanCode.DomainModels.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,5 +44,7 @@ public class CoreModule : AppModule
         var self = typeof(CoreModule).Assembly;
 
         builder.Register(c => c.Resolve<CoreDbContext>()).AsImplementedInterfaces();
+
+        builder.RegisterAssemblyTypes(self).AsClosedTypesOf(typeof(IRepository<,>)).AsImplementedInterfaces().AsSelf();
     }
 }
