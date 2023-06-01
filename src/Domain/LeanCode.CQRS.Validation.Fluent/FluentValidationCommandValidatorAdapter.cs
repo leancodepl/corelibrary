@@ -1,46 +1,41 @@
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Validation.Fluent;
 
-public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : ICommandValidator<TAppContext, TCommand>
+public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
-    where TAppContext : notnull
 {
     private readonly IValidator fluentValidator;
-    private readonly IComponentContext componentContext;
 
-    public FluentValidationCommandValidatorAdapter(IValidator fluentValidator, IComponentContext componentContext)
+    public FluentValidationCommandValidatorAdapter(IValidator fluentValidator)
     {
         this.fluentValidator = fluentValidator;
-        this.componentContext = componentContext;
     }
 
-    public async Task<Contracts.Validation.ValidationResult> ValidateAsync(TAppContext appContext, TCommand command)
+    public async Task<Contracts.Validation.ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command)
     {
-        var ctx = PrepareContext(appContext, command);
+        var ctx = PrepareContext(httpContext, command);
 
-        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx);
+        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx, httpContext.RequestAborted);
 
         var mappedResult = fluentValidationResult.Errors.Select(MapFluentError).ToList();
 
         return new(mappedResult);
     }
 
-    private ValidationError MapFluentError(ValidationFailure failure)
+    private static ValidationError MapFluentError(ValidationFailure failure)
     {
         var state = failure.CustomState as FluentValidatorErrorState;
 
         return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0);
     }
 
-    private ValidationContext<TCommand> PrepareContext(TAppContext appContext, TCommand command)
+    private static ValidationContext<TCommand> PrepareContext(HttpContext httpContext, TCommand command)
     {
         var ctx = new ValidationContext<TCommand>(
             command,
@@ -48,8 +43,7 @@ public class FluentValidationCommandValidatorAdapter<TAppContext, TCommand> : IC
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
         );
 
-        ctx.RootContextData[ValidationContextExtensions.AppContextKey] = appContext;
-        ctx.RootContextData[ValidationContextExtensions.ComponentContextKey] = componentContext;
+        ctx.RootContextData[ValidationContextExtensions.HttpContextKey] = httpContext;
 
         return ctx;
     }

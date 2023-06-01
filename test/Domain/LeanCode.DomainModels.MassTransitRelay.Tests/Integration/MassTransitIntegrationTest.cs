@@ -1,5 +1,5 @@
-using Autofac;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
@@ -30,8 +30,8 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
 
     private async Task VerifyHandledLogs()
     {
-        await using var scope = testApp.Container.BeginLifetimeScope();
-        await using var dbContext = scope.Resolve<TestDbContext>();
+        using var scope = testApp.Services.CreateScope();
+        await using var dbContext = scope.ServiceProvider.GetRequiredService<TestDbContext>();
 
         var handled = await dbContext.HandledLog.Where(l => l.CorrelationId == correlationId).ToListAsync();
 
@@ -44,9 +44,8 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
 
     private async Task ExecuteCommandAsync()
     {
-        var ctx = new Context();
         var cmd = new TestCommand { CorrelationId = correlationId };
-        await testApp.Commands.RunAsync(ctx, cmd);
+        await testApp.RunCommand(cmd);
     }
 
     private async Task VerifyEventRaisedFromCommandWasPublishedAndHandled()
@@ -77,8 +76,9 @@ public class MassTransitIntegrationTest : IClassFixture<TestApp>
 
     private async Task WaitForConsumers()
     {
-        // 5 because of the retries + inactivity timeout + some buffer
-        var result = await testApp.ActivityMonitor.AwaitBusInactivity(TimeSpan.FromSeconds(10));
-        Assert.True(result, "The bus did not stabilize.");
+        // There appears to be some hole in the test harness when tested with outbox.
+        // Even though the bus has stabilized, harness does not see the messages published.
+        // Resorting to harness inactivity which will takes more time, but is not flaky.
+        await testApp.Harness.InactivityTask;
     }
 }

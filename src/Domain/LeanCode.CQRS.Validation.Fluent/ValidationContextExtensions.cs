@@ -1,35 +1,33 @@
-using System;
-using Autofac;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.Validation.Fluent;
 
 public static class ValidationContextExtensions
 {
-    public const string ComponentContextKey = "ComponentContext";
-    public const string AppContextKey = "AppContext";
+    public const string HttpContextKey = "HttpContext";
 
-    public static TAppContext AppContext<TAppContext>(this IValidationContext ctx)
-        where TAppContext : class
+    public static HttpContext HttpContext(this IValidationContext ctx)
     {
-        if (ctx.RootContextData.TryGetValue(AppContextKey, out var ac))
+        if (ctx.RootContextData.TryGetValue(HttpContextKey, out var httpContext))
         {
-            return (TAppContext)ac;
+            return (HttpContext)httpContext;
         }
         else
         {
             throw new InvalidOperationException(
-                "Cannot use `AppContext` extension method outside the `ContextualValidator` class."
+                "Cannot use `HttpContext` extension method outside the `ContextualValidator` class."
             );
         }
     }
 
     public static T GetService<T>(this IValidationContext ctx)
-        where T : class
+        where T : notnull
     {
-        if (ctx.RootContextData.TryGetValue(ComponentContextKey, out var cc))
+        if (ctx.RootContextData.TryGetValue(HttpContextKey, out var httpContext))
         {
-            return ((IComponentContext)cc).Resolve<T>();
+            return ((HttpContext)httpContext).RequestServices.GetRequiredService<T>();
         }
         else
         {

@@ -1,15 +1,15 @@
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
+using System.Net.Http.Json;
+using System.Text.Json;
 using LeanCode.Components;
-using LeanCode.CQRS.Default;
-using LeanCode.CQRS.Execution;
-using LeanCode.DomainModels.MassTransitRelay.Middleware;
-using LeanCode.DomainModels.MassTransitRelay.Testing;
+using LeanCode.Contracts;
+using LeanCode.CQRS.AspNetCore;
 using LeanCode.OpenTelemetry;
 using MassTransit;
-using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Testing;
 using MassTransit.Testing.Implementations;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,27 +21,13 @@ namespace LeanCode.DomainModels.MassTransitRelay.Tests.Integration;
 
 public sealed class TestApp : IAsyncLifetime, IDisposable
 {
-    private static readonly TypesCatalog SearchAssemblies = TypesCatalog.Of<TestApp>();
-    private readonly AppModule[] modules = new AppModule[]
-    {
-        new CQRSModule().WithCustomPipelines<Context>(
-            SearchAssemblies,
-            cmd => cmd.Trace().CommitDatabaseTransaction().Using<TestDbContext>().PublishEvents(),
-            query => query,
-            op => op
-        ),
-        new TestMassTransitModule(),
-        new MassTransitTestRelayModule(),
-        new OpenTelemetryModule(),
-    };
-
-    private readonly IBusControl bus;
     private readonly SqliteConnection dbConnection;
+    private readonly IHost host;
+    private readonly TestServer server;
 
-    public IContainer Container { get; }
-    public ICommandExecutor<Context> Commands { get; }
-    public IBusActivityMonitor ActivityMonitor { get; }
-    public ITestHarness Harness => Container.Resolve<ITestHarness>();
+    public IBusActivityMonitor ActivityMonitor => host.Services.GetRequiredService<IBusActivityMonitor>();
+    public ITestHarness Harness => host.Services.GetRequiredService<ITestHarness>();
+    public IServiceProvider Services => host.Services;
 
     public TestApp()
     {
@@ -60,78 +46,102 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         // it will get dropped prematurely and the tests would fail.
         dbConnection = new(connStr.ConnectionString);
 
-        var services = new ServiceCollection();
-        services.AddLogging(cfg => cfg.AddSerilog());
-        services.AddDbContext<TestDbContext>(cfg => cfg.UseSqlite(connStr.ConnectionString));
+        host = new HostBuilder()
+            .ConfigureWebHost(webHost =>
+            {
+                webHost
+                    .UseTestServer()
+                    .ConfigureServices(cfg =>
+                    {
+                        cfg.AddDbContext<TestDbContext>(db => db.UseSqlite(connStr.ConnectionString));
+                        cfg.AddLogging(l => l.AddSerilog());
+                        cfg.AddRouting();
+                        cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
+                        cfg.AddMassTransitTestHarness(ConfigureMassTransit);
+                        cfg.AddAsyncEventsInterceptor();
+                        cfg.AddBusActivityMonitor();
+                        cfg.AddOptions<OutboxDeliveryServiceOptions>()
+                            .Configure(opts => opts.QueryDelay = TimeSpan.FromSeconds(1));
+                    })
+                    .Configure(app =>
+                    {
+                        app.UseRouting();
+                        app.UseEndpoints(ep =>
+                        {
+                            ep.MapRemoteCqrs(
+                                "/cqrs",
+                                cqrs =>
+                                {
+                                    cqrs.Queries = q => q.Secure();
+                                    cqrs.Commands = c =>
+                                        c.Secure().Validate().CommitTransaction<TestDbContext>().PublishEvents();
+                                    cqrs.Operations = o => o.Secure();
+                                }
+                            );
+                        });
+                    });
+            })
+            .Build();
 
-        var builder = new ContainerBuilder();
+        server = host.GetTestServer();
+        Harness.TestInactivityTimeout = TimeSpan.FromSeconds(0.5);
+    }
 
-        foreach (var m in modules)
+    private static void ConfigureMassTransit(IBusRegistrationConfigurator cfg)
+    {
+        cfg.AddConsumersWithDefaultConfiguration(
+            new[] { typeof(TestApp).Assembly },
+            typeof(DefaultConsumerDefinition<>)
+        );
+
+        cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
         {
-            m.ConfigureServices(services);
-            builder.RegisterModule(m);
-        }
+            outboxCfg.UseSqlite();
+            outboxCfg.UseBusOutbox();
+        });
 
-        builder.Populate(services);
-        Container = builder.Build();
-        bus = Container.Resolve<IBusControl>();
+        cfg.UsingInMemory(
+            (ctx, busCfg) =>
+            {
+                busCfg.ConfigureEndpoints(ctx);
+                busCfg.ConnectBusObservers(ctx);
+            }
+        );
+    }
 
-        Commands = Container.Resolve<ICommandExecutor<Context>>();
-        ActivityMonitor = Container.Resolve<IBusActivityMonitor>();
+    public async Task RunCommand(ICommand command)
+    {
+        var response = await server
+            .CreateRequest($"/cqrs/command/{command.GetType().FullName}")
+            .And(
+                cfg =>
+                    cfg.Content = JsonContent.Create(command, command.GetType(), options: new JsonSerializerOptions())
+            )
+            .PostAsync();
+        response.EnsureSuccessStatusCode();
     }
 
     public void Dispose()
     {
-        Container.Dispose();
+        server.Dispose();
+        host.Dispose();
     }
 
     public async Task InitializeAsync()
     {
         await dbConnection.OpenAsync();
 
-        await using var scope = Container.BeginLifetimeScope();
-        using var dbContext = scope.Resolve<TestDbContext>();
+        using var scope = host.Services.CreateScope();
+        await using var dbContext = scope.ServiceProvider.GetRequiredService<TestDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
 
-        await Harness.Start();
+        await host.StartAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await Harness.Stop();
+        await host.StopAsync();
         await dbConnection.CloseAsync();
         await dbConnection.DisposeAsync();
-    }
-}
-
-public class TestMassTransitModule : MassTransitRelayModule
-{
-    public override void ConfigureMassTransit(IServiceCollection services)
-    {
-        services
-            .AddOptions<OutboxDeliveryServiceOptions>()
-            .Configure(opts => opts.QueryDelay = TimeSpan.FromSeconds(1));
-
-        services.AddMassTransitTestHarness(cfg =>
-        {
-            cfg.AddConsumersWithDefaultConfiguration(
-                new[] { typeof(TestApp).Assembly },
-                typeof(DefaultConsumerDefinition<>)
-            );
-
-            cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
-            {
-                outboxCfg.UseSqlite();
-                outboxCfg.UseBusOutbox();
-            });
-
-            cfg.UsingInMemory(
-                (ctx, busCfg) =>
-                {
-                    busCfg.ConfigureEndpoints(ctx);
-                    busCfg.ConnectBusObservers(ctx);
-                }
-            );
-        });
     }
 }

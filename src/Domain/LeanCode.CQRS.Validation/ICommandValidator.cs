@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Validation;
 
-public interface ICommandValidator<in TAppContext, TCommand>
-    where TAppContext : notnull
+public interface ICommandValidator<TCommand>
     where TCommand : ICommand
 {
-    Task<ValidationResult> ValidateAsync(TAppContext appContext, TCommand command);
+    Task<ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command);
 }

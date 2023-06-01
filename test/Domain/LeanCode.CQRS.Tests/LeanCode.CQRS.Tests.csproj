@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Default/LeanCode.CQRS.Default.csproj" />
-  </ItemGroup>
-
-</Project>

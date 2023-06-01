@@ -16,8 +16,6 @@ public static class ExternalIdentityProvidersServiceCollectionExtensions
     )
         where TUser : IdentityUser<Guid>
     {
-        services.TryAddTransient(typeof(ExternalLoginExceptionHandler<>));
-
         var builder = new ExternalIdentityProviderBuilder<TUser>(services);
         config(builder);
         builder.Validate();

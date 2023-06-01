@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using LeanCode.Contracts.Security;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security;
 
-public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, object, string[]>, IHasPermissions
+public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, IHasPermissions
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
 
@@ -15,7 +16,7 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<ISecurityContext, ob
     }
 
     protected override Task<bool> CheckIfAuthorizedAsync(
-        ISecurityContext appContext,
+        HttpContext appContext,
         object obj,
         string[]? customData = null
     )
