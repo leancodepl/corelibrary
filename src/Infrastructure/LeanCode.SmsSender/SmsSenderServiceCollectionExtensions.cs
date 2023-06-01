@@ -1,14 +1,12 @@
-using System;
-using System.Net.Http.Headers;
-using System.Text;
-using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.SmsSender;
 
-public class SmsSenderModule : AppModule
+public static class SmsSenderServiceCollectionExtensions
 {
-    public override void ConfigureServices(IServiceCollection services) =>
+    public static IServiceCollection AddSmsSender(this IServiceCollection services, SmsApiConfiguration config)
+    {
+        services.AddSingleton(config);
         services.AddHttpClient<ISmsSender, SmsApiClient>(
             (sp, c) =>
             {
@@ -17,4 +15,7 @@ public class SmsSenderModule : AppModule
                 SmsApiClient.ConfigureHttpClient(config, c);
             }
         );
+
+        return services;
+    }
 }

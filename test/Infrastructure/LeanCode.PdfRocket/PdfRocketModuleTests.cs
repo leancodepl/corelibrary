@@ -1,9 +1,8 @@
-using LeanCode.Components;
 using LeanCode.ViewRenderer;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LeanCode.PdfRocket;
+namespace LeanCode.PdfRocket.Tests;
 
 public class PdfRocketModuleTests
 {
@@ -12,11 +11,7 @@ public class PdfRocketModuleTests
     {
         var services = new ServiceCollection();
 
-        var module = new PdfRocketModule();
-        module.ConfigureServices(services);
-
-        var config = new PdfRocketConfiguration { ApiKey = "api_key" };
-        services.AddSingleton(config);
+        services.AddPdfRocket(new PdfRocketConfiguration { ApiKey = "api_key" });
         services.AddSingleton<IViewRenderer, MockRenderer>();
 
         var serviceProvider = services.BuildServiceProvider();
