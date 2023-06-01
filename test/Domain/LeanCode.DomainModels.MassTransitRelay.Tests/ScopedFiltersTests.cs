@@ -23,21 +23,12 @@ public class ScopedFiltersTests : IAsyncLifetime, IDisposable
 
         services.AddMassTransit(cfg =>
         {
-            cfg.AddConsumer(typeof(Consumer));
+            cfg.AddConsumer(typeof(TestConsumer), typeof(TestConsumerDefinition));
 
             cfg.UsingInMemory(
                 (ctx, cfg) =>
                 {
-                    cfg.ReceiveEndpoint(
-                        "queue",
-                        rcv =>
-                        {
-                            Filter1Observer.UseFilter1(rcv, ctx);
-                            Filter2Observer.UseFilter2(rcv, ctx);
-
-                            rcv.ConfigureConsumers(ctx);
-                        }
-                    );
+                    cfg.ConfigureEndpoints(ctx);
                 }
             );
         });
@@ -180,12 +171,12 @@ public class ScopedFiltersTests : IAsyncLifetime, IDisposable
             >(Provider);
     }
 
-    private sealed class Consumer : IConsumer<Message>
+    private sealed class TestConsumer : IConsumer<Message>
     {
         private readonly TestService service;
         private readonly Interceptor interceptor;
 
-        public Consumer(TestService service, Interceptor interceptor)
+        public TestConsumer(TestService service, Interceptor interceptor)
         {
             this.service = service;
             this.interceptor = interceptor;
@@ -195,6 +186,25 @@ public class ScopedFiltersTests : IAsyncLifetime, IDisposable
         {
             interceptor.SetConsumer(context.MessageId!.Value, service.InstanceId);
             return Task.CompletedTask;
+        }
+    }
+
+    private sealed class TestConsumerDefinition : ConsumerDefinition<TestConsumer>
+    {
+        private readonly IServiceProvider serviceProvider;
+
+        public TestConsumerDefinition(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
+        protected override void ConfigureConsumer(
+            IReceiveEndpointConfigurator endpointConfigurator,
+            IConsumerConfigurator<TestConsumer> consumerConfigurator
+        )
+        {
+            Filter1Observer.UseFilter1(endpointConfigurator, serviceProvider);
+            Filter2Observer.UseFilter2(endpointConfigurator, serviceProvider);
         }
     }
 
