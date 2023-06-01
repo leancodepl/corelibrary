@@ -13,8 +13,6 @@ using LeanCode.IdentityServer.KeyVault;
 using LeanCode.Localization;
 using LeanCode.OpenTelemetry;
 using LeanCode.ViewRenderer.Razor;
-using ExampleApp.Core.Contracts.Example;
-using ExampleApp.Core.Domain.Example.Events;
 using ExampleApp.Core.Services;
 using ExampleApp.Api.Auth;
 using ExampleApp.Api.Handlers;
@@ -23,6 +21,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using ExampleApp.Core.Contracts.Projects;
+using ExampleApp.Core.Domain.Events;
 
 namespace ExampleApp.Api;
 
@@ -31,8 +31,8 @@ public class Startup : LeanStartup
     private static readonly RazorViewRendererOptions ViewOptions = new("Templates");
 
     private static readonly TypesCatalog AllHandlers = new(typeof(CoreContext));
-    private static readonly TypesCatalog Api = new(typeof(ExampleCommand));
-    private static readonly TypesCatalog Domain = new(typeof(ExampleEvent));
+    private static readonly TypesCatalog Api = new(typeof(CreateProject));
+    private static readonly TypesCatalog Domain = new(typeof(EmployeeAssignedToAssignment));
 
     private readonly IWebHostEnvironment hostEnv;
 
@@ -54,14 +54,13 @@ public class Startup : LeanStartup
             new ApiModule(config, hostEnv),
             new CoreModule(dbConnStr),
             new AuthModule(hostEnv, config),
-
             new OpenTelemetryModule(),
-            new CQRSModule()
-                .WithCustomPipelines<CoreContext>(
-                    AllHandlers,
-                    c => c.Trace().Secure().Validate().StoreAndPublishEvents(),
-                    q => q.Trace().Secure().Cache(),
-                    o => o.Trace().Secure().StoreAndPublishEvents()),
+            new CQRSModule().WithCustomPipelines<CoreContext>(
+                AllHandlers,
+                c => c.Trace().Secure().Validate().StoreAndPublishEvents(),
+                q => q.Trace().Secure().Cache(),
+                o => o.Trace().Secure().StoreAndPublishEvents()
+            ),
             new FluentValidationModule(AllHandlers),
             new InMemoryCacheModule(),
             new ExampleAppMassTransitModule(AllHandlers, Domain, config, hostEnv),
@@ -78,19 +77,11 @@ public class Startup : LeanStartup
 
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        app
-            .UseRouting()
-            .UseForwardedHeaders()
-            .UseCors(ApiModule.ApiCorsPolicy);
+        app.UseRouting().UseForwardedHeaders().UseCors(ApiModule.ApiCorsPolicy);
 
         app.Map("/auth", auth => auth.UseIdentityServer());
 
-        app.Map("/api", api =>
-            api
-                .UseAuthentication()
-                .UseRemoteCQRS(
-                    Api,
-                    CoreContext.FromHttp));
+        app.Map("/api", api => api.UseAuthentication().UseRemoteCQRS(Api, CoreContext.FromHttp));
 
         app.UseEndpoints(endpoints =>
         {

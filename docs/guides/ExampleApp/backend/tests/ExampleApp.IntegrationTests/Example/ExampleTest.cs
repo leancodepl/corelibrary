@@ -1,4 +1,4 @@
-using ExampleApp.Core.Contracts.Example;
+using ExampleApp.Core.Contracts.Projects;
 using Xunit;
 
 namespace ExampleApp.IntegrationTests.Example
@@ -8,7 +8,7 @@ namespace ExampleApp.IntegrationTests.Example
         [Fact]
         public async Task Example_test()
         {
-            var result = await App.Command.RunAsync(new AddProject { Name = "Project", });
+            var result = await App.Command.RunAsync(new CreateProject { Name = "Project", });
 
             Assert.True(result.WasSuccessful);
         }

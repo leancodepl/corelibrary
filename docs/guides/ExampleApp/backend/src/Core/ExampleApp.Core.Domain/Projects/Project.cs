@@ -21,29 +21,29 @@ public class Project : IAggregateRoot<SId<Project>>
         return new Project { Id = SId<Project>.New(), Name = name, };
     }
 
-    public void AddAssignments(IEnumerable<string> taskNames)
+    public void AddAssignments(IEnumerable<string> assignmentNames)
     {
-        this.assignments.AddRange(taskNames.Select(tn => Assignment.Create(this, tn)));
+        this.assignments.AddRange(assignmentNames.Select(tn => Assignment.Create(this, tn)));
     }
 
-    public void EditTask(SId<Assignment> taskId, string name)
+    public void EditTask(SId<Assignment> assignmentId, string name)
     {
-        assignments.Single(t => t.Id == taskId).Edit(name);
+        assignments.Single(t => t.Id == assignmentId).Edit(name);
     }
 
-    public void AssignEmployeeToTask(SId<Assignment> taskId, SId<Employee> employeeId)
+    public void AssignEmployeeToAssignment(SId<Assignment> assignmentId, SId<Employee> employeeId)
     {
-        assignments.Single(t => t.Id == taskId).AssignEmployee(employeeId);
-        DomainEvents.Raise(new UserAssignedToTask(taskId, employeeId));
+        assignments.Single(t => t.Id == assignmentId).AssignEmployee(employeeId);
+        DomainEvents.Raise(new EmployeeAssignedToAssignment(assignmentId, employeeId));
     }
 
-    public void UnassignEmployeeFromTask(SId<Assignment> taskId)
+    public void UnassignEmployeeFromAssignment(SId<Assignment> assignmentId)
     {
-        assignments.Single(t => t.Id == taskId).UnassignEmployee();
+        assignments.Single(t => t.Id == assignmentId).UnassignEmployee();
     }
 
-    public void ChangeTaskStatus(SId<Assignment> taskId, Assignment.AssignmentStatus status)
+    public void ChangeAssignmentStatus(SId<Assignment> assignmentId, Assignment.AssignmentStatus status)
     {
-        assignments.Single(t => t.Id == taskId).ChangeStatus(status);
+        assignments.Single(t => t.Id == assignmentId).ChangeStatus(status);
     }
 }
