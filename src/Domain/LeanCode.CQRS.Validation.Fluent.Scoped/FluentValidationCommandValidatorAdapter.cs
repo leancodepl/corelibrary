@@ -19,9 +19,9 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
 
     public async Task<Contracts.Validation.ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command)
     {
-        var ctx = PrepareContext(command);
+        var ctx = PrepareContext(httpContext, command);
 
-        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx);
+        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx, httpContext.RequestAborted);
 
         var mappedResult = fluentValidationResult.Errors.Select(MapFluentError).ToList();
 
@@ -35,12 +35,15 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
         return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0);
     }
 
-    private static ValidationContext<TCommand> PrepareContext(TCommand command)
+    private static ValidationContext<TCommand> PrepareContext(HttpContext httpContext, TCommand command)
     {
         return new ValidationContext<TCommand>(
             command,
             new PropertyChain(),
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
-        );
+        )
+        {
+            RootContextData = { [ValidationContextExtensions.HttpContextKey] = httpContext, }
+        };
     }
 }

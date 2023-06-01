@@ -21,7 +21,7 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
     {
         var ctx = PrepareContext(httpContext, command);
 
-        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx);
+        var fluentValidationResult = await fluentValidator.ValidateAsync(ctx, httpContext.RequestAborted);
 
         var mappedResult = fluentValidationResult.Errors.Select(MapFluentError).ToList();
 
