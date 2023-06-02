@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+        <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+        <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
     </ItemGroup>
 
     <ItemGroup>

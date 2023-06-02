@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Domain/LeanCode.CQRS.Validation.Fluent.Scoped/LeanCode.CQRS.Validation.Fluent.Scoped.csproj" />
-  </ItemGroup>
-
-</Project>
