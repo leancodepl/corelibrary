@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
-    <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
