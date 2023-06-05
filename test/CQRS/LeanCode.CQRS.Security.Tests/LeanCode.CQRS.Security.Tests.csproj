@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+  </ItemGroup>
+
+</Project>
