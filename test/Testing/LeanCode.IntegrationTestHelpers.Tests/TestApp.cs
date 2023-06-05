@@ -1,12 +1,9 @@
-using System.Collections.Generic;
 using System.Reflection;
-using LeanCode.Components;
 using LeanCode.Components.Startup;
 using LeanCode.IntegrationTestHelpers.Tests.App;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTestHelpers.Tests;
@@ -31,7 +28,10 @@ public class TestApp : LeanCodeTestFactory<Startup>
     {
         return LeanProgram
             .BuildMinimalHost<Startup>()
-            .ConfigureDefaultLogging(projectName: "integration-tests", destructurers: new TypesCatalog(typeof(Program)))
+            .ConfigureDefaultLogging(
+                projectName: "integration-tests",
+                destructurers: new[] { typeof(Program).Assembly }
+            )
             .UseEnvironment(Environments.Development);
     }
 }

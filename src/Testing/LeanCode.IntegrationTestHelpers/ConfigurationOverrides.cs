@@ -86,8 +86,8 @@ public class ConfigurationOverrides : IConfigurationSource
                 [connectionStringKey] = dbConnStr,
                 [internalBaseKey] = "http://localhost",
                 [publicBaseKey] = "http://localhost",
-                [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
-                [IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
+                [LeanCode.Logging.IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
+                [LeanCode.Logging.IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
             };
         }
     }

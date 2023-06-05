@@ -1,5 +1,6 @@
 using LeanCode.Components;
 using LeanCode.Components.Startup;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

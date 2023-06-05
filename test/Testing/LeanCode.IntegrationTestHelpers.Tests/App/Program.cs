@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
+using LeanCode.AzureIdentity;
 using LeanCode.Components;
 using LeanCode.Components.Startup;
+using LeanCode.Logging;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App;
@@ -15,7 +17,7 @@ public static class Program
             .AddAppConfigurationFromAzureKeyVaultOnNonDevelopmentEnvironment()
             .ConfigureDefaultLogging(
                 projectName: "integration-tests",
-                destructurers: new TypesCatalog(typeof(Program))
+                destructurers: new[] { typeof(Program).Assembly }
             );
     }
 }
