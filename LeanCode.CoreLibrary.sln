@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7AFA22EA-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Components", "src\Core\LeanCode.Components\LeanCode.Components.csproj", "{9D56CBAA-44BD-4FEA-AC2F-13A8B49BF832}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Components.Startup", "src\Core\LeanCode.Components.Startup\LeanCode.Components.Startup.csproj", "{0FBEB0F0-F6BB-48B7-942D-96B9F3D56A95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Startup.Autofac", "src\Core\LeanCode.Startup.Autofac\LeanCode.Startup.Autofac.csproj", "{0FBEB0F0-F6BB-48B7-942D-96B9F3D56A95}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{CEFCB733-AF22-46A6-8CAA-A620D9E90DB4}"
 EndProject
@@ -174,6 +174,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CQRS.Validation.Fluent.Scoped.Tests", "test\CQRS\LeanCode.CQRS.Validation.Fluent.Scoped.Tests\LeanCode.CQRS.Validation.Fluent.Scoped.Tests.csproj", "{A7328190-F3EE-4311-8328-C83490A806B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CQRS.Validation.Fluent.Tests", "test\CQRS\LeanCode.CQRS.Validation.Fluent.Tests\LeanCode.CQRS.Validation.Fluent.Tests.csproj", "{64A80461-3132-4DF4-9591-CD33E0AAE21D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Components.Autofac", "src\Core\LeanCode.Components.Autofac\LeanCode.Components.Autofac.csproj", "{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Startup.MicrosoftDI", "src\Core\LeanCode.Startup.MicrosoftDI\LeanCode.Startup.MicrosoftDI.csproj", "{222D62B8-14BB-4992-8315-B699A695B730}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1040,6 +1044,30 @@ Global
 		{64A80461-3132-4DF4-9591-CD33E0AAE21D}.Release|x64.Build.0 = Release|Any CPU
 		{64A80461-3132-4DF4-9591-CD33E0AAE21D}.Release|x86.ActiveCfg = Release|Any CPU
 		{64A80461-3132-4DF4-9591-CD33E0AAE21D}.Release|x86.Build.0 = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|x64.Build.0 = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3}.Release|x86.Build.0 = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|x64.Build.0 = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Debug|x86.Build.0 = Debug|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|Any CPU.Build.0 = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|x64.ActiveCfg = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|x64.Build.0 = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|x86.ActiveCfg = Release|Any CPU
+		{222D62B8-14BB-4992-8315-B699A695B730}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AFA22EA-B093-4457-ABA2-CFF96DF41350} = {7324BABF-C1F7-430D-BF76-CF9BFA559DC6}
@@ -1125,5 +1153,7 @@ Global
 		{DAE6EAC8-676D-41D8-A661-B679114BE897} = {904D67A9-3E75-4754-B802-ACEB2541510B}
 		{A7328190-F3EE-4311-8328-C83490A806B3} = {904D67A9-3E75-4754-B802-ACEB2541510B}
 		{64A80461-3132-4DF4-9591-CD33E0AAE21D} = {904D67A9-3E75-4754-B802-ACEB2541510B}
+		{78D456B3-AF2D-4AB2-8172-A492A4FFD5F3} = {7AFA22EA-B093-4457-ABA2-CFF96DF41350}
+		{222D62B8-14BB-4992-8315-B699A695B730} = {7AFA22EA-B093-4457-ABA2-CFF96DF41350}
 	EndGlobalSection
 EndGlobal

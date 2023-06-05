@@ -1,5 +1,6 @@
 using LeanCode.Components;
-using LeanCode.Components.Startup;
+using LeanCode.Components.Autofac;
+using LeanCode.Startup.Autofac;
 using LeanCode.CQRS.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

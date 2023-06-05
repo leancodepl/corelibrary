@@ -1,4 +1,3 @@
-using LeanCode.Components.Startup;
 using Microsoft.Extensions.Configuration;
 using Serilog.Events;
 

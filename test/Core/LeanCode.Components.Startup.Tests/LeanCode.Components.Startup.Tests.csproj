@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>LeanCode.Components.Startup.Tests</RootNamespace>
+    <RootNamespace>LeanCode.Startup.Autofac.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
+    <ProjectReference Include="../../../src/Core/LeanCode.Startup.Autofac/LeanCode.Startup.Autofac.csproj" />
   </ItemGroup>
 
 </Project>

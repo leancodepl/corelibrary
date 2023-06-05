@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.AzureIdentity;
 using LeanCode.Components;
-using LeanCode.Components.Startup;
+using LeanCode.Startup.Autofac;
 using LeanCode.Logging;
 using Microsoft.Extensions.Hosting;
 

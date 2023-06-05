@@ -2,7 +2,7 @@ using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.Components;
+namespace LeanCode.Components.Autofac;
 
 public interface IAppModule : IModule
 {

@@ -1,11 +1,12 @@
 using Autofac;
+using LeanCode.Components.Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace LeanCode.Components.Startup;
+namespace LeanCode.Startup.Autofac;
 
 public abstract class LeanStartup
 {
