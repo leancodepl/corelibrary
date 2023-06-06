@@ -10,15 +10,15 @@ public class EmployeeAssignedToAssignment : IDomainEvent
     public Guid Id { get; private init; }
     public DateTime DateOccurred { get; private init; }
 
-    public SId<Projects.Assignment> TaskId { get; private init; }
+    public SId<Assignment> AssignmentId { get; private init; }
     public SId<Employee> EmployeeId { get; private init; }
 
-    public EmployeeAssignedToAssignment(SId<Projects.Assignment> taskId, SId<Employee> employeeId)
+    public EmployeeAssignedToAssignment(SId<Projects.Assignment> assignmentId, SId<Employee> employeeId)
     {
         Id = Guid.NewGuid();
         DateOccurred = TimeProvider.Now;
 
-        TaskId = taskId;
+        AssignmentId = assignmentId;
         EmployeeId = employeeId;
     }
 
@@ -26,14 +26,14 @@ public class EmployeeAssignedToAssignment : IDomainEvent
     public EmployeeAssignedToAssignment(
         Guid id,
         DateTime dateOccurred,
-        SId<Assignment> taskId,
+        SId<Assignment> assignmentId,
         SId<Employee> employeeId
     )
     {
         Id = id;
         DateOccurred = dateOccurred;
 
-        TaskId = taskId;
+        AssignmentId = assignmentId;
         EmployeeId = employeeId;
     }
 }

@@ -26,7 +26,7 @@ public class Project : IAggregateRoot<SId<Project>>
         this.assignments.AddRange(assignmentNames.Select(tn => Assignment.Create(this, tn)));
     }
 
-    public void EditTask(SId<Assignment> assignmentId, string name)
+    public void EditAssignment(SId<Assignment> assignmentId, string name)
     {
         assignments.Single(t => t.Id == assignmentId).Edit(name);
     }
