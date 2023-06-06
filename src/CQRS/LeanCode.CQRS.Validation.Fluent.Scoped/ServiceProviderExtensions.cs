@@ -8,11 +8,12 @@ public static class ServiceProviderExtensions
 {
     public static IServiceCollection AddFluentValidation(
         this IServiceCollection serviceCollection,
-        TypesCatalog catalog
+        TypesCatalog catalog,
+        ServiceLifetime validatorsLifetime = ServiceLifetime.Scoped
     )
     {
         serviceCollection.AddScoped(typeof(ICommandValidator<>), typeof(AdapterLoader<>));
-        serviceCollection.RegisterGenericTypes(catalog, typeof(IValidator<>), ServiceLifetime.Scoped);
+        serviceCollection.RegisterGenericTypes(catalog, typeof(IValidator<>), validatorsLifetime);
 
         return serviceCollection;
     }
