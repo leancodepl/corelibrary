@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../Core/LeanCode.Components.Startup/LeanCode.Components.Startup.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Startup.Autofac/LeanCode.Startup.Autofac.csproj" />
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj" />

@@ -1,8 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
 using LeanCode.Time;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.PeriodicService;
@@ -10,13 +7,12 @@ namespace LeanCode.PeriodicService;
 public class PeriodicHostedService<TAction> : BackgroundService
     where TAction : IPeriodicAction
 {
+    private readonly IServiceProvider serviceProvider;
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PeriodicHostedService<TAction>>();
 
-    private readonly ILifetimeScope scope;
-
-    public PeriodicHostedService(ILifetimeScope scope)
+    public PeriodicHostedService(IServiceProvider serviceProvider)
     {
-        this.scope = scope;
+        this.serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,23 +37,21 @@ public class PeriodicHostedService<TAction> : BackgroundService
     )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
-        using (var innerScope = scope.BeginLifetimeScope())
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var service = scope.ServiceProvider.GetRequiredService<TAction>();
+        if (!service.SkipFirstExecution || executionNo > 0)
         {
-            var service = innerScope.Resolve<TAction>();
-            if (!service.SkipFirstExecution || executionNo > 0)
+            try
             {
-                try
-                {
-                    await service.ExecuteAsync(stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Cannot run periodic action, exception has been thrown");
-                }
+                await service.ExecuteAsync(stoppingToken);
             }
-
-            return CalculateDelay(service);
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Cannot run periodic action, exception has been thrown");
+            }
         }
+
+        return CalculateDelay(service);
     }
 
     private static TimeSpan CalculateDelay(IPeriodicAction action)

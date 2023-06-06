@@ -1,6 +1,4 @@
 #nullable enable
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using LeanCode.CQRS.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
 using MassTransit;
@@ -14,29 +12,22 @@ namespace LeanCode.CQRS.MassTransitRelay.Tests.Middleware;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
 public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
 {
-    private readonly IContainer container;
+    private readonly IServiceProvider serviceProvider;
     private readonly InMemoryTestHarness harness;
 
     public EventsPublisherFilterTests()
     {
         var collection = new ServiceCollection();
         collection.AddMassTransitInMemoryTestHarness();
+        collection.AddAsyncEventsInterceptor();
 
-        var factory = new AutofacServiceProviderFactory();
-        var builder = factory.CreateBuilder(collection);
-        builder
-            .RegisterType<AsyncEventsInterceptor>()
-            .AsSelf()
-            .OnActivated(a => a.Instance.Configure())
-            .SingleInstance();
-
-        container = builder.Build();
-        harness = container.Resolve<InMemoryTestHarness>();
+        serviceProvider = collection.BuildServiceProvider();
+        harness = serviceProvider.GetRequiredService<InMemoryTestHarness>();
 
         harness.TestTimeout = TimeSpan.FromSeconds(1);
         harness.OnConfigureInMemoryBus += cfg =>
         {
-            cfg.UseDomainEventsPublishing(container.Resolve<IServiceProvider>());
+            cfg.UseDomainEventsPublishing(serviceProvider);
         };
     }
 
@@ -58,13 +49,11 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
     public async Task DisposeAsync()
     {
         await harness.Stop();
-        await container.DisposeAsync();
     }
 
     public void Dispose()
     {
         harness.Dispose();
-        container.Dispose();
     }
 
     private sealed class TestMsg { }

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Components.Autofac/LeanCode.Components.Autofac.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.AzureIdentity/LeanCode.AzureIdentity.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+
+</Project>

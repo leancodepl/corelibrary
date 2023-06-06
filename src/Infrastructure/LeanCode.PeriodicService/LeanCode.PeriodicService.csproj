@@ -3,7 +3,6 @@
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
 
-    <PackageReference Include="Autofac" />
     <PackageReference Include="Cronos" />
     <PackageReference Include="Serilog" />
 

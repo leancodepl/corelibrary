@@ -1,14 +1,13 @@
-using LeanCode.Components;
-using LeanCode.Components.Startup;
+using LeanCode.Components.Autofac;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Xunit;
 
-namespace LeanCode.Startup.Tests;
+namespace LeanCode.Startup.Autofac.Tests;
 
 public class LeanStartupTests
 {

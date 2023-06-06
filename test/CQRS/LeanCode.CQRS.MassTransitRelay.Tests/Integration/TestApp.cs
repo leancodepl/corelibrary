@@ -53,7 +53,6 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
                     .ConfigureServices(cfg =>
                     {
                         cfg.AddDbContext<TestDbContext>(db => db.UseSqlite(connStr.ConnectionString));
-                        cfg.AddLogging(l => l.AddSerilog());
                         cfg.AddRouting();
                         cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
                         cfg.AddMassTransitTestHarness(ConfigureMassTransit);

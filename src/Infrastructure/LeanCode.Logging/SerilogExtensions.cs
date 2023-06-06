@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Serilog;
 using Serilog.Core;
 
-namespace LeanCode.Components.Startup;
+namespace LeanCode.Logging;
 
 internal static class SerilogExtensions
 {
@@ -23,12 +20,6 @@ internal static class SerilogExtensions
         {
             return config;
         }
-    }
-
-    [Obsolete]
-    internal static LoggerConfiguration EnrichWithAppName(this LoggerConfiguration config, string appName)
-    {
-        return config.Enrich.WithProperty("AppName", appName);
     }
 
     private static List<TType> SelectTypes<TType>(IEnumerable<Assembly> searchAssemblies)

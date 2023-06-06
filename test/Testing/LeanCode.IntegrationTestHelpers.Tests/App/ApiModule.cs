@@ -1,4 +1,5 @@
 using LeanCode.Components;
+using LeanCode.Components.Autofac;
 using LeanCode.CQRS.AspNetCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

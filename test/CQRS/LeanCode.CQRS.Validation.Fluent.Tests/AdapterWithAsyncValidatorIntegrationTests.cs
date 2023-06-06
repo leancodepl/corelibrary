@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Core;
 using FluentValidation;
 using LeanCode.Contracts;
 using Microsoft.AspNetCore.Http;
@@ -66,12 +62,5 @@ public class AdapterWithAsyncValidatorIntegrationTests
     private sealed class Command : ICommand
     {
         public int Data { get; set; }
-    }
-
-    private sealed class ComponentContext : IComponentContext
-    {
-        public IComponentRegistry ComponentRegistry => null;
-
-        public object ResolveComponent(ResolveRequest request) => null;
     }
 }
