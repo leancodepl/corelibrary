@@ -1,3 +1,4 @@
+using FluentAssertions;
 using FluentValidation;
 using LeanCode.Components;
 using LeanCode.Contracts;
@@ -29,8 +30,7 @@ public class ModuleTests
 
         var res = await validator.ValidateAsync(MockHttpContext(), new CustomCommandWithInt { Field = 0 });
 
-        var err = Assert.Single(res.Errors);
-        Assert.Equal(10, err.ErrorCode);
+        res.Errors.Should().ContainSingle().Which.ErrorCode.Should().Be(10);
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public class ModuleTests
             new CustomCommandWithoutCustomValidator { Field = 0 }
         );
 
-        Assert.NotNull(validator);
-        Assert.Empty(res.Errors);
+        validator.Should().NotBeNull();
+        res.Errors.Should().BeEmpty();
     }
 
     [Fact]
@@ -54,26 +54,11 @@ public class ModuleTests
 
         var res = await validator.ValidateAsync(MockHttpContext(), new CustomCommandWithString { Field = "test" });
 
-        var err = Assert.Single(res.Errors);
-        Assert.Equal(13, err.ErrorCode);
-    }
-
-    [Fact(Skip = "Not supported yet")]
-    public async Task Resolves_command_validator_taking_AppCtx_as_a_ctor_parameterAsync()
-    {
-        var appContext = MockHttpContext();
-
-        var validator = serviceProvider.GetRequiredService<ICommandValidator<CustomCommandWithFloat>>();
-
-        var res = await validator.ValidateAsync(appContext, new CustomCommandWithFloat { Field = 1.3f });
-
-        Assert.NotNull(validator);
-        var err = Assert.Single(res.Errors);
-        Assert.Equal("test", err.ErrorMessage);
+        res.Errors.Should().ContainSingle().Which.ErrorCode.Should().Be(13);
     }
 
     [Fact]
-    public void Ensure_that_the_same_validator_resolved_in_two_diffrent_scopes_is_not_the_same_instance()
+    public void Ensure_that_the_same_validator_resolved_in_two_different_scopes_is_not_the_same_instance()
     {
         using var scope1 = serviceProvider.CreateScope();
         using var scope2 = serviceProvider.CreateScope();
@@ -81,7 +66,7 @@ public class ModuleTests
         var validator1 = scope1.ServiceProvider.GetRequiredService<ICommandValidator<CustomCommandWithInt>>();
         var validator2 = scope2.ServiceProvider.GetRequiredService<ICommandValidator<CustomCommandWithInt>>();
 
-        Assert.NotSame(validator1, validator2);
+        validator1.Should().NotBeSameAs(validator2);
     }
 }
 

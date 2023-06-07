@@ -1,9 +1,11 @@
+using FluentAssertions;
 using FluentValidation;
-using FluentValidation.Results;
 using LeanCode.Contracts;
+using LeanCode.Contracts.Validation;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Xunit;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
 
@@ -30,19 +32,27 @@ public class AdapterWithAsyncValidatorIntegrationTests
     {
         var res = await adapter.ValidateAsync(MockHttpContext(), new Command { Data = Validator.MinValue });
 
-        Assert.True(res.IsValid);
+        res.IsValid.Should().BeTrue();
     }
 
     [Fact]
     public async Task Correctly_maps_validation_result()
     {
-        var res = await adapter.ValidateAsync(MockHttpContext(), new Command { Data = Validator.MinValue - 1 });
+        var res = await adapter.ValidateAsync(
+            MockHttpContext(),
+            new Command { Data = Validator.MinValue - 1, FailCustom = true }
+        );
 
-        Assert.False(res.IsValid);
-        var err = Assert.Single(res.Errors);
-        Assert.Equal(nameof(Command.Data), err.PropertyName);
-        Assert.Equal(Validator.ErrorCode, err.ErrorCode);
-        Assert.Equal(Validator.ErrorMessage, err.ErrorMessage);
+        res.IsValid.Should().BeFalse();
+        res.Errors
+            .Should()
+            .BeEquivalentTo(
+                new ValidationError[]
+                {
+                    new(nameof(Command.Data), Validator.MinValueErrorMessage, Validator.MinValueErrorCode),
+                    new(nameof(Command.FailCustom), Validator.CustomErrorMessage, Validator.CustomErrorCode),
+                }
+            );
     }
 
     [Fact]
@@ -63,23 +73,41 @@ public class AdapterWithAsyncValidatorIntegrationTests
 
         await adapter.ValidateAsync(httpContext, command);
 
-        Assert.Equal(httpContext, interceptedHttpContext);
+        interceptedHttpContext.Should().BeSameAs(httpContext);
     }
 
     private class Validator : AbstractValidator<Command>
     {
         public const int MinValue = 5;
-        public const int ErrorCode = 1;
-        public const string ErrorMessage = "Custom message";
+
+        public const int MinValueErrorCode = 1;
+        public const string MinValueErrorMessage = "Min value error message";
+        public const int CustomErrorCode = 2;
+        public const string CustomErrorMessage = "Custom error message";
 
         public Validator()
         {
-            RuleFor(c => c.Data).GreaterThanOrEqualTo(MinValue).WithCode(ErrorCode).WithMessage(ErrorMessage);
+            RuleFor(c => c.Data)
+                .GreaterThanOrEqualTo(MinValue)
+                .WithCode(MinValueErrorCode)
+                .WithMessage(MinValueErrorMessage);
+            RuleFor(cmd => cmd).CustomAsync(CustomValidateAsync);
+        }
+
+        private Task CustomValidateAsync(Command cmd, ValidationContext<Command> ctx, CancellationToken ct)
+        {
+            if (cmd.FailCustom)
+            {
+                ctx.AddValidationError(CustomErrorMessage, CustomErrorCode, nameof(Command.FailCustom));
+            }
+
+            return Task.CompletedTask;
         }
     }
 
     private class Command : ICommand
     {
         public int Data { get; set; }
+        public bool FailCustom { get; set; }
     }
 }
