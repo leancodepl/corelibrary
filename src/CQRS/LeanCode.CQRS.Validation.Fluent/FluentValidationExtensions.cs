@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped;
+namespace LeanCode.CQRS.Validation.Fluent;
 
 public static class FluentValidatorExtensions
 {

@@ -7,7 +7,7 @@ using NSubstitute;
 using Xunit;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
+namespace LeanCode.CQRS.Validation.Fluent.Tests;
 
 public class AdapterWithAsyncValidatorIntegrationTests
 {

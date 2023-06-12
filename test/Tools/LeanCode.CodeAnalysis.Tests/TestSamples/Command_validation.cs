@@ -1,13 +1,13 @@
+using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Http;
 
 namespace ValidatedCommands;
 
 public class ValidatedCommand : ICommand { }
 
-public class Validator : ContextualValidator<ValidatedCommand> { }
+public class Validator : AbstractValidator<ValidatedCommand> { }
 
 public class ValidatedHandler : ICommandHandler<ValidatedCommand>
 {

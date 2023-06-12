@@ -4,7 +4,7 @@ using LeanCode.Contracts.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped;
+namespace LeanCode.CQRS.Validation.Fluent;
 
 internal sealed class AdapterLoader<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand

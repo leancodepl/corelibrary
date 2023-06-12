@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <UsingTask
-    TaskName="SetEnv"
-    TaskFactory="RoslynCodeTaskFactory"
-    AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+  <UsingTask TaskName="SetEnv" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
 
     <ParameterGroup>
       <Name ParameterType="System.String" Required="true" />
@@ -31,8 +28,32 @@
   <ItemGroup>
     <Compile Remove="**/*.cs" />
     <TestProjects Include="**/*.csproj" Exclude="LeanCode.Tests.csproj;LeanCode.IntegrationTests/LeanCode.IntegrationTests.csproj;LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
-
-    <ProjectReference Include="@(TestProjects)" />
+    <ProjectReference Include="Core/LeanCode.Components.Startup.Tests/LeanCode.Components.Startup.Tests.csproj" />
+    <ProjectReference Include="CQRS/LeanCode.CQRS.AspNetCore.Tests.Integration/LeanCode.CQRS.AspNetCore.Tests.Integration.csproj" />
+    <ProjectReference Include="CQRS/LeanCode.CQRS.AspNetCore.Tests/LeanCode.CQRS.AspNetCore.Tests.csproj" />
+    <ProjectReference Include="CQRS/LeanCode.CQRS.MassTransitRelay.Tests/LeanCode.CQRS.MassTransitRelay.Tests.csproj" />
+    <ProjectReference Include="CQRS/LeanCode.CQRS.RemoteHttp.Client.Tests/LeanCode.CQRS.RemoteHttp.Client.Tests.csproj" />
+    <ProjectReference Include="CQRS/LeanCode.CQRS.Security.Tests/LeanCode.CQRS.Security.Tests.csproj" />
+    <ProjectReference Include="CQRS\LeanCode.CQRS.Validation.Fluent.Tests\LeanCode.CQRS.Validation.Fluent.Tests.csproj" />
+    <ProjectReference Include="Domain/LeanCode.DomainModels.EF.Tests/LeanCode.DomainModels.EF.Tests.csproj" />
+    <ProjectReference Include="Domain/LeanCode.DomainModels.EventsExecution.TestHelpers.Tests/LeanCode.DomainModels.EventsExecution.TestHelpers.Tests.csproj" />
+    <ProjectReference Include="Domain/LeanCode.DomainModels.Tests/LeanCode.DomainModels.Tests.csproj" />
+    <ProjectReference Include="Domain/LeanCode.TimeProvider.Tests/LeanCode.TimeProvider.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.AzureIdentity.Tests/LeanCode.AzureIdentity.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Dapper.Tests/LeanCode.Dapper.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.ExternalIdentityProviders.Tests/LeanCode.ExternalIdentityProviders.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Firebase.FCM.Tests/LeanCode.Firebase.FCM.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Kratos.Tests/LeanCode.Kratos.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Localization.Tests/LeanCode.Localization.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Logging.Tests/LeanCode.Logging.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Mixpanel.Tests/LeanCode.Mixpanel.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.PdfRocket/LeanCode.PdfRocket.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.SendGrid.Tests/LeanCode.SendGrid.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.Serialization.Tests/LeanCode.Serialization.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.SmsSender.Tests/LeanCode.SmsSender.Tests.csproj" />
+    <ProjectReference Include="Infrastructure/LeanCode.ViewRenderer.Razor.Tests/LeanCode.ViewRenderer.Razor.Tests.csproj" />
+    <ProjectReference Include="Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj" />
+    <ProjectReference Include="Tools/LeanCode.CodeAnalysis.Tests/LeanCode.CodeAnalysis.Tests.csproj" />
   </ItemGroup>
 
   <Target Name="RunTests" DependsOnTargets="Build">
@@ -40,25 +61,13 @@
       <TestProjectsAssemblies Include="@(_ResolvedProjectReferencePaths)" Condition="$([System.String]::new('%(FullPath)').Contains('test'))" />
     </ItemGroup>
 
-    <SetEnv
-      Name="ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS"
-      Value="$(MSBuildThisFileDirectory)Testing/LeanCode.IntegrationTestHelpers.Tests" />
+    <SetEnv Name="ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS" Value="$(MSBuildThisFileDirectory)Testing/LeanCode.IntegrationTestHelpers.Tests" />
     <exec WorkingDirectory="$(TargetDir)" Command="dotnet vstest @(TestProjectsAssemblies -> '&quot;%(FullPath)&quot;', ' ')" />
   </Target>
 
   <Target Name="RunTestsWithCoverage" DependsOnTargets="Build">
-    <SetEnv
-      Name="ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS"
-      Value="$(MSBuildThisFileDirectory)Testing/LeanCode.IntegrationTestHelpers.Tests" />
-    <exec
-      ContinueOnError="ErrorAndContinue"
-      WorkingDirectory="$(TargetDir)"
-      Command="dotnet vstest \
-        &quot;%(_ResolvedProjectReferencePaths.FullPath)&quot; \
-        --logger:trx \
-        --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \
-        --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;"
-      Condition="$([System.String]::new('%(FullPath)').Contains('test'))" />
+    <SetEnv Name="ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS" Value="$(MSBuildThisFileDirectory)Testing/LeanCode.IntegrationTestHelpers.Tests" />
+    <exec ContinueOnError="ErrorAndContinue" WorkingDirectory="$(TargetDir)" Command="dotnet vstest \&#xA;        &quot;%(_ResolvedProjectReferencePaths.FullPath)&quot; \&#xA;        --logger:trx \&#xA;        --TestAdapterPath:&quot;$(Pkgcoverlet_collector)&quot; \&#xA;        --Settings:&quot;$(MSBuildProjectDirectory)/coverlet.runsettings&quot;" Condition="$([System.String]::new('%(FullPath)').Contains('test'))" />
   </Target>
 
 </Project>

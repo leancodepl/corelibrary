@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped.Tests;
+namespace LeanCode.CQRS.Validation.Fluent.Tests;
 
 public class ModuleTests
 {

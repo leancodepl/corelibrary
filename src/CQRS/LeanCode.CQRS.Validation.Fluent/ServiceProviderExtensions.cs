@@ -2,7 +2,7 @@ using FluentValidation;
 using LeanCode.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped;
+namespace LeanCode.CQRS.Validation.Fluent;
 
 public static class ServiceProviderExtensions
 {

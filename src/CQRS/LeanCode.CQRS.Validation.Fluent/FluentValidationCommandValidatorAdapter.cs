@@ -5,7 +5,7 @@ using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using Microsoft.AspNetCore.Http;
 
-namespace LeanCode.CQRS.Validation.Fluent.Scoped;
+namespace LeanCode.CQRS.Validation.Fluent;
 
 public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
