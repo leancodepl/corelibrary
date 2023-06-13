@@ -17,8 +17,8 @@ namespace LeanCode.CodeAnalysis.CodeActions;
 public class AddCommandValidatorCodeAction : CodeAction
 {
     private const string HandlerFullTypeName = "LeanCode.CQRS.Execution.ICommandHandler`1";
-    private const string ValidatorType = "ContextualValidator";
-    private const string ValidatorNamespace = "LeanCode.CQRS.Validation.Fluent";
+    private const string ValidatorType = "AbstractValidator";
+    private const string ValidatorNamespace = "FluentValidation";
 
     private readonly Document document;
     private readonly TextSpan handlerSpan;

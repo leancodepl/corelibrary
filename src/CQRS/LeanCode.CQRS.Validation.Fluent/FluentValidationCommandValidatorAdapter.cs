@@ -28,7 +28,7 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
         return new(mappedResult);
     }
 
-    private ValidationError MapFluentError(ValidationFailure failure)
+    private static ValidationError MapFluentError(ValidationFailure failure)
     {
         var state = failure.CustomState as FluentValidatorErrorState;
 

@@ -83,7 +83,6 @@ using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Http;
 
 namespace Test
