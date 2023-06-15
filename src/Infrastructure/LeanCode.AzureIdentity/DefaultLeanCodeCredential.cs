@@ -15,6 +15,7 @@ public static class DefaultLeanCodeCredential
             ClientSecret = Get<string>(AzureCredentialConfiguration.ClientSecretKey),
             UseAzureCLI = Get<bool>(AzureCredentialConfiguration.UseAzureCLIKey),
             UseManagedIdentity = Get<bool>(AzureCredentialConfiguration.UseManagedIdentityKey),
+            UseAzureWorkloadIdentity = Get<bool>(AzureCredentialConfiguration.UseAzureWorkloadIdentityKey),
         };
 
         return Create(config);
@@ -32,6 +33,8 @@ public static class DefaultLeanCodeCredential
             UseAzureCLI = GetEnv(AzureCredentialConfiguration.UseAzureCLIKey) is string cli && bool.Parse(cli),
             UseManagedIdentity =
                 GetEnv(AzureCredentialConfiguration.UseManagedIdentityKey) is string mi && bool.Parse(mi),
+            UseAzureWorkloadIdentity =
+                GetEnv(AzureCredentialConfiguration.UseAzureWorkloadIdentityKey) is string wi && bool.Parse(wi),
         };
 
         return Create(config);
@@ -51,6 +54,10 @@ public static class DefaultLeanCodeCredential
         else if (config.UseAzureCLI)
         {
             return new AzureCliCredential();
+        }
+        else if (config.UseAzureWorkloadIdentity)
+        {
+            return new WorkloadIdentityCredential();
         }
         else
         {
@@ -72,12 +79,13 @@ public static class DefaultLeanCodeCredential
         var methodsUsed =
             (config.UseAzureCLI ? 1 : 0)
             + (config.UseManagedIdentity ? 1 : 0)
+            + (config.UseAzureWorkloadIdentity ? 1 : 0)
             + (!string.IsNullOrWhiteSpace(config.ClientSecret) ? 1 : 0);
 
         if (methodsUsed != 1)
         {
             throw new InvalidOperationException(
-                "You need to specify exactly one authorization method: Azure CLI, Managed Identity or Client Secret."
+                "You need to specify exactly one authorization method: Azure CLI, Managed Identity, Workload Identity or Client Secret."
             );
         }
     }
