@@ -17,7 +17,7 @@ public static class ValidationContextExtensions
         else
         {
             throw new InvalidOperationException(
-                "Cannot use `HttpContext` extension method outside the `ContextualValidator` class."
+                "`HttpContext` is not available in validation context. Ensure you are calling the validator through FluentValidationCommandValidatorAdapter."
             );
         }
     }
@@ -25,15 +25,6 @@ public static class ValidationContextExtensions
     public static T GetService<T>(this IValidationContext ctx)
         where T : notnull
     {
-        if (ctx.RootContextData.TryGetValue(HttpContextKey, out var httpContext))
-        {
-            return ((HttpContext)httpContext).RequestServices.GetRequiredService<T>();
-        }
-        else
-        {
-            throw new InvalidOperationException(
-                "Cannot use `GetService` extension method outside the `ContextualValidator` class."
-            );
-        }
+        return ctx.HttpContext().RequestServices.GetRequiredService<T>();
     }
 }

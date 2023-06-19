@@ -53,6 +53,7 @@
 
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.0.123" />
+    <PackageReference Update="FluentValidation" Version="11.5.1" />
     <PackageReference Update="Polly" Version="7.2.3" />
     <PackageReference Update="Sendgrid" Version="9.28.1" />
   </ItemGroup>
@@ -112,6 +113,7 @@
 
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.2" />
+    <PackageReference Update="FluentAssertions" Version="6.11.0" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Update="NSubstitute" Version="4.4.0" />
     <PackageReference Update="xunit" Version="2.4.2" />

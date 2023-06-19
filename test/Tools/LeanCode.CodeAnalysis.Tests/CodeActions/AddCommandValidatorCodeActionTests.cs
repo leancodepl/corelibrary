@@ -16,9 +16,9 @@ public class AddCommandValidatorCodeActionTests : CodeFixVerifier
         var source =
             @"
 using System.Threading.Tasks;
+using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Http;
 
 namespace Test
@@ -33,16 +33,16 @@ namespace Test
         var expected =
             @"
 using System.Threading.Tasks;
+using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
     public class Command : ICommand { }
 
-    public class CommandCV : ContextualValidator<Command>
+    public class CommandCV : AbstractValidator<Command>
     {
         public CommandCV()
         {
@@ -80,16 +80,16 @@ namespace Test
         var expected =
             @"
 using System.Threading.Tasks;
+using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Http;
 
 namespace Test
 {
     public class Command : ICommand { }
 
-    public class CommandCV : ContextualValidator<Command>
+    public class CommandCV : AbstractValidator<Command>
     {
         public CommandCV()
         {

@@ -37,14 +37,13 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
 
     private static ValidationContext<TCommand> PrepareContext(HttpContext httpContext, TCommand command)
     {
-        var ctx = new ValidationContext<TCommand>(
+        return new ValidationContext<TCommand>(
             command,
             new PropertyChain(),
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
-        );
-
-        ctx.RootContextData[ValidationContextExtensions.HttpContextKey] = httpContext;
-
-        return ctx;
+        )
+        {
+            RootContextData = { [ValidationContextExtensions.HttpContextKey] = httpContext, }
+        };
     }
 }

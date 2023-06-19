@@ -18,7 +18,7 @@ public class TestCommand : ICommand, ICustomAuthorizerParams
     }
 }
 
-public class TestCommandValidator : ContextualValidator<TestCommand>
+public class TestCommandValidator : AbstractValidator<TestCommand>
 {
     public TestCommandValidator()
     {

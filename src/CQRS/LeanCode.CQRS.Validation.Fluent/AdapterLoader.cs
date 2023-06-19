@@ -9,22 +9,25 @@ namespace LeanCode.CQRS.Validation.Fluent;
 internal sealed class AdapterLoader<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
 {
+    private readonly IServiceProvider serviceProvider;
     private static readonly Task<ValidationResult> NoError = Task.FromResult(new ValidationResult(null));
-
-    private readonly FluentValidationCommandValidatorAdapter<TCommand>? adapter;
 
     public AdapterLoader(IServiceProvider serviceProvider)
     {
-        var val = serviceProvider.GetService<IValidator<TCommand>>();
-
-        if (val is not null)
-        {
-            adapter = new FluentValidationCommandValidatorAdapter<TCommand>(val);
-        }
+        this.serviceProvider = serviceProvider;
     }
 
     public Task<ValidationResult> ValidateAsync(HttpContext httpContext, TCommand command)
     {
-        return adapter is null ? NoError : adapter.ValidateAsync(httpContext, command);
+        var val = serviceProvider.GetService<IValidator<TCommand>>();
+
+        if (val is null)
+        {
+            return NoError;
+        }
+
+        var adapter = new FluentValidationCommandValidatorAdapter<TCommand>(val);
+
+        return adapter.ValidateAsync(httpContext, command);
     }
 }
