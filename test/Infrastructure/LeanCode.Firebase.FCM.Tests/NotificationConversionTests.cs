@@ -11,7 +11,7 @@ public class NotificationConversionTests
     {
         var data = Notifications.ToNotificationData(new { Field = IntEnum.Second });
 
-        Assert.Same("1", data["Field"]);
+        Assert.Equal("1", data["Field"]);
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class NotificationConversionTests
     {
         var data = Notifications.ToNotificationData(new { Field = ByteEnum.Second });
 
-        Assert.Same("1", data["Field"]);
+        Assert.Equal("1", data["Field"]);
     }
 
     private enum IntEnum
