@@ -33,8 +33,8 @@ jobs:
           if [[ $BRANCH =~ ^v([0-9]+.[0-9]+)(-[a-zA-Z0-9]+)?$ ]]
           then
             BUILD_NUMBER=$(( GITHUB_RUN_NUMBER + 500 )) # compensate for old jenkins CI
-            BRANCH_VERSION=BASH_REMATCH[1]
-            VERSION_SUFFIX=BASH_REMATCH[2]
+            BRANCH_VERSION=${BASH_REMATCH[1]}
+            VERSION_SUFFIX=${BASH_REMATCH[2]}
             VERSION="${BRANCH_VERSION}.${BUILD_NUMBER}${VERSION_SUFFIX}"
             PUBLISH_ARTIFACTS=1
             ARTIFACTS_NAME="LeanCode.CoreLibrary.$VERSION.zip"
