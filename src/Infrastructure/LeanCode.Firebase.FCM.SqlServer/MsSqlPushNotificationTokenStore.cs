@@ -80,7 +80,7 @@ public sealed class MsSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
                     newId = Guid.NewGuid(),
                     userId,
                     newToken,
-                    now = TimeProvider.Now
+                    now = Time.TimeProvider.Now
                 },
                 cancellationToken: cancellationToken
             );

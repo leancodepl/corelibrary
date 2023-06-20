@@ -56,7 +56,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
 
     private static TimeSpan CalculateDelay(IPeriodicAction action)
     {
-        var now = TimeProvider.Now;
+        var now = Time.TimeProvider.Now;
         var next =
             action.When.GetNextOccurrence(now, false)
             ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");

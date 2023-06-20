@@ -1,7 +1,7 @@
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
-using LeanCode.Time;
 using Microsoft.EntityFrameworkCore;
+using TimeProvider = LeanCode.Time.TimeProvider;
 
 namespace LeanCode.DomainModels.EF;
 
