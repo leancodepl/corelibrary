@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using FluentAssertions;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers.Tests.App;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +38,41 @@ public class Tests : IAsyncLifetime
         var res = await query.GetAsync(new Query { Id = 1 });
         Assert.NotNull(res);
         Assert.Equal("test", res);
+    }
+
+    [Fact]
+    public async Task Test_authorization_scheme_works()
+    {
+        var testPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new Claim[]
+                {
+                    new("sub", "test_id"),
+                    new("role", "user"),
+                    new("role", "admin"),
+                    new("other_claim", "other_claim_value")
+                },
+                TestAuthenticationHandler.SchemeName,
+                "sub",
+                "role"
+            )
+        );
+
+        var queries = app.CreateQueriesExecutor(client => client.WithTestAuthorization(testPrincipal));
+        var authResult = await queries.GetAsync(new AuthQuery());
+
+        authResult.IsAuthenticated.Should().BeTrue();
+        authResult.Claims
+            .Should()
+            .BeEquivalentTo(
+                new[]
+                {
+                    KeyValuePair.Create("sub", "test_id"),
+                    KeyValuePair.Create("role", "user"),
+                    KeyValuePair.Create("role", "admin"),
+                    KeyValuePair.Create("other_claim", "other_claim_value")
+                }
+            );
     }
 
     public async Task InitializeAsync()

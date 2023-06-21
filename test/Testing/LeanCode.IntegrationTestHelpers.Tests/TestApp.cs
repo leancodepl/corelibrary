@@ -2,16 +2,17 @@ using System.Reflection;
 using LeanCode.IntegrationTestHelpers.Tests.App;
 using LeanCode.Logging;
 using LeanCode.Startup.MicrosoftDI;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<App.Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } =
-        new ConfigurationOverrides(Serilog.Events.LogEventLevel.Error, false);
+    protected override ConfigurationOverrides Configuration { get; } = new(Serilog.Events.LogEventLevel.Error, false);
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
@@ -22,6 +23,16 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
     {
         base.ConfigureWebHost(builder);
         builder.UseSolutionRelativeContentRoot("test/Testing/LeanCode.IntegrationTestHelpers.Tests");
+
+        builder.ConfigureServices(services =>
+        {
+            services
+                .AddAuthentication(TestAuthenticationHandler.SchemeName)
+                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                    TestAuthenticationHandler.SchemeName,
+                    _ => { }
+                );
+        });
     }
 
     protected override IHostBuilder CreateHostBuilder()

@@ -37,6 +37,7 @@ public class Startup : LeanStartup
     protected override void ConfigureApp(IApplicationBuilder app)
     {
         app.UseRouting();
+        app.UseAuthentication();
         app.UseEndpoints(e => e.MapRemoteCqrs("/api", cqrs => { }));
     }
 }
