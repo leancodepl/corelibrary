@@ -1,8 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.AzureIdentity;
-using LeanCode.Components;
-using LeanCode.Startup.Autofac;
 using LeanCode.Logging;
+using LeanCode.Startup.MicrosoftDI;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTestHelpers.Tests.App;
