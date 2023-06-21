@@ -1,9 +1,6 @@
-using System.Net.Http.Headers;
 using System.Text.Json;
-using IdentityModel.Client;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.Serialization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,59 +26,23 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
         };
 
     protected virtual string ApiBaseAddress => "api/";
-    protected virtual string AuthBaseAddress => "auth/";
 
-    public string? CurrentUserToken { get; private set; }
-
-    public virtual HttpClient CreateApiClient()
+    public virtual HttpClient CreateApiClient(Action<HttpClient>? config = null)
     {
         var apiBase = UrlHelper.Concat("http://localhost/", ApiBaseAddress);
         var client = CreateDefaultClient(new Uri(apiBase));
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUserToken);
+        config?.Invoke(client);
         return client;
     }
 
-    public virtual HttpClient CreateAuthClient()
+    public virtual HttpQueriesExecutor CreateQueriesExecutor(Action<HttpClient>? config = null)
     {
-        var apiBase = UrlHelper.Concat("http://localhost/", AuthBaseAddress);
-        return CreateDefaultClient(new Uri(apiBase));
+        return new HttpQueriesExecutor(CreateApiClient(config), JsonOptions);
     }
 
-    public virtual HttpQueriesExecutor CreateQueriesExecutor()
+    public virtual HttpCommandsExecutor CreateCommandsExecutor(Action<HttpClient>? config = null)
     {
-        return new HttpQueriesExecutor(CreateApiClient(), JsonOptions);
-    }
-
-    public virtual HttpCommandsExecutor CreateCommandsExecutor()
-    {
-        return new HttpCommandsExecutor(CreateApiClient(), JsonOptions);
-    }
-
-    public virtual async Task<bool> AuthenticateAsync(PasswordTokenRequest tokenRequest)
-    {
-        // FIXME: what if the auth server is outside of the app?
-        using var client = CreateAuthClient();
-
-        var discovery = await client.GetDiscoveryDocumentAsync();
-        if (discovery.IsError)
-        {
-            return false;
-        }
-        else
-        {
-            tokenRequest.Address = discovery.TokenEndpoint;
-
-            var token = await client.RequestPasswordTokenAsync(tokenRequest);
-            if (token.IsError)
-            {
-                return false;
-            }
-            else
-            {
-                CurrentUserToken = token.AccessToken;
-                return true;
-            }
-        }
+        return new HttpCommandsExecutor(CreateApiClient(config), JsonOptions);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -93,10 +54,6 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
             })
             .ConfigureServices(services =>
             {
-                services.Configure<JwtBearerOptions>(
-                    JwtBearerDefaults.AuthenticationScheme,
-                    opts => opts.BackchannelHttpHandler = Server.CreateHandler()
-                );
                 // Allow the host to perform shutdown a little bit longer - it will make
                 // `DbContextsInitializer` successfully drop the database more frequently. :)
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
