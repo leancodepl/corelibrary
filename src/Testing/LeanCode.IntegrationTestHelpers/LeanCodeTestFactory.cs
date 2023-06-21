@@ -1,9 +1,8 @@
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using System.Text.Json;
 using IdentityModel.Client;
 using LeanCode.CQRS.RemoteHttp.Client;
+using LeanCode.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -17,6 +16,18 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
     where TStartup : class
 {
     protected virtual ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides();
+
+    public virtual JsonSerializerOptions JsonOptions { get; } =
+        new()
+        {
+            Converters =
+            {
+                new JsonLaxDateOnlyConverter(),
+                new JsonLaxTimeOnlyConverter(),
+                new JsonLaxDateTimeOffsetConverter(),
+            },
+        };
+
     protected virtual string ApiBaseAddress => "api/";
     protected virtual string AuthBaseAddress => "auth/";
 
@@ -38,12 +49,12 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
 
     public virtual HttpQueriesExecutor CreateQueriesExecutor()
     {
-        return new HttpQueriesExecutor(CreateApiClient());
+        return new HttpQueriesExecutor(CreateApiClient(), JsonOptions);
     }
 
     public virtual HttpCommandsExecutor CreateCommandsExecutor()
     {
-        return new HttpCommandsExecutor(CreateApiClient());
+        return new HttpCommandsExecutor(CreateApiClient(), JsonOptions);
     }
 
     public virtual async Task<bool> AuthenticateAsync(PasswordTokenRequest tokenRequest)
