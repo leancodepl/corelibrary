@@ -51,7 +51,7 @@
         "pipeProgram": "docker",
         "quoteArgs": false,
         "pipeArgs": [
-          "exec -i corelib-integration-tests_watch_test_1"
+          "exec -i corelib-integration-tests-watch_test-1"
         ],
         "debuggerPath": "/vsdbg/vsdbg"
       }

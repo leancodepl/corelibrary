@@ -58,7 +58,7 @@ public class Tests : IAsyncLifetime
             )
         );
 
-        var queries = app.CreateQueriesExecutor(client => client.WithTestAuthorization(testPrincipal));
+        var queries = app.CreateQueriesExecutor(client => client.UseTestAuthorization(testPrincipal));
         var authResult = await queries.GetAsync(new AuthQuery());
 
         authResult.IsAuthenticated.Should().BeTrue();

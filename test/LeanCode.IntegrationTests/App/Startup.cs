@@ -1,0 +1,61 @@
+using LeanCode.Components;
+using LeanCode.CQRS.AspNetCore;
+using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.CQRS.Security;
+using LeanCode.IntegrationTestHelpers;
+using LeanCode.Startup.MicrosoftDI;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LeanCode.IntegrationTests.App;
+
+public class Startup : LeanStartup
+{
+    private static readonly TypesCatalog CQRSTypes = TypesCatalog.Of<Startup>();
+
+    protected override bool CloseAndFlushLogger { get; }
+
+    public Startup(IConfiguration config)
+        : base(config) { }
+
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddHostedService<DbContextInitializer<TestDbContext>>();
+        services.AddDbContext<TestDbContext>(
+            cfg => cfg.UseSqlServer(Configuration.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault))
+        );
+        services.AddSingleton<IRoleRegistration, AppRoles>();
+
+        services.AddRouting();
+        services.AddCQRS(CQRSTypes, CQRSTypes);
+        services.AddFluentValidation(CQRSTypes);
+
+        services
+            .AddAuthentication(TestAuthenticationHandler.SchemeName)
+            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                TestAuthenticationHandler.SchemeName,
+                _ => { }
+            );
+    }
+
+    protected override void ConfigureApp(IApplicationBuilder app)
+    {
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseEndpoints(
+            e =>
+                e.MapRemoteCqrs(
+                    "/api",
+                    cfg =>
+                    {
+                        cfg.Commands = cmd => cmd.Secure().Validate();
+                        cfg.Queries = cmd => cmd.Secure();
+                        cfg.Operations = cmd => cmd.Secure();
+                    }
+                )
+        );
+    }
+}

@@ -9,7 +9,7 @@ public class AuthQuery : IQuery<AuthResult> { }
 public class AuthResult
 {
     public bool IsAuthenticated { get; set; }
-    public List<KeyValuePair<string, string>> Claims { get; set; }
+    public List<KeyValuePair<string, string>> Claims { get; set; } = default!;
 }
 
 public class AuthQueryHandler : IQueryHandler<AuthQuery, AuthResult>
