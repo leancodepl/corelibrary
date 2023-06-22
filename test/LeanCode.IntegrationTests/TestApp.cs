@@ -34,30 +34,9 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
 
     protected override ConfigurationOverrides Configuration { get; } = new(LogEventLevel.Debug);
 
-    public async Task WaitForBusAsync()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        await Services.GetRequiredService<IBusOutboxNotification>().WaitForDelivery(cts.Token);
-
-        var result = await Services
-            .GetRequiredService<IBusActivityMonitor>()
-            .AwaitBusInactivity(TimeSpan.FromSeconds(5));
-
-        result.Should().BeTrue("bus should process messages");
-    }
-
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
         yield return typeof(App.Startup).Assembly;
-    }
-
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        base.ConfigureWebHost(builder);
-        builder.ConfigureServices(services =>
-        {
-            services.AddBusActivityMonitor();
-        });
     }
 
     protected override IHostBuilder CreateHostBuilder()

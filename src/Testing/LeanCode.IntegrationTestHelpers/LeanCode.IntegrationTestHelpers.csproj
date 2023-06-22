@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
@@ -17,6 +18,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
+
+    <PackageReference Include="MassTransit.EntityFrameworkCore" />
 
     <PackageReference Include="IdentityModel" />
 

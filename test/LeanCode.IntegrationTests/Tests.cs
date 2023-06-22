@@ -3,8 +3,6 @@ using FluentAssertions.Execution;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
-using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.IntegrationTests;
@@ -22,9 +20,6 @@ public class Tests : IAsyncLifetime
     [Fact]
     public async Task Test_basic_cqrs_flows()
     {
-        var bus = app.Services.GetRequiredService<IBusControl>();
-        var probe = bus.GetProbeResult();
-
         await RunUnauthorizedCommandsAsync();
         await RunInvalidCommandAsync();
         await AddEntityAndVerifyResultsAsync();

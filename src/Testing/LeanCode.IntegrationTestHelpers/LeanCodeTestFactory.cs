@@ -1,6 +1,9 @@
 using System.Text.Json;
+using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.Serialization;
+using MassTransit.Middleware.Outbox;
+using MassTransit.Testing.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +48,27 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
         return new HttpCommandsExecutor(CreateApiClient(config), JsonOptions);
     }
 
+    public virtual HttpOperationsExecutor CreateOperationsExecutor(Action<HttpClient>? config = null)
+    {
+        return new HttpOperationsExecutor(CreateApiClient(config), JsonOptions);
+    }
+
+    public virtual async Task WaitForBusAsync(TimeSpan? delay = null)
+    {
+        delay ??= TimeSpan.FromSeconds(5);
+
+        // Ensure outbox is sent
+        using var cts = new CancellationTokenSource(delay.Value);
+        await Services.GetRequiredService<IBusOutboxNotification>().WaitForDelivery(cts.Token);
+
+        var busInactive = await Services.GetRequiredService<IBusActivityMonitor>().AwaitBusInactivity(delay.Value);
+
+        if (!busInactive)
+        {
+            throw new System.InvalidOperationException("Bus did not stabilize");
+        }
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder
@@ -57,6 +81,8 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
                 // Allow the host to perform shutdown a little bit longer - it will make
                 // `DbContextsInitializer` successfully drop the database more frequently. :)
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+
+                services.AddBusActivityMonitor();
             });
     }
 
