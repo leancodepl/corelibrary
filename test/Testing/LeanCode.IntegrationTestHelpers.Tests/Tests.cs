@@ -25,19 +25,19 @@ public class Tests : IAsyncLifetime
     public void Test_services_order_is_correct()
     {
         var hostedServices = app.Services.GetRequiredService<IEnumerable<IHostedService>>().ToList();
-        Assert.IsType<ConnectionKeeper>(hostedServices.FirstOrDefault());
-        Assert.IsType<DbContextInitializer<TestDbContext>>(hostedServices.Skip(1).FirstOrDefault());
+
+        hostedServices.ElementAtOrDefault(0).Should().BeOfType<ConnectionKeeper>();
+        hostedServices.ElementAtOrDefault(1).Should().BeOfType<DbContextInitializer<TestDbContext>>();
     }
 
     [Fact]
     public async Task Save_and_load()
     {
         var saveResult = await command.RunAsync(new Command { Id = 1, Data = "test" });
-        Assert.True(saveResult.WasSuccessful);
+        saveResult.WasSuccessful.Should().BeTrue();
 
         var res = await query.GetAsync(new Query { Id = 1 });
-        Assert.NotNull(res);
-        Assert.Equal("test", res);
+        res.Should().Be("test");
     }
 
     [Fact]
