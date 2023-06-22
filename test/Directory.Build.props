@@ -12,7 +12,7 @@
 
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.analyzers" />
-    <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'net7.0'" />
+    <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'net8.0'" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"

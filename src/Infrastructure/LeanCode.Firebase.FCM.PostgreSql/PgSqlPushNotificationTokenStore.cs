@@ -77,7 +77,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
                     newId = Guid.NewGuid(),
                     userId,
                     newToken,
-                    now = TimeProvider.Now
+                    now = Time.TimeProvider.Now
                 },
                 cancellationToken: cancellationToken
             );

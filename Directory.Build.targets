@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>7.0.0</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>7.0.0</AspNetCoreVersion>
-    <ExtensionsVersion>7.0.0</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0-preview.5.23280.1</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0-preview.5.23302.2</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0-preview.5.23280.8</ExtensionsVersion>
 
     <GoogleApisVersion>1.58.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -47,7 +47,7 @@
     <PackageReference Update="FirebaseAdmin" Version="2.3.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="3.0.0" />
 
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.0.1" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.1" />
 
     <PackageReference Update="Ory.Kratos.Client" Version="0.13.1" />
 
@@ -95,7 +95,8 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(ExtensionsVersion)" />
+
+    <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
 

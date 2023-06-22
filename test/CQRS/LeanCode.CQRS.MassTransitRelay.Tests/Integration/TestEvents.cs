@@ -1,5 +1,5 @@
 using LeanCode.DomainModels.Model;
-using LeanCode.Time;
+using TimeProvider = LeanCode.Time.TimeProvider;
 
 namespace LeanCode.CQRS.MassTransitRelay.Tests.Integration;
 
