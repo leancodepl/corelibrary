@@ -1,11 +1,17 @@
 using System.Diagnostics;
 using System.Reflection;
-using LeanCode.CQRS.RemoteHttp.Client;
+using FluentAssertions;
+using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Logging;
 using LeanCode.Startup.MicrosoftDI;
+using MassTransit.Middleware.Outbox;
+using MassTransit.Testing.Implementations;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog.Events;
 
 namespace LeanCode.IntegrationTests;
 
@@ -26,14 +32,32 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
         }
     }
 
-    public override async Task InitializeAsync()
+    protected override ConfigurationOverrides Configuration { get; } = new(LogEventLevel.Debug);
+
+    public async Task WaitForBusAsync()
     {
-        await base.InitializeAsync();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        await Services.GetRequiredService<IBusOutboxNotification>().WaitForDelivery(cts.Token);
+
+        var result = await Services
+            .GetRequiredService<IBusActivityMonitor>()
+            .AwaitBusInactivity(TimeSpan.FromSeconds(5));
+
+        result.Should().BeTrue("bus should process messages");
     }
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
         yield return typeof(App.Startup).Assembly;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        base.ConfigureWebHost(builder);
+        builder.ConfigureServices(services =>
+        {
+            services.AddBusActivityMonitor();
+        });
     }
 
     protected override IHostBuilder CreateHostBuilder()
@@ -42,26 +66,5 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
             .BuildMinimalHost<App.Startup>()
             .ConfigureDefaultLogging(projectName: "test", destructurers: new[] { typeof(Program).Assembly })
             .UseEnvironment(Environments.Development);
-    }
-}
-
-public class AuthenticatedTestApp : TestApp
-{
-    public HttpQueriesExecutor Query { get; private set; } = null!;
-    public HttpCommandsExecutor Command { get; private set; } = null!;
-
-    public override async Task InitializeAsync()
-    {
-        await base.InitializeAsync();
-
-        Query = CreateQueriesExecutor(client => client.UseTestAuthorization(AuthConfig.User));
-        Command = CreateCommandsExecutor(client => client.UseTestAuthorization(AuthConfig.User));
-    }
-
-    public override ValueTask DisposeAsync()
-    {
-        Command = null!;
-        Query = null!;
-        return base.DisposeAsync();
     }
 }

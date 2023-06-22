@@ -1,9 +1,11 @@
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
+using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.CQRS.Security;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.Startup.MicrosoftDI;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,24 @@ public class Startup : LeanStartup
         services.AddRouting();
         services.AddCQRS(CQRSTypes, CQRSTypes);
         services.AddFluentValidation(CQRSTypes);
+        services.AddCQRSMassTransitIntegration(busCfg =>
+        {
+            busCfg.AddConsumer<EntityAddedConsumer, EntityAddedConsumerDefinition>();
+            busCfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
+            {
+                outboxCfg.QueryDelay = TimeSpan.FromSeconds(0.5);
+
+                outboxCfg.UseSqlServer();
+                outboxCfg.UseBusOutbox();
+            });
+
+            busCfg.UsingInMemory(
+                (ctx, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(ctx);
+                }
+            );
+        });
 
         services
             .AddAuthentication(TestAuthenticationHandler.SchemeName)
@@ -51,7 +71,8 @@ public class Startup : LeanStartup
                     "/api",
                     cfg =>
                     {
-                        cfg.Commands = cmd => cmd.Secure().Validate();
+                        cfg.Commands = cmd =>
+                            cmd.Secure().Validate().CommitTransaction<TestDbContext>().PublishEvents();
                         cfg.Queries = cmd => cmd.Secure();
                         cfg.Operations = cmd => cmd.Secure();
                     }

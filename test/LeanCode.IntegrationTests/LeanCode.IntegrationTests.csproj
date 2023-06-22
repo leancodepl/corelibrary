@@ -21,6 +21,8 @@
 
     <PackageReference Include="LeanCode.Contracts" />
 
+    <PackageReference Include="MassTransit.EntityFrameworkCore" />
+      
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
   </ItemGroup>

@@ -16,4 +16,14 @@ public static class AuthConfig
                 "role"
             )
         );
+
+    public static readonly ClaimsPrincipal UserWithoutRole =
+        new(
+            new ClaimsIdentity(
+                new Claim[] { new("sub", UserId.ToString()) },
+                TestAuthenticationHandler.SchemeName,
+                "sub",
+                "role"
+            )
+        );
 }
