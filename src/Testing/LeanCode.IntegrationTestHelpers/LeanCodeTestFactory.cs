@@ -15,7 +15,7 @@ namespace LeanCode.IntegrationTestHelpers;
 public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>, IAsyncLifetime
     where TStartup : class
 {
-    protected virtual ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides();
+    protected abstract ConfigurationOverrides Configuration { get; }
 
     public virtual JsonSerializerOptions JsonOptions { get; } =
         new()

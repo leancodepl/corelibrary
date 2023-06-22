@@ -12,7 +12,8 @@ namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<App.Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } = new(Serilog.Events.LogEventLevel.Error, false);
+    protected override ConfigurationOverrides Configuration { get; } =
+        new("SqlServer__ConnectionStringBase", "SqlServer:ConnectionString", Serilog.Events.LogEventLevel.Error, false);
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {

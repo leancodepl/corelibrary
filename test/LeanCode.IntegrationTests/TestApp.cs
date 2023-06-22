@@ -32,7 +32,8 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
         }
     }
 
-    protected override ConfigurationOverrides Configuration { get; } = new(LogEventLevel.Debug);
+    protected override ConfigurationOverrides Configuration { get; } =
+        new("SqlServer__ConnectionStringBase", "SqlServer:ConnectionString");
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {

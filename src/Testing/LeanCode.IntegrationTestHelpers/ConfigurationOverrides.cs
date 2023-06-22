@@ -7,8 +7,6 @@ public class ConfigurationOverrides : IConfigurationSource
 {
     public const LogEventLevel MinimumLevelDefault = LogEventLevel.Warning;
     public const bool EnableInternalLogsDefault = false;
-    public const string ConnectionStringBaseDefault = "SqlServer__ConnectionStringBase";
-    public const string ConnectionStringKeyDefault = "SqlServer:ConnectionString";
     public const string InternalBaseKeyDefault = "InternalBase";
     public const string PublicBaseKeyDefault = "PublicBase";
 
@@ -20,18 +18,18 @@ public class ConfigurationOverrides : IConfigurationSource
     private readonly string publicBaseKey;
 
     public ConfigurationOverrides(
+        string connectionStringBase,
+        string connectionStringKey,
         LogEventLevel? minimumLevel = null,
         bool? enableInternalLogs = null,
-        string? connectionStringBase = null,
-        string? connectionStringKey = null,
         string? internalBaseKey = null,
         string? publicBaseKey = null
     )
     {
+        this.connectionStringBase = connectionStringBase;
+        this.connectionStringKey = connectionStringKey;
         this.minimumLevel = minimumLevel ?? MinimumLevelDefault;
         this.enableInternalLogs = enableInternalLogs ?? EnableInternalLogsDefault;
-        this.connectionStringBase = connectionStringBase ?? ConnectionStringBaseDefault;
-        this.connectionStringKey = connectionStringKey ?? ConnectionStringKeyDefault;
         this.internalBaseKey = internalBaseKey ?? InternalBaseKeyDefault;
         this.publicBaseKey = publicBaseKey ?? PublicBaseKeyDefault;
     }

@@ -27,7 +27,7 @@ public class Startup : LeanStartup
     {
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
         services.AddDbContext<TestDbContext>(
-            cfg => cfg.UseSqlServer(Configuration.GetValue<string>(ConfigurationOverrides.ConnectionStringKeyDefault))
+            cfg => cfg.UseSqlServer(Configuration.GetValue<string>("SqlServer:ConnectionString"))
         );
         services.AddSingleton<IRoleRegistration, AppRoles>();
 
