@@ -26,12 +26,7 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
 
         builder.ConfigureServices(services =>
         {
-            services
-                .AddAuthentication(TestAuthenticationHandler.SchemeName)
-                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-                    TestAuthenticationHandler.SchemeName,
-                    _ => { }
-                );
+            services.AddAuthentication(TestAuthenticationHandler.SchemeName).AddTestAuthenticationHandler();
         });
     }
 

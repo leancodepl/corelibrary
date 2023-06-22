@@ -67,3 +67,17 @@ public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSch
         return new ClaimsPrincipal(reader);
     }
 }
+
+public static class TestAuthenticationHandlerExtensions
+{
+    public static AuthenticationBuilder AddTestAuthenticationHandler(
+        this AuthenticationBuilder builder,
+        Action<AuthenticationSchemeOptions>? config = null
+    )
+    {
+        return builder.AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+            TestAuthenticationHandler.SchemeName,
+            config
+        );
+    }
+}

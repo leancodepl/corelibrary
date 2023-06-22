@@ -53,12 +53,7 @@ public class Startup : LeanStartup
             );
         });
 
-        services
-            .AddAuthentication(TestAuthenticationHandler.SchemeName)
-            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-                TestAuthenticationHandler.SchemeName,
-                _ => { }
-            );
+        services.AddAuthentication(TestAuthenticationHandler.SchemeName).AddTestAuthenticationHandler();
     }
 
     protected override void ConfigureApp(IApplicationBuilder app)
