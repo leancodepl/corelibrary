@@ -30,10 +30,9 @@ public class KratosAuthenticationHandler<TOptions> : AuthenticationHandler<TOpti
         IOptionsMonitor<TOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock,
         IFrontendApi api
     )
-        : base(options, logger, encoder, clock)
+        : base(options, logger, encoder)
     {
         this.api = api;
     }
@@ -164,8 +163,7 @@ public class KratosAuthenticationHandler : KratosAuthenticationHandler<KratosAut
         IOptionsMonitor<KratosAuthenticationOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock,
         IFrontendApi api
     )
-        : base(options, logger, encoder, clock, api) { }
+        : base(options, logger, encoder, api) { }
 }
