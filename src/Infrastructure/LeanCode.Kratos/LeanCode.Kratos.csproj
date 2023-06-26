@@ -4,6 +4,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
     <PackageReference Include="Ory.Kratos.Client" />
+
+    <ProjectReference Include="../LeanCode.Serialization/LeanCode.Serialization.csproj" />
   </ItemGroup>
 
 </Project>
