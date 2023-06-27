@@ -30,28 +30,7 @@ namespace LeanCode.DomainModels.Ulids;
 internal static class UlidRandomProvider
 {
     [ThreadStatic]
-    private static Random? random;
-
-    [ThreadStatic]
     private static XorShift64? xorShift;
-
-    // this random is async-unsafe, be careful to use.
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Random GetRandom()
-    {
-        return random ??= CreateRandom();
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static Random CreateRandom()
-    {
-        using var rng = RandomNumberGenerator.Create();
-        // Span<byte> buffer = stackalloc byte[sizeof(int)];
-        var buffer = new byte[sizeof(int)];
-        rng.GetBytes(buffer);
-        var seed = BitConverter.ToInt32(buffer, 0);
-        return new Random(seed);
-    }
 
     // this random is async-unsafe, be careful to use.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64,10 +43,9 @@ internal static class UlidRandomProvider
     private static XorShift64 CreateXorShift64()
     {
         using var rng = RandomNumberGenerator.Create();
-        // Span<byte> buffer = stackalloc byte[sizeof(UInt64)];
-        var buffer = new byte[sizeof(ulong)];
+        Span<byte> buffer = stackalloc byte[sizeof(ulong)];
         rng.GetBytes(buffer);
-        var seed = BitConverter.ToUInt64(buffer, 0);
+        var seed = BitConverter.ToUInt64(buffer);
         return new XorShift64(seed);
     }
 }
