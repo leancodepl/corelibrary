@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="NUlid" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,5 +40,4 @@
       <Link>Resources/System.Text.Json.dll</Link>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>
