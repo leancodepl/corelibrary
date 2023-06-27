@@ -4,6 +4,8 @@ using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
+using LeanCode.ForceUpdate.Contracts;
+using LeanCode.ForceUpdate.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -27,6 +29,21 @@ public static class ServiceCollectionCQRSExtensions
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+
+        return new CQRSServicesBuilder(serviceCollection);
+    }
+
+    public static CQRSServicesBuilder AddForceUpdate(this IServiceCollection serviceCollection)
+    {
+        var objectsSource = new CQRSObjectsRegistrationSource(
+            TypesCatalog.Of<VersionSupport>(),
+            TypesCatalog.Of<VersionSupport>()
+        );
+
+        serviceCollection.AddSingleton(objectsSource);
+        serviceCollection.AddCQRSHandlers(objectsSource.Objects);
+
+        serviceCollection.AddTransient<VersionHandler>();
 
         return new CQRSServicesBuilder(serviceCollection);
     }
