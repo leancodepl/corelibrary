@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
@@ -9,19 +10,16 @@ public class IntegrationTestsConfigurationTests
     public void Custom_configuration_keys_are_respected()
     {
         var customConnectionStringKey = "CustomConnectionStringKey";
-        var customInternalBaseKey = "CustomInternalBaseKey";
-        var customPublicBaseKey = "CustomPublicBaseKey";
+        var customConnectionStringBaseKey = "CustomConnectionStringBaseKey";
 
         var configurationOverrides = new ConfigurationOverrides(
             connectionStringKey: customConnectionStringKey,
-            internalBaseKey: customInternalBaseKey,
-            publicBaseKey: customPublicBaseKey
+            connectionStringBase: customConnectionStringBaseKey
         );
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
 
-        Assert.NotEmpty(config.GetValue<string>(customConnectionStringKey)!);
-        Assert.NotEmpty(config.GetValue<string>(customInternalBaseKey)!);
-        Assert.NotEmpty(config.GetValue<string>(customPublicBaseKey)!);
+        config.GetValue<string>(customConnectionStringKey).Should().NotBeEmpty();
+        config.GetValue<string>(customConnectionStringBaseKey).Should().NotBeEmpty();
     }
 }

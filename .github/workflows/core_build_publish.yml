@@ -7,6 +7,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  DOTNET_VERSION: 8.0.1xx
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
 jobs:
   event_file:
     name: "Event File"
@@ -73,31 +78,67 @@ jobs:
       checks: write
       pull-requests: write
     env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "8.0.1xx"
+          dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore
         run: dotnet restore
       - name: Tool Restore
         run: dotnet tool restore
       - name: Check formatting
         run: dotnet csharpier . --check
-      - name: Install trx2junit
-        run: dotnet tool install --global trx2junit
       - name: Build
         run: dotnet build --configuration Release --no-restore
         env:
           GIT_COMMIT: ${{ github.sha }}
+      - name: Pack
+        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
+        env:
+          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
+        run: |
+          dotnet pack --no-build -c Release -o "$PWD/packed"
+          zip -j "$ZIP" "$PWD"/packed/*.nupkg
+      - name: Publish artifacts
+        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.prepare.outputs.artifacts_name }}
+          path: ${{ needs.prepare.outputs.artifacts_name }}
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    needs: [prepare, build]
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Passw12#
+        ports:
+          - "1433:1433"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install trx2junit
+        run: dotnet tool install --global trx2junit
+      - name: Restore
+        run: dotnet restore
       - name: Test
         run: dotnet msbuild /t:RunTestsWithCoverage
         working-directory: test
-
+      - name: Integration Test
+        run: dotnet test -c Release --logger trx --results-directory ../TestResults
+        working-directory: test/LeanCode.IntegrationTests
+        env:
+          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
+          SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         if: always()
@@ -124,25 +165,10 @@ jobs:
           name: Unit Test Results
           path: test/TestResults/*.xml
 
-      - name: Pack
-        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-        env:
-          ZIP: ${{ needs.prepare.outputs.artifacts_name }}
-        run: |
-          dotnet pack --no-build -c Release -o "$PWD/packed"
-          zip -j "$ZIP" "$PWD"/packed/*.nupkg
-
-      - name: Publish artifacts
-        if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ needs.prepare.outputs.artifacts_name }}
-          path: ${{ needs.prepare.outputs.artifacts_name }}
-
   publish:
     runs-on: ubuntu-latest
     name: Publish to feeds
-    needs: [prepare, build]
+    needs: [prepare, build, test]
     if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
     steps:
       - name: Fetch build

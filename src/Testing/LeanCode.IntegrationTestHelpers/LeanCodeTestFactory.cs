@@ -1,10 +1,10 @@
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using IdentityModel.Client;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.CQRS.RemoteHttp.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using LeanCode.Serialization;
+using MassTransit.Middleware.Outbox;
+using MassTransit.Testing.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,60 +16,66 @@ namespace LeanCode.IntegrationTestHelpers;
 public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>, IAsyncLifetime
     where TStartup : class
 {
-    protected virtual ConfigurationOverrides Configuration { get; } = new ConfigurationOverrides();
+    protected abstract ConfigurationOverrides Configuration { get; }
+
+    public virtual JsonSerializerOptions JsonOptions { get; }
+
     protected virtual string ApiBaseAddress => "api/";
-    protected virtual string AuthBaseAddress => "auth/";
 
-    public string? CurrentUserToken { get; private set; }
+    protected LeanCodeTestFactory()
+    {
+        var options = new JsonSerializerOptions
+        {
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            Converters =
+            {
+                new JsonLaxDateOnlyConverter(),
+                new JsonLaxTimeOnlyConverter(),
+                new JsonLaxDateTimeOffsetConverter(),
+            },
+        };
 
-    public virtual HttpClient CreateApiClient()
+        options.MakeReadOnly();
+
+        JsonOptions = options;
+    }
+
+    public virtual HttpClient CreateApiClient(Action<HttpClient>? config = null)
     {
         var apiBase = UrlHelper.Concat("http://localhost/", ApiBaseAddress);
         var client = CreateDefaultClient(new Uri(apiBase));
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUserToken);
+        config?.Invoke(client);
         return client;
     }
 
-    public virtual HttpClient CreateAuthClient()
+    public virtual HttpQueriesExecutor CreateQueriesExecutor(Action<HttpClient>? config = null)
     {
-        var apiBase = UrlHelper.Concat("http://localhost/", AuthBaseAddress);
-        return CreateDefaultClient(new Uri(apiBase));
+        return new HttpQueriesExecutor(CreateApiClient(config), JsonOptions);
     }
 
-    public virtual HttpQueriesExecutor CreateQueriesExecutor()
+    public virtual HttpCommandsExecutor CreateCommandsExecutor(Action<HttpClient>? config = null)
     {
-        return new HttpQueriesExecutor(CreateApiClient());
+        return new HttpCommandsExecutor(CreateApiClient(config), JsonOptions);
     }
 
-    public virtual HttpCommandsExecutor CreateCommandsExecutor()
+    public virtual HttpOperationsExecutor CreateOperationsExecutor(Action<HttpClient>? config = null)
     {
-        return new HttpCommandsExecutor(CreateApiClient());
+        return new HttpOperationsExecutor(CreateApiClient(config), JsonOptions);
     }
 
-    public virtual async Task<bool> AuthenticateAsync(PasswordTokenRequest tokenRequest)
+    public virtual async Task WaitForBusAsync(TimeSpan? delay = null)
     {
-        // FIXME: what if the auth server is outside of the app?
-        using var client = CreateAuthClient();
+        delay ??= TimeSpan.FromSeconds(5);
 
-        var discovery = await client.GetDiscoveryDocumentAsync();
-        if (discovery.IsError)
+        // Ensure outbox is sent
+        using var cts = new CancellationTokenSource(delay.Value);
+        await Services.GetRequiredService<IBusOutboxNotification>().WaitForDelivery(cts.Token);
+
+        var busInactive = await Services.GetRequiredService<IBusActivityMonitor>().AwaitBusInactivity(delay.Value);
+
+        if (!busInactive)
         {
-            return false;
-        }
-        else
-        {
-            tokenRequest.Address = discovery.TokenEndpoint;
-
-            var token = await client.RequestPasswordTokenAsync(tokenRequest);
-            if (token.IsError)
-            {
-                return false;
-            }
-            else
-            {
-                CurrentUserToken = token.AccessToken;
-                return true;
-            }
+            throw new System.InvalidOperationException("Bus did not stabilize");
         }
     }
 
@@ -82,13 +88,11 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
             })
             .ConfigureServices(services =>
             {
-                services.Configure<JwtBearerOptions>(
-                    JwtBearerDefaults.AuthenticationScheme,
-                    opts => opts.BackchannelHttpHandler = Server.CreateHandler()
-                );
                 // Allow the host to perform shutdown a little bit longer - it will make
                 // `DbContextsInitializer` successfully drop the database more frequently. :)
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+
+                services.AddBusActivityMonitor();
             });
     }
 

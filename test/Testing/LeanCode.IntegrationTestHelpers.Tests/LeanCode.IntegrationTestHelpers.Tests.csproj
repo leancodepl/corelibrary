@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Core/LeanCode.Startup.Autofac/LeanCode.Startup.Autofac.csproj" />
+    <ProjectReference Include="../../../src/Core/LeanCode.Startup.MicrosoftDI/LeanCode.Startup.MicrosoftDI.csproj" />
     <ProjectReference Include="../../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />

@@ -1,0 +1,37 @@
+version: "3.6"
+services:
+  #### Tests
+  test:
+    build:
+      context: ../../..
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile
+    volumes:
+      - ../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    environment:
+      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#;Encrypt=false
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
+    depends_on:
+      - db
+
+  watch_test:
+    build:
+      context: ../../..
+      dockerfile: ./test/LeanCode.IntegrationTests/docker/Dockerfile.watch
+    volumes:
+      - ../../..:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    environment:
+      - SqlServer__ConnectionStringBase=Server=db,1433;User Id=sa;Password=Passw12#;Encrypt=false
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
+    depends_on:
+      - db
+
+  #### Infrastructure
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Passw12#
+    ports:
+      - "1433:1433"

@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using FluentAssertions;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers.Tests.App;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,19 +25,54 @@ public class Tests : IAsyncLifetime
     public void Test_services_order_is_correct()
     {
         var hostedServices = app.Services.GetRequiredService<IEnumerable<IHostedService>>().ToList();
-        Assert.IsType<ConnectionKeeper>(hostedServices.FirstOrDefault());
-        Assert.IsType<DbContextInitializer<TestDbContext>>(hostedServices.Skip(1).FirstOrDefault());
+
+        hostedServices.ElementAtOrDefault(0).Should().BeOfType<ConnectionKeeper>();
+        hostedServices.ElementAtOrDefault(1).Should().BeOfType<DbContextInitializer<TestDbContext>>();
     }
 
     [Fact]
     public async Task Save_and_load()
     {
         var saveResult = await command.RunAsync(new Command { Id = 1, Data = "test" });
-        Assert.True(saveResult.WasSuccessful);
+        saveResult.WasSuccessful.Should().BeTrue();
 
         var res = await query.GetAsync(new Query { Id = 1 });
-        Assert.NotNull(res);
-        Assert.Equal("test", res);
+        res.Should().Be("test");
+    }
+
+    [Fact]
+    public async Task Test_authorization_scheme_works()
+    {
+        var testPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new Claim[]
+                {
+                    new("sub", "test_id"),
+                    new("role", "user"),
+                    new("role", "admin"),
+                    new("other_claim", "other_claim_value")
+                },
+                TestAuthenticationHandler.SchemeName,
+                "sub",
+                "role"
+            )
+        );
+
+        var queries = app.CreateQueriesExecutor(client => client.UseTestAuthorization(testPrincipal));
+        var authResult = await queries.GetAsync(new AuthQuery());
+
+        authResult.IsAuthenticated.Should().BeTrue();
+        authResult.Claims
+            .Should()
+            .BeEquivalentTo(
+                new[]
+                {
+                    KeyValuePair.Create("sub", "test_id"),
+                    KeyValuePair.Create("role", "user"),
+                    KeyValuePair.Create("role", "admin"),
+                    KeyValuePair.Create("other_claim", "other_claim_value")
+                }
+            );
     }
 
     public async Task InitializeAsync()

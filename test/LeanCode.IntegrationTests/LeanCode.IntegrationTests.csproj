@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../src/Core/LeanCode.Startup.MicrosoftDI/LeanCode.Startup.MicrosoftDI.csproj" />
+    <ProjectReference Include="../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+    <ProjectReference Include="../../src/CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
+    <ProjectReference Include="../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="LeanCode.Contracts" />
+
+    <PackageReference Include="MassTransit.EntityFrameworkCore" />
+      
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+</Project>
