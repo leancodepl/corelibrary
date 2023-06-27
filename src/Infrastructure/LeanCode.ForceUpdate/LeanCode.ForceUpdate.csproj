@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CQRS\LeanCode.CQRS.Execution\LeanCode.CQRS.Execution.csproj" />
+  </ItemGroup>
+</Project>
