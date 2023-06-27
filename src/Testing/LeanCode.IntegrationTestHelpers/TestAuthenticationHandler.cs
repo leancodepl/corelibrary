@@ -15,10 +15,9 @@ public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSch
     public TestAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
-        UrlEncoder encoder,
-        ISystemClock clock
+        UrlEncoder encoder
     )
-        : base(options, logger, encoder, clock) { }
+        : base(options, logger, encoder) { }
 
     [SuppressMessage("?", "CA1031", Justification = "Method is an exception boundary")]
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()

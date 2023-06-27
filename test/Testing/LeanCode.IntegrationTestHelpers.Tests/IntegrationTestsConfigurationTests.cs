@@ -11,21 +11,15 @@ public class IntegrationTestsConfigurationTests
     {
         var customConnectionStringKey = "CustomConnectionStringKey";
         var customConnectionStringBaseKey = "CustomConnectionStringBaseKey";
-        var customInternalBaseKey = "CustomInternalBaseKey";
-        var customPublicBaseKey = "CustomPublicBaseKey";
 
         var configurationOverrides = new ConfigurationOverrides(
             connectionStringKey: customConnectionStringKey,
-            connectionStringBase: customConnectionStringBaseKey,
-            internalBaseKey: customInternalBaseKey,
-            publicBaseKey: customPublicBaseKey
+            connectionStringBase: customConnectionStringBaseKey
         );
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
 
         config.GetValue<string>(customConnectionStringKey).Should().NotBeEmpty();
         config.GetValue<string>(customConnectionStringBaseKey).Should().NotBeEmpty();
-        config.GetValue<string>(customInternalBaseKey).Should().NotBeEmpty();
-        config.GetValue<string>(customPublicBaseKey).Should().NotBeEmpty();
     }
 }
