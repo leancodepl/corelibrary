@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LeanCode.Serialization.Tests;
 
-public class JsonStringEnumConvertersTests
+public partial class JsonStringEnumConvertersTests
 {
     [JsonConverter(typeof(JsonCamelCaseStringEnumConverter))]
     public enum CamelCase
@@ -12,10 +12,15 @@ public class JsonStringEnumConvertersTests
         ExampleValue
     }
 
-    [Fact]
-    public void Camel_case_converter_correctly_converts_enum_name()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Camel_case_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
     {
-        var result = JsonSerializer.Serialize(CamelCase.ExampleValue);
+        var result = useSourceGenerationContext
+            ? JsonSerializer.Serialize(CamelCase.ExampleValue, StringEnumConvertersContext.Default.CamelCase)
+            : JsonSerializer.Serialize(CamelCase.ExampleValue);
+
         Assert.Equal(@"""exampleValue""", result);
     }
 
@@ -25,10 +30,15 @@ public class JsonStringEnumConvertersTests
         ExampleValue
     }
 
-    [Fact]
-    public void Kebab_case_lower_converter_correctly_converts_enum_name()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Kebab_case_lower_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
     {
-        var result = JsonSerializer.Serialize(KebabCaseLower.ExampleValue);
+        var result = useSourceGenerationContext
+            ? JsonSerializer.Serialize(KebabCaseLower.ExampleValue, StringEnumConvertersContext.Default.KebabCaseLower)
+            : JsonSerializer.Serialize(KebabCaseLower.ExampleValue);
+
         Assert.Equal(@"""example-value""", result);
     }
 
@@ -38,10 +48,15 @@ public class JsonStringEnumConvertersTests
         ExampleValue
     }
 
-    [Fact]
-    public void Kebab_case_upper_converter_correctly_converts_enum_name()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Kebab_case_upper_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
     {
-        var result = JsonSerializer.Serialize(KebabCaseUpper.ExampleValue);
+        var result = useSourceGenerationContext
+            ? JsonSerializer.Serialize(KebabCaseUpper.ExampleValue, StringEnumConvertersContext.Default.KebabCaseUpper)
+            : JsonSerializer.Serialize(KebabCaseUpper.ExampleValue);
+
         Assert.Equal(@"""EXAMPLE-VALUE""", result);
     }
 
@@ -51,10 +66,15 @@ public class JsonStringEnumConvertersTests
         ExampleValue
     }
 
-    [Fact]
-    public void Snake_case_lower_converter_correctly_converts_enum_name()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Snake_case_lower_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
     {
-        var result = JsonSerializer.Serialize(SnakeCaseLower.ExampleValue);
+        var result = useSourceGenerationContext
+            ? JsonSerializer.Serialize(SnakeCaseLower.ExampleValue, StringEnumConvertersContext.Default.SnakeCaseLower)
+            : JsonSerializer.Serialize(SnakeCaseLower.ExampleValue);
+
         Assert.Equal(@"""example_value""", result);
     }
 
@@ -64,10 +84,22 @@ public class JsonStringEnumConvertersTests
         ExampleValue
     }
 
-    [Fact]
-    public void Snake_case_upper_converter_correctly_converts_enum_name()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Snake_case_upper_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
     {
-        var result = JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue);
+        var result = useSourceGenerationContext
+            ? JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue, StringEnumConvertersContext.Default.SnakeCaseUpper)
+            : JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue);
+
         Assert.Equal(@"""EXAMPLE_VALUE""", result);
     }
+
+    [JsonSerializable(typeof(CamelCase))]
+    [JsonSerializable(typeof(KebabCaseLower))]
+    [JsonSerializable(typeof(KebabCaseUpper))]
+    [JsonSerializable(typeof(SnakeCaseLower))]
+    [JsonSerializable(typeof(SnakeCaseUpper))]
+    internal sealed partial class StringEnumConvertersContext : JsonSerializerContext { }
 }
