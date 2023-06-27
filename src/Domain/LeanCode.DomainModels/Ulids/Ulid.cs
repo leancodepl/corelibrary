@@ -25,6 +25,7 @@ SOFTWARE.
 using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -39,7 +40,7 @@ namespace LeanCode.DomainModels.Ulids;
 [StructLayout(LayoutKind.Explicit, Size = 16)]
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
-public partial struct Ulid : IEquatable<Ulid>, IComparable<Ulid>
+public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>
 {
     // https://en.wikipedia.org/wiki/Base32
     private static readonly char[] Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToCharArray();
@@ -184,7 +185,7 @@ public partial struct Ulid : IEquatable<Ulid>, IComparable<Ulid>
         new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 }
     );
 
-    public static readonly Ulid Empty = new();
+    public static readonly Ulid Empty;
 
     // Core
 
@@ -428,7 +429,7 @@ public partial struct Ulid : IEquatable<Ulid>, IComparable<Ulid>
         return ulid;
     }
 
-    public static bool TryParse(string base32, out Ulid ulid)
+    public static bool TryParse([NotNullWhen(true)] string? base32, out Ulid ulid)
     {
         return TryParse(base32.AsSpan(), out ulid);
     }
@@ -474,6 +475,16 @@ public partial struct Ulid : IEquatable<Ulid>, IComparable<Ulid>
             return false;
         }
     }
+
+    public static Ulid Parse(string s, IFormatProvider? provider) => Parse(s);
+
+    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Ulid result) =>
+        TryParse(s, out result);
+
+    public static Ulid Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s);
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Ulid result) =>
+        TryParse(s, out result);
 
     private static Ulid ParseCore(ReadOnlySpan<byte> base32)
     {
@@ -656,11 +667,27 @@ public partial struct Ulid : IEquatable<Ulid>, IComparable<Ulid>
 
     public override string ToString()
     {
-        Span<char> span = stackalloc char[26];
-        TryWriteStringify(span);
-        unsafe
+        return string.Create(26, this, (span, ulid) => ulid.TryWriteStringify(span));
+    }
+
+    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
+
+    public bool TryFormat(
+        Span<char> destination,
+        out int charsWritten,
+        ReadOnlySpan<char> format,
+        IFormatProvider? provider
+    )
+    {
+        if (TryWriteStringify(destination))
         {
-            return new string((char*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(span)), 0, 26);
+            charsWritten = 26;
+            return true;
+        }
+        else
+        {
+            charsWritten = 0;
+            return false;
         }
     }
 
