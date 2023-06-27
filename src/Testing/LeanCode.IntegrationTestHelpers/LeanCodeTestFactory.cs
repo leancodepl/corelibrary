@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.Serialization;
@@ -17,9 +18,15 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
 {
     protected abstract ConfigurationOverrides Configuration { get; }
 
-    public virtual JsonSerializerOptions JsonOptions { get; } =
-        new()
+    public virtual JsonSerializerOptions JsonOptions { get; }
+
+    protected virtual string ApiBaseAddress => "api/";
+
+    protected LeanCodeTestFactory()
+    {
+        var options = new JsonSerializerOptions
         {
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
             Converters =
             {
                 new JsonLaxDateOnlyConverter(),
@@ -28,7 +35,10 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
             },
         };
 
-    protected virtual string ApiBaseAddress => "api/";
+        options.MakeReadOnly();
+
+        JsonOptions = options;
+    }
 
     public virtual HttpClient CreateApiClient(Action<HttpClient>? config = null)
     {
