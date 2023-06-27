@@ -1,6 +1,5 @@
 using LeanCode.Components;
 using LeanCode.Contracts.Security;
-using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Security;
@@ -27,7 +26,6 @@ public static class ServiceCollectionCQRSExtensions
 
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
-        serviceCollection.AddScoped<CQRSSecurityMiddleware>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
 
         return new CQRSServicesBuilder(serviceCollection);
