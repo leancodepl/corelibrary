@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json;
 using FluentAssertions;
 using LeanCode.DomainModels.Ids;
@@ -16,7 +16,7 @@ public class PrefixedUlidIdTests
     private const string TPU1 = "tpu_01H40FTH0DN6SDM42A77SBRMDB";
     private const string TPU2 = "tpu_01H40FTH0PWHEF7FYMY6XM7VE4";
     private const string TPU3 = "tpu_01H40PRZCA6XDXE41XTGQNG2ZH";
-    private static readonly Ulid TPG1Ulid = Ulid.Parse("01H40FTH0DN6SDM42A77SBRMDB");
+    private static readonly Ulid TPG1Ulid = Ulid.Parse("01H40FTH0DN6SDM42A77SBRMDB", CultureInfo.InvariantCulture);
 
     [Fact]
     public void Generated_class_implements_ITypedId()

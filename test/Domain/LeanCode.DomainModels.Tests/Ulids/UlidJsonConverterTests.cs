@@ -32,7 +32,7 @@ namespace LeanCode.DomainModels.Tests.Ulids;
 
 public class UlidJsonConverterTest
 {
-    private class TestSerializationClass
+    private sealed class TestSerializationClass
     {
         public Ulid Value { get; set; }
     }

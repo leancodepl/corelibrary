@@ -83,7 +83,10 @@ public class UlidTest
         for (var i = 0; i < 100; i++)
         {
             var nulid = NUlid.Ulid.NewUlid();
-            Ulid.Parse(nulid.ToString()).ToByteArray().Should().BeEquivalentTo(nulid.ToByteArray());
+            Ulid.Parse(nulid.ToString(), CultureInfo.InvariantCulture)
+                .ToByteArray()
+                .Should()
+                .BeEquivalentTo(nulid.ToByteArray());
         }
     }
 
@@ -126,8 +129,8 @@ public class UlidTest
     [Fact]
     public void UlidParseRejectsInvalidStrings()
     {
-        Assert.Throws<ArgumentException>(() => Ulid.Parse("1234"));
-        Assert.Throws<ArgumentException>(() => Ulid.Parse(Guid.NewGuid().ToString()));
+        Assert.Throws<ArgumentException>(() => Ulid.Parse("1234", CultureInfo.InvariantCulture));
+        Assert.Throws<ArgumentException>(() => Ulid.Parse(Guid.NewGuid().ToString(), CultureInfo.InvariantCulture));
     }
 
     [Fact]

@@ -241,6 +241,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     private readonly byte randomness9;
 
     [IgnoreDataMember]
+    [SuppressMessage("?", "CA1819", Justification = "Fresh array is allocated per call")]
     public byte[] Random =>
         new byte[]
         {
@@ -278,13 +279,13 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         : this()
     {
         // Get memory in stack and copy to ulid(Little->Big reverse order).
-        ref var fisrtByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
-        this.timestamp0 = Unsafe.Add(ref fisrtByte, 5);
-        this.timestamp1 = Unsafe.Add(ref fisrtByte, 4);
-        this.timestamp2 = Unsafe.Add(ref fisrtByte, 3);
-        this.timestamp3 = Unsafe.Add(ref fisrtByte, 2);
-        this.timestamp4 = Unsafe.Add(ref fisrtByte, 1);
-        this.timestamp5 = Unsafe.Add(ref fisrtByte, 0);
+        ref var firstByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
+        this.timestamp0 = Unsafe.Add(ref firstByte, 5);
+        this.timestamp1 = Unsafe.Add(ref firstByte, 4);
+        this.timestamp2 = Unsafe.Add(ref firstByte, 3);
+        this.timestamp3 = Unsafe.Add(ref firstByte, 2);
+        this.timestamp4 = Unsafe.Add(ref firstByte, 1);
+        this.timestamp5 = Unsafe.Add(ref firstByte, 0);
 
         // Get first byte of randomness from Ulid Struct.
         Unsafe.WriteUnaligned(ref randomness0, random.Next()); // randomness0~7(but use 0~1 only)
@@ -294,13 +295,13 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     internal Ulid(long timestampMilliseconds, ReadOnlySpan<byte> randomness)
         : this()
     {
-        ref var fisrtByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
-        this.timestamp0 = Unsafe.Add(ref fisrtByte, 5);
-        this.timestamp1 = Unsafe.Add(ref fisrtByte, 4);
-        this.timestamp2 = Unsafe.Add(ref fisrtByte, 3);
-        this.timestamp3 = Unsafe.Add(ref fisrtByte, 2);
-        this.timestamp4 = Unsafe.Add(ref fisrtByte, 1);
-        this.timestamp5 = Unsafe.Add(ref fisrtByte, 0);
+        ref var firstByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
+        this.timestamp0 = Unsafe.Add(ref firstByte, 5);
+        this.timestamp1 = Unsafe.Add(ref firstByte, 4);
+        this.timestamp2 = Unsafe.Add(ref firstByte, 3);
+        this.timestamp3 = Unsafe.Add(ref firstByte, 2);
+        this.timestamp4 = Unsafe.Add(ref firstByte, 1);
+        this.timestamp5 = Unsafe.Add(ref firstByte, 0);
 
         ref var src = ref MemoryMarshal.GetReference(randomness); // length = 10
         randomness0 = randomness[0];
@@ -405,6 +406,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         return new Ulid(timestamp.ToUnixTimeMilliseconds(), randomness);
     }
 
+    [SuppressMessage("?", "CA1305", Justification = "Ulids ignore user culture")]
     public static Ulid Parse(string base32)
     {
         return Parse(base32.AsSpan());
@@ -477,11 +479,13 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         }
     }
 
+    [SuppressMessage("?", "CA1305", Justification = "Ulids ignore user culture")]
     public static Ulid Parse(string s, IFormatProvider? provider) => Parse(s);
 
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Ulid result) =>
         TryParse(s, out result);
 
+    [SuppressMessage("?", "CA1305", Justification = "Ulids ignore user culture")]
     public static Ulid Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s);
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Ulid result) =>
@@ -746,6 +750,11 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     {
         return !a.Equals(b);
     }
+
+    public static bool operator <(Ulid a, Ulid b) => a.CompareTo(b) < 0;
+    public static bool operator <=(Ulid a, Ulid b) => a.CompareTo(b) <= 0;
+    public static bool operator >(Ulid a, Ulid b) => a.CompareTo(b) > 0;
+    public static bool operator >=(Ulid a, Ulid b) => a.CompareTo(b) >= 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetResult(byte me, byte them) => me < them ? -1 : 1;
