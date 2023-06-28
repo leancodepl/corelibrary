@@ -240,4 +240,13 @@ public class PrefixedUlidIdTests
     {
         TestPrefixedUlidId.RawLength.Should().Be(TPU1.Length);
     }
+
+    [Fact]
+    public void Raw_ulid_can_be_extracted_from_type()
+    {
+        var id = TestPrefixedUlidId.Parse(TPU1);
+        var ulid = id.Ulid;
+
+        ulid.Should().Be(TPG1Ulid);
+    }
 }

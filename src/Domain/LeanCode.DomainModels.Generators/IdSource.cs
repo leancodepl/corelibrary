@@ -16,7 +16,7 @@ internal static class IdSource
                 return BuildRaw(data, "Guid", "Guid", "Guid.NewGuid()", "Guid.Empty", "");
 
             case TypedIdFormat.PrefixedGuid:
-                return BuildPrefixed(data, "Guid.NewGuid()", 32, "Guid.Empty", true, "Guid.TryParseExact", "N");
+                return BuildPrefixedGuid(data, "Guid.NewGuid()", 32, "Guid.Empty", true, "Guid.TryParseExact", "N");
 
             case TypedIdFormat.PrefixedUlid:
                 return BuildPrefixedUlid(data);
@@ -26,7 +26,7 @@ internal static class IdSource
         }
     }
 
-    private static string BuildPrefixed(
+    private static string BuildPrefixedGuid(
         TypedIdData data,
         string randomValueGenerator,
         int valueLength,
@@ -180,6 +180,7 @@ namespace {{data.Namespace}}
 
         public string Value => value ?? Empty.Value;
         public bool IsEmpty => value is null || value == Empty;
+        public Ulid Ulid => value is null ? Ulid.Empty : Ulid.Parse(value.AsSpan()[{{prefix.Length + 1}}..]);
 
         private {{data.TypeName}}(string v) => value = v;
 
