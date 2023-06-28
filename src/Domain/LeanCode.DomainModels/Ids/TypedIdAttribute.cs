@@ -28,6 +28,12 @@ public enum TypedIdFormat : int
     /// type is <see cref="string" />.
     /// </summary>
     PrefixedGuid = 3,
+
+    /// <summary>
+    /// <see cref="Ulids.Ulid" /> prefixed with the class name or <see cref="TypedIdAttribute.CustomPrefix" />. It's backing
+    /// type is <see cref="string" />.
+    /// </summary>
+    PrefixedUlid = 4,
 }
 
 /// <summary>
