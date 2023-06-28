@@ -1,5 +1,4 @@
 #nullable disable warnings
-#pragma warning disable CA2227 // Collection properties should be read only
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -7,6 +6,7 @@ using LeanCode.Serialization;
 
 namespace LeanCode.Kratos.Model;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2227")]
 public class Identity
 {
     [JsonPropertyName("state")]

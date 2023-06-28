@@ -85,15 +85,15 @@ public abstract partial class KratosWebHookHandlerBase
 [JsonSerializable(typeof(ErrorResponseBody))]
 public partial class KratosWebHookHandlerBaseJsonSerializerContext : JsonSerializerContext;
 
-#pragma warning disable CA2227 // Collection properties should be read only
-
 public record struct IdentityResponseBody([property: JsonPropertyName("identity")] Identity Identity);
 
-public record struct ErrorResponseBody([property: JsonPropertyName("messages")] List<ErrorMessage> Messages);
+public record struct ErrorResponseBody(
+    [SuppressMessage("?", "CA2227")] [property: JsonPropertyName("messages")] List<ErrorMessage> Messages
+);
 
 public record struct ErrorMessage(
     [property: JsonPropertyName("instance_ptr")] string? InstancePtr,
-    [property: JsonPropertyName("messages")] List<DetailedMessage> Messages
+    [SuppressMessage("?", "CA2227")] [property: JsonPropertyName("messages")] List<DetailedMessage> Messages
 );
 
 public record struct DetailedMessage(
