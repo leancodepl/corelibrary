@@ -1,15 +1,15 @@
-# Forced/suggested updates
+# Clients updates checks
 
-## Configuring version checks
+## Configuration
 
-To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate()` extension method from the `LeanCode.CQRS.AspNetCore` package in the `Startup.cs` file. This method is available on the `IServiceCollection`. To make the endpoints work, you need to register two records: `IOSVersionsConfiguration` and `AndroidVersionsConfiguration`. Both require the `MinimumRequiredVersion` and `CurrentlySupportedVersion` parameters. The following example demonstrates the usage:
+To enforce or suggest updates for client apps, you can utilize the `AddClientsUpdates()` extension method from the `LeanCode.CQRS.AspNetCore` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. To configure version checks, you need to register two records: `IOSVersionsConfiguration` and `AndroidVersionsConfiguration`. Both require the `MinimumRequiredVersion` and `CurrentlySupportedVersion` parameters. The following example demonstrates the usage:
 
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
     // ...
     services.AddCQRS(CQRSTypes, CQRSTypes);
-    services.AddForceUpdate();
+    services.AddClientsUpdates();
 
     services.AddSingleton(
         new IOSVersionsConfiguration(
@@ -28,7 +28,7 @@ public override void ConfigureServices(IServiceCollection services)
 ```
 
 ## Version support
-After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport`. This endpoint should be used by default:
+After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ClientsUpdates.Contracts.VersionSupport`. This endpoint should be used by default by clients:
 ```csharp
 public class VersionSupport : IQuery<VersionSupportDTO?>
 {
@@ -61,7 +61,18 @@ public class VersionHandler
         HttpContext context
     )
     {
-    // ...
+        if (version < minimumRequiredVersion)
+        {
+            return VersionSupport.UpdateRequired;
+        }
+        else if (version >= minimumRequiredVersion && version < currentlySupportedVersion)
+        {
+            return VersionSupport.UpdateSuggested;
+        }
+        else
+        {
+            return VersionSupport.UpToDate;
+        }
     }
 
     public enum VersionSupport
@@ -85,13 +96,6 @@ public class CustomVersionHandler : VersionHandler
     {
     // You can also use for example UserId from HttpContext
     }
-
-    public enum VersionSupport
-    {
-        UpdateRequired,
-        UpdateSuggested,
-        UpToDate,
-    }
 }
 ```
 To make it work, you need to register `CustomVersionHandler` in the ConfigureServices method:
@@ -106,7 +110,7 @@ public override void ConfigureServices(IServiceCollection services)
 
 ## Versions
 
-After the configuration, a `Versions` query is also created and available at the `/cqrs/query/LeanCode.ForceUpdate.Contracts.Versions` endpoint. The query returns a list of supported app versions for all platforms.
+After the configuration, a `Versions` query is also created and available at the `/cqrs/query/LeanCode.ClientsUpdates.Contracts.Versions` endpoint. The query returns a list of supported app versions for all platforms.
 
 ```csharp
 public class Versions : IQuery<List<VersionsDTO>> { }

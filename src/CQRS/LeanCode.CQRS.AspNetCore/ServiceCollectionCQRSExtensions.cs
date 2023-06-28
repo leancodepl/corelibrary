@@ -4,8 +4,8 @@ using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.ForceUpdate.Contracts;
-using LeanCode.ForceUpdate.Services;
+using LeanCode.ClientsUpdates.Contracts;
+using LeanCode.ClientsUpdates.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -33,15 +33,22 @@ public static class ServiceCollectionCQRSExtensions
         return new CQRSServicesBuilder(serviceCollection);
     }
 
-    public static CQRSServicesBuilder AddForceUpdate(this IServiceCollection serviceCollection)
+    public static CQRSServicesBuilder AddClientsUpdates(this IServiceCollection serviceCollection)
     {
-        var objectsSource = new CQRSObjectsRegistrationSource(
+        var sp = serviceCollection.BuildServiceProvider();
+
+        var cqrsHandlers =
+            sp.GetService<CQRSObjectsRegistrationSource>()
+            ?? throw new InvalidOperationException(
+                "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first."
+            );
+
+        var addtionalCQRSObjects = cqrsHandlers.AddAdditionalCQRSObjects(
             TypesCatalog.Of<VersionSupport>(),
             TypesCatalog.Of<VersionSupport>()
         );
 
-        serviceCollection.AddSingleton(objectsSource);
-        serviceCollection.AddCQRSHandlers(objectsSource.Objects);
+        serviceCollection.AddCQRSHandlers(addtionalCQRSObjects);
 
         serviceCollection.AddTransient<VersionHandler>();
 

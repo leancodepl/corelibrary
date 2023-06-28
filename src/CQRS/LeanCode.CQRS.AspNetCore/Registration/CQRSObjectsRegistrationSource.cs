@@ -10,17 +10,32 @@ internal class CQRSObjectsRegistrationSource
     private readonly TypesCatalog contractsCatalog;
     private readonly TypesCatalog handlersCatalog;
 
-    public IEnumerable<CQRSObjectMetadata> Objects { get; }
+    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; }
 
     public CQRSObjectsRegistrationSource(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         this.contractsCatalog = contractsCatalog;
         this.handlersCatalog = handlersCatalog;
 
-        Objects = FindCQRSObjects();
+        Objects = FindCQRSObjects(contractsCatalog, handlersCatalog);
     }
 
-    private IEnumerable<CQRSObjectMetadata> FindCQRSObjects()
+    public IEnumerable<CQRSObjectMetadata> AddAdditionalCQRSObjects(
+        TypesCatalog contractsCatalog,
+        TypesCatalog handlersCatalog
+    )
+    {
+        var addtionalCQRSObjects = FindCQRSObjects(contractsCatalog, handlersCatalog);
+
+        foreach (var o in addtionalCQRSObjects)
+        {
+            Objects = Objects.Append(o);
+        }
+
+        return addtionalCQRSObjects;
+    }
+
+    private IEnumerable<CQRSObjectMetadata> FindCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         var contracts = contractsCatalog.Assemblies
             .SelectMany(a => a.DefinedTypes)

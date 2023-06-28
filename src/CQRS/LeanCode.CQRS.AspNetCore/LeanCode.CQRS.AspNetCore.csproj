@@ -6,7 +6,7 @@
       <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
       <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
       <ProjectReference Include="../../Infrastructure/LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
-      <ProjectReference Include="../../Infrastructure/LeanCode.ForceUpdate/LeanCode.ForceUpdate.csproj" />
+      <ProjectReference Include="../../Infrastructure/LeanCode.ClientsUpdates/LeanCode.ClientsUpdates.csproj" />
       <ProjectReference Include="../LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
     </ItemGroup>
 

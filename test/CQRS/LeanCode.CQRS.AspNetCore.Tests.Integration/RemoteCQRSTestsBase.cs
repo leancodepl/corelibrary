@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using LeanCode.Components;
 using LeanCode.CQRS.Validation.Fluent;
-using LeanCode.ForceUpdate;
+using LeanCode.ClientsUpdates;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +35,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         cfg.AddScoped<ICustomAuthorizer, CustomAuthorizer>();
                         cfg.AddRouting();
                         cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
-                        cfg.AddForceUpdate();
+                        cfg.AddClientsUpdates();
                         cfg.AddFluentValidation(TypesCatalog.Of<TestCommandValidator>());
 
                         cfg.AddSingleton(

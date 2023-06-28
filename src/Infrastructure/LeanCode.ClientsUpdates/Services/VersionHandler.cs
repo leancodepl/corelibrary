@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace LeanCode.ForceUpdate.Services;
+namespace LeanCode.ClientsUpdates.Services;
 
 public class VersionHandler
 {

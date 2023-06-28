@@ -1,9 +1,9 @@
 using LeanCode.CQRS.Execution;
-using LeanCode.ForceUpdate.Contracts;
+using LeanCode.ClientsUpdates.Contracts;
 using Microsoft.AspNetCore.Http;
-using VersionSupport = LeanCode.ForceUpdate.Contracts.VersionSupport;
+using VersionSupport = LeanCode.ClientsUpdates.Contracts.VersionSupport;
 
-namespace LeanCode.ForceUpdate.Services.CQRS;
+namespace LeanCode.ClientsUpdates.Services.CQRS;
 
 public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?>
 {

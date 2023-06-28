@@ -1,6 +1,6 @@
 ﻿using LeanCode.Contracts;
 
-namespace LeanCode.ForceUpdate.Contracts;
+namespace LeanCode.ClientsUpdates.Contracts;
 
 public class Versions : IQuery<List<VersionsDTO>> { }
 

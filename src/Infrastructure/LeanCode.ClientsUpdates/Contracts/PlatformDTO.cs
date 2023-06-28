@@ -1,4 +1,4 @@
-namespace LeanCode.ForceUpdate.Contracts;
+namespace LeanCode.ClientsUpdates.Contracts;
 
 public enum PlatformDTO
 {
