@@ -249,4 +249,13 @@ public class PrefixedUlidIdTests
 
         ulid.Should().Be(TPG1Ulid);
     }
+
+    [Fact]
+    public void Ids_are_case_insensitive()
+    {
+        var u1 = TestPrefixedUlidId.Parse("tpu_01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        var u2 = TestPrefixedUlidId.Parse("tpu_01arz3ndektsv4rrffq69g5fav");
+
+        u1.Should().Be(u2);
+    }
 }

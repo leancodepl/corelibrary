@@ -752,8 +752,11 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     }
 
     public static bool operator <(Ulid a, Ulid b) => a.CompareTo(b) < 0;
+
     public static bool operator <=(Ulid a, Ulid b) => a.CompareTo(b) <= 0;
+
     public static bool operator >(Ulid a, Ulid b) => a.CompareTo(b) > 0;
+
     public static bool operator >=(Ulid a, Ulid b) => a.CompareTo(b) >= 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
