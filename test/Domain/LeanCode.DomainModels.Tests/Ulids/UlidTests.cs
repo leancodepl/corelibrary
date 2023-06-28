@@ -139,4 +139,13 @@ public class UlidTest
         Assert.False(Ulid.TryParse("1234", out _));
         Assert.False(Ulid.TryParse(Guid.NewGuid().ToString(), out _));
     }
+
+    [Fact]
+    public void Ulids_are_case_insenstive()
+    {
+        var u1 = Ulid.Parse("01ARZ3NDEKTSV4RRFFQ69G5FAV", CultureInfo.InvariantCulture);
+        var u2 = Ulid.Parse("01arz3ndektsv4rrffq69g5fav", CultureInfo.InvariantCulture);
+
+        u1.Should().Be(u2);
+    }
 }

@@ -190,9 +190,9 @@ namespace {{data.Namespace}}
 
         public static {{data.TypeName}} Parse(string? v)
         {
-            if (IsValid(v))
+            if (TryDeconstruct(v.AsSpan(), out var ulid))
             {
-                return new {{data.TypeName}}(v);
+                return new {{data.TypeName}}(ulid);
             }
             else
             {
@@ -207,9 +207,9 @@ namespace {{data.Namespace}}
 
         public static bool TryParse([NotNullWhen(true)] string? v, out {{data.TypeName}} id)
         {
-            if (IsValid(v))
+            if (TryDeconstruct(v, out var ulid))
             {
-                id = new {{data.TypeName}}(v);
+                id = new {{data.TypeName}}(ulid);
                 return true;
             }
             else
@@ -219,20 +219,19 @@ namespace {{data.Namespace}}
             }
         }
 
+        public static bool TryDeconstruct(ReadOnlySpan<char> span, out Ulid rawUlid)
+        {
+            rawUlid = Ulid.Empty;
+
+            return span.Length == RawLength
+                && span.StartsWith(TypePrefix)
+                && span[{{prefix.Length}}] == Separator
+                && Ulid.TryParse(span[{{prefix.Length + 1}}..], out rawUlid);
+        }
+
         public static bool IsValid([NotNullWhen(true)] string? v)
         {
-            if (v is null)
-            {
-                return false;
-            }
-            else
-            {
-                var span = v.AsSpan();
-                return span.Length == RawLength
-                    && span.StartsWith(TypePrefix)
-                    && span[{{prefix.Length}}] == Separator
-                    && Ulid.TryParse(span[{{prefix.Length + 1}}..], out _);
-            }
+            return TryDeconstruct(v.AsSpan(), out _);
         }
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
