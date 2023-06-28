@@ -10,7 +10,7 @@ internal class CQRSObjectsRegistrationSource
 {
     private readonly IServiceCollection services;
 
-    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; } = default!;
+    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; }
 
     public CQRSObjectsRegistrationSource(
         IServiceCollection services,
