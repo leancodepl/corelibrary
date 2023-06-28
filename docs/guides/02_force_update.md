@@ -1,15 +1,15 @@
-# Clients updates checks
+# Force update
 
 ## Configuration
 
-To enforce or suggest updates for client apps, you can utilize the `AddClientsUpdates()` extension method from the `LeanCode.CQRS.AspNetCore` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. To configure version checks, you need to register two records: `IOSVersionsConfiguration` and `AndroidVersionsConfiguration`. Both require the `MinimumRequiredVersion` and `CurrentlySupportedVersion` parameters. The following example demonstrates the usage:
+To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate()` extension method from the `LeanCode.ForceUpdate` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. To configure version checks, you need to register two records: `IOSVersionsConfiguration` and `AndroidVersionsConfiguration`. Both require the `MinimumRequiredVersion` and `CurrentlySupportedVersion` parameters. The following example demonstrates the usage:
 
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
     // ...
-    services.AddCQRS(CQRSTypes, CQRSTypes);
-    services.AddClientsUpdates();
+    services.AddCQRS(CQRSTypes, CQRSTypes)
+            .AddForceUpdate();
 
     services.AddSingleton(
         new IOSVersionsConfiguration(
@@ -28,7 +28,7 @@ public override void ConfigureServices(IServiceCollection services)
 ```
 
 ## Version support
-After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ClientsUpdates.Contracts.VersionSupport`. This endpoint should be used by default by clients:
+After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport`. This endpoint should be used by default by clients:
 ```csharp
 public class VersionSupport : IQuery<VersionSupportDTO?>
 {
@@ -110,7 +110,7 @@ public override void ConfigureServices(IServiceCollection services)
 
 ## Versions
 
-After the configuration, a `Versions` query is also created and available at the `/cqrs/query/LeanCode.ClientsUpdates.Contracts.Versions` endpoint. The query returns a list of supported app versions for all platforms.
+After the configuration, a `Versions` query is also created and available at the `/cqrs/query/LeanCode.ForceUpdate.Contracts.Versions` endpoint. The query returns a list of supported app versions for all platforms.
 
 ```csharp
 public class Versions : IQuery<List<VersionsDTO>> { }

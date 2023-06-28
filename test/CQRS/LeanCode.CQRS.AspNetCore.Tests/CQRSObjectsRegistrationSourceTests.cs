@@ -4,6 +4,7 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
@@ -62,6 +63,7 @@ public class CQRSObjectsRegistrationSourceTests
     private static List<CQRSObjectMetadata> GetCQRSObjects()
     {
         return new CQRSObjectsRegistrationSource(
+            new ServiceCollection(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
         ).Objects.ToList();

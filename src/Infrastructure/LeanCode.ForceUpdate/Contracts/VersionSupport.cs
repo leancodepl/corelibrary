@@ -1,6 +1,6 @@
 using LeanCode.Contracts;
 
-namespace LeanCode.ClientsUpdates.Contracts;
+namespace LeanCode.ForceUpdate.Contracts;
 
 public class VersionSupport : IQuery<VersionSupportDTO?>
 {
@@ -10,7 +10,7 @@ public class VersionSupport : IQuery<VersionSupportDTO?>
 
 public enum VersionSupportDTO
 {
-    UpdateRequired,
-    UpdateSuggested,
-    UpToDate,
+    UpdateRequired = 0,
+    UpdateSuggested = 1,
+    UpToDate = 2,
 }

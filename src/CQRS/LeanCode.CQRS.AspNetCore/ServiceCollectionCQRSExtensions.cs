@@ -4,8 +4,6 @@ using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
-using LeanCode.ClientsUpdates.Contracts;
-using LeanCode.ClientsUpdates.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -21,53 +19,38 @@ public static class ServiceCollectionCQRSExtensions
     {
         serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
 
-        var objectsSource = new CQRSObjectsRegistrationSource(contractsCatalog, handlersCatalog);
+        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, contractsCatalog, handlersCatalog);
 
         serviceCollection.AddSingleton(objectsSource);
-        serviceCollection.AddCQRSHandlers(objectsSource.Objects);
 
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
 
-        return new CQRSServicesBuilder(serviceCollection);
-    }
-
-    public static CQRSServicesBuilder AddClientsUpdates(this IServiceCollection serviceCollection)
-    {
-        var sp = serviceCollection.BuildServiceProvider();
-
-        var cqrsHandlers =
-            sp.GetService<CQRSObjectsRegistrationSource>()
-            ?? throw new InvalidOperationException(
-                "CQRS services were not registered, make sure you've called IServiceCollection.AddCQRS(...) first."
-            );
-
-        var addtionalCQRSObjects = cqrsHandlers.AddAdditionalCQRSObjects(
-            TypesCatalog.Of<VersionSupport>(),
-            TypesCatalog.Of<VersionSupport>()
-        );
-
-        serviceCollection.AddCQRSHandlers(addtionalCQRSObjects);
-
-        serviceCollection.AddTransient<VersionHandler>();
-
-        return new CQRSServicesBuilder(serviceCollection);
+        return new CQRSServicesBuilder(serviceCollection, objectsSource);
     }
 }
 
 public class CQRSServicesBuilder
 {
-    private readonly IServiceCollection services;
+    public readonly IServiceCollection services;
+    private readonly CQRSObjectsRegistrationSource objectsSource;
 
-    public CQRSServicesBuilder(IServiceCollection services)
+    internal CQRSServicesBuilder(IServiceCollection services, CQRSObjectsRegistrationSource objectsSource)
     {
         this.services = services;
+        this.objectsSource = objectsSource;
     }
 
     public CQRSServicesBuilder WithSerializer(ISerializer serializer)
     {
         services.Replace(new ServiceDescriptor(typeof(ISerializer), serializer));
+        return this;
+    }
+
+    public CQRSServicesBuilder AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    {
+        objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
         return this;
     }
 }

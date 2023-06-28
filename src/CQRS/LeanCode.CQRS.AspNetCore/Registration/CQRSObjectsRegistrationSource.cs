@@ -2,40 +2,29 @@ using System.Reflection;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore.Registration;
 
 internal class CQRSObjectsRegistrationSource
 {
-    private readonly TypesCatalog contractsCatalog;
-    private readonly TypesCatalog handlersCatalog;
+    private readonly IServiceCollection services;
 
-    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; }
+    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; } = default!;
 
-    public CQRSObjectsRegistrationSource(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
-    {
-        this.contractsCatalog = contractsCatalog;
-        this.handlersCatalog = handlersCatalog;
-
-        Objects = FindCQRSObjects(contractsCatalog, handlersCatalog);
-    }
-
-    public IEnumerable<CQRSObjectMetadata> AddAdditionalCQRSObjects(
+    public CQRSObjectsRegistrationSource(
+        IServiceCollection services,
         TypesCatalog contractsCatalog,
         TypesCatalog handlersCatalog
     )
     {
-        var addtionalCQRSObjects = FindCQRSObjects(contractsCatalog, handlersCatalog);
+        this.services = services;
+        this.Objects = new List<CQRSObjectMetadata>();
 
-        foreach (var o in addtionalCQRSObjects)
-        {
-            Objects = Objects.Append(o);
-        }
-
-        return addtionalCQRSObjects;
+        AddCQRSObjects(contractsCatalog, handlersCatalog);
     }
 
-    private IEnumerable<CQRSObjectMetadata> FindCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         var contracts = contractsCatalog.Assemblies
             .SelectMany(a => a.DefinedTypes)
@@ -72,9 +61,10 @@ internal class CQRSObjectsRegistrationSource
             );
 
             resultObjects.Add(metadata);
+            Objects = Objects.Append(metadata);
         }
 
-        return resultObjects;
+        services.AddCQRSHandlers(resultObjects);
     }
 
     private static bool ValidateContractType(TypeInfo type)

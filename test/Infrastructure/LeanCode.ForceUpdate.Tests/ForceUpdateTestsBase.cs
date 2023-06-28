@@ -1,26 +1,28 @@
 using System.Net;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using LeanCode.Components;
-using LeanCode.CQRS.Validation.Fluent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using LeanCode.CQRS.AspNetCore;
+using LeanCode.Contracts;
+using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 
-namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
+namespace LeanCode.ForceUpdate.Tests;
 
-public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
+public abstract class ForceUpdateTestsBase : IDisposable, IAsyncLifetime
 {
-    private const string IsAuthenticatedHeader = "is-authenticated";
-
     private readonly IHost host;
     private readonly TestServer server;
 
-    protected RemoteCQRSTestsBase()
+    protected const string MinimumRequiredVersion = "1.0";
+    protected const string CurrentlySupportedVersion = "1.3";
+
+    protected ForceUpdateTestsBase()
     {
         host = new HostBuilder()
             .ConfigureWebHost(webHost =>
@@ -29,15 +31,24 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                     .UseTestServer()
                     .ConfigureServices(cfg =>
                     {
-                        cfg.AddScoped<ICustomAuthorizer, CustomAuthorizer>();
                         cfg.AddRouting();
-                        cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
-                        cfg.AddFluentValidation(TypesCatalog.Of<TestCommandValidator>());
+                        cfg.AddCQRS(TypesCatalog.Of<Query1>(), TypesCatalog.Of<Query1Handler>()).AddForceUpdate();
+                        cfg.AddSingleton(
+                            new IOSVersionsConfiguration(
+                                new Version(MinimumRequiredVersion),
+                                new Version(CurrentlySupportedVersion)
+                            )
+                        );
+                        cfg.AddSingleton(
+                            new AndroidVersionsConfiguration(
+                                new Version(MinimumRequiredVersion),
+                                new Version(CurrentlySupportedVersion)
+                            )
+                        );
                     })
                     .Configure(app =>
                     {
                         app.UseRouting();
-                        app.Use(MockAuthorization);
                         app.UseEndpoints(ep =>
                         {
                             ep.MapRemoteCqrs(
@@ -45,8 +56,6 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                                 cqrs =>
                                 {
                                     cqrs.Queries = q => q.Secure();
-                                    cqrs.Commands = c => c.Secure().Validate();
-                                    cqrs.Operations = o => o.Secure();
                                 }
                             );
                         });
@@ -57,17 +66,14 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
         server = host.GetTestServer();
     }
 
-    private static Task MockAuthorization(HttpContext httpContext, RequestDelegate next)
-    {
-        if (
-            httpContext.Request.Headers.TryGetValue(IsAuthenticatedHeader, out var isAuthenticated)
-            && isAuthenticated == bool.TrueString
-        )
-        {
-            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity("Test Identity"));
-        }
+    private class Query1 : IQuery<QueryResult1> { }
 
-        return next(httpContext);
+    private class QueryResult1 { }
+
+    private class Query1Handler : IQueryHandler<Query1, QueryResult1>
+    {
+        public Task<QueryResult1> ExecuteAsync(HttpContext context, Query1 query) =>
+            throw new NotImplementedException();
     }
 
     protected async Task<(string ReponseBody, HttpStatusCode StatusCode)> SendAsync(
@@ -84,8 +90,6 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
         {
             msg.Content = new StringContent(body, new MediaTypeHeaderValue("application/json", "utf-8"));
         }
-
-        msg.Headers.Add(IsAuthenticatedHeader, isAuthenticated.ToString());
 
         var response = await host.GetTestClient().SendAsync(msg);
 

@@ -1,4 +1,4 @@
-﻿namespace LeanCode.ClientsUpdates;
+﻿namespace LeanCode.ForceUpdate;
 
 public sealed record IOSVersionsConfiguration(Version MinimumRequiredVersion, Version CurrentlySupportedVersion);
 
