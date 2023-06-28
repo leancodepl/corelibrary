@@ -50,7 +50,7 @@ internal static class UlidRandomProvider
     }
 }
 
-internal class XorShift64
+internal sealed class XorShift64
 {
     private ulong x = 88172645463325252UL;
 

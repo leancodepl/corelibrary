@@ -6,4 +6,5 @@ public enum TypedIdFormat : int
     RawLong = 1,
     RawGuid = 2,
     PrefixedGuid = 3,
+    PrefixedUlid = 4,
 }

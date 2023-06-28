@@ -40,6 +40,7 @@ namespace LeanCode.DomainModels.Ulids;
 [StructLayout(LayoutKind.Explicit, Size = 16)]
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>
 {
     // https://en.wikipedia.org/wiki/Base32

@@ -28,6 +28,7 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.DomainModels.Ulids
 {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public class UlidJsonConverter : JsonConverter<Ulid>
     {
         /// <summary>

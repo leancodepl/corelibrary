@@ -11,9 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
-    <ProjectReference
-      Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj"
-      OutputItemType="Analyzer" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>
