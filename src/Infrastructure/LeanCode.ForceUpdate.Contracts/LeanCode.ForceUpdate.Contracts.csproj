@@ -4,7 +4,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="LeanCode.ForceUpdate.Contracts.pb">
+    <EmbeddedResource Include="LeanCode.Contracts.pb">
       <LogicalName>%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
