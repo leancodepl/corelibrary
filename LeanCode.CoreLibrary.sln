@@ -183,6 +183,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ForceUpdate.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Startup.MicrosoftDI", "src\Core\LeanCode.Startup.MicrosoftDI\LeanCode.Startup.MicrosoftDI.csproj", "{6DA18449-E4BA-4648-871C-85BEF07775F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ForceUpdate.Contracts", "src\Infrastructure\LeanCode.ForceUpdate.Contracts\LeanCode.ForceUpdate.Contracts.csproj", "{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1093,6 +1095,18 @@ Global
 		{6DA18449-E4BA-4648-871C-85BEF07775F7}.Release|x64.Build.0 = Release|Any CPU
 		{6DA18449-E4BA-4648-871C-85BEF07775F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{6DA18449-E4BA-4648-871C-85BEF07775F7}.Release|x86.Build.0 = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|x64.Build.0 = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1185,5 +1199,6 @@ Global
 		{EFBA80BB-523F-4C1B-B3FE-51DDF7058BBB} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{D2F210FB-DAE8-4E62-8595-B9C65ACD9BE1} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
 		{6DA18449-E4BA-4648-871C-85BEF07775F7} = {7AFA22EA-B093-4457-ABA2-CFF96DF41350}
+		{FE79C5C9-774E-4734-9BFE-5A867BFB45C8} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 	EndGlobalSection
 EndGlobal

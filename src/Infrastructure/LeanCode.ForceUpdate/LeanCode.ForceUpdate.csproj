@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="LeanCode.Contracts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../LeanCode.ForceUpdate.Contracts/LeanCode.ForceUpdate.Contracts.csproj" />
   </ItemGroup>
 </Project>
