@@ -24,34 +24,30 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
 
     public Task<VersionSupportDTO?> ExecuteAsync(HttpContext context, VersionSupport query)
     {
-        if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(typeof(PlatformDTO), query.Platform))
+        if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined<PlatformDTO>(query.Platform))
         {
             return Task.FromResult<VersionSupportDTO?>(null);
         }
 
-        return query.Platform switch
+        var result = query.Platform switch
         {
             PlatformDTO.IOS
-                => Task.FromResult<VersionSupportDTO?>(
-                    (VersionSupportDTO)
-                        versionHandler.CheckVersion(
-                            version,
-                            iOSConfiguration.MinimumRequiredVersion,
-                            iOSConfiguration.CurrentlySupportedVersion,
-                            context
-                        )
+                => versionHandler.CheckVersion(
+                    version,
+                    iOSConfiguration.MinimumRequiredVersion,
+                    iOSConfiguration.CurrentlySupportedVersion,
+                    context
                 ),
             PlatformDTO.Android
-                => Task.FromResult<VersionSupportDTO?>(
-                    (VersionSupportDTO)
-                        versionHandler.CheckVersion(
-                            version,
-                            iOSConfiguration.MinimumRequiredVersion,
-                            iOSConfiguration.CurrentlySupportedVersion,
-                            context
-                        )
+                => versionHandler.CheckVersion(
+                    version,
+                    androidConfiguration.MinimumRequiredVersion,
+                    androidConfiguration.CurrentlySupportedVersion,
+                    context
                 ),
             _ => throw new InvalidOperationException("Invalid platform"),
         };
+
+        return Task.FromResult((VersionSupportDTO?)result);
     }
 }

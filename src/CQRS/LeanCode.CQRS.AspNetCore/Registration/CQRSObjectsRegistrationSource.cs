@@ -12,16 +12,10 @@ internal class CQRSObjectsRegistrationSource
 
     public IEnumerable<CQRSObjectMetadata> Objects { get; private set; }
 
-    public CQRSObjectsRegistrationSource(
-        IServiceCollection services,
-        TypesCatalog contractsCatalog,
-        TypesCatalog handlersCatalog
-    )
+    public CQRSObjectsRegistrationSource(IServiceCollection services)
     {
         this.services = services;
-        this.Objects = new List<CQRSObjectMetadata>();
-
-        AddCQRSObjects(contractsCatalog, handlersCatalog);
+        this.Objects = new HashSet<CQRSObjectMetadata>();
     }
 
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
@@ -35,7 +29,9 @@ internal class CQRSObjectsRegistrationSource
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);
 
-        var resultObjects = new List<CQRSObjectMetadata>();
+        var equalityComparer = new CQRSObjectMetadataEqualityComparer();
+        var resultObjects = new HashSet<CQRSObjectMetadata>(Objects, equalityComparer);
+        var newObjects = new HashSet<CQRSObjectMetadata>(equalityComparer);
 
         foreach (var contract in contracts)
         {
@@ -60,11 +56,16 @@ internal class CQRSObjectsRegistrationSource
                 handlerType: handler.HandlerType
             );
 
-            resultObjects.Add(metadata);
-            Objects = Objects.Append(metadata);
+            var added = resultObjects.Add(metadata);
+
+            if (added)
+            {
+                newObjects.Add(metadata);
+            }
         }
 
-        services.AddCQRSHandlers(resultObjects);
+        Objects = resultObjects;
+        services.AddCQRSHandlers(newObjects);
     }
 
     private static bool ValidateContractType(TypeInfo type)

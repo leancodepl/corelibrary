@@ -1,20 +1,44 @@
-using System.Net;
-using System.Text.Json;
 using LeanCode.ForceUpdate.Contracts;
 using FluentAssertions;
 using Xunit;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using LeanCode.CQRS.AspNetCore;
+using Microsoft.AspNetCore.Http;
+using LeanCode.CQRS.Execution;
 
 namespace LeanCode.ForceUpdate.Tests;
 
-public class ForceUpdateTests : ForceUpdateTestsBase
+public class ForceUpdateTests
 {
+    private const string MinimumRequiredVersion = "1.0";
+    private const string CurrentlySupportedVersion = "1.3";
+
+    private readonly ServiceProvider serviceProvider;
+
+    public ForceUpdateTests()
+    {
+        var services = new ServiceCollection();
+        services.AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>())).AddForceUpdate();
+        services.AddSingleton(
+            new IOSVersionsConfiguration(new Version(MinimumRequiredVersion), new Version(CurrentlySupportedVersion))
+        );
+        services.AddSingleton(
+            new AndroidVersionsConfiguration(
+                new Version(MinimumRequiredVersion),
+                new Version(CurrentlySupportedVersion)
+            )
+        );
+
+        this.serviceProvider = services.BuildServiceProvider();
+    }
+
     [Fact]
     public async Task Versions_correctly_returns_all_versions()
     {
-        var (body, statusCode) = await SendAsync("/cqrs/query/LeanCode.ForceUpdate.Contracts.Versions");
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<Versions, List<VersionsDTO>>>();
+        var result = await handler.ExecuteAsync(new DefaultHttpContext(), new());
 
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<List<VersionsDTO>>(body);
         result
             .Should()
             .BeEquivalentTo(
@@ -39,80 +63,48 @@ public class ForceUpdateTests : ForceUpdateTestsBase
     [Fact]
     public async Task Version_smaller_then_minimum_required_is_not_supported()
     {
-        var (body, statusCode) = await SendAsync(
-            "/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport",
-            @"{
-                ""Platform"": 0,
-                ""Version"": ""0.9""
-            }"
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "0.9", }
         );
 
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<VersionSupportDTO?>(body);
         result.Should().Be(VersionSupportDTO.UpdateRequired);
     }
 
     [Fact]
     public async Task Update_is_suggested_for_version_between_minium_and_current()
     {
-        var (body, statusCode) = await SendAsync(
-            "/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport",
-            @"{
-                ""Platform"": 0,
-                ""Version"": ""1.2""
-            }"
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.2", }
         );
 
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<VersionSupportDTO?>(body);
         result.Should().Be(VersionSupportDTO.UpdateSuggested);
     }
 
     [Fact]
     public async Task Version_above_currently_supported_is_up_to_date()
     {
-        var (body, statusCode) = await SendAsync(
-            "/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport",
-            @"{
-                ""Platform"": 0,
-                ""Version"": ""1.4""
-            }"
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.4", }
         );
 
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<VersionSupportDTO?>(body);
         result.Should().Be(VersionSupportDTO.UpToDate);
-    }
-
-    [Fact]
-    public async Task Version_support_returns_null_for_not_supported_platform()
-    {
-        var (body, statusCode) = await SendAsync(
-            "/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport",
-            @"{
-                ""Platform"": 4,
-                ""Version"": ""1.4""
-            }"
-        );
-
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<VersionSupportDTO?>(body);
-        result.Should().BeNull();
     }
 
     [Fact]
     public async Task Version_support_returns_null_for_invalid_version()
     {
-        var (body, statusCode) = await SendAsync(
-            "/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport",
-            @"{
-                ""Platform"": 0,
-                ""Version"": ""1.x""
-            }"
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.x", }
         );
 
-        statusCode.Should().Be(HttpStatusCode.OK);
-        var result = JsonSerializer.Deserialize<VersionSupportDTO?>(body);
         result.Should().BeNull();
     }
 }

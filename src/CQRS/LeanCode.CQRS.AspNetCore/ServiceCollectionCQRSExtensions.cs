@@ -19,7 +19,8 @@ public static class ServiceCollectionCQRSExtensions
     {
         serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
 
-        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, contractsCatalog, handlersCatalog);
+        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection);
+        objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
         serviceCollection.AddSingleton(objectsSource);
 
