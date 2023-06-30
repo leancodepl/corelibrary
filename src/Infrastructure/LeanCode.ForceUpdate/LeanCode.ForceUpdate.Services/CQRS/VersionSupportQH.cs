@@ -7,6 +7,8 @@ namespace LeanCode.ForceUpdate.Services.CQRS;
 
 public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?>
 {
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<VersionSupportQH>();
+
     private readonly IOSVersionsConfiguration iOSConfiguration;
     private readonly AndroidVersionsConfiguration androidConfiguration;
     private readonly VersionHandler versionHandler;
@@ -26,6 +28,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
     {
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined<PlatformDTO>(query.Platform))
         {
+            logger.Warning("Invalid input: Version={Version}, Platform={Platform}", query.Version, query.Platform);
             return null;
         }
 

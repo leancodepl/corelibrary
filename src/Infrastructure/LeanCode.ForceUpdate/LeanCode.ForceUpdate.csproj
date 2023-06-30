@@ -5,4 +5,8 @@
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.ForceUpdate.Contracts/LeanCode.ForceUpdate.Contracts.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+  </ItemGroup>
 </Project>
