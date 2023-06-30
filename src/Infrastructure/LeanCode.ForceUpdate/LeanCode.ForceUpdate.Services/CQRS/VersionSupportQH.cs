@@ -22,32 +22,44 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
         this.versionHandler = versionHandler;
     }
 
-    public Task<VersionSupportDTO?> ExecuteAsync(HttpContext context, VersionSupport query)
+    public async Task<VersionSupportDTO?> ExecuteAsync(HttpContext context, VersionSupport query)
     {
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined<PlatformDTO>(query.Platform))
         {
-            return Task.FromResult<VersionSupportDTO?>(null);
+            return null;
         }
 
-        var result = query.Platform switch
+        return query.Platform switch
         {
             PlatformDTO.IOS
-                => versionHandler.CheckVersion(
-                    version,
-                    iOSConfiguration.MinimumRequiredVersion,
-                    iOSConfiguration.CurrentlySupportedVersion,
-                    context
-                ),
+                => new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = iOSConfiguration.CurrentlySupportedVersion.ToString(),
+                    MinimumRequiredVersion = iOSConfiguration.MinimumRequiredVersion.ToString(),
+                    Result = (VersionSupportResultDTO)(
+                        await versionHandler.CheckVersionAsync(
+                            version,
+                            iOSConfiguration.MinimumRequiredVersion,
+                            iOSConfiguration.CurrentlySupportedVersion,
+                            context
+                        )
+                    ),
+                },
             PlatformDTO.Android
-                => versionHandler.CheckVersion(
-                    version,
-                    androidConfiguration.MinimumRequiredVersion,
-                    androidConfiguration.CurrentlySupportedVersion,
-                    context
-                ),
+                => new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = androidConfiguration.CurrentlySupportedVersion.ToString(),
+                    MinimumRequiredVersion = androidConfiguration.MinimumRequiredVersion.ToString(),
+                    Result = (VersionSupportResultDTO)(
+                        await versionHandler.CheckVersionAsync(
+                            version,
+                            androidConfiguration.MinimumRequiredVersion,
+                            androidConfiguration.CurrentlySupportedVersion,
+                            context
+                        )
+                    ),
+                },
             _ => throw new InvalidOperationException("Invalid platform"),
         };
-
-        return Task.FromResult((VersionSupportDTO?)result);
     }
 }

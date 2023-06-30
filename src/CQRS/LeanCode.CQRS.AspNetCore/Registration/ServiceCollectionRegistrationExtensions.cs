@@ -12,12 +12,17 @@ public static class ServiceCollectionRegistrationExtensions
     {
         foreach (var obj in cqrsObjects)
         {
-            serviceCollection.Add(
-                new ServiceDescriptor(MakeHandlerInterfaceType(obj), obj.HandlerType, ServiceLifetime.Scoped)
-            );
+            serviceCollection.AddCQRSHandler(obj);
         }
 
         return serviceCollection;
+    }
+
+    public static void AddCQRSHandler(this IServiceCollection serviceCollection, CQRSObjectMetadata obj)
+    {
+        serviceCollection.Add(
+            new ServiceDescriptor(MakeHandlerInterfaceType(obj), obj.HandlerType, ServiceLifetime.Scoped)
+        );
 
         Type MakeHandlerInterfaceType(CQRSObjectMetadata obj)
         {

@@ -4,7 +4,7 @@ namespace LeanCode.ForceUpdate.Services;
 
 public class VersionHandler
 {
-    public virtual VersionSupport CheckVersion(
+    public virtual Task<VersionSupportResult> CheckVersionAsync(
         Version version,
         Version minimumRequiredVersion,
         Version currentlySupportedVersion,
@@ -13,19 +13,19 @@ public class VersionHandler
     {
         if (version < minimumRequiredVersion)
         {
-            return VersionSupport.UpdateRequired;
+            return Task.FromResult(VersionSupportResult.UpdateRequired);
         }
         else if (version >= minimumRequiredVersion && version < currentlySupportedVersion)
         {
-            return VersionSupport.UpdateSuggested;
+            return Task.FromResult(VersionSupportResult.UpdateSuggested);
         }
         else
         {
-            return VersionSupport.UpToDate;
+            return Task.FromResult(VersionSupportResult.UpToDate);
         }
     }
 
-    public enum VersionSupport
+    public enum VersionSupportResult
     {
         UpdateRequired,
         UpdateSuggested,

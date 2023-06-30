@@ -11,8 +11,10 @@ namespace LeanCode.ForceUpdate.Tests;
 
 public class ForceUpdateTests
 {
-    private const string MinimumRequiredVersion = "1.0";
-    private const string CurrentlySupportedVersion = "1.3";
+    private const string AndroidMinimumRequiredVersion = "2.0";
+    private const string AndroidCurrentlySupportedVersion = "2.3";
+    private const string IOSMinimumRequiredVersion = "1.0";
+    private const string IOSCurrentlySupportedVersion = "1.3";
 
     private readonly ServiceProvider serviceProvider;
 
@@ -21,43 +23,19 @@ public class ForceUpdateTests
         var services = new ServiceCollection();
         services.AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>())).AddForceUpdate();
         services.AddSingleton(
-            new IOSVersionsConfiguration(new Version(MinimumRequiredVersion), new Version(CurrentlySupportedVersion))
+            new IOSVersionsConfiguration(
+                new Version(IOSMinimumRequiredVersion),
+                new Version(IOSCurrentlySupportedVersion)
+            )
         );
         services.AddSingleton(
             new AndroidVersionsConfiguration(
-                new Version(MinimumRequiredVersion),
-                new Version(CurrentlySupportedVersion)
+                new Version(AndroidMinimumRequiredVersion),
+                new Version(AndroidCurrentlySupportedVersion)
             )
         );
 
         this.serviceProvider = services.BuildServiceProvider();
-    }
-
-    [Fact]
-    public async Task Versions_correctly_returns_all_versions()
-    {
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<Versions, List<VersionsDTO>>>();
-        var result = await handler.ExecuteAsync(new DefaultHttpContext(), new());
-
-        result
-            .Should()
-            .BeEquivalentTo(
-                new List<VersionsDTO>
-                {
-                    new VersionsDTO
-                    {
-                        Platform = PlatformDTO.IOS,
-                        MinimumRequiredVersion = MinimumRequiredVersion.ToString(),
-                        CurrentlySupportedVersion = CurrentlySupportedVersion.ToString(),
-                    },
-                    new VersionsDTO
-                    {
-                        Platform = PlatformDTO.Android,
-                        MinimumRequiredVersion = MinimumRequiredVersion.ToString(),
-                        CurrentlySupportedVersion = CurrentlySupportedVersion.ToString(),
-                    }
-                }
-            );
     }
 
     [Fact]
@@ -69,7 +47,16 @@ public class ForceUpdateTests
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "0.9", }
         );
 
-        result.Should().Be(VersionSupportDTO.UpdateRequired);
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = IOSCurrentlySupportedVersion,
+                    MinimumRequiredVersion = IOSMinimumRequiredVersion,
+                    Result = VersionSupportResultDTO.UpdateRequired,
+                }
+            );
     }
 
     [Fact]
@@ -78,10 +65,19 @@ public class ForceUpdateTests
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
-            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.2", }
+            new VersionSupport { Platform = PlatformDTO.Android, Version = "2.2", }
         );
 
-        result.Should().Be(VersionSupportDTO.UpdateSuggested);
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = AndroidCurrentlySupportedVersion,
+                    MinimumRequiredVersion = AndroidMinimumRequiredVersion,
+                    Result = VersionSupportResultDTO.UpdateSuggested,
+                }
+            );
     }
 
     [Fact]
@@ -93,7 +89,16 @@ public class ForceUpdateTests
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.4", }
         );
 
-        result.Should().Be(VersionSupportDTO.UpToDate);
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = IOSCurrentlySupportedVersion,
+                    MinimumRequiredVersion = IOSMinimumRequiredVersion,
+                    Result = VersionSupportResultDTO.UpToDate,
+                }
+            );
     }
 
     [Fact]

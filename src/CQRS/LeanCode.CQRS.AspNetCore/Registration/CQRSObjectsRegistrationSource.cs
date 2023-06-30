@@ -9,13 +9,13 @@ namespace LeanCode.CQRS.AspNetCore.Registration;
 internal class CQRSObjectsRegistrationSource
 {
     private readonly IServiceCollection services;
+    private readonly HashSet<CQRSObjectMetadata> objects = new();
 
-    public IEnumerable<CQRSObjectMetadata> Objects { get; private set; }
+    public IReadOnlySet<CQRSObjectMetadata> Objects => objects;
 
     public CQRSObjectsRegistrationSource(IServiceCollection services)
     {
         this.services = services;
-        this.Objects = new HashSet<CQRSObjectMetadata>();
     }
 
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
@@ -28,10 +28,6 @@ internal class CQRSObjectsRegistrationSource
             .SelectMany(a => a.DefinedTypes)
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);
-
-        var equalityComparer = new CQRSObjectMetadataEqualityComparer();
-        var resultObjects = new HashSet<CQRSObjectMetadata>(Objects, equalityComparer);
-        var newObjects = new HashSet<CQRSObjectMetadata>(equalityComparer);
 
         foreach (var contract in contracts)
         {
@@ -56,16 +52,13 @@ internal class CQRSObjectsRegistrationSource
                 handlerType: handler.HandlerType
             );
 
-            var added = resultObjects.Add(metadata);
+            var added = objects.Add(metadata);
 
             if (added)
             {
-                newObjects.Add(metadata);
+                services.AddCQRSHandler(metadata);
             }
         }
-
-        Objects = resultObjects;
-        services.AddCQRSHandlers(newObjects);
     }
 
     private static bool ValidateContractType(TypeInfo type)

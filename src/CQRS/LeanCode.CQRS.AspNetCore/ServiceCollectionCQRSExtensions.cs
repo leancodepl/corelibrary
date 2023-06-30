@@ -34,7 +34,7 @@ public static class ServiceCollectionCQRSExtensions
 
 public class CQRSServicesBuilder
 {
-    public readonly IServiceCollection services;
+    public IServiceCollection services { get; }
     private readonly CQRSObjectsRegistrationSource objectsSource;
 
     internal CQRSServicesBuilder(IServiceCollection services, CQRSObjectsRegistrationSource objectsSource)

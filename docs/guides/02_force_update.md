@@ -28,33 +28,40 @@ public override void ConfigureServices(IServiceCollection services)
 ```
 
 ## Version support
-After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport`. This endpoint should be used by default by clients:
+After configuation above. `VersionSupport` query is created and available at `/cqrs/query/LeanCode.ForceUpdate.Contracts.VersionSupport`.
 ```csharp
-public class VersionSupport : IQuery<VersionSupportDTO?>
+public class VersionSupport : IQuery<VersionSupportDTO>
 {
     public PlatformDTO Platform { get; set; }
-    public string Version { get; set; } = default!;
+    public string Version { get; set; }
 }
 
-public enum VersionSupportDTO
+public class VersionSupportDTO
 {
-    UpdateRequired,
-    UpdateSuggested,
-    UpToDate,
+    public string CurrentlySupportedVersion { get; set; }
+    public string MinimumRequiredVersion { get; set; }
+    public VersionSupportResultDTO Result { get; set; }
 }
 
 public enum PlatformDTO
 {
-    IOS,
-    Android,
+    Android = 0,
+    IOS = 1,
+}
+
+public enum VersionSupportResultDTO
+{
+    UpdateRequired = 0,
+    UpdateSuggested = 1,
+    UpToDate = 2,
 }
 ```
-The query takes `Platform` (either IOS or Android) and the `Version` of the client app as parameters. It returns whether the client's version is supported. If the client's version is below the `MinimumRequiredVersion` defined earlier, the response will indicate that an update is needed. If the client's version is greater than or equal to the `MinimumRequiredVersion` and less than the `CurrentlySupportedVersion`, the response will suggest an update. If the app version is greater than or equal to the `CurrentlySupportedVersion`, the response will indicate that the app is up to date. It's also possible to override this behavior by overriding the `CheckVersion` method in the `VersionHandler` class, responsible for version checking:
+The query takes `Platform` (either IOS or Android) and the `Version` of the client app as parameters. It returns whether the client's version is supported, `CurrentlySupportedVersion` and `MinimumRequiredVersion` for specified provider. If the client's version is below the `MinimumRequiredVersion`, the response will indicate that an update is needed. If the client's version is greater than or equal to the `MinimumRequiredVersion` and less than the `CurrentlySupportedVersion`, the response will suggest an update. If the app version is greater than or equal to the `CurrentlySupportedVersion`, the response will indicate that the app is up to date. It's also possible to override this behavior by overriding the `CheckVersion` method in the `VersionHandler` class, responsible for version checking:
 
 ```csharp
 public class VersionHandler
 {
-    public virtual VersionSupport CheckVersion(
+    public virtual Task<VersionSupportResult> CheckVersionAsync(
         Version version,
         Version minimumRequiredVersion,
         Version currentlySupportedVersion,
@@ -63,19 +70,19 @@ public class VersionHandler
     {
         if (version < minimumRequiredVersion)
         {
-            return VersionSupport.UpdateRequired;
+            return Task.FromResult(VersionSupportResult.UpdateRequired);
         }
         else if (version >= minimumRequiredVersion && version < currentlySupportedVersion)
         {
-            return VersionSupport.UpdateSuggested;
+            return Task.FromResult(VersionSupportResult.UpdateSuggested);
         }
         else
         {
-            return VersionSupport.UpToDate;
+            return Task.FromResult(VersionSupportResult.UpToDate);
         }
     }
 
-    public enum VersionSupport
+    public enum VersionSupportResult
     {
         UpdateRequired,
         UpdateSuggested,
@@ -87,7 +94,7 @@ Below is an example of overriding the `CheckVersion` method:
 ```csharp
 public class CustomVersionHandler : VersionHandler
 {
-    public override VersionSupport CheckVersion(
+    public override Task<VersionSupportResult> CheckVersionAsync(
         Version version,
         Version minimumRequiredVersion,
         Version currentlySupportedVersion,
@@ -105,20 +112,5 @@ public override void ConfigureServices(IServiceCollection services)
     //...
     services.AddTransient<VersionHandler, CustomVersionHandler>();
     //..
-}
-```
-
-## Versions
-
-After the configuration, a `Versions` query is also created and available at the `/cqrs/query/LeanCode.ForceUpdate.Contracts.Versions` endpoint. The query returns a list of supported app versions for all platforms.
-
-```csharp
-public class Versions : IQuery<List<VersionsDTO>> { }
-
-public class VersionsDTO
-{
-    public PlatformDTO Platform { get; set; }
-    public string MinimumRequiredVersion { get; set; } = default!;
-    public string CurrentlySupportedVersion { get; set; } = default!;
 }
 ```
