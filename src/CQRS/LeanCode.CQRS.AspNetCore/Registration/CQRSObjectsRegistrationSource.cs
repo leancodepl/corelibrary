@@ -9,7 +9,7 @@ namespace LeanCode.CQRS.AspNetCore.Registration;
 internal class CQRSObjectsRegistrationSource
 {
     private readonly IServiceCollection services;
-    private readonly HashSet<CQRSObjectMetadata> objects = new();
+    private readonly HashSet<CQRSObjectMetadata> objects = new(new CQRSObjectMetadataEqualityComparer());
 
     public IReadOnlySet<CQRSObjectMetadata> Objects => objects;
 

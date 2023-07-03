@@ -2,27 +2,18 @@
 
 ## Configuration
 
-To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate()` extension method from the `LeanCode.ForceUpdate` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. To configure version checks, you need to register two records: `IOSVersionsConfiguration` and `AndroidVersionsConfiguration`. Both require the `MinimumRequiredVersion` and `CurrentlySupportedVersion` parameters. The following example demonstrates the usage:
+To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate(...)` extension method from the `LeanCode.ForceUpdate` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. The following example demonstrates the usage:
 
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
     // ...
     services.AddCQRS(CQRSTypes, CQRSTypes)
-            .AddForceUpdate();
-
-    services.AddSingleton(
-        new IOSVersionsConfiguration(
-            new Version(IOSMinimumRequiredVersion),
-            new Version(IOSCurrentlySupportedVersion)
-        )
-    );
-    services.AddSingleton(
-        new AndroidVersionsConfiguration(
-            new Version(AndroidMinimumRequiredVersion),
-            new Version(AndroidCurrentlySupportedVersion)
-        )
-    );
+            .AddForceUpdate(
+                new Version(AndroidMinimumRequiredVersion),
+                new Version(AndroidCurrentlySupportedVersion),
+                new Version(IOSMinimumRequiredVersion),
+                new Version(IOSCurrentlySupportedVersion));
     // ...
 }
 ```
@@ -61,13 +52,20 @@ The query takes `Platform` (either IOS or Android) and the `Version` of the clie
 ```csharp
 public class VersionHandler
 {
+    // ...
     public virtual Task<VersionSupportResult> CheckVersionAsync(
         Version version,
-        Version minimumRequiredVersion,
-        Version currentlySupportedVersion,
+        Platform platform,
         HttpContext context
     )
     {
+        var (minimumRequiredVersion, currentlySupportedVersion) = platform switch
+        {
+            Platform.Android => (androidConfiguration.MinimumRequiredVersion, androidConfiguration.CurrentlySupportedVersion),
+            Platform.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
+            _ => throw new InvalidOperationException($"Invalid platform: {platform}"),
+        };
+
         if (version < minimumRequiredVersion)
         {
             return Task.FromResult(VersionSupportResult.UpdateRequired);
@@ -81,13 +79,19 @@ public class VersionHandler
             return Task.FromResult(VersionSupportResult.UpToDate);
         }
     }
+}
 
-    public enum VersionSupportResult
-    {
-        UpdateRequired,
-        UpdateSuggested,
-        UpToDate,
-    }
+public enum Platform
+{
+    Android,
+    IOS,
+}
+
+public enum VersionSupportResult
+{
+    UpdateRequired,
+    UpdateSuggested,
+    UpToDate,
 }
 ```
 Below is an example of overriding the `CheckVersion` method:
@@ -96,8 +100,7 @@ public class CustomVersionHandler : VersionHandler
 {
     public override Task<VersionSupportResult> CheckVersionAsync(
         Version version,
-        Version minimumRequiredVersion,
-        Version currentlySupportedVersion,
+        Platform platform,
         HttpContext context
     )
     {

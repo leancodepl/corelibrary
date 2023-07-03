@@ -9,8 +9,8 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<VersionSupportQH>();
 
-    private readonly IOSVersionsConfiguration iOSConfiguration;
     private readonly AndroidVersionsConfiguration androidConfiguration;
+    private readonly IOSVersionsConfiguration iOSConfiguration;
     private readonly VersionHandler versionHandler;
 
     public VersionSupportQH(
@@ -28,7 +28,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
     {
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined<PlatformDTO>(query.Platform))
         {
-            logger.Warning("Invalid input: Version={Version}, Platform={Platform}", query.Version, query.Platform);
+            logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
             return null;
         }
 
@@ -40,12 +40,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
                     CurrentlySupportedVersion = iOSConfiguration.CurrentlySupportedVersion.ToString(),
                     MinimumRequiredVersion = iOSConfiguration.MinimumRequiredVersion.ToString(),
                     Result = (VersionSupportResultDTO)(
-                        await versionHandler.CheckVersionAsync(
-                            version,
-                            iOSConfiguration.MinimumRequiredVersion,
-                            iOSConfiguration.CurrentlySupportedVersion,
-                            context
-                        )
+                        await versionHandler.CheckVersionAsync(version, (Platform)query.Platform, context)
                     ),
                 },
             PlatformDTO.Android
@@ -54,15 +49,10 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
                     CurrentlySupportedVersion = androidConfiguration.CurrentlySupportedVersion.ToString(),
                     MinimumRequiredVersion = androidConfiguration.MinimumRequiredVersion.ToString(),
                     Result = (VersionSupportResultDTO)(
-                        await versionHandler.CheckVersionAsync(
-                            version,
-                            androidConfiguration.MinimumRequiredVersion,
-                            androidConfiguration.CurrentlySupportedVersion,
-                            context
-                        )
+                        await versionHandler.CheckVersionAsync(version, (Platform)query.Platform, context)
                     ),
                 },
-            _ => throw new InvalidOperationException("Invalid platform"),
+            _ => throw new InvalidOperationException($"Invalid platform: {query.Platform}"),
         };
     }
 }

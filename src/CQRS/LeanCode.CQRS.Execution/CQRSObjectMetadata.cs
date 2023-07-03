@@ -1,6 +1,6 @@
 namespace LeanCode.CQRS.Execution;
 
-public record class CQRSObjectMetadata
+public class CQRSObjectMetadata
 {
     public CQRSObjectKind ObjectKind { get; }
     public Type ObjectType { get; }
@@ -13,6 +13,29 @@ public record class CQRSObjectMetadata
         ObjectType = objectType;
         ResultType = resultType;
         HandlerType = handlerType;
+    }
+}
+
+public class CQRSObjectMetadataEqualityComparer : IEqualityComparer<CQRSObjectMetadata>
+{
+    public bool Equals(CQRSObjectMetadata? x, CQRSObjectMetadata? y)
+    {
+        if (ReferenceEquals(x, y))
+        {
+            return true;
+        }
+
+        if (x is null || y is null)
+        {
+            return false;
+        }
+
+        return x.ObjectType == y.ObjectType;
+    }
+
+    public int GetHashCode(CQRSObjectMetadata obj)
+    {
+        return HashCode.Combine(obj.ObjectKind, obj.ObjectType, obj.ResultType, obj.HandlerType);
     }
 }
 

@@ -21,19 +21,14 @@ public class ForceUpdateTests
     public ForceUpdateTests()
     {
         var services = new ServiceCollection();
-        services.AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>())).AddForceUpdate();
-        services.AddSingleton(
-            new IOSVersionsConfiguration(
+        services
+            .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
+            .AddForceUpdate(
+                new Version(AndroidMinimumRequiredVersion),
+                new Version(AndroidCurrentlySupportedVersion),
                 new Version(IOSMinimumRequiredVersion),
                 new Version(IOSCurrentlySupportedVersion)
-            )
-        );
-        services.AddSingleton(
-            new AndroidVersionsConfiguration(
-                new Version(AndroidMinimumRequiredVersion),
-                new Version(AndroidCurrentlySupportedVersion)
-            )
-        );
+            );
 
         this.serviceProvider = services.BuildServiceProvider();
     }

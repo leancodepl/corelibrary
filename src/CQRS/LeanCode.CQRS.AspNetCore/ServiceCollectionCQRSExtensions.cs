@@ -34,18 +34,18 @@ public static class ServiceCollectionCQRSExtensions
 
 public class CQRSServicesBuilder
 {
-    public IServiceCollection services { get; }
+    public IServiceCollection Services { get; }
     private readonly CQRSObjectsRegistrationSource objectsSource;
 
     internal CQRSServicesBuilder(IServiceCollection services, CQRSObjectsRegistrationSource objectsSource)
     {
-        this.services = services;
+        this.Services = services;
         this.objectsSource = objectsSource;
     }
 
     public CQRSServicesBuilder WithSerializer(ISerializer serializer)
     {
-        services.Replace(new ServiceDescriptor(typeof(ISerializer), serializer));
+        Services.Replace(new ServiceDescriptor(typeof(ISerializer), serializer));
         return this;
     }
 
