@@ -20,7 +20,7 @@ public class VersionHandler
             Platform.Android
                 => (androidConfiguration.MinimumRequiredVersion, androidConfiguration.CurrentlySupportedVersion),
             Platform.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
-            _ => throw new InvalidOperationException($"Invalid platform: {platform}"),
+            _ => throw new InvalidOperationException($"Invalid platform: {platform}."),
         };
 
         if (version < minimumRequiredVersion)

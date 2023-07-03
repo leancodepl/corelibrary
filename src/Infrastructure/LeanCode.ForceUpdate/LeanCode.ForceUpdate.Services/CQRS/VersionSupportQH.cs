@@ -52,7 +52,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
                         await versionHandler.CheckVersionAsync(version, (Platform)query.Platform, context)
                     ),
                 },
-            _ => throw new InvalidOperationException($"Invalid platform: {query.Platform}"),
+            _ => throw new InvalidOperationException($"Invalid platform: {query.Platform}."),
         };
     }
 }
