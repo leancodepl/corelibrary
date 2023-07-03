@@ -23,6 +23,7 @@ SOFTWARE.
  */
 
 using System.Buffers;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -44,10 +45,10 @@ namespace LeanCode.DomainModels.Ulids;
 public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>
 {
     // https://en.wikipedia.org/wiki/Base32
-    private static readonly char[] Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToCharArray();
-    private static readonly byte[] Base32Bytes = Encoding.UTF8.GetBytes(Base32Text);
+    private static readonly ImmutableArray<char> Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToImmutableArray();
+    private static readonly ImmutableArray<byte> Base32Bytes = Encoding.UTF8.GetBytes(Base32Text.ToArray()).ToImmutableArray();
 
-    private static readonly byte[] CharToBase32 = new byte[]
+    private static readonly ImmutableArray<byte> CharToBase32 = new byte[]
     {
         255,
         255,
@@ -172,12 +173,10 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         29,
         30,
         31
-    };
-
-    private static readonly DateTimeOffset UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    }.ToImmutableArray();
 
     public static readonly Ulid MinValue = new Ulid(
-        UnixEpoch.ToUnixTimeMilliseconds(),
+        DateTimeOffset.UnixEpoch.ToUnixTimeMilliseconds(),
         new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     );
 
