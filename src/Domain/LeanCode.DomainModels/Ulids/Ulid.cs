@@ -22,11 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-using System.Buffers;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -579,16 +577,9 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public string ToBase64(Base64FormattingOptions options = Base64FormattingOptions.None)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(16);
-        try
-        {
-            TryWriteBytes(buffer);
-            return Convert.ToBase64String(buffer, options);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+        Span<byte> buffer = stackalloc byte[16];
+        TryWriteBytes(buffer);
+        return Convert.ToBase64String(buffer, options);
     }
 
     public override string ToString()
@@ -696,42 +687,21 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     // Comparable/Equatable
 
-    public override unsafe int GetHashCode()
+    public override int GetHashCode()
     {
+        var span = AsSpan(ref this);
+        var ints = MemoryMarshal.Cast<byte, int>(span);
+
         // Simply XOR, same algorithm of Guid.GetHashCode
-        fixed (void* p = &this.timestamp0)
-        {
-            var a = (int*)p;
-            return (*a) ^ *(a + 1) ^ *(a + 2) ^ *(a + 3);
-        }
+        return ints[0] ^ ints[1] ^ ints[2] ^ ints[3];
     }
 
-    public unsafe bool Equals(Ulid other)
+    public bool Equals(Ulid other)
     {
-        // readonly struct can not use Unsafe.As...
-        fixed (byte* a = &this.timestamp0)
-        {
-            byte* b = &other.timestamp0;
+        var thisSpan = AsSpan(ref this);
+        var otherSpan = AsSpan(ref other);
 
-            {
-                var x = *(ulong*)a;
-                var y = *(ulong*)b;
-                if (x != y)
-                {
-                    return false;
-                }
-            }
-            {
-                var x = *(ulong*)(a + 8);
-                var y = *(ulong*)(b + 8);
-                if (x != y)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        return thisSpan.SequenceEqual(otherSpan);
     }
 
     public override bool Equals(object? obj)
@@ -757,92 +727,17 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public static bool operator >=(Ulid a, Ulid b) => a.CompareTo(b) >= 0;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetResult(byte me, byte them) => me < them ? -1 : 1;
-
     public int CompareTo(Ulid other)
     {
-        if (this.timestamp0 != other.timestamp0)
-        {
-            return GetResult(this.timestamp0, other.timestamp0);
-        }
+        var thisSpan = AsSpan(ref this);
+        var otherSpan = AsSpan(ref other);
+        return thisSpan.SequenceCompareTo(otherSpan);
+    }
 
-        if (this.timestamp1 != other.timestamp1)
-        {
-            return GetResult(this.timestamp1, other.timestamp1);
-        }
-
-        if (this.timestamp2 != other.timestamp2)
-        {
-            return GetResult(this.timestamp2, other.timestamp2);
-        }
-
-        if (this.timestamp3 != other.timestamp3)
-        {
-            return GetResult(this.timestamp3, other.timestamp3);
-        }
-
-        if (this.timestamp4 != other.timestamp4)
-        {
-            return GetResult(this.timestamp4, other.timestamp4);
-        }
-
-        if (this.timestamp5 != other.timestamp5)
-        {
-            return GetResult(this.timestamp5, other.timestamp5);
-        }
-
-        if (this.randomness0 != other.randomness0)
-        {
-            return GetResult(this.randomness0, other.randomness0);
-        }
-
-        if (this.randomness1 != other.randomness1)
-        {
-            return GetResult(this.randomness1, other.randomness1);
-        }
-
-        if (this.randomness2 != other.randomness2)
-        {
-            return GetResult(this.randomness2, other.randomness2);
-        }
-
-        if (this.randomness3 != other.randomness3)
-        {
-            return GetResult(this.randomness3, other.randomness3);
-        }
-
-        if (this.randomness4 != other.randomness4)
-        {
-            return GetResult(this.randomness4, other.randomness4);
-        }
-
-        if (this.randomness5 != other.randomness5)
-        {
-            return GetResult(this.randomness5, other.randomness5);
-        }
-
-        if (this.randomness6 != other.randomness6)
-        {
-            return GetResult(this.randomness6, other.randomness6);
-        }
-
-        if (this.randomness7 != other.randomness7)
-        {
-            return GetResult(this.randomness7, other.randomness7);
-        }
-
-        if (this.randomness8 != other.randomness8)
-        {
-            return GetResult(this.randomness8, other.randomness8);
-        }
-
-        if (this.randomness9 != other.randomness9)
-        {
-            return GetResult(this.randomness9, other.randomness9);
-        }
-
-        return 0;
+    private static ReadOnlySpan<byte> AsSpan(ref Ulid ulid)
+    {
+        var span = MemoryMarshal.CreateReadOnlySpan(ref ulid, 1);
+        return MemoryMarshal.AsBytes(span);
     }
 
     public static explicit operator Guid(Ulid @this)
@@ -860,7 +755,9 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     public Guid ToGuid()
     {
         Span<byte> buf = stackalloc byte[16];
-        MemoryMarshal.Write(buf, ref this);
+
+        TryWriteBytes(buf);
+
         if (BitConverter.IsLittleEndian)
         {
             byte tmp;
