@@ -98,7 +98,6 @@ public class UlidTest
         var first = Ulid.NewUlid(d, r);
         var second = Ulid.NewUlid(d, r);
         first.ToString().Should().BeEquivalentTo(second.ToString());
-        // Console.WriteLine($"first={first.ToString()}, second={second.ToString()}");
     }
 
     [Fact]
@@ -156,5 +155,39 @@ public class UlidTest
         var ulid = Ulid.NewUlid();
 
         ulid.Time.Should().BeCloseTo(now, TimeSpan.FromMilliseconds(25));
+    }
+
+    [Fact]
+    public void Parse_works()
+    {
+        var date = new DateTimeOffset(2023, 7, 3, 13, 59, 31, 471, TimeSpan.Zero);
+        var random = new byte[] { 194, 35, 230, 39, 12, 152, 187, 107, 182, 121 };
+        var ulid = Ulid.Parse("01H4E0T9WFR8HYC9RCK2XPQDKS", CultureInfo.InvariantCulture);
+
+        ulid.Time.Should().Be(date);
+        ulid.Random.Should().Equal(random);
+    }
+
+    [Fact]
+    public void Base64_works()
+    {
+        var ulid = Ulid.NewUlid();
+        var base64 = ulid.ToBase64();
+        var bytes = Convert.FromBase64String(base64);
+        var ulid2 = new Ulid(bytes);
+
+        ulid2.Should().Be(ulid);
+    }
+
+    [Fact]
+    public void String_comparison_works()
+    {
+        // a < b < c
+        var a = Ulid.NewUlid(new DateTimeOffset(2023, 1, 1, 0, 0, 1, TimeSpan.Zero));
+        var b = Ulid.NewUlid(new DateTimeOffset(2023, 1, 1, 0, 0, 2, TimeSpan.Zero));
+        var c = Ulid.NewUlid(new DateTimeOffset(2023, 1, 1, 0, 0, 3, TimeSpan.Zero));
+
+        var strings = new[] { a.ToString(), b.ToString(), c.ToString(), };
+        strings.Should().BeInAscendingOrder(x => x);
     }
 }
