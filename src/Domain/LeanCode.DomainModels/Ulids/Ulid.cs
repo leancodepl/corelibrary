@@ -361,19 +361,9 @@ public readonly record struct Ulid
         MemoryMarshal.Write(buf, ref guid);
         if (BitConverter.IsLittleEndian)
         {
-            byte tmp;
-            tmp = buf[0];
-            buf[0] = buf[3];
-            buf[3] = tmp;
-            tmp = buf[1];
-            buf[1] = buf[2];
-            buf[2] = tmp;
-            tmp = buf[4];
-            buf[4] = buf[5];
-            buf[5] = tmp;
-            tmp = buf[6];
-            buf[6] = buf[7];
-            buf[7] = tmp;
+            buf[0..4].Reverse();
+            buf[4..6].Reverse();
+            buf[6..8].Reverse();
         }
         this = MemoryMarshal.Read<Ulid>(buf);
     }
@@ -753,19 +743,9 @@ public readonly record struct Ulid
 
         if (BitConverter.IsLittleEndian)
         {
-            byte tmp;
-            tmp = buf[0];
-            buf[0] = buf[3];
-            buf[3] = tmp;
-            tmp = buf[1];
-            buf[1] = buf[2];
-            buf[2] = tmp;
-            tmp = buf[4];
-            buf[4] = buf[5];
-            buf[5] = tmp;
-            tmp = buf[6];
-            buf[6] = buf[7];
-            buf[7] = tmp;
+            buf[0..4].Reverse();
+            buf[4..6].Reverse();
+            buf[6..8].Reverse();
         }
         return MemoryMarshal.Read<Guid>(buf);
     }
