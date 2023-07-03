@@ -42,11 +42,15 @@ namespace LeanCode.DomainModels.Ulids;
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>
+public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>, IUtf8SpanFormattable
 {
+    public const int BytesLength = 26;
+
     // https://en.wikipedia.org/wiki/Base32
     private static readonly ImmutableArray<char> Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToImmutableArray();
-    private static readonly ImmutableArray<byte> Base32Bytes = Encoding.UTF8.GetBytes(Base32Text.ToArray()).ToImmutableArray();
+    private static readonly ImmutableArray<byte> Base32Bytes = Encoding.UTF8
+        .GetBytes(Base32Text.ToArray())
+        .ToImmutableArray();
 
     private static readonly ImmutableArray<byte> CharToBase32 = new byte[]
     {
@@ -413,7 +417,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public static Ulid Parse(ReadOnlySpan<char> base32)
     {
-        if (base32.Length != 26)
+        if (base32.Length != BytesLength)
         {
             throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         }
@@ -439,7 +443,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     [SuppressMessage("?", "CA1031", Justification = "Method is an exception boundary")]
     public static bool TryParse(ReadOnlySpan<char> base32, out Ulid ulid)
     {
-        if (base32.Length != 26)
+        if (base32.Length != BytesLength)
         {
             ulid = default(Ulid);
             return false;
@@ -460,7 +464,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     [SuppressMessage("?", "CA1031", Justification = "Method is an exception boundary")]
     public static bool TryParse(ReadOnlySpan<byte> base32, out Ulid ulid)
     {
-        if (base32.Length != 26)
+        if (base32.Length != BytesLength)
         {
             ulid = default(Ulid);
             return false;
@@ -492,7 +496,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     private static Ulid ParseCore(ReadOnlySpan<byte> base32)
     {
-        if (base32.Length != 26)
+        if (base32.Length != BytesLength)
         {
             throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         }
@@ -587,91 +591,9 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         }
     }
 
-    public bool TryWriteStringify(Span<byte> span)
-    {
-        if (span.Length < 26)
-        {
-            return false;
-        }
-
-        span[25] = Base32Bytes[randomness9 & 31]; // eliminate bounds-check of span
-
-        // timestamp
-        span[0] = Base32Bytes[(timestamp0 & 224) >> 5];
-        span[1] = Base32Bytes[timestamp0 & 31];
-        span[2] = Base32Bytes[(timestamp1 & 248) >> 3];
-        span[3] = Base32Bytes[((timestamp1 & 7) << 2) | ((timestamp2 & 192) >> 6)];
-        span[4] = Base32Bytes[(timestamp2 & 62) >> 1];
-        span[5] = Base32Bytes[((timestamp2 & 1) << 4) | ((timestamp3 & 240) >> 4)];
-        span[6] = Base32Bytes[((timestamp3 & 15) << 1) | ((timestamp4 & 128) >> 7)];
-        span[7] = Base32Bytes[(timestamp4 & 124) >> 2];
-        span[8] = Base32Bytes[((timestamp4 & 3) << 3) | ((timestamp5 & 224) >> 5)];
-        span[9] = Base32Bytes[timestamp5 & 31];
-
-        // randomness
-        span[10] = Base32Bytes[(randomness0 & 248) >> 3];
-        span[11] = Base32Bytes[((randomness0 & 7) << 2) | ((randomness1 & 192) >> 6)];
-        span[12] = Base32Bytes[(randomness1 & 62) >> 1];
-        span[13] = Base32Bytes[((randomness1 & 1) << 4) | ((randomness2 & 240) >> 4)];
-        span[14] = Base32Bytes[((randomness2 & 15) << 1) | ((randomness3 & 128) >> 7)];
-        span[15] = Base32Bytes[(randomness3 & 124) >> 2];
-        span[16] = Base32Bytes[((randomness3 & 3) << 3) | ((randomness4 & 224) >> 5)];
-        span[17] = Base32Bytes[randomness4 & 31];
-        span[18] = Base32Bytes[(randomness5 & 248) >> 3];
-        span[19] = Base32Bytes[((randomness5 & 7) << 2) | ((randomness6 & 192) >> 6)];
-        span[20] = Base32Bytes[(randomness6 & 62) >> 1];
-        span[21] = Base32Bytes[((randomness6 & 1) << 4) | ((randomness7 & 240) >> 4)];
-        span[22] = Base32Bytes[((randomness7 & 15) << 1) | ((randomness8 & 128) >> 7)];
-        span[23] = Base32Bytes[(randomness8 & 124) >> 2];
-        span[24] = Base32Bytes[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
-
-        return true;
-    }
-
-    public bool TryWriteStringify(Span<char> span)
-    {
-        if (span.Length < 26)
-        {
-            return false;
-        }
-
-        span[25] = Base32Text[randomness9 & 31]; // eliminate bounds-check of span
-
-        // timestamp
-        span[0] = Base32Text[(timestamp0 & 224) >> 5];
-        span[1] = Base32Text[timestamp0 & 31];
-        span[2] = Base32Text[(timestamp1 & 248) >> 3];
-        span[3] = Base32Text[((timestamp1 & 7) << 2) | ((timestamp2 & 192) >> 6)];
-        span[4] = Base32Text[(timestamp2 & 62) >> 1];
-        span[5] = Base32Text[((timestamp2 & 1) << 4) | ((timestamp3 & 240) >> 4)];
-        span[6] = Base32Text[((timestamp3 & 15) << 1) | ((timestamp4 & 128) >> 7)];
-        span[7] = Base32Text[(timestamp4 & 124) >> 2];
-        span[8] = Base32Text[((timestamp4 & 3) << 3) | ((timestamp5 & 224) >> 5)];
-        span[9] = Base32Text[timestamp5 & 31];
-
-        // randomness
-        span[10] = Base32Text[(randomness0 & 248) >> 3];
-        span[11] = Base32Text[((randomness0 & 7) << 2) | ((randomness1 & 192) >> 6)];
-        span[12] = Base32Text[(randomness1 & 62) >> 1];
-        span[13] = Base32Text[((randomness1 & 1) << 4) | ((randomness2 & 240) >> 4)];
-        span[14] = Base32Text[((randomness2 & 15) << 1) | ((randomness3 & 128) >> 7)];
-        span[15] = Base32Text[(randomness3 & 124) >> 2];
-        span[16] = Base32Text[((randomness3 & 3) << 3) | ((randomness4 & 224) >> 5)];
-        span[17] = Base32Text[randomness4 & 31];
-        span[18] = Base32Text[(randomness5 & 248) >> 3];
-        span[19] = Base32Text[((randomness5 & 7) << 2) | ((randomness6 & 192) >> 6)];
-        span[20] = Base32Text[(randomness6 & 62) >> 1];
-        span[21] = Base32Text[((randomness6 & 1) << 4) | ((randomness7 & 240) >> 4)];
-        span[22] = Base32Text[((randomness7 & 15) << 1) | ((randomness8 & 128) >> 7)];
-        span[23] = Base32Text[(randomness8 & 124) >> 2];
-        span[24] = Base32Text[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
-
-        return true;
-    }
-
     public override string ToString()
     {
-        return string.Create(26, this, (span, ulid) => ulid.TryWriteStringify(span));
+        return string.Create(BytesLength, this, (span, ulid) => ulid.TryFormat(span, out _, "", null));
     }
 
     public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
@@ -683,16 +605,93 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
         IFormatProvider? provider
     )
     {
-        if (TryWriteStringify(destination))
-        {
-            charsWritten = 26;
-            return true;
-        }
-        else
+        if (destination.Length < BytesLength)
         {
             charsWritten = 0;
             return false;
         }
+
+        destination[25] = Base32Text[randomness9 & 31]; // eliminate bounds-check of span
+
+        // timestamp
+        destination[0] = Base32Text[(timestamp0 & 224) >> 5];
+        destination[1] = Base32Text[timestamp0 & 31];
+        destination[2] = Base32Text[(timestamp1 & 248) >> 3];
+        destination[3] = Base32Text[((timestamp1 & 7) << 2) | ((timestamp2 & 192) >> 6)];
+        destination[4] = Base32Text[(timestamp2 & 62) >> 1];
+        destination[5] = Base32Text[((timestamp2 & 1) << 4) | ((timestamp3 & 240) >> 4)];
+        destination[6] = Base32Text[((timestamp3 & 15) << 1) | ((timestamp4 & 128) >> 7)];
+        destination[7] = Base32Text[(timestamp4 & 124) >> 2];
+        destination[8] = Base32Text[((timestamp4 & 3) << 3) | ((timestamp5 & 224) >> 5)];
+        destination[9] = Base32Text[timestamp5 & 31];
+
+        // randomness
+        destination[10] = Base32Text[(randomness0 & 248) >> 3];
+        destination[11] = Base32Text[((randomness0 & 7) << 2) | ((randomness1 & 192) >> 6)];
+        destination[12] = Base32Text[(randomness1 & 62) >> 1];
+        destination[13] = Base32Text[((randomness1 & 1) << 4) | ((randomness2 & 240) >> 4)];
+        destination[14] = Base32Text[((randomness2 & 15) << 1) | ((randomness3 & 128) >> 7)];
+        destination[15] = Base32Text[(randomness3 & 124) >> 2];
+        destination[16] = Base32Text[((randomness3 & 3) << 3) | ((randomness4 & 224) >> 5)];
+        destination[17] = Base32Text[randomness4 & 31];
+        destination[18] = Base32Text[(randomness5 & 248) >> 3];
+        destination[19] = Base32Text[((randomness5 & 7) << 2) | ((randomness6 & 192) >> 6)];
+        destination[20] = Base32Text[(randomness6 & 62) >> 1];
+        destination[21] = Base32Text[((randomness6 & 1) << 4) | ((randomness7 & 240) >> 4)];
+        destination[22] = Base32Text[((randomness7 & 15) << 1) | ((randomness8 & 128) >> 7)];
+        destination[23] = Base32Text[(randomness8 & 124) >> 2];
+        destination[24] = Base32Text[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
+
+        charsWritten = BytesLength;
+        return true;
+    }
+
+    public bool TryFormat(
+        Span<byte> utf8Destination,
+        out int bytesWritten,
+        ReadOnlySpan<char> format,
+        IFormatProvider? provider
+    )
+    {
+        if (utf8Destination.Length < BytesLength)
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        utf8Destination[25] = Base32Bytes[randomness9 & 31]; // eliminate bounds-check of span
+
+        // timestamp
+        utf8Destination[0] = Base32Bytes[(timestamp0 & 224) >> 5];
+        utf8Destination[1] = Base32Bytes[timestamp0 & 31];
+        utf8Destination[2] = Base32Bytes[(timestamp1 & 248) >> 3];
+        utf8Destination[3] = Base32Bytes[((timestamp1 & 7) << 2) | ((timestamp2 & 192) >> 6)];
+        utf8Destination[4] = Base32Bytes[(timestamp2 & 62) >> 1];
+        utf8Destination[5] = Base32Bytes[((timestamp2 & 1) << 4) | ((timestamp3 & 240) >> 4)];
+        utf8Destination[6] = Base32Bytes[((timestamp3 & 15) << 1) | ((timestamp4 & 128) >> 7)];
+        utf8Destination[7] = Base32Bytes[(timestamp4 & 124) >> 2];
+        utf8Destination[8] = Base32Bytes[((timestamp4 & 3) << 3) | ((timestamp5 & 224) >> 5)];
+        utf8Destination[9] = Base32Bytes[timestamp5 & 31];
+
+        // randomness
+        utf8Destination[10] = Base32Bytes[(randomness0 & 248) >> 3];
+        utf8Destination[11] = Base32Bytes[((randomness0 & 7) << 2) | ((randomness1 & 192) >> 6)];
+        utf8Destination[12] = Base32Bytes[(randomness1 & 62) >> 1];
+        utf8Destination[13] = Base32Bytes[((randomness1 & 1) << 4) | ((randomness2 & 240) >> 4)];
+        utf8Destination[14] = Base32Bytes[((randomness2 & 15) << 1) | ((randomness3 & 128) >> 7)];
+        utf8Destination[15] = Base32Bytes[(randomness3 & 124) >> 2];
+        utf8Destination[16] = Base32Bytes[((randomness3 & 3) << 3) | ((randomness4 & 224) >> 5)];
+        utf8Destination[17] = Base32Bytes[randomness4 & 31];
+        utf8Destination[18] = Base32Bytes[(randomness5 & 248) >> 3];
+        utf8Destination[19] = Base32Bytes[((randomness5 & 7) << 2) | ((randomness6 & 192) >> 6)];
+        utf8Destination[20] = Base32Bytes[(randomness6 & 62) >> 1];
+        utf8Destination[21] = Base32Bytes[((randomness6 & 1) << 4) | ((randomness7 & 240) >> 4)];
+        utf8Destination[22] = Base32Bytes[((randomness7 & 15) << 1) | ((randomness8 & 128) >> 7)];
+        utf8Destination[23] = Base32Bytes[(randomness8 & 124) >> 2];
+        utf8Destination[24] = Base32Bytes[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
+
+        bytesWritten = BytesLength;
+        return true;
     }
 
     // Comparable/Equatable
