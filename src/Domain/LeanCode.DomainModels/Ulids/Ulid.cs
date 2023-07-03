@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+using System.Buffers.Binary;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -40,7 +41,12 @@ namespace LeanCode.DomainModels.Ulids;
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>, IUtf8SpanFormattable
+public readonly record struct Ulid
+    : IEquatable<Ulid>,
+        IComparable<Ulid>,
+        ISpanFormattable,
+        ISpanParsable<Ulid>,
+        IUtf8SpanFormattable
 {
     public const int BytesLength = 26;
 
@@ -271,22 +277,15 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
             buffer[4] = timestamp1;
             buffer[5] = timestamp0; // [6], [7] = 0
 
-            var timestampMilliseconds = Unsafe.As<byte, long>(ref MemoryMarshal.GetReference(buffer));
-            return DateTimeOffset.FromUnixTimeMilliseconds(timestampMilliseconds);
+            var ts = BinaryPrimitives.ReadInt64LittleEndian(buffer);
+            return DateTimeOffset.FromUnixTimeMilliseconds(ts);
         }
     }
 
     internal Ulid(long timestampMilliseconds, XorShift64 random)
         : this()
     {
-        // Get memory in stack and copy to ulid(Little->Big reverse order).
-        ref var firstByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
-        this.timestamp0 = Unsafe.Add(ref firstByte, 5);
-        this.timestamp1 = Unsafe.Add(ref firstByte, 4);
-        this.timestamp2 = Unsafe.Add(ref firstByte, 3);
-        this.timestamp3 = Unsafe.Add(ref firstByte, 2);
-        this.timestamp4 = Unsafe.Add(ref firstByte, 1);
-        this.timestamp5 = Unsafe.Add(ref firstByte, 0);
+        WriteTimestamp(ref this, timestampMilliseconds);
 
         // Get first byte of randomness from Ulid Struct.
         Unsafe.WriteUnaligned(ref randomness0, random.Next()); // randomness0~7(but use 0~1 only)
@@ -296,13 +295,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
     internal Ulid(long timestampMilliseconds, ReadOnlySpan<byte> randomness)
         : this()
     {
-        ref var firstByte = ref Unsafe.As<long, byte>(ref timestampMilliseconds);
-        this.timestamp0 = Unsafe.Add(ref firstByte, 5);
-        this.timestamp1 = Unsafe.Add(ref firstByte, 4);
-        this.timestamp2 = Unsafe.Add(ref firstByte, 3);
-        this.timestamp3 = Unsafe.Add(ref firstByte, 2);
-        this.timestamp4 = Unsafe.Add(ref firstByte, 1);
-        this.timestamp5 = Unsafe.Add(ref firstByte, 0);
+        WriteTimestamp(ref this, timestampMilliseconds);
 
         ref var src = ref MemoryMarshal.GetReference(randomness); // length = 10
         randomness0 = randomness[0];
@@ -383,6 +376,19 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
             buf[7] = tmp;
         }
         this = MemoryMarshal.Read<Ulid>(buf);
+    }
+
+    private static void WriteTimestamp(ref Ulid ulid, long timestampMilliseconds)
+    {
+        if (BitConverter.IsLittleEndian)
+        {
+            timestampMilliseconds = BinaryPrimitives.ReverseEndianness(timestampMilliseconds);
+        }
+
+        var sourceSpan = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref timestampMilliseconds, 1))[2..]; // Ignore two oldest bytes
+        var destSpan = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref ulid, 1));
+
+        sourceSpan.CopyTo(destSpan);
     }
 
     // Factory
@@ -689,7 +695,7 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public override int GetHashCode()
     {
-        var span = AsSpan(ref this);
+        var span = AsSpan(in this);
         var ints = MemoryMarshal.Cast<byte, int>(span);
 
         // Simply XOR, same algorithm of Guid.GetHashCode
@@ -698,25 +704,10 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public bool Equals(Ulid other)
     {
-        var thisSpan = AsSpan(ref this);
-        var otherSpan = AsSpan(ref other);
+        var thisSpan = AsSpan(in this);
+        var otherSpan = AsSpan(in other);
 
         return thisSpan.SequenceEqual(otherSpan);
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is Ulid other && this.Equals(other);
-    }
-
-    public static bool operator ==(Ulid a, Ulid b)
-    {
-        return a.Equals(b);
-    }
-
-    public static bool operator !=(Ulid a, Ulid b)
-    {
-        return !a.Equals(b);
     }
 
     public static bool operator <(Ulid a, Ulid b) => a.CompareTo(b) < 0;
@@ -729,14 +720,16 @@ public struct Ulid : IEquatable<Ulid>, IComparable<Ulid>, ISpanFormattable, ISpa
 
     public int CompareTo(Ulid other)
     {
-        var thisSpan = AsSpan(ref this);
-        var otherSpan = AsSpan(ref other);
+        var thisSpan = AsSpan(in this);
+        var otherSpan = AsSpan(in other);
         return thisSpan.SequenceCompareTo(otherSpan);
     }
 
-    private static ReadOnlySpan<byte> AsSpan(ref Ulid ulid)
+    private static ReadOnlySpan<byte> AsSpan(in Ulid ulid)
     {
-        var span = MemoryMarshal.CreateReadOnlySpan(ref ulid, 1);
+        ref var refUlid = ref Unsafe.AsRef(in ulid);
+
+        var span = MemoryMarshal.CreateReadOnlySpan(ref refUlid, 1);
         return MemoryMarshal.AsBytes(span);
     }
 

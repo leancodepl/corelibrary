@@ -148,4 +148,13 @@ public class UlidTest
 
         u1.Should().Be(u2);
     }
+
+    [Fact]
+    public void Generated_Ulids_are_close_to_now()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var ulid = Ulid.NewUlid();
+
+        ulid.Time.Should().BeCloseTo(now, TimeSpan.FromMilliseconds(25));
+    }
 }
