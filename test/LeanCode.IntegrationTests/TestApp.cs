@@ -1,17 +1,10 @@
 using System.Diagnostics;
 using System.Reflection;
-using FluentAssertions;
-using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Logging;
 using LeanCode.Startup.MicrosoftDI;
-using MassTransit.Middleware.Outbox;
-using MassTransit.Testing.Implementations;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog.Events;
 
 namespace LeanCode.IntegrationTests;
 
