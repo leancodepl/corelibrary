@@ -82,7 +82,7 @@ namespace LeanCode.DomainModels.Ulids
 
         public override void Write(Utf8JsonWriter writer, Ulid value, JsonSerializerOptions options)
         {
-            Span<byte> buf = stackalloc byte[Ulid.BytesLength];
+            Span<byte> buf = stackalloc byte[Ulid.LengthInTextElements];
             value.TryFormat(buf, out _, "", null);
             writer.WriteStringValue(buf);
         }

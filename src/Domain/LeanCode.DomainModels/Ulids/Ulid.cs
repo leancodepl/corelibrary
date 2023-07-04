@@ -48,7 +48,7 @@ public readonly record struct Ulid
         ISpanParsable<Ulid>,
         IUtf8SpanFormattable
 {
-    public const int BytesLength = 26;
+    public const int LengthInTextElements = 26;
 
     // https://en.wikipedia.org/wiki/Base32
     private static readonly ImmutableArray<char> Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToImmutableArray();
@@ -361,6 +361,8 @@ public readonly record struct Ulid
         MemoryMarshal.Write(buf, ref guid);
         if (BitConverter.IsLittleEndian)
         {
+            // Align with Guid layout - Int32, Int16, Int16, 8x Int8
+
             buf[0..4].Reverse();
             buf[4..6].Reverse();
             buf[6..8].Reverse();
@@ -411,7 +413,7 @@ public readonly record struct Ulid
 
     public static Ulid Parse(ReadOnlySpan<char> base32)
     {
-        if (base32.Length != BytesLength)
+        if (base32.Length != LengthInTextElements)
         {
             throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         }
@@ -437,7 +439,7 @@ public readonly record struct Ulid
     [SuppressMessage("?", "CA1031", Justification = "Method is an exception boundary")]
     public static bool TryParse(ReadOnlySpan<char> base32, out Ulid ulid)
     {
-        if (base32.Length != BytesLength)
+        if (base32.Length != LengthInTextElements)
         {
             ulid = default(Ulid);
             return false;
@@ -458,7 +460,7 @@ public readonly record struct Ulid
     [SuppressMessage("?", "CA1031", Justification = "Method is an exception boundary")]
     public static bool TryParse(ReadOnlySpan<byte> base32, out Ulid ulid)
     {
-        if (base32.Length != BytesLength)
+        if (base32.Length != LengthInTextElements)
         {
             ulid = default(Ulid);
             return false;
@@ -490,7 +492,7 @@ public readonly record struct Ulid
 
     private static Ulid ParseCore(ReadOnlySpan<byte> base32)
     {
-        if (base32.Length != BytesLength)
+        if (base32.Length != LengthInTextElements)
         {
             throw new ArgumentException("invalid base32 length, length:" + base32.Length);
         }
@@ -580,7 +582,7 @@ public readonly record struct Ulid
 
     public override string ToString()
     {
-        return string.Create(BytesLength, this, (span, ulid) => ulid.TryFormat(span, out _, "", null));
+        return string.Create(LengthInTextElements, this, (span, ulid) => ulid.TryFormat(span, out _, "", null));
     }
 
     public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
@@ -592,7 +594,7 @@ public readonly record struct Ulid
         IFormatProvider? provider
     )
     {
-        if (destination.Length < BytesLength)
+        if (destination.Length < LengthInTextElements)
         {
             charsWritten = 0;
             return false;
@@ -629,7 +631,7 @@ public readonly record struct Ulid
         destination[23] = Base32Text[(randomness8 & 124) >> 2];
         destination[24] = Base32Text[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
 
-        charsWritten = BytesLength;
+        charsWritten = LengthInTextElements;
         return true;
     }
 
@@ -640,7 +642,7 @@ public readonly record struct Ulid
         IFormatProvider? provider
     )
     {
-        if (utf8Destination.Length < BytesLength)
+        if (utf8Destination.Length < LengthInTextElements)
         {
             bytesWritten = 0;
             return false;
@@ -677,7 +679,7 @@ public readonly record struct Ulid
         utf8Destination[23] = Base32Bytes[(randomness8 & 124) >> 2];
         utf8Destination[24] = Base32Bytes[((randomness8 & 3) << 3) | ((randomness9 & 224) >> 5)];
 
-        bytesWritten = BytesLength;
+        bytesWritten = LengthInTextElements;
         return true;
     }
 
@@ -715,6 +717,7 @@ public readonly record struct Ulid
         return thisSpan.SequenceCompareTo(otherSpan);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ReadOnlySpan<byte> AsSpan(in Ulid ulid)
     {
         ref var refUlid = ref Unsafe.AsRef(in ulid);
@@ -743,6 +746,7 @@ public readonly record struct Ulid
 
         if (BitConverter.IsLittleEndian)
         {
+            // Align with Guid layout - Int32, Int16, Int16, 8x Int8
             buf[0..4].Reverse();
             buf[4..6].Reverse();
             buf[6..8].Reverse();
