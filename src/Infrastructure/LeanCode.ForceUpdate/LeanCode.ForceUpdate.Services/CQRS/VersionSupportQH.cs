@@ -39,18 +39,14 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
                 {
                     CurrentlySupportedVersion = iOSConfiguration.CurrentlySupportedVersion.ToString(),
                     MinimumRequiredVersion = iOSConfiguration.MinimumRequiredVersion.ToString(),
-                    Result = (VersionSupportResultDTO)(
-                        await versionHandler.CheckVersionAsync(version, (Platform)query.Platform, context)
-                    ),
+                    Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
                 },
             PlatformDTO.Android
                 => new VersionSupportDTO
                 {
                     CurrentlySupportedVersion = androidConfiguration.CurrentlySupportedVersion.ToString(),
                     MinimumRequiredVersion = androidConfiguration.MinimumRequiredVersion.ToString(),
-                    Result = (VersionSupportResultDTO)(
-                        await versionHandler.CheckVersionAsync(version, (Platform)query.Platform, context)
-                    ),
+                    Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
                 },
             _ => throw new InvalidOperationException($"Invalid platform: {query.Platform}."),
         };

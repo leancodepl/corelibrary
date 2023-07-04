@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using LeanCode.ForceUpdate.Contracts;
 
 namespace LeanCode.ForceUpdate.Services;
 
@@ -13,40 +14,31 @@ public class VersionHandler
         this.iOSConfiguration = iOSConfiguration;
     }
 
-    public virtual Task<VersionSupportResult> CheckVersionAsync(Version version, Platform platform, HttpContext context)
+    public virtual ValueTask<VersionSupportResultDTO> CheckVersionAsync(
+        Version version,
+        PlatformDTO platform,
+        HttpContext context
+    )
     {
         var (minimumRequiredVersion, currentlySupportedVersion) = platform switch
         {
-            Platform.Android
+            PlatformDTO.Android
                 => (androidConfiguration.MinimumRequiredVersion, androidConfiguration.CurrentlySupportedVersion),
-            Platform.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
+            PlatformDTO.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
             _ => throw new InvalidOperationException($"Invalid platform: {platform}."),
         };
 
         if (version < minimumRequiredVersion)
         {
-            return Task.FromResult(VersionSupportResult.UpdateRequired);
+            return ValueTask.FromResult(VersionSupportResultDTO.UpdateRequired);
         }
         else if (version >= minimumRequiredVersion && version < currentlySupportedVersion)
         {
-            return Task.FromResult(VersionSupportResult.UpdateSuggested);
+            return ValueTask.FromResult(VersionSupportResultDTO.UpdateSuggested);
         }
         else
         {
-            return Task.FromResult(VersionSupportResult.UpToDate);
+            return ValueTask.FromResult(VersionSupportResultDTO.UpToDate);
         }
     }
-}
-
-public enum Platform
-{
-    Android,
-    IOS,
-}
-
-public enum VersionSupportResult
-{
-    UpdateRequired,
-    UpdateSuggested,
-    UpToDate,
 }
