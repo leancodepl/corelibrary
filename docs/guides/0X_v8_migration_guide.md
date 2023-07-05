@@ -8,7 +8,7 @@ Autofac based `IAppModule`s are still available in `LeanCode.Components.Autofac`
 Instead services are registered via extension methods on `Microsoft.Extension.DependencyInjection.IServiceCollection`.
 Typically an `XYZModule` class was replaced with `AddXYZ()` extension method (e.g. `AddSmsSender()` replaced `SmsSenderModule`)
 
-Additionally, modules requiring configuration now require it passed explicitly when registering services. E.g. previously adding `SmsSenderModule` required the client to additionally register `SmsApiConfiguration` class. Now, the configuration class is required when calling `AddSmsSender()` method.
+Additionally, modules requiring configuration now require passing it explicitly when registering services. E.g. previously adding `SmsSenderModule` required the client to additionally register `SmsApiConfiguration` class. Now, the configuration class is required when calling `AddSmsSender()` method.
 
 ## Startup changes
 
@@ -25,7 +25,7 @@ Helper methods for setting up logging and Azure Key Vault configuration were mov
 
 ### Deeper ASP.NET Core integration
 
-Our custom pipelines were removed, now all the CQRS execution is tied to ASP.NET Core request handling. All the pipeline elements(e.g. security/validation were rewritten to be ASP.NET middlewares). In-proc `ICommandExecutor`/`IQueryExecutor`/`IOperationExecutor` interfaces were removed, the only way to invoke CQRS is via HTTP.
+Our custom pipelines were removed, now all the CQRS execution is tied to the ASP.NET Core request handling. All the pipeline elements(e.g. security/validation were rewritten to be ASP.NET middlewares). In-proc `ICommandExecutor`/`IQueryExecutor`/`IOperationExecutor` interfaces were removed, the only way to invoke CQRS is via HTTP.
 
 Previous projects: `LeanCode.Pipelines`, `LeanCode.Pipelines.Autofac`, `LeanCode.CQRS.Default` were replaced by `LeanCode.CQRS.AspNetCore`.
 
@@ -50,7 +50,7 @@ public interface IQueryHandler<in TQuery, TResult>
 public interface IOperationHandler<in TOperation, TResult>
     where TOperation : IOperation<TResult>
 {
-    public Task<TResult> ExecuteAsync(HttpContext context, TOperation operation);
+    Task<TResult> ExecuteAsync(HttpContext context, TOperation operation);
 }
 ```
 
@@ -74,7 +74,6 @@ public override void ConfigureServices(IServiceCollection services)
 protected override void ConfigureApp(IApplicationBuilder app)
 {
     app.UseRouting();
-    app.UseAuthentication();
     app.UseEndpoints(
         e =>
             e.MapRemoteCqrs(
@@ -111,9 +110,9 @@ public Task(HttpContext httpContext)
 }
 ```
 
-\_NOTE: Since CQRS related middlewares are plain ASP.NET middleware, it's possible to register them outside of `MapRemoteCQRS` method. This will throw a runtime exception since `GetCQRSEndpoint()` and `GetCQRSRequestPayload()` require CQRS metadata to be present in `HttpContext` (see the chart below)
+**NOTE**: Since CQRS related middlewares are plain ASP.NET middleware, it's possible to register them outside of `MapRemoteCQRS` method. This will throw a runtime exception since `GetCQRSEndpoint()` and `GetCQRSRequestPayload()` require CQRS metadata to be present in `HttpContext` (see the chart below)
 
-#### CQRS Request handling
+### CQRS Request handling
 
 ```mermaid
 sequenceDiagram
@@ -173,7 +172,7 @@ public class CreateDishCV : ContextualValidator<CreateDish>
 Example new approach:
 
 ```csharp
-public class CreateDishCV : ContextualValidator<CreateDish>
+public class CreateDishCV : AbstractValidator<CreateDish>
 {
     public CreateDishCV()
     {
