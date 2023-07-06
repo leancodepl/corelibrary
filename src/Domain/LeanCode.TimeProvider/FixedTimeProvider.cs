@@ -1,7 +1,4 @@
-using System;
-using System.Threading;
-
-namespace LeanCode.Time;
+namespace LeanCode.TimeProvider;
 
 public sealed class FixedTimeProvider : ITimeProvider
 {
@@ -40,7 +37,7 @@ public sealed class FixedTimeProvider : ITimeProvider
             );
         }
 
-        TimeProvider.Use(SharedInstance);
+        Time.Use(SharedInstance);
 
         SharedInstance.savedTime.Value = new DateTimeOffset(time, TimeSpan.Zero);
     }
@@ -50,7 +47,7 @@ public sealed class FixedTimeProvider : ITimeProvider
     /// </summary>
     public static void SetTo(DateTimeOffset time)
     {
-        TimeProvider.Use(SharedInstance);
+        Time.Use(SharedInstance);
 
         SharedInstance.savedTime.Value = time;
     }

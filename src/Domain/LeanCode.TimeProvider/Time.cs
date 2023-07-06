@@ -1,8 +1,6 @@
-using System;
+namespace LeanCode.TimeProvider;
 
-namespace LeanCode.Time;
-
-public static class TimeProvider
+public static class Time
 {
     private static ITimeProvider timeProvider = new UtcTimeProvider();
 

@@ -1,9 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using LeanCode.Test.Helpers;
 using Xunit;
 
-namespace LeanCode.Time.Tests;
+namespace LeanCode.TimeProvider.Tests;
 
 public abstract class FixedTimeProviderTestsBase
 {
@@ -26,7 +24,7 @@ public abstract class FixedTimeProviderTestsBase
 
         for (var i = 0; i < Iterations; i++)
         {
-            Assert.Equal(expectedTime, TimeProvider.Now);
+            Assert.Equal(expectedTime, Time.Now);
         }
     }
 
@@ -37,7 +35,7 @@ public abstract class FixedTimeProviderTestsBase
 
         for (var i = 0; i < DelayIterations; i++)
         {
-            Assert.Equal(expectedTime, TimeProvider.Now);
+            Assert.Equal(expectedTime, Time.Now);
             await Task.Delay(Delay);
         }
     }
@@ -49,7 +47,7 @@ public abstract class FixedTimeProviderTestsBase
 
         var expectedTimeWithOffset = new DateTimeOffset(expectedTime, TimeSpan.Zero);
 
-        Assert.Equal(expectedTimeWithOffset, TimeProvider.NowWithOffset);
+        Assert.Equal(expectedTimeWithOffset, Time.NowWithOffset);
     }
 }
 
@@ -90,13 +88,13 @@ public class FixedTimeProviderTests
         var fixedTime = new DateTime(2023, 1, 14, 12, 1, 15);
         FixedTimeProvider.SetTo(fixedTime);
 
-        Assert.Equal(fixedTime, TimeProvider.Now);
+        Assert.Equal(fixedTime, Time.Now);
     }
 
     [Fact]
     public void Check_if_date_is_correct_if_you_have_not_set_value()
     {
-        var fixedTime = TimeProvider.Now;
+        var fixedTime = Time.Now;
         var expectedTime = DateTime.UtcNow;
 
         var differenceInSeconds = (fixedTime - expectedTime).TotalSeconds;
@@ -110,13 +108,13 @@ public class FixedTimeProviderTests
         var fixedTime = new DateTimeOffset(2023, 1, 14, 12, 1, 15, TimeSpan.FromHours(2));
         FixedTimeProvider.SetTo(fixedTime);
 
-        Assert.Equal(fixedTime, TimeProvider.NowWithOffset);
+        Assert.Equal(fixedTime, Time.NowWithOffset);
     }
 
     [Fact]
     public void Check_if_date_with_offset_is_correct_if_you_have_not_set_value()
     {
-        var fixedTime = TimeProvider.NowWithOffset;
+        var fixedTime = Time.NowWithOffset;
         var expectedTime = DateTimeOffset.UtcNow;
 
         var differenceInSeconds = (fixedTime - expectedTime).TotalSeconds;
