@@ -1,6 +1,6 @@
 using Dapper;
 using LeanCode.Dapper;
-using LeanCode.Time;
+using LeanCode.TimeProvider;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -80,7 +80,7 @@ public sealed class MsSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
                     newId = Guid.NewGuid(),
                     userId,
                     newToken,
-                    now = Time.TimeProvider.Now
+                    now = Time.Now
                 },
                 cancellationToken: cancellationToken
             );

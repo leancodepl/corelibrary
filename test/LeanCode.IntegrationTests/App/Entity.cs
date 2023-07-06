@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using LeanCode.DomainModels.Model;
+using LeanCode.TimeProvider;
 
 namespace LeanCode.IntegrationTests.App;
 
@@ -29,7 +30,7 @@ public class EntityAdded : IDomainEvent
     public EntityAdded(Entity entity)
     {
         Id = Guid.NewGuid();
-        DateOccurred = Time.TimeProvider.Now;
+        DateOccurred = Time.Now;
 
         EntityId = entity.Id;
         Value = entity.Value;
