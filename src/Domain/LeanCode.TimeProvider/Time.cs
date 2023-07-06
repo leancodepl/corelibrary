@@ -2,10 +2,8 @@ namespace LeanCode.TimeProvider;
 
 public static class Time
 {
-    private static ITimeProvider timeProvider = new UtcTimeProvider();
+    public static System.TimeProvider Provider { get; set; } = UtcSystemTimeProvider.Instance;
 
-    public static DateTime Now => timeProvider.Now;
-    public static DateTimeOffset NowWithOffset => timeProvider.NowWithOffset;
-
-    public static void Use(ITimeProvider newProvider) => timeProvider = newProvider;
+    public static DateTime Now => NowWithOffset.DateTime;
+    public static DateTimeOffset NowWithOffset => Provider.GetLocalNow();
 }
