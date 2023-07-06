@@ -287,6 +287,60 @@ class MyDbContext: DbContext
 }
 ```
 
+## Integration tests
+
+Callers may configure `JsonSerializerOptions` and `HttpClient` when creating `HttpQueriesExecutor`/`HttpCommandsExecutor`/`HttpOperationsExecutor`
+Integration tests no longer assume any authentication method, it's up to the project to decide (see options below).
+
+### Mocking authorization with TestAuthenticationHandler
+
+For simple scenarios it's possible to inject arbitrary `ClaimsPrincipal` into a HTTP request.
+
+```csharp
+
+class TestApp : LeanCodeTestFactory<Startup>
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        base.ConfigureWebHost(builder);
+        builder.ConfigureServices(services =>
+        {
+            services.AddAuthentication().AddTestAuthenticationHandler();
+        });
+    }
+}
+
+class Tests
+{
+    public Tests()
+    {
+        testApp = new TestApp();
+    }
+
+    [Fact]
+    public async Task TestMethod()
+    {
+        var principal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new Claim[] { new("sub", "<user-id>"), new("role", "admin") },
+                TestAuthenticationHandler.SchemeName,
+                "sub",
+                "role"
+            )
+        );
+
+        var queries = testApp.CreateQueryExecutor(httpClient => httpClient.UseTestAuthorization(principal));
+
+        // run tests
+    }
+}
+```
+
+### Mocking Kratos authorization
+
+For applications using Kratos for authorization it might be better to keep Kratos authorization schemes and mock the whole Kratos API instead.
+TODO: how?
+
 ## Misc changes
 
 ...
