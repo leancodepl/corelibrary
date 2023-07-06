@@ -289,7 +289,11 @@ class MyDbContext: DbContext
 
 ## Integration tests
 
-Callers may configure `JsonSerializerOptions` and `HttpClient` when creating `HttpQueriesExecutor`/`HttpCommandsExecutor`/`HttpOperationsExecutor`
+### CQRS clients adjustments
+
+`WebApplicationFactory` now allows to override `JsonSerializerOptions` used by `HttpQueriesExecutor`/`HttpCommandsExecutor`/`HttpOperationsExecutor`. The default options are the same as the default server ones.
+Additionally clients can configure `HttpClient` when creating executors.
+
 Integration tests no longer assume any authentication method, it's up to the project to decide (see options below).
 
 ### Mocking authorization with TestAuthenticationHandler
@@ -338,8 +342,57 @@ class Tests
 
 ### Mocking Kratos authorization
 
-For applications using Kratos for authorization it might be better to keep Kratos authorization schemes and mock the whole Kratos API instead.
-TODO: how?
+For applications using Kratos for authorization it might be better to keep Kratos authorization schemes and mock Kratos API instead. `KratosAuthenticationHandler` depends on `IFrontendApi` to verify user sessions.
+Since this interface is *very* large, you may consider using `NSubititute` for it's implementation.
+
+```csharp
+class TestApp : LeanCodeTestFactory<Startup>
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        base.ConfigureWebHost(builder);
+        builder.ConfigureServices(services =>
+        {
+            services.AddSingleton(MockKratosFrontendApi());
+        });
+    }
+
+    private IFrontendApi MockKratosFrontendApi()
+    {
+        var frontendApi = Substitute.For<IFrontendApi>();
+        frontendApi.ToSessionAsync(default, default, default)
+            .ReturnsForAnyArgs(call =>
+            {
+                var sessionToken = call.ArgAt<string>(0);
+                var cookie = call.ArgAt<string>(1);
+
+                // map token/cookie to session
+                return new KratosSession();
+            });
+    }
+}
+
+class Tests
+{
+    public Tests()
+    {
+        testApp = new TestApp();
+    }
+
+    [Fact]
+    public async Task TestMethod()
+    {
+        var queries = app.CreateQueriesExecutor(httpClient => httpClient.DefaultRequestHeaders.Add("X-Session-Token", "test-user-1"));
+
+        // run tests
+    }
+}
+```
+
+Similarly, you can override the rest of Kratos api clients, if your application is using them:
+- `ICourierApi`
+- `IIdentityApi`
+- `IMetadataApi`
 
 ## Misc changes
 
