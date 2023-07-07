@@ -24,10 +24,14 @@ public class ForceUpdateTests
         services
             .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
             .AddForceUpdate(
-                new Version(AndroidMinimumRequiredVersion),
-                new Version(AndroidCurrentlySupportedVersion),
-                new Version(IOSMinimumRequiredVersion),
-                new Version(IOSCurrentlySupportedVersion)
+                new AndroidVersionsConfiguration(
+                    new Version(AndroidMinimumRequiredVersion),
+                    new Version(AndroidCurrentlySupportedVersion)
+                ),
+                new IOSVersionsConfiguration(
+                    new Version(IOSMinimumRequiredVersion),
+                    new Version(IOSCurrentlySupportedVersion)
+                )
             );
 
         this.serviceProvider = services.BuildServiceProvider();

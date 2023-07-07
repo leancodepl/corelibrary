@@ -11,21 +11,15 @@ public static class CQRSServicesBuilderCQRSExtensions
 {
     public static CQRSServicesBuilder AddForceUpdate(
         this CQRSServicesBuilder cqrsServicesBuilder,
-        Version androidMinimumRequiredVersion,
-        Version androidCurrentlySupportedVersion,
-        Version iosMinimumRequiredVersion,
-        Version iosCurrentlySupportedVersion
+        AndroidVersionsConfiguration androidConfiguration,
+        IOSVersionsConfiguration iOSConfiguration
     )
     {
         cqrsServicesBuilder.Services.AddTransient<VersionHandler>();
 
-        cqrsServicesBuilder.Services.AddSingleton(
-            new AndroidVersionsConfiguration(androidMinimumRequiredVersion, androidCurrentlySupportedVersion)
-        );
+        cqrsServicesBuilder.Services.AddSingleton(androidConfiguration);
 
-        cqrsServicesBuilder.Services.AddSingleton(
-            new IOSVersionsConfiguration(iosMinimumRequiredVersion, iosCurrentlySupportedVersion)
-        );
+        cqrsServicesBuilder.Services.AddSingleton(iOSConfiguration);
 
         return cqrsServicesBuilder.AddCQRSObjects(
             TypesCatalog.Of<VersionSupport>(),

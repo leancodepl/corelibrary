@@ -32,23 +32,24 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
             return null;
         }
 
-        return query.Platform switch
+        var (minimum, current) = GetVersions(query.Platform);
+
+        return new VersionSupportDTO
         {
-            PlatformDTO.IOS
-                => new VersionSupportDTO
-                {
-                    CurrentlySupportedVersion = iOSConfiguration.CurrentlySupportedVersion.ToString(),
-                    MinimumRequiredVersion = iOSConfiguration.MinimumRequiredVersion.ToString(),
-                    Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
-                },
+            CurrentlySupportedVersion = current.ToString(),
+            MinimumRequiredVersion = minimum.ToString(),
+            Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
+        };
+    }
+
+    private (Version Minimum, Version Current) GetVersions(PlatformDTO platform)
+    {
+        return platform switch
+        {
             PlatformDTO.Android
-                => new VersionSupportDTO
-                {
-                    CurrentlySupportedVersion = androidConfiguration.CurrentlySupportedVersion.ToString(),
-                    MinimumRequiredVersion = androidConfiguration.MinimumRequiredVersion.ToString(),
-                    Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
-                },
-            _ => throw new InvalidOperationException($"Invalid platform: {query.Platform}."),
+                => (androidConfiguration.MinimumRequiredVersion, androidConfiguration.CurrentlySupportedVersion),
+            PlatformDTO.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
+            _ => throw new InvalidOperationException($"Invalid platform: {platform}."),
         };
     }
 }
