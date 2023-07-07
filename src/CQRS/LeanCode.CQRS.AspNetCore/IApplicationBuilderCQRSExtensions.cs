@@ -30,4 +30,9 @@ public static class IApplicationBuilderCQRSExtensions
     {
         return builder.UseMiddleware<CQRSTracingMiddleware>();
     }
+
+    public static IApplicationBuilder TranslateExceptions(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<CQRSExceptionTranslationMiddleware>();
+    }
 }
