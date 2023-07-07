@@ -1,4 +1,5 @@
 namespace LeanCode.CQRS.Execution;
+
 /// <summary>
 /// Use to propagate arbitrary <see cref="LeanCode.Contracts.Validation.ValidationError"/> from the command handler.
 /// Use as a last resort - when validation and execution are so coupled that separating it is too complicated.

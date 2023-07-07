@@ -16,7 +16,7 @@ using Xunit;
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
+public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private readonly IHost host;
     private readonly TestServer server;
@@ -119,13 +119,7 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
                 typeof(IgnoreType)
             );
 
-            var endpointMetadata = new CQRSEndpointMetadata(
-                cqrsMetadata,
-                (_, __) => Task.FromResult<object?>(CommandResult.Success)
-            );
-            var endpoint = new Endpoint(null, new EndpointMetadataCollection(endpointMetadata), null);
-
-            ctx.SetEndpoint(endpoint);
+            ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(cqrsMetadata));
             ctx.SetCQRSRequestPayload(command);
         });
     }

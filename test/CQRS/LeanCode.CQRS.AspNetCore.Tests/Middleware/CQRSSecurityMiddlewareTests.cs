@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
 [SuppressMessage(category: "?", "CA1040", Justification = "Empty marker interfaces")]
-public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
+public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 {
     private const string SingleAuthorizerCustomData = nameof(SingleAuthorizerCustomData);
 
@@ -132,19 +132,15 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
             typeof(IgnoreType)
         );
 
-        var endpointMetadata = new CQRSEndpointMetadata(cqrsMetadata, (_, __) => Task.FromResult<object?>(null));
-
         return server.SendAsync(ctx =>
         {
-            var endpoint = new Endpoint(null, new EndpointMetadataCollection(endpointMetadata), "Test Endpoint");
-
             if (user is not null)
             {
                 ctx.User = user;
             }
 
             ctx.Request.Method = "POST";
-            ctx.SetEndpoint(endpoint);
+            ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(cqrsMetadata));
             ctx.SetCQRSRequestPayload(payload);
         });
     }
