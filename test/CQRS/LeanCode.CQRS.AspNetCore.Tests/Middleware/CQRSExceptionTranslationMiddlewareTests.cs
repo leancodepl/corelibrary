@@ -10,7 +10,7 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
-public class CQRSExceptionTranslationMiddlewareTests : IDisposable, IAsyncLifetime
+public sealed class CQRSExceptionTranslationMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private readonly IHost host;
     private readonly TestServer server;
@@ -115,7 +115,7 @@ public class CQRSExceptionTranslationMiddlewareTests : IDisposable, IAsyncLifeti
         host.Dispose();
     }
 
-    private class Command : ICommand { }
+    private sealed class Command : ICommand { }
 
-    private class Ignore { }
+    private sealed class Ignore { }
 }

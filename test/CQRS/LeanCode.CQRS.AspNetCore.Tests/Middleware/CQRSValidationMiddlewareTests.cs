@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
@@ -16,7 +17,7 @@ using Xunit;
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
+public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private readonly IHost host;
     private readonly TestServer server;

@@ -18,7 +18,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
 [SuppressMessage(category: "?", "CA1040", Justification = "Empty marker interfaces")]
-public class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
+public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 {
     private const string SingleAuthorizerCustomData = nameof(SingleAuthorizerCustomData);
 

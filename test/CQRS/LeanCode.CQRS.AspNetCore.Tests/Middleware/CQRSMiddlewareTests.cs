@@ -16,7 +16,7 @@ using Xunit;
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
+public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 {
     private static readonly CQRSObjectMetadata QueryMetadata =
         new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
