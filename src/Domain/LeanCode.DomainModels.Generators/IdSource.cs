@@ -55,6 +55,7 @@ namespace {{data.Namespace}}
     using global::System.Diagnostics.CodeAnalysis;
     using global::System.Diagnostics;
     using global::System.Linq.Expressions;
+    using global::System.Text;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
     #pragma warning restore CS8019
@@ -129,7 +130,6 @@ namespace {{data.Namespace}}
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
-        public override string ToString() => Value;
         public static implicit operator string({{data.TypeName}} id) => id.Value;
 
         public static bool operator <({{data.TypeName}} a, {{data.TypeName}} b) => a.CompareTo(b) < 0;
@@ -139,6 +139,26 @@ namespace {{data.Namespace}}
 
         static Expression<Func<string, {{data.TypeName}}>> IPrefixedTypedId<{{data.TypeName}}>.FromDatabase { get; } = d => Parse(d);
         static Expression<Func<{{data.TypeName}}, {{data.TypeName}}, bool>> IPrefixedTypedId<{{data.TypeName}}>.DatabaseEquals { get; } = (a, b) => a == b;
+
+        public override string ToString() => Value;
+        public string ToString(string? format, IFormatProvider? formatProvider) => Value;
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+        {
+            if (destination.Length >= Value.Length)
+            {
+                Value.CopyTo(destination);
+                charsWritten = Value.Length;
+                return true;
+            }
+            else
+            {
+                charsWritten = 0;
+                return false;
+            }
+        }
+
+        public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+            => Encoding.UTF8.TryGetBytes(Value, utf8Destination, out bytesWritten);
     }
 }
 """;
@@ -160,6 +180,7 @@ namespace {{data.Namespace}}
     using global::System.Diagnostics.CodeAnalysis;
     using global::System.Diagnostics;
     using global::System.Linq.Expressions;
+    using global::System.Text;
     using global::System.Text.Json.Serialization;
     using global::LeanCode.DomainModels.Ids;
     using global::LeanCode.DomainModels.Ulids;
@@ -237,7 +258,6 @@ namespace {{data.Namespace}}
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
-        public override string ToString() => Value;
         public static implicit operator string({{data.TypeName}} id) => id.Value;
 
         public static bool operator <({{data.TypeName}} a, {{data.TypeName}} b) => a.CompareTo(b) < 0;
@@ -247,6 +267,26 @@ namespace {{data.Namespace}}
 
         static Expression<Func<string, {{data.TypeName}}>> IPrefixedTypedId<{{data.TypeName}}>.FromDatabase { get; } = d => Parse(d);
         static Expression<Func<{{data.TypeName}}, {{data.TypeName}}, bool>> IPrefixedTypedId<{{data.TypeName}}>.DatabaseEquals { get; } = (a, b) => a == b;
+
+        public override string ToString() => Value;
+        public string ToString(string? format, IFormatProvider? formatProvider) => Value;
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+        {
+            if (destination.Length >= Value.Length)
+            {
+                Value.CopyTo(destination);
+                charsWritten = Value.Length;
+                return true;
+            }
+            else
+            {
+                charsWritten = 0;
+                return false;
+            }
+        }
+
+        public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+            => Encoding.UTF8.TryGetBytes(Value, utf8Destination, out bytesWritten);
     }
 }
 """;

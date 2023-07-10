@@ -6,7 +6,7 @@ namespace LeanCode.DomainModels.Ids;
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public interface IPrefixedTypedId<TSelf> : IEquatable<TSelf>, IComparable<TSelf>
+public interface IPrefixedTypedId<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, ISpanFormattable, IUtf8SpanFormattable
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
     string Value { get; }
