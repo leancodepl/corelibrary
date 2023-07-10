@@ -35,7 +35,11 @@ public static class MassTransitRelayServiceCollectionExtensions
         return services;
     }
 
-    public static void AddBusActivityMonitor(this IServiceCollection services, TimeSpan? inactivityWaitTime = null)
+    public static void AddBusActivityMonitor(
+        this IServiceCollection services,
+        TimeSpan? inactivityWaitTime = null,
+        bool initializeAtStartup = true
+    )
     {
         services.AddSingleton(
             sp =>
@@ -45,5 +49,10 @@ public static class MassTransitRelayServiceCollectionExtensions
                 )
         );
         services.AddSingleton<IBusActivityMonitor>(sp => sp.GetRequiredService<ResettableBusActivityMonitor>());
+
+        if (initializeAtStartup)
+        {
+            services.AddHostedService<ResettableBusActivityMonitorInitializer>();
+        }
     }
 }
