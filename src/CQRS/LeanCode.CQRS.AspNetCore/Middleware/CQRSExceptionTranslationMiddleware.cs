@@ -24,7 +24,7 @@ public class CQRSExceptionTranslationMiddleware
 
         if (cqrsMetadata.ObjectKind != CQRSObjectKind.Command)
         {
-            throw new InvalidOperationException("CQRSValidationMiddleware may be used only for commands");
+            throw new InvalidOperationException("CQRSExceptionTranslationMiddleware may be used only for commands.");
         }
 
         try
