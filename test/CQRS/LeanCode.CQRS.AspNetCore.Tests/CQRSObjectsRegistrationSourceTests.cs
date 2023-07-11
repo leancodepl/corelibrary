@@ -4,7 +4,9 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using FluentAssertions;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 
@@ -12,10 +14,12 @@ namespace LeanCode.CQRS.AspNetCore.Tests;
 public class CQRSObjectsRegistrationSourceTests
 {
     private readonly List<CQRSObjectMetadata> cqrsObjects;
+    private readonly ServiceCollection services;
 
     public CQRSObjectsRegistrationSourceTests()
     {
-        cqrsObjects = GetCQRSObjects();
+        services = new ServiceCollection();
+        cqrsObjects = GetCQRSObjects(services);
     }
 
     [Fact]
@@ -32,15 +36,47 @@ public class CQRSObjectsRegistrationSourceTests
         AssertNotRegistered<QueryCommand>();
     }
 
+    [Fact]
+    public void Objects_are_registered_in_di_container()
+    {
+        var serviceProvider = services.BuildServiceProvider();
+
+        serviceProvider.GetService<IQueryHandler<Query1, QueryResult1>>().Should().NotBeNull();
+        serviceProvider.GetService<IQueryHandler<Query2, QueryResult2>>().Should().NotBeNull();
+        serviceProvider.GetService<IQueryHandler<Query3, QueryResult1>>().Should().NotBeNull();
+        serviceProvider.GetService<IQueryHandler<Query4, QueryResult2>>().Should().NotBeNull();
+        serviceProvider.GetService<ICommandHandler<Command1>>().Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Same_objects_are_not_registered_multiple_times()
+    {
+        var registrationSource = new CQRSObjectsRegistrationSource(services);
+
+        registrationSource.AddCQRSObjects(
+            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
+            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
+        );
+        var firstCount = registrationSource.Objects.Count();
+
+        registrationSource.AddCQRSObjects(
+            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
+            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
+        );
+        var secondCount = registrationSource.Objects.Count();
+
+        firstCount.Should().Be(secondCount);
+    }
+
     private void AssertRegistered<TQuery, TResult, THandler>()
         where TQuery : IQuery<TResult>
         where THandler : IQueryHandler<TQuery, TResult>
     {
-        var cqrsObject = Assert.Single(cqrsObjects, o => o.ObjectType == typeof(TQuery));
+        var cqrsObject = cqrsObjects.Should().ContainSingle(o => o.ObjectType == typeof(TQuery)).Which;
 
-        Assert.Equal(CQRSObjectKind.Query, cqrsObject.ObjectKind);
-        Assert.Equal(typeof(TResult), cqrsObject.ResultType);
-        Assert.Equal(typeof(THandler), cqrsObject.HandlerType);
+        cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Query);
+        cqrsObject.ResultType.Should().Be(typeof(TResult));
+        cqrsObject.HandlerType.Should().Be(typeof(THandler));
     }
 
     private void AssertRegistered<TCommand, THandler>()
@@ -49,22 +85,26 @@ public class CQRSObjectsRegistrationSourceTests
     {
         var cqrsObject = Assert.Single(cqrsObjects, o => o.ObjectType == typeof(TCommand));
 
-        Assert.Equal(CQRSObjectKind.Command, cqrsObject.ObjectKind);
-        Assert.Equal(typeof(CommandResult), cqrsObject.ResultType);
-        Assert.Equal(typeof(THandler), cqrsObject.HandlerType);
+        cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Command);
+        cqrsObject.ResultType.Should().Be(typeof(CommandResult));
+        cqrsObject.HandlerType.Should().Be(typeof(THandler));
     }
 
     private void AssertNotRegistered<T>()
     {
-        Assert.DoesNotContain(cqrsObjects, o => o.ObjectType == typeof(T));
+        cqrsObjects.Should().NotContain(o => o.ObjectType == typeof(T));
     }
 
-    private static List<CQRSObjectMetadata> GetCQRSObjects()
+    private static List<CQRSObjectMetadata> GetCQRSObjects(IServiceCollection services)
     {
-        return new CQRSObjectsRegistrationSource(
+        var registrationSource = new CQRSObjectsRegistrationSource(services);
+
+        registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
-        ).Objects.ToList();
+        );
+
+        return registrationSource.Objects.ToList();
         // This will find more types, filtering for better readability
     }
 

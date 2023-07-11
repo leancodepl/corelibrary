@@ -16,6 +16,29 @@ public class CQRSObjectMetadata
     }
 }
 
+public class CQRSObjectMetadataEqualityComparer : IEqualityComparer<CQRSObjectMetadata>
+{
+    public bool Equals(CQRSObjectMetadata? x, CQRSObjectMetadata? y)
+    {
+        if (ReferenceEquals(x, y))
+        {
+            return true;
+        }
+
+        if (x is null || y is null)
+        {
+            return false;
+        }
+
+        return x.ObjectType == y.ObjectType;
+    }
+
+    public int GetHashCode(CQRSObjectMetadata obj)
+    {
+        return HashCode.Combine(obj.ObjectKind, obj.ObjectType, obj.ResultType, obj.HandlerType);
+    }
+}
+
 public enum CQRSObjectKind
 {
     Command,

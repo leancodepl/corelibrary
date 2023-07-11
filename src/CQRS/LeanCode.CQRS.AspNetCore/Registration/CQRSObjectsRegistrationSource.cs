@@ -2,25 +2,23 @@ using System.Reflection;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore.Registration;
 
 internal class CQRSObjectsRegistrationSource
 {
-    private readonly TypesCatalog contractsCatalog;
-    private readonly TypesCatalog handlersCatalog;
+    private readonly IServiceCollection services;
+    private readonly HashSet<CQRSObjectMetadata> objects = new(new CQRSObjectMetadataEqualityComparer());
 
-    public IEnumerable<CQRSObjectMetadata> Objects { get; }
+    public IReadOnlySet<CQRSObjectMetadata> Objects => objects;
 
-    public CQRSObjectsRegistrationSource(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    public CQRSObjectsRegistrationSource(IServiceCollection services)
     {
-        this.contractsCatalog = contractsCatalog;
-        this.handlersCatalog = handlersCatalog;
-
-        Objects = FindCQRSObjects();
+        this.services = services;
     }
 
-    private IEnumerable<CQRSObjectMetadata> FindCQRSObjects()
+    public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         var contracts = contractsCatalog.Assemblies
             .SelectMany(a => a.DefinedTypes)
@@ -30,8 +28,6 @@ internal class CQRSObjectsRegistrationSource
             .SelectMany(a => a.DefinedTypes)
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);
-
-        var resultObjects = new List<CQRSObjectMetadata>();
 
         foreach (var contract in contracts)
         {
@@ -56,10 +52,13 @@ internal class CQRSObjectsRegistrationSource
                 handlerType: handler.HandlerType
             );
 
-            resultObjects.Add(metadata);
-        }
+            var added = objects.Add(metadata);
 
-        return resultObjects;
+            if (added)
+            {
+                services.AddCQRSHandler(metadata);
+            }
+        }
     }
 
     private static bool ValidateContractType(TypeInfo type)

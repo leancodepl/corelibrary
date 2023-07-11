@@ -19,31 +19,39 @@ public static class ServiceCollectionCQRSExtensions
     {
         serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
 
-        var objectsSource = new CQRSObjectsRegistrationSource(contractsCatalog, handlersCatalog);
+        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection);
+        objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
         serviceCollection.AddSingleton(objectsSource);
-        serviceCollection.AddCQRSHandlers(objectsSource.Objects);
 
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
 
-        return new CQRSServicesBuilder(serviceCollection);
+        return new CQRSServicesBuilder(serviceCollection, objectsSource);
     }
 }
 
 public class CQRSServicesBuilder
 {
-    private readonly IServiceCollection services;
+    public IServiceCollection Services { get; }
+    private readonly CQRSObjectsRegistrationSource objectsSource;
 
-    public CQRSServicesBuilder(IServiceCollection services)
+    internal CQRSServicesBuilder(IServiceCollection services, CQRSObjectsRegistrationSource objectsSource)
     {
-        this.services = services;
+        this.Services = services;
+        this.objectsSource = objectsSource;
     }
 
     public CQRSServicesBuilder WithSerializer(ISerializer serializer)
     {
-        services.Replace(new ServiceDescriptor(typeof(ISerializer), serializer));
+        Services.Replace(new ServiceDescriptor(typeof(ISerializer), serializer));
+        return this;
+    }
+
+    public CQRSServicesBuilder AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    {
+        objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
         return this;
     }
 }
