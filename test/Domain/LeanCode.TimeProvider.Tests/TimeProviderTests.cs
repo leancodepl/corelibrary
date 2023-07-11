@@ -1,5 +1,5 @@
 using LeanCode.Test.Helpers;
-using Microsoft.Extensions.Time.Testing;
+using LeanCode.TimeProvider.TestHelpers;
 using Xunit;
 
 namespace LeanCode.TimeProvider.Tests;
@@ -17,13 +17,13 @@ public abstract class TimeProviderTests
     protected TimeProviderTests(DateTimeOffset expectedTime, TimeZoneInfo timeZoneInfo = null)
     {
         this.expectedTime = expectedTime;
-        this.timeZoneInfo = timeZoneInfo ?? TimeZoneInfo.Utc;
+        this.timeZoneInfo = timeZoneInfo;
     }
 
     [LongRunningFact]
     public void Check_the_value_sync()
     {
-        SetTime();
+        TestTimeProvider.ActivateFake(expectedTime, timeZoneInfo);
 
         for (var i = 0; i < Iterations; i++)
         {
@@ -36,7 +36,7 @@ public abstract class TimeProviderTests
     [LongRunningFact]
     public async Task Check_the_value_async()
     {
-        SetTime();
+        TestTimeProvider.ActivateFake(expectedTime, timeZoneInfo);
 
         for (var i = 0; i < DelayIterations; i++)
         {
@@ -51,18 +51,11 @@ public abstract class TimeProviderTests
     [Fact]
     public void TimeNow_returns_timestamp_in_providers_time_zone()
     {
-        SetTime();
+        TestTimeProvider.ActivateFake(expectedTime, timeZoneInfo);
 
         var now = Time.Now;
         Assert.Equal(expectedTime.DateTime, now);
         Assert.Equal(DateTimeKind.Unspecified, now.Kind);
-    }
-
-    private void SetTime()
-    {
-        var provider = new FakeTimeProvider(expectedTime.ToUniversalTime());
-        provider.SetLocalTimeZone(timeZoneInfo);
-        AsyncLocalTimeProvider.Activate(provider);
     }
 }
 
