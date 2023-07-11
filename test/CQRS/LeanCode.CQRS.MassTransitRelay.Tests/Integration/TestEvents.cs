@@ -1,5 +1,5 @@
 using LeanCode.DomainModels.Model;
-using TimeProvider = LeanCode.Time.TimeProvider;
+using LeanCode.TimeProvider;
 
 namespace LeanCode.CQRS.MassTransitRelay.Tests.Integration;
 
@@ -13,7 +13,7 @@ public class Event1 : IDomainEvent
     {
         CorrelationId = correlationId;
         Id = Guid.NewGuid();
-        DateOccurred = TimeProvider.Now;
+        DateOccurred = Time.Now;
     }
 }
 
@@ -26,7 +26,7 @@ public class Event2 : IDomainEvent
     public Event2(Guid correlationId)
     {
         Id = Guid.NewGuid();
-        DateOccurred = TimeProvider.Now;
+        DateOccurred = Time.Now;
         CorrelationId = correlationId;
     }
 }
@@ -40,7 +40,7 @@ public class Event3 : IDomainEvent
     public Event3(Guid correlationId)
     {
         Id = Guid.NewGuid();
-        DateOccurred = TimeProvider.Now;
+        DateOccurred = Time.Now;
         CorrelationId = correlationId;
     }
 }
