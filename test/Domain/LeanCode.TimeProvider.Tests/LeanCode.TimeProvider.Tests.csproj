@@ -1,12 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../../src/Testing/LeanCode.TimeProvider.TestHelpers/LeanCode.TimeProvider.TestHelpers.csproj" />
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
   </ItemGroup>
 
 </Project>
