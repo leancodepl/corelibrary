@@ -4,3 +4,28 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      aspnet:
+        patterns:
+          - "Microsoft.AspNetCore*"
+          - "Microsoft.Extensions.WebEncoders"
+      entityframework:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
+      extensions:
+        patterns:
+          - "Microsoft.Extensions*"
+        ignore:
+          - "Microsoft.Extensions.WebEncoders" # this one follows ASP.NET versioning scheme
+      identityserver:
+        patterns:
+          - "IdentityServer*"
+      masstransit:
+        patterns:
+          - "MassTransit*"
+      serilog:
+        patterns:
+          - "Serilog*"
+      xunit:
+        patterns:
+          - "xunit*"
