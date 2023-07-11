@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
@@ -94,18 +95,19 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
     private static void AssertCommandResultSuccess(HttpContext httpContext)
     {
         var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
-        var commandResult = Assert.IsType<CommandResult>(rawResult);
 
-        Assert.True(commandResult.WasSuccessful);
-        Assert.Empty(commandResult.ValidationErrors);
+        var commandResult = rawResult.Should().BeOfType<CommandResult>().Subject;
+        commandResult.WasSuccessful.Should().BeTrue();
+        commandResult.ValidationErrors.Should().BeEmpty();
     }
 
     private static void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
     {
         var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
-        var commandResult = Assert.IsType<CommandResult>(rawResult);
 
-        Assert.False(commandResult.WasSuccessful);
+        var commandResult = rawResult.Should().BeOfType<CommandResult>().Subject;
+        commandResult.ValidationErrors.Should().BeEquivalentTo(errors);
+        commandResult.WasSuccessful.Should().BeFalse();
     }
 
     private Task<HttpContext> SendAsync(ICommand command)
@@ -119,13 +121,7 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
                 typeof(IgnoreType)
             );
 
-            var endpointMetadata = new CQRSEndpointMetadata(
-                cqrsMetadata,
-                (_, __) => Task.FromResult<object?>(CommandResult.Success)
-            );
-            var endpoint = new Endpoint(null, new EndpointMetadataCollection(endpointMetadata), null);
-
-            ctx.SetEndpoint(endpoint);
+            ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(cqrsMetadata));
             ctx.SetCQRSRequestPayload(command);
         });
     }

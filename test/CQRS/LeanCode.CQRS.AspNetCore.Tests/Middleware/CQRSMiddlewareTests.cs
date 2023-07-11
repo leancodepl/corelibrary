@@ -188,10 +188,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
         return server.SendAsync(ctx =>
         {
             config?.Invoke(ctx);
-
-            var endpointMetadata = new CQRSEndpointMetadata(QueryMetadata, (_, __) => Task.FromResult<object?>(null));
-            var endpoint = new Endpoint(null, new EndpointMetadataCollection(endpointMetadata), "Test endpoint");
-            ctx.SetEndpoint(endpoint);
+            ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(QueryMetadata));
         });
     }
 
