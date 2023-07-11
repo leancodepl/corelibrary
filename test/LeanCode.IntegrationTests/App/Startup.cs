@@ -39,8 +39,6 @@ public class Startup : LeanStartup
             busCfg.AddConsumer<EntityAddedConsumer, EntityAddedConsumerDefinition>();
             busCfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
             {
-                outboxCfg.QueryDelay = TimeSpan.FromSeconds(0.5);
-
                 outboxCfg.UseSqlServer();
                 outboxCfg.UseBusOutbox();
             });

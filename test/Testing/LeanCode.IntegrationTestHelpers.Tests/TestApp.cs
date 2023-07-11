@@ -22,13 +22,25 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        base.ConfigureWebHost(builder);
+        // Slight hack - not calling base to not register BusActivityMonitor
+        // Seems easier for this special case then setting up MassTransit
+        // base.ConfigureWebHost(builder);
+
         builder.UseSolutionRelativeContentRoot("test/Testing/LeanCode.IntegrationTestHelpers.Tests");
 
-        builder.ConfigureServices(services =>
-        {
-            services.AddAuthentication(TestAuthenticationHandler.SchemeName).AddTestAuthenticationHandler();
-        });
+        builder
+            .ConfigureAppConfiguration(config =>
+            {
+                config.Add(Configuration);
+            })
+            .ConfigureServices(services =>
+            {
+                services.AddAuthentication(TestAuthenticationHandler.SchemeName).AddTestAuthenticationHandler();
+
+                // Allow the host to perform shutdown a little bit longer - it will make
+                // `DbContextsInitializer` successfully drop the database more frequently. :)
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+            });
     }
 
     protected override IHostBuilder CreateHostBuilder()

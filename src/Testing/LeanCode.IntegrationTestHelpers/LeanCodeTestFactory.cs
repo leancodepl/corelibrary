@@ -3,7 +3,6 @@ using System.Text.Json.Serialization.Metadata;
 using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.Serialization;
-using MassTransit.Middleware.Outbox;
 using MassTransit.Testing.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -63,15 +62,14 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
         return new HttpOperationsExecutor(CreateApiClient(config), JsonOptions);
     }
 
-    public virtual async Task WaitForBusAsync(TimeSpan? delay = null)
+    public virtual async Task WaitForBusAsync(TimeSpan? delay = null, TimeSpan? outboxDelay = null)
     {
-        delay ??= TimeSpan.FromSeconds(5);
+        // We cannot explicitly wait until outbox service has published events
+        await Task.Delay(outboxDelay ?? TimeSpan.FromSeconds(1));
 
-        // Ensure outbox is sent
-        using var cts = new CancellationTokenSource(delay.Value);
-        await Services.GetRequiredService<IBusOutboxNotification>().WaitForDelivery(cts.Token);
-
-        var busInactive = await Services.GetRequiredService<IBusActivityMonitor>().AwaitBusInactivity(delay.Value);
+        var busInactive = await Services
+            .GetRequiredService<IBusActivityMonitor>()
+            .AwaitBusInactivity(delay ?? TimeSpan.FromSeconds(5));
 
         if (!busInactive)
         {
