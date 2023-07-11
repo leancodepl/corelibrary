@@ -57,13 +57,13 @@ public class CQRSObjectsRegistrationSourceTests
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
         );
-        var firstCount = registrationSource.Objects.Count();
+        var firstCount = registrationSource.Objects.Count;
 
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
         );
-        var secondCount = registrationSource.Objects.Count();
+        var secondCount = registrationSource.Objects.Count;
 
         firstCount.Should().Be(secondCount);
     }
@@ -83,7 +83,7 @@ public class CQRSObjectsRegistrationSourceTests
         where TCommand : ICommand
         where THandler : ICommandHandler<TCommand>
     {
-        var cqrsObject = Assert.Single(cqrsObjects, o => o.ObjectType == typeof(TCommand));
+        var cqrsObject = cqrsObjects.Should().ContainSingle(o => o.ObjectType == typeof(TCommand)).Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Command);
         cqrsObject.ResultType.Should().Be(typeof(CommandResult));
@@ -105,7 +105,6 @@ public class CQRSObjectsRegistrationSourceTests
         );
 
         return registrationSource.Objects.ToList();
-        // This will find more types, filtering for better readability
     }
 
     public class Query1 : IQuery<QueryResult1> { }
