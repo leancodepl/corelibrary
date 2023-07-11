@@ -96,6 +96,8 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.5.23308.3" />
+
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
