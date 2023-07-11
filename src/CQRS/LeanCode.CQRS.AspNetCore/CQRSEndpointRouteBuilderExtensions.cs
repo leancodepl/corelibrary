@@ -40,9 +40,9 @@ public class CQRSPipelineBuilder
 {
     public Func<CQRSObjectMetadata, bool> ObjectsFilter { get; set; } = _ => true;
 
-    public Action<IApplicationBuilder> Commands { get; set; } = app => { };
-    public Action<IApplicationBuilder> Queries { get; set; } = app => { };
-    public Action<IApplicationBuilder> Operations { get; set; } = app => { };
+    public Action<ICQRSApplicationBuilder> Commands { get; set; } = app => { };
+    public Action<ICQRSApplicationBuilder> Queries { get; set; } = app => { };
+    public Action<ICQRSApplicationBuilder> Operations { get; set; } = app => { };
 
     private readonly IEndpointRouteBuilder routeBuilder;
 
@@ -51,9 +51,9 @@ public class CQRSPipelineBuilder
         this.routeBuilder = routeBuilder;
     }
 
-    internal RequestDelegate PreparePipeline(Action<IApplicationBuilder> pipelineCfg)
+    internal RequestDelegate PreparePipeline(Action<ICQRSApplicationBuilder> pipelineCfg)
     {
-        var applicationBuilder = routeBuilder.CreateApplicationBuilder();
+        var applicationBuilder = new CQRSApplicationBuilder(routeBuilder.CreateApplicationBuilder());
         applicationBuilder.UseMiddleware<CQRSMiddleware>();
         pipelineCfg(applicationBuilder);
         applicationBuilder.Run(CQRSPipelineFinalizer.HandleAsync);
