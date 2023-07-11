@@ -1,5 +1,6 @@
 using FluentAssertions;
 using LeanCode.Contracts;
+using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,7 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : IDisposable, IAsyn
                     .UseTestServer()
                     .Configure(app =>
                     {
-                        app.TranslateExceptions();
+                        app.UseMiddleware<CQRSExceptionTranslationMiddleware>();
                         app.Run(ctx => finalPipeline(ctx));
                     });
             })
