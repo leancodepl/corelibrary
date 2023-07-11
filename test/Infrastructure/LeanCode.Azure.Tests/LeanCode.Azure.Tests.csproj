@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="../../../src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
+    </ItemGroup>
+</Project>

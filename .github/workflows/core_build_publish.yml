@@ -133,6 +133,14 @@ jobs:
       - name: Test
         run: dotnet msbuild /t:RunTestsWithCoverage
         working-directory: test
+      - name: Azure Test
+        run: dotnet test -c Release --logger trx --results-directory ../../TestResults
+        working-directory: test/Infrastructure/LeanCode.Azure.Tests
+        env:
+          CORELIB_TESTS_TENANT_ID: ${{ secrets.CORELIB_TESTS_TENANT_ID }}
+          CORELIB_TESTS_CLIENT_ID: ${{ secrets.CORELIB_TESTS_CLIENT_ID }}
+          CORELIB_TESTS_CLIENT_SECRET: ${{ secrets.CORELIB_TESTS_CLIENT_SECRET }}
+          CORELIB_TESTS_NPGSQL_CONNECTION_STRING: ${{ secrets.CORELIB_TESTS_NPGSQL_CONNECTION_STRING }}
       - name: Integration Test
         run: dotnet test -c Release --logger trx --results-directory ../TestResults
         working-directory: test/LeanCode.IntegrationTests
