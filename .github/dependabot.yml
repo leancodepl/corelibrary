@@ -15,7 +15,7 @@ updates:
       extensions:
         patterns:
           - "Microsoft.Extensions*"
-        ignore:
+        exclude_patterns:
           - "Microsoft.Extensions.WebEncoders" # this one follows ASP.NET versioning scheme
       identityserver:
         patterns:
