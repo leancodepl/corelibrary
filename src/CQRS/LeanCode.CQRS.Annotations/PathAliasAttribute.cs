@@ -1,7 +1,7 @@
 ﻿namespace LeanCode.CQRS.Annotations;
 
 /// <summary>
-/// Register command/query/operation under additional HTTP path. This could be useful for reorganizing contracts namespaces without introducing a braking change.
+/// Register command/query/operation under additional HTTP path. This could be useful for reorganizing contracts namespaces without introducing a breaking change.
 /// This attribute can be used multiple times.
 /// </summary>
 /// <example>
