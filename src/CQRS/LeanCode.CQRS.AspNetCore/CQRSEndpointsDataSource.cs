@@ -1,3 +1,5 @@
+using System.Reflection;
+using LeanCode.CQRS.Annotations;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -32,17 +34,21 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
     {
         foreach (var obj in objects)
         {
-            var builder = new RouteEndpointBuilder(PipelineFor(obj), RouteFor(obj), 0)
-            {
-                DisplayName = $"{obj.ObjectKind} {obj.ObjectType.FullName}",
-                Metadata =
-                {
-                    new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj)),
-                    new HttpMethodMetadata(new[] { HttpMethods.Post })
-                }
-            };
+            var pipeline = PipelineFor(obj);
+            var cqrsEndpointMetadata = new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj));
+            var httpMetadata = new HttpMethodMetadata(new[] { HttpMethods.Post });
 
-            endpoints.Add(builder.Build());
+            foreach (var route in RoutesFor(obj))
+            {
+                var endpoint = new RouteEndpoint(
+                    pipeline,
+                    route.Pattern,
+                    0,
+                    new EndpointMetadataCollection(cqrsEndpointMetadata, httpMetadata),
+                    $"{obj.ObjectKind} {route.Name}"
+                );
+                endpoints.Add(endpoint);
+            }
         }
 
         RequestDelegate PipelineFor(CQRSObjectMetadata obj)
@@ -57,7 +63,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
         }
     }
 
-    private RoutePattern RouteFor(CQRSObjectMetadata obj)
+    private IEnumerable<(string Name, RoutePattern Pattern)> RoutesFor(CQRSObjectMetadata obj)
     {
         var kindSegment = obj.ObjectKind switch
         {
@@ -67,8 +73,20 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
             _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}")
         };
 
-        var typeSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(obj.ObjectType.FullName!));
-        var path = RoutePatternFactory.Pattern(kindSegment, typeSegment);
-        return RoutePatternFactory.Combine(basePath, path);
+        var typeName = obj.ObjectType.FullName!;
+
+        yield return (typeName, Path(typeName));
+
+        foreach (var alias in obj.ObjectType.GetCustomAttributes<PathAliasAttribute>())
+        {
+            yield return (alias.Path, Path(alias.Path));
+        }
+
+        RoutePattern Path(string name)
+        {
+            var typeSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(name));
+            var path = RoutePatternFactory.Pattern(kindSegment, typeSegment);
+            return RoutePatternFactory.Combine(basePath, path);
+        }
     }
 }

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+      <ProjectReference Include="../LeanCode.CQRS.Annotations/LeanCode.CQRS.Annotations.csproj" />
+      <ProjectReference Include="../LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />    
       <ProjectReference Include="../LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
       <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
       <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
