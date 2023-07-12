@@ -36,7 +36,7 @@ Besides `.targets` file, we use central `Directory.Build.props` to manage some o
 
 Creating new packages (that will be published to the feed) is simple. You just have to:
 
-1. Create new .NET Core library project in the correct location,
+1. Create new .NET CoreLibrary project in the correct location,
 2. Remove `TargetFramework` since it is managed externally.
 
 Or you can just modify the following project template (most of the projects use this):

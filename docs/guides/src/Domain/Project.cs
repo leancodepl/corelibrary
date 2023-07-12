@@ -16,6 +16,11 @@ public class Project : IAggregateRoot<SId<Project>>
         return new Project { Id = SId<Project>.New(), Name = name, };
     }
 
+    public void AddTasks(IEnumerable<string> taskNames)
+    {
+        this.tasks.AddRange(taskNames.Select(tn => Task.Create(this, tn)));
+    }
+
     public void EditTask(SId<Task> taskId, string name)
     {
         tasks.Single(t => t.Id == taskId).Edit(name);
