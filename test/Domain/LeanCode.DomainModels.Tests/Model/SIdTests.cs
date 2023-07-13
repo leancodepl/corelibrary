@@ -3,6 +3,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Model;
 
+[Obsolete("Tests for obsolete classes")]
 public class SIdTests
 {
     internal sealed record Entity(SId<Entity> Id) : IIdentifiable<SId<Entity>>;

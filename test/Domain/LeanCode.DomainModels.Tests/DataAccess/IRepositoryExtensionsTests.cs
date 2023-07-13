@@ -1,6 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using LeanCode.DomainModels.DataAccess;
+using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
 using NSubstitute;
 using Xunit;
@@ -10,14 +9,14 @@ namespace LeanCode.DomainModels.Tests.DataAccess;
 public class IRepositoryExtensionsTests
 {
     private const int UserId = 1;
-    private static readonly Id<DiscountCode> CodeId = Id<DiscountCode>.New();
+    private static readonly DiscountCodeId CodeId = DiscountCodeId.New();
     private static readonly DiscountCode Code = new DiscountCode { Id = CodeId, };
     private static readonly User User = new User { Id = UserId, };
 
     [Fact]
     public async Task Returns_entity_when_exists()
     {
-        var repository = Substitute.For<IRepository<DiscountCode, Id<DiscountCode>>>();
+        var repository = Substitute.For<IRepository<DiscountCode, DiscountCodeId>>();
         repository.FindAsync(CodeId).Returns(Code);
 
         var code = await repository.FindAndEnsureExistsAsync(CodeId);
@@ -29,7 +28,7 @@ public class IRepositoryExtensionsTests
     [Fact]
     public async Task Throws_when_entity_does_not_exist()
     {
-        var repository = Substitute.For<IRepository<DiscountCode, Id<DiscountCode>>>();
+        var repository = Substitute.For<IRepository<DiscountCode, DiscountCodeId>>();
         repository.FindAsync(CodeId).Returns(null as DiscountCode);
 
         await Assert.ThrowsAsync<EntityDoesNotExistException>(() => repository.FindAndEnsureExistsAsync(CodeId));
@@ -57,9 +56,12 @@ public class IRepositoryExtensionsTests
     }
 }
 
-public class DiscountCode : IAggregateRoot<Id<DiscountCode>>
+[TypedId(TypedIdFormat.RawGuid)]
+public readonly partial record struct DiscountCodeId { }
+
+public class DiscountCode : IAggregateRoot<DiscountCodeId>
 {
-    public Id<DiscountCode> Id { get; set; }
+    public DiscountCodeId Id { get; set; }
 
     DateTime IOptimisticConcurrency.DateModified { get; set; }
 }
