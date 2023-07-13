@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
+using FluentAssertions;
 using LeanCode.DomainModels.Ids;
 using Xunit;
 
@@ -176,5 +178,38 @@ public class GuidIdTests
     {
         var rnd = TestGuidId.New();
         Assert.NotEqual(rnd.Value, Guid.Empty);
+    }
+
+    [Fact]
+    public void TryFormatChar_is_correct()
+    {
+        var length = 36;
+        var id = TestGuidId.Parse(Guid1);
+        var buffer = new char[50];
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var charsWritten, "", null).Should().BeFalse();
+        charsWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
+        charsWritten.Should().Be(length);
+        new string(buffer[..length]).Should().Be(Guid1.ToString());
+        buffer[length..].Should().AllBeEquivalentTo(default(char));
+    }
+
+    [Fact]
+    public void TryFormatUtf8Byte_is_correct()
+    {
+        var length = 36;
+        var id = TestGuidId.Parse(Guid1);
+        var buffer = new byte[50];
+        var expectedBytes = Encoding.UTF8.GetBytes(id.ToString());
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var bytesWritten, "", null).Should().BeFalse();
+        bytesWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
+        bytesWritten.Should().Be(length);
+        buffer[..length].Should().BeEquivalentTo(expectedBytes);
+        buffer[length..].Should().AllBeEquivalentTo(default(byte));
     }
 }

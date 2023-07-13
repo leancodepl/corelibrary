@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
+using FluentAssertions;
 using LeanCode.DomainModels.Ids;
 using Xunit;
 
@@ -219,5 +221,36 @@ public class PrefixedGuidIdTests
     public void RawLength_is_correct()
     {
         Assert.Equal(TestPrefixedGuidId.RawLength, TPG1.Length);
+    }
+
+    [Fact]
+    public void TryFormatChar_is_correct()
+    {
+        var id = TestPrefixedGuidId.Parse(TPG1);
+        var buffer = new char[50];
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var charsWritten, "", null).Should().BeFalse();
+        charsWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
+        charsWritten.Should().Be(TestPrefixedGuidId.RawLength);
+        new string(buffer[..TestPrefixedGuidId.RawLength]).Should().Be(TPG1);
+        buffer[TestPrefixedGuidId.RawLength..].Should().AllBeEquivalentTo(default(char));
+    }
+
+    [Fact]
+    public void TryFormatUtf8Byte_is_correct()
+    {
+        var id = TestPrefixedGuidId.Parse(TPG1);
+        var buffer = new byte[50];
+        var expectedBytes = Encoding.UTF8.GetBytes(TPG1);
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var bytesWritten, "", null).Should().BeFalse();
+        bytesWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
+        bytesWritten.Should().Be(TestPrefixedGuidId.RawLength);
+        buffer[..TestPrefixedGuidId.RawLength].Should().BeEquivalentTo(expectedBytes);
+        buffer[TestPrefixedGuidId.RawLength..].Should().AllBeEquivalentTo(default(byte));
     }
 }

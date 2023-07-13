@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using FluentAssertions;
 using LeanCode.DomainModels.Ids;
 using Xunit;
 
@@ -159,5 +160,36 @@ public class LongIdTests
             Assert.Equal(T.FromDatabase.Compile().Invoke(1), T.Parse(1));
             Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(1), T.Parse(1)));
         }
+    }
+
+    [Fact]
+    public void TryFormatChar_is_correct()
+    {
+        var id = new TestIntId(1234);
+        var buffer = new char[10];
+
+        id.TryFormat(buffer.AsSpan(0, 2), out var charsWritten, "", null).Should().BeFalse();
+        charsWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
+        charsWritten.Should().Be(4);
+        new string(buffer[..4]).Should().Be("1234");
+        buffer[4..].Should().AllBeEquivalentTo(default(char));
+    }
+
+    [Fact]
+    public void TryFormatUtf8Byte_is_correct()
+    {
+        var id = new TestIntId(1234);
+        var buffer = new byte[10];
+        var expectedBuffer = "1234"u8.ToArray();
+
+        id.TryFormat(buffer.AsSpan(0, 2), out var bytesWritten, "", null).Should().BeFalse();
+        bytesWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
+        bytesWritten.Should().Be(4);
+        buffer[..4].Should().BeEquivalentTo(expectedBuffer);
+        buffer[4..].Should().AllBeEquivalentTo(default(byte));
     }
 }
