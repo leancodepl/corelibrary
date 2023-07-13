@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
