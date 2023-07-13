@@ -22,7 +22,11 @@ public interface IPrefixedTypedId<TSelf> : IEquatable<TSelf>, IComparable<TSelf>
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public interface IRawTypedId<TBacking, TSelf> : IEquatable<TSelf>, IComparable<TSelf>
+public interface IRawTypedId<TBacking, TSelf>
+    : IEquatable<TSelf>,
+        IComparable<TSelf>,
+        ISpanFormattable,
+        IUtf8SpanFormattable
     where TBacking : struct
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {

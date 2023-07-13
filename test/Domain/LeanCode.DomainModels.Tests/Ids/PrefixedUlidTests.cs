@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using LeanCode.DomainModels.Ids;
@@ -257,5 +258,36 @@ public class PrefixedUlidIdTests
         var u2 = TestPrefixedUlidId.Parse("tpu_01arz3ndektsv4rrffq69g5fav");
 
         u1.Should().Be(u2);
+    }
+
+    [Fact]
+    public void TryFormatChar_is_correct()
+    {
+        var id = TestPrefixedUlidId.Parse(TPU1);
+        var buffer = new char[50];
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var charsWritten, "", null).Should().BeFalse();
+        charsWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
+        charsWritten.Should().Be(TestPrefixedUlidId.RawLength);
+        new string(buffer[..TestPrefixedUlidId.RawLength]).Should().Be(TPU1);
+        buffer[TestPrefixedUlidId.RawLength..].Should().AllBeEquivalentTo(default(char));
+    }
+
+    [Fact]
+    public void TryFormatUtf8Byte_is_correct()
+    {
+        var id = TestPrefixedUlidId.Parse(TPU1);
+        var buffer = new byte[50];
+        var expectedBytes = Encoding.UTF8.GetBytes(TPU1);
+
+        id.TryFormat(buffer.AsSpan(0, 15), out var bytesWritten, "", null).Should().BeFalse();
+        bytesWritten.Should().Be(0);
+
+        id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
+        bytesWritten.Should().Be(TestPrefixedUlidId.RawLength);
+        buffer[..TestPrefixedUlidId.RawLength].Should().BeEquivalentTo(expectedBytes);
+        buffer[TestPrefixedUlidId.RawLength..].Should().AllBeEquivalentTo(default(byte));
     }
 }

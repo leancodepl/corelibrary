@@ -7,13 +7,29 @@ internal static class IdSource
         switch (data.Format)
         {
             case TypedIdFormat.RawInt:
-                return BuildRaw(data, "int", "Int", null, "0", "CultureInfo.InvariantCulture");
+                return BuildRaw(
+                    data,
+                    "int",
+                    "Int",
+                    null,
+                    "0",
+                    "CultureInfo.InvariantCulture",
+                    "string.Empty, CultureInfo.InvariantCulture"
+                );
 
             case TypedIdFormat.RawLong:
-                return BuildRaw(data, "long", "Long", null, "0", "CultureInfo.InvariantCulture");
+                return BuildRaw(
+                    data,
+                    "long",
+                    "Long",
+                    null,
+                    "0",
+                    "CultureInfo.InvariantCulture",
+                    "string.Empty, CultureInfo.InvariantCulture"
+                );
 
             case TypedIdFormat.RawGuid:
-                return BuildRaw(data, "Guid", "Guid", "Guid.NewGuid()", "Guid.Empty", "");
+                return BuildRaw(data, "Guid", "Guid", "Guid.NewGuid()", "Guid.Empty", "", "string.Empty");
 
             case TypedIdFormat.PrefixedGuid:
                 return BuildPrefixedGuid(data, "Guid.NewGuid()", 32, "Guid.Empty", true, "Guid.TryParseExact", "N");
@@ -298,7 +314,8 @@ namespace {{data.Namespace}}
         string converterPrefix,
         string? randomValueGenerator,
         string defaultValue,
-        string toStringParam
+        string toStringParam,
+        string tryFormatParams
     )
     {
         var randomFactory =
@@ -370,7 +387,6 @@ namespace {{data.Namespace}}
         public bool Equals({{data.TypeName}} other) => Value == other.Value;
         public int CompareTo({{data.TypeName}} other) => Value.CompareTo(other.Value);
         public override int GetHashCode() => Value.GetHashCode();
-        public override string ToString() => Value.ToString({{toStringParam}});
         public static implicit operator {{backingType}}({{data.TypeName}} id) => id.Value;
 
         public static bool operator <({{data.TypeName}} a, {{data.TypeName}} b) => a.Value < b.Value;
@@ -380,6 +396,14 @@ namespace {{data.Namespace}}
 
         static Expression<Func<{{backingType}}, {{data.TypeName}}>> IRawTypedId<{{backingType}}, {{data.TypeName}}>.FromDatabase { get; } = d => Parse(d);
         static Expression<Func<{{data.TypeName}}, {{data.TypeName}}, bool>> IRawTypedId<{{backingType}}, {{data.TypeName}}>.DatabaseEquals { get; } = (a, b) => a == b;
+
+        public override string ToString() => Value.ToString({{toStringParam}});
+        public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+            => Value.TryFormat(destination, out charsWritten, {{tryFormatParams}});
+
+        public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+            => Value.TryFormat(utf8Destination, out bytesWritten, {{tryFormatParams}});
     }
 }
 """;
