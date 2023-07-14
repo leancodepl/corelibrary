@@ -31,7 +31,7 @@ Previous projects: `LeanCode.Pipelines`, `LeanCode.Pipelines.Autofac`, `LeanCode
 
 ### Replacing app contexts with HttpContext
 
-The concept of application context was abandoned. Handlers and middlewares (ex pipeline elements) now have access to `HttpContext` directly.
+The concept of application context was abandoned. Handlers and middlewares (former `IPipelineElement`s) now have access to `HttpContext` directly.
 The new command/query/operation handlers interfaces look like:
 
 ```csharp
@@ -94,7 +94,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
 `IPipelineElement<TContext, TInput, TOutput>` was replaced with plain ASP.NET middlewares. There are helper methods to get CQRS related information from `HttpContext`.
 
 ```csharp
-public Task(HttpContext httpContext)
+public Task InvokeAsync(HttpContext httpContext)
 {
     var endpointMetadata = httpContext.GetCQRSEndpoint();
     var objectMetadata = endpointMetadata.ObjectMetadata;
@@ -343,7 +343,7 @@ class Tests
 ### Mocking Kratos authorization
 
 For applications using Kratos for authorization it might be better to keep Kratos authorization schemes and mock Kratos API instead. `KratosAuthenticationHandler` depends on `IFrontendApi` to verify user sessions.
-Since this interface is *very* large, you may consider using `NSubititute` for it's implementation.
+Since this interface is _very_ large, you may consider using `NSubititute` for it's implementation.
 
 ```csharp
 class TestApp : LeanCodeTestFactory<Startup>
@@ -390,10 +390,82 @@ class Tests
 ```
 
 Similarly, you can override the rest of Kratos api clients, if your application is using them:
+
 - `ICourierApi`
 - `IIdentityApi`
 - `IMetadataApi`
 
 ## Misc changes
 
-...
+### TimeProvider adjustments
+
+.NET 8 introduced `System.TimeProvider` class. To avoid name clash we renamed `LeanCode.Time.TimeProvider` to `LeanCode.TimeProvider.Time` (the package name still is `LeanCode.TimeProvider`).
+The `Time` class is built on top of `System.TimeProvider`. `FixedTimeProvider` was replaced by `TestTimeProvider`, which is available in `LeanCode.TimeProvider.TestHelpers` package.
+
+
+```csharp
+// before
+using LeanCode.Time;
+
+class Tests
+{
+    public void TestMethod()
+    {
+        FixedTimeProvider.SetTo(new DateTime());
+
+        // tests
+        var date = TimeProvider.Now;
+    }
+}
+// after
+using LeanCode.TimeProvider;
+using LeanCode.TimeProvider.TestHelpers;
+
+class Tests
+{
+    public void TestMethod()
+    {
+        // provider will be used within the async scpoe - you can further adjust time in it
+        FakeTimeProvider provider = TestTimeProvider.ActivateFake(new DateTimeOffset());
+
+        // tests
+        var date = Time.Now;
+    }
+}
+```
+
+### Deprecation of `Id<T>`, `IID<T>`, `LId<T>`, `SId<T>`
+
+Those strongly typed id types are deprecated. Migrate to source generated ids instead.
+
+```csharp
+// before
+using LeanCode.DomainModels.Model;
+
+public class Entity : IIdentifiable<Id<Entity>>
+{
+    public Id<Entity> Id { get; set; }
+}
+// after
+using LeanCode.DomainModels.Ids;
+using LeanCode.DomainModels.Model;
+
+[TypedId(TypedIdFormat.RawGuid)]
+public partial readonly record struct EntityId { }
+
+public class Entity : IIdentifiable<EntityId>
+{
+    public EntityId Id { get; set; }
+}
+
+```
+
+### Ulids
+
+[Ulid](https://github.com/ulid/spec) type was introduced (vendored implementation of https://github.com/Cysharp/Ulid).
+Also, a source generated id type based on ulid was introduced (`TypedIdFormat.PrefixedUlid`).
+
+### Azure Workload Identity
+
+[AAD Pod Identity](https://github.com/Azure/aad-pod-identity) is deprecated.
+Migrate your application to [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) and adjust `DefaultLeanCodeCredential` configuration to use the new version.
