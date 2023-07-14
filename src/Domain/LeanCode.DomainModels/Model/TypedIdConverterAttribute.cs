@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.DomainModels.Model;
 
+[Obsolete]
 internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 {
     private static readonly Dictionary<Type, Type> Converters =

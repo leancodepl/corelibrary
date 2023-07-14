@@ -68,6 +68,7 @@ namespace {{data.Namespace}}
 
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
+    [ExcludeFromCodeCoverage]
     public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
     {
         private const int ValueLength = {{valueLength}};
@@ -194,6 +195,7 @@ namespace {{data.Namespace}}
 
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
+    [ExcludeFromCodeCoverage]
     public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
     {
         private const int ValueLength = {{valueLength}};
@@ -330,6 +332,7 @@ namespace {{data.Namespace}}
 
     [JsonConverter(typeof({{converterPrefix}}TypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
+    [ExcludeFromCodeCoverage]
     public readonly partial record struct {{data.TypeName}} : IRawTypedId<{{backingType}}, {{data.TypeName}}>
     {
         public static readonly {{data.TypeName}} Empty = new({{defaultValue}});

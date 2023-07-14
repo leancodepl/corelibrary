@@ -4,6 +4,7 @@ using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Model;
 
+[Obsolete("Tests for obsolete classes")]
 public class TypedIdSerializationTests
 {
     private sealed record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
