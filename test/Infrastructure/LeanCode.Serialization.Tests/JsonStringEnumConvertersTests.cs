@@ -6,92 +6,124 @@ namespace LeanCode.Serialization.Tests;
 
 public partial class JsonStringEnumConvertersTests
 {
-    [JsonConverter(typeof(JsonCamelCaseStringEnumConverter))]
+    [JsonConverter(typeof(JsonCamelCaseStringEnumConverter<CamelCase>))]
     public enum CamelCase
     {
         ExampleValue
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Camel_case_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
+    [Fact]
+    public void Camel_case_converter_correctly_converts_enum_name()
     {
-        var result = useSourceGenerationContext
-            ? JsonSerializer.Serialize(CamelCase.ExampleValue, StringEnumConvertersContext.Default.CamelCase)
-            : JsonSerializer.Serialize(CamelCase.ExampleValue);
+        var result = JsonSerializer.Serialize(CamelCase.ExampleValue);
 
         Assert.Equal(@"""exampleValue""", result);
     }
 
-    [JsonConverter(typeof(JsonKebabCaseLowerStringEnumConverter))]
+    [Fact]
+    public void Camel_case_converter_correctly_converts_enum_name_when_serializing_using_context()
+    {
+        var result = JsonSerializer.Serialize(CamelCase.ExampleValue, StringEnumConvertersContext.Default.CamelCase);
+
+        Assert.Equal(@"""exampleValue""", result);
+    }
+
+    [JsonConverter(typeof(JsonKebabCaseLowerStringEnumConverter<KebabCaseLower>))]
     public enum KebabCaseLower
     {
         ExampleValue
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Kebab_case_lower_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
+    [Fact]
+    public void Kebab_case_lower_converter_correctly_converts_enum_name()
     {
-        var result = useSourceGenerationContext
-            ? JsonSerializer.Serialize(KebabCaseLower.ExampleValue, StringEnumConvertersContext.Default.KebabCaseLower)
-            : JsonSerializer.Serialize(KebabCaseLower.ExampleValue);
+        var result = JsonSerializer.Serialize(KebabCaseLower.ExampleValue);
 
         Assert.Equal(@"""example-value""", result);
     }
 
-    [JsonConverter(typeof(JsonKebabCaseUpperStringEnumConverter))]
+    [Fact]
+    public void Kebab_case_lower_converter_correctly_converts_enum_name_when_serializing_using_context()
+    {
+        var result = JsonSerializer.Serialize(
+            KebabCaseLower.ExampleValue,
+            StringEnumConvertersContext.Default.KebabCaseLower
+        );
+
+        Assert.Equal(@"""example-value""", result);
+    }
+
+    [JsonConverter(typeof(JsonKebabCaseUpperStringEnumConverter<KebabCaseUpper>))]
     public enum KebabCaseUpper
     {
         ExampleValue
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Kebab_case_upper_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
+    [Fact]
+    public void Kebab_case_upper_converter_correctly_converts_enum_name()
     {
-        var result = useSourceGenerationContext
-            ? JsonSerializer.Serialize(KebabCaseUpper.ExampleValue, StringEnumConvertersContext.Default.KebabCaseUpper)
-            : JsonSerializer.Serialize(KebabCaseUpper.ExampleValue);
+        var result = JsonSerializer.Serialize(KebabCaseUpper.ExampleValue);
 
         Assert.Equal(@"""EXAMPLE-VALUE""", result);
     }
 
-    [JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter))]
+    [Fact]
+    public void Kebab_case_upper_converter_correctly_converts_enum_name_when_serializing_using_context()
+    {
+        var result = JsonSerializer.Serialize(
+            KebabCaseUpper.ExampleValue,
+            StringEnumConvertersContext.Default.KebabCaseUpper
+        );
+
+        Assert.Equal(@"""EXAMPLE-VALUE""", result);
+    }
+
+    [JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter<SnakeCaseLower>))]
     public enum SnakeCaseLower
     {
         ExampleValue
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Snake_case_lower_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
+    [Fact]
+    public void Snake_case_lower_converter_correctly_converts_enum_name()
     {
-        var result = useSourceGenerationContext
-            ? JsonSerializer.Serialize(SnakeCaseLower.ExampleValue, StringEnumConvertersContext.Default.SnakeCaseLower)
-            : JsonSerializer.Serialize(SnakeCaseLower.ExampleValue);
+        var result = JsonSerializer.Serialize(SnakeCaseLower.ExampleValue);
 
         Assert.Equal(@"""example_value""", result);
     }
 
-    [JsonConverter(typeof(JsonSnakeCaseUpperStringEnumConverter))]
+    [Fact]
+    public void Snake_case_lower_converter_correctly_converts_enum_name_when_serializing_using_context()
+    {
+        var result = JsonSerializer.Serialize(
+            SnakeCaseLower.ExampleValue,
+            StringEnumConvertersContext.Default.SnakeCaseLower
+        );
+
+        Assert.Equal(@"""example_value""", result);
+    }
+
+    [JsonConverter(typeof(JsonSnakeCaseUpperStringEnumConverter<SnakeCaseUpper>))]
     public enum SnakeCaseUpper
     {
         ExampleValue
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Snake_case_upper_converter_correctly_converts_enum_name(bool useSourceGenerationContext)
+    [Fact]
+    public void Snake_case_upper_converter_correctly_converts_enum_name()
     {
-        var result = useSourceGenerationContext
-            ? JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue, StringEnumConvertersContext.Default.SnakeCaseUpper)
-            : JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue);
+        var result = JsonSerializer.Serialize(SnakeCaseUpper.ExampleValue);
+
+        Assert.Equal(@"""EXAMPLE_VALUE""", result);
+    }
+
+    [Fact]
+    public void Snake_case_upper_converter_correctly_converts_enum_name_when_serializing_using_context()
+    {
+        var result = JsonSerializer.Serialize(
+            SnakeCaseUpper.ExampleValue,
+            StringEnumConvertersContext.Default.SnakeCaseUpper
+        );
 
         Assert.Equal(@"""EXAMPLE_VALUE""", result);
     }

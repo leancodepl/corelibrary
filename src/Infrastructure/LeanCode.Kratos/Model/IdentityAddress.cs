@@ -50,14 +50,14 @@ public class VerifiableIdentityAddress
     public AddressType Via { get; set; }
 }
 
-[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter))]
+[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter<AddressType>))]
 public enum AddressType
 {
     Email,
     Phone,
 }
 
-[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter))]
+[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter<AddressStatus>))]
 public enum AddressStatus
 {
     Pending,
