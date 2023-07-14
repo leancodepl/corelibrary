@@ -39,7 +39,7 @@ public class CommandValidatorResolver : ICommandValidatorResolver
             .CreateDelegate<Func<IServiceProvider, ICommandValidatorWrapper?>>();
     }
 
-    private static ICommandValidatorWrapper? ResolveValidator<TCommand>(IServiceProvider sp)
+    private static CommandValidatorWrapper<TCommand>? ResolveValidator<TCommand>(IServiceProvider sp)
         where TCommand : ICommand
     {
         var validator = sp.GetService<ICommandValidator<TCommand>>();

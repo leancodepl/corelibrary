@@ -86,7 +86,7 @@ public class ExternalIdentityProvidersModuleTests
         Assert.DoesNotContain(validators, v => v is TService);
     }
 
-    private static IServiceProvider Prepare(Action<ExternalIdentityProviderBuilder<User>> config)
+    private static ServiceProvider Prepare(Action<ExternalIdentityProviderBuilder<User>> config)
     {
         var services = new ServiceCollection();
 

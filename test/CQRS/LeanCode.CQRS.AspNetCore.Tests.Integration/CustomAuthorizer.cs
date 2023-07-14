@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ public interface ICustomAuthorizerParams
     public bool FailAuthorization { get; set; }
 }
 
+[SuppressMessage("?", "CA1040", Justification = "Marker interface")]
 public interface ICustomAuthorizer { }
 
 public class CustomAuthorizer : CustomAuthorizer<ICustomAuthorizerParams>, ICustomAuthorizer
@@ -19,7 +21,7 @@ public class CustomAuthorizer : CustomAuthorizer<ICustomAuthorizerParams>, ICust
     }
 }
 
-public class CustomAuthorizeWhenAttribute : AuthorizeWhenAttribute
+public sealed class CustomAuthorizeWhenAttribute : AuthorizeWhenAttribute
 {
     public CustomAuthorizeWhenAttribute()
         : base(typeof(ICustomAuthorizer)) { }

@@ -23,7 +23,7 @@ public class ScopedTransactionMiddleware<TDbContext>
             : RunWithOptimisticConcurrency(httpContext, dbContext);
     }
 
-    private bool UsePessimisticConcurrency(
+    private static bool UsePessimisticConcurrency(
         HttpContext httpContext,
         [NotNullWhen(true)] out PessimisticConcurrencyAttribute? config
     )

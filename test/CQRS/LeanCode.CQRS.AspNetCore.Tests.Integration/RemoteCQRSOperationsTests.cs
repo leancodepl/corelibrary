@@ -45,7 +45,7 @@ public class RemoteCQRSOperationsTests : RemoteCQRSTestsBase
 
         Assert.Equal(HttpStatusCode.OK, statusCode);
         var result = JsonSerializer.Deserialize<TestOperationResult>(body);
-        Assert.Equal(5, result.Sum);
+        Assert.Equal(5, result?.Sum);
     }
 
     [Fact]

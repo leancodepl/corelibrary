@@ -6,7 +6,7 @@ using Xunit;
 
 namespace LeanCode.CQRS.MassTransitRelay.Tests;
 
-public class ScopedFiltersTests : IAsyncLifetime, IDisposable
+public sealed class ScopedFiltersTests : IAsyncLifetime, IDisposable
 {
     private readonly IBusControl bus;
     private readonly IBusActivityMonitor activityMonitor;
@@ -22,9 +22,9 @@ public class ScopedFiltersTests : IAsyncLifetime, IDisposable
             cfg.AddConsumer(typeof(TestConsumer), typeof(TestConsumerDefinition));
 
             cfg.UsingInMemory(
-                (ctx, cfg) =>
+                (ctx, busCfg) =>
                 {
-                    cfg.ConfigureEndpoints(ctx);
+                    busCfg.ConfigureEndpoints(ctx);
                 }
             );
         });

@@ -20,8 +20,8 @@ public class TestOperationResult
 
 public class TestOperationHandler : IOperationHandler<TestOperation, TestOperationResult>
 {
-    public Task<TestOperationResult> ExecuteAsync(HttpContext context, TestOperation query)
+    public Task<TestOperationResult> ExecuteAsync(HttpContext context, TestOperation operation)
     {
-        return Task.FromResult(new TestOperationResult { Sum = query.X + query.Y });
+        return Task.FromResult(new TestOperationResult { Sum = operation.X + operation.Y });
     }
 }

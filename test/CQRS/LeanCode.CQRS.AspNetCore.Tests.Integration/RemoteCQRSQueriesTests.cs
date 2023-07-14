@@ -41,12 +41,12 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     {
         var (body, statusCode) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
-            @"{ ""X"": 2, ""Y"": 3 }"
+            """{ "X": 2, "Y": 3 }"""
         );
 
         Assert.Equal(HttpStatusCode.OK, statusCode);
         var result = JsonSerializer.Deserialize<TestQueryResult>(body);
-        Assert.Equal(5, result.Sum);
+        Assert.Equal(5, result?.Sum);
     }
 
     [Fact]

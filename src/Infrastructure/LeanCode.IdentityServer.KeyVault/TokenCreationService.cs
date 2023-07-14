@@ -12,10 +12,12 @@ internal sealed class TokenCreationService : DefaultTokenCreationService
 
     public TokenCreationService(
         SigningService signing,
+#pragma warning disable CS0618 // obsolete
         ISystemClock clock,
+#pragma warning restore CS0618 // obsolete
         IKeyMaterialService keys,
         IdentityServerOptions options,
-        ILogger<DefaultTokenCreationService> logger
+        ILogger<TokenCreationService> logger
     )
         : base(clock, keys, options, logger)
     {

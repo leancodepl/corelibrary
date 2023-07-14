@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -32,7 +33,7 @@ public static class ServiceCollectionExtensions
         return serviceCollection;
     }
 
-    private static IEnumerable<Type> GetImplementedGenericTypes(Type type, Type genericType)
+    private static IEnumerable<Type> GetImplementedGenericTypes(TypeInfo type, Type genericType)
     {
         return type.GetInterfaces()
             .Concat(GetBaseTypes(type))

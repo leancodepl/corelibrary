@@ -1,14 +1,14 @@
 namespace LeanCode.CQRS.Execution;
 
-public struct ExecutionResult
+public readonly record struct ExecutionResult
 {
-    public int StatusCode { get; private set; }
+    public int StatusCode { get; private init; }
 
     /// <remarks>
     /// Indicates that result should be written in http response, however <see cref="Payload"/> may still be a null value.
     /// </remarks>
-    public bool HasPayload { get; private set; }
-    public object? Payload { get; private set; }
+    public bool HasPayload { get; private init; }
+    public object? Payload { get; private init; }
 
     public static ExecutionResult Empty(int code) => new() { StatusCode = code, };
 

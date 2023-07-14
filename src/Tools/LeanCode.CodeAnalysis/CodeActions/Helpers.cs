@@ -15,7 +15,7 @@ public static class Helpers
     public static bool TypeIsResolvable(SemanticModel model, int position, SyntaxNode type)
     {
         var info = model.GetSpeculativeTypeInfo(position, type, SpeculativeBindingOption.BindAsTypeOrNamespace);
-        return (info.Type?.Kind is SymbolKind k) && k != SymbolKind.ErrorType;
+        return info.Type?.Kind is { } k && k != SymbolKind.ErrorType;
     }
 
     public static void InsertNamespaceDirective(DocumentEditor editor, SyntaxNode root, string namespaceName)
@@ -26,7 +26,7 @@ public static class Helpers
             .OrderBy(n => n.Name.ToString(), NamespaceComparer)
             .ToArray();
 
-        if (!namespaces.Any())
+        if (namespaces.Length == 0)
         {
             editor.InsertBefore(root.DescendantNodes().First(), stmt);
             return;
@@ -46,7 +46,7 @@ public static class Helpers
         }
     }
 
-    private static SyntaxNode BuildUsing(string namespaceName)
+    private static UsingDirectiveSyntax BuildUsing(string namespaceName)
     {
         var name = SF.ParseName(namespaceName).WithLeadingTrivia(SF.ParseTrailingTrivia(" "));
         return SF.UsingDirective(name).WithTrailingTrivia(SF.ParseTrailingTrivia("\n"));
