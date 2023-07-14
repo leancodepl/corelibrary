@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeanCode.CQRS.ScopedTransaction;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public class PessimisticConcurrencyAttribute : Attribute
+public sealed class PessimisticConcurrencyAttribute : Attribute
 {
     /// <summary>
     /// Whether <see cref="ScopedTransactionMiddleware{TDbContext}"/> should explicitly call <see cref="DbContext.SaveChangesAsync(System.Threading.CancellationToken)"/>.

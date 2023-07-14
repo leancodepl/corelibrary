@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.CQRS.MassTransitRelay.Testing;
 
-internal class ResettableBusActivityMonitorInitializer : IHostedService
+internal sealed class ResettableBusActivityMonitorInitializer : IHostedService
 {
     public ResettableBusActivityMonitorInitializer(ResettableBusActivityMonitor monitor)
     {

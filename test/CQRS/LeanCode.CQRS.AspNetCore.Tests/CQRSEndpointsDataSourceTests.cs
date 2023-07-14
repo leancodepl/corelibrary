@@ -166,13 +166,13 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
         public Task DisposeAsync() => host.StopAsync();
 
-        private class MockExecutorFactory : IObjectExecutorFactory
+        private sealed class MockExecutorFactory : IObjectExecutorFactory
         {
             public ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object) =>
                 (httpContext, payload) => Task.FromResult(null as object);
         }
 
-        private class IgnoreHandler { }
+        private sealed class IgnoreHandler { }
     }
 }
 

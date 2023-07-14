@@ -76,7 +76,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
         interceptedHttpContext.Should().BeSameAs(httpContext);
     }
 
-    private class Validator : AbstractValidator<Command>
+    private sealed class Validator : AbstractValidator<Command>
     {
         public const int MinValue = 5;
 
@@ -105,7 +105,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
         }
     }
 
-    private class Command : ICommand
+    private sealed class Command : ICommand
     {
         public int Data { get; set; }
         public bool FailCustom { get; set; }

@@ -37,15 +37,12 @@ public class DefaultLeanCodeCredentialsTests_Authorization
         await AssertGetsTokenAsync(cred);
     }
 
+    private static readonly string[] RequestedScopes = { "https://database.windows.net/.default" }; // just an arbitrary scope
+
     private static async Task AssertGetsTokenAsync(TokenCredential cred)
     {
         var ex = await Record.ExceptionAsync(
-            () =>
-                cred.GetTokenAsync(
-                        new TokenRequestContext(new[] { "https://database.windows.net/.default" }), // just an arbitrary scope
-                        CancellationToken.None
-                    )
-                    .AsTask()
+            () => cred.GetTokenAsync(new TokenRequestContext(RequestedScopes), CancellationToken.None).AsTask()
         );
 
         Assert.Null(ex);

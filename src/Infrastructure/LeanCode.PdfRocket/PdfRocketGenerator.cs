@@ -54,7 +54,7 @@ public class PdfRocketGenerator
         CancellationToken cancellationToken = default
     )
     {
-        logger.Debug("Generating PDF from URL {@URL}", url);
+        logger.Debug("Generating PDF from URL {@Url}", url);
 
         return GenerateAsync(url.ToString(), options, cancellationToken);
     }
@@ -85,7 +85,7 @@ public class PdfRocketGenerator
         "CA2000",
         Justification = "Can't be easily fixed with current approach."
     )]
-    private HttpContent GetContent(string source, PdfOptions? options)
+    private MultipartFormDataContent GetContent(string source, PdfOptions? options)
     {
         var content = new MultipartFormDataContent
         {

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,8 @@ public class AuthQuery : IQuery<AuthResult> { }
 public class AuthResult
 {
     public bool IsAuthenticated { get; set; }
+
+    [SuppressMessage("?", "CA2227", Justification = "Public modifiable list as part of the contract")]
     public List<KeyValuePair<string, string>> Claims { get; set; } = default!;
 }
 

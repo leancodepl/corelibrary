@@ -15,13 +15,9 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, I
         this.registry = registry;
     }
 
-    protected override Task<bool> CheckIfAuthorizedAsync(
-        HttpContext appContext,
-        object obj,
-        string[]? customData = null
-    )
+    protected override Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, object obj, string[]? customData)
     {
-        if (!appContext.User.HasPermission(registry, customData ?? System.Array.Empty<string>()))
+        if (!httpContext.User.HasPermission(registry, customData ?? Array.Empty<string>()))
         {
             logger.Warning(
                 "User does not have sufficient permissions ({Permissions}) to run {@Object}",

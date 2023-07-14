@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
@@ -12,6 +13,7 @@ public class TestCommand : ICommand, ICustomAuthorizerParams
     public bool FailValidation { get; set; }
     public bool FailAuthorization { get; set; }
 
+    [SuppressMessage("?", "CA1034", Justification = "Convention for error codes")]
     public static class ErrorCodes
     {
         public const int ValidationError = 1;

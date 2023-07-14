@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
@@ -16,6 +17,7 @@ public class AddEntity : ICommand
 {
     public string Value { get; set; } = null!;
 
+    [SuppressMessage("?", "CA1034", Justification = "Convention for error codes")]
     public static class ErrorCodes
     {
         public const int ValueRequired = 1;
@@ -28,7 +30,7 @@ public class ListEntities : IQuery<List<EntityDTO>> { }
 public class EntityDTO
 {
     public Guid Id { get; set; }
-    public string Value { get; set; }
+    public string Value { get; set; } = default!;
 }
 
 public class ListEntitiesQH : IQueryHandler<ListEntities, List<EntityDTO>>

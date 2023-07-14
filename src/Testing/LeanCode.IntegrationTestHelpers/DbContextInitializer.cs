@@ -2,13 +2,14 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Polly;
+using Polly.Retry;
 
 namespace LeanCode.IntegrationTestHelpers;
 
 public class DbContextInitializer<T> : IHostedService
     where T : DbContext
 {
-    private static readonly IAsyncPolicy CreatePolicy = Policy
+    private static readonly AsyncRetryPolicy CreatePolicy = Policy
         .Handle<SqlException>(e => e.Number == 5177)
         .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), });
 

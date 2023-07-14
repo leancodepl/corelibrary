@@ -135,7 +135,7 @@ public class FCMClient
             .Where(ShouldTokenBeRemoved)
             .Select(p => p.Second)
             .ToList();
-        if (tokensToRemove.Any())
+        if (tokensToRemove.Count != 0)
         {
             logger.Debug("Some PN tokens have to be removed because they either expired or are wrongly configured");
             await tokenStore.RemoveTokensAsync(tokensToRemove, cancellationToken);

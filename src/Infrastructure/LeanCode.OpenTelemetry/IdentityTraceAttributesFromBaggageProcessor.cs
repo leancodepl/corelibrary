@@ -5,18 +5,18 @@ namespace LeanCode.OpenTelemetry;
 
 public class IdentityTraceAttributesFromBaggageProcessor : BaseProcessor<Activity>
 {
-    public override void OnEnd(Activity activity)
+    public override void OnEnd(Activity data)
     {
-        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.UserIdKey) is string userId)
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.UserIdKey) is { } userId)
         {
-            activity.SetTag(IdentityTraceBaggageHelpers.UserIdKey, userId);
+            data.SetTag(IdentityTraceBaggageHelpers.UserIdKey, userId);
         }
 
-        var roles = activity.GetUserRoleBaggage();
+        var roles = data.GetUserRoleBaggage();
 
         if (roles is not null)
         {
-            activity.SetTag(IdentityTraceBaggageHelpers.RoleKey, roles);
+            data.SetTag(IdentityTraceBaggageHelpers.RoleKey, roles);
         }
     }
 }
