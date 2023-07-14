@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
@@ -10,11 +11,10 @@ internal sealed class TokenCreationService : DefaultTokenCreationService
 {
     private readonly SigningService signing;
 
+    [Obsolete]
     public TokenCreationService(
         SigningService signing,
-#pragma warning disable CS0618 // obsolete
         ISystemClock clock,
-#pragma warning restore CS0618 // obsolete
         IKeyMaterialService keys,
         IdentityServerOptions options,
         ILogger<TokenCreationService> logger
