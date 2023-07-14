@@ -46,7 +46,7 @@ public class Identity
     public JsonElement Traits { get; set; }
 }
 
-[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter))]
+[JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter<IdentityState>))]
 public enum IdentityState
 {
     Active,
