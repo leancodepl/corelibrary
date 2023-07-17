@@ -65,7 +65,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.11" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.20" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
