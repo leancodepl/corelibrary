@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <EntityFrameworkCoreVersion>8.0.0-preview.5.23280.1</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-preview.5.23302.2</AspNetCoreVersion>
+    <AspNetCoreVersion>8.0.0-preview.6.23329.11</AspNetCoreVersion>
     <ExtensionsVersion>8.0.0-preview.5.23280.8</ExtensionsVersion>
 
     <GoogleApisVersion>1.58.0</GoogleApisVersion>
@@ -65,7 +65,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.11" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.20" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
