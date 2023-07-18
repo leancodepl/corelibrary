@@ -12,6 +12,4 @@ updates:
         patterns:
           - "*"
         exclude-patterns:
-          - "Microsoft.AspNetCore*"
-          - "Microsoft.EntityFrameworkCore*"
-          - "Microsoft.Extensions*"
+          - "Microsoft.*"
