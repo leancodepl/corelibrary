@@ -15,12 +15,12 @@ updates:
       extensions:
         patterns:
           - "Microsoft.Extensions*"
-        exclude_patterns:
+        exclude-patterns:
           - "Microsoft.Extensions.WebEncoders" # this one follows ASP.NET versioning scheme
       misc:
         patterns:
           - "*"
-        exclude_patterns:
+        exclude-patterns:
           - "Microsoft.AspNetCore*"
           - "Microsoft.EntityFrameworkCore*"
           - "Microsoft.Extensions*"
