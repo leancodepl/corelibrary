@@ -5,19 +5,10 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      aspnet:
+      microsoft:
         patterns:
-          - "Microsoft.AspNetCore*"
-          - "Microsoft.Extensions.WebEncoders"
-      entityframework:
-        patterns:
-          - "Microsoft.EntityFrameworkCore*"
-      extensions:
-        patterns:
-          - "Microsoft.Extensions*"
-        exclude-patterns:
-          - "Microsoft.Extensions.WebEncoders" # this one follows ASP.NET versioning scheme
-      misc:
+          - "Microsoft.*"
+      other:
         patterns:
           - "*"
         exclude-patterns:
