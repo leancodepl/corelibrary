@@ -17,15 +17,10 @@ updates:
           - "Microsoft.Extensions*"
         exclude_patterns:
           - "Microsoft.Extensions.WebEncoders" # this one follows ASP.NET versioning scheme
-      identityserver:
+      misc:
         patterns:
-          - "IdentityServer*"
-      masstransit:
-        patterns:
-          - "MassTransit*"
-      serilog:
-        patterns:
-          - "Serilog*"
-      xunit:
-        patterns:
-          - "xunit*"
+          - "*"
+        exclude_patterns:
+          - "Microsoft.AspNetCore*"
+          - "Microsoft.EntityFrameworkCore*"
+          - "Microsoft.Extensions*"
