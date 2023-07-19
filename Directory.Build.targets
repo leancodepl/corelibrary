@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.0-preview.5.23280.1</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-preview.5.23302.2</AspNetCoreVersion>
-    <ExtensionsVersion>8.0.0-preview.5.23280.8</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0-preview.6.23329.4</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0-preview.6.23329.11</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0-preview.6.23329.7</ExtensionsVersion>
 
     <GoogleApisVersion>1.58.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>8.0.15</MassTransitVersion>
-    <SystemIdentityModelVersion>6.25.1</SystemIdentityModelVersion>
+    <SystemIdentityModelVersion>6.32.0</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
@@ -27,7 +27,7 @@
     <PackageReference Update="Autofac" Version="6.5.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 
-    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.6.0" />
+    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.6.3" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Update="Azure.Identity" Version="1.9.0" />
     <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.4.0" />
@@ -65,7 +65,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.11" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.20" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
@@ -96,7 +96,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.5.23308.3" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.6.23360.2" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
@@ -120,7 +120,7 @@
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.2" />
     <PackageReference Update="FluentAssertions" Version="6.11.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     <PackageReference Update="NSubstitute" Version="4.4.0" />
     <PackageReference Update="xunit" Version="2.4.2" />
     <PackageReference Update="xunit.analyzers" Version="1.1.0" />
