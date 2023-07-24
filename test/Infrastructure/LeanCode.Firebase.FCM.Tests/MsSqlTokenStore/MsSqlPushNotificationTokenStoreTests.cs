@@ -47,14 +47,14 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
 
         var result = await store.GetTokensAsync(new HashSet<Guid> { uid1, uid2 });
 
-        Assert.Equal(
-            new()
-            {
-                [uid1] = new() { Token1 },
-                [uid2] = new() { Token2 },
-            },
-            result
-        );
+        Assert.Equal(2, result.Count);
+        var first = Assert.Single(result, e => e.Key == uid1);
+        var firstToken = Assert.Single(first.Value);
+        Assert.Equal(Token1, firstToken);
+
+        var second = Assert.Single(result, e => e.Key == uid2);
+        var secondToken = Assert.Single(second.Value);
+        Assert.Equal(Token2, secondToken);
     }
 
     [Fact]
