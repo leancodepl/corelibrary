@@ -30,7 +30,7 @@ public class EntityAdded : IDomainEvent
     public EntityAdded(Entity entity)
     {
         Id = Guid.NewGuid();
-        DateOccurred = Time.Now;
+        DateOccurred = Time.UtcNow;
 
         EntityId = entity.Id;
         Value = entity.Value;

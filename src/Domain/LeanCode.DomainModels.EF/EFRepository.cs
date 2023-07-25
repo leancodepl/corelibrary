@@ -23,7 +23,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     {
         if (entity is IOptimisticConcurrency oc)
         {
-            oc.DateModified = Time.Now;
+            oc.DateModified = Time.UtcNow;
         }
 
         DbSet.Add(entity);
@@ -33,7 +33,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     {
         if (entity is IOptimisticConcurrency oc)
         {
-            oc.DateModified = Time.Now;
+            oc.DateModified = Time.UtcNow;
         }
 
         DbSet.Remove(entity);
@@ -43,7 +43,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     {
         foreach (var oc in entities.OfType<IOptimisticConcurrency>())
         {
-            oc.DateModified = Time.Now;
+            oc.DateModified = Time.UtcNow;
         }
 
         DbSet.RemoveRange(entities);
@@ -53,7 +53,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     {
         if (entity is IOptimisticConcurrency oc)
         {
-            oc.DateModified = Time.Now;
+            oc.DateModified = Time.UtcNow;
         }
     }
 
