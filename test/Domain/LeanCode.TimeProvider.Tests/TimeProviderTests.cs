@@ -57,6 +57,16 @@ public abstract class TimeProviderTests
         Assert.Equal(expectedTime.DateTime, now);
         Assert.Equal(DateTimeKind.Unspecified, now.Kind);
     }
+
+    [Fact]
+    public void TimeUtcNow_returns_timestamp_in_UTC_time_zone()
+    {
+        TestTimeProvider.ActivateFake(expectedTime, timeZoneInfo);
+
+        var utcNow = Time.UtcNow;
+        Assert.Equal(expectedTime.UtcDateTime, utcNow);
+        Assert.Equal(DateTimeKind.Utc, utcNow.Kind);
+    }
 }
 
 public class TimeProviderTests1 : TimeProviderTests
