@@ -62,7 +62,9 @@ public static class IHostBuilderExtensions
                         minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
                     loggerConfiguration.MinimumLevel
                         .Override("Microsoft", internalLogLevel)
-                        .MinimumLevel.Override("System", internalLogLevel);
+                        .MinimumLevel.Override("System", internalLogLevel)
+                        .MinimumLevel.Override("Azure.Identity", internalLogLevel)
+                        .MinimumLevel.Override("Azure.Core", internalLogLevel);
                 }
 
                 if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
