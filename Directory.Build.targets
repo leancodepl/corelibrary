@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.0-preview.6.23329.4</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-preview.6.23329.11</AspNetCoreVersion>
-    <ExtensionsVersion>8.0.0-preview.6.23329.7</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0-preview.7.23375.4</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0-preview.7.23375.9</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0-preview.7.23375.6</ExtensionsVersion>
 
     <GoogleApisVersion>1.61.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -27,7 +27,7 @@
     <PackageReference Update="Autofac" Version="7.0.1" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 
-    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.6.3" />
+    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.7.0" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Update="Azure.Identity" Version="1.9.0" />
     <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.5.0" />
@@ -65,7 +65,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.20" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.21" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
@@ -96,7 +96,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.6.23360.2" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.7.23407.5" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
@@ -120,7 +120,7 @@
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.6" />
     <PackageReference Update="FluentAssertions" Version="6.11.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.0" />
     <PackageReference Update="NSubstitute" Version="5.0.0" />
     <PackageReference Update="xunit" Version="2.5.0" />
     <PackageReference Update="xunit.analyzers" Version="1.2.0" />
