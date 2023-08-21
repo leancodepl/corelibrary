@@ -6,7 +6,7 @@
 
     <GoogleApisVersion>1.61.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>8.0.16</MassTransitVersion>
+    <MassTransitVersion>8.1.0</MassTransitVersion>
     <SystemIdentityModelVersion>6.32.1</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
@@ -24,12 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Autofac" Version="7.0.1" />
+    <PackageReference Update="Autofac" Version="7.1.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 
     <PackageReference Update="Microsoft.Extensions.Azure" Version="1.6.3" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Update="Azure.Identity" Version="1.9.0" />
+    <PackageReference Update="Azure.Identity" Version="1.10.0" />
     <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.5.0" />
     <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
 
@@ -52,7 +52,7 @@
     <PackageReference Update="Ory.Kratos.Client" Version="0.13.1" />
 
     <PackageReference Update="Cronos" Version="0.7.1" />
-    <PackageReference Update="Dapper" Version="2.0.143" />
+    <PackageReference Update="Dapper" Version="2.0.151" />
     <PackageReference Update="FluentValidation" Version="11.5.1" />
     <PackageReference Update="Polly" Version="7.2.4" />
     <PackageReference Update="Sendgrid" Version="9.28.1" />
@@ -118,7 +118,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="BenchmarkDotNet" Version="0.13.6" />
+    <PackageReference Update="BenchmarkDotNet" Version="0.13.7" />
     <PackageReference Update="FluentAssertions" Version="6.11.0" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     <PackageReference Update="NSubstitute" Version="5.0.0" />
