@@ -6,32 +6,46 @@ namespace LeanCode.CQRS.MassTransitRelay.Middleware;
 
 public class EventsPublisherMiddleware
 {
+    public const string EventActorIdentifier = "ActorId";
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherMiddleware>();
     private readonly RequestDelegate next;
     private readonly AsyncEventsInterceptor interceptor;
+    private readonly EventsPublisherOptions options;
 
-    public EventsPublisherMiddleware(RequestDelegate next, AsyncEventsInterceptor interceptor)
+    public EventsPublisherMiddleware(
+        RequestDelegate next,
+        AsyncEventsInterceptor interceptor,
+        EventsPublisherOptions? options = null
+    )
     {
         this.next = next;
         this.interceptor = interceptor;
+        this.options = options ?? EventsPublisherOptions.Default;
     }
 
     public async Task InvokeAsync(HttpContext httpContext, IPublishEndpoint publishEndpoint)
     {
         var events = await interceptor.CaptureEventsOfAsync(() => next(httpContext));
 
+        var actorId = httpContext.User.Claims.Where(c => c.Type == options.NameClaimType).FirstOrDefault()?.Value;
+
         if (events.Count > 0)
         {
-            await PublishEventsAsync(publishEndpoint, events, httpContext.RequestAborted);
+            await PublishEventsAsync(publishEndpoint, events, actorId, httpContext.RequestAborted);
         }
     }
 
-    private Task PublishEventsAsync(IPublishEndpoint publishEndpoint, List<IDomainEvent> events, CancellationToken ct)
+    private Task PublishEventsAsync(
+        IPublishEndpoint publishEndpoint,
+        List<IDomainEvent> events,
+        string? actorId,
+        CancellationToken ct
+    )
     {
         logger.Debug("Publishing {Count} raised events", events.Count);
         var conversationId = Guid.NewGuid();
 
-        var publishTasks = events.Select(evt => PublishEventAsync(publishEndpoint, evt, conversationId, ct));
+        var publishTasks = events.Select(evt => PublishEventAsync(publishEndpoint, evt, actorId, conversationId, ct));
 
         return Task.WhenAll(publishTasks);
     }
@@ -39,6 +53,7 @@ public class EventsPublisherMiddleware
     private Task PublishEventAsync(
         IPublishEndpoint publishEndpoint,
         IDomainEvent evt,
+        string? actorId,
         Guid conversationId,
         CancellationToken ct
     )
@@ -50,6 +65,7 @@ public class EventsPublisherMiddleware
             {
                 publishCtx.MessageId = evt.Id;
                 publishCtx.ConversationId = conversationId;
+                publishCtx.Headers.Set(EventActorIdentifier, actorId);
             },
             ct
         );
