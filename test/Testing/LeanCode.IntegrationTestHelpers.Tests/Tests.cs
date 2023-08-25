@@ -2,7 +2,6 @@ using System.Security.Claims;
 using FluentAssertions;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers.Tests.App;
-using LeanCode.IntegrationTestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;

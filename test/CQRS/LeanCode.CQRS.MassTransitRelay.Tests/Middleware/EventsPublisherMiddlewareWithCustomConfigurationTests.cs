@@ -1,3 +1,4 @@
+#nullable enable
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using FluentAssertions;
@@ -35,7 +36,10 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : IDis
                     .ConfigureServices(cfg =>
                     {
                         cfg.AddAuthentication().AddTestAuthenticationHandler();
-                        cfg.AddMassTransitTestHarness();
+                        cfg.AddMassTransitTestHarness(c =>
+                        {
+                            c.AddConsumer(typeof(TestEventConsumer), typeof(TestEventConsumerDefinition));
+                        });
                         cfg.AddAsyncEventsInterceptor();
 
                         cfg.AddSingleton(new EventsPublisherOptions("other_claim"));
@@ -47,7 +51,7 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : IDis
                         app.Run(ctx =>
                         {
                             var payload = ctx.GetCQRSRequestPayload();
-                            DomainEvents.Raise(new TestEvent());
+                            DomainEvents.Raise(new TestEvent1());
                             payload.SetResult(Execution.ExecutionResult.WithPayload(CommandResult.Success));
                             return Task.CompletedTask;
                         });
@@ -68,11 +72,20 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : IDis
         await harness.Start();
         var ctx = await SendAsync(new TestCommand(), null);
         AssertCommandResultSuccess(ctx);
-        harness.Published.Select<TestEvent>().Should().ContainSingle().Which.Context.Headers.Should().BeEmpty();
+        harness.Published.Select<TestEvent1>().Should().ContainSingle().Which.Context.Headers.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task Propagates_actor_id_if_able()
+    public async Task Does_not_propagate_anything_in_consumers_when_the_user_is_unauthorized()
+    {
+        await harness.Start();
+        var ctx = await SendAsync(new TestCommand(), null);
+        AssertCommandResultSuccess(ctx);
+        harness.Published.Select<TestEvent2>().Should().ContainSingle().Which.Context.Headers.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Propagates_actor_id_in_handlers_if_able()
     {
         await harness.Start();
 
@@ -94,7 +107,39 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : IDis
         var ctx = await SendAsync(new TestCommand(), testPrincipal);
         AssertCommandResultSuccess(ctx);
         var tmp = harness.Published
-            .Select<TestEvent>()
+            .Select<TestEvent1>()
+            .Should()
+            .ContainSingle()
+            .Which.Context.Headers.Should()
+            .ContainSingle()
+            .Which.Should()
+            .BeEquivalentTo(new KeyValuePair<string, object>("ActorId", "other_claim_value"));
+    }
+
+    [Fact]
+    public async Task Propagates_actor_id_in_consumers_if_able()
+    {
+        await harness.Start();
+
+        var testPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new Claim[]
+                {
+                    new("sub", "test_id"),
+                    new("role", "user"),
+                    new("role", "admin"),
+                    new("other_claim", "other_claim_value")
+                },
+                TestAuthenticationHandler.SchemeName,
+                "sub",
+                "role"
+            )
+        );
+
+        var ctx = await SendAsync(new TestCommand(), testPrincipal);
+        AssertCommandResultSuccess(ctx);
+        harness.Published
+            .Select<TestEvent2>()
             .Should()
             .ContainSingle()
             .Which.Context.Headers.Should()
