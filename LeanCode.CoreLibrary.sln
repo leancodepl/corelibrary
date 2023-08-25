@@ -193,8 +193,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CQRS.Annotations",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.TimeProvider.TestHelpers", "src\Testing\LeanCode.TimeProvider.TestHelpers\LeanCode.TimeProvider.TestHelpers.csproj", "{9837D365-5F3B-4849-853A-F3ED506950D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.CollectionExtensions", "src\Infrastructure\LeanCode.CollectionExtensions\LeanCode.CollectionExtensions.csproj", "{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1165,18 +1163,6 @@ Global
 		{9837D365-5F3B-4849-853A-F3ED506950D2}.Release|x64.Build.0 = Release|Any CPU
 		{9837D365-5F3B-4849-853A-F3ED506950D2}.Release|x86.ActiveCfg = Release|Any CPU
 		{9837D365-5F3B-4849-853A-F3ED506950D2}.Release|x86.Build.0 = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|x64.Build.0 = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Debug|x86.Build.0 = Debug|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|x64.ActiveCfg = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|x64.Build.0 = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|x86.ActiveCfg = Release|Any CPU
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1286,6 +1272,5 @@ Global
 		{78E74391-5455-41B5-AC59-1C07A06DB56E} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
 		{3BD3AF48-38EC-4CD6-8BED-3996737C9128} = {54A36A22-89A6-4525-AB2D-FBBB643C0CE0}
 		{9837D365-5F3B-4849-853A-F3ED506950D2} = {DD0E6BF3-F966-426F-901A-D0140B7FE13C}
-		{C9D6CAAA-3D65-4984-B1E6-388BAD82218F} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 	EndGlobalSection
 EndGlobal
