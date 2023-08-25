@@ -27,7 +27,7 @@ public class EventsPublisherMiddleware
     {
         var events = await interceptor.CaptureEventsOfAsync(() => next(httpContext));
 
-        var actorId = httpContext.User.Claims.Where(c => c.Type == options.NameClaimType).FirstOrDefault()?.Value;
+        var actorId = httpContext.User.Claims.FirstOrDefault(c => c.Type == options.NameClaimType)?.Value;
 
         if (events.Count > 0)
         {
