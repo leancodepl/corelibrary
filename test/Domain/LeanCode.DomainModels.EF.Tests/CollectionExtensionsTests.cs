@@ -1,3 +1,4 @@
+#nullable enable
 using FluentAssertions;
 using LeanCode.QueryableExtensions;
 using Xunit;
@@ -54,6 +55,19 @@ public class CollectionExtensionsTests
     }
 
     [Fact]
+    public void OrderBy_orders_correctly_using_custom_comparer()
+    {
+        animals
+            .OrderBy(c => c.Name, false, new ReverseComparer())
+            .Should()
+            .BeEquivalentTo(new[] { Dog, Dog, Dash, Dash, Cat, Parrot, });
+        animals
+            .OrderBy(c => c.Name, true, new ReverseComparer())
+            .Should()
+            .BeEquivalentTo(new[] { Parrot, Cat, Dash, Dash, Dog, Dog, });
+    }
+
+    [Fact]
     public void ThenBy_orders_by_secondary_condition_correctly()
     {
         animals
@@ -90,15 +104,15 @@ public class CollectionExtensionsTests
             .BeEquivalentTo(
                 new[]
                 {
-                    new { Animal = Parrot, Species = ParrotS4, },
-                    new { Animal = Parrot, Species = ParrotS5, },
-                    new { Animal = Parrot, Species = ParrotS6, },
-                    new { Animal = Dog, Species = DogS1, },
-                    new { Animal = Dog, Species = DogS2, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS4, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS5, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS6, },
+                    new { Animal = Dog, Species = (Species?)DogS1, },
+                    new { Animal = Dog, Species = (Species?)DogS2, },
                     new { Animal = Dash, Species = null as Species, },
-                    new { Animal = Cat, Species = CatS, },
-                    new { Animal = Dog, Species = DogS1, },
-                    new { Animal = Dog, Species = DogS2, },
+                    new { Animal = Cat, Species = (Species?)CatS, },
+                    new { Animal = Dog, Species = (Species?)DogS1, },
+                    new { Animal = Dog, Species = (Species?)DogS2, },
                     new { Animal = Dash, Species = null as Species, },
                 }
             );
@@ -109,29 +123,49 @@ public class CollectionExtensionsTests
             .BeEquivalentTo(
                 new[]
                 {
-                    new { Animal = Parrot, Species = ParrotS4, },
-                    new { Animal = Parrot, Species = ParrotS5, },
-                    new { Animal = Parrot, Species = ParrotS6, },
-                    new { Animal = Dog, Species = DogS1, },
-                    new { Animal = Dog, Species = DogS2, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS4, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS5, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS6, },
+                    new { Animal = Dog, Species = (Species?)DogS1, },
+                    new { Animal = Dog, Species = (Species?)DogS2, },
                     new { Animal = Dash, Species = null as Species, },
-                    new { Animal = Cat, Species = CatS, },
-                    new { Animal = Dog, Species = DogS1, },
-                    new { Animal = Dog, Species = DogS2, },
+                    new { Animal = Cat, Species = (Species?)CatS, },
+                    new { Animal = Dog, Species = (Species?)DogS1, },
+                    new { Animal = Dog, Species = (Species?)DogS2, },
                     new { Animal = Dash, Species = null as Species, },
                 }
             );
     }
 }
 
-internal class Animal(string name, int legsCount)
+internal sealed class Animal(string name, int legsCount)
 {
     public string Name { get; init; } = name;
     public int LegsCount { get; init; } = legsCount;
 }
 
-internal class Species(string animalName, int index)
+internal sealed class Species(string animalName, int index)
 {
     public string AnimalName { get; init; } = animalName;
     public int Index { get; init; } = index;
+}
+
+public class ReverseComparer : IComparer<string>
+{
+    public int Compare(string? x, string? y)
+    {
+        return new System.Collections.CaseInsensitiveComparer().Compare(Reverse(x), Reverse(y));
+    }
+
+    private static string? Reverse(string? s)
+    {
+        if (s is null)
+        {
+            return null;
+        }
+
+        var charArray = s.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
+    }
 }
