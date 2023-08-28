@@ -115,8 +115,9 @@ public static class CollectionExtensions
         public TKey Key { get; set; }
         public IEnumerable<TValue> Values { get; set; }
 
-        public static System.Reflection.PropertyInfo KeyPropertyInfo = typeof(Grouping<TKey, TValue>).GetProperty(
-            nameof(Key)
-        )!;
+        public static readonly System.Reflection.PropertyInfo KeyPropertyInfo = typeof(Grouping<
+            TKey,
+            TValue
+        >).GetProperty(nameof(Key))!;
     }
 }
