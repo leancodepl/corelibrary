@@ -14,7 +14,7 @@ public static class ConsumerConfigurationExtensions
                 && payload.TryGetHeader<string>(EventsPublisherMiddleware.EventActorIdentifier, out var actorId)
             )
             {
-                ex.Headers.Set("ActorId", actorId);
+                ex.Headers.Set(EventsPublisherMiddleware.EventActorIdentifier, actorId);
             }
         });
         return cfg;
@@ -29,7 +29,7 @@ public static class ConsumerConfigurationExtensions
                 && payload.TryGetHeader<string>(EventsPublisherMiddleware.EventActorIdentifier, out var actorId)
             )
             {
-                ex.Headers.Set("ActorId", actorId);
+                ex.Headers.Set(EventsPublisherMiddleware.EventActorIdentifier, actorId);
             }
         });
         return cfg;

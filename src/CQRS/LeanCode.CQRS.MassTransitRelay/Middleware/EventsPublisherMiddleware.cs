@@ -27,25 +27,23 @@ public class EventsPublisherMiddleware
     {
         var events = await interceptor.CaptureEventsOfAsync(() => next(httpContext));
 
-        var actorId = httpContext.User.Claims.FirstOrDefault(c => c.Type == options.NameClaimType)?.Value;
-
         if (events.Count > 0)
         {
-            await PublishEventsAsync(publishEndpoint, events, actorId, httpContext.RequestAborted);
+            await PublishEventsAsync(publishEndpoint, events, httpContext, httpContext.RequestAborted);
         }
     }
 
     private Task PublishEventsAsync(
         IPublishEndpoint publishEndpoint,
         List<IDomainEvent> events,
-        string? actorId,
+        HttpContext httpContext,
         CancellationToken ct
     )
     {
         logger.Debug("Publishing {Count} raised events", events.Count);
         var conversationId = Guid.NewGuid();
 
-        var publishTasks = events.Select(evt => PublishEventAsync(publishEndpoint, evt, actorId, conversationId, ct));
+        var publishTasks = events.Select(evt => PublishEventAsync(publishEndpoint, evt, httpContext, conversationId, ct));
 
         return Task.WhenAll(publishTasks);
     }
@@ -53,12 +51,15 @@ public class EventsPublisherMiddleware
     private Task PublishEventAsync(
         IPublishEndpoint publishEndpoint,
         IDomainEvent evt,
-        string? actorId,
+        HttpContext httpContext,
         Guid conversationId,
         CancellationToken ct
     )
     {
         logger.Debug("Publishing event of type {DomainEvent}", evt.GetType());
+
+        var actorId = httpContext.User.Claims.FirstOrDefault(c => c.Type == options.NameClaimType)?.Value;
+
         return publishEndpoint.Publish(
             (object)evt, // Cast is necessary to publish the event as it's type, not an `IDomainEvent`
             publishCtx =>
