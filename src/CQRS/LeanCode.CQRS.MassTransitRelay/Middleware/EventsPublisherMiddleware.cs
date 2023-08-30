@@ -1,3 +1,4 @@
+using Leancode.CQRS.MassTransitRelay;
 using LeanCode.DomainModels.Model;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +7,6 @@ namespace LeanCode.CQRS.MassTransitRelay.Middleware;
 
 public class EventsPublisherMiddleware
 {
-    public const string EventActorIdentifier = "ActorId";
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherMiddleware>();
     private readonly RequestDelegate next;
     private readonly AsyncEventsInterceptor interceptor;
@@ -66,7 +66,7 @@ public class EventsPublisherMiddleware
             {
                 publishCtx.MessageId = evt.Id;
                 publishCtx.ConversationId = conversationId;
-                publishCtx.Headers.Set(EventActorIdentifier, actorId);
+                publishCtx.Headers.Set(ConsumerConfigurationExtensions.ActorIdentifier, actorId);
             },
             ct
         );
