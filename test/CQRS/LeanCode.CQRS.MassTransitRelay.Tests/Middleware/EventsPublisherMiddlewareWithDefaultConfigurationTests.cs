@@ -1,20 +1,15 @@
 #nullable enable
 using System.Security.Claims;
 using FluentAssertions;
-using LeanCode.CQRS.MassTransitRelay.Middleware;
 using LeanCode.IntegrationTestHelpers;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.CQRS.MassTransitRelay.Tests.Middleware;
 
-public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : EventsPublisherMiddlewareBaseTests
+public sealed class EventsPublisherMiddlewareWithDefaultConfigurationTests : EventsPublisherMiddlewareBaseTests
 {
-    public EventsPublisherMiddlewareWithCustomConfigurationTests()
-        : base(cfg =>
-        {
-            cfg.AddSingleton(new EventsPublisherOptions("other_claim"));
-        }) { }
+    public EventsPublisherMiddlewareWithDefaultConfigurationTests()
+        : base(cfg => { }) { }
 
     [Fact]
     public async Task Does_not_propagate_anything_when_the_user_is_unauthorized()
@@ -60,7 +55,7 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
             .Which.Context.Headers.Should()
             .ContainSingle()
             .Which.Should()
-            .BeEquivalentTo(new KeyValuePair<string, object>("ActorId", "other_claim_value"));
+            .BeEquivalentTo(new KeyValuePair<string, object>("ActorId", "test_id"));
     }
 
     [Fact]
@@ -91,6 +86,6 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
             .Which.Context.Headers.Should()
             .ContainSingle()
             .Which.Should()
-            .BeEquivalentTo(new KeyValuePair<string, object>("ActorId", "other_claim_value"));
+            .BeEquivalentTo(new KeyValuePair<string, object>("ActorId", "test_id"));
     }
 }

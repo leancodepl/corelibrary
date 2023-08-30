@@ -43,7 +43,9 @@ public class EventsPublisherMiddleware
         logger.Debug("Publishing {Count} raised events", events.Count);
         var conversationId = Guid.NewGuid();
 
-        var publishTasks = events.Select(evt => PublishEventAsync(publishEndpoint, evt, httpContext, conversationId, ct));
+        var publishTasks = events.Select(
+            evt => PublishEventAsync(publishEndpoint, evt, httpContext, conversationId, ct)
+        );
 
         return Task.WhenAll(publishTasks);
     }
