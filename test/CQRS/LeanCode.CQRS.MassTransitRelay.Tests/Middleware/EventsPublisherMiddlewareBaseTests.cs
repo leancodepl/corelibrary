@@ -86,6 +86,14 @@ public class EventsPublisherMiddlewareBaseTests : IDisposable, IAsyncLifetime
         });
     }
 
+    protected async Task WaitForProcessing()
+    {
+        // There appears to be some hole in the test harness when tested with outbox.
+        // Even though the bus has stabilized, harness does not see the messages published.
+        // Resorting to harness inactivity which will takes more time, but is not flaky.
+        await Harness.InactivityTask;
+    }
+
     public Task DisposeAsync()
     {
         return Task.WhenAll(Host.StopAsync(), Harness.Stop());

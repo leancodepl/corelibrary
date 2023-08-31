@@ -21,7 +21,12 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
     {
         await Harness.Start();
         await SendAsync(new TestCommand(), null);
-        Harness.Published.Select<TestEvent1>().Should().ContainSingle().Which.Context.Headers.Should().BeEmpty();
+        await WaitForProcessing();
+        (await Harness.Published.SelectAsync<TestEvent1>().ToListAsync())
+            .Should()
+            .ContainSingle()
+            .Which.Context.Headers.Should()
+            .BeEmpty();
     }
 
     [Fact]
@@ -29,7 +34,12 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
     {
         await Harness.Start();
         await SendAsync(new TestCommand(), null);
-        Harness.Published.Select<TestEvent2>().Should().ContainSingle().Which.Context.Headers.Should().BeEmpty();
+        await WaitForProcessing();
+        (await Harness.Published.SelectAsync<TestEvent2>().ToListAsync())
+            .Should()
+            .ContainSingle()
+            .Which.Context.Headers.Should()
+            .BeEmpty();
     }
 
     [Fact]
@@ -53,8 +63,8 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
         );
 
         await SendAsync(new TestCommand(), testPrincipal);
-        Harness.Published
-            .Select<TestEvent1>()
+        await WaitForProcessing();
+        (await Harness.Published.SelectAsync<TestEvent1>().ToListAsync())
             .Should()
             .ContainSingle()
             .Which.Context.Headers.Should()
@@ -84,8 +94,8 @@ public sealed class EventsPublisherMiddlewareWithCustomConfigurationTests : Even
         );
 
         await SendAsync(new TestCommand(), testPrincipal);
-        Harness.Published
-            .Select<TestEvent2>()
+        await WaitForProcessing();
+        (await Harness.Published.SelectAsync<TestEvent2>().ToListAsync())
             .Should()
             .ContainSingle()
             .Which.Context.Headers.Should()
