@@ -21,21 +21,25 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
 
     public TContext CreateDbContext(string[] args)
     {
-        var connectionString =
-            MigrationsConfig.GetConnectionString()
-            ?? throw new InvalidOperationException("Failed to find connection string.");
+        var connectionString = MigrationsConfig.GetConnectionString();
+        var optionsAction = (SqlServerDbContextOptionsBuilder cfg) =>
+            UseAdditionalSqlServerDbContextOptions(cfg.MigrationsAssembly(AssemblyName));
 
-        var builder = new DbContextOptionsBuilder<TContext>()
-            .UseLoggerFactory(
-                new ServiceCollection()
-                    .AddLogging(cfg => cfg.AddConsole())
-                    .BuildServiceProvider()
-                    .GetRequiredService<ILoggerFactory>()
-            )
-            .UseSqlServer(
-                connectionString,
-                cfg => UseAdditionalSqlServerDbContextOptions(cfg.MigrationsAssembly(AssemblyName))
-            );
+        var builder = new DbContextOptionsBuilder<TContext>().UseLoggerFactory(
+            new ServiceCollection()
+                .AddLogging(cfg => cfg.AddConsole())
+                .BuildServiceProvider()
+                .GetRequiredService<ILoggerFactory>()
+        );
+
+        if (connectionString is not null)
+        {
+            builder = builder.UseSqlServer(connectionString, optionsAction);
+        }
+        else
+        {
+            builder = builder.UseSqlServer(optionsAction);
+        }
 
         UseAdditionalDbContextOptions(builder);
 
