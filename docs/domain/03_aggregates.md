@@ -9,9 +9,9 @@ In order to create aggregate root you should create class inheriting it. [`IAggr
 Consider the following aggregate.
 
 ```csharp
-public class User : IAggregateRoot<Id<User>>
+public class User : IAggregateRoot<UserId>
 {
-    public Id<User> Id { get; private init; }
+    public UserId Id { get; private init; }
     public string Name { get; private init; } = null!;
 
     DateTime IOptimisticConcurrency.DateModified { get; set; }
@@ -19,7 +19,7 @@ public class User : IAggregateRoot<Id<User>>
     private User()
     { }
 
-    public User(Id<User> id, string name)
+    public User(UserId id, string name)
     {
         Id = id;
         Name = name;
@@ -46,15 +46,15 @@ Id you don't want to use optimistic concurrency for your aggregate, you can use 
 Consider aggregate from previous example, but without optimistic concurrency.
 
 ```csharp
-public class User : IAggregateRootWithoutOptimisticConcurrency<Id<User>>
+public class User : IAggregateRootWithoutOptimisticConcurrency<UserId>
 {
-    public Id<User> Id { get; private init; }
+    public UserId Id { get; private init; }
     public string Name { get; private init; } = null!;
 
     private User()
     { }
 
-    public User(Id<User> id, string name)
+    public User(UserId id, string name)
     {
         Id = id;
         Name = name;
