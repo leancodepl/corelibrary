@@ -4,7 +4,7 @@ Aggregates are part of DDD. To create one you have to create a class inheriting 
 
 ## [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs)
 
-[`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) requires you to specify Id type.
+[`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) requires you to specify Id type. [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) has `Id`, because aggregate root is entity and entities have Ids.
 
 Consider the following aggregate.
 
