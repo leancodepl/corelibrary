@@ -61,3 +61,7 @@ public class User : IAggregateRootWithoutOptimisticConcurrency<UserId>
     }
 }
 ```
+
+## More
+
+If you want to read more about writing aggregates, you can do that [here](../guides/01_creating_an_aggregate.md).
