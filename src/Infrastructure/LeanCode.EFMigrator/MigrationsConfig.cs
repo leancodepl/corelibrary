@@ -5,7 +5,7 @@ namespace LeanCode.EFMigrator;
 
 public static class MigrationsConfig
 {
-    public static string ConnectionStringKey { get; set; } = "SqlServer:ConnectionString";
+    public static string ConnectionStringKey { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1056", Justification = "It should be `string`.")]
     public static string KeyVaultUrlKey { get; set; } = "KeyVault:VaultUrl";
