@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using static System.Console;
@@ -120,11 +120,12 @@ public abstract class Migrator
     {
         int rowsAffected;
 
-        using (var connection = new SqlConnection(MigrationsConfig.GetConnectionString()))
+        using (var connection = GetDbConnection())
         {
             connection.Open();
 
-            using var command = new SqlCommand(File.ReadAllText(SeedPath), connection);
+            using var command = connection.CreateCommand();
+            command.CommandText = File.ReadAllText(SeedPath);
 
             rowsAffected = command.ExecuteNonQuery();
         }
@@ -133,4 +134,6 @@ public abstract class Migrator
 
         return rowsAffected;
     }
+
+    protected abstract DbConnection GetDbConnection();
 }
