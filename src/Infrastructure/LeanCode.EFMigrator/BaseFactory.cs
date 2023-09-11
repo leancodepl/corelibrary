@@ -19,10 +19,6 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
 
     public TContext CreateDbContext(string[] args)
     {
-        var connectionString =
-            MigrationsConfig.GetConnectionString()
-            ?? throw new InvalidOperationException("Failed to find connection string.");
-
         var builder = new DbContextOptionsBuilder<TContext>().UseLoggerFactory(
             new ServiceCollection()
                 .AddLogging(cfg => cfg.AddConsole())
