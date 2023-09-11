@@ -60,4 +60,4 @@ public class User : IAggregateRoot<Id<User>>
 
 ### `IOptimisticConcurrency.DateModified`
 
-`DateModified` is optimistic concurrency token managed by application code. It is managed by [`EFRepository`](../../src/Domain/LeanCode.DomainModels.EF/EFRepository.cs) and you shouldn't do it by yourself, unless you know what you do. It is written this way, instead of `public DateTime DateModified { get; set; }`, to make it not accessible outside [`EFRepository`](../../src/Domain/LeanCode.DomainModels.EF/EFRepository.cs).
+`DateModified` is optimistic concurrency token managed by application code. It is managed by [`EFRepository`](../../src/Domain/LeanCode.DomainModels.EF/EFRepository.cs) and you shouldn't do it by yourself. It is written this way, instead of `public DateTime DateModified { get; set; }`, to make it not accessible outside [`EFRepository`](../../src/Domain/LeanCode.DomainModels.EF/EFRepository.cs).
