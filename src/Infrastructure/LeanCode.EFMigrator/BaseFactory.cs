@@ -15,8 +15,6 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
         typeof(TFactory).Assembly.GetName().Name
         ?? throw new InvalidOperationException("This type is not supported on Assembly-less runtimes.");
 
-    protected virtual void UseAdditionalDbContextOptions(DbContextOptionsBuilder<TContext> builder) { }
-
     public TContext CreateDbContext(string[] args)
     {
         var builder = new DbContextOptionsBuilder<TContext>().UseLoggerFactory(
@@ -27,8 +25,6 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
         );
 
         builder = UseDbProvider(builder);
-
-        UseAdditionalDbContextOptions(builder);
 
         return (TContext?)Activator.CreateInstance(typeof(TContext), builder.Options)
             ?? throw new InvalidOperationException("Failed to create DbContext instance.");
