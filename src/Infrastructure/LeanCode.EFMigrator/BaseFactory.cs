@@ -15,8 +15,6 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
         typeof(TFactory).Assembly.GetName().Name
         ?? throw new InvalidOperationException("This type is not supported on Assembly-less runtimes.");
 
-    protected virtual void UseAdditionalSqlServerDbContextOptions(SqlServerDbContextOptionsBuilder builder) { }
-
     protected virtual void UseAdditionalDbContextOptions(DbContextOptionsBuilder<TContext> builder) { }
 
     public TContext CreateDbContext(string[] args)
@@ -25,21 +23,20 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
             MigrationsConfig.GetConnectionString()
             ?? throw new InvalidOperationException("Failed to find connection string.");
 
-        var builder = new DbContextOptionsBuilder<TContext>()
-            .UseLoggerFactory(
-                new ServiceCollection()
-                    .AddLogging(cfg => cfg.AddConsole())
-                    .BuildServiceProvider()
-                    .GetRequiredService<ILoggerFactory>()
-            )
-            .UseSqlServer(
-                connectionString,
-                cfg => UseAdditionalSqlServerDbContextOptions(cfg.MigrationsAssembly(AssemblyName))
-            );
+        var builder = new DbContextOptionsBuilder<TContext>().UseLoggerFactory(
+            new ServiceCollection()
+                .AddLogging(cfg => cfg.AddConsole())
+                .BuildServiceProvider()
+                .GetRequiredService<ILoggerFactory>()
+        );
+
+        builder = UseDbProvider(builder);
 
         UseAdditionalDbContextOptions(builder);
 
         return (TContext?)Activator.CreateInstance(typeof(TContext), builder.Options)
             ?? throw new InvalidOperationException("Failed to create DbContext instance.");
     }
+
+    public abstract DbContextOptionsBuilder<TContext> UseDbProvider(DbContextOptionsBuilder<TContext> builder);
 }
