@@ -1,6 +1,6 @@
 # Aggregates
 
-Aggregates are part of DDD. To create one you have to create entity class inheriting [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) or [`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs).
+Aggregates are part of DDD. To create one you have to create a class inheriting [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) or [`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs).
 
 ## [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs)
 
