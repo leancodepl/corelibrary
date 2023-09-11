@@ -1,4 +1,5 @@
 # Domain
 
 1. [Value objects](../adrs/2021-02-04_value_object.md),
-2. [IDs](./ids.md).
+2. [IDs](./ids.md),
+3. [Aggregates](./03_aggregates.md).
