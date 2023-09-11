@@ -41,7 +41,7 @@ Parameterless constructor is required by EntityFramework. It is private because 
 
 ## [`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs)
 
-Id you don't want to use optimistic concurrency for your aggregate, you can use [`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) instead.
+If you don't want to use optimistic concurrency for your aggregate, you can use [`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) instead.
 
 Consider aggregate from previous example, but without optimistic concurrency.
 
