@@ -31,7 +31,7 @@ Parameterless constructor is required by entity framework. It is private to not 
 
 ### Id
 
-[`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) requires you to give Id type. Id property of your aggregate root has this type.
+[`IAggregateRootWithoutOptimisticConcurrency`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs) requires you to specify identity type. Every aggregate has an `Id` property of the specified type.
 
 ## [`IAggregateRoot`](../../src/Domain/LeanCode.DomainModels/Model/IAggregateRoot.cs)
 
