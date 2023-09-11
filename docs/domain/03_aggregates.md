@@ -29,7 +29,7 @@ public class User : IAggregateRoot<UserId>
 
 ### Parameterless constructor
 
-Parameterless constructor is required by entity framework. It is private to not be accessible outside.
+Parameterless constructor is required by EntityFramework. It is private because it should not be used in other scenarios, especially application code.
 
 ### Id
 
