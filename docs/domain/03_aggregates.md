@@ -9,6 +9,9 @@ Aggregates are part of DDD. To create one you have to create a class inheriting 
 Consider the following aggregate.
 
 ```csharp
+[TypedId(TypedIdFormat.RawInt)]
+public readonly partial record struct UserId;
+
 public class User : IAggregateRoot<UserId>
 {
     public UserId Id { get; private init; }
