@@ -13,11 +13,14 @@ Let's imagine a simple project management app where users can create projects wh
 Let's start with a simple model for the project aggregate.
 
 ```csharp
-public class Project : IAggregateRoot<SId<Project>>
+[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "project")]
+public readonly partial record struct ProjectId;
+
+public class Project : IAggregateRoot<ProjectId>
 {
     private readonly List<Task> tasks = new();
 
-    public SId<Project> Id { get; private init; }
+    public ProjectId Id { get; private init; }
     public string Name { get; private set; }
 
     public IReadOnlyList<Task> Tasks => tasks;
@@ -30,25 +33,28 @@ public class Project : IAggregateRoot<SId<Project>>
     {
         return new Project
         {
-            Id = SId<Project>.New(),
+            Id = ProjectId.New(),
             Name = name,
         };
     }
 }
 ```
 
-As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `SId<Project>` - it is a special type present in the CoreLibrary which is basically a Guid prefixed with a class name. In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
+As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `ProjectId` - it is a special source-generated type present in the CoreLibrary. You can read more about `Id` types [here](../domain/ids.md). In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
 The `Project` also has a list of `Tasks`. Notice that there are two lists containing tasks of a project - the `Tasks` one is a readonly interface for the `tasks` which contents can be changed by the class. Generally, we try to model the API in such a way that the objects cannot be changed from the outside - an object's state should be modified only by the methods it exposes.
 
 Let's follow with a class representing a task belonging to a project:
 
 ```csharp
-public class Task : IIdentifiable<SId<Task>>
+[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "task")]
+public readonly partial record struct TaskId;
+
+public class Task : IIdentifiable<TaskId>
 {
-    public SId<Task> Id { get; private init; }
+    public TaskId Id { get; private init; }
     public string Name { get; private set; }
     public TaskStatus Status { get; private set; }
-    public SId<User>? AssignedUser { get; private set; }
+    public UserId? AssignedUser { get; private set; }
 
     public Project ParentProject { get; private init; }
 
@@ -80,9 +86,12 @@ Notice that a task is not an aggregate root - it can only be accessed through th
 Likewise, let's create a class representing a user which can be assigned to a task:
 
 ```csharp
-public class User : IAggregateRoot<SId<User>>
+[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "User")]
+public readonly partial record struct UserId;
+
+public class User : IAggregateRoot<UserId>
 {
-    public SId<User> Id { get; private init; }
+    public UserId Id { get; private init; }
     public string Name { get; private set; }
     public string Email { get; private set; }
 
@@ -94,7 +103,7 @@ public class User : IAggregateRoot<SId<User>>
     {
         return new User
         {
-            Id = SId<User>.New(),
+            Id = UserId.New(),
             Name = name,
             Email = email,
         };
@@ -111,7 +120,7 @@ So far, only the structure of objects has been defined but business domain objec
 Let's start with a simple example of adding a few methods to the `Task` class:
 
 ```csharp
-public class Task : IIdentifiable<SId<Task>>
+public class Task : IIdentifiable<TaskId>
 {
     . . .
 
@@ -120,7 +129,7 @@ public class Task : IIdentifiable<SId<Task>>
         Name = name;
     }
 
-    public void AssignUser(SId<User> userId)
+    public void AssignUser(UserId userId)
     {
         AssignedUser = userId;
     }
@@ -140,7 +149,7 @@ public class Task : IIdentifiable<SId<Task>>
 Remember that the only way to access a task is to go through the relevant project which is the aggregate root. Because of this we will add some methods to the `Project` class which will allow us to interact with the tasks:
 
 ```csharp
-public class Project : IAggregateRoot<SId<Project>>
+public class Project : IAggregateRoot<ProjectId>
 {
     . . .
 
@@ -149,22 +158,22 @@ public class Project : IAggregateRoot<SId<Project>>
         this.tasks.AddRange(taskNames.Select(tn => Task.Create(this, tn)));
     }
 
-    public void EditTask(SId<Task> taskId, string name)
+    public void EditTask(TaskId taskId, string name)
     {
         tasks.Single(t => t.Id == taskId).Edit(name);
     }
 
-    public void AssignUserToTask(SId<Task> taskId, SId<User> userId)
+    public void AssignUserToTask(TaskId taskId, UserId userId)
     {
         tasks.Single(t => t.Id == taskId).AssignUser(userId);
     }
 
-    public void UnassignUserFromTask(SId<Task> taskId)
+    public void UnassignUserFromTask(TaskId taskId)
     {
         tasks.Single(t => t.Id == taskId).UnassignUser(userId);
     }
 
-    public void ChangeTaskStatus(SId<Task> taskId, TaskStatus status)
+    public void ChangeTaskStatus(TaskId taskId, TaskStatus status)
     {
         tasks.Single(t => t.Id == taskId).ChangeTaskStatus(status);
     }
@@ -180,14 +189,14 @@ The domain events make an important part of DDD. It is through the use of domain
 Let's imagine that we want to perform some action after a user has been assigned to a task. We will modify `AssignUserToTask` method from the `Project` class:
 
 ```csharp
-public class Project : IAggregateRoot<SId<Project>>
+public class Project : IAggregateRoot<ProjectId>
 {
     . . .
 
-    public void AssignUserToTask(SId<Task> taskId, SId<User> userId)
+    public void AssignUserToTask(TaskId taskId, UserId userId)
     {
         tasks.Single(t => t.Id == taskId).AssignUser(userId);
-        DomainEvents.Raise(new UserAssignedToTask(SId<Task> taskId, SId<User> userId));
+        DomainEvents.Raise(new UserAssignedToTask(TaskId taskId, UserId userId));
     }
 }
 ```
