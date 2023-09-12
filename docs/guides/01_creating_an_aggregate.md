@@ -182,7 +182,7 @@ public class Project : IAggregateRoot<ProjectId>
 
 Notice that these added methods can and will throw an exception if a project does not contain any task with provided Id. This is an excepted behavior - checks for respecting domain logic should be performed in respective command (or operations) validators.
 
-## Rasing domain events
+## Raising domain events
 
 The domain events make an important part of DDD. It is through the use of domain events that an aggregate may communicate with the rest of the system. In this section we will see how to raise an event from an aggregate.
 
