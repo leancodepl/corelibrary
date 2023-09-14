@@ -8,6 +8,10 @@ theme:
 markdown_extensions:
   - admonition
   - footnotes
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 nav:
   - Overview: README.md
   - General:
