@@ -238,3 +238,6 @@ packed
 .paket/Paket.Restore.targets
 
 **/BenchmarkDotNet.Artifacts
+
+# Python venv for MkDocs
+.env

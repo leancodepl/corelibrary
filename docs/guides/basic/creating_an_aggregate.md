@@ -40,7 +40,7 @@ public class Project : IAggregateRoot<ProjectId>
 }
 ```
 
-As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `ProjectId` - it is a special source-generated type present in the CoreLibrary. You can read more about `Id` types [here](../domain/ids.md). In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
+As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `ProjectId` - it is a special source-generated type present in the CoreLibrary. You can read more about `Id` types [here](../../domain/ids.md). In this case, the Id of the Project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
 The `Project` also has a list of `Tasks`. Notice that there are two lists containing tasks of a project - the `Tasks` one is a readonly interface for the `tasks` which contents can be changed by the class. Generally, we try to model the API in such a way that the objects cannot be changed from the outside - an object's state should be modified only by the methods it exposes.
 
 Let's follow with a class representing a task belonging to a project:
@@ -201,4 +201,4 @@ public class Project : IAggregateRoot<ProjectId>
 }
 ```
 
-`UserAssignedToTask` has to implement `IDomainEvent` interface. After being raised, the event can be handled by the matching `IConsumer` to perform wanted action. To read more about events, see [handling events](./0X_handling_events). <!-- TODO: add final name of the handling events file -->
+`UserAssignedToTask` has to implement `IDomainEvent` interface. After being raised, the event can be handled by the matching `IConsumer` to perform wanted action. To read more about events, see [handling events](./handling_events.md). <!-- TODO: add final name of the handling events file -->

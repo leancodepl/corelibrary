@@ -1,5 +1,8 @@
 # CQRS
 
+!!! warning "Outdated"
+    This document is slightly outdated and describes v7 version of the library. v8 revampend some of the things here.
+
 We use CQRS in almost every project. We try to stick to it as much as possible because it allows us to easily construct our APIs (using RemoteCQRS) and makes our code maintainable. Here, we present a short description on what CQRS is and how we designed it.
 
 This is not an extensive CQRS description. :)
@@ -99,12 +102,12 @@ public class CreateDishCH : ICommandHandler<AppContext, CreateDish>
 
 As you can see, the command handler is really simple - it just converts the command into new aggregate, tracking who owns the dish (`UserId` - they are the ones that have `CreateDish` permission). That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 
-1.  Keep them simple and testable, do not try to model whole flows with a single command,
-2.  Commands should rely on aggregates to gather the data (try not to use queries inside command handlers),
-3.  Commands should modify just a single aggregate (try to `AddAsync`/`UpdateAsync`/`DeleteAsync` at most once),
-4.  If the business process requires to modify multiple aggregates, try to use events and event handlers (but don't over-engineer),
-5.  If that does not help, modify/add/delete multiple aggregates,
-6.  Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
+1. Keep them simple and testable, do not try to model whole flows with a single command,
+2. Commands should rely on aggregates to gather the data (try not to use queries inside command handlers),
+3. Commands should modify just a single aggregate (try to `AddAsync`/`UpdateAsync`/`DeleteAsync` at most once),
+4. If the business process requires to modify multiple aggregates, try to use events and event handlers (but don't over-engineer),
+5. If that does not help, modify/add/delete multiple aggregates,
+6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
 
 #### Validation
 
@@ -293,7 +296,7 @@ All commands, queries and operations must derive from those interfaces and so th
 
 RemoteCQRS request example:
 
-```
+```bash
 curl -X POST \
   https://api.local.lncd.pl/api/query/Full.Object.Namespace.Name.FindDishesMatchingName \
   -H 'Content-Type: application/json' \

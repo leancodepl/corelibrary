@@ -2,11 +2,9 @@
 
 ## Dependency injection & startup changes changes
 
-Autofac is no longer the DI container of choice, corelibrary projects use `Microsoft.Extension.DependencyInjection`.
-Autofac based `IAppModule`s are still available in `LeanCode.Components.Autofac` however no project depends on it.
+Autofac is no longer the DI container of choice, corelibrary projects use `Microsoft.Extension.DependencyInjection`.  Autofac based `IAppModule`s are still available in `LeanCode.Components.Autofac` however no project depends on it.
 
-Instead services are registered via extension methods on `Microsoft.Extension.DependencyInjection.IServiceCollection`.
-Typically an `XYZModule` class was replaced with `AddXYZ()` extension method (e.g. `AddSmsSender()` replaced `SmsSenderModule`)
+Instead services are registered via extension methods on `Microsoft.Extension.DependencyInjection.IServiceCollection`.  Typically an `XYZModule` class was replaced with `AddXYZ()` extension method (e.g. `AddSmsSender()` replaced `SmsSenderModule`)
 
 Additionally, modules requiring configuration now require passing it explicitly when registering services. E.g. previously adding `SmsSenderModule` required the client to additionally register `SmsApiConfiguration` class. Now, the configuration class is required when calling `AddSmsSender()` method.
 
@@ -402,7 +400,6 @@ Similarly, you can override the rest of Kratos api clients, if your application 
 .NET 8 introduced `System.TimeProvider` class. To avoid name clash we renamed `LeanCode.Time.TimeProvider` to `LeanCode.TimeProvider.Time` (the package name still is `LeanCode.TimeProvider`).
 The `Time` class is built on top of `System.TimeProvider`. `FixedTimeProvider` was replaced by `TestTimeProvider`, which is available in `LeanCode.TimeProvider.TestHelpers` package.
 
-
 ```csharp
 // before
 using LeanCode.Time;
@@ -462,7 +459,7 @@ public class Entity : IIdentifiable<EntityId>
 
 ### Ulids
 
-[Ulid](https://github.com/ulid/spec) type was introduced (vendored implementation of https://github.com/Cysharp/Ulid).
+[Ulid](https://github.com/ulid/spec) type was introduced (vendored implementation of <https://github.com/Cysharp/Ulid>).
 Also, a source generated id type based on ulid was introduced (`TypedIdFormat.PrefixedUlid`).
 
 ### Azure Workload Identity

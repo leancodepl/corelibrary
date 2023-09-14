@@ -2,7 +2,7 @@
 
 ## Intro
 
-Interacting with systems that are based on the CoreLibrary follows the Command Query Responsibility Segregation ([CQRS](../basics/02_cqrs.md)) principle. As such, there are two main types of actions which can be performed in the system: commands, and [queries](./03_writing_queries.md) [^1]. In this guide we will focus on the former. A command is used to change the state of the system but it does not yield any results other then whether it succeeded — it can be treated as write-only action.
+Interacting with systems that are based on the CoreLibrary follows the Command Query Responsibility Segregation ([CQRS](../../basics/cqrs.md)) principle. As such, there are two main types of actions which can be performed in the system: commands, and [queries](./writing_queries.md) [^1]. In this guide we will focus on the former. A command is used to change the state of the system but it does not yield any results other then whether it succeeded — it can be treated as write-only action.
 
 Each command consists of three parts:
 
@@ -42,7 +42,7 @@ Notice the `ErrorCodes` class. These define possible validation errors which can
 
 Writing contracts in that way makes it possible for web and mobile clients to generate their own version of contract classes with use of the [Contract Generator](https://github.com/leancodepl/contractsgenerator), which is also a part of the CoreLibrary.
 
-Also, a contract can have authorization attributes, which define rules that have to be satisfied for a client to be able to invoke the command. Authorization, however, is an extension to the contracts system and not an integral part of it. To learn more about authorizers, see [authorization](./0X_authorization.md).
+Also, a contract can have authorization attributes, which define rules that have to be satisfied for a client to be able to invoke the command. Authorization, however, is an extension to the contracts system and not an integral part of it. To learn more about authorizers, see [authorization](./authorization.md).
 
 ## Command validator
 
@@ -66,8 +66,8 @@ A validator for a command should inherit from `Validator<T>` where `T` is a type
 
 ## Command handler
 
-> **Info :information_source:**
-> A command validator and handler are usually put in a single file with a `CH` suffix, e.g. `CreateProjectCH.cs`.
+!!! note
+    A command validator and handler are usually put in a single file with a `CH` suffix, e.g. `CreateProjectCH.cs`.
 
 Finally, we arrive at a command handler that is the part which actually executes the command. For the `CreateProject` command, a handler may look like this:
 
@@ -93,10 +93,10 @@ public class CreateProjectCH : ICommandHandler<CoreContext, CreateProject>
 }
 ```
 
-> **Warning :warning:**
-> According to DDD rules, a single command should only modify a single aggregate as an aggregate should be a transaction boundary in the system. If there is a need to modify multiple aggregates as a part of a single operation, raise events and modify all aggregates one by one in event handlers.
+!!! warning
+    According to DDD rules, a single command should only modify a single aggregate as an aggregate should be a transaction boundary in the system. If there is a need to modify multiple aggregates as a part of a single operation, raise events and modify all aggregates one by one in event handlers.
 
-The logic of the handler is straightforward — a new project with a given name is created and added to `projects` repository. The `IRepository` interface is a part of the CoreLibrary which allows to abstract the logic of persisting domain entities and to avoid dependency on the project's `DbContext` which allows for easier unit testing without having to mock the `DbContext`. A repository (and other services) should be injected into a command handler using dependency injection. Also, notice that the `Add` method used to persist newly created project is synchronous. It doesn't commit anything to the database which makes it possible to use [transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html) pattern. The actual asynchronous operation in the database is performed by `StoreAndPublishEvents()` element in the pipeline, see [pipeline](./0X_pipeline.md) for more info. A basic repository for projects allowing for operations on database may look like this:
+The logic of the handler is straightforward — a new project with a given name is created and added to `projects` repository. The `IRepository` interface is a part of the CoreLibrary which allows to abstract the logic of persisting domain entities and to avoid dependency on the project's `DbContext` which allows for easier unit testing without having to mock the `DbContext`. A repository (and other services) should be injected into a command handler using dependency injection. Also, notice that the `Add` method used to persist newly created project is synchronous. It doesn't commit anything to the database which makes it possible to use [transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html) pattern. The actual asynchronous operation in the database is performed by `StoreAndPublishEvents()` element in the pipeline, see [pipeline](./pipeline.md) for more info. A basic repository for projects allowing for operations on database may look like this:
 
 ```csharp
 public class ProjectsRepository<TContext>
@@ -115,8 +115,8 @@ public class ProjectsRepository<TContext>
 
 Here `EFRepository` is a class from the CoreLibrary containing default implementations for `Add`, `Delete` and `Update` methods which can be used to alter the contents of the database. Usually `FindAsync` method can be implemented as a simple retrieval of an entity based on Id but more complicated operations can also be done in the method if they are needed. Usually we don't wan to use `FindAsync` method of the corresponding `DbSet` to avoid concurrency errors resulting from entities being cached by the `DbSet`.
 
-> **Warning :warning:**
-> If an implemented command does not work, make sure that all referenced types are properly registered in the dependency injection container.
+!!! warning
+    If an implemented command does not work, make sure that all referenced types are properly registered in the dependency injection container.
 
 ## More complex commands
 
@@ -147,7 +147,7 @@ public class TaskDTO
     public class ErrorCodes
     {
         public const int NameCannotBeEmpty = 101;
-        public const int NameTooLong = 102; 
+        public const int NameTooLong = 102;
     }
 }
 ```

@@ -1,4 +1,4 @@
-# How to handle concurrency token columns in non–MSSQL databases
+# Optimistic Concurrency
 
 The `IOptimisticConcurrency` interface requires `DateTime DateModified` and `byte[] RowVersion` properties to be implemented by aggregate roots. However, the `byte[]` representation of `RowVersion` column is specific to Microsoft SQL Server and is not compatible with other databases, such as PostgreSQL and its convention to use `uint xmin` hidden column as a concurrency token.
 

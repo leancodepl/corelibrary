@@ -1,5 +1,8 @@
 # CoreLib-based apps
 
+!!! warning "Outdated"
+    This document is slightly outdated and describes v7 version of the library. v8 revampend some of the things here.
+
 CoreLib tries to make developing ASP.NET Core-based apps easier. One of the goals is to provide common features out of the box (e.g. logging & config) and unify how the app is being composed. Here, we describe what is being done and how it affects app structure.
 
 ## Used libraries

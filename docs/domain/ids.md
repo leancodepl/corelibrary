@@ -2,10 +2,10 @@
 
 The domain part of the library supports a set of generic IDs:
 
-1. [`Id<T>`](../../src/Domain/LeanCode.DomainModels/Model/Id.cs),
-2. [`IId<T>`](../../src/Domain/LeanCode.DomainModels/Model/Id.cs),
-3. [`LId<T>`](../../src/Domain/LeanCode.DomainModels/Model/Id.cs),
-4. [`SId<T>`](../../src/Domain/LeanCode.DomainModels/Model/SId.cs).
+1. [`Id<T>`],
+2. [`IId<T>`],
+3. [`LId<T>`],
+4. [`SId<T>`].
 
 All the types give you type safety when passing the IDs, without introducing penalty (they basically work as `newtype`s). Unfortunately, they require an entity to be defined beforehand - it works as a generic parameter. This means you can't use it without a corresponding entity type. This poses a problem if you want to use the ID outside the parent domain. It is also quite hard to use - you need to know the exact ID format before you reference it (you need to choose between the four types when you just want to reference other entity).
 
@@ -23,7 +23,7 @@ To use the source-generated IDs, you first need to reference the source generato
 <PackageReference Include="LeanCode.DomainModels.Generators" Version="(version)" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 ```
 
-Then, you need to add a partial struct record that will be filled up by the compiler when building the project, and decorate it with [`TypedIdAttribute`](../../src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs):
+Then, you need to add a partial struct record that will be filled up by the compiler when building the project, and decorate it with [`TypedIdAttribute`]:
 
 ```cs
 [TypedId(TypedIdFormat.RawInt)]
@@ -83,3 +83,9 @@ public readonly partial record struct VeryLongUserId;
 
 // The `VeryLongUserId` will have format `user_(guid)`, with `New` using `Guid.NewGuid` as random source.
 ```
+
+[`Id<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[`IId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[`LId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[`SId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[`TypedIdAttribute`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs

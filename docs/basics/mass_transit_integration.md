@@ -17,9 +17,9 @@ Relay module comes with a set of filters, mainly to ensure that events raised in
 The filters are:
 
 - `CorrelationFilter` - enriches logs with message ids, correlation ids and consumer types
-- `ConsumeMessagesOnceFilter`\* - see the [inbox](#Inbox)
+- `ConsumeMessagesOnceFilter`\* - see the [inbox](#inbox)
 - `EventsPublisherFilter`\* - relays Domain Events raised further in the pipeline to the bus
-- `StoreAndPublishEventsFilter`\* - as above, additionally implements [outbox](#Outbox)
+- `StoreAndPublishEventsFilter`\* - as above, additionally implements [outbox](#outbox)
 
 CAUTION: Filters marked with \* are registered via configuration observers - they are applied after other regular filters.
 This will cause an counterintuitive filters order if do not register them as last in the pipeline.

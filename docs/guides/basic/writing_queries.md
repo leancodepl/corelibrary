@@ -9,7 +9,7 @@ Each query consists of two parts:
 * Contract
 * Query handler
 
-This is analogous to how [commands](./02_writing_commands.md) are implemented, except a validator.
+This is analogous to how [commands](./writing_commands.md) are implemented, except a validator.
 
 ## Contract
 
