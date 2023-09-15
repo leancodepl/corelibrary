@@ -358,7 +358,7 @@ public readonly record struct Ulid
     public Ulid(Guid guid)
     {
         Span<byte> buf = stackalloc byte[16];
-        MemoryMarshal.Write(buf, ref guid);
+        MemoryMarshal.Write(buf, in guid);
         if (BitConverter.IsLittleEndian)
         {
             // Align with Guid layout - Int32, Int16, Int16, 8x Int8
