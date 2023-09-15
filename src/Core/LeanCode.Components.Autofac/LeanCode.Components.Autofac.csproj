@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-   
+
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Components/LeanCode.Components.csproj" />
+
+    <PackageReference Include="Autofac" />
   </ItemGroup>
 
 </Project>
