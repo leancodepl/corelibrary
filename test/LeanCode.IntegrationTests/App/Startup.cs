@@ -18,18 +18,20 @@ namespace LeanCode.IntegrationTests.App;
 public class Startup : LeanStartup
 {
     private static readonly TypesCatalog CQRSTypes = TypesCatalog.Of<Startup>();
+    private readonly TestDatabaseConfig testDatabaseConfig;
 
     protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)
-        : base(config) { }
+        : base(config)
+    {
+        testDatabaseConfig = TestDatabaseConfig.Create();
+    }
 
     public override void ConfigureServices(IServiceCollection services)
     {
         services.AddHostedService<DbContextInitializer<TestDbContext>>();
-        services.AddDbContext<TestDbContext>(
-            cfg => cfg.UseSqlServer(Configuration.GetValue<string>("SqlServer:ConnectionString"))
-        );
+        services.AddDbContext<TestDbContext>(cfg => testDatabaseConfig.ConfigureDbContext(cfg, Configuration));
         services.AddSingleton<IRoleRegistration, AppRoles>();
 
         services.AddRouting();
@@ -40,7 +42,7 @@ public class Startup : LeanStartup
             busCfg.AddConsumer<EntityAddedConsumer, EntityAddedConsumerDefinition>();
             busCfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
             {
-                outboxCfg.LockStatementProvider = new CustomSqlServerLockStatementProvider();
+                testDatabaseConfig.ConfigureMassTransitOutbox(outboxCfg);
                 outboxCfg.UseBusOutbox();
             });
 
