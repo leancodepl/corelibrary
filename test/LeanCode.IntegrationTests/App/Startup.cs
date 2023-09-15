@@ -1,6 +1,7 @@
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.MassTransitRelay;
+using LeanCode.CQRS.MassTransitRelay.LockProviders;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.CQRS.Security;
 using LeanCode.IntegrationTestHelpers;
@@ -39,7 +40,7 @@ public class Startup : LeanStartup
             busCfg.AddConsumer<EntityAddedConsumer, EntityAddedConsumerDefinition>();
             busCfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
             {
-                outboxCfg.UseSqlServer();
+                outboxCfg.LockStatementProvider = new CustomSqlServerLockStatementProvider();
                 outboxCfg.UseBusOutbox();
             });
 
