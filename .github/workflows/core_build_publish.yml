@@ -120,6 +120,12 @@ jobs:
           SA_PASSWORD: Passw12#
         ports:
           - "1433:1433"
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: Passw12#
+        ports:
+          - "5432:5432"
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET Core
@@ -141,12 +147,20 @@ jobs:
           CORELIB_TESTS_CLIENT_ID: ${{ secrets.CORELIB_TESTS_CLIENT_ID }}
           CORELIB_TESTS_CLIENT_SECRET: ${{ secrets.CORELIB_TESTS_CLIENT_SECRET }}
           CORELIB_TESTS_NPGSQL_CONNECTION_STRING: ${{ secrets.CORELIB_TESTS_NPGSQL_CONNECTION_STRING }}
-      - name: Integration Test
+      - name: Integration Test - SQL Server
         run: dotnet test -c Release --logger trx --results-directory ../TestResults
         working-directory: test/LeanCode.IntegrationTests
         env:
           ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
           SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
+          LeanCodeIntegrationTests__Database: sqlserver
+      - name: Integration Test - Postgres
+        run: dotnet test -c Release --logger trx --results-directory ../TestResults
+        working-directory: test/LeanCode.IntegrationTests
+        env:
+          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
+          Postgres__ConnectionStringBase: Host=localhost;Username=postgres;Password=Passw12#
+          LeanCodeIntegrationTests__Database: postgres
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         if: always()
