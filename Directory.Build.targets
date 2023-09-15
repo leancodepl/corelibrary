@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.0-preview.6.23329.4</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-preview.6.23329.11</AspNetCoreVersion>
-    <ExtensionsVersion>8.0.0-preview.6.23329.7</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0-rc.1.23419.6</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0-rc.1.23421.29</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0-rc.1.23419.4</ExtensionsVersion>
 
     <GoogleApisVersion>1.61.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -12,6 +12,8 @@
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>4.4.0</CodeAnalysisVersion>
+
+     <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.1.23419.4</DomainModelsTestsNetCoreAppRefVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -96,7 +98,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-preview.6.23360.2" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-rc.1.23453.1" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
