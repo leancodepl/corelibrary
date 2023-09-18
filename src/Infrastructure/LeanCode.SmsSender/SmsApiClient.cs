@@ -95,7 +95,7 @@ public class SmsApiClient : ISmsSender
         await using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
         try
         {
-            using var doc = JsonDocument.Parse(responseContent);
+            using var doc = await JsonDocument.ParseAsync(responseContent, cancellationToken: cancellationToken);
             HandleResponse(doc.RootElement);
         }
         catch (Exception e) when (e is JsonException || e is KeyNotFoundException || e is FormatException)

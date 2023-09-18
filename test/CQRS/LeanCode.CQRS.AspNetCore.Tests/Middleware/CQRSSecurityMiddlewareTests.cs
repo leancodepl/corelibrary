@@ -150,7 +150,7 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         var result = context.GetCQRSRequestPayload().Result;
 
         Assert.NotNull(result);
-        Assert.Equal(statusCode, result.Value.StatusCode);
+        Assert.Equal(statusCode, result!.Value.StatusCode);
     }
 
     private static void SetAuthorizationResultAsync(ICustomAuthorizer authorizer, bool result)
