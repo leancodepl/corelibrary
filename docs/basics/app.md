@@ -7,7 +7,7 @@ CoreLib tries to make developing ASP.NET Core-based apps easier. One of the goal
 CoreLib extends ASP.NET Core startup procedure and provides a set of opinionated library/service choices:
 
 1. [Serilog](https://serilog.net/) for logging,
-2. [Azure Key Vault](https://azure.microsoft.com/en-in/services/key-vault/) for production configuration,
+2. [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) for production configuration,
 3. [Seq](https://datalust.co/seq) for development-time log browsing,
 4. [OpenTelemetry-compatible](https://opentelemetry.io/) tooling for metrics & tracing,
 5. `stdout` for production logging. :)
