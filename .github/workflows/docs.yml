@@ -7,12 +7,12 @@ on:
 
 jobs:
   lint-changelog:
-    name: Lint changelog file
+    name: Lint docs
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Lint docs
+    - name: Lint
       uses: DavidAnson/markdownlint-cli2-action@v13
       with:
         config: ./docs/.markdownlint.jsonc
