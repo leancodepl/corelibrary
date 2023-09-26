@@ -12,11 +12,23 @@ public class IdentityTraceAttributesFromBaggageProcessor : BaseProcessor<Activit
             data.SetTag(IdentityTraceBaggageHelpers.UserIdKey, userId);
         }
 
-        var roles = data.GetUserRoleBaggage();
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.InitiatorIdKey) is { } initiatorId)
+        {
+            data.SetTag(IdentityTraceBaggageHelpers.InitiatorIdKey, initiatorId);
+        }
+
+        var roles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.UserRoleKey);
 
         if (roles is not null)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.RoleKey, roles);
+            data.SetTag(IdentityTraceBaggageHelpers.UserRoleKey, roles);
+        }
+
+        var initiatorRoles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.InitiatorRoleKey);
+
+        if (initiatorRoles is not null)
+        {
+            data.SetTag(IdentityTraceBaggageHelpers.InitiatorRoleKey, initiatorRoles);
         }
     }
 }
