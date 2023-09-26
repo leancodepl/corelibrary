@@ -1,21 +1,31 @@
 # IDs
 
-The domain part of the library supports a set of generic IDs:
+CoreLib supports three different flavors of IDs:
 
-1. [`Id<T>`],
-2. [`IId<T>`],
-3. [`LId<T>`],
-4. [`SId<T>`].
+1. Primitive types like `Guid`, `int`, etc.
+2. Generic type wrappers,
+3. Source generated IDs.
 
-All the types give you type safety when passing the IDs, without introducing penalty (they basically work as `newtype`s). Unfortunately, they require an entity to be defined beforehand - it works as a generic parameter. This means you can't use it without a corresponding entity type. This poses a problem if you want to use the ID outside the parent domain. It is also quite hard to use - you need to know the exact ID format before you reference it (you need to choose between the four types when you just want to reference other entity).
+From CoreLib v8, Source Generated IDs are the default one, with primitive types being fallbacks if source generated one cannot be used.
 
-Since v7.0 we introduced another ID type - source generated IDs - that solve the problem.
+## Types
 
-## Source generated IDs
+### Source generated IDs
 
 Source generated IDs leverage [Source Generators](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview) to generate fully functional ID structs that can work as IDs for entities. They are specialized for a particular entity type, but don't use the generic mechanisms of the language. They support the same feature set as aforementioned IDs.
 
-### How to use
+### Generic type wrappers
+
+The domain part of the library supports a set of generic IDs:
+
+1. [Id&lt;T&gt;],
+2. [IId&lt;T&gt;],
+3. [LId&lt;T&gt;],
+4. [SId&lt;T&gt;].
+
+All the types give you type safety when passing the IDs, without introducing penalty (they basically work as `newtype`s). Unfortunately, they require an entity to be defined beforehand - it works as a generic parameter. This means you can't use it without a corresponding entity type. This poses a problem if you want to use the ID outside the parent domain. It is also quite hard to use - you need to know the exact ID format before you reference it (you need to choose between the four types when you just want to reference other entity).
+
+## How to use source-generated IDs
 
 To use the source-generated IDs, you first need to reference the source generator that does the heavy lifting:
 
@@ -23,7 +33,7 @@ To use the source-generated IDs, you first need to reference the source generato
 <PackageReference Include="LeanCode.DomainModels.Generators" Version="(version)" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 ```
 
-Then, you need to add a partial struct record that will be filled up by the compiler when building the project, and decorate it with [`TypedIdAttribute`]:
+Then, you need to add a partial struct record that will be filled up by the compiler when building the project, and decorate it with [TypedIdAttribute]:
 
 ```cs
 [TypedId(TypedIdFormat.RawInt)]
@@ -84,8 +94,8 @@ public readonly partial record struct VeryLongUserId;
 // The `VeryLongUserId` will have format `user_(guid)`, with `New` using `Guid.NewGuid` as random source.
 ```
 
-[`Id<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[`IId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[`LId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[`SId<T>`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[`TypedIdAttribute`]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs
+[Id&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[IId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[LId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[SId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[TypedIdAttribute]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs
