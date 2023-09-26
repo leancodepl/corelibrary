@@ -27,8 +27,11 @@ public class FCMClient
 
     public LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
 
-    public Task SendToUserAsync(string userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
-        SendToUserAsync(userId, message, false, cancellationToken);
+    public Task SendToUserAsync(
+        string userId,
+        MulticastMessage message,
+        CancellationToken cancellationToken = default
+    ) => SendToUserAsync(userId, message, false, cancellationToken);
 
     public Task SendToUsersAsync(
         IReadOnlySet<string> userIds,

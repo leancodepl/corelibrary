@@ -95,7 +95,11 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         "CA1031",
         Justification = "The method is an exception boundary."
     )]
-    public async Task RemoveUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default)
+    public async Task RemoveUserTokenAsync(
+        string userId,
+        string newToken,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
