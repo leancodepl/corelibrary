@@ -27,11 +27,11 @@ public class FCMClient
 
     public LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
 
-    public Task SendToUserAsync(Guid userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
+    public Task SendToUserAsync(string userId, MulticastMessage message, CancellationToken cancellationToken = default) =>
         SendToUserAsync(userId, message, false, cancellationToken);
 
     public Task SendToUsersAsync(
-        IReadOnlySet<Guid> userIds,
+        IReadOnlySet<string> userIds,
         MulticastMessage message,
         CancellationToken cancellationToken = default
     ) => SendToUsersAsync(userIds, message, false, cancellationToken);
@@ -49,7 +49,7 @@ public class FCMClient
         SendAllAsync(new[] { message }, dryRun, cancellationToken);
 
     public async Task SendToUserAsync(
-        Guid userId,
+        string userId,
         MulticastMessage message,
         bool dryRun,
         CancellationToken cancellationToken = default
@@ -74,7 +74,7 @@ public class FCMClient
     }
 
     public async Task SendToUsersAsync(
-        IReadOnlySet<Guid> userIds,
+        IReadOnlySet<string> userIds,
         MulticastMessage message,
         bool dryRun,
         CancellationToken cancellationToken = default

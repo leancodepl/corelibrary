@@ -18,7 +18,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         this.dbContext = dbContext;
     }
 
-    public async Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<List<string>> GetTokensAsync(string userId, CancellationToken cancellationToken = default)
     {
         var res = await dbContext.QueryAsync<string>(
             $"SELECT {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.Token))} FROM {GetTokensTableName()} WHERE {GetTokensColumnName(nameof(PgSqlPushNotificationEntity.UserId))} = @userId",
@@ -28,8 +28,8 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         return res.AsList();
     }
 
-    public async Task<Dictionary<Guid, List<string>>> GetTokensAsync(
-        IReadOnlySet<Guid> userIds,
+    public async Task<Dictionary<string, List<string>>> GetTokensAsync(
+        IReadOnlySet<string> userIds,
         CancellationToken cancellationToken = default
     )
     {
@@ -51,7 +51,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         return res.GroupBy(g => g.UserId).ToDictionary(t => t.Key, t => t.Select(e => e.Token).ToList());
     }
 
-    public async Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+    public async Task AddUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -95,7 +95,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
         "CA1031",
         Justification = "The method is an exception boundary."
     )]
-    public async Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
+    public async Task RemoveUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -164,7 +164,7 @@ public sealed class PgSqlPushNotificationTokenStore<TDbContext> : IPushNotificat
 
     private readonly struct UserToken
     {
-        public Guid UserId { get; }
+        public string UserId { get; }
         public string Token { get; }
     }
 }

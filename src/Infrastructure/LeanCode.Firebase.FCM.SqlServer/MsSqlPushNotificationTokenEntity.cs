@@ -5,7 +5,7 @@ namespace LeanCode.Firebase.FCM.SqlServer;
 public class MsSqlPushNotificationTokenEntity
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; } = "";
     public string Token { get; set; } = "";
     public DateTime DateCreated { get; set; }
 
@@ -19,6 +19,7 @@ public class MsSqlPushNotificationTokenEntity
 
             c.Property(e => e.Id).ValueGeneratedNever();
             c.Property(e => e.Token).IsRequired(true).HasMaxLength(512);
+            c.Property(e => e.UserId).HasMaxLength(250);
         });
     }
 }
