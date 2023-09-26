@@ -7,28 +7,28 @@ public class IdentityTraceAttributesFromBaggageProcessor : BaseProcessor<Activit
 {
     public override void OnEnd(Activity data)
     {
-        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.UserIdKey) is { } userId)
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey) is { } userId)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.UserIdKey, userId);
+            data.SetTag(IdentityTraceBaggageHelpers.CurrentUserIdKey, userId);
         }
 
-        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.InitiatorIdKey) is { } initiatorId)
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserIdKey) is { } initiatorId)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.InitiatorIdKey, initiatorId);
+            data.SetTag(IdentityTraceBaggageHelpers.EndUserIdKey, initiatorId);
         }
 
-        var roles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.UserRoleKey);
+        var roles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey);
 
         if (roles is not null)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.UserRoleKey, roles);
+            data.SetTag(IdentityTraceBaggageHelpers.CurrentUserRoleKey, roles);
         }
 
-        var initiatorRoles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.InitiatorRoleKey);
+        var initiatorRoles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.EndUserRoleKey);
 
         if (initiatorRoles is not null)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.InitiatorRoleKey, initiatorRoles);
+            data.SetTag(IdentityTraceBaggageHelpers.EndUserRoleKey, initiatorRoles);
         }
     }
 }

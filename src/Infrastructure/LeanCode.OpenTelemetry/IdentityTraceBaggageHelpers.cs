@@ -5,10 +5,10 @@ namespace LeanCode.OpenTelemetry;
 
 public static class IdentityTraceBaggageHelpers
 {
-    public const string UserIdKey = "enduser.id";
-    public const string UserRoleKey = "enduser.role";
-    public const string InitiatorIdKey = "initiator.id";
-    public const string InitiatorRoleKey = "initiator.role";
+    public const string CurrentUserIdKey = "current_user.id";
+    public const string CurrentUserRoleKey = "current_user.role";
+    public const string EndUserIdKey = "enduser.id";
+    public const string EndUserRoleKey = "enduser.role";
 
     public static void SetUserRoleBaggage(this Activity activity, string roleKey, IEnumerable<string> roles)
     {

@@ -22,11 +22,11 @@ public static class IdentityTraceAttributesMiddleware
                         && !string.IsNullOrWhiteSpace(userId)
                     )
                     {
-                        activity.AddBaggage(IdentityTraceBaggageHelpers.UserIdKey, userId);
+                        activity.AddBaggage(IdentityTraceBaggageHelpers.CurrentUserIdKey, userId);
 
-                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.InitiatorIdKey) is null)
+                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserIdKey) is null)
                         {
-                            activity.AddBaggage(IdentityTraceBaggageHelpers.InitiatorIdKey, userId);
+                            activity.AddBaggage(IdentityTraceBaggageHelpers.EndUserIdKey, userId);
                         }
                     }
 
@@ -34,11 +34,11 @@ public static class IdentityTraceAttributesMiddleware
 
                     if (userRoles.Any())
                     {
-                        activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.UserRoleKey, userRoles);
+                        activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey, userRoles);
 
-                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.InitiatorRoleKey) is null)
+                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserRoleKey) is null)
                         {
-                            activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.InitiatorRoleKey, userRoles);
+                            activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.EndUserRoleKey, userRoles);
                         }
                     }
                 }
