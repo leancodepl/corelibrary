@@ -18,19 +18,28 @@ public static class IdentityTraceAttributesMiddleware
                 if ((httpContext.User.Identity?.IsAuthenticated ?? false) && Activity.Current is Activity activity)
                 {
                     if (
-                        activity.GetBaggageItem(IdentityTraceBaggageHelpers.UserIdKey) is null
-                        && httpContext.User.FindFirstValue(userIdClaim) is string userId
+                        httpContext.User.FindFirstValue(userIdClaim) is string userId
                         && !string.IsNullOrWhiteSpace(userId)
                     )
                     {
-                        activity.AddBaggage(IdentityTraceBaggageHelpers.UserIdKey, userId);
+                        activity.AddBaggage(IdentityTraceBaggageHelpers.CurrentUserIdKey, userId);
+
+                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserIdKey) is null)
+                        {
+                            activity.AddBaggage(IdentityTraceBaggageHelpers.EndUserIdKey, userId);
+                        }
                     }
 
                     var userRoles = httpContext.User.Claims.Where(c => c.Type == roleClaim).Select(c => c.Value);
 
-                    if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.RoleKey) is null && userRoles.Any())
+                    if (userRoles.Any())
                     {
-                        activity.SetUserRoleBaggage(userRoles);
+                        activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey, userRoles);
+
+                        if (activity.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserRoleKey) is null)
+                        {
+                            activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.EndUserRoleKey, userRoles);
+                        }
                     }
                 }
 

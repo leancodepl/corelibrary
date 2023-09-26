@@ -7,16 +7,28 @@ public class IdentityTraceAttributesFromBaggageProcessor : BaseProcessor<Activit
 {
     public override void OnEnd(Activity data)
     {
-        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.UserIdKey) is { } userId)
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey) is { } userId)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.UserIdKey, userId);
+            data.SetTag(IdentityTraceBaggageHelpers.CurrentUserIdKey, userId);
         }
 
-        var roles = data.GetUserRoleBaggage();
+        if (data.GetBaggageItem(IdentityTraceBaggageHelpers.EndUserIdKey) is { } initiatorId)
+        {
+            data.SetTag(IdentityTraceBaggageHelpers.EndUserIdKey, initiatorId);
+        }
+
+        var roles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey);
 
         if (roles is not null)
         {
-            data.SetTag(IdentityTraceBaggageHelpers.RoleKey, roles);
+            data.SetTag(IdentityTraceBaggageHelpers.CurrentUserRoleKey, roles);
+        }
+
+        var initiatorRoles = data.GetUserRoleBaggage(IdentityTraceBaggageHelpers.EndUserRoleKey);
+
+        if (initiatorRoles is not null)
+        {
+            data.SetTag(IdentityTraceBaggageHelpers.EndUserRoleKey, initiatorRoles);
         }
     }
 }

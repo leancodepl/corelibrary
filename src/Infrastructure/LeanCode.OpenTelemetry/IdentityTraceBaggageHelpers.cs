@@ -5,18 +5,20 @@ namespace LeanCode.OpenTelemetry;
 
 public static class IdentityTraceBaggageHelpers
 {
-    public const string UserIdKey = "enduser.id";
-    public const string RoleKey = "enduser.role";
+    public const string CurrentUserIdKey = "current_user.id";
+    public const string CurrentUserRoleKey = "current_user.role";
+    public const string EndUserIdKey = "enduser.id";
+    public const string EndUserRoleKey = "enduser.role";
 
-    public static void SetUserRoleBaggage(this Activity activity, IEnumerable<string> roles)
+    public static void SetUserRoleBaggage(this Activity activity, string roleKey, IEnumerable<string> roles)
     {
         var rolesJson = JsonSerializer.Serialize(roles);
-        activity.AddBaggage(RoleKey, rolesJson);
+        activity.AddBaggage(roleKey, rolesJson);
     }
 
-    public static IEnumerable<string>? GetUserRoleBaggage(this Activity activity)
+    public static IEnumerable<string>? GetUserRoleBaggage(this Activity activity, string roleKey)
     {
-        var rolesJson = activity.GetBaggageItem(RoleKey);
+        var rolesJson = activity.GetBaggageItem(roleKey);
 
         if (rolesJson is null)
         {
