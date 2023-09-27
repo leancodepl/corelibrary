@@ -23,7 +23,7 @@ public class FCMClient
         this.stringLocalizer = stringLocalizer;
     }
 
-    public LocalizedNotification Localize(CultureInfo culture) => new(stringLocalizer, culture);
+    public virtual LocalizedNotification Localize(CultureInfo culture) => new(stringLocalizer, culture);
 
     public LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
 
@@ -51,7 +51,7 @@ public class FCMClient
     public Task SendAsync(Message message, bool dryRun, CancellationToken cancellationToken = default) =>
         SendAllAsync(new[] { message }, dryRun, cancellationToken);
 
-    public async Task SendToUserAsync(
+    public virtual async Task SendToUserAsync(
         string userId,
         MulticastMessage message,
         bool dryRun,
@@ -76,7 +76,7 @@ public class FCMClient
         }
     }
 
-    public async Task SendToUsersAsync(
+    public virtual async Task SendToUsersAsync(
         IReadOnlySet<string> userIds,
         MulticastMessage message,
         bool dryRun,
@@ -102,7 +102,7 @@ public class FCMClient
         }
     }
 
-    public async Task SendAllAsync(
+    public virtual async Task SendAllAsync(
         IEnumerable<Message> messages,
         bool dryRun,
         CancellationToken cancellationToken = default
@@ -114,7 +114,7 @@ public class FCMClient
         await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
     }
 
-    public async Task SendMulticastAsync(
+    public virtual async Task SendMulticastAsync(
         MulticastMessage message,
         bool dryRun,
         CancellationToken cancellationToken = default
