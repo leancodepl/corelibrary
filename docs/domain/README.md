@@ -1,5 +1,6 @@
 # Domain
 
-1. [Value objects](../adrs/2021-02-04_value_object.md),
-2. [IDs](./ids.md),
-3. [Aggregates](./03_aggregates.md).
+Here, we describe basic concepts of the DDD part of CoreLibrary.
+
+1. [IDs](./ids.md),
+2. [Aggregates](./aggregates.md).

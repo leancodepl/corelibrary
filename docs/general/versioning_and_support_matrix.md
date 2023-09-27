@@ -30,7 +30,8 @@ Here is the list of available major versions of the library (as of 2022-03-25):
 | v4.1    | 3.1       |                   |            | Unmaintained      |
 | v4.2    | 3.1       |                   |            | Unmaintained      |
 | v5.0    | 5.0       |                   |            | Unmaintained      |
-| v5.1    | 5.0       |                   | &#x2714;   |                   |
-| v6.0    | 6.0       | &#x2714;          | &#x2714;   |                   |
-| v6.1    | 6.0       | &#x2714;          |            | Not started       |
-|         |           |                   |            |                   |
+| v5.1    | 5.0       |                   |            | Unmaintained      |
+| v6.0    | 6.0       |                   |            | Unmaintained      |
+| v6.1    | 6.0       |                   |            | Unmaintained      |
+| v7.0    | 7.0       |                   | &#x2714;   |                   |
+| v8.0    | 8.0       | &#x2714;          |            | In preview        |

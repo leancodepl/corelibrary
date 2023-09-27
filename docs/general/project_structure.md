@@ -26,11 +26,11 @@ The `src` folder that contains the main source code is then divided into:
 
 ## Build system
 
-CoreLib build system mostly MSBuild-based, with some help of CI system to orchestrate build/test/publish process (see [Building & Testing](./02_building-and-testing.md) for more details).
+CoreLib build system mostly MSBuild-based, with some help of CI system to orchestrate build/test/publish process (see [Building & Testing](./building_and_testing.md) for more details).
 
 We leverage .NET Core's MSBuild `Directory.Build.targets` files to centrally manage dependency versions. It is forbidden to directly specify `Version` in `csproj`s. Instead, one adds simple `<ProjectReference Include="NAME" />` and then `<ProjectReference Update="NAME" Version="VALID_VERSION" />` in `Directory.Build.targets` in the CoreLib root. This immensely helps avoiding dependency conflicts down the road.
 
-Besides `.targets` file, we use central `Directory.Build.props` to manage some of the project properties. Check [/Directory.Build.props](../../Directory.Build.props), [/src/Directory.Build.props](../../src/Directory.Build.props) and [/test/Directory.Build.props](../../test/Directory.Build.props) what is being centrally set.
+Besides `.targets` file, we use central `Directory.Build.props` to manage some of the project properties. Check [/Directory.Build.props], [/src/Directory.Build.props] and [/test/Directory.Build.props] what is being centrally set.
 
 ## Creating new packages
 
@@ -48,3 +48,7 @@ Or you can just modify the following project template (most of the projects use 
 ```
 
 :)
+
+[/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/Directory.Build.props
+[/src/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Directory.Build.props
+[/test/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/test/Directory.Build.props

@@ -1,7 +1,7 @@
-# General
+# Overview
 
 Here, we describe general topics regarding CoreLib:
 
- 1. [Versioning](./01_versioning-and-support-matrix.md),
- 2. [Building & testing](./02_building-and-testing.md),
- 3. [Project structure](./03_project-structure.md).
+ 1. [Versioning](./versioning_and_support_matrix.md),
+ 2. [Building & testing](./building_and_testing.md),
+ 3. [Project structure](./project_structure.md).

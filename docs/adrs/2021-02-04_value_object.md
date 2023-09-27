@@ -1,4 +1,4 @@
-# How to implement value objects in our domains
+# Value Objects
 
 While modelling a domain we use the concept of value objects. The issue is how to represent value objects in code, as described in DDD.
 
