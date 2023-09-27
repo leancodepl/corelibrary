@@ -12,7 +12,7 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     public async Task Gets_freshly_saved_token()
     {
         const string Token = "token";
-        var uid = "UserId";
+        const string uid = "UserId";
 
         await store.AddUserTokenAsync(uid, Token);
         var result = await store.GetTokensAsync(uid);
@@ -25,7 +25,7 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = "UserId";
+        const string uid = "UserId";
 
         await store.AddUserTokenAsync(uid, Token1);
         await store.AddUserTokenAsync(uid, Token2);
@@ -39,8 +39,8 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = "UserId1";
-        var uid2 = "UserId2";
+        const string uid1 = "UserId1";
+        const string uid2 = "UserId2";
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);
@@ -62,7 +62,7 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = "UserId";
+        const string uid = "UserId";
 
         await store.AddUserTokenAsync(uid, Token1);
         await store.AddUserTokenAsync(uid, Token2);
@@ -77,8 +77,8 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = "UserId1";
-        var uid2 = "UserId2";
+        const string uid1 = "UserId1";
+        const string uid2 = "UserId2";
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);
@@ -98,8 +98,8 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = "UserId1";
-        var uid2 = "UserId2";
+        const string uid1 = "UserId1";
+        const string uid2 = "UserId2";
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);

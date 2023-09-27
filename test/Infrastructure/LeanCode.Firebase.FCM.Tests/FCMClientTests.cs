@@ -10,7 +10,7 @@ public class FCMClientTests
     public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
     public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
 
-    private static readonly string UserId = "UserId";
+    private const string UserId = "UserId";
 
     private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(
         FirebaseConfiguration.Prepare(Key)
