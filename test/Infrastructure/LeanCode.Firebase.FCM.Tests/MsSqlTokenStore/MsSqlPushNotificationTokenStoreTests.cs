@@ -12,10 +12,10 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     public async Task Gets_freshly_saved_token()
     {
         const string Token = "token";
-        var uid = Guid.NewGuid();
+        const string UserId = "UserId";
 
-        await store.AddUserTokenAsync(uid, Token);
-        var result = await store.GetTokensAsync(uid);
+        await store.AddUserTokenAsync(UserId, Token);
+        var result = await store.GetTokensAsync(UserId);
 
         Assert.Equal(new() { Token }, result);
     }
@@ -25,11 +25,11 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = Guid.NewGuid();
+        const string UserId = "UserId";
 
-        await store.AddUserTokenAsync(uid, Token1);
-        await store.AddUserTokenAsync(uid, Token2);
-        var result = await store.GetTokensAsync(uid);
+        await store.AddUserTokenAsync(UserId, Token1);
+        await store.AddUserTokenAsync(UserId, Token2);
+        var result = await store.GetTokensAsync(UserId);
 
         Assert.Equal(new() { Token1, Token2 }, result);
     }
@@ -39,20 +39,20 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        const string UserId1 = "UserId1";
+        const string UserId2 = "UserId2";
 
-        await store.AddUserTokenAsync(uid1, Token1);
-        await store.AddUserTokenAsync(uid2, Token2);
+        await store.AddUserTokenAsync(UserId1, Token1);
+        await store.AddUserTokenAsync(UserId2, Token2);
 
-        var result = await store.GetTokensAsync(new HashSet<Guid> { uid1, uid2 });
+        var result = await store.GetTokensAsync(new HashSet<string> { UserId1, UserId2 });
 
         Assert.Equal(2, result.Count);
-        var first = Assert.Single(result, e => e.Key == uid1);
+        var first = Assert.Single(result, e => e.Key == UserId1);
         var firstToken = Assert.Single(first.Value);
         Assert.Equal(Token1, firstToken);
 
-        var second = Assert.Single(result, e => e.Key == uid2);
+        var second = Assert.Single(result, e => e.Key == UserId2);
         var secondToken = Assert.Single(second.Value);
         Assert.Equal(Token2, secondToken);
     }
@@ -62,12 +62,12 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = Guid.NewGuid();
+        const string UserId = "UserId";
 
-        await store.AddUserTokenAsync(uid, Token1);
-        await store.AddUserTokenAsync(uid, Token2);
+        await store.AddUserTokenAsync(UserId, Token1);
+        await store.AddUserTokenAsync(UserId, Token2);
         await store.RemoveTokenAsync(Token1);
-        var result = await store.GetTokensAsync(uid);
+        var result = await store.GetTokensAsync(UserId);
 
         Assert.Equal(new() { Token2 }, result);
     }
@@ -77,17 +77,17 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        const string UserId1 = "UserId1";
+        const string UserId2 = "UserId2";
 
-        await store.AddUserTokenAsync(uid1, Token1);
-        await store.AddUserTokenAsync(uid2, Token2);
+        await store.AddUserTokenAsync(UserId1, Token1);
+        await store.AddUserTokenAsync(UserId2, Token2);
 
-        await store.RemoveUserTokenAsync(uid1, Token2); // Noop
-        await store.RemoveUserTokenAsync(uid1, Token1);
+        await store.RemoveUserTokenAsync(UserId1, Token2); // Noop
+        await store.RemoveUserTokenAsync(UserId1, Token1);
 
-        var result1 = await store.GetTokensAsync(uid1);
-        var result2 = await store.GetTokensAsync(uid2);
+        var result1 = await store.GetTokensAsync(UserId1);
+        var result2 = await store.GetTokensAsync(UserId2);
 
         Assert.Empty(result1);
         Assert.Equal(new() { Token2 }, result2);
@@ -98,16 +98,16 @@ public class MSSQLPushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        const string UserId1 = "UserId1";
+        const string UserId2 = "UserId2";
 
-        await store.AddUserTokenAsync(uid1, Token1);
-        await store.AddUserTokenAsync(uid2, Token2);
+        await store.AddUserTokenAsync(UserId1, Token1);
+        await store.AddUserTokenAsync(UserId2, Token2);
 
         await store.RemoveTokensAsync(new[] { Token1, Token2 });
 
-        var result1 = await store.GetTokensAsync(uid1);
-        var result2 = await store.GetTokensAsync(uid2);
+        var result1 = await store.GetTokensAsync(UserId1);
+        var result2 = await store.GetTokensAsync(UserId2);
 
         Assert.Empty(result1);
         Assert.Empty(result2);

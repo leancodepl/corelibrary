@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
@@ -13,7 +10,7 @@ public class FCMClientTests
     public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
     public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
 
-    private static readonly Guid UserId = Guid.NewGuid();
+    private const string UserId = "UserId";
 
     private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(
         FirebaseConfiguration.Prepare(Key)
@@ -47,7 +44,7 @@ public class FCMClientTests
             Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
-        await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
+        await client.SendToUsersAsync(new HashSet<string> { UserId }, message);
     }
 
     [FCMFact]
@@ -58,7 +55,7 @@ public class FCMClientTests
             Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
-        await client.SendToUserAsync(Guid.NewGuid(), message);
+        await client.SendToUserAsync(Guid.NewGuid().ToString(), message);
     }
 
     [FCMFact]

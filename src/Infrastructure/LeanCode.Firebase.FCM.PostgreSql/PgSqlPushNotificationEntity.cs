@@ -5,7 +5,7 @@ namespace LeanCode.Firebase.FCM.PostgreSql;
 public class PgSqlPushNotificationEntity
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; } = "";
     public string Token { get; set; } = "";
     public DateTime DateCreated { get; set; }
 
