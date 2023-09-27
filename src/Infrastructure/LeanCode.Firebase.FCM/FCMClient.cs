@@ -25,30 +25,30 @@ public class FCMClient
 
     public virtual LocalizedNotification Localize(CultureInfo culture) => new(stringLocalizer, culture);
 
-    public virtual LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
+    public LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
 
-    public virtual Task SendToUserAsync(
+    public Task SendToUserAsync(
         string userId,
         MulticastMessage message,
         CancellationToken cancellationToken = default
     ) => SendToUserAsync(userId, message, false, cancellationToken);
 
-    public virtual Task SendToUsersAsync(
+    public Task SendToUsersAsync(
         IReadOnlySet<string> userIds,
         MulticastMessage message,
         CancellationToken cancellationToken = default
     ) => SendToUsersAsync(userIds, message, false, cancellationToken);
 
-    public virtual Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
+    public Task SendAsync(Message message, CancellationToken cancellationToken = default) =>
         SendAsync(message, false, cancellationToken);
 
-    public virtual Task SendMulticastAsync(MulticastMessage message, CancellationToken cancellationToken = default) =>
+    public Task SendMulticastAsync(MulticastMessage message, CancellationToken cancellationToken = default) =>
         SendMulticastAsync(message, false, cancellationToken);
 
-    public virtual Task SendAllAsync(IEnumerable<Message> messages, CancellationToken cancellationToken = default) =>
+    public Task SendAllAsync(IEnumerable<Message> messages, CancellationToken cancellationToken = default) =>
         SendAllAsync(messages, false, cancellationToken);
 
-    public virtual Task SendAsync(Message message, bool dryRun, CancellationToken cancellationToken = default) =>
+    public Task SendAsync(Message message, bool dryRun, CancellationToken cancellationToken = default) =>
         SendAllAsync(new[] { message }, dryRun, cancellationToken);
 
     public virtual async Task SendToUserAsync(
