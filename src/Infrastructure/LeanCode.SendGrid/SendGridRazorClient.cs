@@ -34,7 +34,7 @@ public class SendGridRazorClient
         this.localizer = localizer;
     }
 
-    public async Task SendEmailAsync(SendGridMessage msg, CancellationToken cancellationToken = default)
+    public virtual async Task SendEmailAsync(SendGridMessage msg, CancellationToken cancellationToken = default)
     {
         if (msg is SendGridRazorMessage rmsg)
         {
