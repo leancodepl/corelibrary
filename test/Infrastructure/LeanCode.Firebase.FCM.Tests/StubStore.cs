@@ -6,31 +6,31 @@ using System.Threading.Tasks;
 
 namespace LeanCode.Firebase.FCM.Tests;
 
-internal sealed class StubStore : IPushNotificationTokenStore
+internal sealed class StubStore : IPushNotificationTokenStore<Guid>
 {
-    private readonly string userId;
+    private readonly Guid userId;
     private readonly string token;
 
     public bool AllRemoved { get; private set; }
     public bool SingleRemoved { get; private set; }
 
-    public StubStore(string userId, string token)
+    public StubStore(Guid userId, string token)
     {
         this.userId = userId;
         this.token = token;
     }
 
-    public Task AddUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default)
+    public Task AddUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task RemoveUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default)
+    public Task RemoveUserTokenAsync(Guid userId, string newToken, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<string>> GetTokensAsync(string userId, CancellationToken cancellationToken = default)
+    public Task<List<string>> GetTokensAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         if (userId == this.userId)
         {
@@ -42,18 +42,18 @@ internal sealed class StubStore : IPushNotificationTokenStore
         }
     }
 
-    public Task<Dictionary<string, List<string>>> GetTokensAsync(
-        IReadOnlySet<string> userIds,
+    public Task<Dictionary<Guid, List<string>>> GetTokensAsync(
+        IReadOnlySet<Guid> userIds,
         CancellationToken cancellationToken = default
     )
     {
         if (userIds.Contains(userId))
         {
-            return Task.FromResult(new Dictionary<string, List<string>> { [userId] = new() { token } });
+            return Task.FromResult(new Dictionary<Guid, List<string>> { [userId] = new() { token } });
         }
         else
         {
-            return Task.FromResult(new Dictionary<string, List<string>>());
+            return Task.FromResult(new Dictionary<Guid, List<string>>());
         }
     }
 

@@ -15,12 +15,12 @@ public class FCMClientLocalizationTests
     );
 
     private readonly IStringLocalizer stringLocalizer;
-    private readonly FCMClient client;
+    private readonly FCMClient<Guid> client;
 
     public FCMClientLocalizationTests()
     {
         stringLocalizer = Substitute.For<IStringLocalizer>();
-        client = new FCMClient(Messaging, Substitute.For<IPushNotificationTokenStore>(), stringLocalizer);
+        client = new FCMClient<Guid>(Messaging, Substitute.For<IPushNotificationTokenStore<Guid>>(), stringLocalizer);
     }
 
     [Fact]

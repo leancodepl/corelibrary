@@ -10,19 +10,19 @@ public class FCMClientTests
     public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
     public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
 
-    private const string UserId = "UserId";
+    private static readonly Guid UserId = Guid.NewGuid();
 
     private static readonly FirebaseMessaging Messaging = FirebaseMessaging.GetMessaging(
         FirebaseConfiguration.Prepare(Key)
     );
 
     private readonly StubStore store;
-    private readonly FCMClient client;
+    private readonly FCMClient<Guid> client;
 
     public FCMClientTests()
     {
         store = new StubStore(UserId, Token);
-        client = new FCMClient(Messaging, store, Substitute.For<IStringLocalizer>());
+        client = new FCMClient<Guid>(Messaging, store, Substitute.For<IStringLocalizer>());
     }
 
     [FCMFact]
@@ -44,7 +44,7 @@ public class FCMClientTests
             Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
-        await client.SendToUsersAsync(new HashSet<string> { UserId }, message);
+        await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
     }
 
     [FCMFact]
@@ -55,7 +55,7 @@ public class FCMClientTests
             Notification = new Notification { Title = "Test title", Body = "Test body", },
         };
 
-        await client.SendToUserAsync(Guid.NewGuid().ToString(), message);
+        await client.SendToUserAsync(Guid.NewGuid(), message);
     }
 
     [FCMFact]
