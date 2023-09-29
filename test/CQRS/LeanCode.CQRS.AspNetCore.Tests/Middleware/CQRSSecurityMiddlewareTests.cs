@@ -120,7 +120,7 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
 
         await firstAuthorizer
             .Received()
-            .CheckIfAuthorizedAsync(Arg.Any<HttpContext>(), cmd, SingleAuthorizerCustomData);
+            .CheckIfAuthorizedAsync(Arg.Any<ClaimsPrincipal>(), cmd, SingleAuthorizerCustomData);
     }
 
     private Task<HttpContext> SendPayloadAsync(object payload, ClaimsPrincipal? user = null)

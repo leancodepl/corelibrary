@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LeanCode.Contracts.Security;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +16,9 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, I
         this.registry = registry;
     }
 
-    protected override Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, object obj, string[]? customData)
+    protected override Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, object obj, string[]? customData)
     {
-        if (!httpContext.User.HasPermission(registry, customData ?? Array.Empty<string>()))
+        if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))
         {
             logger.Warning(
                 "User does not have sufficient permissions ({Permissions}) to run {@Object}",
