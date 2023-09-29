@@ -29,25 +29,25 @@ public class LocalizedNotification
         return this;
     }
 
-    public LocalizedNotification RawImageUrl(Uri uri)
+    public LocalizedNotification RawImageUrl(Uri? uri)
     {
-        return RawImageUrl(uri.ToString());
+        return RawImageUrl(uri?.ToString());
     }
 
-    public LocalizedNotification RawImageUrl(string rawUrl)
+    public LocalizedNotification RawImageUrl(string? rawUrl)
     {
         notification.ImageUrl = rawUrl;
         return this;
     }
 
-    public LocalizedNotification ImageUrl(Uri urlKey, params object[] arguments)
+    public LocalizedNotification ImageUrl(Uri? urlKey, params object[] arguments)
     {
-        return ImageUrl(urlKey, arguments);
+        return ImageUrl(urlKey?.ToString(), arguments);
     }
 
-    public LocalizedNotification ImageUrl(string urlKey, params object[] arguments)
+    public LocalizedNotification ImageUrl(string? urlKey, params object[] arguments)
     {
-        notification.ImageUrl = localizer.Format(culture, urlKey, arguments);
+        notification.ImageUrl = urlKey is null ? null : localizer.Format(culture, urlKey, arguments);
         return this;
     }
 
