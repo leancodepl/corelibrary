@@ -13,6 +13,7 @@
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />
     <ProjectReference Include="../../src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj" />
   </ItemGroup>
 
@@ -22,10 +23,10 @@
     <PackageReference Include="LeanCode.Contracts" />
 
     <PackageReference Include="MassTransit.EntityFrameworkCore" />
-      
+
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />  
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
 </Project>
