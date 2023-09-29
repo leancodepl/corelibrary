@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace LeanCode.DomainModels.EF;
 
@@ -58,4 +60,28 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     }
 
     public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
+
+    [SuppressMessage(
+        "?",
+        "EF1001",
+        Justification = "There basically resembles the EntityFinder.FindTracked to mimic `FindAsync` snapshot re-use."
+    )]
+    protected TEntity? FindTracked(TIdentity id)
+    {
+        // Safety: aggregates are bound to have Id as a primary key by design.
+        var primaryKey = DbContext.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!;
+        return ((IDbContextDependencies)DbContext).StateManager!.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
+    }
+
+    protected ValueTask<TEntity?> FindTrackedOrLoadNewAsync(
+        TIdentity id,
+        IQueryable<TEntity> withIncludes,
+        CancellationToken cancellationToken
+    )
+    {
+        var tracked = FindTracked(id);
+        return tracked is not null
+            ? new(tracked)
+            : new(withIncludes.AsTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken));
+    }
 }
