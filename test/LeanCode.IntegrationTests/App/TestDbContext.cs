@@ -1,3 +1,4 @@
+using LeanCode.Firebase.FCM;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace LeanCode.IntegrationTests.App;
 public class TestDbContext : DbContext
 {
     public DbSet<Entity> Entities => Set<Entity>();
+    public DbSet<PushNotificationTokenEntity<Guid>> Tokens => Set<PushNotificationTokenEntity<Guid>>();
 
     public TestDbContext(DbContextOptions<TestDbContext> opts)
         : base(opts) { }
@@ -21,5 +23,7 @@ public class TestDbContext : DbContext
         modelBuilder.AddInboxStateEntity();
         modelBuilder.AddOutboxMessageEntity();
         modelBuilder.AddOutboxStateEntity();
+
+        modelBuilder.ConfigurePushNotificationTokenEntity<Guid>(setTokenColumnMaxLength: true);
     }
 }

@@ -4,17 +4,18 @@ using LeanCode.Localization.StringLocalizers;
 
 namespace LeanCode.Firebase.FCM;
 
-public class FCMClient
+public class FCMClient<TUserId>
+    where TUserId : notnull, IEquatable<TUserId>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient>();
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient<TUserId>>();
 
     private readonly FirebaseMessaging messaging;
-    private readonly IPushNotificationTokenStore tokenStore;
+    private readonly IPushNotificationTokenStore<TUserId> tokenStore;
     private readonly IStringLocalizer stringLocalizer;
 
     public FCMClient(
         FirebaseMessaging messaging,
-        IPushNotificationTokenStore tokenStore,
+        IPushNotificationTokenStore<TUserId> tokenStore,
         IStringLocalizer stringLocalizer
     )
     {
@@ -28,13 +29,13 @@ public class FCMClient
     public LocalizedNotification Localize(string lang) => Localize(CultureInfo.GetCultureInfo(lang));
 
     public Task SendToUserAsync(
-        string userId,
+        TUserId userId,
         MulticastMessage message,
         CancellationToken cancellationToken = default
     ) => SendToUserAsync(userId, message, false, cancellationToken);
 
     public Task SendToUsersAsync(
-        IReadOnlySet<string> userIds,
+        IReadOnlySet<TUserId> userIds,
         MulticastMessage message,
         CancellationToken cancellationToken = default
     ) => SendToUsersAsync(userIds, message, false, cancellationToken);
@@ -52,7 +53,7 @@ public class FCMClient
         SendAllAsync(new[] { message }, dryRun, cancellationToken);
 
     public virtual async Task SendToUserAsync(
-        string userId,
+        TUserId userId,
         MulticastMessage message,
         bool dryRun,
         CancellationToken cancellationToken = default
@@ -77,7 +78,7 @@ public class FCMClient
     }
 
     public virtual async Task SendToUsersAsync(
-        IReadOnlySet<string> userIds,
+        IReadOnlySet<TUserId> userIds,
         MulticastMessage message,
         bool dryRun,
         CancellationToken cancellationToken = default

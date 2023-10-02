@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace LeanCode.Firebase.FCM;
 
-public interface IPushNotificationTokenStore
+public interface IPushNotificationTokenStore<TUserId>
+    where TUserId : notnull, IEquatable<TUserId>
 {
     public const int MaxTokenBatchSize = 100;
 
-    Task<List<string>> GetTokensAsync(string userId, CancellationToken cancellationToken = default);
-    Task<Dictionary<string, List<string>>> GetTokensAsync(
-        IReadOnlySet<string> userIds,
+    Task<List<string>> GetTokensAsync(TUserId userId, CancellationToken cancellationToken = default);
+
+    Task<Dictionary<TUserId, List<string>>> GetTokensAsync(
+        IReadOnlySet<TUserId> userIds,
         CancellationToken cancellationToken = default
     );
 
-    Task AddUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default);
-    Task RemoveUserTokenAsync(string userId, string newToken, CancellationToken cancellationToken = default);
+    Task AddUserTokenAsync(TUserId userId, string newToken, CancellationToken cancellationToken = default);
+    Task RemoveUserTokenAsync(TUserId userId, string token, CancellationToken cancellationToken = default);
 
     Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default);
     Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default);
