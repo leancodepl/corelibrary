@@ -249,6 +249,25 @@ public class DefaultConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer
 
 ```
 
+Or, when using Mass Transit 8.1:
+
+```csharp
+public class DefaultConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer>
+    where TConsumer : class, IConsumer
+{
+    protected override void ConfigureConsumer(
+        IReceiveEndpointConfigurator endpointConfigurator,
+        IConsumerConfigurator<TConsumer> consumerConfigurator,
+        IRegistrationContext context
+    )
+    {
+        endpointConfigurator.UseMessageRetry(r => r.Immediate(1));
+        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(context);
+        endpointConfigurator.UseDomainEventsPublishing(context);
+    }
+}
+```
+
 ### Migration to MT provided inbox/outbox
 
 Our custom inbox/outbox was replaced with Mass Transit [Transactional Outbox](https://masstransit.io/documentation/patterns/transactional-outbox). You'll need to configure outbox entities in your db context and register outbox when configuring Mass Transit
@@ -281,6 +300,18 @@ class MyDbContext: DbContext
         modelBuilder.AddInboxStateEntity();
         modelBuilder.AddOutboxMessageEntity();
         modelBuilder.AddOutboxStateEntity();
+    }
+}
+```
+
+Or, when using Mass Transit 8.1:
+
+```csharp
+class MyDbContext: DbContext
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.AddTransactionalOutboxEntities();
     }
 }
 ```
@@ -466,3 +497,15 @@ Also, a source generated id type based on ulid was introduced (`TypedIdFormat.Pr
 
 [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) is deprecated.
 Migrate your application to [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) and adjust `DefaultLeanCodeCredential` configuration to use the new version.
+
+### Firebase Cloud Messaging
+
+In 8.0, handling of FCM registrations/tokens has been reworked. Taking advantage of EF's delete-by-query and raw SQL support, separate per-database implementations of token entity and store have been merged back into one that supports both SQL Server and PostgreSQL (and other databases that support SQL `MERGE` statements). Furthermore, the token entity has been made generic on `UserId` type which had to be propagated to token store and `FCMClient` classes.
+
+In order to upgrade to this new implementation:
+
+1. Remove references to `LeanCode.Firebase.FCM.SqlServer` and `LeanCode.Firebase.FCM.PostgreSql` packages.
+2. Change service registation to `services.AddFCM<TUserId>(fcm => fcm.AddTokenStore<TDbContext>());`, where `TUserId` is the type of your `UserId` (most likely `Guid` if you're upgrading from pre-8.0) and `TDbContext` is the `DbContext` that contains the table for token storage (e.g. `CoreDbContext`).
+3. In your `TDbContext` class, change the type of token entity class to `PushNotificationTokenEntity<TUserId>`, e.g. `public DbSet<PushNotificationTokenEntity<Guid>> PushNotificationTokens => Set<PushNotificationTokenEntity<Guid>>();`. Then, in `OnModelCreating` change the call to former token class `Configure` method into `modelBuilder.ConfigurePushNotificationTokenEntity<TUserId>(setTokenColumnMaxLength: value);`. It is recommended to use `setTokenColumnMaxLength: true` for SQL Server and `setTokenColumnMaxLength: false` for PostgreSQL.
+4. Generate a database migration for your `TDbContext`. This is required because new `PushNotificationTokenEntity<TUserId>` no longer has `Id` column and instead uses `{ UserId, Token }` pair as primary (composite) key.
+5. Change references to `IPushNotificationTokenStore` in your code into `IPushNotificationTokenStore<TUserId>` and references to `FCMClient` into `FCMClient<TUserId>`.
