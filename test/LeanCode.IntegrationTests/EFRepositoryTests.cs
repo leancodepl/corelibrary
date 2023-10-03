@@ -14,7 +14,7 @@ public class EFRepositoryTests : IAsyncLifetime
     [Fact]
     public async Task Default_implementation_of_EFRepository_works()
     {
-        var entity = new Entity { Id = Guid.NewGuid() };
+        var entity = new Entity { Id = Guid.NewGuid(), Value = "test value" };
 
         await EnsureEntityDoesNotExistAsync(entity);
         await AddEntityAsync(entity);
