@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
@@ -10,7 +11,7 @@ namespace LeanCode.DomainModels.EF;
 public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<TEntity, TIdentity>
     where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
     where TIdentity : notnull
-    where TContext : notnull, DbContext
+    where TContext : DbContext
 {
     protected TContext DbContext { get; }
     protected DbSet<TEntity> DbSet { get; }
@@ -64,7 +65,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
     [SuppressMessage(
         "?",
         "EF1001",
-        Justification = "There basically resembles the EntityFinder.FindTracked to mimic `FindAsync` snapshot re-use."
+        Justification = "This is basically the `EntityFinder.FindTracked` to mimic `FindAsync` snapshot re-use."
     )]
     protected TEntity? FindTracked(TIdentity id)
     {
@@ -73,15 +74,27 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
         return ((IDbContextDependencies)DbContext).StateManager!.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
     }
 
-    protected ValueTask<TEntity?> FindTrackedOrLoadNewAsync(
-        TIdentity id,
-        IQueryable<TEntity> withIncludes,
-        CancellationToken cancellationToken
-    )
+    [SuppressMessage(
+        "?",
+        "EF1001",
+        Justification = "This is basically the `EntityFinder.FindTracked` to mimic `FindAsync` snapshot re-use."
+    )]
+    protected TEntity? FindTracked(params object[] id)
+    {
+        // Safety: aggregates are bound to have Id as a primary key by design.
+        var primaryKey = DbContext.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!;
+        return ((IDbContextDependencies)DbContext).StateManager!.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
+    }
+
+    protected ValueTask<TEntity?> FindTrackedOrLoadNewAsync(TIdentity id, Func<DbSet<TEntity>, Task<TEntity?>> query)
     {
         var tracked = FindTracked(id);
-        return tracked is not null
-            ? new(tracked)
-            : new(withIncludes.AsTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken));
+        return tracked is not null ? new(tracked) : new(query(DbSet));
+    }
+
+    protected ValueTask<TEntity?> FindTrackedOrLoadNewAsync(object[] id, Func<DbSet<TEntity>, Task<TEntity?>> query)
+    {
+        var tracked = FindTracked(id);
+        return tracked is not null ? new(tracked) : new(query(DbSet));
     }
 }
