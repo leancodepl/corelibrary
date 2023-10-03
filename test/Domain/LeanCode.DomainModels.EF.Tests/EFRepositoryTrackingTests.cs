@@ -172,7 +172,7 @@ public class EFRepositoryTrackingTests
         }
     }
 
-    private sealed class EntityRepository : EFRepository<Entity, int, TestDbContext>
+    private sealed class EntityRepository : CachingEFRepository<Entity, int, TestDbContext>
     {
         public EntityRepository(TestDbContext dbContext)
             : base(dbContext) { }
