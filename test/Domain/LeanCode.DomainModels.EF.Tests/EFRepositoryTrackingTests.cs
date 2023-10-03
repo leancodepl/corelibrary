@@ -9,8 +9,8 @@ namespace LeanCode.DomainModels.EF.Tests;
 
 public class EFRepositoryTrackingTests
 {
-    private readonly InMemoryDatabaseRoot DbRoot = new();
-    private readonly Guid DbId = Guid.NewGuid();
+    private readonly InMemoryDatabaseRoot dbRoot = new();
+    private readonly Guid dbId = Guid.NewGuid();
 
     [Fact]
     public void Does_not_return_tracked_entity_if_it_is_not_there()
@@ -143,7 +143,7 @@ public class EFRepositoryTrackingTests
 
     private (TestDbContext, EntityRepository) Prepare()
     {
-        var context = TestDbContext.Create(DbRoot, DbId);
+        var context = TestDbContext.Create(dbRoot, dbId);
         context.Database.EnsureCreated();
         return (context, new(context));
     }
