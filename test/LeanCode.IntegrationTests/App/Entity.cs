@@ -4,7 +4,7 @@ using LeanCode.TimeProvider;
 
 namespace LeanCode.IntegrationTests.App;
 
-public class Entity
+public class Entity : IAggregateRootWithoutOptimisticConcurrency<Guid>
 {
     public Guid Id { get; set; }
     public string Value { get; set; } = null!;
