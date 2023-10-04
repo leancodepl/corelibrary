@@ -1,3 +1,0 @@
-# Authorization
-
-TODO
