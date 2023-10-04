@@ -1,4 +1,5 @@
 using LeanCode.CQRS.MassTransitRelay.LockProviders;
+using LeanCode.DomainModels.EF;
 using LeanCode.IntegrationTestHelpers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +54,7 @@ public class PostgresTestConfig : TestDatabaseConfig
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
         var dataSource = new NpgsqlDataSourceBuilder(config.GetValue<string>("Postgres:ConnectionString")).Build();
-        builder.UseNpgsql(dataSource);
+        builder.UseNpgsql(dataSource).AddTimestampTzExpressionInterceptor();
     }
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
