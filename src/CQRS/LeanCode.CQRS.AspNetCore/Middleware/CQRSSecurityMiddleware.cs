@@ -24,7 +24,7 @@ public class CQRSSecurityMiddleware
         var customAuthorizers = AuthorizeWhenAttribute.GetCustomAuthorizers(cqrsMetadata.ObjectType);
         var user = context.User;
 
-        if (customAuthorizers.Count > 0 && !(user?.Identity?.IsAuthenticated ?? false))
+        if (customAuthorizers.Count > 0 && !(user.Identity?.IsAuthenticated ?? false))
         {
             logger.Warning("The current user is not authenticated and the object requires authorization");
 
@@ -35,7 +35,7 @@ public class CQRSSecurityMiddleware
         foreach (var customAuthorizerDefinition in customAuthorizers)
         {
             var authorizerType = customAuthorizerDefinition.Authorizer;
-            var customAuthorizer = context.RequestServices.GetService(authorizerType) as ICustomAuthorizer;
+            var customAuthorizer = context.RequestServices.GetService(authorizerType) as IHttpContextCustomAuthorizer;
 
             if (customAuthorizer is null)
             {
@@ -43,7 +43,7 @@ public class CQRSSecurityMiddleware
             }
 
             var authorized = await customAuthorizer.CheckIfAuthorizedAsync(
-                user,
+                context,
                 payload.Payload,
                 customAuthorizerDefinition.CustomData
             );
