@@ -43,9 +43,7 @@ public class TimestampTzTests : IAsyncLifetime
     {
         var orderedByUtc = await dbContext.Meetings.OrderBy(m => m.StartTime.UtcTimestamp).ToListAsync();
 
-        AssertionExtensions
-            .Should(orderedByUtc)
-            .BeEquivalentTo([ meeting1, meeting2 ], options => options.WithStrictOrdering());
+        orderedByUtc.Should().BeEquivalentTo([ meeting1, meeting2 ], options => options.WithStrictOrdering());
     }
 
     [PostgresFact]
@@ -55,18 +53,16 @@ public class TimestampTzTests : IAsyncLifetime
             .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
             .ToListAsync();
 
-        AssertionExtensions
-            .Should(orderedByLocal)
-            .BeEquivalentTo([ meeting2, meeting1 ], options => options.WithStrictOrdering());
+        orderedByLocal.Should().BeEquivalentTo([ meeting2, meeting1 ], options => options.WithStrictOrdering());
     }
 
     [PostgresFact]
     public void Sorting_by_LocalTimestampWithoutOffset_generates_SQL_with_expected_AT_TIME_ZONE_operator()
     {
-        var sql = dbContext.Meetings.OrderBy(m => m.StartTime.LocalTimestampWithoutOffset).ToQueryString();
-
-        AssertionExtensions
-            .Should(sql)
+        dbContext.Meetings
+            .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
+            .ToQueryString()
+            .Should()
             .ContainEquivalentOf(
                 @$"ORDER BY m.""{nameof(Meeting.StartTime)}_{nameof(TimestampTz.UtcTimestamp)}"" AT TIME ZONE m.""{nameof(Meeting.StartTime)}_{nameof(TimestampTz.TimeZoneId)}"""
             );

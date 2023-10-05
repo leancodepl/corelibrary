@@ -15,7 +15,7 @@ public class TimestampTzTests
     [InlineData("Central European Standard Time")]
     public void Both_IANA_and_Windows_time_zone_ids_are_valid(string timeZoneId)
     {
-        AssertionExtensions.Should(TimestampTz.IsValidTimeZoneId(timeZoneId)).BeTrue();
+        TimestampTz.IsValidTimeZoneId(timeZoneId).Should().BeTrue();
     }
 
     [Theory]
@@ -23,7 +23,7 @@ public class TimestampTzTests
     [InlineData("invalid")]
     public void Invalid_time_zone_ids_are_rejected(string timeZoneId)
     {
-        AssertionExtensions.Should(TimestampTz.IsValidTimeZoneId(timeZoneId)).BeFalse();
+        TimestampTz.IsValidTimeZoneId(timeZoneId).Should().BeFalse();
     }
 
     [Theory]
@@ -34,8 +34,8 @@ public class TimestampTzTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, timeZoneId);
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be(timeZoneId);
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
+        timestampTz.TimeZoneId.Should().Be(timeZoneId);
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
     }
 
     [Theory]
@@ -46,8 +46,8 @@ public class TimestampTzTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be(timeZoneId);
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
+        timestampTz.TimeZoneId.Should().Be(timeZoneId);
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
     }
 
     [Fact]
@@ -55,8 +55,8 @@ public class TimestampTzTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, TimeZoneInfo.Utc.Id);
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be("Etc/UTC");
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById("Etc/UTC"));
+        timestampTz.TimeZoneId.Should().Be("Etc/UTC");
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById("Etc/UTC"));
     }
 
     [Fact]
@@ -64,8 +64,8 @@ public class TimestampTzTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, TimeZoneInfo.Utc);
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be("Etc/UTC");
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById("Etc/UTC"));
+        timestampTz.TimeZoneId.Should().Be("Etc/UTC");
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById("Etc/UTC"));
     }
 
     [Fact]
@@ -73,8 +73,8 @@ public class TimestampTzTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Central European Standard Time");
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be("Europe/Warsaw");
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"));
+        timestampTz.TimeZoneId.Should().Be("Europe/Warsaw");
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"));
     }
 
     [Fact]
@@ -85,8 +85,8 @@ public class TimestampTzTests
             TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time")
         );
 
-        AssertionExtensions.Should(timestampTz.TimeZoneId).Be("Europe/Warsaw");
-        AssertionExtensions.Should(timestampTz.TimeZoneInfo).Be(TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"));
+        timestampTz.TimeZoneId.Should().Be("Europe/Warsaw");
+        timestampTz.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"));
     }
 
     [Theory]
@@ -94,15 +94,15 @@ public class TimestampTzTests
     [InlineData("invalid")]
     public void Invalid_time_zone_ids_throw_exception(string timeZoneId)
     {
-        AssertionExtensions
-            .Should(() => new TimestampTz(DateTime.UtcNow, timeZoneId))
-            .Throw<TimeZoneNotFoundException>();
+        var act = () => new TimestampTz(DateTime.UtcNow, timeZoneId);
+        act.Should().Throw<TimeZoneNotFoundException>();
     }
 
     [Fact]
     public void Non_UTC_DateTime_timestamps_throw_exception()
     {
-        AssertionExtensions.Should(() => new TimestampTz(DateTime.Now, "Etc/UTC")).Throw<ArgumentException>();
+        var act = () => new TimestampTz(DateTime.Now, "Etc/UTC");
+        act.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -116,7 +116,7 @@ public class TimestampTzTests
             ? new TimestampTz(now, TimeZoneInfo.FindSystemTimeZoneById("Etc/UTC"))
             : new TimestampTz(now, "Etc/UTC");
 
-        AssertionExtensions.Should(timestampTz.UtcTimestamp).Be(now.UtcDateTime);
+        timestampTz.UtcTimestamp.Should().Be(now.UtcDateTime);
     }
 
     [Theory]
@@ -131,8 +131,8 @@ public class TimestampTzTests
             ? new TimestampTz(now, TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"))
             : new TimestampTz(now, "Europe/Warsaw");
 
-        AssertionExtensions.Should(timestampTz.LocalTimestampWithOffset).Be(nowInWarsaw);
-        AssertionExtensions.Should(timestampTz.LocalTimestampWithoutOffset).Be(nowInWarsaw.DateTime);
+        timestampTz.LocalTimestampWithOffset.Should().Be(nowInWarsaw);
+        timestampTz.LocalTimestampWithoutOffset.Should().Be(nowInWarsaw.DateTime);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class TimestampTzTests
         var (timestamp, timeZoneId) = source;
         var reconstructed = new TimestampTz(timestamp, timeZoneId);
 
-        AssertionExtensions.Should(reconstructed).Be(source);
+        reconstructed.Should().Be(source);
     }
 
     [Fact]
@@ -153,9 +153,10 @@ public class TimestampTzTests
         // {"UtcTimestamp":"2009-06-15T13:45:30.0000000+00:00","TimeZoneId":"Europe/Warsaw"}
         using var document = JsonDocument.Parse(serialized);
 
-        AssertionExtensions.Should(document.RootElement.ValueKind).Be(JsonValueKind.Object);
-        AssertionExtensions
-            .Should(document.RootElement.EnumerateObject())
+        document.RootElement.ValueKind.Should().Be(JsonValueKind.Object);
+        document.RootElement
+            .EnumerateObject()
+            .Should()
             .BeEquivalentTo(
                 [
                     new { Name = nameof(TimestampTz.UtcTimestamp), Value = new { ValueKind = JsonValueKind.String } },
@@ -172,8 +173,8 @@ public class TimestampTzTests
         var serialized = JsonSerializer.Serialize(source);
         var deserialized = JsonSerializer.Deserialize<TimestampTz>(serialized)!;
 
-        AssertionExtensions.Should(deserialized).NotBeNull();
-        AssertionExtensions.Should(deserialized.TimeZoneId).Be(source.TimeZoneId);
-        AssertionExtensions.Should(deserialized.UtcTimestamp).Be(source.UtcTimestamp);
+        deserialized.Should().NotBeNull();
+        deserialized.TimeZoneId.Should().Be(source.TimeZoneId);
+        deserialized.UtcTimestamp.Should().Be(source.UtcTimestamp);
     }
 }
