@@ -13,3 +13,38 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
 nav:
+  - Overview: ./overview/index.md
+  - CQRS:
+    - ./cqrs/index.md
+    - Pipeline:
+      - ./cqrs/pipeline/index.md
+    - Query:
+      - ./cqrs/query/index.md
+    - Command:
+      - ./cqrs/command/index.md
+    - Operation:
+      - ./cqrs/operation/index.md
+    - Authorization:
+      - ./cqrs/authorization/index.md
+    - Validation:
+      - ./cqrs/validation/index.md
+  - Domain:
+    - ./domain/index.md
+    - Id:
+      - ./domain/id/index.md
+    - Aggregate:
+      - ./domain/aggregate/index.md
+    - Identifiable:
+      - ./domain/identifiable/index.md
+    - Value object:
+      - ./domain/value_object/index.md
+  - External integrations:
+    - ./external_integrations/index.md
+    - Messaging - MassTransit:
+      - ./external_integrations/messaging_masstransit/index.md
+  - Features:
+    - ./features/index.md
+    - Force update:
+      - ./features/force_update/index.md
+  - CoreLibrary 8.0 changes overview & migration guide:
+    - ./v8_migration_guide/index.md
