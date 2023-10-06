@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Security;
-using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
 

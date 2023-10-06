@@ -19,7 +19,7 @@ public interface ICustomAuthorizer : IHttpContextCustomAuthorizer
     ) => CheckIfAuthorizedAsync(context.User, obj, customData);
 }
 
-public abstract class CustomHttpContextAuthorizer<TObject> : IHttpContextCustomAuthorizer
+public abstract class HttpContextCustomAuthorizer<TObject> : IHttpContextCustomAuthorizer
 {
     public Task<bool> CheckIfAuthorizedAsync(HttpContext context, object obj, object? customData) =>
         CheckIfAuthorizedAsync(context, (TObject)obj);
@@ -35,7 +35,7 @@ public abstract class CustomAuthorizer<TObject> : ICustomAuthorizer
     protected abstract Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, TObject obj);
 }
 
-public abstract class CustomHttpContextAuthorizer<TObject, TCustomData> : IHttpContextCustomAuthorizer
+public abstract class HttpContextCustomAuthorizer<TObject, TCustomData> : IHttpContextCustomAuthorizer
 {
     public Task<bool> CheckIfAuthorizedAsync(HttpContext context, object obj, object? customData) =>
         CheckIfAuthorizedInternalAsync(context, (TObject)obj, customData);

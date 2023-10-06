@@ -30,6 +30,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                     .ConfigureServices(cfg =>
                     {
                         cfg.AddScoped<ICustomAuthorizer, CustomAuthorizer>();
+                        cfg.AddScoped<IHttpContextCustomAuthorizer, HttpContextCustomAuthorizer>();
                         cfg.AddRouting();
                         cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
                         cfg.AddFluentValidation(TypesCatalog.Of<TestCommandValidator>());
