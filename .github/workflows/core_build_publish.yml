@@ -137,8 +137,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Run unit tests
-        run: dotnet test --filter 'FullyQualifiedName!~LeanCode.IntegrationTests&FullyQualifiedName!~LeanCode.Azure.Tests' --logger trx --results-directory ./TestResults --collect:"XPlat Code Coverage" --settings ./coverlet.runsettings
-        working-directory: test
+        run: dotnet test --filter 'FullyQualifiedName!~LeanCode.IntegrationTests&FullyQualifiedName!~LeanCode.Azure.Tests' --logger trx --results-directory ./test/TestResults --collect:"XPlat Code Coverage" --settings ./test/coverlet.runsettings
         env:
           ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS: /home/runner/work/corelibrary/corelibrary/test/Testing/LeanCode.IntegrationTestHelpers.Tests
       - name: Azure Test
