@@ -11,23 +11,23 @@ public sealed class TimestampTzExpressionRewriter : ExpressionVisitor
     private static readonly Type TimeZoneInfoType = typeof(TimeZoneInfo);
     private static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
 
-    private static readonly PropertyInfo LocalTimestampWithoutOffsetProperty =
+    public static readonly PropertyInfo LocalTimestampWithoutOffsetProperty =
         TimestampTzType.GetProperty(nameof(TimestampTz.LocalTimestampWithoutOffset))
         ?? throw new MissingMemberException(TimestampTzType.FullName, nameof(TimestampTz.LocalTimestampWithoutOffset));
 
-    private static readonly PropertyInfo UtcTimestampProperty =
+    public static readonly PropertyInfo UtcTimestampProperty =
         TimestampTzType.GetProperty(nameof(TimestampTz.UtcTimestamp))
         ?? throw new MissingMemberException(TimestampTzType.FullName, nameof(TimestampTz.UtcTimestamp));
 
-    private static readonly PropertyInfo TimeZoneIdProperty =
+    public static readonly PropertyInfo TimeZoneIdProperty =
         TimestampTzType.GetProperty(nameof(TimestampTz.TimeZoneId))
         ?? throw new MissingMemberException(TimestampTzType.FullName, nameof(TimestampTz.TimeZoneId));
 
-    private static readonly PropertyInfo UtcDateTimeProperty =
+    public static readonly PropertyInfo UtcDateTimeProperty =
         DateTimeOffsetType.GetProperty(nameof(DateTimeOffset.UtcDateTime))
         ?? throw new MissingMemberException(DateTimeOffsetType.FullName, nameof(DateTimeOffset.UtcDateTime));
 
-    private static readonly MethodInfo ConvertDateTimeBySystemTimeZoneIdMethod =
+    public static readonly MethodInfo ConvertDateTimeBySystemTimeZoneIdMethod =
         TimeZoneInfoType.GetMethod(
             nameof(TimeZoneInfo.ConvertTimeBySystemTimeZoneId),
             new[] { typeof(DateTime), typeof(string) }
