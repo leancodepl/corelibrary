@@ -136,9 +136,11 @@ jobs:
         run: dotnet tool install --global trx2junit
       - name: Restore
         run: dotnet restore
-      - name: Test
-        run: dotnet msbuild /t:RunTestsWithCoverage
+      - name: Run unit tests
+        run: dotnet test --filter 'FullyQualifiedName!~LeanCode.IntegrationTests&FullyQualifiedName!~LeanCode.Azure.Tests' --logger trx --results-directory ./TestResults --collect:"XPlat Code Coverage" --settings ./coverlet.runsettings
         working-directory: test
+        env:
+          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTHELPERS_TESTS: /home/runner/work/corelibrary/corelibrary/test/Testing/LeanCode.IntegrationTestHelpers.Tests
       - name: Azure Test
         run: dotnet test -c Release --logger trx --results-directory ../../TestResults --collect:"XPlat Code Coverage" --settings ../../coverlet.runsettings
         working-directory: test/Infrastructure/LeanCode.Azure.Tests
