@@ -140,7 +140,7 @@ jobs:
         run: dotnet msbuild /t:RunTestsWithCoverage
         working-directory: test
       - name: Azure Test
-        run: dotnet test -c Release --logger trx --results-directory ../../TestResults --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --logger trx --results-directory ../../TestResults --collect:"XPlat Code Coverage" --settings ../../coverlet.runsettings
         working-directory: test/Infrastructure/LeanCode.Azure.Tests
         env:
           CORELIB_TESTS_TENANT_ID: ${{ secrets.CORELIB_TESTS_TENANT_ID }}
@@ -148,14 +148,14 @@ jobs:
           CORELIB_TESTS_CLIENT_SECRET: ${{ secrets.CORELIB_TESTS_CLIENT_SECRET }}
           CORELIB_TESTS_NPGSQL_CONNECTION_STRING: ${{ secrets.CORELIB_TESTS_NPGSQL_CONNECTION_STRING }}
       - name: Integration Test - SQL Server
-        run: dotnet test -c Release --logger trx --results-directory ../TestResults --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --logger trx --results-directory ../TestResults --collect:"XPlat Code Coverage" --settings ../coverlet.runsettings
         working-directory: test/LeanCode.IntegrationTests
         env:
           ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
           SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
           LeanCodeIntegrationTests__Database: sqlserver
       - name: Integration Test - Postgres
-        run: dotnet test -c Release --logger trx --results-directory ../TestResults --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --logger trx --results-directory ../TestResults --collect:"XPlat Code Coverage" --settings ../coverlet.runsettings
         working-directory: test/LeanCode.IntegrationTests
         env:
           ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
