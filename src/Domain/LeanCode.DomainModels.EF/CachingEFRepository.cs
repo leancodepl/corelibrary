@@ -13,14 +13,11 @@ public abstract class CachingEFRepository<TEntity, TIdentity, TContext> : EFRepo
     protected CachingEFRepository(TContext dbContext)
         : base(dbContext) { }
 
+    /// <inheritdoc />
     /// <summary>
     /// Finds an entity by primary key. If the entity with provided key is tracked by the underlying
     /// <see cref="DbContext" />, this method will return the cached entity.
     /// </summary>
-    /// <remarks>For implementers: the default implementation won't work for composite primary keys.</remarks>
-    /// <param name="id">The identifier that</param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
-    /// <returns>Task with the found entity, or -null- if not found.</returns>
     public override async Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default)
     {
         return await FindTrackedOrLoadNewAsync(
