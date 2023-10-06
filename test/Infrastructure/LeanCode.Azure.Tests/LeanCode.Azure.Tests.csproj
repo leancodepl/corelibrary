@@ -1,5 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-        <ProjectReference Include="../../../src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
-    </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
