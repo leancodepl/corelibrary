@@ -54,7 +54,7 @@ public class EFRepositoryTests : IAsyncLifetime
 
     public Task DisposeAsync() => app.DisposeAsync().AsTask();
 
-    class EntityRepository : EFRepository<Entity, Guid, TestDbContext>
+    private sealed class EntityRepository : EFRepository<Entity, Guid, TestDbContext>
     {
         public EntityRepository(TestDbContext dbContext)
             : base(dbContext) { }
