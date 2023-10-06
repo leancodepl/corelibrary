@@ -8,7 +8,7 @@ namespace LeanCode.DomainModels.EF;
 public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<TEntity, TIdentity>
     where TEntity : class, IAggregateRootWithoutOptimisticConcurrency<TIdentity>
     where TIdentity : notnull
-    where TContext : notnull, DbContext
+    where TContext : DbContext
 {
     protected TContext DbContext { get; }
     protected DbSet<TEntity> DbSet { get; }
@@ -57,5 +57,17 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
         }
     }
 
-    public abstract Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default);
+    protected virtual IQueryable<TEntity> BaseQuery() => DbSet.AsQueryable();
+
+    /// <summary>
+    /// Finds an entity by primary key.
+    /// </summary>
+    /// <remarks>For implementers: the default implementation won't work for composite primary keys.</remarks>
+    /// <param name="id">The identifier of the aggregate.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
+    /// <returns>Task with the found entity, or -null- if not found.</returns>
+    public virtual async Task<TEntity?> FindAsync(TIdentity id, CancellationToken cancellationToken = default)
+    {
+        return await BaseQuery().AsTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+    }
 }

@@ -8,11 +8,11 @@ using Xunit;
 namespace LeanCode.IntegrationTests;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1001", Justification = "Disposed with `IAsyncLifetime`.")]
-public class Tests : IAsyncLifetime
+public class CQRSTests : IAsyncLifetime
 {
     private readonly TestApp app;
 
-    public Tests()
+    public CQRSTests()
     {
         app = new TestApp();
     }
