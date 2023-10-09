@@ -40,7 +40,7 @@ public abstract class HttpContextCustomAuthorizer<TObject, TCustomData> : IHttpC
     public Task<bool> CheckIfAuthorizedAsync(HttpContext context, object obj, object? customData) =>
         CheckIfAuthorizedInternalAsync(context, (TObject)obj, customData);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(HttpContext context, TObject obj);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(HttpContext context, TObject obj, TCustomData? customData);
 
     private Task<bool> CheckIfAuthorizedInternalAsync(HttpContext context, TObject obj, object? customData)
     {
