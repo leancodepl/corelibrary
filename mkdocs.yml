@@ -11,17 +11,22 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 nav:
   - Overview: ./overview/index.md
   - CQRS:
     - ./cqrs/index.md
     - Pipeline:
       - ./cqrs/pipeline/index.md
-    - Query:
-      - ./cqrs/query/index.md
+      - Adding custom middlewares: ./cqrs/pipeline/adding_custom_middlewares.md
     - Command:
       - ./cqrs/command/index.md
+    - Query:
+      - ./cqrs/query/index.md
     - Operation:
       - ./cqrs/operation/index.md
     - Authorization:
