@@ -26,14 +26,14 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
     private readonly TestServer server;
 
     private readonly ICustomAuthorizer firstAuthorizer;
-    private readonly ICustomAuthorizer secondAuthorizer;
+    private readonly IHttpContextCustomAuthorizer secondAuthorizer;
 
     private static ClaimsPrincipal AuthenticatedUser() => new(new ClaimsIdentity("TEST"));
 
     public CQRSSecurityMiddlewareTests()
     {
         firstAuthorizer = Substitute.For<ICustomAuthorizer, IFirstAuthorizer>();
-        secondAuthorizer = Substitute.For<ICustomAuthorizer, ISecondAuthorizer>();
+        secondAuthorizer = Substitute.For<IHttpContextCustomAuthorizer, ISecondAuthorizer>();
 
         host = new HostBuilder()
             .ConfigureWebHost(webHost =>
@@ -153,7 +153,7 @@ public sealed class CQRSSecurityMiddlewareTests : IAsyncLifetime, IDisposable
         Assert.Equal(statusCode, result!.Value.StatusCode);
     }
 
-    private static void SetAuthorizationResultAsync(ICustomAuthorizer authorizer, bool result)
+    private static void SetAuthorizationResultAsync(IHttpContextCustomAuthorizer authorizer, bool result)
     {
         authorizer.CheckIfAuthorizedAsync(null!, null!, null).ReturnsForAnyArgs(result);
     }

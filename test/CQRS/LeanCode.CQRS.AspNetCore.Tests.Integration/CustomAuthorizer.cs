@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Security;
-using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
 
@@ -15,7 +15,7 @@ public interface ICustomAuthorizer { }
 
 public class CustomAuthorizer : CustomAuthorizer<ICustomAuthorizerParams>, ICustomAuthorizer
 {
-    protected override Task<bool> CheckIfAuthorizedAsync(HttpContext httpContext, ICustomAuthorizerParams obj)
+    protected override Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, ICustomAuthorizerParams obj)
     {
         return Task.FromResult(!obj.FailAuthorization);
     }

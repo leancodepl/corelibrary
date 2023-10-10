@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
 
-[CustomAuthorizeWhen]
-public class TestOperation : IOperation<TestOperationResult>, ICustomAuthorizerParams
+[HttpContextCustomAuthorizeWhen]
+public class TestOperation : IOperation<TestOperationResult>, IHttpContextCustomAuthorizerParams
 {
     public bool FailAuthorization { get; set; }
 
