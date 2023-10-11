@@ -54,7 +54,7 @@ public class ProjectIsOwnedAuthorizer
         IProjectRelated obj)
     {
         var project = await Access.FindAsync(new(obj.ProjectId), context.RequestAborted);
-        return project.OwnerId == context.GetUserId();
+        return project.OwnerId == context.GetEmployeeId();
     }
 }
 ```

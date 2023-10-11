@@ -35,14 +35,16 @@ nav:
       - ./cqrs/validation/index.md
   - Domain:
     - ./domain/index.md
-    - Id:
-      - ./domain/id/index.md
     - Aggregate:
       - ./domain/aggregate/index.md
     - Identifiable:
       - ./domain/identifiable/index.md
     - Value object:
       - ./domain/value_object/index.md
+    - Domain event:
+      - ./domain/domain_event/index.md
+    - Id:
+      - ./domain/id/index.md
   - External integrations:
     - ./external_integrations/index.md
     - Messaging - MassTransit:

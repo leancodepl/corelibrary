@@ -42,11 +42,11 @@ public class CreateProjectCH : ICommandHandler<CreateProject>
 
     public Task ExecuteAsync(HttpContext context, CreateProject command)
     {
-        // context.UserId() is an extension method defined elsewhere
+        // context.EmployeeId() is an extension method defined elsewhere
         var project = Project.Create(
             ProjectId.Parse(command.ProjectId),
             command.Name,
-            context.UserId());
+            context.EmployeeId());
 
         // We only notify the repository that this is new entity,
         // we let other part of the code commit the database transaction
@@ -60,7 +60,7 @@ public class CreateProjectCH : ICommandHandler<CreateProject>
 
 > **Tip:** More on ids can be found [here](../../domain/id/index.md).
 
-As you can see, the command handler is really simple - it just converts the command into new [aggregate], tracking who owns the project (`UserId` - they are the ones that have `CreateProject` permission). That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
+As you can see, the command handler is really simple - it just converts the command into new [aggregate], tracking who owns the project (`EmployeeId` - they are the ones that have `CreateProject` permission). That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 
 1. Keep them simple and testable, do not try to model whole flows with a single command.
 2. Commands should rely on aggregates to gather the data (try not to use queries inside command handlers).

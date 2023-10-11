@@ -16,7 +16,7 @@ Consider the following operation:
 ```csharp
 public class PayForAccess : IOperation<PaymentTokenDTO>
 {
-    public string UserId { get; set; }
+    public string EmployeeId { get; set; }
 }
 
 public class PaymentTokenDTO
@@ -25,7 +25,7 @@ public class PaymentTokenDTO
 }
 ```
 
-that creates payment in external service for user's access to application and returns payment token.
+that creates payment in external service for employee's access to application and returns payment token.
 
 ## Handler
 
@@ -48,7 +48,7 @@ public class PayForAccessOH : IOperationHandler<PayForAccess, PaymentTokenDTO>
         PayForAccess operation)
     {
         var result = await payments.CreatePaymentInExternalService(
-            operation.UserId,
+            operation.EmployeeId,
             context.RequestAborted);
 
         return new PaymentTokenDTO

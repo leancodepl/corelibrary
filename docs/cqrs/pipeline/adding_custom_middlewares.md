@@ -1,23 +1,23 @@
 
 # Adding custom middlewares
 
-Custom middlewares can further augment the pipeline by employing the `UseMiddleware` method on `IApplicationBuilder`. To illustrate, consider the following basic example, which introduces a check if user is blocked into the pipeline:
+Custom middlewares can further augment the pipeline by employing the `UseMiddleware` method on `IApplicationBuilder`. To illustrate, consider the following basic example, which introduces a check if employee is blocked into the pipeline:
 
 ```csharp
-    public class UserBlockerMiddleware : IMiddleware
+    public class EmployeeBlockerMiddleware : IMiddleware
     {
-        private readonly UserBlocker userBlocker;
+        private readonly EmployeeBlocker employeeBlocker;
 
-        public EnsureCallerIsSyncedMiddleware(UserBlocker userBlocker)
+        public EmployeeBlockerMiddleware(EmployeeBlocker employeeBlocker)
         {
-            this.userBlocker = userBlocker;
+            this.employeeBlocker = employeeBlocker;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (userBlocker.IsUserBlocked(context.UserId()))
+            if (employeeBlocker.IsEmployeeBlocked(context.EmployeeId()))
             {
-                throw new UnauthenticatedException("User blocked.");
+                throw new UnauthenticatedException("Employee blocked.");
             }
             else
             {
@@ -26,17 +26,17 @@ Custom middlewares can further augment the pipeline by employing the `UseMiddlew
         }
     }
 
-    public static class UserBlockerMiddlewareExtensions
+    public static class EmployeeBlockerMiddlewareExtensions
     {
-        public static IApplicationBuilder BlockUsers(
+        public static IApplicationBuilder BlockEmployees(
             this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<UserBlockerMiddleware>();
+            return builder.UseMiddleware<EmployeeBlockerMiddleware>();
         }
     }
 ```
 
-Then, you can integrate `UserBlockerMiddleware` into the pipeline as follows:
+Then, you can integrate `EmployeeBlockerMiddleware` into the pipeline as follows:
 
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
@@ -50,7 +50,7 @@ Then, you can integrate `UserBlockerMiddleware` into the pipeline as follows:
                     {
                         cqrs.Commands = c =>
                             c.CQRSTrace()
-                            .BlockUsers()
+                            .BlockEmployees()
                             .Secure()
                             .Validate()
                             .CommitTransaction<CoreDbContext>()
@@ -58,12 +58,12 @@ Then, you can integrate `UserBlockerMiddleware` into the pipeline as follows:
 
                         cqrs.Queries = c =>
                             c.CQRSTrace()
-                            .BlockUsers()
+                            .BlockEmployees()
                             .Secure();
 
                         cqrs.Operations = c =>
                             c.CQRSTrace()
-                            .BlockUsers()
+                            .BlockEmployees()
                             .Secure()
                             .CommitTransaction<CoreDbContext>()
                             .PublishEvents();

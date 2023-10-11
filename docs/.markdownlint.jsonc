@@ -1,5 +1,9 @@
 {
   "default": true,
   // Line length
-  "MD013": false
+  "MD013": false,
+  // Unordered list indentation
+  "MD007": {
+    "indent": 4
+  }
 }
