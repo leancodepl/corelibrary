@@ -20,7 +20,7 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, I
         ClaimsPrincipal user,
         object obj,
         string[]? customData,
-        CancellationToken ct
+        CancellationToken cancellationToken
     )
     {
         if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))

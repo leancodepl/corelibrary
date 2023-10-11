@@ -114,7 +114,7 @@ public class CustomAuthorizerTests
             ClaimsPrincipal user,
             AClass obj,
             AnotherClass customData,
-            CancellationToken ct
+            CancellationToken cancellationToken
         )
         {
             InternalWasCalled = true;
