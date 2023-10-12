@@ -10,13 +10,18 @@ public interface IHttpContextCustomAuthorizer
 
 public interface ICustomAuthorizer : IHttpContextCustomAuthorizer
 {
-    Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, object obj, object? customData);
+    Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        object obj,
+        object? customData,
+        CancellationToken cancellationToken = default
+    );
 
     Task<bool> IHttpContextCustomAuthorizer.CheckIfAuthorizedAsync(
         HttpContext context,
         object obj,
         object? customData
-    ) => CheckIfAuthorizedAsync(context.User, obj, customData);
+    ) => CheckIfAuthorizedAsync(context.User, obj, customData, context.RequestAborted);
 }
 
 public abstract class HttpContextCustomAuthorizer<TObject> : IHttpContextCustomAuthorizer
@@ -29,10 +34,18 @@ public abstract class HttpContextCustomAuthorizer<TObject> : IHttpContextCustomA
 
 public abstract class CustomAuthorizer<TObject> : ICustomAuthorizer
 {
-    public Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, object obj, object? customData) =>
-        CheckIfAuthorizedAsync(user, (TObject)obj);
+    public Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        object obj,
+        object? customData,
+        CancellationToken cancellationToken = default
+    ) => CheckIfAuthorizedAsync(user, (TObject)obj, cancellationToken);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, TObject obj);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        TObject obj,
+        CancellationToken cancellationToken
+    );
 }
 
 public abstract class HttpContextCustomAuthorizer<TObject, TCustomData> : IHttpContextCustomAuthorizer
@@ -59,12 +72,26 @@ public abstract class HttpContextCustomAuthorizer<TObject, TCustomData> : IHttpC
 public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
     where TCustomData : class
 {
-    public Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, object obj, object? customData) =>
-        CheckIfAuthorizedInternalAsync(user, (TObject)obj, customData);
+    public Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        object obj,
+        object? customData,
+        CancellationToken cancellationToken = default
+    ) => CheckIfAuthorizedInternalAsync(user, (TObject)obj, customData, cancellationToken);
 
-    protected abstract Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, TObject obj, TCustomData? customData);
+    protected abstract Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        TObject obj,
+        TCustomData? customData,
+        CancellationToken cancellationToken
+    );
 
-    private Task<bool> CheckIfAuthorizedInternalAsync(ClaimsPrincipal user, TObject obj, object? customData)
+    private Task<bool> CheckIfAuthorizedInternalAsync(
+        ClaimsPrincipal user,
+        TObject obj,
+        object? customData,
+        CancellationToken cancellationToken
+    )
     {
         if (!(customData is null || customData is TCustomData))
         {
@@ -74,6 +101,6 @@ public abstract class CustomAuthorizer<TObject, TCustomData> : ICustomAuthorizer
             );
         }
 
-        return CheckIfAuthorizedAsync(user, obj, (TCustomData?)customData);
+        return CheckIfAuthorizedAsync(user, obj, (TCustomData?)customData, cancellationToken);
     }
 }

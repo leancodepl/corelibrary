@@ -15,7 +15,11 @@ public interface ICustomAuthorizer { }
 
 public class CustomAuthorizer : CustomAuthorizer<ICustomAuthorizerParams>, ICustomAuthorizer
 {
-    protected override Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, ICustomAuthorizerParams obj)
+    protected override Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        ICustomAuthorizerParams obj,
+        CancellationToken cancellationToken
+    )
     {
         return Task.FromResult(!obj.FailAuthorization);
     }

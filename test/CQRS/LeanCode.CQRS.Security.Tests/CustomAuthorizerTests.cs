@@ -110,7 +110,12 @@ public class CustomAuthorizerTests
 
     private class CustomAuthorizer : CustomAuthorizer<AClass, AnotherClass>
     {
-        protected override Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, AClass obj, AnotherClass customData)
+        protected override Task<bool> CheckIfAuthorizedAsync(
+            ClaimsPrincipal user,
+            AClass obj,
+            AnotherClass customData,
+            CancellationToken cancellationToken
+        )
         {
             InternalWasCalled = true;
             return Task.FromResult(true);

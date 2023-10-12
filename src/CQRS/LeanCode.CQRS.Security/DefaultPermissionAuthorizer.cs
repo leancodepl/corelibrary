@@ -16,7 +16,12 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, I
         this.registry = registry;
     }
 
-    protected override Task<bool> CheckIfAuthorizedAsync(ClaimsPrincipal user, object obj, string[]? customData)
+    protected override Task<bool> CheckIfAuthorizedAsync(
+        ClaimsPrincipal user,
+        object obj,
+        string[]? customData,
+        CancellationToken cancellationToken
+    )
     {
         if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))
         {
