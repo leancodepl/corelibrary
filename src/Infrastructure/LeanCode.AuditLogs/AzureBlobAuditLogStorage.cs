@@ -60,6 +60,18 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
 
     private async Task AppendLogToBlobAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken)
     {
+        var blob = await CreateBlobAsync(auditLogMessage, cancellationToken);
+        using var stream = Serialize(auditLogMessage);
+        await blob.AppendBlockAsync(stream, cancellationToken: cancellationToken);
+
+        logger.Verbose("Log append to the blob {BlobName}", blob.Name);
+    }
+
+    private async Task<AppendBlobClient> CreateBlobAsync(
+        AuditLogMessage auditLogMessage,
+        CancellationToken cancellationToken
+    )
+    {
         var container = blobClient.GetBlobContainerClient(config.AuditLogsContainer);
         var table = tableClient.GetTableClient(config.AuditLogsTable);
         var suffix = await GetSuffixAsync(auditLogMessage, table, cancellationToken);
@@ -68,13 +80,16 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
 
         var blob = container.GetAppendBlobClient(blobName);
         await blob.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-        using var stream = new MemoryStream();
+        return blob;
+    }
+
+    private static MemoryStream Serialize(AuditLogMessage auditLogMessage)
+    {
+        var stream = new MemoryStream();
         JsonSerializer.Serialize(stream, auditLogMessage, Options);
         stream.Write(NewLineBytes);
         stream.Position = 0;
-        await blob.AppendBlockAsync(stream, cancellationToken: cancellationToken);
-
-        logger.Verbose("Log append to the blob {BlobName}", blobName);
+        return stream;
     }
 
     private static async Task<int> GetSuffixAsync(
