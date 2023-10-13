@@ -20,30 +20,11 @@ public class AuditLogsMiddleware<TDbContext>
     public async Task InvokeAsync(HttpContext httpContext, TDbContext dbContext, IBus bus)
     {
         await next(httpContext);
-
-        var entitiesChanged = ChangedEntitiesExtractor.Extract(dbContext);
-        if (entitiesChanged.Count != 0)
-        {
-            var actorId = Activity.Current?.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey);
-            var actionName = httpContext.Request.Path.ToString();
-            var now = Time.NowWithOffset;
-
-            await Task.WhenAll(
-                entitiesChanged.Select(
-                    e =>
-                        bus.Publish(
-                            new AuditLogMessage(
-                                e,
-                                actionName,
-                                now,
-                                actorId,
-                                Activity.Current?.TraceId.ToString(),
-                                Activity.Current?.SpanId.ToString()
-                            ),
-                            httpContext.RequestAborted
-                        )
-                )
-            );
-        }
+        await AuditLogsPublisher.ExtractAndPublishAsync(
+            dbContext,
+            bus,
+            httpContext.Request.Path.ToString()!,
+            httpContext.RequestAborted
+        );
     }
 }

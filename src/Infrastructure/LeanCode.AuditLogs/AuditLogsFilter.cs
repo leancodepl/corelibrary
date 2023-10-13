@@ -1,9 +1,7 @@
-using System.Diagnostics;
 using LeanCode.CQRS.MassTransitRelay;
-using LeanCode.OpenTelemetry;
-using LeanCode.TimeProvider;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace LeanCode.AuditLogs;
 
@@ -29,31 +27,12 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
     )
     {
         await next.Send(context);
-
-        var entitiesChanged = ChangedEntitiesExtractor.Extract(dbContext);
-        if (entitiesChanged.Count != 0)
-        {
-            var actorId = Activity.Current?.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey);
-            var actionName = context.Consumer.ToString()!;
-            var now = Time.NowWithOffset;
-
-            await Task.WhenAll(
-                entitiesChanged.Select(
-                    e =>
-                        bus.Publish(
-                            new AuditLogMessage(
-                                e,
-                                actionName,
-                                now,
-                                actorId,
-                                Activity.Current?.TraceId.ToString(),
-                                Activity.Current?.SpanId.ToString()
-                            ),
-                            context.CancellationToken
-                        )
-                )
-            );
-        }
+        await AuditLogsPublisher.ExtractAndPublishAsync(
+            dbContext,
+            bus,
+            context.Consumer.ToString()!,
+            context.CancellationToken
+        );
     }
 }
 

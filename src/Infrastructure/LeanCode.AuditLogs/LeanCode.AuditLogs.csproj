@@ -13,12 +13,14 @@
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Serilog" />
+  </ItemGroup>
 
-    <PackageReference Include="LeanCode.CQRS.AspNetCore" />
-    <PackageReference Include="LeanCode.CQRS.MassTransitRelay" />
-    <PackageReference Include="LeanCode.DomainModels" />
-    <PackageReference Include="LeanCode.OpenTelemetry" />
-    <PackageReference Include="LeanCode.TimeProvider" />
+  <ItemGroup>
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
   </ItemGroup>
 
 </Project>
