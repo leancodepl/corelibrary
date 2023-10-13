@@ -30,7 +30,7 @@ public static class ChangedEntitiesExtractor
                                 p =>
                                     // This may lose some info comparing to JsonSerializer.Serialize , but we don't get
                                     // values in unnecessary "". We accept this tradeoff
-                                    p.PropertyInfo?.GetMethod?.Invoke(e.Entity, null)?.ToString()
+                                    p.PropertyInfo?.GetValue(e.Entity, null)?.ToString()
                                     ?? "Cannot extract key property"
                             )
                             .ToList(),
