@@ -102,7 +102,7 @@
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
-    <PackageReference Update="Npgsql" Version="8.0.0-preview.4" />
+    <PackageReference Update="Npgsql" Version="8.0.0-rc.2" />
     <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.1" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
 
