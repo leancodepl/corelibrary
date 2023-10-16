@@ -122,6 +122,23 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Empty(result2);
     }
 
+    [Fact]
+    public async Task Removes_all_user_tokens()
+    {
+        const string Token1 = "token1";
+        const string Token2 = "token2";
+        var uid = Guid.NewGuid();
+
+        await store.AddUserTokenAsync(uid, Token1);
+        await store.AddUserTokenAsync(uid, Token2);
+
+        await store.RemoveAllUserTokensAsync(uid);
+
+        var result = await store.GetTokensAsync(uid);
+
+        Assert.Empty(result);
+    }
+
     public async Task InitializeAsync()
     {
         await app.InitializeAsync();

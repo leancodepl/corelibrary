@@ -82,4 +82,9 @@ internal sealed class StubStore : IPushNotificationTokenStore<Guid>
             throw new KeyNotFoundException();
         }
     }
+
+    public Task RemoveAllUserTokensAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
