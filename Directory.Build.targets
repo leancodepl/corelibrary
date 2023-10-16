@@ -13,7 +13,7 @@
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>4.4.0</CodeAnalysisVersion>
 
-     <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.1.23419.4</DomainModelsTestsNetCoreAppRefVersion>
+     <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.2.23479.6</DomainModelsTestsNetCoreAppRefVersion>
   </PropertyGroup>
 
   <ItemGroup>
