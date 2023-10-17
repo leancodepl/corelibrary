@@ -5,7 +5,9 @@ To reject [commands] that have invalid data or that cannot be fulfilled (the sta
 To validate example command introduced in [command] section, you can use something like:
 
 ```csharp
-public class CreateProject : ICommand
+[ProjectIsOwned]
+[AuthorizeWhenHasAnyOf(Auth.Roles.Employee)]
+public class UpdateProjectName : ICommand, IProjectRelated
 {
     public string ProjectId { get; set; }
     public string Name { get; set; }
@@ -15,28 +17,28 @@ public class CreateProject : ICommand
     {
         public const int InvalidName = 1;
         public const int ProjectIdInvalid = 2;
-        public const int ProjectAlreadyExists = 3;
+        public const int ProjectDoesNotExist = 3;
     }
 }
 
-public class CreateProjectCV : AbstractValidator<CreateProject>
+public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
 {
     private readonly IRepository<Project, ProjectId> projects;
 
-    public CreateProjectCV(IRepository<Project, ProjectId> projects)
+    public UpdateProjectNameCV(IRepository<Project, ProjectId> projects)
     {
         this.projects = projects;
 
         RuleFor(c => c.Name)
-            .NotEmpty().WithCode(CreateProject.ErrorCodes.InvalidName);
+            .NotEmpty().WithCode(UpdateProjectName.ErrorCodes.InvalidName);
 
         RuleFor(c => c.ProjectId)
             .CustomAsync(CheckProjectDoesNotExistAsync);
     }
 
-    private async Task CheckProjectDoesNotExistAsync(
+    private async Task CheckProjectExistsAsync(
         string ProjectId,
-        ValidationContext<CreateProject> ctx,
+        ValidationContext<UpdateProjectName> ctx,
         CancellationToken ct
     )
     {
@@ -44,18 +46,18 @@ public class CreateProjectCV : AbstractValidator<CreateProject>
         {
             ctx.AddValidationError(
                 "ProjectId is invalid.",
-                CreateProject.ErrorCodes.ProjectIdInvalid);
+                UpdateProjectName.ErrorCodes.ProjectIdInvalid);
 
             return;
         }
 
-        var existing = await projects.FindAsync(parsedProjectId, ct);
+        var project = await projects.FindAsync(parsedProjectId, ct);
 
-        if (existing is not null)
+        if (project is null)
         {
             ctx.AddValidationError(
-                $"Project with the ID {ProjectId} already exists.",
-                CreateProject.ErrorCodes.ProjectAlreadyExists
+                $"Project with the id: {ProjectId} does not exist.",
+                UpdateProjectName.ErrorCodes.ProjectDoesNotExist
             );
         }
     }

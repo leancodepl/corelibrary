@@ -91,6 +91,11 @@ public class Project : IAggregateRoot<ProjectId>
 {
     . . .
 
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+
     public void AddAssignments(IEnumerable<string> assignmentNames)
     {
         assignments.AddRange(
