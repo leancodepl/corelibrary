@@ -17,4 +17,5 @@ public interface IPushNotificationTokenStore<TUserId>
 
     Task RemoveTokenAsync(string token, CancellationToken cancellationToken = default);
     Task RemoveTokensAsync(IEnumerable<string> tokens, CancellationToken cancellationToken = default);
+    Task RemoveAllUserTokensAsync(TUserId userId, CancellationToken cancellationToken = default);
 }

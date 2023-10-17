@@ -198,4 +198,26 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
             logger.Error(ex, "Something went wrong when deleting push notification tokens");
         }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "The method is an exception boundary."
+    )]
+    public async Task RemoveAllUserTokensAsync(TUserId userId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var removed = await dbContext
+                .Set<PushNotificationTokenEntity<TUserId>>()
+                .Where(e => (object)e.UserId == (object)userId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            logger.Information("Removed {Count} push notification tokens from the store", removed);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Something went wrong when deleting push notification tokens");
+        }
+    }
 }
