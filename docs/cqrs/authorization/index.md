@@ -42,23 +42,30 @@ public class UpdateProjectName : ICommand, IProjectRelated
 public class ProjectIsOwnedAuthorizer
     : CustomAuthorizer<IProjectRelated>, IProjectIsOwned
 {
-    private readonly IRepository<Project, ProjectId> Projects;
+    private readonly IRepository<Project, ProjectId> projects;
 
-    public ProjectIsOwnedAuthorizer(IRepository<Project, ProjectId> Access)
+    public ProjectIsOwnedAuthorizer(IRepository<Project, ProjectId> projects)
     {
-        this.Access = Access;
+        this.projects = projects;
     }
 
     protected override async Task<bool> CheckIfAuthorizedAsync(
         HttpContext context,
         IProjectRelated obj)
     {
-        var project = await Access.FindAsync(new(obj.ProjectId), context.RequestAborted);
+        var project = await projects.FindAsync(new(obj.ProjectId), context.RequestAborted);
+
+        if (project is null)
+        {
+            // If no project is found we let validation handle it.
+            return true;
+        }
+
         return project.OwnerId == context.GetEmployeeId();
     }
 }
 ```
 
-Both queries, commands and operations can (and should!) be behind authorization. By default, authorization is run before validation so the object that the command/query/operation is pointing at might not exist.
+All queries, commands and operations can (and should!) be behind authorization. By default, authorization is run before validation so the object that the command/query/operation is pointing at might not exist.
 
 > **Tip:** You can implement your own authorization and use it with LeanCode CoreLibrary authorizers. To see how you can implement authorization using Ory Kratos and LeanCode CoreLibrary see here. <!-- TODO: add link to Ory Kratos page -->
