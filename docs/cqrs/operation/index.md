@@ -11,9 +11,10 @@ Operations change the state of the system, but also allow to return some result.
 
 ## Contract
 
-Consider the following operation:
+Consider the operation that creates payment in external service for employee's access to application and returns payment token.
 
 ```csharp
+[AuthorizeWhenHasAnyOf(Auth.Roles.Admin)]
 public class PayForAccess : IOperation<PaymentTokenDTO>
 {
     public string EmployeeId { get; set; }
@@ -24,8 +25,6 @@ public class PaymentTokenDTO
     public string Token { get; set; }
 }
 ```
-
-that creates payment in external service for employee's access to application and returns payment token.
 
 ## Handler
 
