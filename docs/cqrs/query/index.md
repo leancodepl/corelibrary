@@ -1,26 +1,24 @@
 # Query
 
-Query is just an class that implements the `IQuery<TResult>` interface (there's also non-generic `IQuery` interface but it shouldn't be used directly). The only generic parameter specifies the type that the query returns when executed. It should be a DTO (because most of the time it will be serialized). Queries get the data from the system but don't modify it.
+Query is just a class that implements the `IQuery<TResult>` interface (there's also non-generic `IQuery` interface but it shouldn't be used directly). The only generic parameter specifies the type that the query returns when executed. It should be a DTO (because most of the time it will be serialized). Queries get the data from the system but don't modify it.
 
 ## Contract
 
-Consider the following query
+Consider the query that finds all projects that match the name filter. It may be called anonymously and returns a list of `ProjectDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface).
 
 ```csharp
-public class ProjectInfoDTO
+public class ProjectDTO
 {
-    public string ProjectId { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
 }
 
 [AllowUnauthorized]
-public class FindProjectsMatchingName : IQuery<List<ProjectInfoDTO>>
+public class Projects : IQuery<List<ProjectDTO>>
 {
-    public string NameFilter { get; set; }
+    public string? NameFilter { get; set; }
 }
 ```
-
-It finds all the Projects that match the name filter (however we define the filter). It may be called anonymously and returns a list of `ProjectInfoDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface).
 
 ## Handler
 
@@ -29,28 +27,35 @@ Query handlers execute queries. They should not have any side effects but can re
 For the above query, you can have handler like this:
 
 ```csharp
-public class FindProjectsMatchingNameQH
-    : IQueryHandler<FindProjectsMatchingName, List<ProjectInfoDTO>>
+public class ProjectsQH : IQueryHandler<Projects, List<ProjectDTO>>
 {
     private readonly CoreDbContext dbContext;
 
-    public FindProjectsMatchingNameQH(CoreDbContext dbContext)
+    public ProjectsQH(CoreDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
 
-    public async Task<List<ProjectInfoDTO>> ExecuteAsync(
+    public async Task<List<ProjectDTO>> ExecuteAsync(
         HttpContext context,
-        FindProjectsMatchingName query)
+        Projects query)
     {
-        // Here, we use raw SQL but you are free
+        // Here, we use Entity Framework but you are free
         // to use other mechanisms to get the data
-        var filter = $"%{query.NameFilter.ToLower()}%";
-        var results = await dbContext.QueryAsync<ProjectInfoDTO>(@"
-            SELECT ""Id"" AS ""ProjectId"", ""Name"" FROM ""Projects""
-            WHERE ""Name"" LIKE @filter",
-            new { filter });
-        return results.AsList();
+        var dbQuery = dbContext.Projects.AsQueryable();
+
+        if (!string.IsNullOrEmpty(query.NameFilter))
+        {
+            dbQuery = dbQuery.Where(p => p.Name.Contains(query.NameFilter));
+        }
+
+        return await dbQuery
+            .Select(p => new ProjectDTO
+            {
+                Id = p.Id,
+                Name = p.Name
+            })
+            .ToListAsync(context.RequestAborted);
     }
 }
 ```
