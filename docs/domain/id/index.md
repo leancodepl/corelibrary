@@ -24,20 +24,19 @@ Then, you need to add a partial struct record that will be filled up by the comp
 
 ```cs
 [TypedId(TypedIdFormat.RawInt)]
-public readonly partial record struct UserId;
+public readonly partial record struct EmployeeId;
 ```
 
-Then, you can use it as an aggregate ID:
+Then, you can use it as an aggregate id and across the project.
 
 ```cs
-public class User : IAggregateRoot<UserId>
+public class Employee : IAggregateRoot<EmployeeId>
 {
-    public UserId Id { get; }
-    DateTime IOptimisticConcurrency.DateModified { get; set; }
+    public EmployeeId Id { get; }
+
+    . . .
 }
 ```
-
-And use it across the project.
 
 ### API
 
@@ -75,10 +74,10 @@ The format of the ID can be configured using:
 Example:
 
 ```cs
-[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "user")]
-public readonly partial record struct VeryLongUserId;
+[TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "employee")]
+public readonly partial record struct VeryLongEmployeeId;
 
-// The `VeryLongUserId` will have format `user_(guid)`, with `New` using `Guid.NewGuid` as random source.
+// The `VeryLongEmployeeId` will have format `employee_(guid)`, with `New` using `Guid.NewGuid` as random source.
 ```
 
 ## Generic type wrappers
