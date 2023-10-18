@@ -238,4 +238,19 @@ public class ChangedEntitiesExtractorTests
                 opt => opt.ComparingByMembers<JsonElement>()
             );
     }
+
+    [Fact]
+    public void Check_if_returns_nothing_when_nothing_changed()
+    {
+        dbContext.TestEntities.Add(TestEntity.Create(SomeId));
+        dbContext.SaveChanges();
+
+        var changes = ChangedEntitiesExtractor.Extract(dbContext);
+        changes.Should().BeEmpty();
+
+        var testEntity = dbContext.TestEntities.Find(SomeId);
+
+        changes = ChangedEntitiesExtractor.Extract(dbContext);
+        changes.Should().BeEmpty();
+    }
 }
