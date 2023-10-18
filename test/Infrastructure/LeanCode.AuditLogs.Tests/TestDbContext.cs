@@ -58,16 +58,11 @@ public class TestEntity : IAggregateRoot<string>
         return new() { Id = id, SomeString = "initial_value", };
     }
 
-    public void SetSomeString(string someString)
-    {
-        SomeString = someString;
-    }
-
     public void AddOwnedEntities()
     {
         foreach (var i in Enumerable.Range(20, 5))
         {
-            ownedEntities.Add(new OwnedEntity(i, i.ToString()));
+            ownedEntities.Add(new(i, i.ToString()));
         }
     }
 
@@ -75,7 +70,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var i in Enumerable.Range(20, 5))
         {
-            includedEntities.Add(new IncludedEntity(this, i, i.ToString()));
+            includedEntities.Add(new(this, i, i.ToString()));
         }
     }
 
@@ -83,7 +78,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var e in ownedEntities)
         {
-            e.Update((e.SomeInt + 100).ToString());
+            e.SomeString = (e.SomeInt + 100).ToString();
         }
     }
 
@@ -91,36 +86,28 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var e in includedEntities)
         {
-            e.Update((e.SomeInt + 100).ToString());
+            e.SomeString = (e.SomeInt + 100).ToString();
         }
     }
 }
 
 public class OwnedEntity
 {
-    public int SomeInt { get; private set; }
-    public string SomeString { get; private set; } = null!;
-
-    private OwnedEntity() { }
+    public int SomeInt { get; set; }
+    public string SomeString { get; set; } = null!; private OwnedEntity() { }
 
     public OwnedEntity(int someInt, string someString)
     {
         SomeInt = someInt;
         SomeString = someString;
     }
-
-    public void Update(string someString)
-    {
-        SomeString = someString;
-    }
 }
-
 public class IncludedEntity
 {
     public TestEntity TestEntity { get; private init; } = null!;
     public string TestEntityId { get; private init; } = null!;
-    public int SomeInt { get; private set; }
-    public string SomeString { get; private set; } = null!;
+    public int SomeInt { get; set; }
+    public string SomeString { get; set; } = null!;
 
     private IncludedEntity() { }
 
@@ -129,11 +116,6 @@ public class IncludedEntity
         TestEntity = testEntity;
         TestEntityId = testEntity.Id;
         SomeInt = someInt;
-        SomeString = someString;
-    }
-
-    public void Update(string someString)
-    {
         SomeString = someString;
     }
 }

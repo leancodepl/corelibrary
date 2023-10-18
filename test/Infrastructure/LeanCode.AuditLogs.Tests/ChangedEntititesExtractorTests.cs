@@ -56,8 +56,7 @@ public class ChangedEntitiesExtractorTests
         dbContext.SaveChanges();
 
         var testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
-        testEntity!.SetSomeString("foo bar");
+        testEntity!.SomeString = "foo bar";
         dbContext.TestEntities.Update(testEntity);
 
         var changes = ChangedEntitiesExtractor.Extract(dbContext);
@@ -85,7 +84,6 @@ public class ChangedEntitiesExtractorTests
         dbContext.SaveChanges();
 
         var testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
         dbContext.Remove(testEntity!);
 
         var changes = ChangedEntitiesExtractor.Extract(dbContext);
@@ -116,8 +114,7 @@ public class ChangedEntitiesExtractorTests
         var otherEntity = TestEntity.Create(OtherId);
         dbContext.TestEntities.Add(otherEntity);
         var testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
-        testEntity!.SetSomeString("foo bar");
+        testEntity!.SomeString = "foo bar";
         dbContext.TestEntities.Update(testEntity);
 
         var changes = ChangedEntitiesExtractor.Extract(dbContext);
@@ -156,7 +153,6 @@ public class ChangedEntitiesExtractorTests
         dbContext.SaveChanges();
 
         var testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
         testEntity!.AddOwnedEntities();
         dbContext.TestEntities.Update(testEntity);
 
@@ -178,7 +174,6 @@ public class ChangedEntitiesExtractorTests
         dbContext.SaveChanges();
 
         testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
         testEntity!.UpdateOwnedEntities();
         dbContext.TestEntities.Update(testEntity);
 
@@ -205,7 +200,6 @@ public class ChangedEntitiesExtractorTests
         dbContext.SaveChanges();
 
         var testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
         testEntity!.AddIncludedEntities();
         dbContext.TestEntities.Update(testEntity);
 
@@ -226,7 +220,6 @@ public class ChangedEntitiesExtractorTests
 
         dbContext.SaveChanges();
         testEntity = dbContext.TestEntities.Find(SomeId);
-        testEntity.Should().NotBeNull();
         testEntity!.UpdateIncludedEntities();
         dbContext.TestEntities.Update(testEntity);
 
