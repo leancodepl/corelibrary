@@ -67,7 +67,7 @@ As you can see, the command handler is really simple - it just finds project wit
 4. If the business process requires to modify multiple aggregates, try to use [events] (but don't over-engineer).
 5. If that does not help, modify/add/delete multiple aggregates.
 6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
-7. Database transaction will be commited at the end of the [pipeline] (assuming [CommitTransaction] pipeline element was added), so it's not recommended to commit it inside query handler as it may make serialized [events] inconsistent with the entity.
+7. Database transaction will be commited at the end of the [pipeline] (assuming [CommitTransaction] pipeline element was added), so it's not recommended to commit it inside query handler as it may make [events] inconsistent with the entity. To read more why it's not recommended to commit transactions in handlers visit [here](../pipeline/avoid_commiting_transactions_in_handlers.md).
 
 ## Naming conventions
 
