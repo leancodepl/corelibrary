@@ -44,17 +44,10 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
         {
             await AppendLogToBlobAsync(auditLogMessage, cancellationToken);
         }
-        catch (RequestFailedException e)
+        catch (RequestFailedException e) when (e.ErrorCode == BlobErrorCode.BlockCountExceedsLimit)
         {
-            if (e.ErrorCode == BlobErrorCode.BlockCountExceedsLimit)
-            {
-                await BumpSuffixInTableAsync(auditLogMessage, cancellationToken);
-                await AppendLogToBlobAsync(auditLogMessage, cancellationToken);
-            }
-            else
-            {
-                throw;
-            }
+            await BumpSuffixInTableAsync(auditLogMessage, cancellationToken);
+            await AppendLogToBlobAsync(auditLogMessage, cancellationToken);
         }
     }
 

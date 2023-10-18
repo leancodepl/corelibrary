@@ -22,9 +22,15 @@ resource "azurerm_storage_container" "container" {
   container_access_type = "private"
 }
 
-resource "azurerm_role_assignment" "data_owners" {
+resource "azurerm_role_assignment" "table_data_contributor" {
   scope                = azurerm_storage_account.storage.id
-  role_definition_name = "Azure Service Bus Data Owner"
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = azuread_service_principal.tests.object_id
+}
+
+resource "azurerm_role_assignment" "blob_data_owner" {
+  scope                = azurerm_storage_account.storage.id
+  role_definition_name = "Storage Blob Data Owner"
   principal_id         = azuread_service_principal.tests.object_id
 }
 

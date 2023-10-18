@@ -6,12 +6,13 @@ using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
+using LeanCode.AuditLogs;
 using LeanCode.TimeProvider;
 using Xunit;
 
-namespace LeanCode.AuditLogs.Tests;
+namespace LeanCode.Azure.Tests;
 
-public class AzureBlobAuditLogStorageTests
+public class AzureStorageAuditLogIntegrationTests
 {
     private static readonly JsonSerializerOptions Options =
         new()
@@ -24,7 +25,7 @@ public class AzureBlobAuditLogStorageTests
     private readonly BlobServiceClient blobServiceClient;
     private readonly AzureBlobAuditLogStorage storage;
 
-    public AzureBlobAuditLogStorageTests()
+    public AzureStorageAuditLogIntegrationTests()
     {
         var credential = Env.GetTokenCredential();
         blobServiceClient = new BlobServiceClient(
@@ -90,8 +91,6 @@ public class AzureBlobAuditLogStorageTests
         linesFound.Should().Be(1);
     }
 
-
-
     [AzureStorageFact]
     public async Task Ensure_that_multiple_logs_are_correctly_uploaded_to_storage()
     {
@@ -139,9 +138,8 @@ public class AzureBlobAuditLogStorageTests
         }
 
         blobsFound.Should().Be(1);
-        linesFound.Should().Be(logsToRecord );
+        linesFound.Should().Be(logsToRecord);
     }
-
 
     [AzureStorageFact(Skip = "This test is too long")]
     public async Task Ensure_that_all_logs_are_correctly_uploaded_to_multiple_files()
@@ -190,7 +188,7 @@ public class AzureBlobAuditLogStorageTests
         }
 
         blobsFound.Should().NotBe(1);
-        linesFound.Should().Be(logsToRecord );
+        linesFound.Should().Be(logsToRecord);
     }
 }
 
@@ -199,11 +197,11 @@ public sealed class AzureStorageFactAttribute : FactAttribute
     public AzureStorageFactAttribute()
     {
         Skip ??= Env.SkipIfVariablesNotSet(
-                Env.TenantIdKey,
-                Env.ClientIdKey,
-                Env.ClientSecretKey,
-                Env.AzureBlobStorageServiceUriKey,
-                Env.AzureTableStorageServiceUriKey
-            );
+            Env.TenantIdKey,
+            Env.ClientIdKey,
+            Env.ClientSecretKey,
+            Env.AzureBlobStorageServiceUriKey,
+            Env.AzureTableStorageServiceUriKey
+        );
     }
 }
