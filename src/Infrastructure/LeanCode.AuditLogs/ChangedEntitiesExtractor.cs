@@ -23,7 +23,8 @@ public static class ChangedEntitiesExtractor
             .Select(
                 e =>
                     new EntityData(
-                        // TODO: FIXME, I fail with owned entities
+                        // This method does not extract key name for owned properties  - we are ok with it since the
+                        // focus of this feature is to extract root entities.
                         e.Metadata
                             .FindPrimaryKey()!
                             .Properties.Select(
