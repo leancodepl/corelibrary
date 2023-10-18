@@ -8,7 +8,7 @@ namespace LeanCode.AuditLogs;
 
 public class AuditLogsPublisher
 {
-    public Task ExtractAndPublishAsync(
+    public async Task ExtractAndPublishAsync(
         DbContext dbContext,
         IBus bus,
         string actionName,
@@ -21,7 +21,7 @@ public class AuditLogsPublisher
             var actorId = Activity.Current?.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey);
             var now = Time.NowWithOffset;
 
-            return Task.WhenAll(
+            await Task.WhenAll(
                 entitiesChanged.Select(
                     e =>
                         bus.Publish(
@@ -38,7 +38,5 @@ public class AuditLogsPublisher
                 )
             );
         }
-
-        return Task.CompletedTask;
     }
 }
