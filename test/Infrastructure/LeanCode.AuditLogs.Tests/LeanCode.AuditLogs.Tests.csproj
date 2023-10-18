@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <!-- Necessary for LeanCode.TimeProvider.TestHelpers to restore -->
-    <NoWarn>NU1603</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
