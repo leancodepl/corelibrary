@@ -60,4 +60,8 @@ public class ProjectsQH : IQueryHandler<Projects, List<ProjectDTO>>
 }
 ```
 
+## Naming conventions
+
+Queries are designed to retrieve information without altering the system's state. To maintain a clear and consistent naming convention, queries should possess names that directly indicate the type of information being requested. An effective approach is to use descriptive nouns or noun phrases, exemplified by names like `Projects`, `ProjectById`, or `EmployeesInAssignment`. Query handlers should be named in alignment with the associated query, appending the `QH` suffix.
+
 [validation]: ../validation/index.md

@@ -69,6 +69,10 @@ As you can see, the command handler is really simple - it just finds project wit
 6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
 7. Database transaction will be commited at the end of the [pipeline] (assuming [CommitTransaction] pipeline element was added), so it's not recommended to commit it inside query handler as it may make serialized [events] inconsistent with the entity.
 
+## Naming conventions
+
+Commands in CQRS are responsible for modifying the state of the system, and therefore their names should reflect the action they trigger. A common convention is to use imperative verbs that clearly describe the intent, such as `UpdateProjectName`, `DeleteProject`, or `AssignEmployeeToAssignment`. Handlers should share the identical name as the associated contract, appended with the `CH` suffix. This practice enhances ease of identification and ensures a straightforward correlation between contracts and their corresponding handlers.
+
 [aggregates]: ../../domain/aggregate/index.md
 [events]: ../../domain/domain_event/index.md
 [pipeline]: ../pipeline/index.md

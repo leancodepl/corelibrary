@@ -57,3 +57,7 @@ public class PayForAccessOH : IOperationHandler<PayForAccess, PaymentTokenDTO>
     }
 }
 ```
+
+## Naming conventions
+
+Operations are designed to both modify the state of the system and provide a result. To uphold a consistent naming convention, these operations should be named to reflect both their transformative action and if possible the nature of the information returned. Striking a balance between clarity and conciseness, names like `GenerateReferralLink`, `GetNextQuestion`, or `AnswerQuestion` convey both the intent of state modification and the potential for a consequential result. Correspondingly, handlers for operations should start with the name of the associated operation while incorporating the `OH` suffix.
