@@ -1,7 +1,6 @@
 using LeanCode.CQRS.MassTransitRelay;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace LeanCode.AuditLogs;
 
@@ -12,11 +11,13 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
 {
     private readonly TDbContext dbContext;
     private readonly IBus bus;
+    private readonly AuditLogsPublisher auditLogsPublisher;
 
-    public AuditLogsFilter(TDbContext dbContext, IBus bus)
+    public AuditLogsFilter(TDbContext dbContext, IBus bus, AuditLogsPublisher auditLogsPublisher)
     {
         this.dbContext = dbContext;
         this.bus = bus;
+        this.auditLogsPublisher = auditLogsPublisher;
     }
 
     public void Probe(ProbeContext context) { }
@@ -27,7 +28,7 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
     )
     {
         await next.Send(context);
-        await AuditLogsPublisher.ExtractAndPublishAsync(
+        await auditLogsPublisher.ExtractAndPublishAsync(
             dbContext,
             bus,
             context.Consumer.ToString()!,

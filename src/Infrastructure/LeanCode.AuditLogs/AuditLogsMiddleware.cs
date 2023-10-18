@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using LeanCode.OpenTelemetry;
-using LeanCode.TimeProvider;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +14,15 @@ public class AuditLogsMiddleware<TDbContext>
         this.next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, TDbContext dbContext, IBus bus)
+    public async Task InvokeAsync(
+        HttpContext httpContext,
+        TDbContext dbContext,
+        IBus bus,
+        AuditLogsPublisher auditLogsPublisher
+    )
     {
         await next(httpContext);
-        await AuditLogsPublisher.ExtractAndPublishAsync(
+        await auditLogsPublisher.ExtractAndPublishAsync(
             dbContext,
             bus,
             httpContext.Request.Path.ToString()!,

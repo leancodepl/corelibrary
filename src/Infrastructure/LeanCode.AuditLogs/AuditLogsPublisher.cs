@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.AuditLogs;
 
-public static class AuditLogsPublisher
+public class AuditLogsPublisher
 {
-    public static Task ExtractAndPublishAsync(
+    public Task ExtractAndPublishAsync(
         DbContext dbContext,
         IBus bus,
         string actionName,
