@@ -11,7 +11,7 @@ Operations change the state of the system, but also allow to return some result.
 
 ## Contract
 
-Consider the operation that creates payment in external service for employee's access to application and returns payment token.
+Consider the operation that creates payment in external service for employee's access to application and returns payment token:
 
 ```csharp
 [AuthorizeWhenHasAnyOf(Auth.Roles.Admin)]

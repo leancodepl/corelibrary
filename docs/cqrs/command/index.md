@@ -4,7 +4,7 @@ Command is just a class that implements the `ICommand` interface. Commands are 
 
 ## Contract
 
-Consider the command that updates name of the `Project` (caller of the command is required to have `Employee` role and own project).
+Consider the command that updates name of the `Project` (caller of the command is required to have `Employee` role and own project):
 
 ```csharp
 [ProjectIsOwned]

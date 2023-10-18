@@ -4,7 +4,7 @@ Query is just a class that implements the `IQuery<TResult>` interface (there's 
 
 ## Contract
 
-Consider the query that finds all projects that match the name filter. It may be called anonymously and returns a list of `ProjectDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface).
+Consider the query that finds all projects that match the name filter. It may be called anonymously and returns a list of `ProjectDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface):
 
 ```csharp
 public class ProjectDTO
