@@ -48,12 +48,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                         cfg.AddOpenTelemetry()
                             .WithTracing(builder =>
                             {
-                                builder
-                                    .AddAspNetCoreInstrumentation(
-                                        opts => opts.Filter = ctx => !ctx.Request.Path.StartsWithSegments("/live")
-                                    )
-                                    .AddProcessor<IdentityTraceAttributesFromBaggageProcessor>()
-                                    .AddSource("MassTransit");
+                                builder.AddAspNetCoreInstrumentation();
                             });
                         cfg.AddDbContext<TestDbContext>();
                         cfg.AddTransient<IAuditLogStorage, StubAuditLogStorage>();
