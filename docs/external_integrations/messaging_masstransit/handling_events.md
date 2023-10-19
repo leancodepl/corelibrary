@@ -1,6 +1,6 @@
 # Handling events
 
-Once an event is raised, it can be handled by a corresponding `IConsumer` to perform the desired action. The default consumer configuration can be customized by overriding the `ConfigureConsumer` method from the `ConsumerDefinition` interface. In the following example, an email is sent to the employee who has been assigned to a assignment:
+Once an event is raised, it can be handled by a corresponding `IConsumer` to perform the desired action. The default consumer configuration can be customized by overriding the `ConfigureConsumer` method from the `ConsumerDefinition` interface. In the following example, an email is sent to the employee who has been assigned to an assignment:
 
 ```csharp
 public class SendEmailToEmployeeOnEmployeeAssignedToAssignment
