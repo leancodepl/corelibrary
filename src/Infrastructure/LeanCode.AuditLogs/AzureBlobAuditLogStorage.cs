@@ -12,6 +12,7 @@ namespace LeanCode.AuditLogs;
 
 public class AzureBlobAuditLogStorage : IAuditLogStorage
 {
+    private const string SuffixKey = "Suffix";
     private readonly ILogger logger = Log.ForContext<AzureBlobAuditLogStorage>();
 
     private static ReadOnlySpan<byte> NewLineBytes => "\n"u8;
@@ -103,15 +104,15 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
                 string.Join("", auditLogMessage.EntityChanged.Ids)
             )
             {
-                ["Suffix"] = 0,
+                [SuffixKey] = 0,
             };
             await table.AddEntityAsync(entity, cancellationToken: cancellationToken);
 
-            return (int)entity["Suffix"];
+            return (int)entity[SuffixKey];
         }
         else
         {
-            return (int)res.Value["Suffix"];
+            return (int)res.Value[SuffixKey];
         }
     }
 
@@ -124,7 +125,7 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
             cancellationToken: cancellationToken
         );
         var entity = res.Value;
-        entity["Suffix"] = (int)entity["Suffix"] + 1;
+        entity[SuffixKey] = (int)entity[SuffixKey] + 1;
         await table.UpdateEntityAsync(entity, entity.ETag, cancellationToken: cancellationToken);
     }
 
