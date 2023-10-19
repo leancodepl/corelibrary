@@ -89,6 +89,16 @@ public class TestEntity : IAggregateRoot<string>
             e.SomeString = (e.SomeInt + 100).ToString();
         }
     }
+
+    public void RemoveOwnedEntities()
+    {
+        ownedEntities.Clear();
+    }
+
+    internal void RemoveIncludedEntities()
+    {
+        includedEntities.Clear();
+    }
 }
 
 public class OwnedEntity
