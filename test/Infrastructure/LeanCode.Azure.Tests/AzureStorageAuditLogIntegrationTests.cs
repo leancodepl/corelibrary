@@ -1,7 +1,5 @@
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -156,13 +154,12 @@ public class AzureStorageAuditLogIntegrationTests
             await blockBlob.DownloadToAsync(stream);
 
             stream.Position = 0;
-            using var reader = new StreamReader(stream, Encoding.UTF8);
 
-            linesFound += (await reader.ReadToEndAsync()).Count(c => c == '\n');
+            linesFound += stream.ToArray().Count(c => c == '\n');
             blobsFound++;
         }
 
-        return (blobsFound, linesFound);
+        return (linesFound, blobsFound);
     }
 }
 
