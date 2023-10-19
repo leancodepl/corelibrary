@@ -6,7 +6,7 @@ namespace LeanCode.AuditLogs.Tests;
 
 public sealed class AuditLogsFilterTests
 {
-    public const string ConsumerName = "Test.Consumer.Name";
+    private const string ConsumerName = "Test.Consumer.Name";
 
     [Fact]
     public async void Extracts_changes_after_pipeline_execution()
