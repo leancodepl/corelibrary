@@ -59,7 +59,6 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                     .Configure(app =>
                     {
                         app.Audit<TestDbContext>()
-                            .UseIdentityTraceAttributes()
                             .UseRouting()
                             .UseEndpoints(e =>
                             {
