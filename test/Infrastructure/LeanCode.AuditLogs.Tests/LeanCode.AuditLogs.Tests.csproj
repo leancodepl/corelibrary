@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,12 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.5.1" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.5.1-beta.1" />
   </ItemGroup>
 
 </Project>
