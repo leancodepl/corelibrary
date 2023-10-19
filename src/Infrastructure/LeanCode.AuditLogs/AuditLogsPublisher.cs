@@ -8,7 +8,7 @@ namespace LeanCode.AuditLogs;
 
 public class AuditLogsPublisher
 {
-    public async Task ExtractAndPublishAsync(
+    public virtual async Task ExtractAndPublishAsync(
         DbContext dbContext,
         IPublishEndpoint bus,
         string actionName,
