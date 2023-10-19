@@ -12,9 +12,8 @@ public sealed class AuditLogsFilterTests
     public async void Extracts_changes_after_pipeline_execution()
     {
         var dbContext = new TestDbContext();
-        var bus = Substitute.For<IBus>();
         var publisher = Substitute.For<AuditLogsPublisher>();
-        var filter = new AuditLogsFilter<TestDbContext, Consumer, TestMsg>(dbContext, bus, publisher);
+        var filter = new AuditLogsFilter<TestDbContext, Consumer, TestMsg>(dbContext, publisher);
 
         var consumer = new Consumer();
         var context = Substitute.For<ConsumerConsumeContext<Consumer, TestMsg>>();
@@ -22,7 +21,9 @@ public sealed class AuditLogsFilterTests
 
         await filter.Send(context, Substitute.For<IPipe<ConsumerConsumeContext<Consumer, TestMsg>>>());
 
-        await publisher.Received().ExtractAndPublishAsync(dbContext, bus, ConsumerName, Arg.Any<CancellationToken>());
+        await publisher
+            .Received()
+            .ExtractAndPublishAsync(dbContext, context, ConsumerName, Arg.Any<CancellationToken>());
     }
 
     public sealed class TestMsg { }

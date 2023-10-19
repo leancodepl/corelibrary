@@ -10,13 +10,11 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
     where TMessage : class
 {
     private readonly TDbContext dbContext;
-    private readonly IBus bus;
     private readonly AuditLogsPublisher auditLogsPublisher;
 
-    public AuditLogsFilter(TDbContext dbContext, IBus bus, AuditLogsPublisher auditLogsPublisher)
+    public AuditLogsFilter(TDbContext dbContext, AuditLogsPublisher auditLogsPublisher)
     {
         this.dbContext = dbContext;
-        this.bus = bus;
         this.auditLogsPublisher = auditLogsPublisher;
     }
 
@@ -30,7 +28,7 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
         await next.Send(context);
         await auditLogsPublisher.ExtractAndPublishAsync(
             dbContext,
-            bus,
+            context,
             context.Consumer.ToString()!,
             context.CancellationToken
         );

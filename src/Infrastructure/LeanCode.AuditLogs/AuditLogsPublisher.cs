@@ -10,7 +10,7 @@ public class AuditLogsPublisher
 {
     public async Task ExtractAndPublishAsync(
         DbContext dbContext,
-        IBus bus,
+        IPublishEndpoint bus,
         string actionName,
         CancellationToken cancellationToken
     )
