@@ -63,4 +63,4 @@ public class EmployeeAssignedToAssignment : IDomainEvent
 
 Ensure that `EmployeeAssignedToAssignment` implements the `IDomainEvent` interface, and it has a constructor with the `[JsonConstructor]` attribute for proper deserialization. After being raised, the event can be handled by the matching `IConsumer` to perform wanted action.
 
-> **Tip:** To read how to handle domain events, see [Messaging - MassTransit](../../external_integrations/messaging_masstransit/index.md).
+> **Tip:** To read how to handle domain events, visit [here](../../external_integrations/messaging_masstransit/handling_events.md).

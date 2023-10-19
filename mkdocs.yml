@@ -50,6 +50,7 @@ nav:
     - ./external_integrations/index.md
     - Messaging - MassTransit:
       - ./external_integrations/messaging_masstransit/index.md
+      - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
   - Features:
     - ./features/index.md
     - Force update:
