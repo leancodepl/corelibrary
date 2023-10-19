@@ -10,17 +10,16 @@ public sealed class AuditLogsMiddlewareTests
     [Fact]
     public async void Extracts_changes_after_pipeline_execution()
     {
-        var requestPath = "/test.request.path";
+        const string RequestPath = "/test.request.path";
         var dbContext = new TestDbContext();
         var bus = Substitute.For<IBus>();
         var publisher = Substitute.For<AuditLogsPublisher>();
-        var requestDelegate = Substitute.For<RequestDelegate>();
-        var middleware = new AuditLogsMiddleware<TestDbContext>(requestDelegate);
+        var middleware = new AuditLogsMiddleware<TestDbContext>(c => Task.CompletedTask);
 
         var httpContext = Substitute.For<HttpContext>();
-        httpContext.Request.Path.Returns(PathString.FromUriComponent(requestPath));
+        httpContext.Request.Path.Returns(PathString.FromUriComponent(RequestPath));
         await middleware.InvokeAsync(httpContext, dbContext, bus, publisher);
 
-        await publisher.Received().ExtractAndPublishAsync(dbContext, bus, requestPath, Arg.Any<CancellationToken>());
+        await publisher.Received().ExtractAndPublishAsync(dbContext, bus, RequestPath, Arg.Any<CancellationToken>());
     }
 }
