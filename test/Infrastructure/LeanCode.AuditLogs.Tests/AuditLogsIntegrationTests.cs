@@ -123,7 +123,6 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
     [Fact]
     public async Task Ensure_that_audit_log_is_collected_correctly()
     {
-        await harness.Start();
         await server.SendAsync(ctx =>
         {
             ctx.Request.Method = "POST";
@@ -156,7 +155,6 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
     [Fact]
     public async Task Ensure_that_audit_log_is_collected_with_actor_id()
     {
-        await harness.Start();
         await server.SendAsync(ctx =>
         {
             ctx.Request.Method = "POST";
@@ -173,7 +171,11 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
             .Match(s => s.As<AuditLogMessage>().SpanId != null && s.As<AuditLogMessage>().TraceId != null);
     }
 
-    public Task InitializeAsync() => host.StartAsync();
+    public async Task InitializeAsync()
+    {
+        await host.StartAsync();
+        await harness.Start();
+    }
 
     public Task DisposeAsync() => host.StopAsync();
 
