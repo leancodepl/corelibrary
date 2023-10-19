@@ -14,14 +14,6 @@ namespace LeanCode.Azure.Tests;
 
 public class AzureStorageAuditLogIntegrationTests
 {
-    private static readonly JsonSerializerOptions Options =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-        };
-
     private readonly BlobServiceClient blobServiceClient;
     private readonly AzureBlobAuditLogStorage storage;
 
@@ -68,28 +60,13 @@ public class AzureStorageAuditLogIntegrationTests
             default
         );
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(
-            Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
-        );
+        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
 
-        var blobsFound = 0;
-        var linesFound = 0;
-        await foreach (var b in containerClient.GetBlobsAsync(BlobTraits.All, BlobStates.All, $"{type}/{id}"))
-        {
-            var blockBlob = containerClient.GetBlobClient(b.Name);
-            using var stream = new MemoryStream();
-            await blockBlob.DownloadToAsync(stream);
-
-            stream.Position = 0;
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-
-            linesFound += reader.ReadToEnd().Count(c => c == '\n');
-            blobsFound++;
-        }
-
-        blobsFound.Should().Be(1);
-        linesFound.Should().Be(1);
+        lineCount.Should().Be(1);
+        blobCount.Should().Be(1);
     }
+
+
 
     [AzureStorageFact]
     public async Task Ensure_that_multiple_logs_are_correctly_uploaded_to_storage()
@@ -122,23 +99,10 @@ public class AzureStorageAuditLogIntegrationTests
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
-        var blobsFound = 0;
-        var linesFound = 0;
-        await foreach (var b in containerClient.GetBlobsAsync(BlobTraits.All, BlobStates.All, $"{type}/{id}"))
-        {
-            var blockBlob = containerClient.GetBlobClient(b.Name);
-            using var stream = new MemoryStream();
-            await blockBlob.DownloadToAsync(stream);
+        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
 
-            stream.Position = 0;
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-
-            linesFound += reader.ReadToEnd().Count(c => c == '\n');
-            blobsFound++;
-        }
-
-        blobsFound.Should().Be(1);
-        linesFound.Should().Be(logsToRecord);
+        blobCount.Should().Be(1);
+        lineCount.Should().Be(logsToRecord);
     }
 
     [AzureStorageFact(Skip = "This test is too long")]
@@ -172,6 +136,17 @@ public class AzureStorageAuditLogIntegrationTests
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
+        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
+
+        blobCount.Should().NotBe(1);
+        lineCount.Should().Be(logsToRecord);
+    }
+        private async Task<(int LineCount, int BlobCount)> CheckLinesAndBlobsCountAsync(string type, Guid id)
+    {
+        var containerClient = blobServiceClient.GetBlobContainerClient(
+            Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
+        );
+
         var blobsFound = 0;
         var linesFound = 0;
         await foreach (var b in containerClient.GetBlobsAsync(BlobTraits.All, BlobStates.All, $"{type}/{id}"))
@@ -183,12 +158,11 @@ public class AzureStorageAuditLogIntegrationTests
             stream.Position = 0;
             using var reader = new StreamReader(stream, Encoding.UTF8);
 
-            linesFound += reader.ReadToEnd().Count(c => c == '\n');
+            linesFound += (await reader.ReadToEndAsync()).Count(c => c == '\n');
             blobsFound++;
         }
 
-        blobsFound.Should().NotBe(1);
-        linesFound.Should().Be(logsToRecord);
+        return (blobsFound, linesFound);
     }
 }
 

@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using LeanCode.OpenTelemetry;
 using MassTransit;
 using NSubstitute;
 using Xunit;
