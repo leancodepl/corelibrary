@@ -16,26 +16,34 @@ Package uses EntityFramework's ChangeTracker in order to detect changes. Each lo
 
 ## Configuration
 
-The package does not require extra work from the user other than initial configuration. In order to collect audit logs from all handlers there are 5 things to configure.
+The package does not require extra work from the user other than initial configuration. In order to collect audit logs from all handlers there are 3 things to configure.
 
-### 1. AuditLogsPublisher
+### 1. AddAzureStorageAuditLogs
 
-This class needs to be registered so that MassTransit filter and AspNet middleware can work properly.
+If you want to use audit logs stored on Azure Storage you need to add necessary configuration used by the audit logs package.
+
+Storage implementation using Azure Blob Storage service stores log for each entity as a separate append blob. This storage assumes that there is azure storage client configured in DI. It also requires the container name passed via `AzureBlobAuditLogStorageConfiguration` to know where to store audit log files. The storage assumes that container specified as `AuditLogsContainer` is already created (private access is mandatory) and `AuditLogsTable` is already created.
 
 ```csharp
     public override void ConfigureServices(IServiceCollection services)
     {
         // some other code
 
-        services.AddTransient<AuditLogPublisher>();
+        services.AddAzureClients(cfg =>
+        {
+            cfg.AddBlobServiceClient(Config.BlobStorage.ConnectionString(config));
+            cfg.AddTableServiceClient(Config.BlobStorage.ConnectionString(config));
+        });
+
+        services.AddAzureStorageAuditLogs(new AzureBlobAuditLogStorageConfiguration("audit-logs", "auditlogs"));
 
         // some other code
     }
 ```
 
-### 2. AuditLogsConsumer
+### 2. AddAuditLogsConsumer
 
-The audit logs are collected and processed asynchronously by dedicated consumer. Usually event handlers are registered within the project, so adding the `AuditLogsConsumer` to the list of consumers should suffice to configure everything correctly.
+The audit logs are collected and processed asynchronously by dedicated consumer. You need to add it to your MassTransit configuration
 
 ```csharp
 
@@ -47,69 +55,15 @@ The audit logs are collected and processed asynchronously by dedicated consumer.
         {
             // some other code
 
-            cfg.AddConsumersWithDefaultConfiguration(
-                AllHandlers.Assemblies.ToArray().Append(typeof(AuditLogsConsumer).Assembly),
-                typeof(DefaultConsumerDefinition<>)
-            );
+            cfg.AddAuditLogsConsumer();
 
             // some other code
         }
+
         // some other code
 ```
 
-⚠️ Remember that if you configure the audit log in the same way as other consumers it's audit log will also be recorded. In order to avoid recursive logging of changes do not use the same `DbContext` for audit logs as you use for the business part of the system
-
-### 3. AuditLogStorage
-
-AuditLogs collectors require `IAuditLogStorage` to be registered in the DI container.
-
-```csharp
-public override void ConfigureServices(IServiceCollection services)
-{
-    // some other code
-
-    services.AddTransient<IAuditLogStorage, YourAuditLogStorage>();
-
-    // some other code
-}
-```
-
-Currently there are couple of ready made implementations of `IAuditLogStorage`:
-
-#### StubAuditLogStorage
-
-Sample implementation that logs audit information using `Serilog` logger.
-
-#### AzureBlobAuditLogStorage
-
-Storage implementation using Azure Blob Storage service. It stores log for each entity as a separate append blob.
-
-This storage assumes that there is azure storage client configured in DI. It also requires the container name passed via `AzureBlobAuditLogStorageConfiguration` to know where to store audit log files. The storage assumes that container specified as `AuditLogsContainer` is already created (private access is mandatory) and `AuditLogsTable` is already created.
-
-Example configuration looks like this:
-
-```csharp
-public override void ConfigureServices(IServiceCollection services)
-{
-    // some other code
-
-    services.AddAzureClients(cfg =>
-    {
-        cfg.AddBlobServiceClient(Config.BlobStorage.ConnectionString(config));
-        cfg.AddTableServiceClient(Config.BlobStorage.ConnectionString(config));
-    });
-    services.AddSingleton(new AzureBlobAuditLogStorageConfiguration("audit-logs", "auditlogs"));
-    services.AddTransient<IAuditLogStorage, AzureBlobAuditLogStorage>();
-
-    // some other code
-}
-```
-
-#### Other options
-
-If you want to use some other store for your data feel free to implement `IAuditLogStorage` on your own.
-
-### 4. Endpoints
+### 3. Endpoints
 
 In order to collect audit logs you need to add `Audit<TDbContext>()` middleware to execution pipeline. The `TDbContext` argument is a `DbContext` where we want to audit the changes.
 
@@ -149,7 +103,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
 
 ⚠️ Bear in mind, that the order here makes difference. If you don't want to collect changes in the MT inbox/outbox tables, then you should configure `Audit<TDbContext>()` middleware **after** the `PublishEvents()` middleware.
 
-### 5. Consumers
+### 4. Consumers
 
 In order to add audit logs to event handling the only thing you need to do is to add `.UseAuditLogs<TDbContext>(context)` to the consumer configuration.
 
@@ -170,3 +124,7 @@ protected override void ConfigureConsumer(
 ```
 
 ⚠️ Bear in mind, that the order here makes difference. If you don't want to collect changes in the MT inbox/outbox tables, then you should configure `UseAuditLogs<TDbContext>(context)` filter **after** the `UseDomainEventsPublishing(context)` filter.
+
+## Other options
+
+If you want to use some other store for your data feel free to implement `IAuditLogStorage` on your own. Remember to register `AuditLogsPublisher` when configuring DI.
