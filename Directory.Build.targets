@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.0-rc.1.23419.6</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-rc.1.23421.29</AspNetCoreVersion>
-    <ExtensionsVersion>8.0.0-rc.1.23419.4</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0-rc.2.23480.1</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0-rc.2.23480.2</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0-rc.2.23479.6</ExtensionsVersion>
 
     <GoogleApisVersion>1.61.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -13,7 +13,7 @@
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>4.4.0</CodeAnalysisVersion>
 
-     <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.1.23419.4</DomainModelsTestsNetCoreAppRefVersion>
+    <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.2.23479.6</DomainModelsTestsNetCoreAppRefVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -100,12 +100,12 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-rc.1.23453.1" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-rc.2.23510.2" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
-    <PackageReference Update="Npgsql" Version="8.0.0-preview.4" />
-    <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.1" />
+    <PackageReference Update="Npgsql" Version="8.0.0-rc.2" />
+    <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.2" />
     <PackageReference Update="Google.Apis.Auth" Version="$(GoogleApisVersion)" />
 
     <PackageReference Update="IdentityServer4" Version="$(IdentityServerVersion)" />

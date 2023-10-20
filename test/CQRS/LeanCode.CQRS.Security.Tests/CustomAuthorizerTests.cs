@@ -97,7 +97,7 @@ public class CustomAuthorizerTests
         customAuthorizer.InternalWasCalled.Should().BeTrue();
     }
 
-    private class HttpContextCustomAuthorizer : HttpContextCustomAuthorizer<AClass, AnotherClass>
+    private sealed class HttpContextCustomAuthorizer : HttpContextCustomAuthorizer<AClass, AnotherClass>
     {
         protected override Task<bool> CheckIfAuthorizedAsync(HttpContext context, AClass obj, AnotherClass customData)
         {
@@ -108,7 +108,7 @@ public class CustomAuthorizerTests
         public bool InternalWasCalled { get; private set; }
     }
 
-    private class CustomAuthorizer : CustomAuthorizer<AClass, AnotherClass>
+    private sealed class CustomAuthorizer : CustomAuthorizer<AClass, AnotherClass>
     {
         protected override Task<bool> CheckIfAuthorizedAsync(
             ClaimsPrincipal user,
@@ -124,12 +124,12 @@ public class CustomAuthorizerTests
         public bool InternalWasCalled { get; private set; }
     }
 
-    private class AClass
+    private sealed class AClass
     {
         public string AProperty { get; set; }
     }
 
-    private class AnotherClass
+    private sealed class AnotherClass
     {
         public string AnotherProperty { get; set; }
     }
