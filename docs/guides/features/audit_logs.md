@@ -3,6 +3,7 @@
 Package dedicated to auditing changes of entities (including domain objects) modified during execution of command/operation/event handlers.
 
 Package uses EntityFramework's ChangeTracker in order to detect changes. Each log consists of:
+
 - object type
 - object identifier
 - handler name
