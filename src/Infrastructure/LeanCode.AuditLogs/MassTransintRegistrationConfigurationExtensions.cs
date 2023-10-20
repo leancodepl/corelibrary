@@ -6,6 +6,20 @@ public static class MassTransitRegistrationConfigurationExtensions
 {
     public static void AddAuditLogsConsumer(this IRegistrationConfigurator configurator)
     {
-        configurator.AddConsumer(typeof(AuditLogsConsumer));
+        configurator.AddConsumer(typeof(AuditLogsConsumer), typeof(AuditLogsConsumerDefinition));
+    }
+}
+
+public class AuditLogsConsumerDefinition : ConsumerDefinition<AuditLogsConsumer>
+{
+    protected override void ConfigureConsumer(
+        IReceiveEndpointConfigurator endpointConfigurator,
+        IConsumerConfigurator<AuditLogsConsumer> consumerConfigurator,
+        IRegistrationContext context
+    )
+    {
+        endpointConfigurator.UseMessageRetry(
+            r => r.Immediate(1).Incremental(3, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5))
+        );
     }
 }
