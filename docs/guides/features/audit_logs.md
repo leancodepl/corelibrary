@@ -129,3 +129,30 @@ protected override void ConfigureConsumer(
 ## Other options
 
 If you want to use some other store for your data feel free to implement `IAuditLogStorage` on your own. Remember to register `AuditLogsPublisher` when configuring DI.
+
+## Azure Storage infrastructure configuration
+
+When configuring cloud resources in cloud you should remember about the right to be forgotten and costs of storing the data based on the access tiers. Below you can find a terraform snippet that configures automatic tier changes and deletion based on the last blob modification time. ⚠️ Bear in mind that the values provided below may not be valid for your use case.
+
+```terraform
+resource "azurerm_storage_management_policy" "decrease_access_tier" {
+  storage_account_id = azurerm_storage_account.audit_logs_storage.id
+
+  rule {
+    name    = "archive_and_delete_old_log_entries"
+    enabled = true
+    filters {
+      prefix_match = ["{$YOUR_AUDIT_LOGS_CONTAINER_NAME}/"]
+      blob_types   = ["appendBlob"]
+    }
+    actions {
+      base_blob {
+        tier_to_cool_after_days_since_modification_greater_than    = 28
+        auto_tier_to_hot_from_cool_enabled                         = true
+        tier_to_archive_after_days_since_modification_greater_than = 84
+        delete_after_days_since_modification_greater_than          = 365
+      }
+    }
+  }
+}
+```
