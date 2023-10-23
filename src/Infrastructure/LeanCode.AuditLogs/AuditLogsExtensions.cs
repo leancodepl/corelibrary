@@ -1,8 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
+using LeanCode.AuditLogs;
 
-namespace LeanCode.AuditLogs;
+namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ServiceCollectionExtensions
+public static class AuditLogsExtensions
 {
     public static IServiceCollection AddAzureStorageAuditLogs(
         this IServiceCollection services,
