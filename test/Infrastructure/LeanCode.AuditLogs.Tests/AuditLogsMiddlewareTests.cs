@@ -11,7 +11,7 @@ public sealed class AuditLogsMiddlewareTests
     public async void Extracts_changes_after_pipeline_execution()
     {
         const string RequestPath = "/test.request.path";
-        var dbContext = new TestDbContext();
+        using var dbContext = new TestDbContext();
         var bus = Substitute.For<IBus>();
         var publisher = Substitute.For<AuditLogsPublisher>();
         var middleware = new AuditLogsMiddleware<TestDbContext>(c => Task.CompletedTask);

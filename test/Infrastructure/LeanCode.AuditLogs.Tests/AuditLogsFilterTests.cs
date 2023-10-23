@@ -11,7 +11,7 @@ public sealed class AuditLogsFilterTests
     [Fact]
     public async void Extracts_changes_after_pipeline_execution()
     {
-        var dbContext = new TestDbContext();
+        using var dbContext = new TestDbContext();
         var publisher = Substitute.For<AuditLogsPublisher>();
         var filter = new AuditLogsFilter<TestDbContext, Consumer, TestMsg>(dbContext, publisher);
 
