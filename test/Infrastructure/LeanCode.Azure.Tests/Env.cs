@@ -9,6 +9,10 @@ public static class Env
     public const string ClientIdKey = "CORELIB_TESTS_CLIENT_ID";
     public const string ClientSecretKey = "CORELIB_TESTS_CLIENT_SECRET";
     public const string NpgsqlConnectionStringKey = "CORELIB_TESTS_NPGSQL_CONNECTION_STRING";
+    public const string AzureBlobStorageServiceUriKey = "CORELIB_TESTS_AZURE_BLOB_STORAGE_SERVICE_URI";
+    public const string AzureTableStorageServiceUriKey = "CORELIB_TESTS_AZURE_TABLE_STORAGE_SERVICE_URI";
+    public const string AzureBlobStorageContainerNameKey = "CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME";
+    public const string AzureTableStorageTableNameKey = "CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME";
 
     public static string SkipIfVariablesNotSet(params string[] variables)
     {

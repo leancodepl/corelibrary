@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>LeanCode.AuditLogs</AssemblyName>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="Azure.Data.Tables" />
+    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Serilog" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference Include="../LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
+    <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+  </ItemGroup>
+
+</Project>

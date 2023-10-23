@@ -1,5 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-        <ProjectReference Include="../../../src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.AuditLogs/LeanCode.AuditLogs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+  </ItemGroup>
 </Project>

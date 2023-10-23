@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.AuditLogs/LeanCode.AuditLogs.csproj" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
+    <ProjectReference Include="../../../src/Testing/LeanCode.TimeProvider.TestHelpers/LeanCode.TimeProvider.TestHelpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+  </ItemGroup>
+
+</Project>
