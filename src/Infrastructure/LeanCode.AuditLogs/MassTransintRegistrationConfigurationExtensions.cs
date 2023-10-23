@@ -8,6 +8,11 @@ public static class MassTransitRegistrationConfigurationExtensions
     {
         configurator.AddConsumer(typeof(AuditLogsConsumer), typeof(AuditLogsConsumerDefinition));
     }
+
+    public static void AddAuditLogsConsumer<T>(this IRegistrationConfigurator configurator)
+    {
+        configurator.AddConsumer(typeof(AuditLogsConsumer), typeof(T));
+    }
 }
 
 public class AuditLogsConsumerDefinition : ConsumerDefinition<AuditLogsConsumer>
