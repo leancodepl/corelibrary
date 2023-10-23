@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Globalization;
 using ConfigCat.Client;
 using Microsoft.Extensions.Logging;
 using CCLogLevel = ConfigCat.Client.LogLevel;
@@ -55,6 +56,8 @@ public class ConfigCatToMSLoggerAdapter : IConfigCatLogger
     // Support for structured logging.
     private sealed class LogValues : IReadOnlyList<KeyValuePair<string, object?>>
     {
+        private string? templateFormat;
+
         public LogValues(ref FormattableLogMessage message)
         {
             Message = message;
@@ -70,8 +73,8 @@ public class ConfigCatToMSLoggerAdapter : IConfigCatLogger
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
 
                 return index == Count - 1
-                    ? new KeyValuePair<string, object?>("{OriginalFormat}", Message.Format)
-                    : new KeyValuePair<string, object?>(Message.ArgNames![index], Message.ArgValues![index]);
+                    ? new("{OriginalFormat}", templateFormat ??= RenderTemplate())
+                    : new(Message.ArgNames[index], Message.ArgValues[index]);
             }
         }
 
@@ -88,5 +91,20 @@ public class ConfigCatToMSLoggerAdapter : IConfigCatLogger
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString() => Message.InvariantFormattedMessage;
+
+        private string RenderTemplate()
+        {
+            // Message.Format contains template in a format: 'A sample error message with parameter value: {0}'
+            // Serilog does not treat it as valid argument, and logs this as is.
+            // So instead we render the format to get: 'A sample error message with parameter value: {Value}'
+            // Which can be consumed correctly later
+            return Message.ArgNames is { } argNames
+                ? string.Format(
+                    provider: CultureInfo.InvariantCulture,
+                    format: Message.Format,
+                    args: argNames.Select(a => $"{{{a}}}" as object).ToArray()
+                )
+                : Message.Format;
+        }
     }
 }
