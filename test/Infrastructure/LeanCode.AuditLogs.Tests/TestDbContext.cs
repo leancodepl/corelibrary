@@ -1,6 +1,7 @@
 using LeanCode.DomainModels.Model;
 using LeanCode.DomainModels.EF;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace LeanCode.AuditLogs.Tests;
 
@@ -62,7 +63,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var i in Enumerable.Range(20, 5))
         {
-            ownedEntities.Add(new(i, i.ToString()));
+            ownedEntities.Add(new(i, i.ToString(CultureInfo.CurrentCulture)));
         }
     }
 
@@ -70,7 +71,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var i in Enumerable.Range(20, 5))
         {
-            includedEntities.Add(new(this, i, i.ToString()));
+            includedEntities.Add(new(this, i, i.ToString(CultureInfo.CurrentCulture)));
         }
     }
 
@@ -78,7 +79,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var e in ownedEntities)
         {
-            e.SomeString = (e.SomeInt + 100).ToString();
+            e.SomeString = (e.SomeInt + 100).ToString(CultureInfo.CurrentCulture);
         }
     }
 
@@ -86,7 +87,7 @@ public class TestEntity : IAggregateRoot<string>
     {
         foreach (var e in includedEntities)
         {
-            e.SomeString = (e.SomeInt + 100).ToString();
+            e.SomeString = (e.SomeInt + 100).ToString(CultureInfo.CurrentCulture);
         }
     }
 

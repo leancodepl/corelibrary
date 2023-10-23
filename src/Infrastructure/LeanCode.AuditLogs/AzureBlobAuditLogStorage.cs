@@ -97,7 +97,11 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
             string.Join("", auditLogMessage.EntityChanged.Ids),
             cancellationToken: cancellationToken
         );
-        if (!res.HasValue)
+        if (res.HasValue)
+        {
+            return (int)res.Value![SuffixKey];
+        }
+        else
         {
             var entity = new TableEntity(
                 auditLogMessage.EntityChanged.Type,
@@ -109,10 +113,6 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
             await table.AddEntityAsync(entity, cancellationToken: cancellationToken);
 
             return (int)entity[SuffixKey];
-        }
-        else
-        {
-            return (int)res.Value[SuffixKey];
         }
     }
 

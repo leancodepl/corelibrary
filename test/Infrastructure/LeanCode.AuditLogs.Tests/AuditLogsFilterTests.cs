@@ -26,8 +26,18 @@ public sealed class AuditLogsFilterTests
             .ExtractAndPublishAsync(dbContext, context, ConsumerName, Arg.Any<CancellationToken>());
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Design",
+        "CA1034",
+        Justification = "Should not be used outside the test"
+    )]
     public sealed class TestMsg { }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Design",
+        "CA1034",
+        Justification = "Should not be used outside the test"
+    )]
     public class Consumer : IConsumer<TestMsg>
     {
         public Task Consume(ConsumeContext<TestMsg> context) => Task.CompletedTask;

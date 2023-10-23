@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LeanCode.AuditLogs.Tests;
 
-public class AuditLogsPublisherTests
+public class AuditLogsPublisherTests : IDisposable
 {
     private readonly TestDbContext dbContext;
     private readonly AuditLogsPublisher auditLogsPublisher;
@@ -32,5 +32,15 @@ public class AuditLogsPublisherTests
         await auditLogsPublisher.ExtractAndPublishAsync(dbContext, bus, string.Empty, default);
 
         await bus.ReceivedWithAnyArgs(1).Publish((AuditLogMessage)default!, default!);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        dbContext.Dispose();
     }
 }

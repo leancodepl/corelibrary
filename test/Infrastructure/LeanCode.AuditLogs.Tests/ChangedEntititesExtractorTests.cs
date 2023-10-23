@@ -6,7 +6,7 @@ using Xunit;
 
 namespace LeanCode.AuditLogs.Tests;
 
-public class ChangedEntitiesExtractorTests
+public class ChangedEntitiesExtractorTests : IDisposable
 {
     private static readonly JsonSerializerOptions Options =
         new()
@@ -308,5 +308,15 @@ public class ChangedEntitiesExtractorTests
 
         var changes = ChangedEntitiesExtractor.Extract(dbContext);
         changes.Should().BeEmpty();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        dbContext.Dispose();
     }
 }

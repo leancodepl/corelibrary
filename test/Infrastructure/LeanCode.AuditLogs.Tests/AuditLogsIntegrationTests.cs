@@ -124,8 +124,12 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
             ctx.Request.Path = TestPath;
         });
 
-        harness.Published
-            .Select<AuditLogMessage>()
+        var messages = new List<IPublishedMessage<AuditLogMessage>>(1);
+        await foreach (var m in harness.Published.SelectAsync<AuditLogMessage>())
+        {
+            messages.Add(m);
+        }
+        messages
             .Should()
             .ContainSingle()
             .Which.Context.Message.Should()
@@ -156,8 +160,12 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
             ctx.Request.Path = AuthorizedTestPath;
         });
 
-        harness.Published
-            .Select<AuditLogMessage>()
+        var messages = new List<IPublishedMessage<AuditLogMessage>>(1);
+        await foreach (var m in harness.Published.SelectAsync<AuditLogMessage>())
+        {
+            messages.Add(m);
+        }
+        messages
             .Should()
             .ContainSingle()
             .Which.Context.Message.Should()
@@ -180,7 +188,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
         host.Dispose();
     }
 
-    public class TestConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer>
+    internal sealed class TestConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer>
         where TConsumer : class, IConsumer
     {
         protected override void ConfigureConsumer(
@@ -193,7 +201,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
         }
     }
 
-    public class StubAuditLogStorage : IAuditLogStorage
+    internal sealed class StubAuditLogStorage : IAuditLogStorage
     {
         private readonly ILogger logger = Log.ForContext<StubAuditLogStorage>();
 
