@@ -8,5 +8,5 @@ public interface IPeriodicAction
 {
     CronExpression When { get; }
     bool SkipFirstExecution { get; }
-    Task ExecuteAsync(CancellationToken stoppingToken);
+    Task ExecuteAsync(CancellationToken cancellationToken);
 }

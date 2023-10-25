@@ -5,8 +5,8 @@ namespace LeanCode.CQRS.AspNetCore.Serialization;
 
 public interface ISerializer
 {
-    Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken token);
-    ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token);
+    Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken cancellationToken);
+    ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken);
 }
 
 public sealed class Utf8JsonSerializer : ISerializer
@@ -32,13 +32,13 @@ public sealed class Utf8JsonSerializer : ISerializer
     public Utf8JsonSerializer()
         : this(null) { }
 
-    public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken token)
+    public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken)
     {
-        return JsonSerializer.DeserializeAsync(utf8Json, returnType, options, token);
+        return JsonSerializer.DeserializeAsync(utf8Json, returnType, options, cancellationToken);
     }
 
-    public Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken token)
+    public Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken cancellationToken)
     {
-        return JsonSerializer.SerializeAsync(utf8Json, value, inputType, options, token);
+        return JsonSerializer.SerializeAsync(utf8Json, value, inputType, options, cancellationToken);
     }
 }

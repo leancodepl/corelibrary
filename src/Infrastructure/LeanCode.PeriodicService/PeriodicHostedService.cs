@@ -34,6 +34,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
         "CA1031",
         Justification = "The method is an exception boundary."
     )]
+#pragma warning disable LNCD0006 // For consistency with `ExecuteAsync`
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
@@ -52,6 +53,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
 
         return CalculateDelay(service);
     }
+#pragma warning restore LNCD0006
 
     private static TimeSpan CalculateDelay(IPeriodicAction action)
     {
