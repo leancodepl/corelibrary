@@ -8,6 +8,7 @@ public interface IPeriodicAction
 {
     CronExpression When { get; }
     bool SkipFirstExecution { get; }
+
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "?",
         "LNCD0006",
