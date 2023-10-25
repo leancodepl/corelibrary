@@ -45,7 +45,7 @@ public static class Test
     [Theory]
     [InlineData("override")]
     [InlineData("new")]
-    public async Task Does_not_rename_overriden_and_new_methods(string keyword)
+    public async Task Does_not_rename_overridden_and_new_methods(string keyword)
     {
         var source =
             $@"
