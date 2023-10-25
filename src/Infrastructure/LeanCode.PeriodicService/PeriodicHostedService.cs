@@ -37,7 +37,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "?",
         "LNCD0006",
-        Justification = "For consistency with `ExecuteAsync."
+        Justification = "Convention for `PeriodicAction`."
     )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
