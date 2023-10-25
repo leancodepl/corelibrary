@@ -9,8 +9,8 @@ namespace LeanCode.CodeAnalysis.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class CancellationTokensShouldFollowNamingConvention : DiagnosticAnalyzer
 {
-    internal const string IdentifierName = "CancellationToken";
-    internal const string ExpectedName = "cancellationToken";
+    internal const string TypeName = "CancellationToken";
+    internal const string ParameterName = "cancellationToken";
 
     private static readonly DiagnosticDescriptor Rule =
         new(
@@ -47,15 +47,15 @@ public class CancellationTokensShouldFollowNamingConvention : DiagnosticAnalyzer
             {
                 if (
                     parameter.Type is IdentifierNameSyntax identifierName
-                    && identifierName.Identifier.Text == IdentifierName
-                    && parameter.Identifier.Text != ExpectedName
+                    && identifierName.Identifier.Text == TypeName
+                    && parameter.Identifier.Text != ParameterName
                 )
                 {
                     var diagnostic = Diagnostic.Create(
                         Rule,
                         parameter.Identifier.GetLocation(),
                         parameter.Identifier.Text,
-                        ExpectedName
+                        ParameterName
                     );
 
                     context.ReportDiagnostic(diagnostic);

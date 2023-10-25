@@ -35,8 +35,8 @@ public class FixCancellationTokenNamingAction : CodeAction
         if (
             token.Parent is ParameterSyntax parameter
             && parameter.Type is IdentifierNameSyntax identifierName
-            && identifierName.Identifier.Text == CancellationTokensShouldFollowNamingConvention.IdentifierName
-            && parameter.Identifier.Text != CancellationTokensShouldFollowNamingConvention.ExpectedName
+            && identifierName.Identifier.Text == CancellationTokensShouldFollowNamingConvention.TypeName
+            && parameter.Identifier.Text != CancellationTokensShouldFollowNamingConvention.ParameterName
         )
         {
             var oldIdentifierText = parameter.Identifier.Text;
@@ -64,12 +64,12 @@ public class FixCancellationTokenNamingAction : CodeAction
                             ParameterSyntax parameter
                                 => parameter.WithIdentifier(
                                     SyntaxFactory.Identifier(
-                                        CancellationTokensShouldFollowNamingConvention.ExpectedName
+                                        CancellationTokensShouldFollowNamingConvention.ParameterName
                                     )
                                 ),
                             _
                                 => SyntaxFactory.IdentifierName(
-                                    CancellationTokensShouldFollowNamingConvention.ExpectedName
+                                    CancellationTokensShouldFollowNamingConvention.ParameterName
                                 ),
                         };
                     }
