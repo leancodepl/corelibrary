@@ -51,6 +51,9 @@ nav:
     - Messaging - MassTransit:
       - ./external_integrations/messaging_masstransit/index.md
       - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
+    - Authorization - Ory Kratos:
+      - ./external_integrations/authorization_ory_kratos/index.md
+      - Handling webhooks: ./external_integrations/authorization_ory_kratos/handling_webhooks.md
   - Features:
     - ./features/index.md
     - Force update:
