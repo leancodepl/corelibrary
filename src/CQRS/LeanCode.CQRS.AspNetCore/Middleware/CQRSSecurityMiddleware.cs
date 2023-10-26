@@ -29,6 +29,7 @@ public class CQRSSecurityMiddleware
             logger.Warning("The current user is not authenticated and the object requires authorization");
 
             payload.SetResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
+            CQRSMetrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
             return;
         }
 
@@ -57,6 +58,7 @@ public class CQRSSecurityMiddleware
                 );
 
                 payload.SetResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
+                CQRSMetrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
                 return;
             }
         }
