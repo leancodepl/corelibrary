@@ -51,7 +51,7 @@
     <PackageReference Update="FirebaseAdmin" Version="2.4.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="3.3.0" />
 
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.1" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.2" />
 
     <PackageReference Update="ConfigCat.Client" Version="8.2.0" />
 
