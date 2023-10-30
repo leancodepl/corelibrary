@@ -24,6 +24,12 @@
 
   <ItemGroup>
     <None Include="$(SolutionDir)LICENSE"  Pack="true" />
+    <ProjectReference Include="../../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj"
+                      Condition="'$(MSBuildProjectName)' != 'LeanCode.CodeAnalysis'
+                                And '$(TargetFramework)' == 'net8.0'">
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"

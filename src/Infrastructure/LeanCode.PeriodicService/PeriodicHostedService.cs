@@ -34,6 +34,11 @@ public class PeriodicHostedService<TAction> : BackgroundService
         "CA1031",
         Justification = "The method is an exception boundary."
     )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "LNCD0006",
+        Justification = "Convention for `PeriodicAction`."
+    )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
