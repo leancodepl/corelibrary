@@ -54,6 +54,8 @@ nav:
     - Authorization - Ory Kratos:
       - ./external_integrations/authorization_ory_kratos/index.md
       - Handling webhooks: ./external_integrations/authorization_ory_kratos/handling_webhooks.md
+    - Emails - SendGrid:
+      - ./external_integrations/emails_sendgrid/index.md
   - Features:
     - ./features/index.md
     - Force update:
