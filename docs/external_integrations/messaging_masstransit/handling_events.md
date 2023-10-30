@@ -41,4 +41,4 @@ public class SendEmailToEmployeeOnEmployeeAssignedToAssignment
 }
 ```
 
-> **Tip:** More about consumers can be found here: [MassTransit Consumers](https://masstransit.io/documentation/concepts/consumers).
+> **Tip:** More about consumers can be found here: [MassTransit Consumers](https://masstransit.io/documentation/concepts/consumers). To read how you can send this email using LeanCode CoreLibrary SendGrid integration visit [here](../../external_integrations/emails_sendgrid/index.md).

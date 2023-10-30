@@ -39,20 +39,20 @@ Add this code to the startup project to ensure that email templates in the `Temp
 
 ## Sending emails
 
-Suppose you wish to send a welcome email to a specific user, with their username as an email parameter. For this purpose, you can create a `WelcomeEmail.cs` class:
+Suppose you need to send an email to an employee to inform them of their assignment, with the assignment name as a parameter. For this purpose you can create a `EmployeeAssignedToAssignmentEmail.cs` class:
 
 ```csharp
-public class WelcomeEmail
+public class EmployeeAssignedToAssignmentEmail
 {
-    public string Username { get; set; }
+    public string AssignmentName { get; set; }
 }
 ```
 
-You should also define a `WelcomeEmail.cshtml` template file inside `Templates` directory with the same name as model above to ensure proper linkage:
+You should also define a `EmployeeAssignedToAssignmentEmail.cshtml` template file inside `Templates` directory with the same name as model above to ensure proper linkage:
 
 ```html
 <div>
-    Welcome @Model.Username
+    You have been assigned to @Model.AssignmentName assignment.
 <div>
 ```
 
@@ -60,25 +60,27 @@ After configuring as shown above, you can start sending emails using SendGrid wi
 
 ```csharp
 . . .
+private const string FromEmail = "no-reply@leancode.pl";
+private const string FromName = "LeanCode";
 
 private readonly SendGridRazorClient sendGridClient;
 
 . . .
 
-public async Task SendWelcomeEmailAsync(
-    string username,
-    string email,
-    string fromEmail,
-    string fromName,
-    string subject,
+public async Task SendEmployeeAssignedToAssignmentEmailAsync(
+    Employee employee,
+    Assignment assignment,
     CancellationToken cancellationToken)
 {
-    var vm = new WelcomeEmail { Username = username };
+    var vm = new EmployeeAssignedToAssignmentEmail
+    {
+        AssignmentName = assignment.Name
+    };
 
     var message = new SendGridRazorMessage()
-        .WithSubject(subject)
-        .WithSender(fromEmail, fromName)
-        .WithRecipient(email)
+        .WithSubject("You have been assigned to assignment")
+        .WithSender(FromEmail, FromName)
+        .WithRecipient(employee.Email)
         .WithHtmlContent(vm);
 
     await sendGridClient.SendEmailAsync(message, cancellationToken);
