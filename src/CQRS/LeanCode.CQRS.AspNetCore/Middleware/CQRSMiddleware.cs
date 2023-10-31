@@ -7,17 +7,19 @@ using Serilog;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
-internal class CQRSMiddleware
+public class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
     private readonly ILogger logger = Log.ForContext<CQRSMiddleware>();
 
+    private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSMiddleware(ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(CQRSMetrics metrics, ISerializer serializer, RequestDelegate next)
     {
+        this.metrics = metrics;
         this.serializer = serializer;
         this.next = next;
     }
@@ -38,7 +40,7 @@ internal class CQRSMiddleware
         {
             logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            CQRSMetrics.CQRSFailure(CQRSMetrics.SerializationFailure);
+            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
         }
 
@@ -46,6 +48,7 @@ internal class CQRSMiddleware
         {
             logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
         }
 
@@ -57,7 +60,7 @@ internal class CQRSMiddleware
             await SerializeResultAsync(httpContext, cqrsEndpoint);
 
             logger.Information("{ObjectKind} {@Object} executed successfully", objectType, obj);
-            CQRSMetrics.CQRSSuccess();
+            metrics.CQRSSuccess();
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -67,7 +70,7 @@ internal class CQRSMiddleware
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            CQRSMetrics.CQRSFailure(CQRSMetrics.InternalError);
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
         }
     }
 

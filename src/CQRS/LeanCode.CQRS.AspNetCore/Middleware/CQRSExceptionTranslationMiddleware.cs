@@ -10,10 +10,12 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 public class CQRSExceptionTranslationMiddleware
 {
     private readonly ILogger logger = Log.ForContext<CQRSExceptionTranslationMiddleware>();
+    private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
 
-    public CQRSExceptionTranslationMiddleware(RequestDelegate next)
+    public CQRSExceptionTranslationMiddleware(CQRSMetrics metrics, RequestDelegate next)
     {
+        this.metrics = metrics;
         this.next = next;
     }
 
@@ -37,6 +39,7 @@ public class CQRSExceptionTranslationMiddleware
             logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
             var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
             cqrsPayload.SetResult(executionResult);
+            metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
         }
     }
 

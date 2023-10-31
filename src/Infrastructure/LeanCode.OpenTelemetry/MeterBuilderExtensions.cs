@@ -6,6 +6,6 @@ public static class MeterBuilderExtensions
 {
     public static MeterProviderBuilder AddLeanCodeMetrics(this MeterProviderBuilder builder)
     {
-        return builder.AddMeter(LeanCodeMetrics.Meter.Name);
+        return builder.AddMeter(LeanCodeMetrics.MeterName);
     }
 }
