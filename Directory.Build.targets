@@ -7,7 +7,7 @@
     <GoogleApisVersion>1.62.1</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>8.1.1</MassTransitVersion>
-    <SystemIdentityModelVersion>6.32.1</SystemIdentityModelVersion>
+    <SystemIdentityModelVersion>7.0.3</SystemIdentityModelVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
@@ -29,7 +29,7 @@
     <PackageReference Update="Autofac" Version="7.1.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
 
-    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.6.3" />
+    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.7.1" />
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Update="Azure.Data.Tables" Version="12.8.1" />
     <PackageReference Update="Azure.Storage.Blobs" Version="12.18.0" />
@@ -51,7 +51,7 @@
     <PackageReference Update="FirebaseAdmin" Version="2.4.0" />
     <PackageReference Update="Google.Cloud.Firestore" Version="3.4.0" />
 
-    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.1" />
+    <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.2" />
 
     <PackageReference Update="ConfigCat.Client" Version="8.2.0" />
 
@@ -71,7 +71,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.20" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.24" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
@@ -130,7 +130,7 @@
   <ItemGroup>
     <PackageReference Update="BenchmarkDotNet" Version="0.13.9" />
     <PackageReference Update="FluentAssertions" Version="6.12.0" />
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Update="NSubstitute" Version="5.1.0" />
     <PackageReference Update="xunit" Version="2.5.3" />
     <PackageReference Update="xunit.analyzers" Version="1.4.0" />
