@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using FluentAssertions;
 using LeanCode.OpenTelemetry;
@@ -12,7 +13,8 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
-public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime
+[SuppressMessage("?", "CA1063", Justification = "Demands a Dispose(bool) pattern which is not applicable")]
+public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDisposable
 {
     private readonly MetricCollector<int> cqrsSuccessMetricCollector;
     private readonly MetricCollector<int> cqrsFailureMetricCollector;
@@ -89,4 +91,13 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime
     public Task InitializeAsync() => Host.StartAsync();
 
     public Task DisposeAsync() => Host.StopAsync();
+
+    public void Dispose()
+    {
+        Server.Dispose();
+        Host.Dispose();
+
+        cqrsSuccessMetricCollector.Dispose();
+        cqrsFailureMetricCollector.Dispose();
+    }
 }
