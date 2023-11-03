@@ -9,10 +9,12 @@ public class CQRSValidationMiddleware
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CQRSValidationMiddleware>();
 
+    private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
 
-    public CQRSValidationMiddleware(RequestDelegate next)
+    public CQRSValidationMiddleware(CQRSMetrics metrics, RequestDelegate next)
     {
+        this.metrics = metrics;
         this.next = next;
     }
 
@@ -37,6 +39,7 @@ public class CQRSValidationMiddleware
                 logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
                 var commandResult = CommandResult.NotValid(result);
                 payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
+                metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
                 return;
             }
         }

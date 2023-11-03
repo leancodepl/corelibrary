@@ -1,14 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
@@ -16,39 +13,16 @@ using Xunit;
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
+public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 {
     private static readonly CQRSObjectMetadata QueryMetadata =
         new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
 
-    private readonly IHost host;
-    private readonly TestServer server;
-    private readonly ISerializer serializer;
-    private RequestDelegate pipeline;
+    private readonly ISerializer serializer = Substitute.For<ISerializer>();
 
-    public CQRSMiddlewareTests()
+    protected override void ConfigureServices(IServiceCollection services)
     {
-        serializer = Substitute.For<ISerializer>();
-        pipeline = ctx => Task.CompletedTask;
-
-        host = new HostBuilder()
-            .ConfigureWebHost(webHost =>
-            {
-                webHost
-                    .UseTestServer()
-                    .ConfigureServices(cfg =>
-                    {
-                        cfg.AddSingleton(serializer);
-                    })
-                    .Configure(app =>
-                    {
-                        app.UseMiddleware<CQRSMiddleware>();
-                        app.Run(ctx => pipeline(ctx));
-                    });
-            })
-            .Build();
-
-        server = host.GetTestServer();
+        services.AddSingleton(_ => serializer);
     }
 
     [Fact]
@@ -58,7 +32,8 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status400BadRequest, httpContext.Response.StatusCode);
+        httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status400BadRequest);
+        VerifyCQRSFailureMetrics(CQRSMetrics.SerializationFailure, 1);
     }
 
     [Fact]
@@ -68,7 +43,8 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status400BadRequest, httpContext.Response.StatusCode);
+        httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status400BadRequest);
+        VerifyCQRSFailureMetrics(CQRSMetrics.SerializationFailure, 1);
     }
 
     [Fact]
@@ -82,11 +58,13 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
-        Assert.Equal("application/json", httpContext.Response.ContentType);
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType("application/json");
         await serializer
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+        VerifyCQRSSuccessMetrics(1);
     }
 
     [Fact]
@@ -100,11 +78,15 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status202Accepted, httpContext.Response.StatusCode);
-        Assert.Equal("application/json", httpContext.Response.ContentType);
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status202Accepted)
+            .ShouldHaveResponseContentType("application/json");
+
         await serializer
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+
+        VerifyCQRSSuccessMetrics(1);
     }
 
     [Fact]
@@ -117,9 +99,11 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status418ImATeapot, httpContext.Response.StatusCode);
-        Assert.Null(httpContext.Response.ContentType);
+        httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status418ImATeapot).ShouldHaveResponseContentType(null);
+
         await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(default!, default!, default!, default!);
+
+        VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
     [Fact]
@@ -133,11 +117,15 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
-        Assert.Equal("application/json", httpContext.Response.ContentType);
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType("application/json");
+
         await serializer
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+
+        VerifyCQRSSuccessMetrics(1);
     }
 
     [Fact]
@@ -148,6 +136,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         await SendAsync();
         await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(null!, null!, null!, default);
+        VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
     [Fact]
@@ -156,11 +145,12 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
         var query = new Query();
         SetDeserializerResult<Query>(query);
 
-        pipeline = ctx => throw new InvalidOperationException();
+        FinalPipeline = ctx => throw new InvalidOperationException();
 
         var httpContext = await SendAsync();
 
-        Assert.Equal(StatusCodes.Status500InternalServerError, httpContext.Response.StatusCode);
+        httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status500InternalServerError);
+        VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
     [Fact]
@@ -171,7 +161,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
         object? interceptedPayload = null!;
 
-        pipeline = ctx =>
+        FinalPipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
             interceptedPayload = payload.Payload;
@@ -179,13 +169,12 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
         };
 
         await SendAsync();
-
-        Assert.Equal(query, interceptedPayload);
+        interceptedPayload.Should().Be(query);
     }
 
     private Task<HttpContext> SendAsync(Action<HttpContext>? config = null)
     {
-        return server.SendAsync(ctx =>
+        return Server.SendAsync(ctx =>
         {
             config?.Invoke(ctx);
             ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(QueryMetadata));
@@ -206,7 +195,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
     private void SetPipelineResultSuccess(object? obj, int code = 200)
     {
-        pipeline = ctx =>
+        FinalPipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
             payload.SetResult(ExecutionResult.WithPayload(obj, code));
@@ -216,7 +205,7 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
 
     private void SetPipelineResultFailure(int code)
     {
-        pipeline = ctx =>
+        FinalPipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
             payload.SetResult(ExecutionResult.Empty(code));
@@ -231,14 +220,4 @@ public sealed class CQRSMiddlewareTests : IDisposable, IAsyncLifetime
     public class QueryRuntimeResult : QueryResult { }
 
     public class IgnoreType { }
-
-    public void Dispose()
-    {
-        server.Dispose();
-        host.Dispose();
-    }
-
-    public Task InitializeAsync() => host.StartAsync();
-
-    public Task DisposeAsync() => host.StopAsync();
 }

@@ -22,6 +22,7 @@ public static class ServiceCollectionCQRSExtensions
         var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection);
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
+        serviceCollection.AddSingleton<CQRSMetrics>();
         serviceCollection.AddSingleton(objectsSource);
 
         serviceCollection.AddSingleton<RoleRegistry>();

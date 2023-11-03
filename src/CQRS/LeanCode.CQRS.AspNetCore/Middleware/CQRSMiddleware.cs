@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
@@ -6,17 +7,19 @@ using Serilog;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
-internal class CQRSMiddleware
+public class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
     private readonly ILogger logger = Log.ForContext<CQRSMiddleware>();
 
+    private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSMiddleware(ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(CQRSMetrics metrics, ISerializer serializer, RequestDelegate next)
     {
+        this.metrics = metrics;
         this.serializer = serializer;
         this.next = next;
     }
@@ -37,6 +40,7 @@ internal class CQRSMiddleware
         {
             logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
         }
 
@@ -44,6 +48,7 @@ internal class CQRSMiddleware
         {
             logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
         }
 
@@ -52,15 +57,20 @@ internal class CQRSMiddleware
         try
         {
             await next(httpContext);
+            await SerializeResultAsync(httpContext, cqrsEndpoint);
+
+            logger.Information("{ObjectKind} {@Object} executed successfully", objectType, obj);
+        }
+        catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
+        {
+            logger.Debug(ex, "{ObjectKind} {@Object} cancelled", objectType, obj);
         }
         catch (Exception ex)
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return;
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
         }
-
-        await SerializeResultAsync(httpContext, cqrsEndpoint);
     }
 
     private async Task SerializeResultAsync(HttpContext httpContext, CQRSEndpointMetadata cqrsEndpoint)
@@ -70,6 +80,7 @@ internal class CQRSMiddleware
         if (payload.Result is null)
         {
             logger.Warning("CQRS execution ended with no result");
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
             return;
         }
 
@@ -86,21 +97,23 @@ internal class CQRSMiddleware
             }
             else
             {
-                try
-                {
-                    await serializer.SerializeAsync(
-                        httpContext.Response.Body,
-                        result.Payload,
-                        cqrsEndpoint.ObjectMetadata.ResultType,
-                        httpContext.RequestAborted
-                    );
-                }
-                catch (Exception ex)
-                    when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
-                {
-                    logger.Warning(ex, "Failed to serialize response, request aborted");
-                }
+                await serializer.SerializeAsync(
+                    httpContext.Response.Body,
+                    result.Payload,
+                    cqrsEndpoint.ObjectMetadata.ResultType,
+                    httpContext.RequestAborted
+                );
             }
+
+            if (httpContext.Response.StatusCode < 400)
+            {
+                // assuming that in other cases the middleware itself will report appropriate metric
+                metrics.CQRSSuccess();
+            }
+        }
+        else
+        {
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
         }
     }
 }

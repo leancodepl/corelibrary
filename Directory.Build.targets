@@ -102,6 +102,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
+    <PackageReference Update="Microsoft.Extensions.Telemetry.Testing" Version="8.0.0-rc.2.23510.2" />
     <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-rc.2.23510.2" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />

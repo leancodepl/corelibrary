@@ -8,11 +8,13 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class CQRSSecurityMiddleware
 {
+    private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
     private readonly ILogger logger = Log.ForContext<CQRSSecurityMiddleware>();
 
-    public CQRSSecurityMiddleware(RequestDelegate next)
+    public CQRSSecurityMiddleware(CQRSMetrics metrics, RequestDelegate next)
     {
+        this.metrics = metrics;
         this.next = next;
     }
 
@@ -29,6 +31,7 @@ public class CQRSSecurityMiddleware
             logger.Warning("The current user is not authenticated and the object requires authorization");
 
             payload.SetResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
+            metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
             return;
         }
 
@@ -57,6 +60,7 @@ public class CQRSSecurityMiddleware
                 );
 
                 payload.SetResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
+                metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
                 return;
             }
         }
