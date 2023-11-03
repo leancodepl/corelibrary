@@ -14,7 +14,11 @@ public class CQRSMetrics
     private readonly Counter<int> cqrsSuccess;
     private readonly Counter<int> cqrsFailure;
 
-    [SuppressMessage("?", "CA2000", Justification = "Meter lifetime if managed by DI and it doesn't need to be disposed manually")]
+    [SuppressMessage(
+        "?",
+        "CA2000",
+        Justification = "Meter lifetime if managed by DI and it doesn't need to be disposed manually"
+    )]
     public CQRSMetrics(IMeterFactory meterFactory)
     {
         var meter = meterFactory.Create(LeanCodeMetrics.MeterName);

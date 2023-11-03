@@ -60,7 +60,6 @@ public class CQRSMiddleware
             await SerializeResultAsync(httpContext, cqrsEndpoint);
 
             logger.Information("{ObjectKind} {@Object} executed successfully", objectType, obj);
-            metrics.CQRSSuccess();
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -81,6 +80,7 @@ public class CQRSMiddleware
         if (payload.Result is null)
         {
             logger.Warning("CQRS execution ended with no result");
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
             return;
         }
 
@@ -104,6 +104,16 @@ public class CQRSMiddleware
                     httpContext.RequestAborted
                 );
             }
+
+            if (httpContext.Response.StatusCode < 400)
+            {
+                // assuming that in other cases the middleware itself will report appropriate metric
+                metrics.CQRSSuccess();
+            }
+        }
+        else
+        {
+            metrics.CQRSFailure(CQRSMetrics.InternalError);
         }
     }
 }

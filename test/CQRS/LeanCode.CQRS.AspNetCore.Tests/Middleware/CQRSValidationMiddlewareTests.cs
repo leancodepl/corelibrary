@@ -1,66 +1,49 @@
 using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
-public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
+public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSValidationMiddleware>
 {
-    private readonly IHost host;
-    private readonly TestServer server;
     private readonly ICommandValidatorWrapper validator;
+    private readonly ICommandValidatorResolver validatorResolver;
 
     public CQRSValidationMiddlewareTests()
     {
-        var validatorResolver = Substitute.For<ICommandValidatorResolver>();
+        validatorResolver = Substitute.For<ICommandValidatorResolver>();
         validator = Substitute.For<ICommandValidatorWrapper>();
 
         validatorResolver.FindCommandValidator(typeof(UnvalidatedCommand)).Returns(null as ICommandValidatorWrapper);
         validatorResolver.FindCommandValidator(typeof(ValidatedCommand)).Returns(validator);
 
-        host = new HostBuilder()
-            .ConfigureWebHost(webHost =>
-            {
-                webHost
-                    .UseTestServer()
-                    .ConfigureServices(cfg =>
-                    {
-                        cfg.AddSingleton(validatorResolver);
-                    })
-                    .Configure(app =>
-                    {
-                        app.UseMiddleware<CQRSValidationMiddleware>();
-                        app.Run(ctx =>
-                        {
-                            var payload = ctx.GetCQRSRequestPayload();
-                            payload.SetResult(ExecutionResult.WithPayload(CommandResult.Success));
-                            return Task.CompletedTask;
-                        });
-                    });
-            })
-            .Build();
+        FinalPipeline = ctx =>
+        {
+            ctx.GetCQRSRequestPayload()
+                .SetResult(ExecutionResult.WithPayload(CommandResult.Success, StatusCodes.Status200OK));
+            return Task.CompletedTask;
+        };
+    }
 
-        server = host.GetTestServer();
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton(_ => validatorResolver);
     }
 
     [Fact]
     public async Task Ignores_commands_without_validator()
     {
         var ctx = await SendAsync(new UnvalidatedCommand());
-        AssertCommandResultSuccess(ctx);
+
+        ctx.ShouldContainExecutionResult(StatusCodes.Status200OK).ShouldContainCommandResult().ShouldBeSuccessful();
     }
 
     [Fact]
@@ -92,27 +75,30 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
         validator.ValidateAsync(Arg.Any<HttpContext>(), command).Returns(result);
     }
 
-    private static void AssertCommandResultSuccess(HttpContext httpContext)
+    private void AssertCommandResultSuccess(HttpContext httpContext)
     {
-        var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
+        httpContext
+            .ShouldContainExecutionResult(StatusCodes.Status200OK)
+            .ShouldContainCommandResult()
+            .ShouldBeSuccessful();
 
-        var commandResult = rawResult.Should().BeOfType<CommandResult>().Subject;
-        commandResult.WasSuccessful.Should().BeTrue();
-        commandResult.ValidationErrors.Should().BeEmpty();
+        VerifyNoCQRSSuccessMetrics();
+        VerifyNoCQRSFailureMetrics();
     }
 
-    private static void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
+    private void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
     {
-        var rawResult = httpContext.GetCQRSRequestPayload().Result?.Payload;
+        httpContext
+            .ShouldContainExecutionResult(StatusCodes.Status422UnprocessableEntity)
+            .ShouldContainCommandResult()
+            .ShouldFailWithValidationErrors(errors);
 
-        var commandResult = rawResult.Should().BeOfType<CommandResult>().Subject;
-        commandResult.ValidationErrors.Should().BeEquivalentTo(errors);
-        commandResult.WasSuccessful.Should().BeFalse();
+        VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
     }
 
     private Task<HttpContext> SendAsync(ICommand command)
     {
-        return server.SendAsync(ctx =>
+        return Server.SendAsync(ctx =>
         {
             var cqrsMetadata = new CQRSObjectMetadata(
                 CQRSObjectKind.Command,
@@ -131,14 +117,4 @@ public sealed class CQRSValidationMiddlewareTests : IDisposable, IAsyncLifetime
     public class ValidatedCommand : ICommand { }
 
     public class IgnoreType { }
-
-    public void Dispose()
-    {
-        server.Dispose();
-        host.Dispose();
-    }
-
-    public Task InitializeAsync() => host.StartAsync();
-
-    public Task DisposeAsync() => host.StopAsync();
 }
