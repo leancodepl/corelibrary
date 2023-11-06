@@ -4,7 +4,7 @@
     <AspNetCoreVersion>8.0.0-rc.2.23480.2</AspNetCoreVersion>
     <ExtensionsVersion>8.0.0-rc.2.23479.6</ExtensionsVersion>
 
-    <GoogleApisVersion>1.62.1</GoogleApisVersion>
+    <GoogleApisVersion>1.63.0</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
     <MassTransitVersion>8.1.1</MassTransitVersion>
     <SystemIdentityModelVersion>7.0.3</SystemIdentityModelVersion>
@@ -60,7 +60,7 @@
     <PackageReference Update="Cronos" Version="0.7.1" />
     <PackageReference Update="Dapper" Version="2.1.15" />
     <PackageReference Update="FluentValidation" Version="11.5.1" />
-    <PackageReference Update="Polly" Version="8.0.0" />
+    <PackageReference Update="Polly" Version="8.1.0" />
     <PackageReference Update="Sendgrid" Version="9.28.1" />
   </ItemGroup>
 
@@ -128,11 +128,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="BenchmarkDotNet" Version="0.13.9" />
+    <PackageReference Update="BenchmarkDotNet" Version="0.13.10" />
     <PackageReference Update="FluentAssertions" Version="6.12.0" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Update="NSubstitute" Version="5.1.0" />
-    <PackageReference Update="xunit" Version="2.5.3" />
+    <PackageReference Update="xunit" Version="2.6.1" />
     <PackageReference Update="xunit.analyzers" Version="1.4.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.5.3" />
     <PackageReference Update="coverlet.collector" Version="6.0.0" />
