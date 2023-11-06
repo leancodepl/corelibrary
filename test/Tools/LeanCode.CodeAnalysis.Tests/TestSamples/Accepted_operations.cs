@@ -3,7 +3,7 @@ using LeanCode.Contracts.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
-public abstract class BaseOperation : IOperation { }
+public abstract class BaseOperation : IOperation<int> { }
 
 [AuthorizeWhenHasAnyOf("Sample_permission")]
 public class FirstOperation : BaseOperation { }
