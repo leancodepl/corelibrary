@@ -49,7 +49,8 @@ public class TimestampTzTests : IAsyncLifetime
     [PostgresFact]
     public async Task Sorting_by_LocalTimestampWithoutOffset_returns_results_in_expected_order()
     {
-        var orderedByLocal = await dbContext.Meetings
+        var orderedByLocal = await dbContext
+            .Meetings
             .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
             .ToListAsync();
 
@@ -59,7 +60,8 @@ public class TimestampTzTests : IAsyncLifetime
     [PostgresFact]
     public void Sorting_by_LocalTimestampWithoutOffset_generates_SQL_with_expected_AT_TIME_ZONE_operator()
     {
-        dbContext.Meetings
+        dbContext
+            .Meetings
             .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
             .ToQueryString()
             .Should()

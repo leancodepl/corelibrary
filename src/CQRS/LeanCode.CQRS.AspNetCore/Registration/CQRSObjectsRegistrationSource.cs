@@ -20,11 +20,13 @@ internal class CQRSObjectsRegistrationSource
 
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
-        var contracts = contractsCatalog.Assemblies
+        var contracts = contractsCatalog
+            .Assemblies
             .SelectMany(a => a.DefinedTypes)
             .Where(t => IsCommand(t) || IsQuery(t) || IsOperation(t));
 
-        var handlers = handlersCatalog.Assemblies
+        var handlers = handlersCatalog
+            .Assemblies
             .SelectMany(a => a.DefinedTypes)
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);

@@ -1,11 +1,11 @@
-using LeanCode.ForceUpdate.Contracts;
-using FluentAssertions;
-using Xunit;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+using FluentAssertions;
 using LeanCode.CQRS.AspNetCore;
-using Microsoft.AspNetCore.Http;
 using LeanCode.CQRS.Execution;
+using LeanCode.ForceUpdate.Contracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace LeanCode.ForceUpdate.Tests;
 

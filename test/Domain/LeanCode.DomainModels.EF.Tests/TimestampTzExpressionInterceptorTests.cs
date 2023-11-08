@@ -12,7 +12,8 @@ public class TimestampTzExpressionInterceptorTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
-        TimestampTzExpressionRewriter.LocalTimestampWithoutOffsetProperty
+        TimestampTzExpressionRewriter
+            .LocalTimestampWithoutOffsetProperty
             .GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
@@ -24,7 +25,8 @@ public class TimestampTzExpressionInterceptorTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
-        TimestampTzExpressionRewriter.UtcTimestampProperty
+        TimestampTzExpressionRewriter
+            .UtcTimestampProperty
             .GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
@@ -36,7 +38,8 @@ public class TimestampTzExpressionInterceptorTests
     {
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
-        TimestampTzExpressionRewriter.TimeZoneIdProperty
+        TimestampTzExpressionRewriter
+            .TimeZoneIdProperty
             .GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
@@ -56,7 +59,8 @@ public class TimestampTzExpressionInterceptorTests
     {
         var utcNow = DateTime.UtcNow;
 
-        TimestampTzExpressionRewriter.ConvertDateTimeBySystemTimeZoneIdMethod
+        TimestampTzExpressionRewriter
+            .ConvertDateTimeBySystemTimeZoneIdMethod
             .Invoke(null, [ utcNow, "Europe/Warsaw" ])
             .Should()
             .Be(TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcNow, "Europe/Warsaw"));
@@ -70,7 +74,8 @@ public class TimestampTzExpressionInterceptorTests
         Expression expectedOutput = (TimestampTz tstz) =>
             TimeZoneInfo.ConvertTimeBySystemTimeZoneId(tstz.UtcTimestamp.UtcDateTime, tstz.TimeZoneId);
 
-        TimestampTzExpressionInterceptorDbContextOptionsBuilderExtensions.Interceptor
+        TimestampTzExpressionInterceptorDbContextOptionsBuilderExtensions
+            .Interceptor
             .QueryCompilationStarting(input, default)
             .Should()
             .BeEquivalentTo(expectedOutput);

@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Http;
 using LeanCode.ForceUpdate.Contracts;
+using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.ForceUpdate.Services;
 

@@ -62,7 +62,8 @@ public class Tests : IAsyncLifetime
         var authResult = await queries.GetAsync(new AuthQuery());
 
         authResult.IsAuthenticated.Should().BeTrue();
-        authResult.Claims
+        authResult
+            .Claims
             .Should()
             .BeEquivalentTo(
                 new[]

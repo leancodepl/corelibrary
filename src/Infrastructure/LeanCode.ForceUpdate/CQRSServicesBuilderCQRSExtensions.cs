@@ -1,8 +1,8 @@
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.ForceUpdate.Contracts;
-using LeanCode.ForceUpdate.Services.CQRS;
 using LeanCode.ForceUpdate.Services;
+using LeanCode.ForceUpdate.Services.CQRS;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.ForceUpdate;

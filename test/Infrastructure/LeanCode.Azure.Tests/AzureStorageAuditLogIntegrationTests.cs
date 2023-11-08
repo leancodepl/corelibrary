@@ -43,7 +43,7 @@ public class AzureStorageAuditLogIntegrationTests
         await storage.StoreEventAsync(
             new AuditLogMessage(
                 new(
-                    [id.ToString()],
+                    [ id.ToString() ],
                     type,
                     JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                     JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
@@ -58,13 +58,11 @@ public class AzureStorageAuditLogIntegrationTests
             default
         );
 
-        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
+        var (lineCount, blobCount) = await CheckLinesAndBlobsCountAsync(type, id);
 
         lineCount.Should().Be(1);
         blobCount.Should().Be(1);
     }
-
-
 
     [AzureStorageFact]
     public async Task Ensure_that_multiple_logs_are_correctly_uploaded_to_storage()
@@ -77,7 +75,7 @@ public class AzureStorageAuditLogIntegrationTests
             await storage.StoreEventAsync(
                 new AuditLogMessage(
                     new(
-                        [id.ToString()],
+                        [ id.ToString() ],
                         type,
                         JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                         JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
@@ -97,7 +95,7 @@ public class AzureStorageAuditLogIntegrationTests
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
-        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
+        var (lineCount, blobCount) = await CheckLinesAndBlobsCountAsync(type, id);
 
         blobCount.Should().Be(1);
         lineCount.Should().Be(logsToRecord);
@@ -114,7 +112,7 @@ public class AzureStorageAuditLogIntegrationTests
             await storage.StoreEventAsync(
                 new AuditLogMessage(
                     new(
-                        [id.ToString()],
+                        [ id.ToString() ],
                         type,
                         JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                         JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
@@ -134,12 +132,13 @@ public class AzureStorageAuditLogIntegrationTests
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
-        var (lineCount, blobCount) =  await CheckLinesAndBlobsCountAsync(type, id);
+        var (lineCount, blobCount) = await CheckLinesAndBlobsCountAsync(type, id);
 
         blobCount.Should().NotBe(1);
         lineCount.Should().Be(logsToRecord);
     }
-        private async Task<(int LineCount, int BlobCount)> CheckLinesAndBlobsCountAsync(string type, Guid id)
+
+    private async Task<(int LineCount, int BlobCount)> CheckLinesAndBlobsCountAsync(string type, Guid id)
     {
         var containerClient = blobServiceClient.GetBlobContainerClient(
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)

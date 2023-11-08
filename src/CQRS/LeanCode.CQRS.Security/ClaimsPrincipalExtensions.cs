@@ -11,8 +11,8 @@ public static class ClaimsPrincipalExtensions
         params string[] permissions
     )
     {
-        return registry.All.Any(
-            role => claimsPrincipal.IsInRole(role.Name) && permissions.Any(role.Permissions.Contains)
-        );
+        return registry
+            .All
+            .Any(role => claimsPrincipal.IsInRole(role.Name) && permissions.Any(role.Permissions.Contains));
     }
 }

@@ -120,7 +120,8 @@ internal class ViewCompiler
 
             if (!compilationResult.Success)
             {
-                var errors = compilationResult.Diagnostics
+                var errors = compilationResult
+                    .Diagnostics
                     .Select(d => d.GetMessage(CultureInfo.InvariantCulture))
                     .ToList();
 
