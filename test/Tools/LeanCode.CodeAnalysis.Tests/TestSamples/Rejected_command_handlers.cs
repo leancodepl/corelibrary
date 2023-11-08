@@ -12,5 +12,6 @@ public class WrongCommandHandlerName : ICommandHandler<FirstCommand>
 public class WrongMultipleCommandHandlerName : ICommandHandler<FirstCommand>, ICommandHandler<SecondCommand>
 {
     public Task ExecuteAsync(HttpContext context, FirstCommand command) => throw new NotImplementedException();
+
     public Task ExecuteAsync(HttpContext context, SecondCommand command) => throw new NotImplementedException();
 }

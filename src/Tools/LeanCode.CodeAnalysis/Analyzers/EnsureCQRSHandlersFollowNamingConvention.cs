@@ -80,7 +80,11 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         }
     }
 
-    internal static string GetExpectedCQRSHandlerName(INamedTypeSymbol type, HandlerType handlerType, int implementationCount)
+    internal static string GetExpectedCQRSHandlerName(
+        INamedTypeSymbol type,
+        HandlerType handlerType,
+        int implementationCount
+    )
     {
         var expectedSuffix = GetSuffix(handlerType);
 
@@ -100,9 +104,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         }
     }
 
-    internal static HandlerType? GetCQRSHandlerType(
-        INamedTypeSymbol type,
-        out int implementationCount)
+    internal static HandlerType? GetCQRSHandlerType(INamedTypeSymbol type, out int implementationCount)
     {
         implementationCount = 0;
         var cqrsHandlerCount = 0;
@@ -129,22 +131,15 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
             cqrsHandlerType = HandlerType.Operation;
         }
 
-        return cqrsHandlerCount == 1
-            ? cqrsHandlerType
-            : null;
+        return cqrsHandlerCount == 1 ? cqrsHandlerType : null;
     }
 
-    private static bool IsHandler(
-        INamedTypeSymbol type,
-        HandlerType handlerType,
-        out int implementationCount)
+    private static bool IsHandler(INamedTypeSymbol type, HandlerType handlerType, out int implementationCount)
     {
         var handlerTypeName = GetHandlerTypeName(handlerType);
         implementationCount = type.AllInterfaces.Count(i => i.OriginalDefinition.ToString() == handlerTypeName);
 
-        return type.TypeKind != TypeKind.Interface
-            && implementationCount > 0
-            && !type.IsAbstract;
+        return type.TypeKind != TypeKind.Interface && implementationCount > 0 && !type.IsAbstract;
     }
 
     private static string GetSuffix(HandlerType handlerType)

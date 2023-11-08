@@ -26,6 +26,7 @@ public class WrongCommandHandlerName : ICommandHandler<FirstCommand>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongCommandHandlerName>();
 
     public WrongCommandHandlerName() { }
+
     public Task ExecuteAsync(HttpContext context, FirstCommand command) => throw new NotImplementedException();
 }";
 
@@ -43,6 +44,7 @@ public class FirstCommandCH : ICommandHandler<FirstCommand>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstCommandCH>();
 
     public FirstCommandCH() { }
+
     public Task ExecuteAsync(HttpContext context, FirstCommand command) => throw new NotImplementedException();
 }";
 
@@ -67,6 +69,7 @@ public class WrongQueryHandlerName : IQueryHandler<FirstQuery, int>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongQueryHandlerName>();
 
     public WrongQueryHandlerName() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
 
@@ -84,6 +87,7 @@ public class FirstQueryQH : IQueryHandler<FirstQuery, int>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstQueryQH>();
 
     public FirstQueryQH() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
 
@@ -108,6 +112,7 @@ public class WrongOperationHandlerName : IOperationHandler<FirstOperation, int>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongOperationHandlerName>();
 
     public WrongOperationHandlerName() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
 
@@ -125,6 +130,7 @@ public class FirstOperationOH : IOperationHandler<FirstOperation, int>
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstOperationOH>();
 
     public FirstOperationOH() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
 
@@ -149,7 +155,9 @@ public class MultipleQueries : IQueryHandler<FirstQuery, int>, IQueryHandler<Sec
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueries>();
 
     public MultipleQueries() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+
     public Task<int> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
 }";
 
@@ -167,7 +175,9 @@ public class MultipleQueriesQH : IQueryHandler<FirstQuery, int>, IQueryHandler<S
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueriesQH>();
 
     public MultipleQueriesQH() { }
+
     public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+
     public Task<int> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
 }";
 

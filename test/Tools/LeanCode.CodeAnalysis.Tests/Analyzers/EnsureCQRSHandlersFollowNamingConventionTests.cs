@@ -25,11 +25,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
     {
         var source = await File.ReadAllTextAsync($"TestSamples/Rejected_{cqrsType}_handlers.cs");
 
-        var diags = new[]
-        {
-            new DiagnosticResult(diagnosticId, 6, 13),
-            new DiagnosticResult(diagnosticId, 11, 13)
-        };
+        var diags = new[] { new DiagnosticResult(diagnosticId, 6, 13), new DiagnosticResult(diagnosticId, 11, 13) };
 
         await VerifyDiagnostics(source, diags);
     }

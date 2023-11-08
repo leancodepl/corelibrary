@@ -45,7 +45,8 @@ public class FixCQRSHandlerNamingAction : CodeAction
                 classSymbol,
                 new(RenameFile: true),
                 expectedHandlerName,
-                cancellationToken);
+                cancellationToken
+            );
         }
         else
         {
@@ -53,9 +54,7 @@ public class FixCQRSHandlerNamingAction : CodeAction
         }
     }
 
-    private static string GetExpectedCQRSHandlerName(
-        ClassDeclarationSyntax handlerDeclaration,
-        SemanticModel model)
+    private static string GetExpectedCQRSHandlerName(ClassDeclarationSyntax handlerDeclaration, SemanticModel model)
     {
         var type = model.GetDeclaredSymbol(handlerDeclaration)!;
 
