@@ -17,15 +17,44 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
         await VerifyDiagnostics(source);
     }
 
-    [Theory]
-    [InlineData("command", DiagnosticsIds.CommandHandlersShouldFollowNamingConvention)]
-    [InlineData("query", DiagnosticsIds.QueryHandlersShouldFollowNamingConvention)]
-    [InlineData("operation", DiagnosticsIds.OperationHandlersShouldFollowNamingConvention)]
-    public async Task CQRS_handlers_not_following_naming_convention_are_rejected(string cqrsType, string diagnosticId)
+    [Fact]
+    public async Task Command_handlers_not_following_naming_convention_are_rejected()
     {
-        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_{cqrsType}_handlers.cs");
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_command_handlers.cs");
 
-        var diags = new[] { new DiagnosticResult(diagnosticId, 6, 13), new DiagnosticResult(diagnosticId, 11, 13) };
+        var diags = new[]
+        {
+            new DiagnosticResult(DiagnosticsIds.CommandHandlersShouldFollowNamingConvention, 6, 13),
+            new DiagnosticResult(DiagnosticsIds.CommandHandlersShouldFollowNamingConvention, 11, 13)
+        };
+
+        await VerifyDiagnostics(source, diags);
+    }
+
+    [Fact]
+    public async Task Query_handlers_not_following_naming_convention_are_rejected()
+    {
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_query_handlers.cs");
+
+        var diags = new[]
+        {
+            new DiagnosticResult(DiagnosticsIds.QueryHandlersShouldFollowNamingConvention, 6, 13),
+            new DiagnosticResult(DiagnosticsIds.QueryHandlersShouldFollowNamingConvention, 11, 13)
+        };
+
+        await VerifyDiagnostics(source, diags);
+    }
+
+    [Fact]
+    public async Task Operation_handlers_not_following_naming_convention_are_rejected()
+    {
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_operation_handlers.cs");
+
+        var diags = new[]
+        {
+            new DiagnosticResult(DiagnosticsIds.OperationHandlersShouldFollowNamingConvention, 6, 13),
+            new DiagnosticResult(DiagnosticsIds.OperationHandlersShouldFollowNamingConvention, 12, 13)
+        };
 
         await VerifyDiagnostics(source, diags);
     }
