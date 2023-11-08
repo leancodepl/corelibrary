@@ -88,6 +88,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
     {
         var expectedSuffix = GetSuffix(handlerType);
 
+        // If the handler implements multiple contracts, return its name with the appropriate suffix.
         if (implementationCount > 1)
         {
             return type.Name.EndsWith(expectedSuffix, StringComparison.InvariantCulture)
