@@ -43,10 +43,13 @@ public class CQRSTests : IAsyncLifetime
 
         using var _ = new AssertionScope();
         result.WasSuccessful.Should().BeFalse();
-        result.ValidationErrors
+        result
+            .ValidationErrors
             .Should()
             .ContainSingle()
-            .Which.ErrorCode.Should()
+            .Which
+            .ErrorCode
+            .Should()
             .Be(AddEntity.ErrorCodes.ValueRequired);
     }
 

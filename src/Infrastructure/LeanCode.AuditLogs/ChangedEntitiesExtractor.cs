@@ -17,7 +17,8 @@ public static class ChangedEntitiesExtractor
 
     public static IReadOnlyList<EntityData> Extract(DbContext dbContext)
     {
-        return dbContext.ChangeTracker
+        return dbContext
+            .ChangeTracker
             .Entries()
             .Where(e => e.State != EntityState.Unchanged && e.State != EntityState.Detached)
             .Select(
@@ -27,7 +28,8 @@ public static class ChangedEntitiesExtractor
                         // focus of this feature is to extract root entities.
                         e.Metadata
                             .FindPrimaryKey()!
-                            .Properties.Select(
+                            .Properties
+                            .Select(
                                 p =>
                                     // This may lose some info comparing to JsonSerializer.Serialize , but we don't get
                                     // values in unnecessary "". We accept this tradeoff

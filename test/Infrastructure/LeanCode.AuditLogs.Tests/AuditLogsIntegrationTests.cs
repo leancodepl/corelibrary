@@ -76,10 +76,9 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                                     AuthorizedTestPath,
                                     (ctx) =>
                                     {
-                                        Activity.Current!.AddBaggage(
-                                            IdentityTraceBaggageHelpers.CurrentUserIdKey,
-                                            ActorId
-                                        );
+                                        Activity
+                                            .Current!
+                                            .AddBaggage(IdentityTraceBaggageHelpers.CurrentUserIdKey, ActorId);
                                         var dbContext = ctx.RequestServices.GetService<TestDbContext>()!;
                                         dbContext.Add(TestEntity);
                                         return Task.CompletedTask;
@@ -132,7 +131,10 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
         messages
             .Should()
             .ContainSingle()
-            .Which.Context.Message.Should()
+            .Which
+            .Context
+            .Message
+            .Should()
             .BeEquivalentTo(
                 new
                 {
@@ -147,7 +149,9 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                 },
                 opt => opt.ComparingByMembers<JsonElement>()
             )
-            .And.Subject.Should()
+            .And
+            .Subject
+            .Should()
             .Match(s => s.As<AuditLogMessage>().SpanId != null && s.As<AuditLogMessage>().TraceId != null);
     }
 
@@ -168,9 +172,14 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
         messages
             .Should()
             .ContainSingle()
-            .Which.Context.Message.Should()
+            .Which
+            .Context
+            .Message
+            .Should()
             .BeEquivalentTo(new { ActorId, }, opt => opt.ComparingByMembers<JsonElement>())
-            .And.Subject.Should()
+            .And
+            .Subject
+            .Should()
             .Match(s => s.As<AuditLogMessage>().SpanId != null && s.As<AuditLogMessage>().TraceId != null);
     }
 

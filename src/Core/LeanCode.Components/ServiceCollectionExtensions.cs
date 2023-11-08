@@ -18,7 +18,8 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException($"Type {genericType} is not an open generic type");
         }
 
-        var implementationTypes = catalog.Assemblies
+        var implementationTypes = catalog
+            .Assemblies
             .SelectMany(a => a.DefinedTypes)
             .Where(IsConcrete)
             .Select(type => new { Type = type, ImplementedServices = GetImplementedGenericTypes(type, genericType), })

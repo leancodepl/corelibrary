@@ -23,32 +23,40 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var src = context.SyntaxProvider.ForAttributeWithMetadataName(
-            AttributeName,
-            static (n, _) => n is TypeDeclarationSyntax,
-            static (n, _) =>
-            {
-                var attribute = n.Attributes.First(a => a.AttributeClass?.Name == "TypedIdAttribute");
-                var idFormat = Convert.ToInt32(
-                    attribute.ConstructorArguments.First().Value!,
-                    CultureInfo.InvariantCulture
-                );
-                var customPrefix = attribute.NamedArguments.FirstOrDefault(a => a.Key == CustomPrefixField).Value.Value;
-                var skipRandomGenerator = attribute.NamedArguments
-                    .FirstOrDefault(a => a.Key == SkipRandomGeneratorField)
-                    .Value.Value;
-                var isValid = IsValidSyntaxNode(n.TargetNode);
-                return new TypedIdData(
-                    (TypedIdFormat)idFormat,
-                    n.TargetSymbol.ContainingNamespace.ToDisplayString(),
-                    n.TargetSymbol.Name,
-                    (string?)customPrefix,
-                    skipRandomGenerator is true,
-                    isValid,
-                    !isValid ? n.TargetNode.GetLocation() : null
-                );
-            }
-        );
+        var src = context
+            .SyntaxProvider
+            .ForAttributeWithMetadataName(
+                AttributeName,
+                static (n, _) => n is TypeDeclarationSyntax,
+                static (n, _) =>
+                {
+                    var attribute = n.Attributes.First(a => a.AttributeClass?.Name == "TypedIdAttribute");
+                    var idFormat = Convert.ToInt32(
+                        attribute.ConstructorArguments.First().Value!,
+                        CultureInfo.InvariantCulture
+                    );
+                    var customPrefix = attribute
+                        .NamedArguments
+                        .FirstOrDefault(a => a.Key == CustomPrefixField)
+                        .Value
+                        .Value;
+                    var skipRandomGenerator = attribute
+                        .NamedArguments
+                        .FirstOrDefault(a => a.Key == SkipRandomGeneratorField)
+                        .Value
+                        .Value;
+                    var isValid = IsValidSyntaxNode(n.TargetNode);
+                    return new TypedIdData(
+                        (TypedIdFormat)idFormat,
+                        n.TargetSymbol.ContainingNamespace.ToDisplayString(),
+                        n.TargetSymbol.Name,
+                        (string?)customPrefix,
+                        skipRandomGenerator is true,
+                        isValid,
+                        !isValid ? n.TargetNode.GetLocation() : null
+                    );
+                }
+            );
 
         context.RegisterSourceOutput(
             src,

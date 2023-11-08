@@ -134,7 +134,8 @@ public class FCMClient<TUserId>
     )
     {
         // Remove the leftover tokens
-        var tokensToRemove = response.Responses
+        var tokensToRemove = response
+            .Responses
             .Zip(tokensUsed)
             .Where(ShouldTokenBeRemoved)
             .Select(p => p.Second)

@@ -154,7 +154,8 @@ public class TimestampTzTests
         using var document = JsonDocument.Parse(serialized);
 
         document.RootElement.ValueKind.Should().Be(JsonValueKind.Object);
-        document.RootElement
+        document
+            .RootElement
             .EnumerateObject()
             .Should()
             .BeEquivalentTo(

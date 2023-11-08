@@ -38,9 +38,9 @@ public class CancellationTokensShouldFollowNamingConvention : DiagnosticAnalyzer
         // Skip analyzing methods with 'override' or 'new' keywords as they might come from external source
         if (
             context.Node is MethodDeclarationSyntax methodDeclaration
-            && !methodDeclaration.Modifiers.Any(
-                modifier => modifier.IsKind(SyntaxKind.OverrideKeyword) || modifier.IsKind(SyntaxKind.NewKeyword)
-            )
+            && !methodDeclaration
+                .Modifiers
+                .Any(modifier => modifier.IsKind(SyntaxKind.OverrideKeyword) || modifier.IsKind(SyntaxKind.NewKeyword))
         )
         {
             foreach (var parameter in methodDeclaration.ParameterList.Parameters)

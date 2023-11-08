@@ -44,7 +44,8 @@ public class ListEntitiesQH : IQueryHandler<ListEntities, List<EntityDTO>>
 
     public Task<List<EntityDTO>> ExecuteAsync(HttpContext context, ListEntities query)
     {
-        return dbContext.Entities
+        return dbContext
+            .Entities
             .Select(e => new EntityDTO { Id = e.Id, Value = e.Value })
             .ToListAsync(context.RequestAborted);
     }

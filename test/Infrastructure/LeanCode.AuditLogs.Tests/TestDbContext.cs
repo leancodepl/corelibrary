@@ -1,7 +1,7 @@
-using LeanCode.DomainModels.Model;
-using LeanCode.DomainModels.EF;
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using LeanCode.DomainModels.EF;
+using LeanCode.DomainModels.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.AuditLogs.Tests;
 
@@ -43,14 +43,13 @@ public class TestDbContext : DbContext
 
 public class TestEntity : IAggregateRoot<string>
 {
-    private readonly List<OwnedEntity> ownedEntities = [];
-    private readonly List<IncludedEntity> includedEntities = [];
+    private readonly List<OwnedEntity> ownedEntities =  [ ];
+    private readonly List<IncludedEntity> includedEntities =  [ ];
     public string Id { get; set; } = null!;
     public string SomeString { get; set; } = null!;
 
     public IReadOnlyList<OwnedEntity> OwnedEntities => ownedEntities;
     public IReadOnlyList<IncludedEntity> IncludedEntities => includedEntities;
-
 
     DateTime IOptimisticConcurrency.DateModified { get; set; }
 
@@ -105,7 +104,9 @@ public class TestEntity : IAggregateRoot<string>
 public class OwnedEntity
 {
     public int SomeInt { get; set; }
-    public string SomeString { get; set; } = null!; private OwnedEntity() { }
+    public string SomeString { get; set; } = null!;
+
+    private OwnedEntity() { }
 
     public OwnedEntity(int someInt, string someString)
     {
@@ -113,6 +114,7 @@ public class OwnedEntity
         SomeString = someString;
     }
 }
+
 public class IncludedEntity
 {
     public TestEntity TestEntity { get; private init; } = null!;

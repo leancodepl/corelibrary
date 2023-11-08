@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Registration;
@@ -6,7 +7,6 @@ using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using FluentAssertions;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 

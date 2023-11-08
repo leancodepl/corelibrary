@@ -46,10 +46,12 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
         };
 
         Type GetResultType(Type interfaceType) =>
-            @object.ObjectType
+            @object
+                .ObjectType
                 .GetInterfaces()
                 .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == interfaceType)
-                .GenericTypeArguments.First();
+                .GenericTypeArguments
+                .First();
     }
 
     private static async Task<object?> ExecuteOperationAsync<TOperation, TResult>(

@@ -35,7 +35,8 @@ public class ChangedEntitiesExtractorTests : IDisposable
         changes
             .Should()
             .ContainSingle()
-            .Which.Should()
+            .Which
+            .Should()
             .BeEquivalentTo(
                 new
                 {
@@ -64,7 +65,8 @@ public class ChangedEntitiesExtractorTests : IDisposable
         changes
             .Should()
             .ContainSingle()
-            .Which.Should()
+            .Which
+            .Should()
             .BeEquivalentTo(
                 new
                 {
@@ -91,7 +93,8 @@ public class ChangedEntitiesExtractorTests : IDisposable
         changes
             .Should()
             .ContainSingle()
-            .Which.Should()
+            .Which
+            .Should()
             .BeEquivalentTo(
                 new
                 {
