@@ -7,7 +7,7 @@ using Xunit;
 
 namespace LeanCode.CodeAnalysis.Tests.CodeActions;
 
-public class FixCancellationTokenNamingActionTests : CodeFixVerifier
+public class FixCancellationTokenNamingCodeActionTests : CodeFixVerifier
 {
     [Fact]
     public async Task Renames_CancellationToken_argument_not_following_convention()
