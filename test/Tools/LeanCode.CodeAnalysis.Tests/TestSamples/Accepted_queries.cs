@@ -3,7 +3,7 @@ using LeanCode.Contracts.Security;
 
 namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
-public abstract class BaseQuery : IQuery<int> { }
+public abstract class BaseQuery : IQuery<bool> { }
 
 [AuthorizeWhenHasAnyOf("Sample_permission")]
 public class FirstQuery : BaseQuery { }

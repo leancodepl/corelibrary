@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CodeAnalysis.Tests.Data;
 
-public class WrongOperationHandlerName : IOperationHandler<FirstOperation, int>
+public class WrongOperationHandlerName : IOperationHandler<FirstOperation, bool>
 {
-    public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }
 
 public class WrongMultipleOperationHandlerName
-    : IOperationHandler<FirstOperation, int>,
-        IOperationHandler<SecondOperation, int>
+    : IOperationHandler<FirstOperation, bool>,
+        IOperationHandler<SecondOperation, bool>
 {
-    public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 
-    public Task<int> ExecuteAsync(HttpContext context, SecondOperation operation) =>
+    public Task<bool> ExecuteAsync(HttpContext context, SecondOperation operation) =>
         throw new NotImplementedException();
 }

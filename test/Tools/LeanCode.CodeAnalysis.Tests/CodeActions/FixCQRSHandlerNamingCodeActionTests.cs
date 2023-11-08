@@ -64,13 +64,13 @@ using Serilog;
 
 namespace Test;
 
-public class WrongQueryHandlerName : IQueryHandler<FirstQuery, int>
+public class WrongQueryHandlerName : IQueryHandler<FirstQuery, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongQueryHandlerName>();
 
     public WrongQueryHandlerName() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
 
         var expected =
@@ -82,13 +82,13 @@ using Serilog;
 
 namespace Test;
 
-public class FirstQueryQH : IQueryHandler<FirstQuery, int>
+public class FirstQueryQH : IQueryHandler<FirstQuery, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstQueryQH>();
 
     public FirstQueryQH() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
 
         var fixes = new[] { "Fix CQRS handler name" };
@@ -107,13 +107,13 @@ using Serilog;
 
 namespace Test;
 
-public class WrongOperationHandlerName : IOperationHandler<FirstOperation, int>
+public class WrongOperationHandlerName : IOperationHandler<FirstOperation, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongOperationHandlerName>();
 
     public WrongOperationHandlerName() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
 
         var expected =
@@ -125,13 +125,13 @@ using Serilog;
 
 namespace Test;
 
-public class FirstOperationOH : IOperationHandler<FirstOperation, int>
+public class FirstOperationOH : IOperationHandler<FirstOperation, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstOperationOH>();
 
     public FirstOperationOH() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
 
         var fixes = new[] { "Fix CQRS handler name" };
@@ -150,15 +150,15 @@ using Serilog;
 
 namespace Test;
 
-public class MultipleQueries : IQueryHandler<FirstQuery, int>, IQueryHandler<SecondQuery, int>
+public class MultipleQueries : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueries>();
 
     public MultipleQueries() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 
-    public Task<int> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
 }";
 
         var expected =
@@ -170,15 +170,15 @@ using Serilog;
 
 namespace Test;
 
-public class MultipleQueriesQH : IQueryHandler<FirstQuery, int>, IQueryHandler<SecondQuery, int>
+public class MultipleQueriesQH : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueriesQH>();
 
     public MultipleQueriesQH() { }
 
-    public Task<int> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 
-    public Task<int> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
+    public Task<bool> ExecuteAsync(HttpContext context, SecondQuery query) => throw new NotImplementedException();
 }";
 
         var fixes = new[] { "Fix CQRS handler name" };
