@@ -73,18 +73,18 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
                 .ExecuteSqlInterpolatedAsync(
                     FormattableStringFactory.Create(
                         $$"""
-                    MERGE INTO {{tokensTable}} "pt"
-                    USING (
-                        VALUES ({0}, {1}, {2})
-                    ) AS "nt" ("UserId", "Token", "DateCreated")
-                    ON "nt"."Token" = "pt".{{tokenColumn}}
-                    WHEN MATCHED THEN
-                        UPDATE SET {{userIdColumn}} = "nt"."UserId",
-                                   {{dateCreatedColumn}} = "nt"."DateCreated"
-                    WHEN NOT MATCHED THEN
-                        INSERT ({{userIdColumn}}, {{tokenColumn}}, {{dateCreatedColumn}})
-                        VALUES ("nt"."UserId", "nt"."Token", "nt"."DateCreated");
-                    """,
+                        MERGE INTO {{tokensTable}} "pt"
+                        USING (
+                            VALUES ({0}, {1}, {2})
+                        ) AS "nt" ("UserId", "Token", "DateCreated")
+                        ON "nt"."Token" = "pt".{{tokenColumn}}
+                        WHEN MATCHED THEN
+                            UPDATE SET {{userIdColumn}} = "nt"."UserId",
+                                    {{dateCreatedColumn}} = "nt"."DateCreated"
+                        WHEN NOT MATCHED THEN
+                            INSERT ({{userIdColumn}}, {{tokenColumn}}, {{dateCreatedColumn}})
+                            VALUES ("nt"."UserId", "nt"."Token", "nt"."DateCreated");
+                        """,
                         userId,
                         newToken,
                         TimeProvider.Time.UtcNow
