@@ -21,7 +21,10 @@ public class FixCQRSHandlerNamingCodeFixProvider : CodeFixProvider
 
     public override Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        context.RegisterCodeFix(new FixCQRSHandlerNamingCodeAction(context.Document, context.Span), context.Diagnostics);
+        context.RegisterCodeFix(
+            new FixCQRSHandlerNamingCodeAction(context.Document, context.Span),
+            context.Diagnostics
+        );
 
         return Task.CompletedTask;
     }
