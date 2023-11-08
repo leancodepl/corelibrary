@@ -9,13 +9,13 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
 {
     private const string Category = "Cqrs";
     private const string MessageFormat = @"`{0}` does not follow `{1}` naming convention.";
-    private const string CommandHandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler<TCommand>";
-    private const string QueryHandlerTypeName = "LeanCode.CQRS.Execution.IQueryHandler<TQuery, TResult>";
-    private const string OperationHandlerTypeName = "LeanCode.CQRS.Execution.IOperationHandler<TOperation, TResult>";
 
-    private const string CommandHandlerSuffix = "CH";
-    private const string QueryHandlerSuffix = "QH";
-    private const string OperationHandlerSuffix = "OH";
+    internal const string CommandHandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler<TCommand>";
+    internal const string QueryHandlerTypeName = "LeanCode.CQRS.Execution.IQueryHandler<TQuery, TResult>";
+    internal const string OperationHandlerTypeName = "LeanCode.CQRS.Execution.IOperationHandler<TOperation, TResult>";
+    internal const string CommandHandlerSuffix = "CH";
+    internal const string QueryHandlerSuffix = "QH";
+    internal const string OperationHandlerSuffix = "OH";
 
     private static readonly DiagnosticDescriptor CommandHandlerRule =
         new(
@@ -80,7 +80,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         }
     }
 
-    private static string GetExpectedCQRSHandlerName(INamedTypeSymbol type, HandlerType handlerType, int implementationCount)
+    internal static string GetExpectedCQRSHandlerName(INamedTypeSymbol type, HandlerType handlerType, int implementationCount)
     {
         var expectedSuffix = GetSuffix(handlerType);
 
@@ -100,7 +100,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         }
     }
 
-    private static HandlerType? GetCQRSHandlerType(
+    internal static HandlerType? GetCQRSHandlerType(
         INamedTypeSymbol type,
         out int implementationCount)
     {
@@ -180,7 +180,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         };
     }
 
-    private enum HandlerType
+    internal enum HandlerType
     {
         Query,
         Command,

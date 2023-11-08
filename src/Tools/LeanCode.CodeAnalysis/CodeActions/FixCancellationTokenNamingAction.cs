@@ -12,7 +12,7 @@ public class FixCancellationTokenNamingAction : CodeAction
     private readonly Document document;
     private readonly TextSpan classSpan;
 
-    public override string Title => $"Fix CancellationToken argument name";
+    public override string Title => "Fix CancellationToken argument name";
     public override string EquivalenceKey => Title;
 
     public FixCancellationTokenNamingAction(Document document, TextSpan classSpan)
