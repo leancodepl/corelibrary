@@ -8,7 +8,7 @@ using Analyzer = LeanCode.CodeAnalysis.Analyzers.EnsureCQRSHandlersFollowNamingC
 
 namespace LeanCode.CodeAnalysis.CodeActions;
 
-public class FixCQRSHandlerNamingAction : CodeAction
+public class FixCQRSHandlerNamingCodeAction : CodeAction
 {
     private readonly Document document;
     private readonly TextSpan classSpan;
@@ -16,7 +16,7 @@ public class FixCQRSHandlerNamingAction : CodeAction
     public override string Title => "Fix CQRS handler name";
     public override string EquivalenceKey => Title;
 
-    public FixCQRSHandlerNamingAction(Document document, TextSpan classSpan)
+    public FixCQRSHandlerNamingCodeAction(Document document, TextSpan classSpan)
     {
         this.document = document;
         this.classSpan = classSpan;

@@ -18,7 +18,7 @@ public class FixCancellationTokenNamingCodeFixProvider : CodeFixProvider
     public override Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         context.RegisterCodeFix(
-            new FixCancellationTokenNamingAction(context.Document, context.Span),
+            new FixCancellationTokenNamingCodeAction(context.Document, context.Span),
             context.Diagnostics
         );
 
