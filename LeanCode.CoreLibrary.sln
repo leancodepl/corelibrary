@@ -195,6 +195,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.AuditLogs", "src\I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.AuditLogs.Tests", "test\Infrastructure\LeanCode.AuditLogs.Tests\LeanCode.AuditLogs.Tests.csproj", "{D44016DA-A642-40F2-8911-AE654E88E71C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.AppRating.Contracts", "src\Infrastructure\LeanCode.AppRating.Contracts\LeanCode.AppRating.Contracts.csproj", "{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1177,6 +1179,18 @@ Global
 		{D44016DA-A642-40F2-8911-AE654E88E71C}.Release|x64.Build.0 = Release|Any CPU
 		{D44016DA-A642-40F2-8911-AE654E88E71C}.Release|x86.ActiveCfg = Release|Any CPU
 		{D44016DA-A642-40F2-8911-AE654E88E71C}.Release|x86.Build.0 = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Debug|x86.Build.0 = Debug|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|x64.Build.0 = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|x86.ActiveCfg = Release|Any CPU
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1287,5 +1301,6 @@ Global
 		{F69CBF02-F99A-44F5-8CBB-5F145187473E} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{A5CDDD5C-1906-4F90-9B05-448FAE038B78} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 		{D44016DA-A642-40F2-8911-AE654E88E71C} = {D9CFC5C4-8B87-4EDF-85D1-1471EA1B6D27}
+		{DEA60BC7-852C-4B7E-B61B-D730EA0ABCA6} = {1358A1B6-E8BB-4607-8B61-FDAE49F0EAA4}
 	EndGlobalSection
 EndGlobal
