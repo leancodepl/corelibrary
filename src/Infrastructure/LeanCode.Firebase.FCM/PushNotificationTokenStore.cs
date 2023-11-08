@@ -80,7 +80,7 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
                         ON "nt"."Token" = "pt".{{tokenColumn}}
                         WHEN MATCHED THEN
                             UPDATE SET {{userIdColumn}} = "nt"."UserId",
-                                    {{dateCreatedColumn}} = "nt"."DateCreated"
+                                       {{dateCreatedColumn}} = "nt"."DateCreated"
                         WHEN NOT MATCHED THEN
                             INSERT ({{userIdColumn}}, {{tokenColumn}}, {{dateCreatedColumn}})
                             VALUES ("nt"."UserId", "nt"."Token", "nt"."DateCreated");
