@@ -2,6 +2,13 @@
 
 Command is just a class that implements the `ICommand` interface. Commands are used to execute an action that modifies data. Commands are validated, and if they pass validation, they should succeed. Commands do not return any value. This makes them quite constrained, yet reasoning is much easier.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `ICommand` |
+| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `ICommandHandler` |
+
 ## Contract
 
 Consider the command that updates name of the `Project` (caller of the command is required to have `Employee` role and own project):

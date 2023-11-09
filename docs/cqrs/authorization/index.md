@@ -6,6 +6,13 @@ If multiple `AuthorizeWhen` attributes are specified, **all** authorization rule
 
 An authorizer is a class that implements the `ICustomAuthorizer` interface or derives from one of the `CustomAuthorizer` base classes. It has access to both context and [command]/[query]/[operation]. [Command]/[query]/[operation] type doesn't need to be exact, it just has to be coercible to the specified type (`CustomAuthorizer` casts objects to the types internally). Therefore, if you want to use the same authorizer for many [commands]/[queries]/[operations], you can use base classes or interfaces and implement the authorizer for them.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | Default authorizers |
+| LeanCode.CQRS.Security | [![NuGet version (LeanCode.CQRS.Security)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Security.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Security/8.0.2260-preview/) | Configuration, custom authorizers |
+
 ## AuthorizeWhenHasAnyOf
 
 The `AuthorizeWhenHasAnyOf` attribute, found in `LeanCode.Contracts.Security`, has default authorization implementation. Upon its application, the `CheckIfAuthorizedAsync` method from the `DefaultPermissionAuthorizer` class is invoked to check whether the user possesses adequate permissions:
@@ -14,8 +21,6 @@ The `AuthorizeWhenHasAnyOf` attribute, found in `LeanCode.Contracts.Security`, h
 public class DefaultPermissionAuthorizer
     : CustomAuthorizer<object, string[]>, IHasPermissions
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DefaultPermissionAuthorizer>();
-
     private readonly RoleRegistry registry;
 
     public DefaultPermissionAuthorizer(RoleRegistry registry)
@@ -30,12 +35,6 @@ public class DefaultPermissionAuthorizer
     {
         if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))
         {
-            logger.Warning(
-                "User does not have sufficient permissions ({Permissions}) to run {@Object}",
-                customData,
-                obj
-            );
-
             return Task.FromResult(false);
         }
         else

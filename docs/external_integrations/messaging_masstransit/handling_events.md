@@ -2,6 +2,12 @@
 
 Once an event is raised, it can be handled by a corresponding `IConsumer` to perform the desired action. The default consumer configuration can be customized by overriding the `ConfigureConsumer` method from the `ConsumerDefinition` interface. In the following example, an email is sent to the employee who has been assigned to an assignment:
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square)](https://www.nuget.org/packages/MassTransit/8.1.1/) | `IConsumer` |
+
 ```csharp
 public class SendEmailToEmployeeOnEmployeeAssignedToAssignment
     : IConsumer<EmployeeAssignedToAssignment>

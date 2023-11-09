@@ -8,6 +8,12 @@ The main thing that sets Kratos apart from all the other identity management sol
 
 Ory Kratos has generic email+password flow (with optional verification), there are social logins, and WebAuthN. It also standardizes all the accompanying flows, like registration, email/password change, password reset, email verification, MFA, and alike. For a more in-depth exploration of why Kratos is our preferred choice, you can refer to this [article](https://leancode.co/blog/identity-management-solutions-part-2-the-choice).
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Configuration |
+
 ## LeanCode CoreLibrary integration
 
 LeanCode CoreLibrary provides 3 main components to integrate with Kratos:

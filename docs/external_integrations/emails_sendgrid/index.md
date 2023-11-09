@@ -2,6 +2,14 @@
 
 Managing email communication is a crucial aspect of any modern business or application. LeanCode CoreLibrary streamlines the process of sending emails by integrating with SendGrid, a widely acclaimed and trusted email delivery system. With LeanCode CoreLibrary's custom integration with SendGrid, you gain access to a simplified and efficient email delivery solution. For more information, you can explore [SendGrid documentation](https://docs.sendgrid.com/) and the official [SendGrid C# library GitHub repository](https://github.com/sendgrid/sendgrid-csharp).
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.SendGrid | [![NuGet version (LeanCode.SendGrid)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.SendGrid/8.0.2260-preview/) | Configuration |
+| LeanCode.ViewRenderer.Razor | [![NuGet version (LeanCode.ViewRenderer.Razor)](https://img.shields.io/nuget/vpre/LeanCode.ViewRenderer.Razor.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ViewRenderer.Razor/8.0.2260-preview/) | `.cshtml` templates |
+| SendGrid | [![NuGet version (SendGrid)](https://img.shields.io/nuget/v/SendGrid.svg?style=flat-square)](https://www.nuget.org/packages/SendGrid/9.28.1/) | Email sending |
+
 ## Configuration
 
 To incorporate SendGrid into your LeanCode CoreLibrary-based application, follow the example below. This will enable the SendGrid client, allowing you to send emails through `.cshtml` template files. The example assumes that templates are located in the `Templates` folder.

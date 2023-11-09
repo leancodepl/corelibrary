@@ -2,6 +2,12 @@
 
 To effectively manage incoming webhooks from Ory Kratos, you can employ the [KratosWebHookHandlerBase] class. The following example demonstrates how to synchronize identity data received from Kratos through webhooks with your database using [MassTransit]. This assumes that your Kratos instance is properly configured to send webhooks to your application.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Webhook handling |
+
 ## Mapping the Endpoint in Application Configuration
 
 First, you should map the `KratosIdentitySyncHandler` class to the `/kratos/sync-identity` endpoint in your application's configuration:

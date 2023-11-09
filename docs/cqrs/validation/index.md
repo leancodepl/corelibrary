@@ -2,6 +2,14 @@
 
 To reject [commands] that have invalid data or that cannot be fulfilled (the state of the system disallows it), you should use command validators. A command validator is instantiated and run before command handler even sees the command (but, by default, after [authorization]) and can return error code along the error message, so the system has an opportunity to inform the client why the command is invalid. A validator is a class that implements the `ICommandValidator<TCommand>` interface. To simplify things, we use `FluentValidation` so it is only necessary to implement `AbstractValidator<TCommand>`, everything else is handled by infrastructure.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| FluentValidation | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/FluentValidation.svg?style=flat-square)](https://www.nuget.org/packages/FluentValidation/11.8.0/) | Validation |
+| LeanCode.CQRS.Validation | [![NuGet version (LeanCode.CQRS.Validation)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation/8.0.2260-preview/) | `ICommandValidator` |
+| LeanCode.CQRS.Validation.Fluent | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.Fluent.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation.Fluent/8.0.2260-preview/) | `AbstractValidator` |
+
 To validate example command introduced in [command] section, you can use something like:
 
 ```csharp

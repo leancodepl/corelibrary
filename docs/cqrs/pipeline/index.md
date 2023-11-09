@@ -2,6 +2,13 @@
 
 The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipelines for handling requests and responses. This section intends to showcase the setup of a basic pipeline and explore its inner workings.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore/8.0.2260-preview/) | Configuration |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.MassTransitRelay.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | MassTransit related middlewares |
+
 ## Configuration
 
 To establish LeanCode CoreLibrary pipelines, the [MapRemoteCqrs(...)] method from `LeanCode.CQRS.AspNetCore` package needs to be invoked after calling the `UseEndpoints(...)` method on the `IApplicationBuilder`. In the following example, [MapRemoteCqrs(...)] is configured to handle:

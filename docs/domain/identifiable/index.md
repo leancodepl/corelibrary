@@ -2,6 +2,13 @@
 
 In Domain-Driven Design, entity (marked by `IIdentifiable` in LeanCode CoreLibrary) is a concept used to model a distinct and identifiable object within the domain that is defined by its characteristics and identity. Entities are objects that have a distinct lifecycle and are distinguishable from other objects based on their unique identity.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.DomainModels/8.0.2260-preview/) | `IIdentifiable` |
+| LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators/8.0.2260-preview/) | Ids |
+
 ## Example
 
 Let's define a class representing a assignment belonging to a project:

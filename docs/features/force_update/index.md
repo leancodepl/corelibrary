@@ -2,9 +2,16 @@
 
 CoreLibrary provides an opinionated library for adding force update support to mobile apps. It connects to the broaded CoreLibrary ecosystem and has a ready-made [Flutter implementation](https://github.com/leancodepl/flutter_corelibrary/tree/master/packages/force_update).
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.ForceUpdate | [![NuGet version (LeanCode.ForceUpdate)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ForceUpdate/8.0.2260-preview/) | Configuration |
+| LeanCode.ForceUpdate.Contracts | [![NuGet version (LeanCode.ForceUpdate.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ForceUpdate.Contracts/8.0.2260-preview/) | Predefined contracts |
+
 ## Configuration
 
-To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate(...)` extension method from the `LeanCode.ForceUpdate` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. The following example demonstrates the usage:
+To enforce or suggest updates for client apps, you can utilize the `AddForceUpdate(...)` extension method from the `LeanCode.ForceUpdate` package in the `Startup.cs` file. This method is available on the `IServiceCollection` and needs to be called after `AddCQRS(...)`. It's also necessary to add `LeanCode.ForceUpdate.Contracts` package to the project. The following example demonstrates the usage:
 
 ```csharp
 public override void ConfigureServices(IServiceCollection services)

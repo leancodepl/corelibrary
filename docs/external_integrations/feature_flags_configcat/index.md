@@ -2,6 +2,13 @@
 
 ConfigCat is a feature flag service that allows to toggle features on or off after deploying code. It offers support for percentage rollouts, A/B testing, and feature variations. By integrating ConfigCat with the LeanCode CoreLibrary, you can effortlessly harness its feature-flag capabilities. For in-depth information about ConfigCat, explore the [official documentation](https://configcat.com/docs/) and the [.NET SDK documentation](https://configcat.com/docs/sdk-reference/dotnet/).
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| ConfigCat.Client | [![NuGet version (ConfigCat.Client)](https://img.shields.io/nuget/v/ConfigCat.Client.svg?style=flat-square)](https://www.nuget.org/packages/ConfigCat.Client/8.2.0/) | Client |
+| LeanCode.ConfigCat | [![NuGet version (LeanCode.ConifgCat)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ConfigCat/8.0.2260-preview/) | Configuration |
+
 ## Configuration
 
 To incorporate ConfigCat into your LeanCode CoreLibrary-based application, follow the example below. This example showcases the usage of the `AddConfigCat(...)` method to register the `ConfigCatClient`:

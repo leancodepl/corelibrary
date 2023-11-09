@@ -9,6 +9,13 @@ Operations change the state of the system, but also allow to return some result.
 3. Integration with external services that do not conform to the CQRS pattern. E.g. creating payment in a third-party API and immediately returning some result which should not be stored in our system's database.
 4. Integration with services which combine object validation and creation steps, making it impossible to validate command separately in command validator
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `IOperation` |
+| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `IOperationHandler` |
+
 ## Contract
 
 Consider the operation that creates payment in external service for employee's access to application and returns payment token:

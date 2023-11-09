@@ -4,6 +4,13 @@
 
 To integrate [MassTransit] with LeanCode CoreLibrary CQRS, you can utilize the [LeanCode.CQRS.MassTransitRelay] package. This package serves as a bridge that enables the passing of raised events from your application to the [MassTransit] message bus. This integration is vital for facilitating event-driven communication within domain.
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | Configuration |
+| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square)](https://www.nuget.org/packages/MassTransit/8.1.1/) | Configuration |
+
 ## Configuration
 
 [LeanCode.CQRS.MassTransitRelay] requires the following elements to be configured in the CQRS pipeline (in the following order):
