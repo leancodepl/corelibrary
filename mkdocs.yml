@@ -2,6 +2,7 @@ site_name: LeanCode CoreLibrary
 repo_url: https://github.com/leancodepl/corelibrary
 docs_dir: ./docs
 theme:
+  logo: leancode_logo.png
   name: material
   features:
     - navigation.indexes
@@ -47,7 +48,6 @@ nav:
     - Id:
       - ./domain/id/index.md
   - External integrations:
-    - ./external_integrations/index.md
     - Authorization - Ory Kratos:
       - ./external_integrations/authorization_ory_kratos/index.md
       - Handling webhooks: ./external_integrations/authorization_ory_kratos/handling_webhooks.md
@@ -59,7 +59,6 @@ nav:
       - ./external_integrations/messaging_masstransit/index.md
       - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
   - Features:
-    - ./features/index.md
     - Force update:
       - ./features/force_update/index.md
   - CoreLibrary 8.0 changes overview & migration guide:
