@@ -1,3 +1,4 @@
+using System.Reflection;
 using LeanCode.Components;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Registration;
@@ -31,6 +32,24 @@ public static class ServiceCollectionCQRSExtensions
 
         return new CQRSServicesBuilder(serviceCollection, objectsSource);
     }
+
+    public static CQRSServicesBuilder AddCQRS(
+        this IServiceCollection serviceCollection
+    )
+    {
+        serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
+
+        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection);
+
+        serviceCollection.AddSingleton<CQRSMetrics>();
+        serviceCollection.AddSingleton(objectsSource);
+
+        serviceCollection.AddSingleton<RoleRegistry>();
+        serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
+        serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+
+        return new CQRSServicesBuilder(serviceCollection, objectsSource);
+    }
 }
 
 public class CQRSServicesBuilder
@@ -53,6 +72,12 @@ public class CQRSServicesBuilder
     public CQRSServicesBuilder AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
+        return this;
+    }
+
+    public CQRSServicesBuilder AddCQRSObjects(IEnumerable<TypeInfo> possibleContracts, IEnumerable<TypeInfo> possibleHandlers)
+    {
+        objectsSource.AddCQRSObjects(possibleContracts, possibleHandlers);
         return this;
     }
 }

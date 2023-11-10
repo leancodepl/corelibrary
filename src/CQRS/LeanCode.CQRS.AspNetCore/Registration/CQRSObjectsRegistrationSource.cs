@@ -18,16 +18,12 @@ internal class CQRSObjectsRegistrationSource
         this.services = services;
     }
 
-    public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    public void AddCQRSObjects(IEnumerable<TypeInfo> possibleContracts, IEnumerable<TypeInfo> possibleHandlers)
     {
-        var contracts = contractsCatalog
-            .Assemblies
-            .SelectMany(a => a.DefinedTypes)
+        var contracts = possibleContracts
             .Where(t => IsCommand(t) || IsQuery(t) || IsOperation(t));
 
-        var handlers = handlersCatalog
-            .Assemblies
-            .SelectMany(a => a.DefinedTypes)
+        var handlers = possibleHandlers
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);
 
@@ -61,6 +57,11 @@ internal class CQRSObjectsRegistrationSource
                 services.AddCQRSHandler(metadata);
             }
         }
+    }
+
+    public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
+    {
+        AddCQRSObjects(contractsCatalog.Assemblies.SelectMany(a => a.DefinedTypes), handlersCatalog.Assemblies.SelectMany(a => a.DefinedTypes));
     }
 
     private static bool ValidateContractType(TypeInfo type)
