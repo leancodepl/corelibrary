@@ -8,14 +8,14 @@ namespace LeanCode.CodeAnalysis.Analyzers;
 public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
 {
     private const string Category = "Cqrs";
-    private const string MessageFormat = @"`{0}` does not follow `{1}` naming convention.";
+    private const string MessageFormat = @"`{0}` does not follow `{1}` naming convention";
 
-    internal const string CommandHandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler<TCommand>";
-    internal const string QueryHandlerTypeName = "LeanCode.CQRS.Execution.IQueryHandler<TQuery, TResult>";
-    internal const string OperationHandlerTypeName = "LeanCode.CQRS.Execution.IOperationHandler<TOperation, TResult>";
-    internal const string CommandHandlerSuffix = "CH";
-    internal const string QueryHandlerSuffix = "QH";
-    internal const string OperationHandlerSuffix = "OH";
+    private const string CommandHandlerTypeName = "LeanCode.CQRS.Execution.ICommandHandler`1";
+    private const string QueryHandlerTypeName = "LeanCode.CQRS.Execution.IQueryHandler`2";
+    private const string OperationHandlerTypeName = "LeanCode.CQRS.Execution.IOperationHandler`2";
+    private const string CommandHandlerSuffix = "CH";
+    private const string QueryHandlerSuffix = "QH";
+    private const string OperationHandlerSuffix = "OH";
 
     private static readonly DiagnosticDescriptor CommandHandlerRule =
         new(
@@ -98,7 +98,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
         else
         {
             var handlerTypeName = GetHandlerTypeName(handlerType);
-            var implementedContract = type.AllInterfaces.First(i => i.OriginalDefinition.ToString() == handlerTypeName);
+            var implementedContract = type.AllInterfaces.First(i => i.GetFullNamespaceName() == handlerTypeName);
             var genericTypeArgument = implementedContract.TypeArguments.First();
 
             return genericTypeArgument.Name + expectedSuffix;
@@ -138,7 +138,7 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
     private static bool IsHandler(INamedTypeSymbol type, HandlerType handlerType, out int implementationCount)
     {
         var handlerTypeName = GetHandlerTypeName(handlerType);
-        implementationCount = type.AllInterfaces.Count(i => i.OriginalDefinition.ToString() == handlerTypeName);
+        implementationCount = type.AllInterfaces.Count(i => i.GetFullNamespaceName() == handlerTypeName);
 
         return type.TypeKind != TypeKind.Interface && implementationCount > 0 && !type.IsAbstract;
     }

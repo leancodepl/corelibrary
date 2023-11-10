@@ -37,7 +37,7 @@ public class FixCQRSHandlerNamingCodeAction : CodeAction
 
         if (token.IsKind(SyntaxKind.IdentifierToken) && token.Parent is ClassDeclarationSyntax classDeclaration)
         {
-            var expectedHandlerName = GetExpectedCQRSHandlerName(classDeclaration, model);
+            var expectedHandlerName = GetExpectedCQRSHandlerName(classDeclaration, model, cancellationToken);
             var classSymbol = model.GetDeclaredSymbol(classDeclaration, cancellationToken)!;
 
             return await Renamer.RenameSymbolAsync(
@@ -54,9 +54,13 @@ public class FixCQRSHandlerNamingCodeAction : CodeAction
         }
     }
 
-    private static string GetExpectedCQRSHandlerName(ClassDeclarationSyntax handlerDeclaration, SemanticModel model)
+    private static string GetExpectedCQRSHandlerName(
+        ClassDeclarationSyntax handlerDeclaration,
+        SemanticModel model,
+        CancellationToken cancellationToken
+    )
     {
-        var type = model.GetDeclaredSymbol(handlerDeclaration)!;
+        var type = model.GetDeclaredSymbol(handlerDeclaration, cancellationToken)!;
 
         // If diagnostic has been reported we know that handler implements only one
         // CQRS operation so `handlerType` is not null here.

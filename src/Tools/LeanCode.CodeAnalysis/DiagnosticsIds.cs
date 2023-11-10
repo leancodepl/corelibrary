@@ -11,4 +11,5 @@ public static class DiagnosticsIds
     public const string CommandHandlersShouldFollowNamingConvention = "LNCD0007";
     public const string QueryHandlersShouldFollowNamingConvention = "LNCD0008";
     public const string OperationHandlersShouldFollowNamingConvention = "LNCD0009";
+    public const string CommandValidatorsShouldFollowNamingConvention = "LNCD0010";
 }
