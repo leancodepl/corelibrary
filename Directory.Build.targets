@@ -41,7 +41,7 @@
     <PackageReference Update="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Update="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="7.0.1" />
-    <PackageReference Update="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Update="Serilog.Sinks.Console" Version="5.0.0" />
     <PackageReference Update="Serilog.Sinks.Seq" Version="5.2.3" />
 
     <PackageReference Update="IdentityModel" Version="6.2.0" />
