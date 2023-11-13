@@ -1,11 +1,9 @@
-using System.Security.Claims;
 using FluentValidation;
 using LeanCode.AppRating.Contracts;
 using LeanCode.AppRating.DataAccess;
 using LeanCode.CQRS.Execution;
 using LeanCode.TimeProvider;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.AppRating.CQRS;
 
@@ -40,7 +38,7 @@ public class SubmitAppRatingCH<TUserId> : ICommandHandler<SubmitAppRating>
             .Add(
                 new AppRatingEntity<TUserId>(
                     extractor.Extract(context),
-                    Time.Now,
+                    Time.NowWithOffset,
                     command.Rating,
                     command.AdditionalComment,
                     (Platform)command.Platform,

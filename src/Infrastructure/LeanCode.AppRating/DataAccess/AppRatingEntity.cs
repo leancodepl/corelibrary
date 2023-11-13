@@ -2,7 +2,7 @@ namespace LeanCode.AppRating.DataAccess;
 
 public sealed record class AppRatingEntity<TUserId>(
     TUserId UserId,
-    DateTime DateCreated,
+    DateTimeOffset DateCreated,
     double Rating,
     string? AdditionalComment,
     Platform Platform,

@@ -1,5 +1,3 @@
-using System.Numerics;
-using System.Security.Claims;
 using LeanCode.AppRating.Contracts;
 using LeanCode.AppRating.DataAccess;
 using LeanCode.CQRS.Execution;
