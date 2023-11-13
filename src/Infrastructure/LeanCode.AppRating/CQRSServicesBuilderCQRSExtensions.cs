@@ -18,7 +18,7 @@ public static class CQRSServicesBuilderExtensions
         where TDbContext : DbContext, IAppRatingStore<TUserId>
         where TUserId : notnull, IEquatable<TUserId>
     {
-        cqrsServicesBuilder.Services.TryAddTransient<IAppRatingStore<TUserId>, TDbContext>();
+        cqrsServicesBuilder.Services.AddTransient<IAppRatingStore<TUserId>>(sp => sp.GetRequiredService<TDbContext>());
         cqrsServicesBuilder.Services.AddSingleton(extractor);
 
         return cqrsServicesBuilder.AddCQRSObjects(
