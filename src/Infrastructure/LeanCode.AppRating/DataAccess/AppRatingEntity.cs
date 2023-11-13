@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace LeanCode.AppRating.DataAccess;
 
 public sealed record class AppRatingEntity<TUserId>(
@@ -8,7 +10,7 @@ public sealed record class AppRatingEntity<TUserId>(
     Platform Platform,
     string SystemVersion,
     string AppVersion,
-    Dictionary<string, object>? Metadata
+    ImmutableDictionary<string, object>? Metadata
 )
     where TUserId : notnull, IEquatable<TUserId>;
 

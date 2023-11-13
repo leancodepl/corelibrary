@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FluentValidation;
 using LeanCode.AppRating.Contracts;
 using LeanCode.AppRating.DataAccess;
@@ -57,7 +58,7 @@ public class SubmitAppRatingCH<TUserId> : ICommandHandler<SubmitAppRating>
                     (Platform)command.Platform,
                     command.SystemVersion,
                     command.AppVersion,
-                    command.Metadata
+                    command.Metadata?.ToImmutableDictionary()
                 )
             );
 

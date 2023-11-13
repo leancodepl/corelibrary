@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,11 @@ public static class ModelBuilderExtensions
                     c.Property(e => e.Metadata)
                         .HasConversion(
                             a => JsonSerializer.Serialize(a, (JsonSerializerOptions?)null),
-                            j => JsonSerializer.Deserialize<Dictionary<string, object>>(j, (JsonSerializerOptions?)null)
+                            j =>
+                                JsonSerializer.Deserialize<ImmutableDictionary<string, object>>(
+                                    j,
+                                    (JsonSerializerOptions?)null
+                                )
                         )
                         .HasMaxLength(4000);
                     c.Property(e => e.Metadata).HasMaxLength(4000);
