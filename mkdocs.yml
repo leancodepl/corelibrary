@@ -59,6 +59,8 @@ nav:
       - ./external_integrations/messaging_masstransit/index.md
       - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
   - Features:
+    - Audit logs:
+      - ./features/audit_logs/index.md
     - Force update:
       - ./features/force_update/index.md
   - CoreLibrary 8.0 changes overview & migration guide:

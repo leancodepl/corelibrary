@@ -11,9 +11,12 @@ Package uses EntityFramework's ChangeTracker in order to detect changes. Each lo
 - actor executing changes
 - object changes
 
-## Dependencies
+## Packages
 
-`LeanCode.AuditLogs` depend on `IdentityTraceAttributesMiddleware` from  `LeanCode.OpenTelemetry` - if this middleware is not configured, then the `ActorId` will be always set to `null`.
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.AuditLogs | [![NuGet version (LeanCode.AuditLogs)](https://img.shields.io/nuget/vpre/LeanCode.AuditLogs.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.AuditLogs/8.0.2260-preview/) | Configuration |
+| LeanCode.OpenTelemetry | [![NuGet version (LeanCode.OpenTelemetry)](https://img.shields.io/nuget/vpre/LeanCode.OpenTelemetry.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.OpenTelemetry/8.0.2260-preview/) | `IdentityTraceAttributesMiddleware` which sets `ActorId`. When middleware is not added to the pipeline `ActorId` will be always `null` |
 
 ## Configuration
 
@@ -28,17 +31,21 @@ Storage implementation using Azure Blob Storage service stores log for each enti
 ```csharp
     public override void ConfigureServices(IServiceCollection services)
     {
-        // some other code
+        . . .
 
         services.AddAzureClients(cfg =>
         {
-            cfg.AddBlobServiceClient(Config.BlobStorage.ConnectionString(config));
-            cfg.AddTableServiceClient(Config.BlobStorage.ConnectionString(config));
+            // Add blob storage connection string
+            cfg.AddBlobServiceClient("");
+            cfg.AddTableServiceClient("");
         });
 
-        services.AddAzureStorageAuditLogs(new AzureBlobAuditLogStorageConfiguration("audit-logs", "auditlogs"));
+        services.AddAzureStorageAuditLogs(
+            new AzureBlobAuditLogStorageConfiguration(
+                "audit-logs",
+                "auditlogs"));
 
-        // some other code
+        . . .
     }
 ```
 
@@ -50,18 +57,19 @@ The audit logs are collected and processed asynchronously by dedicated consumer.
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        // some other code
+        . . .
 
         services.AddCQRSMassTransitIntegration(cfg =>
         {
-            // some other code
+            . . .
 
             cfg.AddAuditLogsConsumer();
 
-            // some other code
-        }
+            . . .
+        });
 
-        // some other code
+        . . .
+    }
 ```
 
 ### 3. Endpoints
@@ -73,7 +81,7 @@ Example configuration using AuditLogs looks as follows:
 ```csharp
 protected override void ConfigureApp(IApplicationBuilder app)
 {
-    // some other code
+    . . .
 
     app.UseEndpoints(
         endpoints => endpoints.MapRemoteCqrs(
@@ -98,7 +106,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
         )
     );
 
-    // some other code
+    . . .
 }
 ```
 
@@ -116,7 +124,8 @@ protected override void ConfigureConsumer(
 )
 {
     endpointConfigurator.UseRetry(
-        r => r.Immediate(1).Incremental(3, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5))
+        r => r.Immediate(1)
+            .Incremental(3, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5))
     );
     endpointConfigurator.UseEntityFrameworkOutbox<CoreDbContext>(context);
     endpointConfigurator.UseDomainEventsPublishing(context);
