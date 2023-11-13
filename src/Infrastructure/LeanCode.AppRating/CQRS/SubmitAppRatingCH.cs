@@ -2,6 +2,7 @@ using FluentValidation;
 using LeanCode.AppRating.Contracts;
 using LeanCode.AppRating.DataAccess;
 using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.TimeProvider;
 using Microsoft.AspNetCore.Http;
 
@@ -11,11 +12,23 @@ public class SubmitAppRatingCV : AbstractValidator<SubmitAppRating>
 {
     public SubmitAppRatingCV()
     {
-        RuleFor(cmd => cmd.Rating).InclusiveBetween(1, 5);
+        RuleFor(cmd => cmd.Rating).InclusiveBetween(1, 5).WithCode(SubmitAppRating.ErrorCodes.RatingInvalid);
 
-        RuleFor(cmd => cmd.AdditionalComment).MaximumLength(4000);
-        RuleFor(cmd => cmd.SystemVersion).MaximumLength(200);
-        RuleFor(cmd => cmd.AppVersion).MaximumLength(200);
+        RuleFor(cmd => cmd.Platform).IsInEnum().WithCode(SubmitAppRating.ErrorCodes.PlatformInvalid);
+
+        RuleFor(cmd => cmd.AdditionalComment)
+            .MaximumLength(4000)
+            .WithCode(SubmitAppRating.ErrorCodes.AdditionalCommentTooLong);
+        RuleFor(cmd => cmd.SystemVersion)
+            .NotEmpty()
+            .WithCode(SubmitAppRating.ErrorCodes.SystemVersionRequired)
+            .MaximumLength(200)
+            .WithCode(SubmitAppRating.ErrorCodes.SystemVersionTooLong);
+        RuleFor(cmd => cmd.AppVersion)
+            .NotEmpty()
+            .WithCode(SubmitAppRating.ErrorCodes.AppVersionRequired)
+            .MaximumLength(200)
+            .WithCode(SubmitAppRating.ErrorCodes.AppVersionTooLong);
     }
 }
 
