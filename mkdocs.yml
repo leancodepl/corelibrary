@@ -61,6 +61,8 @@ nav:
     - Messaging - MassTransit:
       - ./external_integrations/messaging_masstransit/index.md
       - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
+    - Push notifications - FCM:
+      - ./external_integrations/push_notifications_fcm/index.md
   - Features:
     - Audit logs:
       - ./features/audit_logs/index.md
