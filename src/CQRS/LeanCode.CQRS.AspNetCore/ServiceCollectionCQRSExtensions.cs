@@ -1,7 +1,9 @@
 using LeanCode.Components;
+using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
+using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +55,34 @@ public class CQRSServicesBuilder
     public CQRSServicesBuilder AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
+        return this;
+    }
+
+    public CQRSServicesBuilder AddQuery<TQuery, TResult, THandler>()
+        where TQuery : IQuery<TResult>
+        where THandler : IQueryHandler<TQuery, TResult>
+    {
+        objectsSource.AddCQRSObject(new(CQRSObjectKind.Query, typeof(TQuery), typeof(TResult), typeof(THandler)));
+        return this;
+    }
+
+    public CQRSServicesBuilder AddCommand<TCommand, THandler>()
+        where TCommand : ICommand
+        where THandler : ICommandHandler<TCommand>
+    {
+        objectsSource.AddCQRSObject(
+            new(CQRSObjectKind.Command, typeof(TCommand), typeof(CommandResult), typeof(THandler))
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder AddOperation<TOperation, TResult, THandler>()
+        where TOperation : IOperation<TResult>
+        where THandler : IOperationHandler<TOperation, TResult>
+    {
+        objectsSource.AddCQRSObject(
+            new(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler))
+        );
         return this;
     }
 }
