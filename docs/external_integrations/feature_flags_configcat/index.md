@@ -16,14 +16,14 @@ To incorporate ConfigCat into your LeanCode CoreLibrary-based application, follo
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
-    . . .
+    // . . .
 
     services.AddConfigCat(
         sdkKey: null,
         flagOverridesFilePath: "YOUR_PATH/configcat.json",
         overrideBehaviour: OverrideBehaviour.LocalOnly);
 
-    . . .
+    // . . .
 }
 ```
 

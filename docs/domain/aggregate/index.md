@@ -96,7 +96,7 @@ Let's add a few methods to the `Project` class:
 ```csharp
 public class Project : IAggregateRoot<ProjectId>
 {
-    . . .
+    // . . .
 
     public void UpdateName(string name)
     {

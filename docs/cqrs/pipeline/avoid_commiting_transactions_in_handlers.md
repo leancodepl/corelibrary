@@ -7,7 +7,7 @@ Directly commiting transactions in [command]/[operation] handlers poses a challe
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        . . .
+        // . . .
         app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRemoteCqrs(
@@ -62,7 +62,7 @@ Take, for instance, an example where we wish to send an email to an employee upo
 ```csharp
 public class Project : IAggregateRoot<ProjectId>
 {
-    . . .
+    // . . .
 
     public void AssignEmployeeToAssignment(
         AssignmentId assignmentId,
@@ -76,7 +76,7 @@ public class Project : IAggregateRoot<ProjectId>
             EmployeeId employeeId));
     }
 
-    . . .
+    // . . .
 }
 ```
 

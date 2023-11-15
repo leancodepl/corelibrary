@@ -16,9 +16,9 @@ Let's add an address to `Employee` aggregate defined in [aggregate section](../a
 ```csharp
 public class Employee : IAggregateRoot<EmployeeId>
 {
-    . . .
+    // . . .
     public Address? Address { get; private set; }
-    . . .
+    // . . .
 
     public void SetAddress(Address address)
     {

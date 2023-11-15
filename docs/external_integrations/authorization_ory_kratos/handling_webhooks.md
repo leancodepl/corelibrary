@@ -15,12 +15,12 @@ First, you should map the `KratosIdentitySyncHandler` class to the `/kratos/sync
 ```csharp
 protected override void ConfigureApp(IApplicationBuilder app)
 {
-    . . .
+    // . . .
 
     app.UseAuthentication()
         .UseEndpoints(endpoints =>
         {
-            . . .
+            // . . .
 
             endpoints.MapPost(
                 "/kratos/sync-identity",
@@ -29,10 +29,10 @@ protected override void ConfigureApp(IApplicationBuilder app)
                     .HandleAsync(ctx)
             );
 
-            . . .
+            // . . .
         });
 
-    . . .
+    // . . .
 }
 ```
 

@@ -41,7 +41,7 @@ public class Employee : IAggregateRoot<EmployeeId>
 {
     public EmployeeId Id { get; }
 
-    . . .
+    // . . .
 }
 ```
 

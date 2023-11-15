@@ -47,11 +47,11 @@ public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
     private readonly Serilog.ILogger logger =
         Serilog.Log.ForContext<UpdateProjectNameCH>();
 
-    . . .
+    // . . .
 
     public Task ExecuteAsync(HttpContext context, UpdateProjectName command)
     {
-        . . .
+        // . . .
 
         logger.Information(
             "Project's {ProjectId} name has been updated",

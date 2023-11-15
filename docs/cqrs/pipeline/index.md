@@ -20,7 +20,7 @@ To establish LeanCode CoreLibrary pipelines, the [MapRemoteCqrs(...)] method fro
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        . . .
+        // . . .
         app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRemoteCqrs(

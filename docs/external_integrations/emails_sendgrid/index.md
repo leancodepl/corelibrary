@@ -15,22 +15,22 @@ Managing email communication is a crucial aspect of any modern business or appli
 To incorporate SendGrid into your LeanCode CoreLibrary-based application, follow the example below. This will enable the SendGrid client, allowing you to send emails through `.cshtml` template files. The example assumes that templates are located in the `Templates` folder.
 
 ```csharp
-. . .
+// . . .
 
 private static readonly RazorViewRendererOptions ViewOptions = new("Templates");
 
-. . .
+// . . .
 
 public override void ConfigureServices(IServiceCollection services)
 {
-    . . .
+    // . . .
 
     services.AddRazorViewRenderer(ViewOptions);
 
     // Add SendGrid ApiKey
     services.AddSendGridClient(new SendGridClientOptions { ApiKey = "" });
 
-    . . .
+    // . . .
 }
 ```
 
@@ -67,13 +67,13 @@ You should also define a `EmployeeAssignedToAssignmentEmail.cshtml` template fil
 After configuring as shown above, you can start sending emails using SendGrid with the following code. Make sure to verify your sender address in SendGrid:
 
 ```csharp
-. . .
+// . . .
 private const string FromEmail = "no-reply@leancode.pl";
 private const string FromName = "LeanCode";
 
 private readonly SendGridRazorClient sendGridClient;
 
-. . .
+// . . .
 
 public async Task SendEmployeeAssignedToAssignmentEmailAsync(
     Employee employee,

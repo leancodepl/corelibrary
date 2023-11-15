@@ -92,11 +92,11 @@ To register this class in the DI container, include the following code in the `C
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
-    . . .
+    // . . .
 
     services.AddSingleton<LeanCode.CQRS.Security.IRoleRegistration, AppRoles>();
 
-    . . .
+    // . . .
 }
 
 ```
@@ -178,14 +178,14 @@ All [queries], [commands] and [operations] can (and should!) be behind authoriza
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        . . .
+        // . . .
         app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRemoteCqrs(
                     "/api",
                     cqrs =>
                     {
-                        . . .
+                        // . . .
 
                         cqrs.Commands = c =>
                             c.CQRSTrace()
@@ -195,7 +195,7 @@ All [queries], [commands] and [operations] can (and should!) be behind authoriza
                             .CommitTransaction<CoreDbContext>()
                             .PublishEvents();
 
-                        . . .
+                        // . . .
                     }
                 );
             });

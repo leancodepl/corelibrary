@@ -16,7 +16,7 @@ Let's imagine that we want to perform some action after a employee has been assi
 ```csharp
 public class Project : IAggregateRoot<ProjectId>
 {
-    . . .
+    // . . .
 
     public void AssignEmployeeToAssignment(
         AssignmentId assignmentId,

@@ -27,7 +27,7 @@ Here's an example configuration that utilizes in-memory transport during develop
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
-    . . .
+    // . . .
 
     services.AddCQRSMassTransitIntegration(cfg =>
     {
@@ -107,7 +107,7 @@ public override void ConfigureServices(IServiceCollection services)
         }
     });
 
-    . . .
+    // . . .
 }
 ```
 
@@ -124,11 +124,11 @@ The integration of CoreLibrary and [MassTransit] relies on the implementation of
 ```csharp
 protected override void OnModelCreating(ModelBuilder builder)
 {
-    . . .
+    // . . .
 
     builder.AddTransactionalOutboxEntities();
 
-    . . .
+    // . . .
 }
 ```
 

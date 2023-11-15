@@ -41,7 +41,7 @@ Then, you can integrate `EmployeeBlockerMiddleware` into the pipeline as follows
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
     {
-        . . .
+        // . . .
         app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRemoteCqrs(

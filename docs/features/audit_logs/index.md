@@ -31,7 +31,7 @@ Storage implementation using Azure Blob Storage service stores log for each enti
 ```csharp
     public override void ConfigureServices(IServiceCollection services)
     {
-        . . .
+        // . . .
 
         services.AddAzureClients(cfg =>
         {
@@ -45,7 +45,7 @@ Storage implementation using Azure Blob Storage service stores log for each enti
                 "audit-logs",
                 "auditlogs"));
 
-        . . .
+        // . . .
     }
 ```
 
@@ -57,18 +57,18 @@ The audit logs are collected and processed asynchronously by dedicated consumer.
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        . . .
+        // . . .
 
         services.AddCQRSMassTransitIntegration(cfg =>
         {
-            . . .
+            // . . .
 
             cfg.AddAuditLogsConsumer();
 
-            . . .
+            // . . .
         });
 
-        . . .
+        // . . .
     }
 ```
 
@@ -81,7 +81,7 @@ Example configuration using AuditLogs looks as follows:
 ```csharp
 protected override void ConfigureApp(IApplicationBuilder app)
 {
-    . . .
+    // . . .
 
     app.UseAuthentication()
         .UseIdentityTraceAttributes("sub", "role")
@@ -108,7 +108,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
             )
     );
 
-    . . .
+    // . . .
 }
 ```
 

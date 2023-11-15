@@ -33,7 +33,7 @@ To integrate Kratos into LeanCode CoreLibrary-based application, you can follow 
 ```csharp
 public override void ConfigureServices(IServiceCollection services)
 {
-    . . .
+    // . . .
     services
         .AddAuthentication()
         .AddKratos(options =>
@@ -74,7 +74,7 @@ public override void ConfigureServices(IServiceCollection services)
 
     // Api key which will be send by Kratos
     services.AddSingleton(new LeanCode.Kratos.KratosWebHookHandlerConfig(""));
-    . . .
+    // . . .
 }
 ```
 
