@@ -18,7 +18,7 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
 nav:
-  - Overview: ./overview/index.md
+  - Overview: ./README.md
   - CQRS:
     - ./cqrs/index.md
     - Pipeline:
@@ -55,6 +55,9 @@ nav:
       - ./external_integrations/emails_sendgrid/index.md
     - Feature flags - ConfigCat:
       - ./external_integrations/feature_flags_configcat/index.md
+    - Logging - Serilog:
+      - ./external_integrations/logging_serilog/index.md
+      - Sanitization: ./external_integrations/logging_serilog/sanitization.md
     - Messaging - MassTransit:
       - ./external_integrations/messaging_masstransit/index.md
       - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
@@ -63,5 +66,8 @@ nav:
       - ./features/audit_logs/index.md
     - Force update:
       - ./features/force_update/index.md
+  - Tests:
+    - Integration tests:
+      - ./tests/integration_tests/index.md
   - CoreLibrary 8.0 changes overview & migration guide:
     - ./v8_migration_guide/index.md
