@@ -1,4 +1,4 @@
-# LeanCode.AuditLogs
+# Audit logs
 
 Package dedicated to auditing changes of entities (including domain objects) modified during execution of command/operation/event handlers.
 
@@ -83,32 +83,36 @@ protected override void ConfigureApp(IApplicationBuilder app)
 {
     . . .
 
-    app.UseEndpoints(
-        endpoints => endpoints.MapRemoteCqrs(
-            "/api",
-            cqrs =>
-            {
-                cqrs.Commands = c =>
-                    c.CQRSTrace()
-                        .Secure()
-                        .Validate()
-                        .CommitTransaction<CoreDbContext>()
-                        .PublishEvents()
-                        .Audit<CoreDbContext>();
-                cqrs.Queries = c => c.CQRSTrace().Secure();
-                cqrs.Operations = c =>
-                    c.CQRSTrace()
-                        .Secure()
-                        .CommitTransaction<CoreDbContext>()
-                        .PublishEvents()
-                        .Audit<CoreDbContext>();
-            }
-        )
+    app.UseAuthentication()
+        .UseIdentityTraceAttributes("sub", "role")
+        .UseEndpoints(endpoints =>
+            endpoints.MapRemoteCqrs(
+                "/api",
+                cqrs =>
+                {
+                    cqrs.Commands = c =>
+                        c.CQRSTrace()
+                            .Secure()
+                            .Validate()
+                            .CommitTransaction<CoreDbContext>()
+                            .PublishEvents()
+                            .Audit<CoreDbContext>();
+                    cqrs.Queries = c => c.CQRSTrace().Secure();
+                    cqrs.Operations = c =>
+                        c.CQRSTrace()
+                            .Secure()
+                            .CommitTransaction<CoreDbContext>()
+                            .PublishEvents()
+                            .Audit<CoreDbContext>();
+                }
+            )
     );
 
     . . .
 }
 ```
+
+`UseAuthentication` and `UseIdentityTraceAttributes` method calls are optional and used to enrich audit logs with `ActorId`.
 
 ⚠️ Bear in mind, that the order here makes difference. If you don't want to collect changes in the MT inbox/outbox tables, then you should configure `Audit<TDbContext>()` middleware **after** the `PublishEvents()` middleware.
 
@@ -141,7 +145,9 @@ If you want to use some other store for your data feel free to implement `IAudit
 
 ## Azure Storage infrastructure configuration
 
-When configuring cloud resources in cloud you should remember about the right to be forgotten and costs of storing the data based on the access tiers. Below you can find a terraform snippet that configures automatic tier changes and deletion based on the last blob modification time. ⚠️ Bear in mind that the values provided below may not be valid for your use case.
+When configuring cloud resources in cloud you should remember about the right to be forgotten and costs of storing the data based on the access tiers. Below you can find a terraform snippet that configures automatic tier changes and deletion based on the last blob modification time.
+
+⚠️ Bear in mind that the values provided below may not be valid for your use case.
 
 ```terraform
 resource "azurerm_storage_management_policy" "decrease_access_tier" {
