@@ -47,19 +47,24 @@ internal class CQRSObjectsRegistrationSource
 
             var handler = handlerCandidates.Single();
 
-            var metadata = new CQRSObjectMetadata(
-                handler.ObjectKind,
-                objectType: contract,
-                resultType: handler.ResultType,
-                handlerType: handler.HandlerType
+            AddCQRSObject(
+                new CQRSObjectMetadata(
+                    handler.ObjectKind,
+                    objectType: contract,
+                    resultType: handler.ResultType,
+                    handlerType: handler.HandlerType
+                )
             );
+        }
+    }
 
-            var added = objects.Add(metadata);
+    public void AddCQRSObject(CQRSObjectMetadata metadata)
+    {
+        var added = objects.Add(metadata);
 
-            if (added)
-            {
-                services.AddCQRSHandler(metadata);
-            }
+        if (added)
+        {
+            services.AddCQRSHandler(metadata);
         }
     }
 
