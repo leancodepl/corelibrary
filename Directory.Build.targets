@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.0-rc.2.23480.1</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.0-rc.2.23480.2</AspNetCoreVersion>
-    <ExtensionsVersion>8.0.0-rc.2.23479.6</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>8.0.0</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.0</AspNetCoreVersion>
+    <ExtensionsVersion>8.0.0</ExtensionsVersion>
 
     <GoogleApisVersion>1.62.1</GoogleApisVersion>
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -13,7 +13,7 @@
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>4.4.0</CodeAnalysisVersion>
 
-    <DomainModelsTestsNetCoreAppRefVersion>8.0.0-rc.2.23479.6</DomainModelsTestsNetCoreAppRefVersion>
+    <DomainModelsTestsNetCoreAppRefVersion>8.0.0</DomainModelsTestsNetCoreAppRefVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -103,7 +103,7 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
     <PackageReference Update="Microsoft.Extensions.Telemetry.Testing" Version="8.0.0-rc.2.23510.2" />
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0-rc.2.23510.2" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.0.0" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
