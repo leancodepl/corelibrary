@@ -8,17 +8,21 @@ namespace LeanCode.CodeAnalysis.CodeFixProviders;
 
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(FixCancellationTokenNamingCodeFixProvider))]
 [Shared]
-public class FixCancellationTokenNamingCodeFixProvider : CodeFixProvider
+public class FixCQRSHandlerNamingCodeFixProvider : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DiagnosticsIds.CancellationTokensShouldFollowNamingConvention);
+        ImmutableArray.Create(
+            DiagnosticsIds.CommandHandlersShouldFollowNamingConvention,
+            DiagnosticsIds.QueryHandlersShouldFollowNamingConvention,
+            DiagnosticsIds.OperationHandlersShouldFollowNamingConvention
+        );
 
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     public override Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         context.RegisterCodeFix(
-            new FixCancellationTokenNamingCodeAction(context.Document, context.Span),
+            new FixCQRSHandlerNamingCodeAction(context.Document, context.Span),
             context.Diagnostics
         );
 
