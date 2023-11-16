@@ -51,7 +51,7 @@ public static class DbContextDapperExtensions
         return context.WithConnectionAsync(conn => conn.ExecuteAsync(cmd));
     }
 
-    public static Task<T> ExecuteScalarAsync<T>(
+    public static Task<T?> ExecuteScalarAsync<T>(
         this DbContext context,
         string sql,
         object? param = null,
@@ -139,7 +139,7 @@ public static class DbContextDapperExtensions
         return context.WithConnectionAsync(conn => conn.QueryAsync(cmd));
     }
 
-    public static Task<TResult> QuerySingleOrDefaultAsync<TResult>(
+    public static Task<TResult?> QuerySingleOrDefaultAsync<TResult>(
         this DbContext context,
         string sql,
         object? param = null,
@@ -160,7 +160,7 @@ public static class DbContextDapperExtensions
         return context.WithConnectionAsync(conn => conn.QuerySingleOrDefaultAsync<TResult>(cmd));
     }
 
-    public static Task<dynamic> QuerySingleOrDefaultAsync(
+    public static Task<dynamic?> QuerySingleOrDefaultAsync(
         this DbContext context,
         string sql,
         object? param = null,
@@ -223,7 +223,7 @@ public static class DbContextDapperExtensions
         return context.WithConnectionAsync(conn => conn.QuerySingleAsync(cmd));
     }
 
-    public static Task<TResult> QueryFirstOrDefaultAsync<TResult>(
+    public static Task<TResult?> QueryFirstOrDefaultAsync<TResult>(
         this DbContext context,
         string sql,
         object? param = null,
@@ -244,7 +244,7 @@ public static class DbContextDapperExtensions
         return context.WithConnectionAsync(conn => conn.QueryFirstOrDefaultAsync<TResult>(cmd));
     }
 
-    public static Task<dynamic> QueryFirstOrDefaultAsync(
+    public static Task<dynamic?> QueryFirstOrDefaultAsync(
         this DbContext context,
         string sql,
         object? param = null,
