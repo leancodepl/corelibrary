@@ -86,20 +86,14 @@ public class Event2RetryingConsumer : IConsumer<Event2>
 public class DefaultConsumerDefinition<TConsumer> : ConsumerDefinition<TConsumer>
     where TConsumer : class, IConsumer
 {
-    private readonly IServiceProvider serviceProvider;
-
-    public DefaultConsumerDefinition(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
     protected override void ConfigureConsumer(
         IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<TConsumer> consumerConfigurator
+        IConsumerConfigurator<TConsumer> consumerConfigurator,
+        IRegistrationContext context
     )
     {
-        endpointConfigurator.UseRetry(r => r.Immediate(1));
-        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(serviceProvider);
-        endpointConfigurator.UseDomainEventsPublishing(serviceProvider);
+        endpointConfigurator.UseMessageRetry(r => r.Immediate(1));
+        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(context);
+        endpointConfigurator.UseDomainEventsPublishing(context);
     }
 }

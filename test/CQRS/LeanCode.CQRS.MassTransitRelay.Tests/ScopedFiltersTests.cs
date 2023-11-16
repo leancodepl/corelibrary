@@ -187,20 +187,14 @@ public sealed class ScopedFiltersTests : IAsyncLifetime, IDisposable
 
     private sealed class TestConsumerDefinition : ConsumerDefinition<TestConsumer>
     {
-        private readonly IServiceProvider serviceProvider;
-
-        public TestConsumerDefinition(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider;
-        }
-
         protected override void ConfigureConsumer(
             IReceiveEndpointConfigurator endpointConfigurator,
-            IConsumerConfigurator<TestConsumer> consumerConfigurator
+            IConsumerConfigurator<TestConsumer> consumerConfigurator,
+            IRegistrationContext context
         )
         {
-            Filter1Observer.UseFilter1(endpointConfigurator, serviceProvider);
-            Filter2Observer.UseFilter2(endpointConfigurator, serviceProvider);
+            Filter1Observer.UseFilter1(endpointConfigurator, context);
+            Filter2Observer.UseFilter2(endpointConfigurator, context);
         }
     }
 
