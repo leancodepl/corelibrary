@@ -102,19 +102,13 @@ public class EntityAddedConsumer : IConsumer<EntityAdded>
 
 public class EntityAddedConsumerDefinition : ConsumerDefinition<EntityAddedConsumer>
 {
-    private readonly IServiceProvider serviceProvider;
-
-    public EntityAddedConsumerDefinition(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
     protected override void ConfigureConsumer(
         IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<EntityAddedConsumer> consumerConfigurator
+        IConsumerConfigurator<EntityAddedConsumer> consumerConfigurator,
+        IRegistrationContext context
     )
     {
-        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(serviceProvider);
-        endpointConfigurator.UseDomainEventsPublishing(serviceProvider);
+        endpointConfigurator.UseEntityFrameworkOutbox<TestDbContext>(context);
+        endpointConfigurator.UseDomainEventsPublishing(context);
     }
 }
