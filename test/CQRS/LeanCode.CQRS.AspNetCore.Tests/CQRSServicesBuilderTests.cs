@@ -38,7 +38,8 @@ public class CQRSServicesBuilderTests
     [Fact]
     public void All_objects_are_registered()
     {
-        builder.AddQuery<Query1, QueryResult1, Query1Handler>()
+        builder
+            .AddQuery<Query1, QueryResult1, Query1Handler>()
             .AddQuery<Query2, QueryResult2, Query2Handler>()
             .AddCommand<Command1, Command1Handler>()
             .AddOperation<Operation1, OperationResult1, Operation1Handler>();
@@ -63,8 +64,7 @@ public class CQRSServicesBuilderTests
     [Fact]
     public void Both_queries_are_registered()
     {
-        builder.AddQuery<Query1, QueryResult1, Query1Handler>()
-            .AddQuery<Query2, QueryResult2, Query2Handler>();
+        builder.AddQuery<Query1, QueryResult1, Query1Handler>().AddQuery<Query2, QueryResult2, Query2Handler>();
 
         AssertQueryRegistered<Query1, QueryResult1, Query1Handler>();
         AssertQueryRegistered<Query2, QueryResult2, Query2Handler>();
@@ -75,8 +75,7 @@ public class CQRSServicesBuilderTests
     [Fact]
     public void Command_is_registered()
     {
-        builder
-            .AddCommand<Command1, Command1Handler>();
+        builder.AddCommand<Command1, Command1Handler>();
 
         AssertNotRegistered<Query1>();
         AssertNotRegistered<Query2>();
@@ -87,8 +86,7 @@ public class CQRSServicesBuilderTests
     [Fact]
     public void Operation_is_registered()
     {
-        builder
-            .AddOperation<Operation1, OperationResult1, Operation1Handler>();
+        builder.AddOperation<Operation1, OperationResult1, Operation1Handler>();
 
         AssertNotRegistered<Query1>();
         AssertNotRegistered<Query2>();
@@ -122,7 +120,11 @@ public class CQRSServicesBuilderTests
         where TOperation : IOperation<TResult>
         where THandler : IOperationHandler<TOperation, TResult>
     {
-        var cqrsObject = registrationSource.Objects.Should().ContainSingle(o => o.ObjectType == typeof(TOperation)).Which;
+        var cqrsObject = registrationSource
+            .Objects
+            .Should()
+            .ContainSingle(o => o.ObjectType == typeof(TOperation))
+            .Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Operation);
         cqrsObject.ResultType.Should().Be(typeof(TResult));
@@ -134,38 +136,38 @@ public class CQRSServicesBuilderTests
         registrationSource.Objects.Should().NotContain(o => o.ObjectType == typeof(T));
     }
 
-    public class Query1 : IQuery<QueryResult1> { }
+    private class Query1 : IQuery<QueryResult1> { }
 
-    public class QueryResult1 { }
+    private class QueryResult1 { }
 
-    public class Query2 : IQuery<QueryResult2> { }
+    private class Query2 : IQuery<QueryResult2> { }
 
-    public class QueryResult2 { }
+    private class QueryResult2 { }
 
-    public class Command1 : ICommand { }
+    private class Command1 : ICommand { }
 
-    public class Operation1 : IOperation<OperationResult1> { }
+    private class Operation1 : IOperation<OperationResult1> { }
 
-    public class OperationResult1 { }
+    private class OperationResult1 { }
 
-    public class Query1Handler : IQueryHandler<Query1, QueryResult1>
+    private class Query1Handler : IQueryHandler<Query1, QueryResult1>
     {
         public Task<QueryResult1> ExecuteAsync(HttpContext context, Query1 query) =>
             throw new NotImplementedException();
     }
 
-    public class Query2Handler : IQueryHandler<Query2, QueryResult2>
+    private class Query2Handler : IQueryHandler<Query2, QueryResult2>
     {
         public Task<QueryResult2> ExecuteAsync(HttpContext context, Query2 query) =>
             throw new NotImplementedException();
     }
 
-    public class Command1Handler : ICommandHandler<Command1>
+    private class Command1Handler : ICommandHandler<Command1>
     {
         public Task ExecuteAsync(HttpContext context, Command1 command) => throw new NotImplementedException();
     }
 
-    public class Operation1Handler : IOperationHandler<Operation1, OperationResult1>
+    private class Operation1Handler : IOperationHandler<Operation1, OperationResult1>
     {
         public Task<OperationResult1> ExecuteAsync(HttpContext context, Operation1 operation) =>
             throw new NotImplementedException();
