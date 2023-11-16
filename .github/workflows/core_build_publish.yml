@@ -88,9 +88,15 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Tool Restore
-        run: dotnet tool restore
+        run:
+          dotnet tool restore
+      # `dotnet csharpier . --check` throws if restored version differs from
+      # the current one. Running additional `dotnet tool install` fixes it.
       - name: Check formatting
-        run: dotnet csharpier . --check
+        run:  |
+          version=$(dotnet tool list | grep 'csharpier' | awk '{print $2}')
+          dotnet tool install csharpier --version $version
+          dotnet csharpier . --check
       - name: Build
         run: dotnet build --configuration Release --no-restore
         env:
