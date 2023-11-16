@@ -94,7 +94,7 @@ jobs:
       # the current one. Running additional `dotnet tool install` fixes it.
       - name: Check formatting
         run:  |
-          version=$(dotnet tool list | grep 'csharpier' | awk '{print $2}')
+          version=$(dotnet tool list | awk '/csharpier/ {print $2}')
           dotnet tool install csharpier --version $version
           dotnet csharpier . --check
       - name: Build
