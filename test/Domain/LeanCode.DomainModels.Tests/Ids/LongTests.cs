@@ -35,7 +35,6 @@ public class LongIdTests
     {
         Assert.False(TestLongId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestLongId.Parse(null));
         Assert.Null(TestLongId.ParseNullable(null));
         Assert.False(TestLongId.TryParse(null, out var value));
         Assert.Equal(value, default);

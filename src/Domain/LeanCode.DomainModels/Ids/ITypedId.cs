@@ -17,7 +17,7 @@ public interface IPrefixedTypedId<TSelf>
 {
     string Value { get; }
     public static abstract int RawLength { get; }
-    public static abstract TSelf Parse(string? v);
+    public static abstract TSelf Parse(string v);
     public static abstract bool IsValid(string? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -39,7 +39,7 @@ public interface IRawTypedId<TBacking, TSelf>
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
-    public static abstract TSelf Parse(TBacking? v);
+    public static abstract TSelf Parse(TBacking v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static abstract Expression<Func<TBacking, TSelf>> FromDatabase { get; }

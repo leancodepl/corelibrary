@@ -87,7 +87,7 @@ namespace {{data.Namespace}}
         public {{data.TypeName}}(Guid v) => value = string.Create(null, stackalloc char[RawLength], $"{TypePrefix}{Separator}{v:N}");
         {{randomFactory}}
 
-        public static {{data.TypeName}} Parse(string? v)
+        public static {{data.TypeName}} Parse(string v)
         {
             if (IsValid(v))
             {
@@ -217,7 +217,7 @@ namespace {{data.Namespace}}
 
         public static {{data.TypeName}} New() => new(Ulid.NewUlid());
 
-        public static {{data.TypeName}} Parse(string? v)
+        public static {{data.TypeName}} Parse(string v)
         {
             if (TryDeconstruct(v.AsSpan(), out var ulid))
             {
@@ -343,16 +343,9 @@ namespace {{data.Namespace}}
         public {{data.TypeName}}({{backingType}} v) => Value = v;
         {{randomFactory}}
 
-        public static {{data.TypeName}} Parse({{backingType}}? v)
+        public static {{data.TypeName}} Parse({{backingType}} v)
         {
-            if (IsValid(v))
-            {
-                return new {{data.TypeName}}(v.Value);
-            }
-            else
-            {
-                throw new FormatException("The ID has invalid format. It should be a valid `{{backingType}}`.");
-            }
+            return new {{data.TypeName}}(v);
         }
 
         [return: NotNullIfNotNull("id")]

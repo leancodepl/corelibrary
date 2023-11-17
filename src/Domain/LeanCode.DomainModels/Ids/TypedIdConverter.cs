@@ -12,7 +12,7 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
     where TId : struct, IPrefixedTypedId<TId>
 {
     public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-        TId.Parse(reader.GetString());
+        TId.Parse(reader.GetString() ?? throw new JsonException("Expected an id string"));
 
     public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
         writer.WriteStringValue(value.Value);

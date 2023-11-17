@@ -43,7 +43,7 @@ public class PrefixedUlidIdTests
     {
         TestPrefixedUlidId.IsValid(null).Should().BeFalse();
 
-        var parseNull = () => TestPrefixedUlidId.Parse(null);
+        var parseNull = () => TestPrefixedUlidId.Parse(null!);
         var parseInvalid = () => TestPrefixedUlidId.ParseNullable("invalid");
 
         parseNull.Should().Throw<FormatException>();

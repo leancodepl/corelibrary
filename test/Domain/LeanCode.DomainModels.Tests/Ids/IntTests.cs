@@ -35,7 +35,6 @@ public class IntIdTests
     {
         Assert.False(TestIntId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestIntId.Parse(null));
         Assert.Null(TestIntId.ParseNullable(null));
         Assert.False(TestIntId.TryParse(null, out var value));
         Assert.Equal(value, default);
