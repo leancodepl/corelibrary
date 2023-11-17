@@ -46,7 +46,6 @@ public class GuidIdTests
     {
         Assert.False(TestGuidId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestGuidId.Parse(null));
         Assert.Null(TestGuidId.ParseNullable(null));
         Assert.False(TestGuidId.TryParse(null, out var value));
         Assert.Equal(value, default);

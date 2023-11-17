@@ -42,7 +42,7 @@ public class PrefixedGuidIdTests
     {
         Assert.False(TestPrefixedGuidId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestPrefixedGuidId.Parse(null));
+        Assert.Throws<FormatException>(() => TestPrefixedGuidId.Parse(null!));
         Assert.Throws<FormatException>(() => TestPrefixedGuidId.ParseNullable("invalid"));
         Assert.False(TestPrefixedGuidId.TryParse(null, out var value));
         Assert.Equal(value, default);
