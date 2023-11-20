@@ -33,7 +33,7 @@
     <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Update="Azure.Data.Tables" Version="12.8.1" />
     <PackageReference Update="Azure.Storage.Blobs" Version="12.18.0" />
-    <PackageReference Update="Azure.Identity" Version="1.10.3" />
+    <PackageReference Update="Azure.Identity" Version="1.10.4" />
     <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.5.0" />
     <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
 
