@@ -3,7 +3,7 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 
-namespace ValidatedCommands;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples;
 
 public class ValidatedCommand : ICommand { }
 

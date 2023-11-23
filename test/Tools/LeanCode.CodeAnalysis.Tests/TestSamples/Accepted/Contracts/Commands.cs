@@ -1,7 +1,7 @@
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
-namespace LeanCode.CodeAnalysis.Tests.Data;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Accepted.Contracts;
 
 public abstract class BaseCommand : ICommand { }
 

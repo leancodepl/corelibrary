@@ -1,6 +1,6 @@
-namespace LeanCode.CodeAnalysis.Tests.Data;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Accepted;
 
-public static class AcceptedMethods
+public static class Methods
 {
     public static CancellationToken CancellationTokenNamingConvention(CancellationToken cancellationToken)
     {
@@ -9,7 +9,7 @@ public static class AcceptedMethods
 }
 
 // Methods with `override` and `new` keywords are accepted as they might come from external source
-public class AcceptedOverrideMethod : RejectedMethods
+public class OverrideMethod : Rejected.Methods
 {
     public override CancellationToken CancellationTokenNamingConvention(CancellationToken ct)
     {
@@ -17,7 +17,7 @@ public class AcceptedOverrideMethod : RejectedMethods
     }
 }
 
-public class AcceptedNewMethod : RejectedMethods
+public class AcceptedNewMethod : Rejected.Methods
 {
     public static new CancellationToken CancellationTokenNamingConvention(CancellationToken ct)
     {

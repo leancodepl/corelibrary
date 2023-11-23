@@ -1,7 +1,7 @@
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 
-namespace LeanCode.CodeAnalysis.Tests.TestSamples;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Accepted.Contracts;
 
 public abstract class BaseQuery : IQuery<bool> { }
 

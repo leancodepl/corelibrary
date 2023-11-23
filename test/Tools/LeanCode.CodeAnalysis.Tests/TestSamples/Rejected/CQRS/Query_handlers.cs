@@ -1,15 +1,15 @@
-using LeanCode.CodeAnalysis.Tests.TestSamples;
+using LeanCode.CodeAnalysis.Tests.TestSamples.Accepted.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 
-namespace LeanCode.CodeAnalysis.Tests.Data;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Rejected.CQRS.WrongNamespace;
 
-public class FirstQueryQH : IQueryHandler<FirstQuery, bool>
+public class WrongQueryHandlerName : IQueryHandler<FirstQuery, bool>
 {
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }
 
-public class MultipleQueriesQH : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
+public class WrongMultipleQueryHandlerName : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
 {
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 

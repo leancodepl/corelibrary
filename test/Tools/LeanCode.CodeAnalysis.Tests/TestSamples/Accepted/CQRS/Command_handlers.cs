@@ -1,8 +1,8 @@
-using LeanCode.CodeAnalysis.Tests.TestSamples;
+using LeanCode.CodeAnalysis.Tests.TestSamples.Accepted.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 
-namespace LeanCode.CodeAnalysis.Tests.Data;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Accepted.CQRS;
 
 public class FirstCommandCH : ICommandHandler<FirstCommand>
 {
