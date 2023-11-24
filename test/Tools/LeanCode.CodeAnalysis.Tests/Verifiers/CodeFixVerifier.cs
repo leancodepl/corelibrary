@@ -21,7 +21,8 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         string newSource,
         string[] expectedFixes,
         int? fixToApply = null,
-        bool allowNewCompilerDiagnostics = false
+        bool allowNewCompilerDiagnostics = false,
+        params string[] additionalSources
     )
     {
         oldSource = oldSource.Trim();
@@ -30,7 +31,7 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         var analyzer = GetDiagnosticAnalyzer();
         var codeFixProvider = GetCodeFixProvider();
 
-        var document = CreateDocument(oldSource);
+        var document = CreateDocument(oldSource, additionalSources);
         var analyzerDiagnostics = await GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
         var compilerDiagnostics = await GetCompilerDiagnostics(document);
 
