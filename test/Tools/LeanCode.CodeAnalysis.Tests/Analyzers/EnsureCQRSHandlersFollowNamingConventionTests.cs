@@ -8,19 +8,19 @@ namespace LeanCode.CodeAnalysis.Tests.Analyzers;
 public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
 {
     [Theory]
-    [InlineData("command")]
-    [InlineData("query")]
-    [InlineData("operation")]
+    [InlineData("Command")]
+    [InlineData("Query")]
+    [InlineData("Operation")]
     public async Task CQRS_handlers_following_naming_convention_are_accepted(string cqrsType)
     {
-        var source = await File.ReadAllTextAsync($"TestSamples/Accepted_{cqrsType}_handlers.cs");
+        var source = await File.ReadAllTextAsync($"TestSamples/Accepted/CQRS/{cqrsType}_handlers.cs");
         await VerifyDiagnostics(source);
     }
 
     [Fact]
     public async Task Command_handlers_not_following_naming_convention_are_rejected()
     {
-        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_command_handlers.cs");
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected/CQRS/Command_handlers.cs");
 
         var diags = new[]
         {
@@ -34,7 +34,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
     [Fact]
     public async Task Query_handlers_not_following_naming_convention_are_rejected()
     {
-        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_query_handlers.cs");
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected/CQRS/Query_handlers.cs");
 
         var diags = new[]
         {
@@ -48,7 +48,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
     [Fact]
     public async Task Operation_handlers_not_following_naming_convention_are_rejected()
     {
-        var source = await File.ReadAllTextAsync($"TestSamples/Rejected_operation_handlers.cs");
+        var source = await File.ReadAllTextAsync($"TestSamples/Rejected/CQRS/Operation_handlers.cs");
 
         var diags = new[]
         {

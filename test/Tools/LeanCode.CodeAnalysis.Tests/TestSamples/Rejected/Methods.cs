@@ -1,6 +1,6 @@
-namespace LeanCode.CodeAnalysis.Tests.Data;
+namespace LeanCode.CodeAnalysis.Tests.TestSamples.Rejected;
 
-public class RejectedMethods
+public class Methods
 {
     public virtual CancellationToken CancellationTokenNamingConvention(CancellationToken ct)
     {

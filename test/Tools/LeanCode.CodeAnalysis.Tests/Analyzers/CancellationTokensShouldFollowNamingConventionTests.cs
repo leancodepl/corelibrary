@@ -10,14 +10,14 @@ public class CancellationTokensShouldFollowNamingConventionTests : DiagnosticVer
     [Fact]
     public async Task Methods_following_CancellationToken_naming_convention_are_accepted()
     {
-        var source = await File.ReadAllTextAsync("TestSamples/Accepted_methods.cs");
+        var source = await File.ReadAllTextAsync("TestSamples/Accepted/Methods.cs");
         await VerifyDiagnostics(source);
     }
 
     [Fact]
     public async Task Methods_not_following_CancellationToken_naming_convention_are_rejected()
     {
-        var source = await File.ReadAllTextAsync("TestSamples/Rejected_methods.cs");
+        var source = await File.ReadAllTextAsync("TestSamples/Rejected/Methods.cs");
 
         var diags = new[]
         {

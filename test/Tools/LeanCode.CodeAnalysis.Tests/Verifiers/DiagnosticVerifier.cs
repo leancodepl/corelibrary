@@ -90,9 +90,9 @@ public abstract class DiagnosticVerifier : IDisposable
         return documents;
     }
 
-    protected Document CreateDocument(string source)
+    protected Document CreateDocument(string source, params string[] additionalSources)
     {
-        return CreateProject(new[] { source }).Documents.First();
+        return CreateProject([ source, ..additionalSources ]).Documents.OrderBy(d => d.Name).First();
     }
 
     private Project CreateProject(string[] sources)
