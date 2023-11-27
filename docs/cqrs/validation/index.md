@@ -10,7 +10,7 @@ To reject [commands] that have invalid data or that cannot be fulfilled (the sta
 | LeanCode.CQRS.Validation | [![NuGet version (LeanCode.CQRS.Validation)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation/8.0.2260-preview/) | `ICommandValidator` |
 | LeanCode.CQRS.Validation.Fluent | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.Fluent.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation.Fluent/8.0.2260-preview/) | `AbstractValidator` |
 
-To validate example command introduced in [command] section, you can use something like:
+To validate example command introduced in [command] section, you can add following code:
 
 ```csharp
 [ProjectIsOwned]
@@ -28,14 +28,33 @@ public class UpdateProjectName : ICommand, IProjectRelated
         public const int ProjectDoesNotExist = 3;
     }
 }
+```
 
+```csharp
 public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
 {
-    private readonly IRepository<Project, ProjectId> projects;
-
     public UpdateProjectNameCV(IRepository<Project, ProjectId> projects)
     {
-        this.projects = projects;
+        RuleFor(c => c.Name)
+            .NotEmpty().WithCode(UpdateProjectName.ErrorCodes.InvalidName);
+
+        // . . .
+    }
+
+    // . . .
+}
+```
+
+If you need complex validation logic that needs to access external state, use `MustAsync`/`CustomAsync` validators. For `CustomAsync` validators, you can use `AddValidationError` helper to specify the error code:
+
+```csharp
+public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
+{
+    private readonly CoreDbContext dbContext;
+
+    public UpdateProjectNameCV(CoreDbContext dbContext)
+    {
+        this.dbContext = dbContext;
 
         RuleFor(c => c.Name)
             .NotEmpty().WithCode(UpdateProjectName.ErrorCodes.InvalidName);
@@ -47,7 +66,7 @@ public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
     private async Task CheckProjectExistsAsync(
         string ProjectId,
         ValidationContext<UpdateProjectName> ctx,
-        CancellationToken ct
+        CancellationToken cancellationToken
     )
     {
         if (!ProjectId.TryParse(ProjectId, out var parsedProjectId))
@@ -59,9 +78,11 @@ public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
             return;
         }
 
-        var project = await projects.FindAsync(parsedProjectId, ct);
+        var exists = await dbContext.Projects.AnyAsync(
+            p => p.Id == parsedProjectId,
+            cancellationToken);
 
-        if (project is null)
+        if (!exists)
         {
             ctx.AddValidationError(
                 $"Project with the id: {ProjectId} does not exist.",
@@ -73,8 +94,6 @@ public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
 ```
 
 > **Tip:** More on ids can be found [here](../../domain/id/index.md).
-
-If you need complex validation logic that needs to access external state, use `MustAsync`/`CustomAsync` validators. For `CustomAsync` validators, you can use `AddValidationError` helper to specify the error code.
 
 [commands]: ../command/index.md
 [command]: ../command/index.md
