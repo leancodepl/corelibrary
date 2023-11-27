@@ -2,7 +2,9 @@
 
 > **Tip:** Before delving into this section, it's highly recommended to explore the [CQRS], [Domain] and [MassTransit] sections.
 
-Directly commiting transactions in [command]/[operation] handlers poses a challenge, potentially causing inconsistencies between [events] and the associated entities. Let's examine the pipeline configuration below:
+**⚠️ Directly commiting transactions in [command]/[operation] handlers poses a challenge, potentially causing inconsistencies between [events] and the associated entities.**
+
+Let's consider following pipeline configuration:
 
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)
@@ -36,7 +38,7 @@ Directly commiting transactions in [command]/[operation] handlers poses a challe
     }
 ```
 
-Consider the `CommitDatabaseTransactionMiddleware<TDbContext>` middleware, which is invoked by the `CommitTransaction<CoreDbContext>()` method. This middleware executes subsequent middlewares and then calls the `SaveChangesAsync` method on `CoreDbContext` to commit all changes within a single transaction.
+The code snippet above involves a `CommitDatabaseTransactionMiddleware<TDbContext>` middleware which is invoked by the `CommitTransaction<CoreDbContext>()` method. This middleware executes subsequent middlewares and then calls the `SaveChangesAsync(...)` method on `CoreDbContext` consolidating all changes made within the pipeline into a single transaction:
 
 ```csharp
 public class CommitDatabaseTransactionMiddleware<TDbContext>
@@ -110,13 +112,13 @@ public class AssignEmployeeToAssignmentCH
         projects.Update(project);
 
         // Directly committing the transaction in the command handler,
-        // which should be avoided
+        // which should be avoided.
         await dbContext.SaveChangesAsync(context.RequestAborted)
     }
 }
 ```
 
-In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before events are published. In LeanCode Corelibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. This ensures that messages are committed to the database before being available to message brokers after publication and the invocation of the `SaveChangesAsync` method on CoreDbContext.
+In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before [events] are published. In LeanCode Corelibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. This ensures that messages are committed to the database before being available to message brokers after publication and the invocation of the `SaveChangesAsync` method on CoreDbContext.
 
 In our scenario, if the database fails after successfully saving changes to the project, the `EmployeeAssignedToAssignment` message won't be saved, leading to it being unavailable to message brokers and not sent.
 
