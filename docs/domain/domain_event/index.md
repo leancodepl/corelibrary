@@ -68,6 +68,8 @@ public class EmployeeAssignedToAssignment : IDomainEvent
 }
 ```
 
-Ensure that `EmployeeAssignedToAssignment` implements the `IDomainEvent` interface, and it has a constructor with the `[JsonConstructor]` attribute for proper deserialization. After being raised, the event can be handled by the matching `IConsumer` to perform wanted action.
+Ensure that `EmployeeAssignedToAssignment` implements the `IDomainEvent` interface, and it has a constructor with the `[JsonConstructor]` attribute. `[JsonConstructor]` attribute is used during JSON deserialization to specify which constructor should be used to create an object from JSON data. This attribute ensures that when a message is deserialized from JSON, the correct constructor is invoked to create the object.
+
+After being raised, the event can be handled by the matching `IConsumer` to perform wanted action.
 
 > **Tip:** To read how to handle domain events, visit [here](../../external_integrations/messaging_masstransit/handling_events.md).
