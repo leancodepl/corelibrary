@@ -37,7 +37,6 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
         if (token.Parent is BaseNamespaceDeclarationSyntax namespaceDeclaration)
         {
             var namespaceSymbol = (INamespaceSymbol)model.GetDeclaredSymbol(namespaceDeclaration, cancellationToken)!;
-            var currentNamespace = namespaceSymbol.ToString();
 
             var (expectedNamespace, _) = Analyzer.GetNamespacesForHandler(namespaceSymbol);
 
@@ -60,7 +59,6 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
 
             await MoveDocumentToContractMatchingFolderIfNecessaryAsync(
                 updatedDocument,
-                currentNamespace,
                 expectedNamespace,
                 cancellationToken
             );
@@ -75,54 +73,37 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
 
     private static async Task MoveDocumentToContractMatchingFolderIfNecessaryAsync(
         Document? document,
-        string currentNamespace,
         string expectedNamespace,
         CancellationToken cancellationToken
     )
     {
         if (document != null && document.FilePath != null)
         {
-            var fileName = Path.GetFileName(document.FilePath);
             var projectName = document.Project.AssemblyName;
+            var fileName = Path.GetFileName(document.FilePath);
             var currentDirectory = Path.GetDirectoryName(document.FilePath);
 
             var currDirectoryIdx = currentDirectory.LastIndexOf(projectName, StringComparison.InvariantCulture);
-            var currNamespaceFirstIdx = Analyzer.LastIndexDotPrefixedSuffixedOrStartEnd(currentNamespace, projectName);
-            var currNamespaceLastIdx = Analyzer.LastIndexDotPrefixedSuffixedOrStartEnd(
-                currentNamespace,
-                Analyzer.HandlersNamespacePart
-            );
-            var expectedNamespaceIdx = Analyzer.LastIndexDotPrefixedSuffixedOrStartEnd(
-                expectedNamespace,
-                Analyzer.HandlersNamespacePart
-            );
+            var expectedNamespaceIdx = expectedNamespace.StartsWith(projectName, StringComparison.InvariantCulture)
+                ? 0
+                : -1;
 
-            if (
-                currDirectoryIdx != -1
-                && currNamespaceFirstIdx != -1
-                && currNamespaceLastIdx != -1
-                && expectedNamespaceIdx != -1
-            )
+            if (currDirectoryIdx != -1 && expectedNamespaceIdx != -1)
             {
                 currDirectoryIdx = currDirectoryIdx + projectName.Length;
-                currNamespaceFirstIdx = currNamespaceFirstIdx + projectName.Length;
+                expectedNamespaceIdx = expectedNamespaceIdx + projectName.Length;
 
                 // Path prefix with project name.
                 var pathPrefix = currentDirectory[..currDirectoryIdx];
-                // Namespace without project name prefix and CQRS suffix.
-                var currentMiddlePart = currentNamespace[currNamespaceFirstIdx..currNamespaceLastIdx];
-                // Namespace suffix starting with CQRS.
+                // Namespace without project name prefix.
                 var namespaceSuffix = expectedNamespace[expectedNamespaceIdx..];
 
                 // `Path.Combine` will return the second argument if it begins with a separation character.
-                var pathMiddlePart = currentMiddlePart
-                    .Replace('.', Path.DirectorySeparatorChar)
-                    .Trim(Path.DirectorySeparatorChar);
                 var pathSuffix = namespaceSuffix
                     .Replace('.', Path.DirectorySeparatorChar)
                     .Trim(Path.DirectorySeparatorChar);
 
-                var newPath = Path.Combine(pathPrefix, pathMiddlePart, pathSuffix, fileName);
+                var newPath = Path.Combine(pathPrefix, pathSuffix, fileName);
 
                 if (newPath != document.FilePath)
                 {
