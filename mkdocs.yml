@@ -68,6 +68,8 @@ nav:
       - ./features/audit_logs/index.md
     - Force update:
       - ./features/force_update/index.md
+    - Localization:
+      - ./features/localization/index.md
   - Tests:
     - Integration tests:
       - ./tests/integration_tests/index.md
