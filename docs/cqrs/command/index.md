@@ -14,6 +14,8 @@ Command is just a class that implements the `ICommand` interface. Commands are 
 Consider the command that updates name of the `Project` (caller of the command is required to have `Employee` role and own project):
 
 ```csharp
+namespace ExampleApp.Contracts.Projects;
+
 [ProjectIsOwned]
 [AuthorizeWhenHasAnyOf(Auth.Roles.Employee)]
 public class UpdateProjectName : ICommand, IProjectRelated
@@ -32,11 +34,23 @@ public class UpdateProjectName : ICommand, IProjectRelated
 
 > **Tip:** More on authorization and permissions can be found [here](../authorization/index.md) and on error codes and validation [here](../validation/index.md).
 
+## Naming conventions
+
+Commands in CQRS are responsible for modifying the state of the system, and therefore their names should reflect the action they trigger. A common convention is to use imperative verbs that clearly describe the intent, including the namespace as part of the contract, such as:
+
+* `ExampleApp.Contracts.Projects.UpdateProjectName`
+* `ExampleApp.Contracts.Projects.DeleteProject`
+* `ExampleApp.Contracts.Employees.AssignEmployeeToAssignment`
+
+Handlers should share the identical name as the associated contract, appended with the `CH` suffix. This practice enhances ease of identification and ensures a straightforward correlation between contracts and their corresponding handlers.
+
 ## Handler
 
 For the above command, you can have handler like this:
 
 ```csharp
+namespace ExampleApp.CQRS.Projects;
+
 public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 {
     private readonly IRepository<Project, ProjectId> projects;
@@ -75,10 +89,6 @@ As you can see, the command handler is really simple - it just finds project wit
 5. If that does not help, modify/add/delete multiple aggregates.
 6. Do not throw exceptions from inside commands. The client will receive generic error (`500 Internal Server Error`). Do it only as a last resort.
 7. Database transaction will be commited at the end of the [pipeline] (assuming [CommitTransaction] pipeline element was added), so it's not recommended to commit it inside query handler as it may make [events] inconsistent with the entity. To read more why it's not recommended to commit transactions in handlers visit [here](../pipeline/avoid_commiting_transactions_in_handlers.md).
-
-## Naming conventions
-
-Commands in CQRS are responsible for modifying the state of the system, and therefore their names should reflect the action they trigger. A common convention is to use imperative verbs that clearly describe the intent, such as `UpdateProjectName`, `DeleteProject`, or `AssignEmployeeToAssignment`. Handlers should share the identical name as the associated contract, appended with the `CH` suffix. This practice enhances ease of identification and ensures a straightforward correlation between contracts and their corresponding handlers.
 
 [aggregates]: ../../domain/aggregate/index.md
 [events]: ../../domain/domain_event/index.md

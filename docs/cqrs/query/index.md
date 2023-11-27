@@ -14,18 +14,30 @@ Query is just a class that implements the `IQuery<TResult>` interface (there's 
 Consider the query that finds all projects that match the name filter. It may be called anonymously and returns a list of `ProjectDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface):
 
 ```csharp
+namespace ExampleApp.Contracts.Projects;
+
+[AllowUnauthorized]
+public class AllProjects : IQuery<List<ProjectDTO>>
+{
+    public string? NameFilter { get; set; }
+}
+
 public class ProjectDTO
 {
     public string Id { get; set; }
     public string Name { get; set; }
 }
-
-[AllowUnauthorized]
-public class Projects : IQuery<List<ProjectDTO>>
-{
-    public string? NameFilter { get; set; }
-}
 ```
+
+## Naming conventions
+
+Queries are designed to retrieve information without altering the system's state. To maintain a clear and consistent naming convention, queries should possess names that directly indicate the type of information being requested, including the namespace as part of the contract. An effective approach is to use descriptive nouns or noun phrases within the designated namespace, exemplified by names like:
+
+* `ExampleApp.Contracts.Projects.AllProjects`
+* `ExampleApp.Contracts.Projects.ProjectById`
+* `ExampleApp.Contracts.Employees.EmployeesInAssignment`
+
+Query handlers should similarly be named in alignment with the associated query, appending the QH suffix within the respective namespace structure.
 
 ## Handler
 
@@ -34,7 +46,9 @@ Query handlers execute queries. They should not have any side effects but can re
 For the above query, you can have handler like this:
 
 ```csharp
-public class ProjectsQH : IQueryHandler<Projects, List<ProjectDTO>>
+namespace ExampleApp.CQRS.Projects;
+
+public class AllProjectsQH : IQueryHandler<AllProjects, List<ProjectDTO>>
 {
     private readonly CoreDbContext dbContext;
 
@@ -66,9 +80,5 @@ public class ProjectsQH : IQueryHandler<Projects, List<ProjectDTO>>
     }
 }
 ```
-
-## Naming conventions
-
-Queries are designed to retrieve information without altering the system's state. To maintain a clear and consistent naming convention, queries should possess names that directly indicate the type of information being requested. An effective approach is to use descriptive nouns or noun phrases, exemplified by names like `Projects`, `ProjectById`, or `EmployeesInAssignment`. Query handlers should be named in alignment with the associated query, appending the `QH` suffix.
 
 [validation]: ../validation/index.md

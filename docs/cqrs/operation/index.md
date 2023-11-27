@@ -18,20 +18,32 @@ Operations change the state of the system, but also allow to return some result.
 
 ## Contract
 
-Consider the operation that creates payment in external service for employee's access to application and returns payment token:
+Consider the operation that generates referral link for employee and returns it:
 
 ```csharp
-[AuthorizeWhenHasAnyOf(Auth.Roles.Admin)]
-public class PayForAccess : IOperation<PaymentTokenDTO>
+namespace ExampleApp.Contracts.Links;
+
+[AuthorizeWhenHasAnyOf(Auth.Roles.Employee)]
+public class GenerateReferralLink : IOperation<ReferralLinkDTO>
 {
     public string EmployeeId { get; set; }
 }
 
-public class PaymentTokenDTO
+public class ReferralLinkDTO
 {
-    public string Token { get; set; }
+    public string Link { get; set; }
 }
 ```
+
+## Naming conventions
+
+Operations are designed to both modify the state of the system and provide a result. To uphold a consistent naming convention, these operations should be named to reflect both their transformative action and if possible the nature of the information returned including the namespace as part of the contract. Striking a balance between clarity and conciseness, contracts should convey both the intent of state modification and the potential for a consequential result, such as:
+
+* `ExampleApp.Contracts.Links.GenerateReferralLink`
+* `ExampleApp.Contracts.Questions.GetNextQuestion`
+* `ExampleApp.Contracts.Questions.AnswerQuestion`
+
+Correspondingly, handlers for operations should start with the name of the associated operation while incorporating the `OH` suffix.
 
 ## Handler
 
@@ -40,31 +52,30 @@ Operation handlers execute complex operations. They should not contain logic the
 For the above operation, you can have handler like this:
 
 ```csharp
-public class PayForAccessOH : IOperationHandler<PayForAccess, PaymentTokenDTO>
-{
-    private readonly IPaymentsService payments;
+namespace ExampleApp.CQRS.Links;
 
-    public PayForAccessOH(IPaymentsService payments)
+public class GenerateReferralLinkOH
+    : IOperationHandler<GenerateReferralLink, ReferralLinkDTO>
+{
+    private readonly ILinksService links;
+
+    public PayForAccessOH(ILinksService links)
     {
-        this.payments = payments;
+        this.links = links;
     }
 
-    public async Task<PaymentTokenDTO> ExecuteAsync(
+    public async Task<ReferralLinkDTO> ExecuteAsync(
         HttpContext context,
-        PayForAccess operation)
+        GenerateReferralLink operation)
     {
-        var result = await payments.CreatePaymentInExternalService(
+        var link = await links.GenerateReferralLinkForEmployeeAsync(
             operation.EmployeeId,
             context.RequestAborted);
 
-        return new PaymentTokenDTO
+        return new ReferralLinkDTO
         {
-            Token = result.Token,
+            Link = link,
         };
     }
 }
 ```
-
-## Naming conventions
-
-Operations are designed to both modify the state of the system and provide a result. To uphold a consistent naming convention, these operations should be named to reflect both their transformative action and if possible the nature of the information returned. Striking a balance between clarity and conciseness, names like `GenerateReferralLink`, `GetNextQuestion`, or `AnswerQuestion` convey both the intent of state modification and the potential for a consequential result. Correspondingly, handlers for operations should start with the name of the associated operation while incorporating the `OH` suffix.
