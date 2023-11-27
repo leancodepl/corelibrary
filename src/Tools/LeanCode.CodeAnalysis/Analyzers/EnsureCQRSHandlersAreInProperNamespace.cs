@@ -123,7 +123,7 @@ public class EnsureCQRSHandlersAreInProperNamespace : DiagnosticAnalyzer
     /// to <c>substring</c>, starts with <c>substring.</c>,
     /// contains <c>.substring.</c>, or ends with <c>.substring</c>.
     /// </summary>
-    internal static int LastIndexDotPrefixedSuffixedOrStartEnd(string value, string substring)
+    private static int LastIndexDotPrefixedSuffixedOrStartEnd(string value, string substring)
     {
         if (value == substring)
         {
