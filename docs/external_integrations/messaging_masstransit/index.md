@@ -8,8 +8,8 @@ To integrate [MassTransit] with LeanCode CoreLibrary CQRS, you can utilize the [
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | Configuration |
-| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square)](https://www.nuget.org/packages/MassTransit/8.1.1/) | Configuration |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | Configuration |
+| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/MassTransit/8.1.1/) | Configuration |
 
 ## Configuration
 

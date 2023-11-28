@@ -6,8 +6,8 @@ Query is just a class that implements the `IQuery<TResult>` interface (there's 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `IQuery` |
-| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `IQueryHandler` |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `IQuery` |
+| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `IQueryHandler` |
 
 ## Contract
 

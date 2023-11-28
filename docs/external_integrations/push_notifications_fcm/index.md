@@ -14,10 +14,10 @@ Sending push notifications involves retrieving the stored tokens of intended rec
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Firebase | [![NuGet version (LeanCode.Firebase)](https://img.shields.io/nuget/vpre/LeanCode.Firebase.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Firebase/8.0.2260-preview/) | Firebase configuration |
-| LeanCode.Firebase.FCM | [![NuGet version (LeanCode.Firebase.FCM)](https://img.shields.io/nuget/vpre/LeanCode.Firebase.FCM.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Firebase.FCM/8.0.2260-preview/) | Push notifications |
-| LeanCode.Localization | [![NuGet version (LeanCode.Localization)](https://img.shields.io/nuget/vpre/LeanCode.Localization.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Localization/8.0.2260-preview/) | Localization |
-| Microsoft.EntityFrameworkCore | [![NuGet version (Microsoft.EntityFrameworkCore)](https://img.shields.io/nuget/v/Microsoft.EntityFrameworkCore.svg?style=flat-square)](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore/8.0.0/) | Push notification token store |
+| LeanCode.Firebase | [![NuGet version (LeanCode.Firebase)](https://img.shields.io/nuget/vpre/LeanCode.Firebase.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Firebase/8.0.2260-preview/) | Firebase configuration |
+| LeanCode.Firebase.FCM | [![NuGet version (LeanCode.Firebase.FCM)](https://img.shields.io/nuget/vpre/LeanCode.Firebase.FCM.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Firebase.FCM/8.0.2260-preview/) | Push notifications |
+| LeanCode.Localization | [![NuGet version (LeanCode.Localization)](https://img.shields.io/nuget/vpre/LeanCode.Localization.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Localization/8.0.2260-preview/) | Localization |
+| Microsoft.EntityFrameworkCore | [![NuGet version (Microsoft.EntityFrameworkCore)](https://img.shields.io/nuget/v/Microsoft.EntityFrameworkCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore/8.0.0/) | Push notification token store |
 
 ### Configuration
 

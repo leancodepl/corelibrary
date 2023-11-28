@@ -10,8 +10,8 @@ An authorizer is a class that implements the `ICustomAuthorizer` interface or d
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | Default authorizers |
-| LeanCode.CQRS.Security | [![NuGet version (LeanCode.CQRS.Security)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Security.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Security/8.0.2260-preview/) | Configuration, custom authorizers |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | Default authorizers |
+| LeanCode.CQRS.Security | [![NuGet version (LeanCode.CQRS.Security)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Security.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Security/8.0.2260-preview/) | Configuration, custom authorizers |
 
 ## AuthorizeWhenHasAnyOf
 

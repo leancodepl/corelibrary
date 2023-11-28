@@ -6,8 +6,8 @@ ConfigCat is a feature flag service that allows to toggle features on or off aft
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| ConfigCat.Client | [![NuGet version (ConfigCat.Client)](https://img.shields.io/nuget/v/ConfigCat.Client.svg?style=flat-square)](https://www.nuget.org/packages/ConfigCat.Client/8.2.0/) | Client |
-| LeanCode.ConfigCat | [![NuGet version (LeanCode.ConifgCat)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ConfigCat/8.0.2260-preview/) | Configuration |
+| ConfigCat.Client | [![NuGet version (ConfigCat.Client)](https://img.shields.io/nuget/v/ConfigCat.Client.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ConfigCat.Client/8.2.0/) | Client |
+| LeanCode.ConfigCat | [![NuGet version (LeanCode.ConifgCat)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ConfigCat/8.0.2260-preview/) | Configuration |
 
 ## Configuration
 

@@ -6,7 +6,7 @@ Once an event is raised, it can be handled by a corresponding `IConsumer` to per
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square)](https://www.nuget.org/packages/MassTransit/8.1.1/) | `IConsumer` |
+| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/MassTransit/8.1.1/) | `IConsumer` |
 
 ```csharp
 public class SendEmailToEmployeeOnEmployeeAssignedToAssignment

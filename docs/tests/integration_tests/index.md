@@ -6,9 +6,9 @@ Integration testing is a critical phase in software development, and LeanCode Co
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.RemoteHttp.Client | [![NuGet version (LeanCode.CQRS.RemoteHttp.Client")](https://img.shields.io/nuget/vpre/LeanCode.CQRS.RemoteHttp.Client.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.RemoteHttp.Client/8.0.2260-preview/) | CQRS client |
-| LeanCode.IntegrationTestHelpers | [![NuGet version (LeanCode.IntegrationTestHelpers)](https://img.shields.io/nuget/vpre/LeanCode.IntegrationTestHelpers.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.IntegrationTestHelpers/8.0.2260-preview/) | Integration tests helper methods |
-| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.Logging.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Logging/8.0.2260-preview/) | Logging |
+| LeanCode.CQRS.RemoteHttp.Client | [![NuGet version (LeanCode.CQRS.RemoteHttp.Client")](https://img.shields.io/nuget/vpre/LeanCode.CQRS.RemoteHttp.Client.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.RemoteHttp.Client/8.0.2260-preview/) | CQRS client |
+| LeanCode.IntegrationTestHelpers | [![NuGet version (LeanCode.IntegrationTestHelpers)](https://img.shields.io/nuget/vpre/LeanCode.IntegrationTestHelpers.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.IntegrationTestHelpers/8.0.2260-preview/) | Integration tests helper methods |
+| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.Logging.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Logging/8.0.2260-preview/) | Logging |
 
 ## Configuration
 

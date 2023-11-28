@@ -6,8 +6,8 @@ In Domain-Driven Design, a domain event is a pattern used to represent a signifi
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.DomainModels/8.0.2260-preview/) | `IAggregateRoot`, `IDomainEvent` |
-| LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators/8.0.2260-preview/) | Ids |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels/8.0.2260-preview/) | `IAggregateRoot`, `IDomainEvent` |
+| LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators/8.0.2260-preview/) | Ids |
 
 ## Example
 

@@ -6,8 +6,8 @@ CoreLibrary provides an opinionated library for adding force update support to m
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.ForceUpdate | [![NuGet version (LeanCode.ForceUpdate)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ForceUpdate/8.0.2260-preview/) | Configuration |
-| LeanCode.ForceUpdate.Contracts | [![NuGet version (LeanCode.ForceUpdate.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.ForceUpdate.Contracts/8.0.2260-preview/) | Predefined contracts |
+| LeanCode.ForceUpdate | [![NuGet version (LeanCode.ForceUpdate)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate/8.0.2260-preview/) | Configuration |
+| LeanCode.ForceUpdate.Contracts | [![NuGet version (LeanCode.ForceUpdate.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate.Contracts/8.0.2260-preview/) | Predefined contracts |
 
 ## Configuration
 

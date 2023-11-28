@@ -12,7 +12,7 @@ Ory Kratos has generic email+password flow (with optional verification), there a
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Configuration |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Configuration |
 
 ## LeanCode CoreLibrary integration
 

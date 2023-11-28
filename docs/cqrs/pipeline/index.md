@@ -6,8 +6,8 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore/8.0.2260-preview/) | Configuration |
-| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.MassTransitRelay.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | MassTransit related middlewares |
+| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore/8.0.2260-preview/) | Configuration |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.MassTransitRelay.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | MassTransit related middlewares |
 
 ## Configuration
 

@@ -6,9 +6,9 @@ To reject [commands] that have invalid data or that cannot be fulfilled (the sta
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| FluentValidation | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/FluentValidation.svg?style=flat-square)](https://www.nuget.org/packages/FluentValidation/11.8.0/) | Validation |
-| LeanCode.CQRS.Validation | [![NuGet version (LeanCode.CQRS.Validation)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation/8.0.2260-preview/) | `ICommandValidator` |
-| LeanCode.CQRS.Validation.Fluent | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.Fluent.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.CQRS.Validation.Fluent/8.0.2260-preview/) | `AbstractValidator` |
+| FluentValidation | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/FluentValidation.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/FluentValidation/11.8.0/) | Validation |
+| LeanCode.CQRS.Validation | [![NuGet version (LeanCode.CQRS.Validation)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Validation/8.0.2260-preview/) | `ICommandValidator` |
+| LeanCode.CQRS.Validation.Fluent | [![NuGet version (LeanCode.CQRS.Validation.Fluent)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Validation.Fluent.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Validation.Fluent/8.0.2260-preview/) | `AbstractValidator` |
 
 To validate example command introduced in [command] section, you can add following code:
 

@@ -6,7 +6,7 @@ To effectively manage incoming webhooks from Ory Kratos, you can employ the [Kra
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Webhook handling |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Webhook handling |
 
 ## Mapping the Endpoint in Application Configuration
 
