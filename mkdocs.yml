@@ -47,6 +47,8 @@ nav:
       - ./domain/domain_event/index.md
     - Id:
       - ./domain/id/index.md
+    - Time provider:
+      - ./domain/time_provider/index.md
   - External integrations:
     - Authorization - Ory Kratos:
       - ./external_integrations/authorization_ory_kratos/index.md
@@ -71,6 +73,8 @@ nav:
     - Localization:
       - ./features/localization/index.md
   - Tests:
+    - Faking time:
+      - ./tests/faking_time/index.md
     - Integration tests:
       - ./tests/integration_tests/index.md
   - CoreLibrary 8.0 changes overview & migration guide:
