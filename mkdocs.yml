@@ -2,7 +2,8 @@ site_name: LeanCode CoreLibrary
 repo_url: https://github.com/leancodepl/corelibrary
 docs_dir: ./docs
 theme:
-  logo: leancode_logo.png
+  logo: ./img/leancode_logo_white.png
+  favicon: ./img/leancode_logo_black.png
   name: material
   features:
     - navigation.indexes
