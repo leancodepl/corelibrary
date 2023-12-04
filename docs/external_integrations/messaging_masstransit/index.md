@@ -18,7 +18,8 @@ To integrate [MassTransit] with LeanCode CoreLibrary CQRS, you can utilize the [
 1. `CommitDatabaseTransactionMiddleware` (call [CommitTransaction])
 2. `EventsPublisherMiddleware` (call [PublishEvents])
 
-> **Tip:** To find you more how you can configure pipeline visit [here](../../cqrs/pipeline/index.md).
+!!! tip
+    To find you more how you can configure pipeline visit [here](../../cqrs/pipeline/index.md).
 
 For setting up bus configuration, [AddMassTransitIntegration] must be used. This method registers all the essential services required for [MassTransit] to work seamlessly with the rest of CoreLibrary. It effectively invokes [AddMassTransit], allowing you to consult the [MassTransit documentation](https://masstransit.io/documentation/concepts) for further insights.
 

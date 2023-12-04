@@ -51,7 +51,8 @@ public override void ConfigureServices(IServiceCollection services)
 }
 ```
 
-> **Tip:** Further details about localization can be found [here](../../features/localization/index.md).
+!!! tip
+    Further details about localization can be found [here](../../features/localization/index.md).
 
 Following the above configuration, it is necessary to incorporate a `DbSet` for the push notification token store. This can be accomplished through `CoreDbContext`, utilizing `Microsoft.EntityFrameworkCore`.
 

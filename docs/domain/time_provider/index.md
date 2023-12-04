@@ -38,4 +38,5 @@ public class Project : IAggregateRoot<ProjectId>
 }
 ```
 
-> **Tip:** Employing a single instance of `LeanCode.TimeProvider.Time` throughout the domain enables convenient manipulation of time for testing purposes. Further information about this can be found [here](../../tests/faking_time/index.md).
+!!! tip
+    Employing a single instance of `LeanCode.TimeProvider.Time` throughout the domain enables convenient manipulation of time for testing purposes. Further information about this can be found [here](../../tests/faking_time/index.md).

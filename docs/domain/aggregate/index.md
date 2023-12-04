@@ -139,6 +139,7 @@ public class Project : IAggregateRoot<ProjectId>
 }
 ```
 
-> **Tip:** To see `Assignment` class implementation visit [here](../identifiable/index.md).
+!!! tip
+    To see `Assignment` class implementation visit [here](../identifiable/index.md).
 
 Notice that these added methods can and will throw an exception if a project does not contain any assignment with provided Id. This is an excepted behavior - checks for respecting domain logic should be performed in respective command (or operations) validators.

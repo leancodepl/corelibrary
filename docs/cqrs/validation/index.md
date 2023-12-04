@@ -93,7 +93,8 @@ public class UpdateProjectNameCV : AbstractValidator<UpdateProjectName>
 }
 ```
 
-> **Tip:** More on ids can be found [here](../../domain/id/index.md).
+!!! tip
+    More on ids can be found [here](../../domain/id/index.md).
 
 [commands]: ../command/index.md
 [command]: ../command/index.md

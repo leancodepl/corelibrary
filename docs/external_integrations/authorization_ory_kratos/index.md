@@ -24,7 +24,8 @@ LeanCode CoreLibrary provides 3 main components to integrate with Kratos:
 
 Ory Kratos can be either hosted on [Ory Network](https://www.ory.sh/network/) or be self-hosted.
 
-> **Tip:** To see quickstart about how you can run self-hosted Kratos instance visit [here](https://www.ory.sh/docs/kratos/quickstart).
+!!! tip
+    To see quickstart about how you can run self-hosted Kratos instance visit [here](https://www.ory.sh/docs/kratos/quickstart).
 
 ## Configuration
 

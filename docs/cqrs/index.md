@@ -13,7 +13,8 @@ The strict separation of [command] and [query] has sometimes led to awkwardness 
 - **Validation on the write side:** With CQRS, the write side typically handles commands that change the state of the system. This is where validation of incoming data and business rules can be enforced. By centralizing validation logic on the write side, you ensure that all changes to the system go through a consistent validation process.
 - **Flexibility in storage and models:** CQRS allows to use different data storage mechanisms for the read and write sides. For example, you might use a relational database for the write side and a NoSQL database for the read side. This flexibility enables you to choose the right tool for each job.
 
-> **Tip:** You can find more about how CQRS allows us generate API contracts for clients  [ContractsGenerator documentation](https://github.com/leancodepl/contractsgenerator/blob/main/docs/index.md).
+!!! tip
+    You can find more about how CQRS allows us generate API contracts for clients  [ContractsGenerator documentation](https://github.com/leancodepl/contractsgenerator/blob/main/docs/index.md).
 
 [query]: ./query/index.md
 [command]: ./command/index.md

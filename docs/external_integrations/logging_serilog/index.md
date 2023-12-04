@@ -37,7 +37,8 @@ public class Program
 }
 ```
 
-> **Tip:** If you rely on `appsettings.json` for your configuration or intend to use different configurations within your `Program.cs`, you can simply invoke `ConfigureDefaultLogging` on your `IHostBuilder`.
+!!! tip
+    If you rely on `appsettings.json` for your configuration or intend to use different configurations within your `Program.cs`, you can simply invoke `ConfigureDefaultLogging` on your `IHostBuilder`.
 
 Once configured, leverage Serilog for logging purposes in your application:
 

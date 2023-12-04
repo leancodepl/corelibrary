@@ -202,7 +202,8 @@ All [queries], [commands] and [operations] can (and should!) be behind authoriza
     }
 ```
 
-> **Tip:** You can implement your own authorization and use it with LeanCode CoreLibrary authorizers. To see how you can implement authorization using Ory Kratos and LeanCode CoreLibrary see [here](../../external_integrations/authorization_ory_kratos/index.md).
+!!! tip
+    You can implement your own authorization and use it with LeanCode CoreLibrary authorizers. To see how you can implement authorization using Ory Kratos and LeanCode CoreLibrary see [here](../../external_integrations/authorization_ory_kratos/index.md).
 
 [query]: ../query/index.md
 [command]: ../command/index.md

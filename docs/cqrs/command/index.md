@@ -32,7 +32,8 @@ public class UpdateProjectName : ICommand, IProjectRelated
 }
 ```
 
-> **Tip:** More on authorization and permissions can be found [here](../authorization/index.md) and on error codes and validation [here](../validation/index.md).
+!!! tip
+    More on authorization and permissions can be found [here](../authorization/index.md) and on error codes and validation [here](../validation/index.md).
 
 ## Naming conventions
 
@@ -78,7 +79,8 @@ public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 }
 ```
 
-> **Tip:** More on ids can be found [here](../../domain/id/index.md) and on validation [here](../validation/index.md).
+!!! tip
+    More on ids can be found [here](../../domain/id/index.md) and on validation [here](../validation/index.md).
 
 As you can see, the command handler is really simple - it just finds project with specified `ProjectId` and updates it's name. That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 

@@ -107,4 +107,5 @@ To enable CQRS traces in your application, it's necessary to use the `CQRSTrace(
     }
 ```
 
-> **Tip:** To learn more about configuring the pipeline, visit [here](../../cqrs/pipeline/index.md).
+!!! tip
+    To learn more about configuring the pipeline, visit [here](../../cqrs/pipeline/index.md).

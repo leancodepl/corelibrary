@@ -72,4 +72,5 @@ Ensure that `EmployeeAssignedToAssignment` implements the `IDomainEvent` interfa
 
 After being raised, the event can be handled by the matching `IConsumer` to perform wanted action.
 
-> **Tip:** To read how to handle domain events, visit [here](../../external_integrations/messaging_masstransit/handling_events.md).
+!!! tip
+    To read how to handle domain events, visit [here](../../external_integrations/messaging_masstransit/handling_events.md).

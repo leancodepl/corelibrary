@@ -1,8 +1,10 @@
 # Avoid committing transactions in handlers
 
-> **Tip:** Before delving into this section, it's highly recommended to explore the [CQRS], [Domain] and [MassTransit] sections.
+!!! tip
+    Before delving into this section, it's highly recommended to explore the [CQRS], [Domain] and [MassTransit] sections.
 
-**⚠️ Directly commiting transactions in [command]/[operation] handlers poses a challenge, potentially causing inconsistencies between [events] and the associated entities.**
+!!! warning
+    Directly commiting transactions in [command]/[operation] handlers poses a challenge, potentially causing inconsistencies between [events] and the associated entities.
 
 Let's consider following pipeline configuration:
 
@@ -124,7 +126,8 @@ In our scenario, if the database fails after successfully saving changes to the 
 
 Conversely, removing `SaveChangesAsync` from the [command] handler would result in both messages and project changes being committed in a single transaction. In the event of a database failure, neither project changes nor messages would be saved or sent, providing clients with information about the request failure without unintended side effects. This is why it's not recommended to not commit transactions directly in [command]/[operation] handlers.
 
-> **Tip:** To read more about LeanCode Corelibrary MassTransit integtation visit [here](../../external_integrations/messaging_masstransit/index.md).
+!!! tip
+    To read more about LeanCode Corelibrary MassTransit integtation visit [here](../../external_integrations/messaging_masstransit/index.md).
 
 [CQRS]: ../index.md
 [Domain]: ../../domain/index.md
