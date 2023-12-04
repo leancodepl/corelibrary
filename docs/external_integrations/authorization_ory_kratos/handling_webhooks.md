@@ -1,6 +1,6 @@
 # Handling webhooks
 
-To effectively manage incoming webhooks from Ory Kratos, you can employ the [KratosWebHookHandlerBase] class. The following example demonstrates how to synchronize identity data received from Kratos through webhooks with your database using [MassTransit]. This assumes that your Kratos instance is properly configured to send webhooks to your application.
+To effectively manage incoming webhooks from Ory Kratos, you can employ the [KratosWebHookHandlerBase] class. The following example demonstrates how to synchronize identity data received from Kratos through webhooks with your database using [MassTransit].
 
 ## Packages
 
@@ -8,9 +8,49 @@ To effectively manage incoming webhooks from Ory Kratos, you can employ the [Kra
 | --- | ----------- | ----------- |
 | LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Webhook handling |
 
-## Mapping the Endpoint in Application Configuration
+## Configuring webhooks in Kratos
 
-First, you should map the `KratosIdentitySyncHandler` class to the `/kratos/sync-identity` endpoint in your application's configuration:
+Let's begin by incorporating a webhook into our Kratos configuration. This webhook triggers after a user completes the registration process using a username/email and password combination. It sends a POST request to the `/kratos/sync-identity` endpoint. The request includes an API key specified in the `X-Api-Key` header and the user's Kratos identity in the request body.
+
+```yaml
+# . . .
+  flows:
+    registration:
+      ui_url: https://${domain}/registration
+      lifespan: 1h
+      enabled: true
+      after:
+        password:
+          hooks:
+            - hook: web_hook
+              config:
+                url: "${api}/kratos/sync-identity"
+                method: POST
+                auth:
+                  type: api_key
+                  config:
+                    in: header
+                    name: X-Api-Key
+                    value: "${web_hook_api_key}"
+                body: file:///etc/kratos/webhook.identity.mapper.jsonnet
+                response:
+                  ignore: true
+                  parse: false
+
+# . . .
+```
+
+The `webhook.identity.mapper.jsonnet` content is as follows:
+
+```jsonnet
+function(ctx) {
+  identity: ctx.identity,
+}
+```
+
+## Endpoint mapping in application configuration
+
+Now, let's map the `KratosIdentitySyncHandler` class to the kratos webhook endpoint, which in this case is `/kratos/sync-identity`, within the application configuration:
 
 ```csharp
 protected override void ConfigureApp(IApplicationBuilder app)
@@ -38,7 +78,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
 
 ## Defining the Webhook Handler
 
-Then, you can define the webhook handler to handle incoming requests. In this example, we deserialize request into [Identity] class, verify it inside a webhook and send an event that the identity has been updated, which will be handled by the appropriate `IConsumer` using [MassTransit]:
+Then, you can define the webhook handler to handle incoming requests. In this example, we deserialize request into [Identity] class, verify it inside a webhook and send an event that the identity has been updated, which will be handled by the appropriate `IConsumer` using [MassTransit]. The handling of the API key check is already managed within the `KratosWebHookHandlerBase` class, eliminating the necessity to perform this action in `HandleCoreAsync(...)`. By default, `KratosWebHookHandlerBase` uses the `X-Api-Key` header to verify the API key. However, if required, this behavior can be altered by overriding the `ApiKeyHeaderName` property.
 
 ```csharp
 public partial class KratosIdentitySyncHandler : KratosWebHookHandlerBase
@@ -56,7 +96,7 @@ public partial class KratosIdentitySyncHandler : KratosWebHookHandlerBase
     protected override async Task HandleCoreAsync(HttpContext ctx)
     {
         // Deserialize request into `Identity` class
-        // from `LeanCode.Kratos` package
+        // from `LeanCode.Kratos` package.
         var body = await JsonSerializer.DeserializeAsync(
             ctx.Request.Body,
             KratosIdentitySyncHandlerContext.Default.RequestBody,
@@ -67,7 +107,7 @@ public partial class KratosIdentitySyncHandler : KratosWebHookHandlerBase
 
         if (identity is null)
         {
-            // Helper method defined in KratosWebHookHandlerBase
+            // Helper method defined in KratosWebHookHandlerBase.
             await WriteErrorResponseAsync(
                 ctx,
                 new List<ErrorMessage>
@@ -109,7 +149,7 @@ public partial class KratosIdentitySyncHandler : KratosWebHookHandlerBase
             return;
         }
 
-        // Send a message via MassTransit that identity has been updated
+        // Send a message via MassTransit that identity has been updated.
         await bus.Publish(
             new KratosIdentityUpdated(Guid.NewGuid(), Time.UtcNow, identity),
             ctx.RequestAborted);
@@ -128,11 +168,14 @@ public partial class KratosIdentitySyncHandler : KratosWebHookHandlerBase
 }
 ```
 
-> **Tip:** To read about LeanCode CoreLibrary MassTranist integration visit [here](../messaging_masstransit/index.md).
+!!! tip
+    To read about LeanCode CoreLibrary MassTransit integration visit [here](../messaging_masstransit/index.md).
 
 ## Updating the Database
 
 With the `KratosIdentitySyncHandler` in place, you can process incoming Kratos webhooks and handle them appropriately. The following code snippet updates the database table that stores identities (assuming that `KratosIdentities` table is already present in your database) when a `KratosIdentityUpdated` event is received:
+
+<!-- TODO: Add link to Kratos identity example implementation once ExampleApp is public. -->
 
 ```csharp
 public sealed record class KratosIdentityUpdated(
@@ -176,7 +219,8 @@ public class SyncKratosIdentity : IConsumer<KratosIdentityUpdated>
 }
 ```
 
-> **Tip:** To read about handling events visit [here](../messaging_masstransit/handling_events.md) and to read about the pipeline visit [here](../../cqrs/pipeline/index.md)
+!!! tip
+    To read about handling events visit [here](../messaging_masstransit/handling_events.md) and to read about the pipeline visit [here](../../cqrs/pipeline/index.md)
 
 [MassTransit]: https://masstransit-project.com/
 [KratosWebHookHandlerBase]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.Kratos/KratosWebHookHandlerBase.cs
