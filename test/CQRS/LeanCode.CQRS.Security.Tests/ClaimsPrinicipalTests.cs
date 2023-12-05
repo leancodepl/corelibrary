@@ -12,6 +12,11 @@ namespace LeanCode.CQRS.Default.Tests.Security;
 
 public class ClaimsPrincipalTests
 {
+    private const string UserIdClaim = "sub";
+
+    private static Guid userId = Guid.NewGuid();
+    private static UserIdExtractor userIdExtractor = new();
+
     private static class Reg
     {
         public const string User = nameof(User);
@@ -110,11 +115,46 @@ public class ClaimsPrincipalTests
         Assert.False(hasPermission);
     }
 
+    [Fact]
+    public void String_user_id_can_be_extracted_from_claims_principal()
+    {
+        var user = CreateUserWithId();
+
+        var extractedUserId = ((IUserIdExtractor)userIdExtractor).Extract(user);
+
+        Assert.Equal(userId.ToString(), extractedUserId);
+    }
+
+    [Fact]
+    public void Guid_user_id_can_be_extracted_from_claims_principal()
+    {
+        var user = CreateUserWithId();
+
+        var extractedUserId = userIdExtractor.Extract(user);
+
+        Assert.Equal(userId, extractedUserId);
+    }
+
+    [Fact]
+    public void User_id_extraction_fails_if_there_is_no_id_in_claims_principal()
+    {
+        var user = CreateUser();
+
+        Assert.Throws<ArgumentNullException>(() => userIdExtractor.Extract(user));
+    }
+
     private static ClaimsPrincipal CreateUser(params string[] roles)
     {
         var claims = roles.Select(r => new Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", r));
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims));
+    }
+
+    private static ClaimsPrincipal CreateUserWithId()
+    {
+        var claim = new Claim(UserIdClaim, userId.ToString());
+
+        return new ClaimsPrincipal(new ClaimsIdentity([ claim ]));
     }
 
     private sealed class RoleRegistration : IRoleRegistration
