@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Helpers/LeanCode.UserIdExtractors/LeanCode.UserIdExtractors.csproj" />
+    <ProjectReference
+      Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj"
+      OutputItemType="Analyzer" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+  </ItemGroup>
+</Project>
