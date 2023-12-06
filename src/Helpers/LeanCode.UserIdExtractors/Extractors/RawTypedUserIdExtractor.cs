@@ -1,28 +1,37 @@
+using System.Collections.Frozen;
 using System.Globalization;
 using System.Security.Claims;
 using LeanCode.DomainModels.Ids;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal sealed class RawTypedUserIdExtractor<TBacking, TId> : StringUserIdExtractor, IUserIdExtractor<TId>
+public sealed class RawTypedUserIdExtractor<TBacking, TId> : IUserIdExtractor<TId>
     where TBacking : struct
     where TId : struct, IRawTypedId<TBacking, TId>
 {
-    private static readonly Dictionary<Type, Func<string, object>> Parsers = new Dictionary<Type, Func<string, object>>
+    private readonly string userIdClaim;
+
+    private static readonly FrozenDictionary<Type, Func<string, object>> Parsers = new Dictionary<
+        Type,
+        Func<string, object>
+    >()
     {
         { typeof(int), s => int.Parse(s, CultureInfo.InvariantCulture) },
         { typeof(long), s => long.Parse(s, CultureInfo.InvariantCulture) },
         { typeof(Guid), s => Guid.Parse(s) }
-    };
+    }.ToFrozenDictionary();
 
     public RawTypedUserIdExtractor(string userIdClaim)
-        : base(userIdClaim) { }
-
-    public TId ExtractId(ClaimsPrincipal user)
     {
-        var id = Extract(user);
-        var backing = GetBacking(id);
+        this.userIdClaim = userIdClaim;
+    }
 
+    public TId Extract(ClaimsPrincipal user)
+    {
+        var claim = user.FindFirst(userIdClaim)?.Value;
+        ArgumentException.ThrowIfNullOrEmpty(claim);
+
+        var backing = GetBacking(claim);
         return TId.Parse(backing);
     }
 
@@ -33,4 +42,6 @@ internal sealed class RawTypedUserIdExtractor<TBacking, TId> : StringUserIdExtra
 
         return (TBacking)Convert.ChangeType(parsedValue, typeof(TBacking), CultureInfo.InvariantCulture);
     }
+
+    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString()!;
 }

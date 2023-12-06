@@ -3,14 +3,23 @@ using LeanCode.DomainModels.Ids;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal sealed class PrefixedTypedUserIdExtractor<TId> : StringUserIdExtractor, IUserIdExtractor<TId>
+public sealed class PrefixedTypedUserIdExtractor<TId> : IUserIdExtractor<TId>
     where TId : struct, IPrefixedTypedId<TId>
 {
-    public PrefixedTypedUserIdExtractor(string userIdClaim)
-        : base(userIdClaim) { }
+    private readonly string userIdClaim;
 
-    public TId ExtractId(ClaimsPrincipal user)
+    public PrefixedTypedUserIdExtractor(string userIdClaim)
     {
-        return TId.Parse(Extract(user));
+        this.userIdClaim = userIdClaim;
     }
+
+    public TId Extract(ClaimsPrincipal user)
+    {
+        var claim = user.FindFirst(userIdClaim)?.Value;
+        ArgumentException.ThrowIfNullOrEmpty(claim);
+
+        return TId.Parse(claim);
+    }
+
+    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString()!;
 }

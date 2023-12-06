@@ -2,13 +2,22 @@ using System.Security.Claims;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal sealed class GuidUserIdExtractor : StringUserIdExtractor, IUserIdExtractor<Guid>
+public sealed class GuidUserIdExtractor : IUserIdExtractor<Guid>
 {
-    public GuidUserIdExtractor(string userIdClaim)
-        : base(userIdClaim) { }
+    private readonly string userIdClaim;
 
-    public Guid ExtractId(ClaimsPrincipal user)
+    public GuidUserIdExtractor(string userIdClaim)
     {
-        return Guid.Parse(Extract(user));
+        this.userIdClaim = userIdClaim;
     }
+
+    public Guid Extract(ClaimsPrincipal user)
+    {
+        var claim = user.FindFirst(userIdClaim)?.Value;
+        ArgumentException.ThrowIfNullOrEmpty(claim);
+
+        return Guid.Parse(claim);
+    }
+
+    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString();
 }

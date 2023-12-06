@@ -5,7 +5,7 @@ namespace LeanCode.UserIdExtractors;
 public interface IUserIdExtractor<TUserId> : IUserIdExtractor
     where TUserId : notnull, IEquatable<TUserId>
 {
-    TUserId ExtractId(ClaimsPrincipal user);
+    new TUserId Extract(ClaimsPrincipal user);
 }
 
 public interface IUserIdExtractor
