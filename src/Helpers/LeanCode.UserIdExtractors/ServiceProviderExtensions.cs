@@ -1,4 +1,3 @@
-using System.Reflection;
 using LeanCode.DomainModels.Ids;
 using LeanCode.UserIdExtractors.Extractors;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,62 +6,41 @@ namespace LeanCode.UserIdExtractors;
 
 public static class UserServiceProviderExtensions
 {
-    public static IServiceCollection AddUserIdExtractors(
+    public static IServiceCollection AddUserIdExtractor<TUserId>(
         this IServiceCollection services,
-        Assembly[] idAssemblies,
         string userIdClaim = "sub"
     )
+        where TUserId : notnull, IEquatable<TUserId>
     {
-        services.AddBasicUserIdExtractors(userIdClaim);
-        services.AddPrefixedTypedUserIdExtractors(idAssemblies, userIdClaim);
-        services.AddRawTypedUserIdExtractors(idAssemblies, userIdClaim);
+        var userIdType = typeof(TUserId);
+        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+
+        if (userIdType == typeof(string))
+        {
+            services.AddSingleton<IUserIdExtractor<string>>(new GenericStringUserIdExtractor(userIdClaim));
+        }
+        else if (userIdType == typeof(Guid))
+        {
+            services.AddSingleton<IUserIdExtractor<Guid>>(new GuidUserIdExtractor(userIdClaim));
+        }
+        else if (
+            !TryAddRawTypedUserIdExtractor(services, userIdType, userIdClaim)
+            && !TryAddPrefixedTypedUserIdExtractor(services, userIdType, userIdClaim)
+        )
+        {
+            throw new InvalidOperationException($"Type {userIdType} is not supported for user ID");
+        }
 
         return services;
     }
 
-    private static void AddBasicUserIdExtractors(this IServiceCollection services, string userIdClaim)
+    private static bool TryAddRawTypedUserIdExtractor(IServiceCollection services, Type userIdType, string userIdClaim)
     {
-        var stringInstance = Activator.CreateInstance(typeof(StringUserIdExtractor), userIdClaim)!;
-        var genericStringInstance = Activator.CreateInstance(typeof(GenericStringUserIdExtractor), userIdClaim)!;
-        var guidInstance = Activator.CreateInstance(typeof(GuidUserIdExtractor), userIdClaim)!;
+        var rawTypedId = GetImplementedIdTypes(userIdType, typeof(IRawTypedId<,>)).FirstOrDefault();
 
-        services.AddSingleton(typeof(IUserIdExtractor), stringInstance);
-        services.AddSingleton(typeof(IUserIdExtractor<string>), genericStringInstance);
-        services.AddSingleton(typeof(IUserIdExtractor<Guid>), guidInstance);
-    }
-
-    private static void AddPrefixedTypedUserIdExtractors(
-        this IServiceCollection services,
-        Assembly[] idAssemblies,
-        string userIdClaim
-    )
-    {
-        var prefixedTypedIdTypes = GetIdTypes(typeof(IPrefixedTypedId<>), idAssemblies);
-
-        foreach (var type in prefixedTypedIdTypes)
+        if (rawTypedId != null)
         {
-            var extractorType = typeof(PrefixedTypedUserIdExtractor<>).MakeGenericType(type);
-            var interfaceType = typeof(IUserIdExtractor<>).MakeGenericType(type);
-            var instance = Activator.CreateInstance(extractorType, userIdClaim)!;
-
-            services.AddSingleton(interfaceType, instance);
-        }
-    }
-
-    private static void AddRawTypedUserIdExtractors(
-        this IServiceCollection services,
-        Assembly[] idAssemblies,
-        string userIdClaim
-    )
-    {
-        var rawTypedIdTypes = GetIdTypes(typeof(IRawTypedId<,>), idAssemblies);
-
-        foreach (var type in rawTypedIdTypes)
-        {
-            var rawTypedIdInterface = type.GetInterfaces()
-                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRawTypedId<,>));
-
-            var genericArguments = rawTypedIdInterface.GetGenericArguments();
+            var genericArguments = rawTypedId.GetGenericArguments();
             var backingType = genericArguments[0];
             var idType = genericArguments[1];
 
@@ -71,17 +49,41 @@ public static class UserServiceProviderExtensions
             var instance = Activator.CreateInstance(extractorType, userIdClaim)!;
 
             services.AddSingleton(interfaceType, instance);
+
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    private static IEnumerable<Type> GetIdTypes(Type idKind, Assembly[] idAssemblies)
+    private static bool TryAddPrefixedTypedUserIdExtractor(
+        IServiceCollection services,
+        Type userIdType,
+        string userIdClaim
+    )
     {
-        return idAssemblies
-            .SelectMany(a => a.GetTypes())
-            .Where(
-                t =>
-                    t.IsValueType
-                    && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
-            );
+        if (GetImplementedIdTypes(userIdType, typeof(IPrefixedTypedId<>)).Any())
+        {
+            var extractorType = typeof(PrefixedTypedUserIdExtractor<>).MakeGenericType(userIdType);
+            var interfaceType = typeof(IUserIdExtractor<>).MakeGenericType(userIdType);
+            var instance = Activator.CreateInstance(extractorType, userIdClaim)!;
+
+            services.AddSingleton(interfaceType, instance);
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private static IEnumerable<Type> GetImplementedIdTypes(Type type, Type idKind)
+    {
+        return type.IsValueType
+            ? type.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
+            : [ ];
     }
 }
