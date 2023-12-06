@@ -78,6 +78,10 @@ public static class UserServiceProviderExtensions
     {
         return idAssemblies
             .SelectMany(a => a.GetTypes())
-            .Where(t => t.IsValueType && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind));
+            .Where(
+                t =>
+                    t.IsValueType
+                    && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
+            );
     }
 }
