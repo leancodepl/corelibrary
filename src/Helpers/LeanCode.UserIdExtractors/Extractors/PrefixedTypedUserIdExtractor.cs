@@ -3,7 +3,7 @@ using LeanCode.DomainModels.Ids;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal class PrefixedTypedUserIdExtractor<TId> : StringUserIdExtractor, IUserIdExtractor<TId>
+internal sealed class PrefixedTypedUserIdExtractor<TId> : StringUserIdExtractor, IUserIdExtractor<TId>
     where TId : struct, IPrefixedTypedId<TId>
 {
     public PrefixedTypedUserIdExtractor(string userIdClaim)

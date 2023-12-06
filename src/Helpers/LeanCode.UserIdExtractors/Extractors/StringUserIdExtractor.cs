@@ -21,7 +21,7 @@ internal class StringUserIdExtractor : IUserIdExtractor
     }
 }
 
-internal class GenericStringUserIdExtractor : StringUserIdExtractor, IUserIdExtractor<string>
+internal sealed class GenericStringUserIdExtractor : StringUserIdExtractor, IUserIdExtractor<string>
 {
     public GenericStringUserIdExtractor(string userIdClaim)
         : base(userIdClaim) { }

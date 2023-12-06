@@ -4,7 +4,7 @@ using LeanCode.DomainModels.Ids;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal class RawTypedUserIdExtractor<TBacking, TId> : StringUserIdExtractor, IUserIdExtractor<TId>
+internal sealed class RawTypedUserIdExtractor<TBacking, TId> : StringUserIdExtractor, IUserIdExtractor<TId>
     where TBacking : struct
     where TId : struct, IRawTypedId<TBacking, TId>
 {

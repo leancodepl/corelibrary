@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace LeanCode.UserIdExtractors.Extractors;
 
-internal class GuidUserIdExtractor : StringUserIdExtractor, IUserIdExtractor<Guid>
+internal sealed class GuidUserIdExtractor : StringUserIdExtractor, IUserIdExtractor<Guid>
 {
     public GuidUserIdExtractor(string userIdClaim)
         : base(userIdClaim) { }
