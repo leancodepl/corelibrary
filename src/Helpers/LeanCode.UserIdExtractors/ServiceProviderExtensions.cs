@@ -6,86 +6,52 @@ namespace LeanCode.UserIdExtractors;
 
 public static class UserServiceProviderExtensions
 {
-    public static IServiceCollection AddUserIdExtractor<TUserId>(
-        this IServiceCollection services,
-        string userIdClaim = "sub"
-    )
-        where TUserId : notnull, IEquatable<TUserId>
-    {
-        var userIdType = typeof(TUserId);
-        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+    private const string DefaultUserIdClaim = "sub";
 
-        if (userIdType == typeof(string))
-        {
-            services.AddSingleton<IUserIdExtractor<string>>(new GenericStringUserIdExtractor(userIdClaim));
-        }
-        else if (userIdType == typeof(Guid))
-        {
-            services.AddSingleton<IUserIdExtractor<Guid>>(new GuidUserIdExtractor(userIdClaim));
-        }
-        else if (
-            !TryAddRawTypedUserIdExtractor(services, userIdType, userIdClaim)
-            && !TryAddPrefixedTypedUserIdExtractor(services, userIdType, userIdClaim)
-        )
-        {
-            throw new InvalidOperationException($"Type {userIdType} is not supported for user ID");
-        }
+    public static IServiceCollection AddStringUserIdExtractor(
+        this IServiceCollection services,
+        string userIdClaim = DefaultUserIdClaim
+    )
+    {
+        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+        services.AddSingleton<IUserIdExtractor<string>>(new GenericStringUserIdExtractor(userIdClaim));
 
         return services;
     }
 
-    private static bool TryAddRawTypedUserIdExtractor(IServiceCollection services, Type userIdType, string userIdClaim)
-    {
-        var rawTypedId = TryGetImplementedGenericType(userIdType, typeof(IRawTypedId<,>));
-
-        if (rawTypedId is not null)
-        {
-            var genericArguments = rawTypedId.GetGenericArguments();
-            var backingType = genericArguments[0];
-            var idType = genericArguments[1];
-
-            var extractorType = typeof(RawTypedUserIdExtractor<,>).MakeGenericType(backingType, idType);
-            var interfaceType = typeof(IUserIdExtractor<>).MakeGenericType(idType);
-            var instance = Activator.CreateInstance(extractorType, userIdClaim)!;
-
-            services.AddSingleton(interfaceType, instance);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private static bool TryAddPrefixedTypedUserIdExtractor(
-        IServiceCollection services,
-        Type userIdType,
-        string userIdClaim
+    public static IServiceCollection AddGuidUserIdExtractor(
+        this IServiceCollection services,
+        string userIdClaim = DefaultUserIdClaim
     )
     {
-        if (TryGetImplementedGenericType(userIdType, typeof(IPrefixedTypedId<>)) is not null)
-        {
-            var extractorType = typeof(PrefixedTypedUserIdExtractor<>).MakeGenericType(userIdType);
-            var interfaceType = typeof(IUserIdExtractor<>).MakeGenericType(userIdType);
-            var instance = Activator.CreateInstance(extractorType, userIdClaim)!;
+        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+        services.AddSingleton<IUserIdExtractor<Guid>>(new GuidUserIdExtractor(userIdClaim));
 
-            services.AddSingleton(interfaceType, instance);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return services;
     }
 
-    private static Type? TryGetImplementedGenericType(Type type, Type idKind)
+    public static IServiceCollection AddRawTypedUserIdExtractor<TBacking, TUserId>(
+        this IServiceCollection services,
+        string userIdClaim = DefaultUserIdClaim
+    )
+        where TBacking : struct
+        where TUserId : struct, IRawTypedId<TBacking, TUserId>
     {
-        return type.IsValueType
-            ? type.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
-                .FirstOrDefault()
-            : null;
+        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+        services.AddSingleton<IUserIdExtractor<TUserId>>(new RawTypedUserIdExtractor<TBacking, TUserId>(userIdClaim));
+
+        return services;
+    }
+
+    public static IServiceCollection AddPrefixedUserIdExtractor<TUserId>(
+        this IServiceCollection services,
+        string userIdClaim = DefaultUserIdClaim
+    )
+        where TUserId : struct, IPrefixedTypedId<TUserId>
+    {
+        services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
+        services.AddSingleton<IUserIdExtractor<TUserId>>(new PrefixedTypedUserIdExtractor<TUserId>(userIdClaim));
+
+        return services;
     }
 }
