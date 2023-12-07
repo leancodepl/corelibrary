@@ -32,12 +32,12 @@ public class UserIdExtractorsRegistrationTests
     public void Raw_typed_IUserIdExtractor_is_correctly_registered()
     {
         var serviceProvider = BuildServiceProvider(
-            services => services.AddRawTypedUserIdExtractor<int, TestIntId>(UserIdClaim)
+            services => services.AddRawTypedUserIdExtractor<Guid, TestGuidId>(UserIdClaim)
         );
-        var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestIntId>>();
+        var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestGuidId>>();
 
         Assert.NotNull(userIdExtractor);
-        Assert.IsType<RawTypedUserIdExtractor<int, TestIntId>>(userIdExtractor);
+        Assert.IsType<RawTypedUserIdExtractor<Guid, TestGuidId>>(userIdExtractor);
     }
 
     [Fact]

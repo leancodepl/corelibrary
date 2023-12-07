@@ -5,17 +5,8 @@ using Xunit;
 
 namespace LeanCode.UserIdExtractors.Tests;
 
-[TypedId(TypedIdFormat.RawInt)]
-public readonly partial record struct TestIntId;
-
-[TypedId(TypedIdFormat.RawLong)]
-public readonly partial record struct TestLongId;
-
 [TypedId(TypedIdFormat.RawGuid)]
 public readonly partial record struct TestGuidId;
-
-[TypedId(TypedIdFormat.PrefixedUlid, CustomPrefix = "tpl")]
-public readonly partial record struct TestPrefixedUlidId;
 
 [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "tpg")]
 public readonly partial record struct TestPrefixedGuidId;
