@@ -36,9 +36,9 @@ public static class UserServiceProviderExtensions
 
     private static bool TryAddRawTypedUserIdExtractor(IServiceCollection services, Type userIdType, string userIdClaim)
     {
-        var rawTypedId = GetImplementedIdTypes(userIdType, typeof(IRawTypedId<,>)).FirstOrDefault();
+        var rawTypedId = TryGetImplementedGenericType(userIdType, typeof(IRawTypedId<,>));
 
-        if (rawTypedId != null)
+        if (rawTypedId is not null)
         {
             var genericArguments = rawTypedId.GetGenericArguments();
             var backingType = genericArguments[0];
@@ -64,7 +64,7 @@ public static class UserServiceProviderExtensions
         string userIdClaim
     )
     {
-        if (GetImplementedIdTypes(userIdType, typeof(IPrefixedTypedId<>)).Any())
+        if (TryGetImplementedGenericType(userIdType, typeof(IPrefixedTypedId<>)) is not null)
         {
             var extractorType = typeof(PrefixedTypedUserIdExtractor<>).MakeGenericType(userIdType);
             var interfaceType = typeof(IUserIdExtractor<>).MakeGenericType(userIdType);
@@ -80,10 +80,12 @@ public static class UserServiceProviderExtensions
         }
     }
 
-    private static IEnumerable<Type> GetImplementedIdTypes(Type type, Type idKind)
+    private static Type? TryGetImplementedGenericType(Type type, Type idKind)
     {
         return type.IsValueType
-            ? type.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
-            : [ ];
+            ? type.GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == idKind)
+                .FirstOrDefault()
+            : null;
     }
 }

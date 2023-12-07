@@ -40,6 +40,6 @@ public sealed class RawTypedUserIdExtractor<TBacking, TId> : IUserIdExtractor<TI
         var backingType = typeof(TBacking);
         var parsedValue = Parsers[backingType].Invoke(value);
 
-        return (TBacking)Convert.ChangeType(parsedValue, typeof(TBacking), CultureInfo.InvariantCulture);
+        return (TBacking)parsedValue;
     }
 }
