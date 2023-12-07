@@ -42,6 +42,4 @@ public sealed class RawTypedUserIdExtractor<TBacking, TId> : IUserIdExtractor<TI
 
         return (TBacking)Convert.ChangeType(parsedValue, typeof(TBacking), CultureInfo.InvariantCulture);
     }
-
-    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString()!;
 }

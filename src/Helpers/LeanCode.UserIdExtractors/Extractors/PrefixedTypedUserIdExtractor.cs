@@ -20,6 +20,4 @@ public sealed class PrefixedTypedUserIdExtractor<TId> : IUserIdExtractor<TId>
 
         return TId.Parse(claim);
     }
-
-    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString()!;
 }

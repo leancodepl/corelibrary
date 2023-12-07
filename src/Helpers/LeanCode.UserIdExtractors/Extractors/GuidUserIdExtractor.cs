@@ -18,6 +18,4 @@ public sealed class GuidUserIdExtractor : IUserIdExtractor<Guid>
 
         return Guid.Parse(claim);
     }
-
-    string IUserIdExtractor.Extract(ClaimsPrincipal user) => Extract(user).ToString();
 }
