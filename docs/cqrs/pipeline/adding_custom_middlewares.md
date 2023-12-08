@@ -36,7 +36,13 @@ Custom middlewares can further augment the pipeline by employing the `UseMiddlew
     }
 ```
 
-Then, you can integrate `EmployeeBlockerMiddleware` into the pipeline as follows:
+Moreover, CoreLibrary provides extension methods for `HttpContext`, which can be useful when creating middlewares:
+
+* `GetCQRSEndpoint()`: This method allows access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
+
+* `GetCQRSRequestPayload()`: By using this `HttpContext` extension method, you can retrieve information about the request payload and the execution result, if the request was handled.
+
+After configuration above, you can integrate `EmployeeBlockerMiddleware` into the pipeline as follows:
 
 ```csharp
     protected override void ConfigureApp(IApplicationBuilder app)

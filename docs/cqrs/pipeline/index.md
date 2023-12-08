@@ -11,7 +11,7 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 ## Configuration
 
-To establish LeanCode CoreLibrary pipelines, the [MapRemoteCqrs(...)] method from `LeanCode.CQRS.AspNetCore` package needs to be invoked after calling the `UseEndpoints(...)` method on the `IApplicationBuilder`. In the following example, [MapRemoteCqrs(...)] is configured to handle:
+CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCqrs(...)` extension method (this differs from `UseEndpoints(...)`, as within minimal startup, you can directly invoke it). In `MapRemoteCqrs(...)` you can configure the inner cqrs requests pipeline. In the following example, app is configured to handle:
 
 - [Commands] at `/api/command/FullyQualifiedName`
 - [Queries] at `/api/query/FullyQualifiedName`

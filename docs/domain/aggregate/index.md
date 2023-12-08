@@ -52,7 +52,7 @@ public class Project : IAggregateRoot<ProjectId>
 }
 ```
 
-As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `ProjectId` - it is a special source-generated type present in the CoreLibrary. You can read more about `Id` types [here](../id/index.md). In this case, the Id of the project will look somewhat like `project_45a8f39f-9df0-4a23-b781-2a46de22fac1`.
+As you can see, the class implements `IAggregateRoot` interface - it marks the class as being the root of an aggregate. Moreover the `Id` field of the class is of type `ProjectId` - it is a special source-generated type present in the CoreLibrary. You can read more about `Id` types [here](../id/index.md). In this case, the Id of the project will look somewhat like `project_45a8f39f9df04a23b7812a46de22fac1`.
 The Project also has a list of `Assignments`. Notice that there are two lists containing assignments of a project - the `Assignments` one is a readonly interface for the `assignments` which contents can be changed by the class. Moreover project has `OwnerId` property which is an Id of employee who created the project. Generally, we try to model the API in such a way that the objects cannot be changed from the outside - an object's state should be modified only by the methods it exposes.
 
 ### Employee
