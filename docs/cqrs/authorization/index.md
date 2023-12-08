@@ -15,66 +15,9 @@ An authorizer is a class that implements the `ICustomAuthorizer` interface or d
 
 ## AuthorizeWhenHasAnyOf
 
-The `AuthorizeWhenHasAnyOf` attribute, found in `LeanCode.Contracts.Security`, has default authorization implementation. Upon its application, the `CheckIfAuthorizedAsync` method from the `DefaultPermissionAuthorizer` class is invoked to check whether the user possesses adequate permissions:
+The `AuthorizeWhenHasAnyOf` attribute, found in `LeanCode.Contracts.Security`, has default authorization implementation. Upon its application, the `CheckIfAuthorizedAsync` method from the `DefaultPermissionAuthorizer` class is invoked to check whether the user possesses adequate permissions.
 
-```csharp
-public class DefaultPermissionAuthorizer
-    : CustomAuthorizer<object, string[]>, IHasPermissions
-{
-    private readonly RoleRegistry registry;
-
-    public DefaultPermissionAuthorizer(RoleRegistry registry)
-    {
-        this.registry = registry;
-    }
-
-    protected override Task<bool> CheckIfAuthorizedAsync(
-        ClaimsPrincipal user,
-        object obj,
-        string[]? customData)
-    {
-        if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))
-        {
-            return Task.FromResult(false);
-        }
-        else
-        {
-            return Task.FromResult(true);
-        }
-    }
-}
-```
-
-```csharp
-public static class ClaimsPrincipalExtensions
-{
-    public static bool HasPermission(
-        this ClaimsPrincipal claimsPrincipal,
-        RoleRegistry registry,
-        params string[] permissions
-    )
-    {
-        return registry.All.Any(
-            role => claimsPrincipal.IsInRole(role.Name)
-                && permissions.Any(role.Permissions.Contains)
-        );
-    }
-}
-```
-
-```csharp
-public sealed class RoleRegistry
-{
-    public ImmutableList<Role> All { get; }
-
-    public RoleRegistry(IEnumerable<IRoleRegistration> registrations)
-    {
-        All = registrations.SelectMany(r => r.Roles).ToImmutableList();
-    }
-}
-```
-
-The `CheckIfAuthorizedAsync` method employs the `RoleRegistry` class to retrieve roles within the system. To integrate roles and ensure proper functionality, a class implementing `IRoleRegistration` must be added to the Dependency Injection (DI) container. The first argument in the `Role` constructor represents the role, and subsequent arguments denote permissions passed as `params`:
+`CheckIfAuthorizedAsync` method employs the `RoleRegistry` class to retrieve roles within the system. To integrate roles and ensure proper functionality, a class implementing `IRoleRegistration` must be added to the Dependency Injection (DI) container. The first argument in the `Role` constructor represents the role, and subsequent arguments denote permissions passed as `params`:
 
 ```csharp
 internal class AppRoles : IRoleRegistration
@@ -101,9 +44,21 @@ public override void ConfigureServices(IServiceCollection services)
 
 ```
 
-## AllowUnauthorized
+Following this registration, the `AuthorizeWhenHasAnyOf` attribute can be utilized as demonstrated below, checking if a user possesses the `employee` role within the `ClaimsPrincipal`:
 
-All [query], [command] and [operation] require usage of authorization attribute (which is enforced by Roslyn analyzers). To bypass the authorization requirements, developers can employ the `AllowUnauthorized` attribute as demonstrated below to skip authorization entirely:
+```csharp
+[AuthorizeWhenHasAnyOf("employee")]
+public class Projects : IQuery<List<ProjectDTO>>
+{
+    public string? NameFilter { get; set; }
+}
+```
+
+This attribute enables the enforcement of access control based on specified roles.
+
+## AllowUnauthorized
+<!-- TODO: add link to analyzers section when it's ready -->
+All [query], [command] and [operation] require usage of authorization attribute (which can enforced by Roslyn analyzers). To bypass the authorization requirements, developers can employ the `AllowUnauthorized` attribute as demonstrated below to skip authorization entirely:
 
 ```csharp
 [AllowUnauthorized]
@@ -118,13 +73,13 @@ public class Projects : IQuery<List<ProjectDTO>>
 Other than `AuthorizeWhenHasAnyOf` and `AllowUnauthorized` attributes which have default implementations custom authorizers can be defined. Here is an example along with the (not required, but convenient) plumbing:
 
 ```csharp
-// Object that use `ProjectIsOwned` attribute must implement this interface
+// Object that use `ProjectIsOwned` attribute must implement this interface.
 public interface IProjectRelated
 {
     string ProjectId { get; }
 }
 
-// Authorizer marker
+// A marker for authorization required for DI resolution in `CQRSSecurityMiddleware`.
 public interface IProjectIsOwned { }
 
 [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
@@ -189,7 +144,7 @@ All [queries], [commands] and [operations] can (and should!) be behind authoriza
 
                         cqrs.Commands = c =>
                             c.CQRSTrace()
-                            // Authorization is before validation
+                            // Authorization is before validation.
                             .Secure()
                             .Validate()
                             .CommitTransaction<CoreDbContext>()
