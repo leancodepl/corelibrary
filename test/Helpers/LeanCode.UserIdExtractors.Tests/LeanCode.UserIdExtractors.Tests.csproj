@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj"
+      OutputItemType="Analyzer" />
+    <ProjectReference Include="../../../src/Helpers/LeanCode.UserIdExtractors/LeanCode.UserIdExtractors.csproj" />
+  </ItemGroup>
+
+</Project>
