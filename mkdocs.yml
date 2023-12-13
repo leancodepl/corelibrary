@@ -7,6 +7,7 @@ theme:
   name: material
   features:
     - navigation.indexes
+    - content.code.copy
 extra_css:
   - stylesheets/extra.css
 markdown_extensions:
@@ -22,6 +23,7 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 nav:
   - Overview: ./README.md
+  - Quick start: ./quick_start/index.md
   - CQRS:
     - ./cqrs/index.md
     - Pipeline:
