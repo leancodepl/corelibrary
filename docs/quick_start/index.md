@@ -8,6 +8,8 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 
 ## Setting up the template
 
+The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates MassTransit with RabbitMQ for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, Blob Storage for managing large datasets, and resources like Seq for logging, Jaeger for tracing, and Traefik as an application proxy, collectively laying a solid foundation for building efficient .NET applications.
+
 To get started, begin by cloning the repository containing `lncdproj` template:
 
 ```sh
@@ -20,10 +22,14 @@ Once the repository is cloned, navigate to the `exampleapp` directory. Here, ins
 dotnet new install .
 ```
 
-Then, you can run it in your preferred directory using the `dotnet new lncdproj` command. The `lncdproj` template requires two arguments: `--project-name`, specifying the name of the newly created project, and `--context`, indicating the name of the first bounded context used throughout the project (additional `--allow-scripts` flag is used to not display user prompts):
+Then, you can run it in your preferred directory using the `dotnet new lncdproj` command with following arguments:
+
+- `--project-name` - name of the project,
+- `--context` - name of the first bounded context,
+- `--allow-scripts` - optional argument used to suppress user prompts from being displayed.
 
 ```sh
-dotnet new lncdproj --allow-scripts Yes --project-name ProjectName --context ContextName
+dotnet new lncdproj --project-name ProjectName --context ContextName --allow-scripts Yes
 ```
 
 This template generates 3 directories:
@@ -32,35 +38,7 @@ This template generates 3 directories:
 - `dev-cluster`: Holds the cluster configuration for local development.
 - `infrastructure`: Contains the configuration for infrastructure in production environments.
 
-## Setting up the local cluster
-
-Let's set up a local Kubernetes cluster, which is a vital part of our development environment. The `dev-cluster` directory contains configuration files for various services that will be deployed to our local Kubernetes cluster. These services include:
-
-- **PostgreSQL Database**: A relational database system for storing and managing application data.
-- **Blob Storage**: A service for storing large amounts of unstructured data, like images or videos.
-- **RabbitMQ**: A message broker that enables applications to communicate with each other asynchronously.
-- **Kratos**: An identity management system that handles user accounts, authentication, and authorization.
-- **Seq**: Log system designed for searching, analysis, and visualization of structured log data.
-- **Jaeger**: An open-source tool for tracing requests.
-- **Traefik**: A cloud-native application proxy that routes incoming requests to the appropriate microservices.
-- **OpenTelemetry**: A set of APIs, SDKs, and tools to generate, collect, and export telemetry data.
-- **Metabase**: Tool for visualizing and sharing data insights.
-
-To configure the local cluster, start by navigating to the `dev-cluster` directory. Once there, ensure that you've set the `sendgrid_api_key` in the `terraform.tfvars` file. Without this api key, the functionality for sending emails won't be available:
-
-```terraform
-sendgrid_api_key = "my_sendgrid_api_key"
-```
-
-Then, execute the following script to set up the local cluster:
-
-```sh
-./deploy.sh
-```
-
-## Setting up the application
-
-After successfully setting up the local cluster, your next step is to initiate your application. Begin by navigating to the `backend` directory. This directory is the heart of your application, containing various subdirectories and files, each serving a specific purpose:
+Let's inspect the `backend` directory. This directory is the heart of your application, containing various subdirectories and files, each serving a specific purpose:
 
 ```txt
 backend
@@ -82,9 +60,51 @@ backend
 │   ├── ProjectName.IntegrationTests - Comprehensive application-wide tests.
 ```
 
-### Generating initial migrations
+## Setting up the cluster
 
-Let's start with generating initial migrations. Begin by navigating, to the `backend/src/Apps/ProjectName.Migrations` directory. Generate initial migrations using the `dotnet ef` tool (install it via `dotnet tool install --global dotnet-ef`):
+In our development process, we emphasize creating an environment that mirrors production as closely as possible. This approach ensures consistency and reliability across different stages of development, testing, and deployment. To achieve this, we utilize a local Kubernetes cluster, which allows us to simulate the behavior of our applications in a controlled environment that resembles our production setup. Our local Kubernetes cluster, configured in the `dev-cluster` directory, comprises several key services:
+
+- **PostgreSQL Database**: A relational database system for storing and managing application data.
+- **Blob Storage**: A service for storing large amounts of unstructured data, like images or videos.
+- **RabbitMQ**: A message broker that enables applications to communicate with each other asynchronously.
+- **Kratos**: An identity management system that handles user accounts, authentication, and authorization.
+- **Seq**: Log system designed for searching, analysis, and visualization of structured log data.
+- **Jaeger**: An open-source tool for tracing requests.
+- **Traefik**: A cloud-native application proxy that routes incoming requests to the appropriate microservices.
+- **OpenTelemetry**: A set of APIs, SDKs, and tools to generate, collect, and export telemetry data.
+
+To configure the local cluster, start by navigating to the `dev-cluster` directory. Once there, you can optionally set the `sendgrid_api_key` in the `terraform.tfvars` file:
+
+```terraform
+sendgrid_api_key = "my_sendgrid_api_key"
+```
+
+Follow these commands to establish your local cluster, or alternatively, use the `deploy.sh` script for an automated setup:
+
+```sh
+# Remove existing cluster and its registry to ensure a clean state.
+k3d cluster delete projectname
+k3d registry delete k3d-projectname-registry.local.lncd.pl
+rm *.tfstate*
+
+# Log in to Azure Container Registry and pull the Traefik proxy image.
+az acr login -n leancode
+docker pull leancode.azurecr.io/traefik-proxy
+
+# Add and update the Helm repository for Traefik.
+helm repo add traefik https://helm.traefik.io/traefik
+helm repo update
+
+# Apply cluster configuration.
+terraform init
+terraform apply -target data.local_file.kubeconfig -auto-approve
+terraform apply -target helm_release.traefik -auto-approve
+terraform apply -auto-approve
+```
+
+## Generating initial migrations
+
+Once local cluster has been deployed we can generate initial migrations. Begin by navigating, to the `backend/src/Apps/ProjectName.Migrations` directory. Generate initial migrations using the `dotnet ef` tool (install it via `dotnet tool install --global dotnet-ef`):
 
 ```sh
 # It does not need to point to a real database
@@ -92,21 +112,27 @@ export PostgreSQL__ConnectionString='Host=localhost;Database=app;Username=app;Pa
 dotnet ef migrations add --context ContextNameDbContext -o Migrations InitialMigration
 ```
 
-### Starting the application
+## Starting the application
 
-Once initial migrations have been generated we can start the application. First of all ensure that you've selected the `kubectl` context corresponding to the newly created cluster:
+Once initial migrations have been generated we can start the application. Let's navigate to the `backend` directory and ensure that the `kubectl` context corresponding to the newly created cluster is selected:
 
 ```sh
 kubectl config use-context k3d-projectname
 ```
 
-Then you can run the migrations and the API using the following command:
+To execute the migrations, use the following command:
 
 ```sh
-tilt up migrations api
+tilt up migrations
 ```
 
-Once Tilt applies migrations and starts the API it should be available at: <https://projectname.local.lncd.pl/api>. You can also run the integration tests using following command:
+With the migrations applied, you can then initiate the API using:
+
+```sh
+tilt up api
+```
+
+Once Tilt starts the API it should be available at: <https://projectname.local.lncd.pl/api>. You can also run the integration tests using following command:
 
 ```sh
 tilt up integration_tests
@@ -114,5 +140,4 @@ tilt up integration_tests
 
 ## Troubleshooting
 
-- If you encounter a `Permission denied` error while running `tilt up` commands for any `.sh` files, attempt to resolve it by granting execute permission using the `chmod +x` command and restarting tilt using `tilt down` and `tilt up` commands.
 - If the `deploy.sh` script fails during the local cluster creation process, you can address the issue by either applying missing services with the `terraform apply -auto-approve` command or by re-running the `deploy.sh` script to redeploy the cluster.
