@@ -8,7 +8,7 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 
 ## Setting up the template
 
-The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates MassTransit with RabbitMQ for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, Blob Storage for managing large data, and resources like Seq for logging, Jaeger for tracing, and Traefik as an application proxy, collectively laying a solid foundation for building efficient .NET applications.
+The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates MassTransit with RabbitMQ for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, Blob Storage for managing large data, and resources like Seq for logging, Jaeger for tracing, and Traefik as an application proxy, collectively laying a solid foundation for building efficient .NET applications in a development setting.
 
 To get started, begin by cloning the repository containing `lncdproj` template:
 
