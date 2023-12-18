@@ -8,7 +8,7 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 
 ## Setting up the template
 
-The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates MassTransit with RabbitMQ for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, Blob Storage for managing large data, and resources like Seq for logging, Jaeger for tracing, and Traefik as an application proxy, collectively laying a solid foundation for building efficient .NET applications in a development setting.
+The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates with MassTransit for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, and Blob Storage for managing large data, collectively laying a solid foundation for building efficient .NET applications.
 
 To get started, begin by cloning the repository containing `lncdproj` template:
 
@@ -82,15 +82,6 @@ sendgrid_api_key = "my_sendgrid_api_key"
 Follow these commands to establish your local cluster, or alternatively, use the `deploy.sh` script for an automated setup:
 
 ```sh
-# Remove existing cluster and its registry to ensure a clean state.
-k3d cluster delete projectname
-k3d registry delete k3d-projectname-registry.local.lncd.pl
-rm *.tfstate*
-
-# Log in to Azure Container Registry and pull the Traefik proxy image.
-az acr login -n leancode
-docker pull leancode.azurecr.io/traefik-proxy
-
 # Add and update the Helm repository for Traefik.
 helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
