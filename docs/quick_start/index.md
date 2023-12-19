@@ -1,6 +1,6 @@
 # Quick start
 
-LeanCode CoreLibrary offers flexibility to suit different needs. Whether you want quick results or a detailed dive into features, it's here for you. In this tutorial, we'll take the DIY route, building, setting up CoreLibrary based project from scratch and learning how to deploy it on a local Kubernetes cluster.
+LeanCode CoreLibrary offers flexibility to suit different needs. Whether you want quick results or a detailed dive into features, it's here for you. In this tutorial, we'll take the DIY route, setting up CoreLibrary based project from scratch and learning how to deploy it on a local Kubernetes cluster.
 
 !!! Prerequisites info
     Prior to proceeding with this tutorial, ensure you have the following requirements installed: [kubectl](https://kubernetes.io/docs/tasks/tools/),
@@ -8,12 +8,12 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 
 ## Setting up the template
 
-The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, PostgreSQL for database management, and Kratos for identity management. It integrates with MassTransit for efficient communication and includes tools to aid testing. Additionally, the template incorporates LeanPipe for real-time SignalR notifications, and Blob Storage for managing large data, collectively laying a solid foundation for building efficient .NET applications.
+The `lncdproj` template, provided by LeanCode CoreLibrary, is a comprehensive template designed for modern .NET application development, featuring CQRS as client-facing APIs, [PostgreSQL] for database management, and [Kratos] for identity management. It integrates with [MassTransit] for efficient communication and includes tools to aid testing. Additionally, the template incorporates [LeanPipe] for real-time [SignalR] notifications, and [Azure Blob Storage] for managing large data, collectively laying a solid foundation for building efficient .NET applications.
 
 To get started, begin by cloning the repository containing `lncdproj` template:
 
 ```sh
-git clone git@github.com:leancodepl/exampleapp.git
+git clone https://github.com/leancodepl/exampleapp.git
 ```
 
 Once the repository is cloned, navigate to the `exampleapp` directory. Here, install the `lncdproj` .NET template:
@@ -41,37 +41,36 @@ This template generates 3 directories:
 Let's inspect the `backend` directory. This directory is the heart of your application, containing various subdirectories and files, each serving a specific purpose:
 
 ```txt
-backend
 ├── dev - Configuration for local development.
 ├── release - Dockerfiles for production deployment.
 ├── src
 │   ├── Apps
-│   │   ├── ProjectName.Api - Hosts the API, serving as the backend entrypoint.
-│   │   ├── ProjectName.LeanPipeFunnel - Manages real-time notifications.
-│   │   └── ProjectName.Migrations - Handles database migrations.
+│   │   └── ProjectName.LeanPipeFunnel - Manages real-time notifications.
 │   └── ContextName
+│       ├── ProjectName.ContextName.Api - Hosts the API, serving as the backend entrypoint.
 │       ├── ProjectName.ContextName.Contracts - API client interfaces.
 │       ├── ProjectName.ContextName.Domain - Core business logic.
+│       ├── ProjectName.ContextName.Migrations - Handles database migrations.
 │       └── ProjectName.ContextName.Services - Service layer.
 ├── tests
-│   ├── ContextName
-│   │   ├── ProjectName.ContextName.Domain.Tests - Tests for business logic.
-│   │   └── ProjectName.ContextName.Services.Tests - Tests for service layer.
-│   ├── ProjectName.IntegrationTests - Comprehensive application-wide tests.
+    ├── ContextName
+        ├── ProjectName.ContextName.Domain.Tests - Tests for business logic.
+        ├── ProjectName.ContextName.IntegrationTests - Tests for service layer.
+        └── ProjectName.ContextName.Services.Tests - Comprehensive application-wide tests.
 ```
 
 ## Setting up the cluster
 
 In our development process, we emphasize creating an environment that mirrors production as closely as possible. This approach ensures consistency and reliability across different stages of development, testing, and deployment. To achieve this, we utilize a local Kubernetes cluster, which allows us to simulate the behavior of our applications in a controlled environment that resembles our production setup. Our local Kubernetes cluster, configured in the `dev-cluster` directory, comprises several key services:
 
-- **PostgreSQL Database**: A relational database system for storing and managing application data.
-- **Blob Storage**: A service for storing large amounts of unstructured data, like images or videos.
-- **RabbitMQ**: A message broker that enables applications to communicate with each other asynchronously.
-- **Kratos**: An identity management system that handles user accounts, authentication, and authorization.
-- **Seq**: Log system designed for searching, analysis, and visualization of structured log data.
-- **Jaeger**: An open-source tool for tracing requests.
-- **Traefik**: A cloud-native application proxy that routes incoming requests to the appropriate microservices.
-- **OpenTelemetry**: A set of APIs, SDKs, and tools to generate, collect, and export telemetry data.
+- [PostgreSQL]: A relational database system for storing and managing application data.
+- [Azure Blob Storage]: A service for storing large amounts of unstructured data, like images or videos.
+- [RabbitMQ]: A message broker that enables applications to communicate with each other asynchronously.
+- [Kratos]: An identity management system that handles user accounts, authentication, and authorization.
+- [Seq]: Log system designed for searching, analysis, and visualization of structured log data.
+- [Jaeger]: An open-source tool for tracing requests.
+- [Traefik]: A cloud-native application proxy that routes incoming requests to the appropriate microservices.
+- [OpenTelemetry]: A set of APIs, SDKs, and tools to generate, collect, and export telemetry data.
 
 To configure the local cluster, start by navigating to the `dev-cluster` directory. Once there, you can optionally set the `sendgrid_api_key` in the `terraform.tfvars` file:
 
@@ -132,3 +131,15 @@ tilt up integration_tests
 ## Troubleshooting
 
 - If the `deploy.sh` script fails during the local cluster creation process, you can address the issue by either applying missing services with the `terraform apply -auto-approve` command or by re-running the `deploy.sh` script to redeploy the cluster.
+
+[Azure Blob Storage]: https://azure.microsoft.com/en-us/products/storage/blobs
+[Jaeger]: https://www.jaegertracing.io/
+[Kratos]: https://www.ory.sh/kratos/
+[LeanPipe]: https://github.com/leancodepl/leanpipe
+[MassTransit]: https://masstransit.io/
+[OpenTelemetry]: https://opentelemetry.io/
+[PostgreSQL]: https://www.postgresql.org/
+[RabbitMQ]: https://rabbitmq.com/
+[Seq]: https://datalust.co/seq
+[SignalR]: https://dotnet.microsoft.com/en-us/apps/aspnet/signalr
+[Traefik]: https://traefik.io/traefik/
