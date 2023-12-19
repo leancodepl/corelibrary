@@ -12,3 +12,7 @@ public interface IAggregateRootWithoutOptimisticConcurrency<TIdentity>
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1040", Justification = "Marker interface.")]
 public interface IAggregateRootWithoutOptimisticConcurrency { }
+
+[Obsolete("`IIdentifiable` is obsolete. Use `IEntity` instead.")]
+public interface IIdentifiable<TIdentity> : IEntity<TIdentity>
+    where TIdentity : notnull { }
