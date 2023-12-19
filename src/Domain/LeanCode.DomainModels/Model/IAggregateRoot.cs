@@ -6,7 +6,7 @@ public interface IAggregateRoot<TIdentity>
     where TIdentity : notnull { }
 
 public interface IAggregateRootWithoutOptimisticConcurrency<TIdentity>
-    : IIdentifiable<TIdentity>,
+    : IEntity<TIdentity>,
         IAggregateRootWithoutOptimisticConcurrency
     where TIdentity : notnull { }
 

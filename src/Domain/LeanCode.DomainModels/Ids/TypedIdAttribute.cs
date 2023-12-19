@@ -39,7 +39,7 @@ public enum TypedIdFormat : int
 /// <summary>
 /// Attribute that mark <c>readonly partial record struct</c> for being <c>TypedId</c>, i.e. a stronly typed identifier
 /// that will be generated during compilation and that can be used as a ID for
-/// <see cref="Model.IIdentifiable{TIdentity}" /> and <see cref="Model.IAggregateRoot{TIdentity}" />.
+/// <see cref="Model.IEntity{TIdentity}" /> and <see cref="Model.IAggregateRoot{TIdentity}" />.
 /// </summary>
 /// <remarks>
 /// See <see href="../../../../docs/domain/ids.md">documentation</see> for more details.

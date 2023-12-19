@@ -6,11 +6,11 @@ namespace LeanCode.DomainModels.Tests.Model;
 [Obsolete("Tests for obsolete classes")]
 public class TypedIdTests
 {
-    private sealed record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+    private sealed record Entity(Id<Entity> Id) : IEntity<Id<Entity>>;
 
-    private sealed record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+    private sealed record IntEntity(IId<IntEntity> Id) : IEntity<IId<IntEntity>>;
 
-    private sealed record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+    private sealed record LongEntity(LId<LongEntity> Id) : IEntity<LId<LongEntity>>;
 
     [Fact]
     public void Guid_id_comparison_operators_work()
