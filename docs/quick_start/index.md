@@ -55,8 +55,8 @@ Let's inspect the `backend` directory. This directory is the heart of your appli
 ├── tests
     ├── ContextName
         ├── ProjectName.ContextName.Domain.Tests - Tests for business logic.
-        ├── ProjectName.ContextName.IntegrationTests - Tests for service layer.
-        └── ProjectName.ContextName.Services.Tests - Comprehensive application-wide tests.
+        ├── ProjectName.ContextName.IntegrationTests - Comprehensive application-wide tests.
+        └── ProjectName.ContextName.Services.Tests - Tests for service layer.
 ```
 
 ## Setting up the cluster
