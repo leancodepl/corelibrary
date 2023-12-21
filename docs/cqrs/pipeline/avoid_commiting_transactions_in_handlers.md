@@ -120,14 +120,14 @@ public class AssignEmployeeToAssignmentCH
 }
 ```
 
-In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before [events] are published. In LeanCode Corelibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. This ensures that messages are committed to the database before being available to message brokers after publication and the invocation of the `SaveChangesAsync` method on CoreDbContext.
+In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before [events] are published. In LeanCode CoreLibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. This ensures that messages are committed to the database before being available to message brokers after publication and the invocation of the `SaveChangesAsync` method on CoreDbContext.
 
 In our scenario, if the database fails after successfully saving changes to the project, the `EmployeeAssignedToAssignment` message won't be saved, leading to it being unavailable to message brokers and not sent.
 
-Conversely, removing `SaveChangesAsync` from the [command] handler would result in both messages and project changes being committed in a single transaction. In the event of a database failure, neither project changes nor messages would be saved or sent, providing clients with information about the request failure without unintended side effects. This is why it's not recommended to not commit transactions directly in [command]/[operation] handlers.
+Conversely, removing `SaveChangesAsync` from the [command] handler would result in both messages and project changes being committed in a single transaction. In the event of a database failure, neither project changes nor messages would be saved or sent, providing clients with information about the request failure without unintended side effects. This is why it's not recommended to commit transactions directly in [command]/[operation] handlers, nor outside the `CommitDatabaseTransactionMiddleware`.
 
 !!! tip
-    To read more about LeanCode Corelibrary MassTransit integtation visit [here](../../external_integrations/messaging_masstransit/index.md).
+    To read more about LeanCode CoreLibrary MassTransit integtation visit [here](../../external_integrations/messaging_masstransit/index.md).
 
 [CQRS]: ../index.md
 [Domain]: ../../domain/index.md

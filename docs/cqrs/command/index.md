@@ -43,7 +43,7 @@ Commands in CQRS are responsible for modifying the state of the system, and ther
 * `ExampleApp.Contracts.Projects.DeleteProject`
 * `ExampleApp.Contracts.Employees.AssignEmployeeToAssignment`
 
-Handlers should share the identical name as the associated contract, appended with the `CH` suffix. This practice enhances ease of identification and ensures a straightforward correlation between contracts and their corresponding handlers.
+Handlers should share the identical name as the associated contract, with the `CH` suffix appended. This practice enhances ease of identification and ensures a straightforward correlation between contracts and their corresponding handlers.
 
 ## Handler
 
@@ -85,7 +85,7 @@ public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 As you can see, the command handler is really simple - it just finds project with specified `ProjectId` and updates it's name. That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 
 1. Keep them simple and testable, do not try to model whole flows with a single command.
-2. Commands should rely on [aggregates] to gather the data (try not to use queries inside command handlers).
+2. Commands should rely on [aggregates] to gather the data.
 3. Commands should modify just a single aggregate (try to `Add`/`Update`/`Delete` at most once).
 4. If the business process requires to modify multiple aggregates, try to use [events] (but don't over-engineer).
 5. If that does not help, modify/add/delete multiple aggregates.

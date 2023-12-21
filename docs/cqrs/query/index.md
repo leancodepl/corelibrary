@@ -1,6 +1,6 @@
 # Query
 
-Query is just a class that implements the `IQuery<TResult>` interface (there's also non-generic `IQuery` interface but it shouldn't be used directly). The only generic parameter specifies the type that the query returns when executed. It should be a DTO (because most of the time it will be serialized). Queries get the data from the system but don't modify it.
+Query is a class that implements the `IQuery<TResult>` interface (there's also non-generic `IQuery` interface but it shouldn't be used directly). The only generic parameter specifies the type that the query returns when executed. It should be a DTO (because most of the time it will be serialized). Queries get the data from the system but don't modify it.
 
 ## Packages
 
@@ -29,6 +29,10 @@ public class ProjectDTO
 }
 ```
 
+!!! Remarks note
+    - There's also non-generic `IQuery` interface but it shouldn't be used directly.
+    - We use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint. `List` is more DTO-ish than any interface.
+
 ## Naming conventions
 
 Queries are designed to retrieve information without altering the system's state. To maintain a clear and consistent naming convention, queries should possess names that directly indicate the type of information being requested, including the namespace as part of the contract. An effective approach is to use descriptive nouns or noun phrases within the designated namespace, exemplified by names like:
@@ -41,7 +45,7 @@ Query handlers should similarly be named in alignment with the associated query,
 
 ## Handler
 
-Query handlers execute queries. They should not have any side effects but can return data back to the client. Since they can return data to the client, they don't need separate [validation] (handler can do it internally). In query handlers you don't need to operate on aggregate level (as this is read-side and is relatively DDD-free) and are allowed to perform arbitrary SQL queries.
+Query handlers execute queries. They should not have any side effects but can return data back to the client. Since they can return data to the client, they don't need separate [validation] (it is rare to need validation; if it is needed, handlers can do it internally). In query handlers you don't need to operate on aggregate level (as this is read-side and is relatively DDD-free) and are allowed to perform arbitrary SQL queries.
 
 For the above query, you can have handler like this:
 

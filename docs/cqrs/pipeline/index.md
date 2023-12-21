@@ -1,6 +1,6 @@
 # Pipeline
 
-The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipelines for handling requests and responses. This section intends to showcase the setup of a basic pipeline and explore its inner workings.
+The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipelines for handling commands/queries/operations. This section intends to showcase the setup of a basic pipeline and explore its inner workings.
 
 ## Packages
 
@@ -11,7 +11,7 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 ## Configuration
 
-CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCqrs(...)` extension method. In `MapRemoteCqrs(...)` you can configure the inner cqrs requests pipeline. In the following example, app is configured to handle:
+CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCqrs(...)` extension method. In `MapRemoteCqrs(...)` you can configure the inner CQRS pipeline. In the following example, app is configured to handle:
 
 - [Commands] at `/api/command/FullyQualifiedName`
 - [Queries] at `/api/query/FullyQualifiedName`
@@ -49,6 +49,9 @@ CQRS objects can only be registered in the ASP.NET request pipeline via endpoint
     }
 ```
 
+!!! tip
+    To learn about ASP.NET middlewares and how you can implement them, visit [here](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/).
+
 In this code snippet, you can specify which middlewares to use for handling commands, queries, and operations. Several middlewares are added in the example:
 
 | Method                           | Middleware                             | Responsibility              |
@@ -56,8 +59,8 @@ In this code snippet, you can specify which middlewares to use for handling comm
 | [CQRSTrace()]                  | [CQRSTracingMiddleware]                | Tracing                     |
 | [Secure()]                     | [CQRSSecurityMiddleware]               | Authorization               |
 | [Validate()]                   | [CQRSValidationMiddleware]             | Validation                  |
-| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware]  | Saving changes on database  |
-| [PublishEvents()]              | [EventsPublisherMiddleware]            | Publishing domain events    |
+| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware]  | Saving changes to the database  |
+| [PublishEvents()]              | [EventsPublisherMiddleware]            | Publishing domain events to MassTransit    |
 
 The order in which these middlewares are added determines the sequence of execution. Additionally, there are a few other middlewares provided by library that can be incorporated into CQRS pipeline, although they are not covered in this basic example:
 

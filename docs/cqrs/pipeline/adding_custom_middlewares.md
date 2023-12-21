@@ -1,7 +1,7 @@
 
 # Adding custom middlewares
 
-Custom middlewares can further augment the pipeline by employing the `UseMiddleware` method on `IApplicationBuilder`. To illustrate, consider the following basic example, which introduces a check if employee is blocked into the pipeline:
+Custom middlewares can further augment the pipeline by employing the `UseMiddleware` method on `IApplicationBuilder`. To illustrate, consider the following basic example, which introduces a check if employee is blocked into the pipeline using [ASP.NET middleware]:
 
 ```csharp
     public class EmployeeBlockerMiddleware : IMiddleware
@@ -38,9 +38,9 @@ Custom middlewares can further augment the pipeline by employing the `UseMiddlew
 
 Moreover, CoreLibrary provides extension methods for `HttpContext`, which can be useful when creating middlewares:
 
-* `GetCQRSEndpoint()`: This method allows access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
+* `GetCQRSEndpoint()`: This method returns [CQRSObjectMetadata] which provides access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
 
-* `GetCQRSRequestPayload()`: By using this `HttpContext` extension method, you can retrieve information about the request payload and the execution result, if the request was handled.
+* `GetCQRSRequestPayload()`: This `HttpContext` extension method, returns [CQRSRequestPayload] which contains information about the request payload and the execution result, if the request was handled.
 
 After configuration above, you can integrate `EmployeeBlockerMiddleware` into the pipeline as follows:
 
@@ -54,8 +54,8 @@ After configuration above, you can integrate `EmployeeBlockerMiddleware` into th
                     "/api",
                     cqrs =>
                     {
-                        cqrs.Commands = c =>
-                            c.CQRSTrace()
+                        cqrs.Commands = c => c
+                            .CQRSTrace()
                             .BlockEmployees()
                             .Secure()
                             .Validate()
@@ -78,3 +78,7 @@ After configuration above, you can integrate `EmployeeBlockerMiddleware` into th
             });
     }
 ```
+
+[ASP.NET middleware]: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
+[CQRSObjectMetadata]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.Execution/CQRSObjectMetadata.cs
+[CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
