@@ -7,16 +7,16 @@ namespace LeanCode.DomainModels.Tests.Model;
 [Obsolete("Tests for obsolete classes")]
 public class TypedIdSerializationTests
 {
-    private sealed record Entity(Id<Entity> Id) : IIdentifiable<Id<Entity>>;
+    private sealed record Entity(Id<Entity> Id) : IEntity<Id<Entity>>;
 
-    private sealed record IntEntity(IId<IntEntity> Id) : IIdentifiable<IId<IntEntity>>;
+    private sealed record IntEntity(IId<IntEntity> Id) : IEntity<IId<IntEntity>>;
 
-    private sealed record LongEntity(LId<LongEntity> Id) : IIdentifiable<LId<LongEntity>>;
+    private sealed record LongEntity(LId<LongEntity> Id) : IEntity<LId<LongEntity>>;
 
-    private sealed record StrEntity(SId<StrEntity> Id) : IIdentifiable<SId<StrEntity>>;
+    private sealed record StrEntity(SId<StrEntity> Id) : IEntity<SId<StrEntity>>;
 
     [IdSlug("custom")]
-    private sealed class StringOverriddenEntity : IIdentifiable<SId<StringOverriddenEntity>>
+    private sealed class StringOverriddenEntity : IEntity<SId<StringOverriddenEntity>>
     {
         public SId<StringOverriddenEntity> Id { get; set; }
     }

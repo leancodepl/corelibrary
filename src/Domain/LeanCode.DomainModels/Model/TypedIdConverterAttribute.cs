@@ -38,7 +38,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     }
 
     private sealed class IdConverter<T> : JsonConverter<Id<T>>
-        where T : class, IIdentifiable<Id<T>>
+        where T : class, IEntity<Id<T>>
     {
         private const int MaxEscapedGuidLength = 36;
 
@@ -116,7 +116,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     }
 
     private sealed class IIdConverter<T> : JsonConverter<IId<T>>
-        where T : class, IIdentifiable<IId<T>>
+        where T : class, IEntity<IId<T>>
     {
         // The longest possible int string is 11 characters long.
         private const int SpanSize = 11;
@@ -162,7 +162,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     }
 
     private sealed class LIdConverter<T> : JsonConverter<LId<T>>
-        where T : class, IIdentifiable<LId<T>>
+        where T : class, IEntity<LId<T>>
     {
         // The longest possible long string is 20 characters long.
         private const int SpanSize = 20;
@@ -208,7 +208,7 @@ internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
     }
 
     private sealed class SIdConverter<T> : JsonConverter<SId<T>>
-        where T : class, IIdentifiable<SId<T>>
+        where T : class, IEntity<SId<T>>
     {
         public override SId<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

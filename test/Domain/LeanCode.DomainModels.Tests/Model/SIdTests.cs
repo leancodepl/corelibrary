@@ -6,12 +6,12 @@ namespace LeanCode.DomainModels.Tests.Model;
 [Obsolete("Tests for obsolete classes")]
 public class SIdTests
 {
-    internal sealed record Entity(SId<Entity> Id) : IIdentifiable<SId<Entity>>;
+    internal sealed record Entity(SId<Entity> Id) : IEntity<SId<Entity>>;
 
-    internal sealed record VeryLongEntity(SId<VeryLongEntity> Id) : IIdentifiable<SId<VeryLongEntity>>;
+    internal sealed record VeryLongEntity(SId<VeryLongEntity> Id) : IEntity<SId<VeryLongEntity>>;
 
     [IdSlug("cus")]
-    internal sealed record CustomEntity(SId<CustomEntity> Id) : IIdentifiable<SId<CustomEntity>>;
+    internal sealed record CustomEntity(SId<CustomEntity> Id) : IEntity<SId<CustomEntity>>;
 
     [Fact]
     public void Parses_and_stringifies_correctly()
