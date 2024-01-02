@@ -1,6 +1,6 @@
 # Command
 
-Command is just a class that implements the `ICommand` interface. Commands are used to execute an action that modifies data. Commands are validated, and if they pass validation, they should succeed. Commands do not return any value. This makes them quite constrained, yet reasoning is much easier.
+Command is a class that implements the `ICommand` interface. Commands are used to execute an action that modifies data. Commands are validated, and if they pass validation, they should succeed. Commands do not return any value. This makes them quite constrained, yet reasoning is much easier.
 
 ## Packages
 
@@ -11,29 +11,26 @@ Command is just a class that implements the `ICommand` interface. Commands are 
 
 ## Contract
 
-Consider the command that updates name of the `Project` (caller of the command is required to have `Employee` role and own project):
+Consider the command that updates name of the `Project`:
 
 ```csharp
 namespace ExampleApp.Contracts.Projects;
 
-[ProjectIsOwned]
 [AuthorizeWhenHasAnyOf(Auth.Roles.Employee)]
-public class UpdateProjectName : ICommand, IProjectRelated
+public class UpdateProjectName : ICommand
 {
     public string ProjectId { get; set; }
     public string Name { get; set; }
 
+    // Error codes for used for validation.
     public static class ErrorCodes
     {
-        public const int InvalidName = 1;
-        public const int ProjectIdInvalid = 2;
-        public const int ProjectDoesNotExist = 3;
+        // . . .
     }
 }
 ```
 
-!!! tip
-    More on authorization and permissions can be found [here](../authorization/index.md) and on error codes and validation [here](../validation/index.md).
+This class implements the `ICommand` interface, marking it as a command within the system. It requires two parameters: `ProjectId` and `Name`. It includes an `AuthorizeWhenHasAnyOf` attribute which is used for [authorization]. Commands typically also define a set of error codes. These codes are used for [validation].
 
 ## Naming conventions
 
@@ -82,7 +79,7 @@ public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 !!! tip
     More on ids can be found [here](../../domain/id/index.md) and on validation [here](../validation/index.md).
 
-As you can see, the command handler is really simple - it just finds project with specified `ProjectId` and updates it's name. That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
+Command handlers implement `ICommandHandler` interface which takes a command as the generic argument. As you can see, this command handler is really simple - it just finds project with specified `ProjectId` and updates it's name. That does not mean this is the only responsibility of the handlers (it's just an example), but there are some guidelines related to them:
 
 1. Keep them simple and testable, do not try to model whole flows with a single command.
 2. Commands should rely on [aggregates] to gather the data.
@@ -95,4 +92,6 @@ As you can see, the command handler is really simple - it just finds project wit
 [aggregates]: ../../domain/aggregate/index.md
 [events]: ../../domain/domain_event/index.md
 [pipeline]: ../pipeline/index.md
+[authorization]: ../authorization/index.md
+[validation]: ../validation/index.md
 [CommitTransaction]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9

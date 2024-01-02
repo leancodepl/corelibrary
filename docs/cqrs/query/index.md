@@ -11,7 +11,7 @@ Query is a class that implements the `IQuery<TResult>` interface (there's also 
 
 ## Contract
 
-Consider the query that finds all projects that match the name filter. It may be called anonymously and returns a list of `ProjectDTO`s (we use a `List` instead of a `IList` or `IReadOnlyList` because of the DTO constraint; `List` is more DTO-ish than any interface):
+Consider the query that finds all projects that match the name filter:
 
 ```csharp
 namespace ExampleApp.Contracts.Projects;
@@ -28,6 +28,8 @@ public class ProjectDTO
     public string Name { get; set; }
 }
 ```
+
+This class implements the `IQuery` interface which takes the type of data to return as an argument and marks it as a query within the system. It may be called anonymously (using `AllowUnauthorized` [authorization] attribute) and returns a list of `ProjectDTO`s.
 
 !!! Remarks note
     - There's also non-generic `IQuery` interface but it shouldn't be used directly.
@@ -85,4 +87,7 @@ public class AllProjectsQH : IQueryHandler<AllProjects, List<ProjectDTO>>
 }
 ```
 
+Query handlers implement `IQueryHandler` interface which takes a query as the first generic argument and the type of data to return as the second.
+
+[authorization]: ../authorization/index.md
 [validation]: ../validation/index.md

@@ -26,16 +26,16 @@ nav:
   - Quick start: ./quick_start/index.md
   - CQRS:
     - ./cqrs/index.md
-    - Pipeline:
-      - ./cqrs/pipeline/index.md
-      - Adding custom middlewares: ./cqrs/pipeline/adding_custom_middlewares.md
-      - Avoid committing transactions in handlers: ./cqrs/pipeline/avoid_commiting_transactions_in_handlers.md
     - Command:
       - ./cqrs/command/index.md
     - Query:
       - ./cqrs/query/index.md
     - Operation:
       - ./cqrs/operation/index.md
+    - Pipeline:
+      - ./cqrs/pipeline/index.md
+      - Adding custom middlewares: ./cqrs/pipeline/adding_custom_middlewares.md
+      - Avoid committing transactions in handlers: ./cqrs/pipeline/avoid_commiting_transactions_in_handlers.md
     - Authorization:
       - ./cqrs/authorization/index.md
     - Validation:

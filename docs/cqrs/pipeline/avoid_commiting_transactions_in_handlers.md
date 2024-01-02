@@ -120,7 +120,7 @@ public class AssignEmployeeToAssignmentCH
 }
 ```
 
-In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before [events] are published. In LeanCode CoreLibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. This ensures that messages are committed to the database before being available to message brokers after publication and the invocation of the `SaveChangesAsync` method on CoreDbContext.
+In our pipeline configuration, [events] are published after the [command] handler is executed. This implies that changes on `CoreDbContext` will be committed before [events] are published. In LeanCode CoreLibrary, we utilize [MassTransit] for message broker interaction, employing the [transactional outbox](https://masstransit.io/documentation/patterns/transactional-outbox) concept. The idea behind it is not to wait for changes to the data before publishing, but to ensure the messages will be available to message brokers if and only if the changes were made, so that the messages are neither lost, nor published even if `SaveChangesAsync` failed.
 
 In our scenario, if the database fails after successfully saving changes to the project, the `EmployeeAssignedToAssignment` message won't be saved, leading to it being unavailable to message brokers and not sent.
 

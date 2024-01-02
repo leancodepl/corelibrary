@@ -35,6 +35,8 @@ public class ReferralLinkDTO
 }
 ```
 
+This class implements the `IOperation` interface, which takes the type of data to return as an argument and marks it as an operation within the system.
+
 ## Naming conventions
 
 Operations are designed to both modify the state of the system and provide a result. To uphold a consistent naming convention, these operations should be named to reflect both their transformative action and if possible the nature of the information returned including the namespace as part of the contract. Striking a balance between clarity and conciseness, contracts should convey both the intent of state modification and the potential for a consequential result, such as:
@@ -79,3 +81,5 @@ public class GenerateReferralLinkOH
     }
 }
 ```
+
+Operation handlers implement `IOperationHandler` interface which takes an operation as the first generic argument and the type of data to return as the second.
