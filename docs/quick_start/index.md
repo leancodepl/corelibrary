@@ -94,7 +94,7 @@ terraform apply -auto-approve
 
 ## Generating initial migrations
 
-Once local cluster has been deployed we can generate initial migrations. Begin by navigating, to the `backend/src/Apps/ProjectName.Migrations` directory. Generate initial migrations using the `dotnet ef` tool (install it via `dotnet tool install --global dotnet-ef`):
+Once local cluster has been deployed we can generate initial migrations. Begin by navigating, to the `backend/src/Apps/ProjectName.Migrations` directory. Generate initial migrations using the `dotnet ef` tool (install it via `dotnet tool restore`):
 
 ```sh
 # It does not need to point to a real database
@@ -113,19 +113,19 @@ kubectl config use-context k3d-projectname
 To execute the migrations, use the following command:
 
 ```sh
-tilt up migrations
+tilt up projectname-migrations
 ```
 
 With the migrations applied, you can then initiate the API using:
 
 ```sh
-tilt up api
+tilt up projectname-api
 ```
 
 Once Tilt starts the API it should be available at: <https://projectname.local.lncd.pl/api>. You can also run the integration tests using following command:
 
 ```sh
-tilt up integration_tests
+tilt up projectname-integration_tests
 ```
 
 ## Troubleshooting
