@@ -44,8 +44,8 @@ nav:
     - ./domain/index.md
     - Aggregate:
       - ./domain/aggregate/index.md
-    - Identifiable:
-      - ./domain/identifiable/index.md
+    - Entity:
+      - ./domain/entity/index.md
     - Value object:
       - ./domain/value_object/index.md
     - Domain event:

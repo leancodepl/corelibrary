@@ -1,4 +1,4 @@
-# Identifiable
+# Entity
 
 In Domain-Driven Design, entity (marked by `IIdentifiable` in LeanCode CoreLibrary) is a concept used to model a distinct and identifiable object within the domain that is defined by its characteristics and identity. Entities are objects that have a distinct lifecycle and are distinguishable from other objects based on their unique identity.
 
