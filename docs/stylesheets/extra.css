@@ -1,0 +1,7 @@
+:root {
+    /* Primary color shades */
+    --md-primary-fg-color: #000000;
+    /* Accent color shades */
+    --md-accent-fg-color: #c28f02;
+    --md-typeset-a-color: #c28f02;
+}

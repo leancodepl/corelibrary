@@ -2,46 +2,87 @@ site_name: LeanCode CoreLibrary
 repo_url: https://github.com/leancodepl/corelibrary
 docs_dir: ./docs
 theme:
+  logo: ./img/leancode_logo_white.png
+  favicon: ./img/leancode_logo_black.png
   name: material
   features:
     - navigation.indexes
+    - content.code.copy
+extra_css:
+  - stylesheets/extra.css
 markdown_extensions:
   - admonition
   - footnotes
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 nav:
-  - Overview: README.md
-  - General:
-    - ./general/README.md
-    - ./general/building_and_testing.md
-    - ./general/project_structure.md
-    - ./general/versioning_and_support_matrix.md
-  - Basics:
-    - ./basics/README.md
-    - ./basics/app.md
-    - ./basics/cqrs.md
-    - ./basics/mass_transit_integration.md
-  - Domain Concepts:
-    - ./domain/README.md
-    - ./domain/ids.md
-    - ./domain/aggregates.md
-  - Guides:
-    - Overview: ./guides/README.md
-    - Basics:
-      - ./guides/basic/creating_an_aggregate.md
-      - ./guides/basic/writing_commands.md
-      - ./guides/basic/writing_queries.md
-      - ./guides/basic/authorization.md
-      - ./guides/basic/handling_events.md
-      - ./guides/basic/pipeline.md
-    - Features:
-      - ./guides/features/force_update.md
-    - Advanced:
-      - ./guides/advanced/v8_migration_guide.md
-  - ADRs:
-    - Overview: ./adrs/README.md
-    - Value Objects: ./adrs/2021-02-04_value_object.md
-    - Optimistic Concurrency: ./adrs/2021-11-25_optimistic_concurrency.md
+  - Overview: ./README.md
+  - Quick start: ./quick_start/index.md
+  - CQRS:
+    - ./cqrs/index.md
+    - Command:
+      - ./cqrs/command/index.md
+    - Query:
+      - ./cqrs/query/index.md
+    - Operation:
+      - ./cqrs/operation/index.md
+    - Pipeline:
+      - ./cqrs/pipeline/index.md
+      - Adding custom middlewares: ./cqrs/pipeline/adding_custom_middlewares.md
+      - Avoid committing transactions in handlers: ./cqrs/pipeline/avoid_commiting_transactions_in_handlers.md
+    - Authorization:
+      - ./cqrs/authorization/index.md
+    - Validation:
+      - ./cqrs/validation/index.md
+  - Domain:
+    - ./domain/index.md
+    - Aggregate:
+      - ./domain/aggregate/index.md
+    - Entity:
+      - ./domain/entity/index.md
+    - Value object:
+      - ./domain/value_object/index.md
+    - Domain event:
+      - ./domain/domain_event/index.md
+    - Id:
+      - ./domain/id/index.md
+    - Time provider:
+      - ./domain/time_provider/index.md
+  - External integrations:
+    - Authorization - Ory Kratos:
+      - ./external_integrations/authorization_ory_kratos/index.md
+      - Handling webhooks: ./external_integrations/authorization_ory_kratos/handling_webhooks.md
+    - Emails - SendGrid:
+      - ./external_integrations/emails_sendgrid/index.md
+    - Feature flags - ConfigCat:
+      - ./external_integrations/feature_flags_configcat/index.md
+    - Logging - Serilog:
+      - ./external_integrations/logging_serilog/index.md
+      - Sanitization: ./external_integrations/logging_serilog/sanitization.md
+    - Messaging - MassTransit:
+      - ./external_integrations/messaging_masstransit/index.md
+      - Handling events: ./external_integrations/messaging_masstransit/handling_events.md
+    - Observability - OpenTelemetry:
+      - ./external_integrations/observability_open_telemetry/index.md
+    - Push notifications - FCM:
+      - ./external_integrations/push_notifications_fcm/index.md
+  - Features:
+    - Audit logs:
+      - ./features/audit_logs/index.md
+    - Force update:
+      - ./features/force_update/index.md
+    - Localization:
+      - ./features/localization/index.md
+  - Tests:
+    - Faking time:
+      - ./tests/faking_time/index.md
+    - Integration tests:
+      - ./tests/integration_tests/index.md
+  - CoreLibrary 8.0 changes overview & migration guide:
+    - ./v8_migration_guide/index.md

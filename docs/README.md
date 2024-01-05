@@ -1,29 +1,21 @@
-# LeanCode Core Library
+# Overview
 
-LeanCode Core Library, or CoreLib for short, is a set of helper libraries developed at [our company](https://leancode.pl) that aids our day-to-day development. It also provides a general guidelines on how we should build our apps.
+[![LeanCode Core Library](https://img.shields.io/badge/Repository-CoreLibrary-green?logo=github)](https://github.com/leancodepl/corelibrary)
+[![Nuget](https://img.shields.io/nuget/vpre/LeanCode.Components?logo=nuget)](https://www.nuget.org/packages/LeanCode.Components/8.0.2260-preview)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-Our aim is to provide an opinionated framework for .NET Core app development. As for now we have, more-or-less, standardized:
+The LeanCode Core Library is a set of helper libraries developed at [our company](https://leancode.co/) that aids our day-to-day development. Not only does it serve as a facilitator in our day-to-day coding activities, but it also encapsulates comprehensive guidelines, gathers our collective knowledge on application architecture and development best practices.
 
-* App startup, config & logging,
-* Base DDD models & how it interacts with the rest of the framework,
-* CQRS and CQRS-as-API,
-* Basic localization,
-* Some integrations with external services.
+Our primary objective is to provide a definitive and opinionated framework tailored for .NET Core application development. Within this framework, we've standardized various facets of application design and implementation:
 
-Even though is a framework, we try to stick to the ASP.NET Core model as close as possible and keep the "framework" part really small.
+* **CQRS (Command Query Responsibility Segregation) and CQRS-as-API:** Establishing conventions and practices for implementing CQRS patterns and their representation through APIs.
 
-## Documentation
+* **Domain-Driven Design (DDD) Models:** Defining foundational DDD models and integrating them within the broader framework.
 
-The CoreLib documentation is available here:
+* **Integrations with External Services:** Pre-defined integrations and guidelines for interfacing with external services, ensuring consistency and reliability.
 
-1. [General](./general/README.md),
-2. [Basics](./basics/README.md),
-3. [Domain](./domain/README.md).
-4. [Architecture decision records](./adrs/README.md).
+* **Additional Functionalities:** Including features such as handling audit logs, facilitating force updates, and localization.
 
-## Domain Driven Design
+* **Tests:** Helpers dedicated to aiding and improving the process of writing and executing tests.
 
-LeanCode Core Library is strongly based on concepts of Domain Driven Design. If you are not familiar with this approach to developing software, you can check these books:
-
-1. Domain-Driven Design: Tackling Complexity in the Heart of Software, Eric Evans
-2. Implementing Domain-Driven Design, Vaughn Vernon
+While embodying the attributes of a framework, LeanCode Core Library aligns closely with the ASP.NET Core model, emphasizing modularity and minimal intrusion into the application codebase.
