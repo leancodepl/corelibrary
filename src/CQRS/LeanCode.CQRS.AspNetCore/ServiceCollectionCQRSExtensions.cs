@@ -89,11 +89,10 @@ public class CQRSServicesBuilder
         return this;
     }
 
-    public CQRSServicesBuilder WithLocalExecutor()
+    public CQRSServicesBuilder WithLocalCommands(Action<ICQRSApplicationBuilder> configure)
     {
-        Services.AddSingleton<Local.MiddlewareBasedLocalCommandExecutor>();
         Services.AddSingleton<Local.ILocalCommandExecutor>(
-            s => s.GetRequiredService<Local.MiddlewareBasedLocalCommandExecutor>()
+            s => new Local.MiddlewareBasedLocalCommandExecutor(s, configure)
         );
         return this;
     }

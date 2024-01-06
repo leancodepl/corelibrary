@@ -34,7 +34,9 @@ public class MiddlewareBasedLocalCommandExecutorTests : IDisposable, IAsyncLifet
                     .ConfigureServices(services =>
                     {
                         services.AddRouting();
-                        services.AddCQRS(ThisCatalog, ThisCatalog).WithLocalExecutor();
+                        services
+                            .AddCQRS(ThisCatalog, ThisCatalog)
+                            .WithLocalCommands(p => p.UseMiddleware<TestMiddleware>());
 
                         services.AddScoped<TestMiddleware>();
                         services.AddSingleton<DataStorage>();

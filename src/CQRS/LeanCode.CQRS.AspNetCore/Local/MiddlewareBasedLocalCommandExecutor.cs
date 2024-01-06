@@ -11,15 +11,15 @@ public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
 {
     private readonly IServiceProvider serviceProvider;
 
-    private RequestDelegate? pipeline;
+    private readonly RequestDelegate pipeline;
 
-    public MiddlewareBasedLocalCommandExecutor(IServiceProvider serviceProvider)
+    public MiddlewareBasedLocalCommandExecutor(
+        IServiceProvider serviceProvider,
+        Action<ICQRSApplicationBuilder> configure
+    )
     {
         this.serviceProvider = serviceProvider;
-    }
 
-    public void Configure(Action<ICQRSApplicationBuilder> configure)
-    {
         var app = new CQRSApplicationBuilder(new ApplicationBuilder(serviceProvider));
         configure(app);
         app.Run(LocalCommandExecutor.HandleAsync);
@@ -33,11 +33,6 @@ public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
     )
         where T : ICommand
     {
-        if (pipeline is null)
-        {
-            throw new InvalidOperationException("`Configure` first.");
-        }
-
         await using var scope = serviceProvider.CreateAsyncScope();
 
         var localContext = new LocalHttpContext(context, scope.ServiceProvider, cancellationToken);
