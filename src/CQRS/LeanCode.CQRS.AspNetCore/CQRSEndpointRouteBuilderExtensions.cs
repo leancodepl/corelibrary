@@ -33,6 +33,11 @@ public static class CQRSEndpointRouteBuilderExtensions
             operationsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Operations)
         );
         builder.DataSources.Add(dataSource);
+
+        builder
+            .ServiceProvider
+            .GetService<Local.MiddlewareBasedLocalCommandExecutor>()
+            ?.Configure(pipelineBuilder.Commands);
     }
 }
 

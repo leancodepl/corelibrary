@@ -88,4 +88,13 @@ public class CQRSServicesBuilder
         objectsSource.AddCQRSObject(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler));
         return this;
     }
+
+    public CQRSServicesBuilder WithLocalExecutor()
+    {
+        Services.AddSingleton<Local.MiddlewareBasedLocalCommandExecutor>();
+        Services.AddSingleton<Local.ILocalCommandExecutor>(
+            s => s.GetRequiredService<Local.MiddlewareBasedLocalCommandExecutor>()
+        );
+        return this;
+    }
 }
