@@ -22,7 +22,7 @@ public static class FluentValidatorExtensions
     {
         errorMessage = ctx.MessageFormatter.BuildMessage(errorMessage);
         ctx.AddFailure(
-            new ValidationFailure(propertyName ?? ctx.PropertyName, errorMessage)
+            new ValidationFailure(propertyName ?? ctx.PropertyPath, errorMessage)
             {
                 CustomState = new FluentValidatorErrorState(errorCode),
             }
