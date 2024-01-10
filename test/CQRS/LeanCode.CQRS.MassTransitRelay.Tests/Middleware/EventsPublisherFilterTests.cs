@@ -10,38 +10,43 @@ namespace LeanCode.CQRS.MassTransitRelay.Tests.Middleware;
 
 [Collection("EventsInterceptor")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1849", Justification = "Allowed in tests.")]
-public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
+public sealed class EventsPublisherFilterTests : IAsyncLifetime
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly InMemoryTestHarness harness;
+    private readonly ITestHarness harness;
 
     public EventsPublisherFilterTests()
     {
         var collection = new ServiceCollection();
-        collection.AddMassTransitInMemoryTestHarness();
+        collection.AddMassTransitTestHarness(cfg =>
+        {
+            cfg.AddConsumer<TestConsumer>();
+            cfg.UsingInMemory(
+                (ctx, bus) =>
+                {
+                    bus.UseDomainEventsPublishing(serviceProvider!);
+                    bus.ConfigureEndpoints(ctx);
+                }
+            );
+        });
         collection.AddAsyncEventsInterceptor();
 
         serviceProvider = collection.BuildServiceProvider();
-        harness = serviceProvider.GetRequiredService<InMemoryTestHarness>();
-
+        harness = serviceProvider.GetRequiredService<ITestHarness>();
         harness.TestTimeout = TimeSpan.FromSeconds(1);
-        harness.OnConfigureInMemoryBus += cfg =>
-        {
-            cfg.UseDomainEventsPublishing(serviceProvider);
-        };
     }
 
     [Fact]
     public async Task Publishes_event_to_the_bus()
     {
-        var consumerHarness = harness.Consumer<Consumer>();
+        var consumerHarness = harness.GetConsumerHarness<TestConsumer>();
         await harness.Start();
 
         await harness.Bus.Publish(new TestMsg());
         Assert.True(await consumerHarness.Consumed.Any<TestMsg>());
 
         var evt = Assert.Single(harness.Published.Select<TestEvent>());
-        Assert.Equal(Consumer.Event, evt.MessageObject);
+        Assert.Equal(TestConsumer.Event, evt.MessageObject);
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
@@ -49,11 +54,6 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
     public async Task DisposeAsync()
     {
         await harness.Stop();
-    }
-
-    public void Dispose()
-    {
-        harness.Dispose();
     }
 
     private sealed class TestMsg { }
@@ -65,7 +65,7 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime, IDisposable
         public DateTime DateOccurred { get; set; }
     }
 
-    private sealed class Consumer : IConsumer<TestMsg>
+    private sealed class TestConsumer : IConsumer<TestMsg>
     {
         public static readonly TestEvent Event = new() { Id = Guid.NewGuid() };
 
