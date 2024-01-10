@@ -11,7 +11,7 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 ## Configuration
 
-CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCqrs(...)` extension method. In `MapRemoteCqrs(...)` you can configure the inner CQRS pipeline. In the following example, app is configured to handle:
+CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCQRS(...)` extension method. In `MapRemoteCQRS(...)` you can configure the inner CQRS pipeline. In the following example, app is configured to handle:
 
 - [Commands] at `/api/command/FullyQualifiedName`
 - [Queries] at `/api/query/FullyQualifiedName`
@@ -23,7 +23,7 @@ CQRS objects can only be registered in the ASP.NET request pipeline via endpoint
         // . . .
         app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRemoteCqrs(
+                endpoints.MapRemoteCQRS(
                     "/api",
                     cqrs =>
                     {
@@ -96,25 +96,25 @@ sequenceDiagram
     Note over final: Execute handler
     Note over final: Set result in CQRSRequestPayload
 
-    final ->> middle: 
+    final ->> middle:
     Note over middle: Custom middlewares, e.g. events publication
 
-    middle ->> start: 
+    middle ->> start:
 
     Note over start: Set response headers
     Note over start: Serialize result
 
-    start ->> aspnet: 
+    start ->> aspnet:
 
 ```
 
-The process begins with the invocation of common ASP.NET middlewares, such as `UseAuthentication` and `UseCors`, prior to the execution of the [MapRemoteCqrs(...)] method. This method, adds the [CQRSMiddleware], initiating the pipeline. During this stage, the request undergoes deserialization and the [CQRSRequestPayload] is set on `HttpContext`.
+The process begins with the invocation of common ASP.NET middlewares, such as `UseAuthentication` and `UseCors`, prior to the execution of the [MapRemoteCQRS(...)] method. This method, adds the [CQRSMiddleware], initiating the pipeline. During this stage, the request undergoes deserialization and the [CQRSRequestPayload] is set on `HttpContext`.
 
 Subsequently, the pipeline executes additional custom middlewares, responsible for tasks like [validation] and [authorization]. Following the successful execution of these middlewares, the specific handler is invoked inside [CQRSPipelineFinalizer]. Upon handler execution, the result is assigned to the [CQRSRequestPayload].
 
-[EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCqrs(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
+[EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
 
-[MapRemoteCqrs(...)]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
+[MapRemoteCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
 [CQRSTrace()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
 [Validate()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L38
 [Secure()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L44

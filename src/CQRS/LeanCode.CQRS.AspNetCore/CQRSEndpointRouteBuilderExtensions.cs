@@ -10,7 +10,7 @@ namespace LeanCode.CQRS.AspNetCore;
 
 public static class CQRSEndpointRouteBuilderExtensions
 {
-    public static void MapRemoteCqrs(
+    public static void MapRemoteCQRS(
         this IEndpointRouteBuilder builder,
         string path,
         Action<CQRSPipelineBuilder> config

@@ -41,7 +41,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         app.Use(MockAuthorization);
                         app.UseEndpoints(ep =>
                         {
-                            ep.MapRemoteCqrs(
+                            ep.MapRemoteCQRS(
                                 "/cqrs",
                                 cqrs =>
                                 {

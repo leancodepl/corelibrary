@@ -38,6 +38,6 @@ public class Startup : LeanStartup
     {
         app.UseRouting();
         app.UseAuthentication();
-        app.UseEndpoints(e => e.MapRemoteCqrs("/api", cqrs => { }));
+        app.UseEndpoints(e => e.MapRemoteCQRS("/api", cqrs => { }));
     }
 }

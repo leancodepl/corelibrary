@@ -86,7 +86,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
     app.UseAuthentication()
         .UseIdentityTraceAttributes("sub", "role")
         .UseEndpoints(endpoints =>
-            endpoints.MapRemoteCqrs(
+            endpoints.MapRemoteCQRS(
                 "/api",
                 cqrs =>
                 {

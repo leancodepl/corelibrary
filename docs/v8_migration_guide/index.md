@@ -74,7 +74,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
     app.UseRouting();
     app.UseEndpoints(
         e =>
-            e.MapRemoteCqrs(
+            e.MapRemoteCQRS(
                 "/api",
                 cfg =>
                 {

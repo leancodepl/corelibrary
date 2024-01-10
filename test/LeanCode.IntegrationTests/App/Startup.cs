@@ -63,7 +63,7 @@ public class Startup : LeanStartup
         app.UseAuthentication();
         app.UseEndpoints(
             e =>
-                e.MapRemoteCqrs(
+                e.MapRemoteCQRS(
                     "/api",
                     cfg =>
                     {
