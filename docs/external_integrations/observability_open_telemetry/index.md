@@ -84,7 +84,7 @@ To enable CQRS traces in your application, it's necessary to use the `CQRSTrace(
 
         app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRemoteCqrs(
+                endpoints.MapRemoteCQRS(
                     "/api",
                     cqrs =>
                     {

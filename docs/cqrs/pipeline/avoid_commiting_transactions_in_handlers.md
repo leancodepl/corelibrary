@@ -14,7 +14,7 @@ Let's consider following pipeline configuration:
         // . . .
         app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRemoteCqrs(
+                endpoints.MapRemoteCQRS(
                     "/api",
                     cqrs =>
                     {

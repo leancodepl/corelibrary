@@ -136,7 +136,7 @@ All [queries], [commands] and [operations] can (and should!) be behind authoriza
         // . . .
         app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRemoteCqrs(
+                endpoints.MapRemoteCQRS(
                     "/api",
                     cqrs =>
                     {

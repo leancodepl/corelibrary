@@ -50,7 +50,7 @@ After configuration above, you can integrate `EmployeeBlockerMiddleware` into th
         // . . .
         app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRemoteCqrs(
+                endpoints.MapRemoteCQRS(
                     "/api",
                     cqrs =>
                     {

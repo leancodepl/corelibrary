@@ -67,7 +67,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
                         app.UseRouting();
                         app.UseEndpoints(ep =>
                         {
-                            ep.MapRemoteCqrs(
+                            ep.MapRemoteCQRS(
                                 "/cqrs",
                                 cqrs =>
                                 {
