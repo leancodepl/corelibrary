@@ -1,12 +1,12 @@
 # Entity
 
-In Domain-Driven Design, entity (marked by `IIdentifiable` in LeanCode CoreLibrary) is a concept used to model a distinct and identifiable object within the domain that is defined by its characteristics and identity. Entities are objects that have a distinct lifecycle and are distinguishable from other objects based on their unique identity.
+In Domain-Driven Design, entity (marked by `IEntity` in LeanCode CoreLibrary) is a concept used to model a distinct and identifiable object within the domain that is defined by its characteristics and identity. Entities are objects that have a distinct lifecycle and are distinguishable from other objects based on their unique identity.
 
 ## Packages
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels) | `IIdentifiable` |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels) | `IEntity` |
 | LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators) | Ids |
 
 ## Example
@@ -17,7 +17,7 @@ Let's define a class representing a assignment belonging to a project:
 [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "assignment")]
 public readonly partial record struct AssignmentId;
 
-public class Assignment : IIdentifiable<AssignmentId>
+public class Assignment : IEntity<AssignmentId>
 {
     public AssignmentId Id { get; private init; }
     public string Name { get; private set; }

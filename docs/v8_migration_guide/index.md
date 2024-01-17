@@ -470,7 +470,7 @@ Those strongly typed id types are deprecated. Migrate to source generated ids in
 // before
 using LeanCode.DomainModels.Model;
 
-public class Entity : IIdentifiable<Id<Entity>>
+public class Entity : IEntity<Id<Entity>>
 {
     public Id<Entity> Id { get; set; }
 }
@@ -481,7 +481,7 @@ using LeanCode.DomainModels.Model;
 [TypedId(TypedIdFormat.RawGuid)]
 public partial readonly record struct EntityId { }
 
-public class Entity : IIdentifiable<EntityId>
+public class Entity : IEntity<EntityId>
 {
     public EntityId Id { get; set; }
 }
