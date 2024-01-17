@@ -136,38 +136,38 @@ public class CQRSServicesBuilderTests
         registrationSource.Objects.Should().NotContain(o => o.ObjectType == typeof(T));
     }
 
-    private class Query1 : IQuery<QueryResult1> { }
+    private sealed class Query1 : IQuery<QueryResult1> { }
 
-    private class QueryResult1 { }
+    private sealed class QueryResult1 { }
 
-    private class Query2 : IQuery<QueryResult2> { }
+    private sealed class Query2 : IQuery<QueryResult2> { }
 
-    private class QueryResult2 { }
+    private sealed class QueryResult2 { }
 
-    private class Command1 : ICommand { }
+    private sealed class Command1 : ICommand { }
 
-    private class Operation1 : IOperation<OperationResult1> { }
+    private sealed class Operation1 : IOperation<OperationResult1> { }
 
-    private class OperationResult1 { }
+    private sealed class OperationResult1 { }
 
-    private class Query1Handler : IQueryHandler<Query1, QueryResult1>
+    private sealed class Query1Handler : IQueryHandler<Query1, QueryResult1>
     {
         public Task<QueryResult1> ExecuteAsync(HttpContext context, Query1 query) =>
             throw new NotImplementedException();
     }
 
-    private class Query2Handler : IQueryHandler<Query2, QueryResult2>
+    private sealed class Query2Handler : IQueryHandler<Query2, QueryResult2>
     {
         public Task<QueryResult2> ExecuteAsync(HttpContext context, Query2 query) =>
             throw new NotImplementedException();
     }
 
-    private class Command1Handler : ICommandHandler<Command1>
+    private sealed class Command1Handler : ICommandHandler<Command1>
     {
         public Task ExecuteAsync(HttpContext context, Command1 command) => throw new NotImplementedException();
     }
 
-    private class Operation1Handler : IOperationHandler<Operation1, OperationResult1>
+    private sealed class Operation1Handler : IOperationHandler<Operation1, OperationResult1>
     {
         public Task<OperationResult1> ExecuteAsync(HttpContext context, Operation1 operation) =>
             throw new NotImplementedException();

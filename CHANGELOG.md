@@ -1,8 +1,29 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
+
+## 8.0
+
+* Upgrade to .NET 8
+* Add `LeanCode.Kratos`
+* Remove custom outbox in favor of MassTransit Outbox
+* Switch to `.Add*` pattern for DI configuration, removing Autofac and `IAppModule`s
+* Use Endpoint Routing for RemoteCQRS
+* Remove custom pipelines, use ASP.NET mechanism of middlewares
+* Remove `AppContext` in favor of using `HttpContext` directly
+* Support Azure Workload Identity
+* Improve CoreLib-provided logging, tracing and metrics
+* Remove singleton/scoped FluentValidation configuration, remove `RuleForAsync` in favor of `CustomAsync`
+* Introduce exception translation middleware,
+* Add Ulids as a valid source-generated ID
+* Switch to `System.TimeProvider`, removing `ITimeProvider`
+* Improved PostgreSQL handling
+* UserId is now a generic type in most of the helpers
+* Rename `IIdentifiable` to `IEntity`
+* Extensive documentation
 
 ## 7.0
 
@@ -19,6 +40,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Add `JsonLaxTimeOnlyConverter` and `JsonLaxDateTimeOffsetConverter`
 * Extract `StyleCop` out of `CodeAnalysis`
 * Add source-generated IDs
+* Add Fluent Validators scoped to request
 
 ## 6.1
 
@@ -55,12 +77,15 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Bump packages (MassTransit to v7, IdentityServer4 to v4)
 
 ## 4.2
+
 * MassTransit inbox/outbox pattern
 
 ## 4.1
+
 * Upgrade to .NET Core 3.1
 
 ## 4.0
+
 * Upgrade to .NET Core 3.0
 * Bump C# language version to 8.0
 * Add support for Nullable Reference Types
@@ -73,15 +98,20 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Replace hand-written SendGrid client with a small wrapper over official Client
 
 ## 3.5
+
 * Rewrite of EFMigrator
 
 ## 3.4
+
 ### Changed
+
 * All projects must be Localized now
 * AutoMapper is no longer supported
 
 ## 3.3
+
 ### Changed
+
 * Upgrade to .NET Core 2.2 & Newtonsoft.Json 12
 * Switch most of the projects to netcoreapp2.2
 * Embed source in nupkgs and do not publish symbol packages
@@ -89,24 +119,33 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Build is now done on Jenkins
 
 ## 3.2
+
 Switch to dockerized build (and new FAKE)
 Cleanup shared target files and remove LeanCode.Dependencies
 
 ## 3.1
+
 Switch to .NET Core 2.1
 
 ## 3.0
+
 The great versioning
 
 ## 0.3
+
 Migrate to .NET Core 2
 Migrate to Razor 2
 
 ## 0.2
+
 Separated CQRS public interfaces/implementations
 Pipelines
+
 ## 0.1
+
 Initial release with base packages
 Basic CQRS, domain models, basic infrastructure
+
 ## 0.0
+
 Project initiation, no packages were released.

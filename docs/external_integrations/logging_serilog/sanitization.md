@@ -6,7 +6,7 @@ In the context of logging, sanitization refers to the process of ensuring that s
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Logging/8.0.2260-preview/) | `BaseSanitizer`, `Placeholder` |
+| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Logging) | `BaseSanitizer`, `Placeholder` |
 
 ## Defining sanitizer
 

@@ -80,5 +80,5 @@ After configuration above, you can integrate `EmployeeBlockerMiddleware` into th
 ```
 
 [ASP.NET middleware]: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
-[CQRSObjectMetadata]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.Execution/CQRSObjectMetadata.cs
-[CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
+[CQRSObjectMetadata]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSObjectMetadata.cs
+[CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs

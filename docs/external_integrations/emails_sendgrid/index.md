@@ -6,9 +6,9 @@ Managing email communication is a crucial aspect of any modern business or appli
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.SendGrid | [![NuGet version (LeanCode.SendGrid)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.SendGrid/8.0.2260-preview/) | Configuration |
-| LeanCode.ViewRenderer.Razor | [![NuGet version (LeanCode.ViewRenderer.Razor)](https://img.shields.io/nuget/vpre/LeanCode.ViewRenderer.Razor.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ViewRenderer.Razor/8.0.2260-preview/) | `.cshtml` templates |
-| SendGrid | [![NuGet version (SendGrid)](https://img.shields.io/nuget/v/SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/SendGrid/9.28.1/) | Email sending |
+| LeanCode.SendGrid | [![NuGet version (LeanCode.SendGrid)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.SendGrid) | Configuration |
+| LeanCode.ViewRenderer.Razor | [![NuGet version (LeanCode.ViewRenderer.Razor)](https://img.shields.io/nuget/vpre/LeanCode.ViewRenderer.Razor.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ViewRenderer.Razor) | `.cshtml` templates |
+| SendGrid | [![NuGet version (SendGrid)](https://img.shields.io/nuget/v/SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/SendGrid) | Email sending |
 
 ## Configuration
 

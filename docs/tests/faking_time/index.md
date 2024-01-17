@@ -6,7 +6,7 @@ When conducting tests involving time-related functionalities, manipulating time 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.TimeProvider.TestHelpers | [![NuGet version (LeanCode.TimeProvider.TestHelpers)](https://img.shields.io/nuget/vpre/LeanCode.TimeProvider.TestHelpers.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.TimeProvider.TestHelpers/8.0.2260-preview/) | `TestTimeProvider` |
+| LeanCode.TimeProvider.TestHelpers | [![NuGet version (LeanCode.TimeProvider.TestHelpers)](https://img.shields.io/nuget/vpre/LeanCode.TimeProvider.TestHelpers.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.TimeProvider.TestHelpers) | `TestTimeProvider` |
 
 ## Example
 

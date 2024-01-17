@@ -4,9 +4,13 @@ namespace LeanCode.CQRS.MassTransitRelay.LockProviders;
 
 public class CustomSqlServerLockStatementProvider : CustomSqlLockStatementProvider
 {
-    public CustomSqlServerLockStatementProvider(bool enableSchemaCaching = true)
-        : base(new SqlServerLockStatementFormatter(), enableSchemaCaching) { }
+    public CustomSqlServerLockStatementProvider(bool enableSchemaCaching = true, bool serializable = false)
+        : base(new SqlServerLockStatementFormatter(serializable), enableSchemaCaching) { }
 
-    public CustomSqlServerLockStatementProvider(string schemaName, bool enableSchemaCaching = true)
-        : base(schemaName, new SqlServerLockStatementFormatter(), enableSchemaCaching) { }
+    public CustomSqlServerLockStatementProvider(
+        string schemaName,
+        bool enableSchemaCaching = true,
+        bool serializable = false
+    )
+        : base(schemaName, new SqlServerLockStatementFormatter(serializable), enableSchemaCaching) { }
 }

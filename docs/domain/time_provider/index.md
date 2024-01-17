@@ -6,8 +6,8 @@
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels/8.0.2260-preview/) | `IAggregateRoot` |
-| LeanCode.TimeProvider | [![NuGet version (LeanCode.TimeProvider)](https://img.shields.io/nuget/vpre/LeanCode.TimeProvider.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.TimeProvider/8.0.2260-preview/) | `Time` |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels) | `IAggregateRoot` |
+| LeanCode.TimeProvider | [![NuGet version (LeanCode.TimeProvider)](https://img.shields.io/nuget/vpre/LeanCode.TimeProvider.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.TimeProvider) | `Time` |
 
 ## Example
 

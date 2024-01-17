@@ -6,8 +6,8 @@ Command is a class that implements the `ICommand` interface. Commands are used 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `ICommand` |
-| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `ICommandHandler` |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts) | `ICommand` |
+| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Execution) | `ICommandHandler` |
 
 ## Contract
 
@@ -94,4 +94,4 @@ Command handlers implement `ICommandHandler` interface which takes a command as 
 [pipeline]: ../pipeline/index.md
 [authorization]: ../authorization/index.md
 [validation]: ../validation/index.md
-[CommitTransaction]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
+[CommitTransaction]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9

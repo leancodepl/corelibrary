@@ -13,8 +13,8 @@ Operations change the state of the system, but also allow to return some result.
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts/2.0.0-preview.3/) | `IOperation` |
-| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Execution/8.0.2260-preview/) | `IOperationHandler` |
+| LeanCode.Contracts | [![NuGet version (LeanCode.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Contracts) | `IOperation` |
+| LeanCode.CQRS.Execution | [![NuGet version (LeanCode.CQRS.Execution)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.Execution.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.Execution) | `IOperationHandler` |
 
 ## Contract
 

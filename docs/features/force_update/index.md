@@ -6,8 +6,8 @@ CoreLibrary provides an opinionated library for adding force update support to m
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.ForceUpdate | [![NuGet version (LeanCode.ForceUpdate)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate/8.0.2260-preview/) | Configuration |
-| LeanCode.ForceUpdate.Contracts | [![NuGet version (LeanCode.ForceUpdate.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate.Contracts/8.0.2260-preview/) | Predefined contracts |
+| LeanCode.ForceUpdate | [![NuGet version (LeanCode.ForceUpdate)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate) | Configuration |
+| LeanCode.ForceUpdate.Contracts | [![NuGet version (LeanCode.ForceUpdate.Contracts)](https://img.shields.io/nuget/vpre/LeanCode.ForceUpdate.Contracts.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.ForceUpdate.Contracts) | Predefined contracts |
 
 ## Configuration
 
@@ -35,5 +35,5 @@ After configuation above. [VersionSupport] query is created and available at `/c
 
 By default, if the client's version is below the minimum required version, the response will indicate that an update is needed. If the client's version is between minimum required and currently supported version, the response will suggest an update. If the app version is greater or equal to the currently supported version, the response will indicate that the app is up to date. It's also possible to change this behavior by creating custom version handler and overriding `CheckVersionAsync` method from the [VersionHandler] class, responsible for version checking (for example when we want to force only specific group of users to update the app).
 
-[VersionSupport]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.ForceUpdate.Contracts/VersionSupport.cs
-[VersionHandler]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.ForceUpdate/LeanCode.ForceUpdate.Services/VersionHandler.cs
+[VersionSupport]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.ForceUpdate.Contracts/VersionSupport.cs
+[VersionHandler]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.ForceUpdate/LeanCode.ForceUpdate.Services/VersionHandler.cs
