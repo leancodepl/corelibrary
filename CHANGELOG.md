@@ -22,7 +22,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Switch to `System.TimeProvider`, removing `ITimeProvider`
 * Improved PostgreSQL handling
 * UserId is now a generic type in most of the helpers
-* `IIdentifiable` is not `IEntity`
+* Rename `IIdentifiable` to `IEntity`
 * Extensive documentation
 
 ## 7.0
