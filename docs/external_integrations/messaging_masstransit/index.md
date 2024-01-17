@@ -8,8 +8,8 @@ To integrate [MassTransit] with LeanCode CoreLibrary CQRS, you can utilize the [
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | Configuration |
-| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/MassTransit/8.1.1/) | Configuration |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.ConfigCat.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay) | Configuration |
+| MassTransit | [![NuGet version (MassTransit)](https://img.shields.io/nuget/v/MassTransit.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/MassTransit) | Configuration |
 
 ## Configuration
 
@@ -168,12 +168,12 @@ public class DefaultConsumerDefinition<TConsumer>
 ```
 
 [MassTransit]: https://masstransit-project.com/
-[LeanCode.CQRS.MassTransitRelay]: https://github.com/leancodepl/corelibrary/tree/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay
-[CommitTransaction]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
-[Publishevents]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L16
-[AddMassTransitIntegration]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayServiceCollectionExtensions.cs#L10
-[AddConsumersWithDefaultConfiguration]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRegistrationConfigurationExtensions.cs#L13
-[CorrelationFilter]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/CorrelationFilter.cs
-[EventsPublisherFilter]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/EventsPublisherFilter.cs
+[LeanCode.CQRS.MassTransitRelay]: https://github.com/leancodepl/corelibrary/tree/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay
+[CommitTransaction]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
+[Publishevents]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L16
+[AddMassTransitIntegration]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayServiceCollectionExtensions.cs#L10
+[AddConsumersWithDefaultConfiguration]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRegistrationConfigurationExtensions.cs#L13
+[CorrelationFilter]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/CorrelationFilter.cs
+[EventsPublisherFilter]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/EventsPublisherFilter.cs
 [ConsumerDefinition]: https://masstransit.io/documentation/configuration/consumers#consumer-definitions
 [AddMassTransit]: https://masstransit.io/documentation/configuration

@@ -12,8 +12,8 @@ From CoreLib v8, Source Generated IDs are the default one, with primitive types 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels/8.0.2260-preview/) | `IAggregateRoot` |
-| LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators/8.0.2260-preview/) | Ids |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels) | `IAggregateRoot` |
+| LeanCode.DomainModels.Generators | [![NuGet version (LeanCode.DomainModels.Generators)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.Generators.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels.Generators) | Ids |
 
 ## Source generated IDs
 
@@ -98,9 +98,9 @@ The domain part of the library supports a set of generic IDs:
 
 All the types give you type safety when passing the IDs, without introducing penalty (they basically work as `newtype`s). Unfortunately, they require an entity to be defined beforehand - it works as a generic parameter. This means you can't use it without a corresponding entity type. This poses a problem if you want to use the ID outside the parent domain. It is also quite hard to use - you need to know the exact ID format before you reference it (you need to choose between the four types when you just want to reference other entity).
 
-[Id&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[IId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[LId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[SId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Model/Id.cs
-[TypedIdAttribute]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs
+[Id&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[IId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[LId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[SId&lt;T&gt;]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Domain/LeanCode.DomainModels/Model/Id.cs
+[TypedIdAttribute]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Domain/LeanCode.DomainModels/Ids/TypedIdAttribute.cs
 [Aggregate]: ../aggregate/index.md

@@ -62,7 +62,7 @@ Here is the list of available major versions of the library (as of 2022-03-25):
 | v6.0    | 6.0       |                   |            | Unmaintained      |
 | v6.1    | 6.0       |                   |            | Unmaintained      |
 | v7.0    | 7.0       |                   | &#x2714;   |                   |
-| v8.0    | 8.0       | &#x2714;          |            | In preview        |
+| v8.0    | 8.0       | &#x2714;          | &#x2714;   |                   |
 
 ## Building & Testing
 
@@ -159,6 +159,6 @@ Or you can just modify the following project template (most of the projects use 
 </Project>
 ```
 
-[/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/Directory.Build.props
-[/src/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Directory.Build.props
-[/test/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/test/Directory.Build.props
+[/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/Directory.Build.props
+[/src/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Directory.Build.props
+[/test/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/test/Directory.Build.props

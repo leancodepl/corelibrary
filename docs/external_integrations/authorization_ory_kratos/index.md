@@ -12,7 +12,7 @@ Ory Kratos has generic email+password flow (with optional verification), there a
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Configuration |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos) | Configuration |
 
 ## LeanCode CoreLibrary integration
 
@@ -79,5 +79,5 @@ public override void ConfigureServices(IServiceCollection services)
 }
 ```
 
-[KratosAuthenticationHandler]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.Kratos/KratosAuthenticationHandler.cs
-[KratosWebHookHandlerBase]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.Kratos/KratosWebHookHandlerBase.cs
+[KratosAuthenticationHandler]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.Kratos/KratosAuthenticationHandler.cs
+[KratosWebHookHandlerBase]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.Kratos/KratosWebHookHandlerBase.cs

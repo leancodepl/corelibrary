@@ -6,12 +6,12 @@ LeanCode CoreLibrary simplifies the implementation of observability practices by
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore/8.0.2260-preview/) | `CQRSTrace()` |
-| LeanCode.OpenTelemetry | [![NuGet version (LeanCode.OpenTelemetry)](https://img.shields.io/nuget/vpre/LeanCode.OpenTelemetry.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.OpenTelemetry/8.0.2260-preview/) | CoreLibrary traces/metrics configuration |
-| OpenTelemetry.Exporter.OpenTelemetryProtocol | [![NuGet version (OpenTelemetry.Exporter.OpenTelemetryProtocol)](https://img.shields.io/nuget/v/OpenTelemetry.Exporter.OpenTelemetryProtocol.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Exporter.OpenTelemetryProtocol/1.6.0) | `AddOtlpExporter(...)` |
-| OpenTelemetry.Extensions.Hosting | [![NuGet version (OpenTelemetry.Extensions.Hosting)](https://img.shields.io/nuget/v/OpenTelemetry.Extensions.Hosting.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Extensions.Hosting/1.6.0) | OpenTelemetry extension methods |
-| OpenTelemetry.Instrumentation.AspNetCore | [![NuGet version (OpenTelemetry.Instrumentation.AspNetCore)](https://img.shields.io/nuget/v/OpenTelemetry.Instrumentation.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.AspNetCore/1.6.0-beta.3) | `AddAspNetCoreInstrumentation()` |
-| OpenTelemetry.Instrumentation.Http | [![NuGet version (OpenTelemetry.Instrumentation.Http)](https://img.shields.io/nuget/v/OpenTelemetry.Instrumentation.Http.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http/1.6.0-beta.3) | `AddHttpClientInstrumentation()` |
+| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore) | `CQRSTrace()` |
+| LeanCode.OpenTelemetry | [![NuGet version (LeanCode.OpenTelemetry)](https://img.shields.io/nuget/vpre/LeanCode.OpenTelemetry.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.OpenTelemetry) | CoreLibrary traces
+| OpenTelemetry.Exporter.OpenTelemetryProtocol | [![NuGet version (OpenTelemetry.Exporter.OpenTelemetryProtocol)](https://img.shields.io/nuget/v/OpenTelemetry.Exporter.OpenTelemetryProtocol.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Exporter.OpenTelemetryProtocol) | `AddOtlpExporter(...)` |
+| OpenTelemetry.Extensions.Hosting | [![NuGet version (OpenTelemetry.Extensions.Hosting)](https://img.shields.io/nuget/v/OpenTelemetry.Extensions.Hosting.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Extensions.Hosting) | OpenTelemetry extension methods |
+| OpenTelemetry.Instrumentation.AspNetCore | [![NuGet version (OpenTelemetry.Instrumentation.AspNetCore)](https://img.shields.io/nuget/v/OpenTelemetry.Instrumentation.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.AspNetCore) | `AddAspNetCoreInstrumentation()` |
+| OpenTelemetry.Instrumentation.Http | [![NuGet version (OpenTelemetry.Instrumentation.Http)](https://img.shields.io/nuget/v/OpenTelemetry.Instrumentation.Http.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) | `AddHttpClientInstrumentation()` |
 
 ## Configuration
 

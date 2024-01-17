@@ -6,8 +6,8 @@ Efficiently managing logs is an essential element in maintaining the health and 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Logging/8.0.2260-preview/) | Configuration |
-| Serilog | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/v/Serilog.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Serilog/3.1.1/) | Logging |
+| LeanCode.Logging | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/vpre/LeanCode.SendGrid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Logging) | Configuration |
+| Serilog | [![NuGet version (LeanCode.Logging)](https://img.shields.io/nuget/v/Serilog.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Serilog) | Logging |
 
 ## Configuration
 

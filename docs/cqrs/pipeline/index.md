@@ -6,8 +6,8 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore/8.0.2260-preview/) | Configuration |
-| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.MassTransitRelay.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay/8.0.2260-preview/) | MassTransit related middlewares |
+| LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore) | Configuration |
+| LeanCode.CQRS.MassTransitRelay | [![NuGet version (LeanCode.CQRS.MassTransitRelay)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.MassTransitRelay.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.MassTransitRelay) | MassTransit related middlewares |
 
 ## Configuration
 
@@ -114,26 +114,26 @@ Subsequently, the pipeline executes additional custom middlewares, responsible f
 
 [EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
 
-[MapRemoteCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
-[CQRSTrace()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
-[Validate()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L38
-[Secure()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L44
-[LogCQRSResponsesOnNonProduction()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L50
-[LogCQRSResponses()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L56
-[TranslateExceptions()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L68
-[CommitTransaction&lt;T&gt;()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
-[PublishEvents()]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L16
-[CQRSTracingMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSTracingMiddleware.cs
-[CQRSSecurityMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSSecurityMiddleware.cs
-[CQRSValidationMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSValidationMiddleware.cs
-[CommitDatabaseTransactionMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/CommitDatabaseTransactionMiddleware.cs
-[EventsPublisherMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/EventsPublisherMiddleware.cs
-[NonProductionResponseLoggerMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/NonProductionResponseLoggerMiddleware.cs
-[ResponseLoggerMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/ResponseLoggerMiddleware.cs
-[CQRSExceptionTranslationMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSExceptionTranslationMiddleware.cs
-[CQRSMiddleware]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSMiddleware.cs
-[CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
-[CQRSPipelineFinalizer]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSPipelineFinalizer.cs
+[MapRemoteCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
+[CQRSTrace()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
+[Validate()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L38
+[Secure()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L44
+[LogCQRSResponsesOnNonProduction()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L50
+[LogCQRSResponses()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L56
+[TranslateExceptions()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L68
+[CommitTransaction&lt;T&gt;()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
+[PublishEvents()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L16
+[CQRSTracingMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSTracingMiddleware.cs
+[CQRSSecurityMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSSecurityMiddleware.cs
+[CQRSValidationMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSValidationMiddleware.cs
+[CommitDatabaseTransactionMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/CommitDatabaseTransactionMiddleware.cs
+[EventsPublisherMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/EventsPublisherMiddleware.cs
+[NonProductionResponseLoggerMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/NonProductionResponseLoggerMiddleware.cs
+[ResponseLoggerMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/ResponseLoggerMiddleware.cs
+[CQRSExceptionTranslationMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSExceptionTranslationMiddleware.cs
+[CQRSMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSMiddleware.cs
+[CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
+[CQRSPipelineFinalizer]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSPipelineFinalizer.cs
 [Commands]: ../command/index.md
 [Queries]: ../query/index.md
 [Operations]: ../operation/index.md

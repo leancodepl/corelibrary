@@ -15,8 +15,8 @@ Package uses EntityFramework's ChangeTracker in order to detect changes. Each lo
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.AuditLogs | [![NuGet version (LeanCode.AuditLogs)](https://img.shields.io/nuget/vpre/LeanCode.AuditLogs.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.AuditLogs/8.0.2260-preview/) | Configuration |
-| LeanCode.OpenTelemetry | [![NuGet version (LeanCode.OpenTelemetry)](https://img.shields.io/nuget/vpre/LeanCode.OpenTelemetry.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.OpenTelemetry/8.0.2260-preview/) | `IdentityTraceAttributesMiddleware` which sets `ActorId`. When middleware is not added to the pipeline `ActorId` will be always `null` |
+| LeanCode.AuditLogs | [![NuGet version (LeanCode.AuditLogs)](https://img.shields.io/nuget/vpre/LeanCode.AuditLogs.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.AuditLogs) | Configuration |
+| LeanCode.OpenTelemetry | [![NuGet version (LeanCode.OpenTelemetry)](https://img.shields.io/nuget/vpre/LeanCode.OpenTelemetry.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.OpenTelemetry) | `IdentityTraceAttributesMiddleware` which sets `ActorId`. When middleware is not added to the pipeline `ActorId` will be always `null` |
 
 ## Configuration
 

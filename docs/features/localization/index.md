@@ -6,7 +6,7 @@ Effectively handling localization is crucial in ensuring software compatibility 
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Localization | [![NuGet version (LeanCode.Localization)](https://img.shields.io/nuget/vpre/LeanCode.Localization.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Localization/8.0.2260-preview/) | Localization |
+| LeanCode.Localization | [![NuGet version (LeanCode.Localization)](https://img.shields.io/nuget/vpre/LeanCode.Localization.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Localization) | Localization |
 
 ## Configuration
 

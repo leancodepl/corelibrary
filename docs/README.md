@@ -1,7 +1,7 @@
 # Overview
 
 [![LeanCode Core Library](https://img.shields.io/badge/Repository-CoreLibrary-green?logo=github)](https://github.com/leancodepl/corelibrary)
-[![Nuget](https://img.shields.io/nuget/vpre/LeanCode.Components?logo=nuget)](https://www.nuget.org/packages/LeanCode.Components/8.0.2260-preview)
+[![Nuget](https://img.shields.io/nuget/vpre/LeanCode.Components?logo=nuget)](https://www.nuget.org/packages/LeanCode.Components)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 The LeanCode Core Library is a set of helper libraries developed at [our company](https://leancode.co/) that aids our day-to-day development. Not only does it serve as a facilitator in our day-to-day coding activities, but it also encapsulates comprehensive guidelines, gathers our collective knowledge on application architecture and development best practices.

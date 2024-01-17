@@ -6,7 +6,7 @@ To effectively manage incoming webhooks from Ory Kratos, you can employ the [Kra
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
-| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos/8.0.2260-preview/) | Webhook handling |
+| LeanCode.Kratos | [![NuGet version (LeanCode.Kratos)](https://img.shields.io/nuget/vpre/LeanCode.Kratos.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.Kratos) | Webhook handling |
 
 ## Configuring webhooks in Kratos
 
@@ -223,5 +223,5 @@ public class SyncKratosIdentity : IConsumer<KratosIdentityUpdated>
     To read about handling events visit [here](../messaging_masstransit/handling_events.md) and to read about the pipeline visit [here](../../cqrs/pipeline/index.md)
 
 [MassTransit]: https://masstransit-project.com/
-[KratosWebHookHandlerBase]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.Kratos/KratosWebHookHandlerBase.cs
-[Identity]: https://github.com/leancodepl/corelibrary/blob/v8.0-preview/src/Infrastructure/LeanCode.Kratos/Model/Identity.cs
+[KratosWebHookHandlerBase]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.Kratos/KratosWebHookHandlerBase.cs
+[Identity]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Infrastructure/LeanCode.Kratos/Model/Identity.cs
