@@ -6,6 +6,7 @@ using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -30,6 +31,7 @@ public static class ServiceCollectionCQRSExtensions
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+        serviceCollection.AddTransient<IApiDescriptionProvider, CQRSApiDescriptionProvider>();
 
         return new CQRSServicesBuilder(serviceCollection, objectsSource);
     }
