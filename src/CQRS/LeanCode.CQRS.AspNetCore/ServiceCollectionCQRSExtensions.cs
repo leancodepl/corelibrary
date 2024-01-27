@@ -25,6 +25,7 @@ public static class ServiceCollectionCQRSExtensions
         var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
+        serviceCollection.AddSingleton<ICQRSObjectSource>(objectsSource);
         serviceCollection.AddSingleton<CQRSMetrics>();
         serviceCollection.AddSingleton(objectsSource);
 
@@ -92,7 +93,7 @@ public class CQRSServicesBuilder
     public CQRSServicesBuilder WithLocalCommands(Action<ICQRSApplicationBuilder> configure)
     {
         Services.AddSingleton<Local.ILocalCommandExecutor>(
-            s => new Local.MiddlewareBasedLocalCommandExecutor(s, configure)
+            s => new Local.MiddlewareBasedLocalCommandExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
         );
         return this;
     }

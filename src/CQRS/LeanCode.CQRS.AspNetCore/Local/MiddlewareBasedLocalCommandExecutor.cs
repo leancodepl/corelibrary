@@ -1,4 +1,6 @@
 using LeanCode.Contracts;
+using LeanCode.CQRS.AspNetCore.Middleware;
+using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,20 +11,21 @@ namespace LeanCode.CQRS.AspNetCore.Local;
 
 public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
 {
-    private readonly IServiceProvider serviceProvider;
+    private readonly ICQRSObjectSource objectSource;
 
     private readonly RequestDelegate pipeline;
 
     public MiddlewareBasedLocalCommandExecutor(
         IServiceProvider serviceProvider,
+        ICQRSObjectSource objectSource,
         Action<ICQRSApplicationBuilder> configure
     )
     {
-        this.serviceProvider = serviceProvider;
+        this.objectSource = objectSource;
 
         var app = new CQRSApplicationBuilder(new ApplicationBuilder(serviceProvider));
         configure(app);
-        app.Run(LocalCommandExecutor.HandleAsync);
+        app.Run(CQRSPipelineFinalizer.HandleAsync);
         pipeline = app.Build();
     }
 
@@ -33,12 +36,14 @@ public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
     )
         where T : ICommand
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
+        await using var scope = context.RequestServices.CreateAsyncScope();
 
+        var metadata = objectSource.MetadataFor(typeof(T));
         var localContext = new LocalHttpContext(context, scope.ServiceProvider, cancellationToken);
 
         localContext.SetCQRSRequestPayload(command);
-        localContext.Features.Set<ILocalCommandPayload>(new LocalCommandPayload<T>(command));
+        localContext.SetCQRSObjectMetadataForLocalExecution(metadata);
+        localContext.Features.Set<IEndpointFeature>(new StubEndpointFeature());
 
         await pipeline(localContext);
 
@@ -48,34 +53,11 @@ public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
     }
 }
 
-internal class LocalCommandExecutor
+internal class StubEndpointFeature : IEndpointFeature
 {
-    public static Task HandleAsync(HttpContext context)
+    public Endpoint? Endpoint
     {
-        var localPayload = context.Features.GetRequiredFeature<ILocalCommandPayload>();
-        return localPayload.ExecuteAsync(context);
-    }
-}
-
-internal interface ILocalCommandPayload
-{
-    Task ExecuteAsync(HttpContext context);
-}
-
-internal class LocalCommandPayload<T> : ILocalCommandPayload
-    where T : ICommand
-{
-    private readonly T cmd;
-
-    public LocalCommandPayload(T cmd)
-    {
-        this.cmd = cmd;
-    }
-
-    public async Task ExecuteAsync(HttpContext context)
-    {
-        var payload = context.GetCQRSRequestPayload();
-        await context.RequestServices.GetRequiredService<ICommandHandler<T>>().ExecuteAsync(context, cmd);
-        payload.SetResult(ExecutionResult.WithPayload(CommandResult.Success));
+        get => null;
+        set { }
     }
 }

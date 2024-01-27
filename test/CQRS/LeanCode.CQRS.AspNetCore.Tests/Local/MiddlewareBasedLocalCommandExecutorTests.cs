@@ -47,7 +47,7 @@ public class MiddlewareBasedLocalCommandExecutorTests : IDisposable, IAsyncLifet
                         app.Use(MockAuthorization);
                         app.UseEndpoints(e =>
                         {
-                            e.MapRemoteCqrs(
+                            e.MapRemoteCQRS(
                                 "/cqrs",
                                 cqrs =>
                                 {
