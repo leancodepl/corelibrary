@@ -31,9 +31,14 @@ public static class ServiceCollectionCQRSExtensions
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
-        serviceCollection.AddTransient<IApiDescriptionProvider, CQRSApiDescriptionProvider>();
 
         return new CQRSServicesBuilder(serviceCollection, objectsSource);
+    }
+
+    public static IServiceCollection AddCQRSApiExplorer(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddTransient<IApiDescriptionProvider, CQRSApiDescriptionProvider>();
+        return serviceCollection;
     }
 }
 

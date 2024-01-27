@@ -1,16 +1,14 @@
 using FluentAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
-using LeanCode.Contracts.Validation;
-using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Registration;
@@ -24,6 +22,18 @@ public class CQRSApiDescriptionProviderTests
     [
         new ApiRequestFormat { MediaType = "application/json" }
     ];
+
+    [Fact]
+    public void ApiDescriptionProvider_is_registered_correctly()
+    {
+        var sc = new ServiceCollection();
+        sc.AddTransient<EndpointDataSource, DummyEndpointDataSource>();
+        sc.AddCQRSApiExplorer();
+        var provider = sc.BuildServiceProvider();
+
+        var providers = provider.GetService<IEnumerable<IApiDescriptionProvider>>();
+        providers.Should().ContainSingle().Which.Should().BeOfType<CQRSApiDescriptionProvider>();
+    }
 
     [Fact]
     public void Describes_base_query_parameters()
@@ -229,4 +239,11 @@ public class OperationOH : IOperationHandler<Operation, OperationResultDTO>
 {
     public Task<OperationResultDTO> ExecuteAsync(HttpContext context, Operation operation) =>
         throw new NotImplementedException();
+}
+
+internal class DummyEndpointDataSource : EndpointDataSource
+{
+    public override IReadOnlyList<Endpoint> Endpoints => throw new NotImplementedException();
+
+    public override IChangeToken GetChangeToken() => throw new NotImplementedException();
 }

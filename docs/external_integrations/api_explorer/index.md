@@ -4,13 +4,22 @@
 
 By using these tools, you get OpenAPI definitions, along the [Swagger UI](https://swagger.io/tools/swagger-ui/) tooling.
 
-The integration is available out of the box for every exposed command, query or operation.
-
 ## Packages
 
 | Package | Link | Application in section |
 | --- | ----------- | ----------- |
 | LeanCode.CQRS.AspNetCore | [![NuGet version (LeanCode.CQRS.AspNetCore)](https://img.shields.io/nuget/vpre/LeanCode.CQRS.AspNetCore.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.CQRS.AspNetCore) | Configuration |
+
+## Configuration
+
+To add the service, call the `AddCQRSApiExplorer` extension method in `ConfigureServices`:
+
+```csharp
+public override void ConfigureServices(IServiceCollection services)
+{
+    services.AddCQRSApiExplorer();
+}
+```
 
 ## JSON Casing
 
