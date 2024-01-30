@@ -72,6 +72,8 @@ nav:
       - ./external_integrations/observability_open_telemetry/index.md
     - Push notifications - FCM:
       - ./external_integrations/push_notifications_fcm/index.md
+    - API Explorer/Swagger:
+      - ./external_integrations/api_explorer/index.md
   - Features:
     - Audit logs:
       - ./features/audit_logs/index.md
