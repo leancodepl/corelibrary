@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
