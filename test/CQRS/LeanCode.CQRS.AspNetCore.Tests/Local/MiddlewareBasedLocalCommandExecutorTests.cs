@@ -148,13 +148,13 @@ public class RemoteCommandHandler : ICommandHandler<RemoteCommand>
     {
         storage.RemoteUser = context.User?.FindFirst("id")?.Value;
 
-        await localCommand.RunAsync(context, new LocalCommand("Test Val 1", false));
+        await localCommand.RunAsync(new LocalCommand("Test Val 1", false), context.User!);
         try
         {
-            await localCommand.RunAsync(context, new LocalCommand("Test Val 2", true));
+            await localCommand.RunAsync(new LocalCommand("Test Val 2", true), context.User!);
         }
         catch { }
-        await localCommand.RunAsync(context, new LocalCommand("Test Val 3", false));
+        await localCommand.RunAsync(new LocalCommand("Test Val 3", false), context.User!);
     }
 }
 

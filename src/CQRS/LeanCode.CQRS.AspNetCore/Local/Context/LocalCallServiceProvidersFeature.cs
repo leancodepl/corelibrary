@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http.Features;
 
-namespace LeanCode.CQRS.AspNetCore.Local;
+namespace LeanCode.CQRS.AspNetCore.Local.Context;
 
 internal class LocalCallServiceProvidersFeature : IServiceProvidersFeature
 {

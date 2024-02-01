@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Http.Features;
 
-namespace LeanCode.CQRS.AspNetCore.Local;
+namespace LeanCode.CQRS.AspNetCore.Local.Context;
 
 internal class LocalCallLifetimeFeature : IHttpRequestLifetimeFeature
 {
     private readonly CancellationTokenSource source;
-
     private CancellationToken requestAborted;
 
     public CancellationToken RequestAborted
