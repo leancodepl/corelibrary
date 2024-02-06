@@ -5,10 +5,10 @@ namespace LeanCode.CQRS.Execution;
 
 public static class HttpContextExtensions
 {
-    public static CQRSEndpointMetadata GetCQRSEndpoint(this HttpContext httpContext)
+    public static CQRSObjectMetadata GetCQRSObjectMetadata(this HttpContext httpContext)
     {
-        return httpContext.GetEndpoint()?.Metadata.GetMetadata<CQRSEndpointMetadata>()
-            ?? throw new InvalidOperationException("Request does not contain CQRSEndpointMetadata.");
+        return httpContext.GetEndpoint()?.Metadata.GetMetadata<CQRSObjectMetadata>()
+            ?? throw new InvalidOperationException("Request does not contain CQRSObjectMetadata.");
     }
 
     public static CQRSRequestPayload GetCQRSRequestPayload(this HttpContext httpContext)

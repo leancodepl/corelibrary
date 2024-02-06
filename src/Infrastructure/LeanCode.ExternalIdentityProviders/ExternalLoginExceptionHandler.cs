@@ -21,7 +21,7 @@ public class ExternalLoginExceptionHandler
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
 
         if (cqrsMetadata.ObjectKind != CQRSObjectKind.Command)
         {

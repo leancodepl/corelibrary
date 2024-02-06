@@ -18,7 +18,7 @@ public class CQRSServicesBuilderTests
     public CQRSServicesBuilderTests()
     {
         services = new();
-        registrationSource = new CQRSObjectsRegistrationSource(services);
+        registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSServicesBuilder>(),
             TypesCatalog.Of<CQRSServicesBuilder>()

@@ -201,10 +201,10 @@ public class CQRSApiDescriptionProviderTests
     private static CQRSEndpointsDataSource CreateDataSource(Type forObject)
     {
         var selfCatalog = TypesCatalog.Of<CQRSApiDescriptionProviderTests>();
-        var regSource = new CQRSObjectsRegistrationSource(new ServiceCollection());
+        var regSource = new CQRSObjectsRegistrationSource(new ServiceCollection(), new ObjectExecutorFactory());
         regSource.AddCQRSObjects(selfCatalog, selfCatalog);
 
-        var dataSource = new CQRSEndpointsDataSource("/" + BasePath, new ObjectExecutorFactory());
+        var dataSource = new CQRSEndpointsDataSource("/" + BasePath);
         dataSource.AddEndpointsFor(
             regSource.Objects.Where(o => o.ObjectType == forObject),
             _ => Task.CompletedTask,

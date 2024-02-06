@@ -27,9 +27,9 @@ public class CQRSMiddleware
     [SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        var cqrsEndpoint = httpContext.GetCQRSEndpoint();
+        var cqrsEndpoint = httpContext.GetCQRSObjectMetadata();
 
-        var objectType = cqrsEndpoint.ObjectMetadata.ObjectType;
+        var objectType = cqrsEndpoint.ObjectType;
         object? obj;
 
         try
@@ -73,7 +73,7 @@ public class CQRSMiddleware
         }
     }
 
-    private async Task SerializeResultAsync(HttpContext httpContext, CQRSEndpointMetadata cqrsEndpoint)
+    private async Task SerializeResultAsync(HttpContext httpContext, CQRSObjectMetadata objectMetadata)
     {
         var payload = httpContext.GetCQRSRequestPayload();
 
@@ -100,7 +100,7 @@ public class CQRSMiddleware
                 await serializer.SerializeAsync(
                     httpContext.Response.Body,
                     result.Payload,
-                    cqrsEndpoint.ObjectMetadata.ResultType,
+                    objectMetadata.ResultType,
                     httpContext.RequestAborted
                 );
             }

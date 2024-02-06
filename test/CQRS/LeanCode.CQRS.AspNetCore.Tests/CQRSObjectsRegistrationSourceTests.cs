@@ -51,7 +51,7 @@ public class CQRSObjectsRegistrationSourceTests
     [Fact]
     public void Same_objects_are_not_registered_multiple_times()
     {
-        var registrationSource = new CQRSObjectsRegistrationSource(services);
+        var registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
 
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
@@ -97,7 +97,7 @@ public class CQRSObjectsRegistrationSourceTests
 
     private static List<CQRSObjectMetadata> GetCQRSObjects(IServiceCollection services)
     {
-        var registrationSource = new CQRSObjectsRegistrationSource(services);
+        var registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
 
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),

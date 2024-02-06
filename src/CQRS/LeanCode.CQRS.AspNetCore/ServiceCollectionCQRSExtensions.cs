@@ -22,7 +22,7 @@ public static class ServiceCollectionCQRSExtensions
     {
         serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
 
-        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection);
+        var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
         serviceCollection.AddSingleton<CQRSMetrics>();
@@ -69,7 +69,7 @@ public class CQRSServicesBuilder
         where TQuery : IQuery<TResult>
         where THandler : IQueryHandler<TQuery, TResult>
     {
-        objectsSource.AddCQRSObject(new(CQRSObjectKind.Query, typeof(TQuery), typeof(TResult), typeof(THandler)));
+        objectsSource.AddCQRSObject(CQRSObjectKind.Query, typeof(TQuery), typeof(TResult), typeof(THandler));
         return this;
     }
 
@@ -77,9 +77,7 @@ public class CQRSServicesBuilder
         where TCommand : ICommand
         where THandler : ICommandHandler<TCommand>
     {
-        objectsSource.AddCQRSObject(
-            new(CQRSObjectKind.Command, typeof(TCommand), typeof(CommandResult), typeof(THandler))
-        );
+        objectsSource.AddCQRSObject(CQRSObjectKind.Command, typeof(TCommand), typeof(CommandResult), typeof(THandler));
         return this;
     }
 
@@ -87,9 +85,7 @@ public class CQRSServicesBuilder
         where TOperation : IOperation<TResult>
         where THandler : IOperationHandler<TOperation, TResult>
     {
-        objectsSource.AddCQRSObject(
-            new(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler))
-        );
+        objectsSource.AddCQRSObject(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler));
         return this;
     }
 }

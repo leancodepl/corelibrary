@@ -139,7 +139,8 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
             CQRSObjectKind.Command,
             payload.GetType(),
             typeof(CommandResult),
-            typeof(IgnoreType)
+            typeof(IgnoreType),
+            (_, _) => Task.FromResult<object?>(null)
         );
 
         return Server.SendAsync(ctx =>

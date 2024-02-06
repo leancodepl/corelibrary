@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Http;
+
 namespace LeanCode.CQRS.Execution;
+
+public delegate Task<object?> ObjectExecutor(HttpContext httpContext, CQRSRequestPayload payload);
 
 public class CQRSObjectMetadata
 {
@@ -6,13 +10,21 @@ public class CQRSObjectMetadata
     public Type ObjectType { get; }
     public Type ResultType { get; }
     public Type HandlerType { get; }
+    public ObjectExecutor ObjectExecutor { get; }
 
-    public CQRSObjectMetadata(CQRSObjectKind objectKind, Type objectType, Type resultType, Type handlerType)
+    public CQRSObjectMetadata(
+        CQRSObjectKind objectKind,
+        Type objectType,
+        Type resultType,
+        Type handlerType,
+        ObjectExecutor objectExecutor
+    )
     {
         ObjectKind = objectKind;
         ObjectType = objectType;
         ResultType = resultType;
         HandlerType = handlerType;
+        ObjectExecutor = objectExecutor;
     }
 }
 

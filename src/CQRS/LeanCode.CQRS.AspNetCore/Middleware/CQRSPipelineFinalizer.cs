@@ -7,10 +7,10 @@ internal static class CQRSPipelineFinalizer
 {
     public static async Task HandleAsync(HttpContext context)
     {
-        var cqrsEndpoint = context.GetCQRSEndpoint();
+        var metadata = context.GetCQRSObjectMetadata();
         var payload = context.GetCQRSRequestPayload();
 
-        var result = await cqrsEndpoint.ObjectExecutor(context, payload);
+        var result = await metadata.ObjectExecutor(context, payload);
 
         payload.SetResult(ExecutionResult.WithPayload(result));
     }

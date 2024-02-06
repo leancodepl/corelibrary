@@ -104,7 +104,8 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
                 CQRSObjectKind.Command,
                 command.GetType(),
                 typeof(CommandResult),
-                typeof(IgnoreType)
+                typeof(IgnoreType),
+                (_, _) => Task.FromResult<object?>(null)
             );
 
             ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(cqrsMetadata));

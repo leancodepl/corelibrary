@@ -16,7 +16,13 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 {
     private static readonly CQRSObjectMetadata QueryMetadata =
-        new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(IgnoreType));
+        new(
+            CQRSObjectKind.Query,
+            typeof(Query),
+            typeof(QueryResult),
+            typeof(IgnoreType),
+            (_, _) => Task.FromResult<object?>(null)
+        );
 
     private readonly ISerializer serializer = Substitute.For<ISerializer>();
 
