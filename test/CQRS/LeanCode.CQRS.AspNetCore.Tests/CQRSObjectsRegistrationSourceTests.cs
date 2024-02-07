@@ -49,7 +49,7 @@ public class CQRSObjectsRegistrationSourceTests
     }
 
     [Fact]
-    public void Same_objects_are_not_registered_multiple_times()
+    public void Duplicate_objects_cannot_be_registered()
     {
         var registrationSource = new CQRSObjectsRegistrationSource(services);
 
@@ -59,13 +59,12 @@ public class CQRSObjectsRegistrationSourceTests
         );
         var firstCount = registrationSource.Objects.Count;
 
-        registrationSource.AddCQRSObjects(
-            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
-            TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
-        );
-        var secondCount = registrationSource.Objects.Count;
-
-        firstCount.Should().Be(secondCount);
+        var act = () =>
+            registrationSource.AddCQRSObjects(
+                TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
+                TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
+            );
+        act.Should().Throw<InvalidOperationException>();
     }
 
     private void AssertRegistered<TQuery, TResult, THandler>()

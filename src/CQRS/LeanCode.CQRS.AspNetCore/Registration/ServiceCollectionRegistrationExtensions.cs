@@ -20,8 +20,9 @@ public static class ServiceCollectionRegistrationExtensions
 
     public static void AddCQRSHandler(this IServiceCollection serviceCollection, CQRSObjectMetadata obj)
     {
+        serviceCollection.Add(new(obj.HandlerType, obj.HandlerType, ServiceLifetime.Scoped));
         serviceCollection.Add(
-            new ServiceDescriptor(MakeHandlerInterfaceType(obj), obj.HandlerType, ServiceLifetime.Scoped)
+            new(MakeHandlerInterfaceType(obj), sp => sp.GetRequiredService(obj.HandlerType), ServiceLifetime.Scoped)
         );
 
         Type MakeHandlerInterfaceType(CQRSObjectMetadata obj)
