@@ -1,11 +1,11 @@
 using System.Security.Claims;
-using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore.Local;
@@ -32,7 +32,7 @@ public abstract class MiddlewareBasedLocalExecutor
         pipeline = app.Build();
     }
 
-    protected async Task<object?> RunInternalAsync(
+    protected async Task<TResult> RunInternalAsync<TResult>(
         object obj,
         ClaimsPrincipal user,
         IHeaderDictionary? headers,
@@ -61,6 +61,17 @@ public abstract class MiddlewareBasedLocalExecutor
 
         localContext.CallAborted.ThrowIfCancellationRequested();
 
-        return localContext.GetCQRSRequestPayload().Result!.Value.Payload;
+        return Decode<TResult>(obj, localContext.GetCQRSRequestPayload().Result!.Value);
+    }
+
+    private static T Decode<T>(object payload, ExecutionResult result)
+    {
+        return result.StatusCode switch
+        {
+            StatusCodes.Status200OK or StatusCodes.Status422UnprocessableEntity => (T)result.Payload!,
+            StatusCodes.Status401Unauthorized => throw new UnauthenticatedCQRSRequestException(payload.GetType()),
+            StatusCodes.Status403Forbidden => throw new UnauthorizedCQRSRequestException(payload.GetType()),
+            var e => throw new UnknownStatusCodeException(e, payload.GetType()),
+        };
     }
 }

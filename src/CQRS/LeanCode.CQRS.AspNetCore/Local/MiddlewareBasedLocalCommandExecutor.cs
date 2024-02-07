@@ -14,18 +14,18 @@ public class MiddlewareBasedLocalCommandExecutor : MiddlewareBasedLocalExecutor,
     )
         : base(serviceProvider, objectSource, configure) { }
 
-    public async Task<CommandResult> RunAsync<T>(
+    public Task<CommandResult> RunAsync<T>(
         T command,
         ClaimsPrincipal user,
         CancellationToken cancellationToken = default
     )
-        where T : ICommand => (CommandResult)(await RunInternalAsync(command, user, null, cancellationToken))!;
+        where T : ICommand => RunInternalAsync<CommandResult>(command, user, null, cancellationToken);
 
-    public async Task<CommandResult> RunAsync<T>(
+    public Task<CommandResult> RunAsync<T>(
         T command,
         ClaimsPrincipal user,
         IHeaderDictionary headers,
         CancellationToken cancellationToken = default
     )
-        where T : ICommand => (CommandResult)(await RunInternalAsync(command, user, headers, cancellationToken))!;
+        where T : ICommand => RunInternalAsync<CommandResult>(command, user, headers, cancellationToken);
 }

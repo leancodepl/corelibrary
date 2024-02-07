@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using FluentAssertions;
 using LeanCode.Components;
@@ -98,6 +99,34 @@ public class MiddlewareBasedLocalExecutorTests
 
         await executor.RunAsync(command, new ClaimsPrincipal());
     }
+
+    [Fact]
+    public async Task Decodes_401_status_code()
+    {
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "401", };
+
+        var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
+        await act.Should().ThrowAsync<UnauthenticatedCQRSRequestException>();
+    }
+
+    [Fact]
+    public async Task Decodes_403_status_code()
+    {
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "403", };
+
+        var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
+        await act.Should().ThrowAsync<UnauthorizedCQRSRequestException>();
+    }
+
+    [Fact]
+    public async Task Decodes_499_status_code_as_unknown()
+    {
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "499", };
+
+        var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
+        var exc = await act.Should().ThrowAsync<UnknownStatusCodeException>();
+        exc.Which.StatusCode.Should().Be(499);
+    }
 }
 
 public class LocalDataStorage
@@ -146,9 +175,20 @@ public class LocalCommandHandler : ICommandHandler<LocalCommand>
 
 public class LocalHandlerMiddleware : IMiddleware
 {
+    public const string StatusHeader = "X-Status";
+
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        context.RequestServices.GetRequiredService<LocalDataStorage>().Middlewares.Add(this);
-        return next(context);
+        if (context.Request.Headers.TryGetValue(StatusHeader, out var value))
+        {
+            var code = int.Parse(value!, CultureInfo.InvariantCulture);
+            context.GetCQRSRequestPayload().SetResult(ExecutionResult.Empty(code));
+            return Task.CompletedTask;
+        }
+        else
+        {
+            context.RequestServices.GetRequiredService<LocalDataStorage>().Middlewares.Add(this);
+            return next(context);
+        }
     }
 }

@@ -70,8 +70,8 @@ public class MiddlewaresForLocalExecutionTests
     {
         var executor = BuildWith(c => c.Secure());
 
-        var result = await executor.RunAsync(new SecuredCommand(), new());
-        result.WasSuccessful.Should().BeFalse();
+        var act = () => executor.RunAsync(new SecuredCommand(), new());
+        await act.Should().ThrowAsync<UnauthenticatedCQRSRequestException>();
     }
 
     public static ILocalCommandExecutor BuildWith(Action<ICQRSApplicationBuilder> configure)

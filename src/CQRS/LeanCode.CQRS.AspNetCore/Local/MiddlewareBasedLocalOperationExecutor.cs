@@ -14,16 +14,16 @@ public class MiddlewareBasedLocalOperationExecutor : MiddlewareBasedLocalExecuto
     )
         : base(serviceProvider, objectSource, configure) { }
 
-    public async Task<TResult> ExecuteAsync<TResult>(
+    public Task<TResult> ExecuteAsync<TResult>(
         IOperation<TResult> query,
         ClaimsPrincipal user,
         CancellationToken cancellationToken = default
-    ) => (TResult)(await RunInternalAsync(query, user, null, cancellationToken))!;
+    ) => RunInternalAsync<TResult>(query, user, null, cancellationToken);
 
-    public async Task<TResult> ExecuteAsync<TResult>(
+    public Task<TResult> ExecuteAsync<TResult>(
         IOperation<TResult> query,
         ClaimsPrincipal user,
         IHeaderDictionary headers,
         CancellationToken cancellationToken = default
-    ) => (TResult)(await RunInternalAsync(query, user, null, cancellationToken))!;
+    ) => RunInternalAsync<TResult>(query, user, null, cancellationToken);
 }
