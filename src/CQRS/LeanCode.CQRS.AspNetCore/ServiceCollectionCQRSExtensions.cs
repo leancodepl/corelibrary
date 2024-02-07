@@ -105,4 +105,13 @@ public class CQRSServicesBuilder
         );
         return this;
     }
+
+    public CQRSServicesBuilder WithLocalOperations(Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddSingleton<Local.ILocalOperationExecutor>(
+            s =>
+                new Local.MiddlewareBasedLocalOperationExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
 }
