@@ -60,12 +60,14 @@ internal class CQRSObjectsRegistrationSource
 
     public void AddCQRSObject(CQRSObjectMetadata metadata)
     {
-        var added = objects.Add(metadata);
-
-        if (added)
+        if (!objects.Add(metadata))
         {
-            services.AddCQRSHandler(metadata);
+            throw new InvalidOperationException(
+                $"CQRS Object({metadata.ObjectKind}) {metadata.ObjectType} is already registered."
+            );
         }
+
+        services.AddCQRSHandler(metadata);
     }
 
     private static bool ValidateContractType(TypeInfo type)
