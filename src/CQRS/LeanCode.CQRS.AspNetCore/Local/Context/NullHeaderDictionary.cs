@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
@@ -20,13 +21,15 @@ internal class NullHeaderDictionary : IHeaderDictionary
         set { }
     }
 
-    public ICollection<string> Keys => [ ];
+    public ICollection<string> Keys { get; } = new ReadOnlyCollection<string>([ ]);
 
-    public ICollection<StringValues> Values => [ ];
+    public ICollection<StringValues> Values { get; } = new ReadOnlyCollection<StringValues>([ ]);
 
     public int Count => 0;
 
     public bool IsReadOnly => true;
+
+    private NullHeaderDictionary() { }
 
     public void Add(string key, StringValues value) { }
 

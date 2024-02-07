@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Net.WebSockets;
 using Microsoft.AspNetCore.Http;
 
@@ -9,7 +10,9 @@ internal class NullWebSocketManager : WebSocketManager
 
     public override bool IsWebSocketRequest => false;
 
-    public override IList<string> WebSocketRequestedProtocols => [ ];
+    public override IList<string> WebSocketRequestedProtocols { get; } = new ReadOnlyCollection<string>([ ]);
+
+    private NullWebSocketManager() { }
 
     public override Task<WebSocket> AcceptWebSocketAsync(string? subProtocol) =>
         throw new NotSupportedException("WebSockets are not supported in local CQRS calls.");

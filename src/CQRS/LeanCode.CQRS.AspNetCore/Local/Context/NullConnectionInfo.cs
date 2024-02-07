@@ -44,6 +44,8 @@ internal class NullConnectionInfo : ConnectionInfo
         set { }
     }
 
+    private NullConnectionInfo() { }
+
     public override Task<X509Certificate2?> GetClientCertificateAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult<X509Certificate2?>(null);
 }

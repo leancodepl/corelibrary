@@ -6,6 +6,8 @@ internal class NullResponseCookies : IResponseCookies
 {
     public static readonly NullResponseCookies Empty = new();
 
+    private NullResponseCookies() { }
+
     public void Append(string key, string value) { }
 
     public void Append(string key, string value, CookieOptions options) { }

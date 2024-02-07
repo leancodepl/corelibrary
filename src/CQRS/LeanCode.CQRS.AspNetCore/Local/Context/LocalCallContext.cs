@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace LeanCode.CQRS.AspNetCore.Local.Context;
 
-internal class LocalCallContext : HttpContext
+internal class LocalCallContext : HttpContext, IDisposable
 {
     private const int DefaultFeatureCollectionSize = 6; // 4 internal, 2 external (set in local executors)
 
@@ -75,4 +75,6 @@ internal class LocalCallContext : HttpContext
     }
 
     public override void Abort() => callLifetimeFeature.Abort();
+
+    public void Dispose() => callLifetimeFeature.Dispose();
 }

@@ -13,6 +13,8 @@ internal class NullSession : ISession
 
     public IEnumerable<string> Keys => [ ];
 
+    private NullSession() { }
+
     public void Clear() { }
 
     public Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace LeanCode.CQRS.AspNetCore.Local.Context;
 
-internal class LocalCallLifetimeFeature : IHttpRequestLifetimeFeature
+internal class LocalCallLifetimeFeature : IHttpRequestLifetimeFeature, IDisposable
 {
     private readonly CancellationTokenSource source;
     private CancellationToken requestAborted;
@@ -22,4 +22,6 @@ internal class LocalCallLifetimeFeature : IHttpRequestLifetimeFeature
     }
 
     public void Abort() => source.Cancel();
+
+    public void Dispose() => source.Dispose();
 }

@@ -14,6 +14,8 @@ internal class NullRequestCookieCollection : IRequestCookieCollection
 
     public ICollection<string> Keys => [ ];
 
+    private NullRequestCookieCollection() { }
+
     public bool ContainsKey(string key) => false;
 
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() =>

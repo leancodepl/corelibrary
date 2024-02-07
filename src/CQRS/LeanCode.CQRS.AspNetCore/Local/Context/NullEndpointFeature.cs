@@ -12,4 +12,6 @@ internal class NullEndpointFeature : IEndpointFeature
         get => null;
         set { }
     }
+
+    private NullEndpointFeature() { }
 }

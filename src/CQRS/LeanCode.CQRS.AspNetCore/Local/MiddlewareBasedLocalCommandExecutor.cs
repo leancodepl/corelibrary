@@ -62,7 +62,7 @@ public class MiddlewareBasedLocalCommandExecutor : ILocalCommandExecutor
 
         await using var scope = serviceProvider.CreateAsyncScope();
 
-        var localContext = new Context.LocalCallContext(
+        using var localContext = new Context.LocalCallContext(
             scope.ServiceProvider,
             user,
             activity?.Id,
