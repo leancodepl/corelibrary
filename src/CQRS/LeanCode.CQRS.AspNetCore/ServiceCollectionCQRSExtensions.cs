@@ -114,4 +114,34 @@ public class CQRSServicesBuilder
         );
         return this;
     }
+
+    public CQRSServicesBuilder WithKeyedLocalCommands(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalCommandExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalCommandExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithKeyedLocalQueries(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalQueryExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalQueryExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithKeyedLocalOperations(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalOperationExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalOperationExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
 }
