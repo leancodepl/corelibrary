@@ -12,7 +12,10 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
 
-public class MiddlewareBasedLocalCommandExecutorTests
+/// <summary>
+/// Tests the <see cref="MiddlewareBasedLocalExecutor"/> class, but uses the <see cref="MiddlewareBasedLocalCommandExecutor"/> as a test bench.
+/// </summary>
+public class MiddlewareBasedLocalExecutorTests
 {
     private static readonly TypesCatalog ThisCatalog = TypesCatalog.Of<LocalCommand>();
 
@@ -22,7 +25,7 @@ public class MiddlewareBasedLocalCommandExecutorTests
 
     private readonly MiddlewareBasedLocalCommandExecutor executor;
 
-    public MiddlewareBasedLocalCommandExecutorTests()
+    public MiddlewareBasedLocalExecutorTests()
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton(storage);
