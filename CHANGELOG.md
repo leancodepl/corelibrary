@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 8.1 (Unreleased)
+
+
 ## 8.0
 
 * Upgrade to .NET 8
