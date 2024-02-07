@@ -1,5 +1,4 @@
 using LeanCode.Components;
-using LeanCode.CQRS.AspNetCore.Registration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -17,7 +16,7 @@ internal sealed class Type1Type2Service : IGenericService<Type1>, IGenericServic
 
 internal sealed class Type3Service : IGenericService<Type3> { }
 
-public class ServiceCollectionRegistrationExtensionsTests
+public class ServiceCollectionExtensionsTests
 {
     [Fact]
     public void Registers_implementations_of_generic_type()

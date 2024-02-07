@@ -27,7 +27,6 @@ public static class ServiceCollectionCQRSExtensions
 
         serviceCollection.AddSingleton<ICQRSObjectSource>(objectsSource);
         serviceCollection.AddSingleton<CQRSMetrics>();
-        serviceCollection.AddSingleton(objectsSource);
 
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
