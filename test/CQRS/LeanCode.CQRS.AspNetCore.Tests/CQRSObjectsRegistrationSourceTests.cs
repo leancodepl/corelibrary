@@ -51,7 +51,7 @@ public class CQRSObjectsRegistrationSourceTests
     [Fact]
     public void Duplicate_objects_cannot_be_registered()
     {
-        var registrationSource = new CQRSObjectsRegistrationSource(services);
+        var registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
 
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
@@ -96,7 +96,7 @@ public class CQRSObjectsRegistrationSourceTests
 
     private static List<CQRSObjectMetadata> GetCQRSObjects(IServiceCollection services)
     {
-        var registrationSource = new CQRSObjectsRegistrationSource(services);
+        var registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
 
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),

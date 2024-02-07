@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.AspNetCore;
 
 internal interface IObjectExecutorFactory
 {
-    ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object);
+    ObjectExecutor CreateExecutorFor(CQRSObjectKind kind, Type objectType, Type handlerType);
 }
 
 internal class ObjectExecutorFactory : IObjectExecutorFactory
@@ -28,28 +28,25 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
         BindingFlags.Static | BindingFlags.NonPublic
     )!;
 
-    public ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object)
+    public ObjectExecutor CreateExecutorFor(CQRSObjectKind kind, Type objectType, Type handlerType)
     {
-        return @object.ObjectKind switch
+        return kind switch
         {
             CQRSObjectKind.Command
-                => ExecuteCommandMethod
-                    .MakeGenericMethod(@object.ObjectType, @object.HandlerType)
-                    .CreateDelegate<ObjectExecutor>(),
+                => ExecuteCommandMethod.MakeGenericMethod(objectType, handlerType).CreateDelegate<ObjectExecutor>(),
             CQRSObjectKind.Query
                 => ExecuteQueryMethod
-                    .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IQuery<>)), @object.HandlerType)
+                    .MakeGenericMethod(objectType, GetResultType(typeof(IQuery<>)), handlerType)
                     .CreateDelegate<ObjectExecutor>(),
             CQRSObjectKind.Operation
                 => ExecuteOperationMethod
-                    .MakeGenericMethod(@object.ObjectType, GetResultType(typeof(IOperation<>)), @object.HandlerType)
+                    .MakeGenericMethod(objectType, GetResultType(typeof(IOperation<>)), handlerType)
                     .CreateDelegate<ObjectExecutor>(),
-            _ => throw new InvalidOperationException($"Unexpected object kind: {@object.ObjectKind}")
+            _ => throw new InvalidOperationException($"Unexpected object kind: {kind}.")
         };
 
         Type GetResultType(Type interfaceType) =>
-            @object
-                .ObjectType
+            objectType
                 .GetInterfaces()
                 .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == interfaceType)
                 .GenericTypeArguments

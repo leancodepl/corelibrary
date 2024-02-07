@@ -18,15 +18,6 @@ public class ObjectExecutorFactoryTests
     private readonly QueryHandler queryHandler = Substitute.For<QueryHandler>();
     private readonly OperationHandler operationHandler = Substitute.For<OperationHandler>();
 
-    private readonly CQRSObjectMetadata queryMetadata =
-        new(CQRSObjectKind.Query, typeof(Query), typeof(QueryResult), typeof(QueryHandler));
-
-    private readonly CQRSObjectMetadata commandMetadata =
-        new(CQRSObjectKind.Command, typeof(Command), typeof(CommandResult), typeof(CommandHandler));
-
-    private readonly CQRSObjectMetadata operationMetadata =
-        new(CQRSObjectKind.Operation, typeof(Operation), typeof(OperationResult), typeof(OperationHandler));
-
     public ObjectExecutorFactoryTests()
     {
         serviceProvider.GetService(typeof(CommandHandler)).Returns(commandHandler);
@@ -40,7 +31,11 @@ public class ObjectExecutorFactoryTests
         var cmd = new Command();
         var ctx = MockHttpContext();
 
-        var executorMethod = executorFactory.CreateExecutorFor(commandMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Command,
+            typeof(Command),
+            typeof(CommandHandler)
+        );
         var result = await executorMethod(ctx, new CQRSRequestPayload(cmd));
 
         await commandHandler.Received().ExecuteAsync(ctx, cmd);
@@ -57,7 +52,11 @@ public class ObjectExecutorFactoryTests
             .GetService(typeof(ICommandHandler<Command>))
             .Returns(Substitute.For<ICommandHandler<Command>>());
 
-        var executorMethod = executorFactory.CreateExecutorFor(commandMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Command,
+            typeof(Command),
+            typeof(CommandHandler)
+        );
         await executorMethod(ctx, new CQRSRequestPayload(cmd));
 
         await commandHandler.Received().ExecuteAsync(ctx, cmd);
@@ -71,7 +70,11 @@ public class ObjectExecutorFactoryTests
         var returnedResult = new QueryResult();
         queryHandler.ExecuteAsync(ctx, query).Returns(returnedResult);
 
-        var executorMethod = executorFactory.CreateExecutorFor(queryMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Query,
+            typeof(Query),
+            typeof(QueryHandler)
+        );
 
         var result = await executorMethod(ctx, new CQRSRequestPayload(query));
 
@@ -89,7 +92,11 @@ public class ObjectExecutorFactoryTests
             .GetService(typeof(IQueryHandler<Query, QueryResult>))
             .Returns(Substitute.For<IQueryHandler<Query, QueryResult>>());
 
-        var executorMethod = executorFactory.CreateExecutorFor(queryMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Query,
+            typeof(Query),
+            typeof(QueryHandler)
+        );
         await executorMethod(ctx, new CQRSRequestPayload(query));
 
         await queryHandler.Received().ExecuteAsync(ctx, Arg.Any<Query>());
@@ -103,7 +110,11 @@ public class ObjectExecutorFactoryTests
         var returnedResult = new OperationResult();
         operationHandler.ExecuteAsync(ctx, operation).Returns(returnedResult);
 
-        var executorMethod = executorFactory.CreateExecutorFor(operationMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Operation,
+            typeof(Operation),
+            typeof(OperationHandler)
+        );
         var result = await executorMethod(ctx, new CQRSRequestPayload(operation));
 
         await operationHandler.Received().ExecuteAsync(ctx, operation);
@@ -120,7 +131,11 @@ public class ObjectExecutorFactoryTests
             .GetService(typeof(IOperationHandler<Operation, OperationResult>))
             .Returns(Substitute.For<IOperationHandler<Operation, OperationResult>>());
 
-        var executorMethod = executorFactory.CreateExecutorFor(operationMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Operation,
+            typeof(Operation),
+            typeof(OperationHandler)
+        );
         await executorMethod(ctx, new CQRSRequestPayload(operation));
 
         await operationHandler.Received().ExecuteAsync(ctx, Arg.Any<Operation>());
@@ -133,7 +148,11 @@ public class ObjectExecutorFactoryTests
         var ctx = MockHttpContext();
 
         serviceProvider.GetService(typeof(CommandHandler)).Returns(null);
-        var executorMethod = executorFactory.CreateExecutorFor(commandMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Command,
+            typeof(Command),
+            typeof(CommandHandler)
+        );
 
         var act = () => executorMethod(ctx, new CQRSRequestPayload(cmd));
         await act.Should().ThrowAsync<CommandHandlerNotFoundException>();
@@ -146,7 +165,11 @@ public class ObjectExecutorFactoryTests
         var ctx = MockHttpContext();
 
         serviceProvider.GetService(typeof(QueryHandler)).Returns(null);
-        var executorMethod = executorFactory.CreateExecutorFor(queryMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Query,
+            typeof(Query),
+            typeof(QueryHandler)
+        );
 
         var act = () => executorMethod(ctx, new CQRSRequestPayload(query));
         await act.Should().ThrowAsync<QueryHandlerNotFoundException>();
@@ -159,7 +182,11 @@ public class ObjectExecutorFactoryTests
         var ctx = MockHttpContext();
 
         serviceProvider.GetService(typeof(OperationHandler)).Returns(null);
-        var executorMethod = executorFactory.CreateExecutorFor(operationMetadata);
+        var executorMethod = executorFactory.CreateExecutorFor(
+            CQRSObjectKind.Operation,
+            typeof(Operation),
+            typeof(OperationHandler)
+        );
 
         var act = () => executorMethod(ctx, new CQRSRequestPayload(operation));
         await act.Should().ThrowAsync<OperationHandlerNotFoundException>();

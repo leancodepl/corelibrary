@@ -20,7 +20,7 @@ public class CQRSValidationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver)
     {
-        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var payload = httpContext.GetCQRSRequestPayload();
 
         if (cqrsMetadata.ObjectKind != CQRSObjectKind.Command)

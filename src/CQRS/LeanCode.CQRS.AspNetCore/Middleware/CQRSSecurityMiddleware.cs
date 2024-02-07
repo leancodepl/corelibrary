@@ -20,7 +20,7 @@ public class CQRSSecurityMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var cqrsMetadata = context.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = context.GetCQRSObjectMetadata();
         var payload = context.GetCQRSRequestPayload();
 
         var customAuthorizers = AuthorizeWhenAttribute.GetCustomAuthorizers(cqrsMetadata.ObjectType);

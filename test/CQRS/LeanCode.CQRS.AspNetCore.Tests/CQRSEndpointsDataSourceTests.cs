@@ -114,7 +114,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests
             });
 
             ctx.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            var cqrsMetadata = ctx.GetCQRSEndpoint().ObjectMetadata;
+            var cqrsMetadata = ctx.GetCQRSObjectMetadata();
             cqrsMetadata.ObjectType.Should().Be(typeof(TObject));
         }
 
@@ -131,7 +131,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
         private static CQRSEndpointsDataSource PrepareEndpointsSource()
         {
-            var dataSource = new CQRSEndpointsDataSource("/cqrs", new MockExecutorFactory());
+            var dataSource = new CQRSEndpointsDataSource("/cqrs");
 
             RequestDelegate pipeline = ctx =>
             {
@@ -140,15 +140,14 @@ namespace LeanCode.CQRS.AspNetCore.Tests
             };
 
             dataSource.AddEndpointsFor(
-                new CQRSObjectMetadata[]
-                {
-                    new(CQRSObjectKind.Command, typeof(Command), typeof(CommandResult), typeof(IgnoreHandler)),
-                    new(CQRSObjectKind.Command, typeof(AliasedCommand), typeof(CommandResult), typeof(IgnoreHandler)),
-                    new(CQRSObjectKind.Query, typeof(Query), typeof(Result), typeof(IgnoreHandler)),
-                    new(CQRSObjectKind.Query, typeof(AliasedQuery), typeof(Result), typeof(IgnoreHandler)),
-                    new(CQRSObjectKind.Operation, typeof(Operation), typeof(Result), typeof(IgnoreHandler)),
-                    new(CQRSObjectKind.Operation, typeof(AliasedOperation), typeof(Result), typeof(IgnoreHandler)),
-                },
+                [
+                    new(CQRSObjectKind.Command, typeof(Command), typeof(CommandResult), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(CQRSObjectKind.Command, typeof(AliasedCommand), typeof(CommandResult), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(CQRSObjectKind.Query, typeof(Query), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(CQRSObjectKind.Query, typeof(AliasedQuery), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(CQRSObjectKind.Operation, typeof(Operation), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(CQRSObjectKind.Operation, typeof(AliasedOperation), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                ],
                 pipeline,
                 pipeline,
                 pipeline
@@ -168,8 +167,8 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
         private sealed class MockExecutorFactory : IObjectExecutorFactory
         {
-            public ObjectExecutor CreateExecutorFor(CQRSObjectMetadata @object) =>
-                (httpContext, payload) => Task.FromResult(null as object);
+            public ObjectExecutor CreateExecutorFor(CQRSObjectKind kind, Type objectType, Type handlerType) =>
+                (_, __) => Task.FromResult<object?>(null);
         }
 
         private sealed class IgnoreHandler { }

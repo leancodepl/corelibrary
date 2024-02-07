@@ -9,13 +9,15 @@ namespace LeanCode.CQRS.AspNetCore.Registration;
 internal class CQRSObjectsRegistrationSource
 {
     private readonly IServiceCollection services;
+    private readonly IObjectExecutorFactory executorFactory;
     private readonly HashSet<CQRSObjectMetadata> objects = new(new CQRSObjectMetadataEqualityComparer());
 
     public IReadOnlySet<CQRSObjectMetadata> Objects => objects;
 
-    public CQRSObjectsRegistrationSource(IServiceCollection services)
+    public CQRSObjectsRegistrationSource(IServiceCollection services, IObjectExecutorFactory executorFactory)
     {
         this.services = services;
+        this.executorFactory = executorFactory;
     }
 
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
@@ -52,10 +54,24 @@ internal class CQRSObjectsRegistrationSource
                     handler.ObjectKind,
                     objectType: contract,
                     resultType: handler.ResultType,
-                    handlerType: handler.HandlerType
+                    handlerType: handler.HandlerType,
+                    objectExecutor: executorFactory.CreateExecutorFor(handler.ObjectKind, contract, handler.HandlerType)
                 )
             );
         }
+    }
+
+    public void AddCQRSObject(CQRSObjectKind kind, Type objectType, Type resultType, Type handlerType)
+    {
+        AddCQRSObject(
+            new(
+                kind,
+                objectType,
+                resultType,
+                handlerType,
+                executorFactory.CreateExecutorFor(kind, objectType, handlerType)
+            )
+        );
     }
 
     public void AddCQRSObject(CQRSObjectMetadata metadata)

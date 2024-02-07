@@ -11,8 +11,7 @@ public static class TestHelpers
 {
     public static Endpoint MockCQRSEndpoint(CQRSObjectMetadata obj)
     {
-        var endpointMetadata = new CQRSEndpointMetadata(obj, (_, __) => Task.FromResult(null as object));
-        return new Endpoint(null, new EndpointMetadataCollection(endpointMetadata), obj.ObjectType.Name);
+        return new Endpoint(null, new EndpointMetadataCollection(obj), obj.ObjectType.Name);
     }
 
     public static ExecutionResult ShouldContainExecutionResult(this HttpContext httpContext, int statusCode)

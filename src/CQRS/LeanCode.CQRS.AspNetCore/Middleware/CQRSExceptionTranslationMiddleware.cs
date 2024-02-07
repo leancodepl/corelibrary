@@ -21,7 +21,7 @@ public class CQRSExceptionTranslationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var cqrsPayload = httpContext.GetCQRSRequestPayload();
 
         if (cqrsMetadata.ObjectKind != CQRSObjectKind.Command)

@@ -11,7 +11,6 @@ namespace LeanCode.CQRS.AspNetCore;
 
 internal class CQRSEndpointsDataSource : EndpointDataSource
 {
-    private readonly IObjectExecutorFactory executorFactory;
     private readonly RoutePattern basePath;
     private readonly List<Endpoint> endpoints = new();
 
@@ -19,9 +18,8 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
 
     public override IReadOnlyList<Endpoint> Endpoints => endpoints;
 
-    public CQRSEndpointsDataSource(string basePath, IObjectExecutorFactory executorFactory)
+    public CQRSEndpointsDataSource(string basePath)
     {
-        this.executorFactory = executorFactory;
         this.basePath = RoutePatternFactory.Parse(basePath);
     }
 
@@ -35,7 +33,6 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
         foreach (var obj in objects)
         {
             var pipeline = PipelineFor(obj);
-            var cqrsEndpointMetadata = new CQRSEndpointMetadata(obj, executorFactory.CreateExecutorFor(obj));
             var httpMetadata = new HttpMethodMetadata(new[] { HttpMethods.Post });
 
             foreach (var route in RoutesFor(obj))
@@ -44,7 +41,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
                     pipeline,
                     route.Pattern,
                     0,
-                    new EndpointMetadataCollection(cqrsEndpointMetadata, httpMetadata),
+                    new EndpointMetadataCollection(obj, httpMetadata),
                     $"{obj.ObjectKind} {route.Name}"
                 );
                 endpoints.Add(endpoint);

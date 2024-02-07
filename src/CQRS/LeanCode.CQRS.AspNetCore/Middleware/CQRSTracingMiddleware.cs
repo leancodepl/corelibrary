@@ -16,7 +16,7 @@ public class CQRSTracingMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
 
         using var activity = LeanCodeActivitySource.ActivitySource.StartActivity("pipeline.action");
         activity?.AddTag("object", cqrsMetadata.ObjectType.FullName);

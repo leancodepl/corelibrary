@@ -25,7 +25,7 @@ public static class CQRSEndpointRouteBuilderExtensions
         var pipelineBuilder = new CQRSPipelineBuilder(builder);
         config(pipelineBuilder);
 
-        var dataSource = new CQRSEndpointsDataSource(path, new ObjectExecutorFactory());
+        var dataSource = new CQRSEndpointsDataSource(path);
         dataSource.AddEndpointsFor(
             cqrsHandlers.Objects.Where(pipelineBuilder.ObjectsFilter),
             commandsPipeline: pipelineBuilder.PreparePipeline(pipelineBuilder.Commands),

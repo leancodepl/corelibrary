@@ -63,7 +63,8 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
                 CQRSObjectKind.Command,
                 typeof(Command),
                 typeof(CommandResult),
-                typeof(Ignore)
+                typeof(Ignore),
+                (_, _) => Task.FromResult<object?>(null)
             );
 
             ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(cqrsMetadata));

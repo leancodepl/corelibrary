@@ -30,7 +30,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
         {
             if (
                 endpoint is RouteEndpoint routeEndpoint
-                && routeEndpoint.Metadata.GetMetadata<CQRSEndpointMetadata>() is { } metadata
+                && routeEndpoint.Metadata.GetMetadata<CQRSObjectMetadata>() is { } metadata
             )
             {
                 context.Results.Add(CreateApiDescription(routeEndpoint, metadata));
@@ -40,7 +40,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
 
     public void OnProvidersExecuted(ApiDescriptionProviderContext context) { }
 
-    private static ApiDescription CreateApiDescription(RouteEndpoint routeEndpoint, CQRSEndpointMetadata metadata)
+    private static ApiDescription CreateApiDescription(RouteEndpoint routeEndpoint, CQRSObjectMetadata metadata)
     {
         var apiDescription = new ApiDescription
         {
@@ -55,15 +55,15 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
         };
         apiDescription.SupportedRequestFormats.Add(new() { MediaType = ApplicationJson });
 
-        if (metadata.ObjectMetadata.ObjectKind == CQRSObjectKind.Command)
+        if (metadata.ObjectKind == CQRSObjectKind.Command)
         {
             DefineCommand(metadata, apiDescription);
         }
-        else if (metadata.ObjectMetadata.ObjectKind == CQRSObjectKind.Query)
+        else if (metadata.ObjectKind == CQRSObjectKind.Query)
         {
             DefineQuery(metadata, apiDescription);
         }
-        else if (metadata.ObjectMetadata.ObjectKind == CQRSObjectKind.Operation)
+        else if (metadata.ObjectKind == CQRSObjectKind.Operation)
         {
             DefineOperation(metadata, apiDescription);
         }
@@ -89,7 +89,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
         return sb.ToString();
     }
 
-    private static void DefineCommand(CQRSEndpointMetadata metadata, ApiDescription apiDescription)
+    private static void DefineCommand(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
         apiDescription
             .ParameterDescriptions
@@ -98,8 +98,8 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 {
                     IsRequired = true,
                     Source = BindingSource.Body,
-                    Type = metadata.ObjectMetadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectMetadata.ObjectType),
+                    Type = metadata.ObjectType,
+                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
                 }
             );
 
@@ -128,7 +128,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
             );
     }
 
-    private static void DefineQuery(CQRSEndpointMetadata metadata, ApiDescription apiDescription)
+    private static void DefineQuery(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
         apiDescription
             .ParameterDescriptions
@@ -137,8 +137,8 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 {
                     IsRequired = true,
                     Source = BindingSource.Body,
-                    Type = metadata.ObjectMetadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectMetadata.ObjectType),
+                    Type = metadata.ObjectType,
+                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
                 }
             );
 
@@ -147,15 +147,15 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
             .Add(
                 new()
                 {
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectMetadata.ResultType),
+                    ModelMetadata = CreateModelMetadata(metadata.ResultType),
                     ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
                     StatusCode = 200,
-                    Type = metadata.ObjectMetadata.ResultType,
+                    Type = metadata.ResultType,
                 }
             );
     }
 
-    private static void DefineOperation(CQRSEndpointMetadata metadata, ApiDescription apiDescription)
+    private static void DefineOperation(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
         apiDescription
             .ParameterDescriptions
@@ -164,8 +164,8 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 {
                     IsRequired = true,
                     Source = BindingSource.Body,
-                    Type = metadata.ObjectMetadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectMetadata.ObjectType),
+                    Type = metadata.ObjectType,
+                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
                 }
             );
 
@@ -174,10 +174,10 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
             .Add(
                 new()
                 {
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectMetadata.ResultType),
+                    ModelMetadata = CreateModelMetadata(metadata.ResultType),
                     ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
                     StatusCode = 200,
-                    Type = metadata.ObjectMetadata.ResultType,
+                    Type = metadata.ResultType,
                 }
             );
     }

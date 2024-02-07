@@ -28,7 +28,7 @@ public class ScopedTransactionMiddleware<TDbContext>
         [NotNullWhen(true)] out PessimisticConcurrencyAttribute? config
     )
     {
-        var cqrsMetadata = httpContext.GetCQRSEndpoint().ObjectMetadata;
+        var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var handlerType = cqrsMetadata.HandlerType;
 
         if (
