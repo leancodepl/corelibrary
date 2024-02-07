@@ -1,192 +1,151 @@
-using System.Net;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using FluentAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Local;
+using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
 
-public class MiddlewareBasedLocalCommandExecutorTests : IDisposable, IAsyncLifetime
+public class MiddlewareBasedLocalCommandExecutorTests
 {
-    private const string IsAuthenticatedHeader = "is-authenticated";
     private static readonly TypesCatalog ThisCatalog = TypesCatalog.Of<LocalCommand>();
 
-    private readonly IHost host;
-    private readonly TestServer server;
+    private readonly LocalDataStorage storage = new();
+    private readonly IServiceProvider serviceProvider;
+    private readonly ICQRSObjectSource objectSource;
+
+    private readonly MiddlewareBasedLocalCommandExecutor executor;
 
     public MiddlewareBasedLocalCommandExecutorTests()
     {
-        host = new HostBuilder()
-            .ConfigureWebHost(webHost =>
-            {
-                webHost
-                    .UseTestServer()
-                    .ConfigureServices(services =>
-                    {
-                        services.AddRouting();
-                        services
-                            .AddCQRS(ThisCatalog, ThisCatalog)
-                            .WithLocalCommands(p => p.UseMiddleware<TestMiddleware>());
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton(storage);
+        serviceCollection.AddScoped<IMiddlewareFactory>(sp => new MiddlewareFactory(sp));
+        serviceCollection.AddScoped<LocalHandlerMiddleware>();
 
-                        services.AddScoped<TestMiddleware>();
-                        services.AddSingleton<DataStorage>();
-                    })
-                    .Configure(app =>
-                    {
-                        app.UseRouting();
-                        app.Use(MockAuthorization);
-                        app.UseEndpoints(e =>
-                        {
-                            e.MapRemoteCQRS(
-                                "/cqrs",
-                                cqrs =>
-                                {
-                                    cqrs.Commands = p => p.UseMiddleware<TestMiddleware>();
-                                }
-                            );
-                        });
-                    });
-            })
-            .Build();
+        var registrationSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
+        registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);
 
-        server = host.GetTestServer();
+        serviceProvider = serviceCollection.BuildServiceProvider();
+        objectSource = registrationSource;
+
+        executor = new(serviceProvider, objectSource, app => app.UseMiddleware<LocalHandlerMiddleware>());
     }
 
     [Fact]
-    public async Task Runs_both_remote_and_local_commands_successfully()
+    public async Task Runs_the_command()
     {
-        var storage = host.Services.GetRequiredService<DataStorage>();
-        var result = await SendAsync(new RemoteCommand());
+        var command = new LocalCommand();
+        var result = await executor.RunAsync(command, new ClaimsPrincipal());
 
-        result.Should().Be(HttpStatusCode.OK);
+        result.Should().Be(CommandResult.Success);
 
-        storage.RemoteUser.Should().NotBeNullOrEmpty();
-        storage.LocalUsers.Should().AllBe(storage.RemoteUser).And.HaveCount(3);
-
-        storage.Middlewares.ToHashSet().Should().HaveSameCount(storage.Middlewares);
-        storage.RunHandlers.ToHashSet().Should().HaveSameCount(storage.RunHandlers);
+        storage.Commands.Should().Contain(command);
+        storage.Handlers.Should().ContainSingle();
     }
 
-    protected async Task<HttpStatusCode> SendAsync(ICommand cmd, bool isAuthenticated = true)
+    [Fact]
+    public async Task Runs_the_middleware()
     {
-        var path = $"/cqrs/command/{cmd.GetType().FullName}";
-        using var msg = new HttpRequestMessage(HttpMethod.Post, path);
-        msg.Content = JsonContent.Create(cmd);
-        msg.Headers.Add(IsAuthenticatedHeader, isAuthenticated.ToString());
+        var command = new LocalCommand();
+        await executor.RunAsync(command, new ClaimsPrincipal());
 
-        var response = await host.GetTestClient().SendAsync(msg);
-        return response.StatusCode;
+        storage.Middlewares.Should().ContainSingle();
     }
 
-    private static Task MockAuthorization(HttpContext httpContext, RequestDelegate next)
+    [Fact]
+    public async Task Each_run_opens_separate_DI_scope()
     {
-        if (
-            httpContext.Request.Headers.TryGetValue(IsAuthenticatedHeader, out var isAuthenticated)
-            && isAuthenticated == bool.TrueString
-        )
-        {
-            httpContext.User = new ClaimsPrincipal(
-                new ClaimsIdentity(new Claim[] { new("id", Guid.NewGuid().ToString()) }, "Test Identity")
-            );
-        }
+        var command1 = new LocalCommand();
+        var command2 = new LocalCommand();
+        await executor.RunAsync(command1, new ClaimsPrincipal());
+        await executor.RunAsync(command2, new ClaimsPrincipal());
 
-        return next(httpContext);
+        storage.Commands.Should().BeEquivalentTo([ command1, command2 ]);
+        storage.Handlers.Should().HaveCount(2);
+        storage.Handlers.Should().HaveCount(2);
     }
 
-    public void Dispose()
+    [Fact]
+    public async Task Exceptions_are_not_catched()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        var command = new LocalCommand(Fail: true);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => executor.RunAsync(command, new ClaimsPrincipal()));
     }
 
-    protected virtual void Dispose(bool disposing)
+    [Fact]
+    public async Task Calls_can_be_aborted()
     {
-        server.Dispose();
-        host.Dispose();
+        var command = new LocalCommand(Cancel: true);
+
+        await Assert.ThrowsAsync<OperationCanceledException>(() => executor.RunAsync(command, new ClaimsPrincipal()));
     }
 
-    public Task InitializeAsync() => host.StartAsync();
+    [Fact]
+    public async Task Object_metadata_is_set()
+    {
+        var command = new LocalCommand(CheckMetadata: true);
 
-    public Task DisposeAsync() => host.StopAsync();
+        await executor.RunAsync(command, new ClaimsPrincipal());
+    }
 }
 
-public class DataStorage
+public class LocalDataStorage
 {
-    public string? RemoteUser { get; set; }
-
-    public List<TestMiddleware> Middlewares { get; } = [ ];
-    public List<string?> LocalUsers { get; } = [ ];
-    public List<LocalCommandHandler> RunHandlers { get; } = [ ];
+    public List<LocalHandlerMiddleware> Middlewares { get; } = [ ];
+    public List<LocalCommandHandler> Handlers { get; } = [ ];
+    public List<LocalCommand> Commands { get; } = [ ];
 }
 
-public record RemoteCommand() : ICommand;
-
-public record LocalCommand(string Value, bool Fail) : ICommand;
-
-public class RemoteCommandHandler : ICommandHandler<RemoteCommand>
-{
-    private readonly DataStorage storage;
-    private readonly ILocalCommandExecutor localCommand;
-
-    public RemoteCommandHandler(DataStorage storage, ILocalCommandExecutor localCommand)
-    {
-        this.storage = storage;
-        this.localCommand = localCommand;
-    }
-
-    public async Task ExecuteAsync(HttpContext context, RemoteCommand command)
-    {
-        storage.RemoteUser = context.User?.FindFirst("id")?.Value;
-
-        await localCommand.RunAsync(new LocalCommand("Test Val 1", false), context.User!);
-        try
-        {
-            await localCommand.RunAsync(new LocalCommand("Test Val 2", true), context.User!);
-        }
-        catch { }
-        await localCommand.RunAsync(new LocalCommand("Test Val 3", false), context.User!);
-    }
-}
+public record LocalCommand(bool Fail = false, bool Cancel = false, bool CheckMetadata = false) : ICommand;
 
 public class LocalCommandHandler : ICommandHandler<LocalCommand>
 {
-    private readonly DataStorage storage;
+    private readonly LocalDataStorage storage;
 
-    public LocalCommand? Command { get; private set; }
-
-    public LocalCommandHandler(DataStorage storage)
+    public LocalCommandHandler(LocalDataStorage storage)
     {
         this.storage = storage;
     }
 
-    public async Task ExecuteAsync(HttpContext context, LocalCommand command)
+    public Task ExecuteAsync(HttpContext context, LocalCommand command)
     {
-        Command = command;
-        storage.RunHandlers.Add(this);
-        storage.LocalUsers.Add(context.User?.FindFirst("id")?.Value);
+        storage.Commands.Add(command);
+        storage.Handlers.Add(this);
 
         if (command.Fail)
         {
             throw new InvalidOperationException("Requested.");
         }
+
+        if (command.Cancel)
+        {
+            context.Abort();
+        }
+
+        if (command.CheckMetadata)
+        {
+            context.GetCQRSObjectMetadata().ObjectKind.Should().Be(CQRSObjectKind.Command);
+            context.GetCQRSObjectMetadata().ObjectType.Should().Be(typeof(LocalCommand));
+            context.GetCQRSObjectMetadata().HandlerType.Should().Be(typeof(LocalCommandHandler));
+        }
+
+        return Task.CompletedTask;
     }
 }
 
-public class TestMiddleware : IMiddleware
+public class LocalHandlerMiddleware : IMiddleware
 {
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        context.RequestServices.GetRequiredService<DataStorage>().Middlewares.Add(this);
+        context.RequestServices.GetRequiredService<LocalDataStorage>().Middlewares.Add(this);
         return next(context);
     }
 }
