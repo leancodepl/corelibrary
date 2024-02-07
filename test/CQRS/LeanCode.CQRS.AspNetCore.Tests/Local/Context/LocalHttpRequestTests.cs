@@ -49,16 +49,16 @@ public class LocalHttpRequestTests
     [Fact]
     public void Host_is_empty_and_cannot_be_changed()
     {
-        request.Host.Should().Be(default);
+        request.Host.Should().Be(default(HostString));
         request.Host = new HostString("localhost");
-        request.Host.Should().Be(default);
+        request.Host.Should().Be(default(HostString));
     }
 
     [Fact]
     public void PathBase_is_empty_and_cannot_be_changed()
     {
         request.PathBase.Should().Be(PathString.Empty);
-        request.PathBase = new("other");
+        request.PathBase = new("/other");
         request.PathBase.Should().Be(PathString.Empty);
     }
 
@@ -66,7 +66,7 @@ public class LocalHttpRequestTests
     public void Path_is_empty_and_cannot_be_changed()
     {
         request.Path.Should().Be(PathString.Empty);
-        request.Path = new("other");
+        request.Path = new("/other");
         request.Path.Should().Be(PathString.Empty);
     }
 
@@ -74,7 +74,7 @@ public class LocalHttpRequestTests
     public void QueryString_is_empty_and_cannot_be_changed()
     {
         request.QueryString.Should().Be(QueryString.Empty);
-        request.QueryString = new("other");
+        request.QueryString = new("?other");
         request.QueryString.Should().Be(QueryString.Empty);
     }
 

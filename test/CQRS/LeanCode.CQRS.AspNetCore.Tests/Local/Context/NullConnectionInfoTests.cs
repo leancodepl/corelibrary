@@ -23,7 +23,7 @@ public class NullConnectionInfoTests
     public void RemoteIpAddress_always_returns_null()
     {
         connectionInfo.RemoteIpAddress.Should().BeNull();
-        connectionInfo.RemoteIpAddress = Substitute.For<IPAddress>();
+        connectionInfo.RemoteIpAddress = new(0x2414188f);
         connectionInfo.RemoteIpAddress.Should().BeNull();
     }
 
@@ -39,7 +39,7 @@ public class NullConnectionInfoTests
     public void LocalIpAddress_always_returns_null()
     {
         connectionInfo.LocalIpAddress.Should().BeNull();
-        connectionInfo.LocalIpAddress = Substitute.For<IPAddress>();
+        connectionInfo.LocalIpAddress = new(0x2414188f);
         connectionInfo.LocalIpAddress.Should().BeNull();
     }
 
