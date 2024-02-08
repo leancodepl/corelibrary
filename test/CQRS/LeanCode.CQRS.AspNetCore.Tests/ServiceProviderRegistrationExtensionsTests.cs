@@ -94,7 +94,7 @@ public class ServiceProviderRegistrationExtensionsTests
         return collection.BuildServiceProvider();
     }
 
-    internal class CustomSerializer : ISerializer
+    internal sealed class CustomSerializer : ISerializer
     {
         public ValueTask<object?> DeserializeAsync(
             Stream utf8Json,
@@ -111,7 +111,7 @@ public class ServiceProviderRegistrationExtensionsTests
     }
 }
 
-file class ServiceProviderAssertions : ReferenceTypeAssertions<ServiceProvider, ServiceProviderAssertions>
+file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServiceProvider, ServiceProviderAssertions>
 {
     protected override string Identifier => "services";
 
