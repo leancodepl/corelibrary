@@ -241,7 +241,7 @@ public class OperationOH : IOperationHandler<Operation, OperationResultDTO>
         throw new NotImplementedException();
 }
 
-internal class DummyEndpointDataSource : EndpointDataSource
+internal sealed class DummyEndpointDataSource : EndpointDataSource
 {
     public override IReadOnlyList<Endpoint> Endpoints => throw new NotImplementedException();
 

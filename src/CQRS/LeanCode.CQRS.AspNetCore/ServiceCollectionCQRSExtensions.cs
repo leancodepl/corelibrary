@@ -25,8 +25,9 @@ public static class ServiceCollectionCQRSExtensions
         var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
 
-        serviceCollection.AddSingleton<CQRSMetrics>();
+        serviceCollection.AddSingleton<ICQRSObjectSource>(objectsSource);
         serviceCollection.AddSingleton(objectsSource);
+        serviceCollection.AddSingleton<CQRSMetrics>();
 
         serviceCollection.AddSingleton<RoleRegistry>();
         serviceCollection.AddScoped<IHasPermissions, DefaultPermissionAuthorizer>();
@@ -86,6 +87,61 @@ public class CQRSServicesBuilder
         where THandler : IOperationHandler<TOperation, TResult>
     {
         objectsSource.AddCQRSObject(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler));
+        return this;
+    }
+
+    public CQRSServicesBuilder WithLocalCommands(Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddSingleton<Local.ILocalCommandExecutor>(
+            s => new Local.MiddlewareBasedLocalCommandExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithLocalQueries(Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddSingleton<Local.ILocalQueryExecutor>(
+            s => new Local.MiddlewareBasedLocalQueryExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithLocalOperations(Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddSingleton<Local.ILocalOperationExecutor>(
+            s =>
+                new Local.MiddlewareBasedLocalOperationExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithKeyedLocalCommands(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalCommandExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalCommandExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithKeyedLocalQueries(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalQueryExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalQueryExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
+        return this;
+    }
+
+    public CQRSServicesBuilder WithKeyedLocalOperations(object? serviceKey, Action<ICQRSApplicationBuilder> configure)
+    {
+        Services.AddKeyedSingleton<Local.ILocalOperationExecutor>(
+            serviceKey,
+            (s, _) =>
+                new Local.MiddlewareBasedLocalOperationExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
+        );
         return this;
     }
 }
