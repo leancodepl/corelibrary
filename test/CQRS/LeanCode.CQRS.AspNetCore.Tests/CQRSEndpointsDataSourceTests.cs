@@ -141,12 +141,48 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
             dataSource.AddEndpointsFor(
                 [
-                    new(CQRSObjectKind.Command, typeof(Command), typeof(CommandResult), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
-                    new(CQRSObjectKind.Command, typeof(AliasedCommand), typeof(CommandResult), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
-                    new(CQRSObjectKind.Query, typeof(Query), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
-                    new(CQRSObjectKind.Query, typeof(AliasedQuery), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
-                    new(CQRSObjectKind.Operation, typeof(Operation), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
-                    new(CQRSObjectKind.Operation, typeof(AliasedOperation), typeof(Result), typeof(IgnoreHandler), (_, __) => Task.FromResult<object?>(null)),
+                    new(
+                        CQRSObjectKind.Command,
+                        typeof(Command),
+                        typeof(CommandResult),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
+                    new(
+                        CQRSObjectKind.Command,
+                        typeof(AliasedCommand),
+                        typeof(CommandResult),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
+                    new(
+                        CQRSObjectKind.Query,
+                        typeof(Query),
+                        typeof(Result),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
+                    new(
+                        CQRSObjectKind.Query,
+                        typeof(AliasedQuery),
+                        typeof(Result),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
+                    new(
+                        CQRSObjectKind.Operation,
+                        typeof(Operation),
+                        typeof(Result),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
+                    new(
+                        CQRSObjectKind.Operation,
+                        typeof(AliasedOperation),
+                        typeof(Result),
+                        typeof(IgnoreHandler),
+                        (_, __) => Task.FromResult<object?>(null)
+                    ),
                 ],
                 pipeline,
                 pipeline,

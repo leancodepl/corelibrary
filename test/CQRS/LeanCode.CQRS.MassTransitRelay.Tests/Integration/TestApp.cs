@@ -112,9 +112,8 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
     {
         var response = await server
             .CreateRequest($"/cqrs/command/{command.GetType().FullName}")
-            .And(
-                cfg =>
-                    cfg.Content = JsonContent.Create(command, command.GetType(), options: new JsonSerializerOptions())
+            .And(cfg =>
+                cfg.Content = JsonContent.Create(command, command.GetType(), options: new JsonSerializerOptions())
             )
             .PostAsync();
         response.EnsureSuccessStatusCode();

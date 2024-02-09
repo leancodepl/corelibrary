@@ -19,8 +19,7 @@ public static class ServiceCollectionExtensions
         }
 
         var implementationTypes = catalog
-            .Assemblies
-            .SelectMany(a => a.DefinedTypes)
+            .Assemblies.SelectMany(a => a.DefinedTypes)
             .Where(IsConcrete)
             .Select(type => new { Type = type, ImplementedServices = GetImplementedGenericTypes(type, genericType), })
             .Where(t => t.ImplementedServices.Any());

@@ -92,26 +92,31 @@ public class CQRSServicesBuilder
 
     public CQRSServicesBuilder WithLocalCommands(Action<ICQRSApplicationBuilder> configure)
     {
-        Services.AddSingleton<Local.ILocalCommandExecutor>(
-            s => new Local.MiddlewareBasedLocalCommandExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
-        );
+        Services.AddSingleton<Local.ILocalCommandExecutor>(s => new Local.MiddlewareBasedLocalCommandExecutor(
+            s,
+            s.GetRequiredService<ICQRSObjectSource>(),
+            configure
+        ));
         return this;
     }
 
     public CQRSServicesBuilder WithLocalQueries(Action<ICQRSApplicationBuilder> configure)
     {
-        Services.AddSingleton<Local.ILocalQueryExecutor>(
-            s => new Local.MiddlewareBasedLocalQueryExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
-        );
+        Services.AddSingleton<Local.ILocalQueryExecutor>(s => new Local.MiddlewareBasedLocalQueryExecutor(
+            s,
+            s.GetRequiredService<ICQRSObjectSource>(),
+            configure
+        ));
         return this;
     }
 
     public CQRSServicesBuilder WithLocalOperations(Action<ICQRSApplicationBuilder> configure)
     {
-        Services.AddSingleton<Local.ILocalOperationExecutor>(
-            s =>
-                new Local.MiddlewareBasedLocalOperationExecutor(s, s.GetRequiredService<ICQRSObjectSource>(), configure)
-        );
+        Services.AddSingleton<Local.ILocalOperationExecutor>(s => new Local.MiddlewareBasedLocalOperationExecutor(
+            s,
+            s.GetRequiredService<ICQRSObjectSource>(),
+            configure
+        ));
         return this;
     }
 

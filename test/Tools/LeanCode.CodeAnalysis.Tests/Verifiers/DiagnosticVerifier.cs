@@ -92,7 +92,7 @@ public abstract class DiagnosticVerifier : IDisposable
 
     protected Document CreateDocument(string source, params string[] additionalSources)
     {
-        return CreateProject([ source, ..additionalSources ]).Documents.OrderBy(d => d.Name).First();
+        return CreateProject([source, ..additionalSources]).Documents.OrderBy(d => d.Name).First();
     }
 
     private Project CreateProject(string[] sources)
@@ -102,8 +102,7 @@ public abstract class DiagnosticVerifier : IDisposable
         var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
         var solution = Workspace
-            .CurrentSolution
-            .AddProject(projectId, TestProjectName, TestProjectName, LanguageNames.CSharp)
+            .CurrentSolution.AddProject(projectId, TestProjectName, TestProjectName, LanguageNames.CSharp)
             .AddMetadataReferences(projectId, CommonReferences)
             .WithProjectCompilationOptions(
                 projectId,

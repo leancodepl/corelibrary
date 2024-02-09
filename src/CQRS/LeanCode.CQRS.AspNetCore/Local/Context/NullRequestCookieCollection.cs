@@ -12,7 +12,7 @@ internal class NullRequestCookieCollection : IRequestCookieCollection
 
     public int Count => 0;
 
-    public ICollection<string> Keys => [ ];
+    public ICollection<string> Keys => [];
 
     private NullRequestCookieCollection() { }
 

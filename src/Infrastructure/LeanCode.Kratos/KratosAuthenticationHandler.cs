@@ -141,16 +141,15 @@ public class KratosAuthenticationHandler<TOptions> : AuthenticationHandler<TOpti
     {
         return Enum.GetValues<T>()
             .Distinct()
-            .Select(
-                v =>
-                    (
-                        Value: v,
-                        Name: (
-                            typeof(T)
-                                .GetField(v.ToString(), BindingFlags.Public | BindingFlags.Static)
-                                ?.GetCustomAttribute(typeof(EnumMemberAttribute)) as EnumMemberAttribute
-                        )?.Value
-                    )
+            .Select(v =>
+                (
+                    Value: v,
+                    Name: (
+                        typeof(T)
+                            .GetField(v.ToString(), BindingFlags.Public | BindingFlags.Static)
+                            ?.GetCustomAttribute(typeof(EnumMemberAttribute)) as EnumMemberAttribute
+                    )?.Value
+                )
             )
             .Where(t => t.Name is not null)
             .ToImmutableDictionary(t => t.Value, t => t.Name!);

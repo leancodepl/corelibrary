@@ -28,8 +28,7 @@ public static class TestHelpers
     public static CommandResult ShouldContainCommandResult(this ExecutionResult executionResult)
     {
         return executionResult
-            .Payload
-            .Should()
+            .Payload.Should()
             .BeOfType<CommandResult>("because execution result should be a command result")
             .Subject;
     }

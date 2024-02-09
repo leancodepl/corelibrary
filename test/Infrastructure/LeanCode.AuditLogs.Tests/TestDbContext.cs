@@ -43,8 +43,8 @@ public class TestDbContext : DbContext
 
 public class TestEntity : IAggregateRoot<string>
 {
-    private readonly List<OwnedEntity> ownedEntities =  [ ];
-    private readonly List<IncludedEntity> includedEntities =  [ ];
+    private readonly List<OwnedEntity> ownedEntities = [];
+    private readonly List<IncludedEntity> includedEntities = [];
     public string Id { get; set; } = null!;
     public string SomeString { get; set; } = null!;
 

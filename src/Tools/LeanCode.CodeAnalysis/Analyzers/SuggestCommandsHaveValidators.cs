@@ -85,8 +85,8 @@ public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
 
     private static bool IsThisCommandValidator(INamedTypeSymbol command, ITypeSymbol type)
     {
-        return type.AllInterfaces
-            .Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
+        return type
+            .AllInterfaces.Where(i => i.GetFullNamespaceName() == ValidatorTypeName)
             .Where(i => SymbolEqualityComparer.Default.Equals(i.TypeArguments.First(), command))
             .Any();
     }

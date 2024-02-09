@@ -61,18 +61,16 @@ public class Startup : LeanStartup
     {
         app.UseRouting();
         app.UseAuthentication();
-        app.UseEndpoints(
-            e =>
-                e.MapRemoteCQRS(
-                    "/api",
-                    cfg =>
-                    {
-                        cfg.Commands = cmd =>
-                            cmd.Secure().Validate().CommitTransaction<TestDbContext>().PublishEvents();
-                        cfg.Queries = cmd => cmd.Secure();
-                        cfg.Operations = cmd => cmd.Secure();
-                    }
-                )
+        app.UseEndpoints(e =>
+            e.MapRemoteCQRS(
+                "/api",
+                cfg =>
+                {
+                    cfg.Commands = cmd => cmd.Secure().Validate().CommitTransaction<TestDbContext>().PublishEvents();
+                    cfg.Queries = cmd => cmd.Secure();
+                    cfg.Operations = cmd => cmd.Secure();
+                }
+            )
         );
     }
 }

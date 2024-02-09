@@ -56,8 +56,8 @@ public class EnsureCommandValidatorsFollowNamingConvention : DiagnosticAnalyzer
 
     internal static INamedTypeSymbol? GetImplementedValidator(INamedTypeSymbol type)
     {
-        return type.AllInterfaces.FirstOrDefault(
-            interfaceSymbol => interfaceSymbol.GetFullNamespaceName() == ValidatorTypeName
+        return type.AllInterfaces.FirstOrDefault(interfaceSymbol =>
+            interfaceSymbol.GetFullNamespaceName() == ValidatorTypeName
         );
     }
 
@@ -69,10 +69,8 @@ public class EnsureCommandValidatorsFollowNamingConvention : DiagnosticAnalyzer
         var validator = GetImplementedValidator(type);
 
         var isCommandValidator = validator
-            ?.TypeArguments
-            .First()
-            .AllInterfaces
-            .Any(i => i.GetFullNamespaceName() == CommandTypeName);
+            ?.TypeArguments.First()
+            .AllInterfaces.Any(i => i.GetFullNamespaceName() == CommandTypeName);
 
         commandValidator = isCommandValidator == true ? validator : null;
 

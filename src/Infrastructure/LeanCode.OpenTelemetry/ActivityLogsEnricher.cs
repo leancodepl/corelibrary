@@ -32,12 +32,10 @@ public class ActivityLogsEnricher : ILogEventEnricher
             if (useDatadogFormat)
             {
                 var traceIdStr = activity
-                    .TraceId
-                    .ToDatadogFormat()
+                    .TraceId.ToDatadogFormat()
                     .ToString(System.Globalization.CultureInfo.InvariantCulture);
                 var spanIdStr = activity
-                    .SpanId
-                    .ToDatadogFormat()
+                    .SpanId.ToDatadogFormat()
                     .ToString(System.Globalization.CultureInfo.InvariantCulture);
                 traceId = propertyFactory.CreateProperty(traceIdKey, traceIdStr);
                 spanId = propertyFactory.CreateProperty(spanIdKey, spanIdStr);

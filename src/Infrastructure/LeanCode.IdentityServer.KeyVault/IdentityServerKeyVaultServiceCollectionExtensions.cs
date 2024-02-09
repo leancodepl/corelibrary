@@ -18,14 +18,10 @@ public static class IdentityServerKeyVaultServiceCollectionExtensions
     {
         services.TryAddTransient<IKeyMaterialService, KeyMaterialService>();
         services.TryAddSingleton<ITokenCreationService, TokenCreationService>();
-        services.TryAddSingleton(
-            ctx =>
-                new SigningService(
-                    ctx.GetRequiredService<KeyClient>(),
-                    ctx.GetRequiredService<IAzureClientFactory<CryptographyClient>>()
-                        .CreateClient(TokenSigningKeyClientName)
-                )
-        );
+        services.TryAddSingleton(ctx => new SigningService(
+            ctx.GetRequiredService<KeyClient>(),
+            ctx.GetRequiredService<IAzureClientFactory<CryptographyClient>>().CreateClient(TokenSigningKeyClientName)
+        ));
 
         services.AddAzureClients(cfg =>
         {

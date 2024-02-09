@@ -43,13 +43,12 @@ public static class NamedTypeSymbolExtensions
     {
         var attributes = type.GetAttributes();
         if (
-            attributes.Any(
-                attr =>
-                    attr.AttributeClass is object
-                    && (
-                        attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName)
-                        || attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)
-                    )
+            attributes.Any(attr =>
+                attr.AttributeClass is object
+                && (
+                    attr.AttributeClass.ImplementsInterfaceOrBaseClass(AuthorizeWhenTypeName)
+                    || attr.AttributeClass.ImplementsInterfaceOrBaseClass(AllowUnauthorizedTypeName)
+                )
             )
         )
         {

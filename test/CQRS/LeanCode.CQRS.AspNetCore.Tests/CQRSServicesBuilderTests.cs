@@ -121,8 +121,7 @@ public class CQRSServicesBuilderTests
         where THandler : IOperationHandler<TOperation, TResult>
     {
         var cqrsObject = registrationSource
-            .Objects
-            .Should()
+            .Objects.Should()
             .ContainSingle(o => o.ObjectType == typeof(TOperation))
             .Which;
 

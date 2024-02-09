@@ -49,8 +49,7 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
             objectType
                 .GetInterfaces()
                 .Single(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == interfaceType)
-                .GenericTypeArguments
-                .First();
+                .GenericTypeArguments.First();
     }
 
     private static async Task<object?> ExecuteOperationAsync<TOperation, TResult, THandler>(

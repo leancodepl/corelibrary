@@ -43,26 +43,24 @@ public class TimestampTzTests : IAsyncLifetime
     {
         var orderedByUtc = await dbContext.Meetings.OrderBy(m => m.StartTime.UtcTimestamp).ToListAsync();
 
-        orderedByUtc.Should().BeEquivalentTo([ meeting1, meeting2 ], options => options.WithStrictOrdering());
+        orderedByUtc.Should().BeEquivalentTo([meeting1, meeting2], options => options.WithStrictOrdering());
     }
 
     [PostgresFact]
     public async Task Sorting_by_LocalTimestampWithoutOffset_returns_results_in_expected_order()
     {
         var orderedByLocal = await dbContext
-            .Meetings
-            .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
+            .Meetings.OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
             .ToListAsync();
 
-        orderedByLocal.Should().BeEquivalentTo([ meeting2, meeting1 ], options => options.WithStrictOrdering());
+        orderedByLocal.Should().BeEquivalentTo([meeting2, meeting1], options => options.WithStrictOrdering());
     }
 
     [PostgresFact]
     public void Sorting_by_LocalTimestampWithoutOffset_generates_SQL_with_expected_AT_TIME_ZONE_operator()
     {
         dbContext
-            .Meetings
-            .OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
+            .Meetings.OrderBy(m => m.StartTime.LocalTimestampWithoutOffset)
             .ToQueryString()
             .Should()
             .ContainEquivalentOf(

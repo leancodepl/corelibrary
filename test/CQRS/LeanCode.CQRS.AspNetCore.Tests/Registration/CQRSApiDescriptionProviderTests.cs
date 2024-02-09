@@ -65,10 +65,9 @@ public class CQRSApiDescriptionProviderTests
 
         var query = allDescriptors.Should().ContainSingle().Which;
         query
-            .SupportedResponseTypes
-            .Should()
+            .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403), ]
+                [ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),]
             );
     }
 
@@ -102,8 +101,7 @@ public class CQRSApiDescriptionProviderTests
 
         var query = allDescriptors.Should().ContainSingle().Which;
         query
-            .SupportedResponseTypes
-            .Should()
+            .SupportedResponseTypes.Should()
             .BeEquivalentTo(
                 [
                     ResponseOf<CommandResult>(200),
@@ -145,10 +143,9 @@ public class CQRSApiDescriptionProviderTests
 
         var query = allDescriptors.Should().ContainSingle().Which;
         query
-            .SupportedResponseTypes
-            .Should()
+            .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403), ]
+                [ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),]
             );
     }
 
@@ -193,7 +190,7 @@ public class CQRSApiDescriptionProviderTests
     private static List<ApiDescription> ListApis(Type forObject)
     {
         var dataSource = CreateDataSource(forObject);
-        var context = new ApiDescriptionProviderContext([ ]);
+        var context = new ApiDescriptionProviderContext([]);
         new CQRSApiDescriptionProvider(dataSource).OnProvidersExecuting(context);
         return context.Results.ToList();
     }

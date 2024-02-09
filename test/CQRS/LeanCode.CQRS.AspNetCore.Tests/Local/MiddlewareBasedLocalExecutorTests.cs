@@ -71,7 +71,7 @@ public class MiddlewareBasedLocalExecutorTests
         await executor.RunAsync(command1, new ClaimsPrincipal());
         await executor.RunAsync(command2, new ClaimsPrincipal());
 
-        storage.Commands.Should().BeEquivalentTo([ command1, command2 ]);
+        storage.Commands.Should().BeEquivalentTo([command1, command2]);
         storage.Handlers.Should().HaveCount(2);
         storage.Handlers.Should().HaveCount(2);
     }
@@ -131,9 +131,9 @@ public class MiddlewareBasedLocalExecutorTests
 
 public class LocalDataStorage
 {
-    public List<LocalHandlerMiddleware> Middlewares { get; } = [ ];
-    public List<LocalCommandHandler> Handlers { get; } = [ ];
-    public List<LocalCommand> Commands { get; } = [ ];
+    public List<LocalHandlerMiddleware> Middlewares { get; } = [];
+    public List<LocalCommandHandler> Handlers { get; } = [];
+    public List<LocalCommand> Commands { get; } = [];
 }
 
 public record LocalCommand(bool Fail = false, bool Cancel = false, bool CheckMetadata = false) : ICommand;

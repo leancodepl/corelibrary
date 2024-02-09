@@ -23,8 +23,8 @@ public class AuditLogsConsumerDefinition : ConsumerDefinition<AuditLogsConsumer>
         IRegistrationContext context
     )
     {
-        endpointConfigurator.UseMessageRetry(
-            r => r.Immediate(1).Incremental(3, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5))
+        endpointConfigurator.UseMessageRetry(r =>
+            r.Immediate(1).Incremental(3, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5))
         );
     }
 }

@@ -9,38 +9,38 @@ public class ValidConstructTests
     {
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawInt)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawInt)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored")]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored")]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawInt, SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawInt, SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
     }
 
@@ -49,38 +49,38 @@ public class ValidConstructTests
     {
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawLong)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawLong)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored")]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored")]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawLong, SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawLong, SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
     }
 
@@ -89,38 +89,38 @@ public class ValidConstructTests
     {
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawGuid)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawGuid)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored")]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored")]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawGuid, SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawGuid, SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
     }
 
@@ -129,38 +129,38 @@ public class ValidConstructTests
     {
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedGuid)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix")]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix")]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid, SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedGuid, SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
 
         AssertCorrect(
             """
-            using LeanCode.DomainModels.Ids;
-            namespace Test;
-            [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true)]
-            public readonly partial record struct Id;
-        """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
         );
     }
 

@@ -41,12 +41,11 @@ public static class MassTransitRelayServiceCollectionExtensions
         bool initializeAtStartup = true
     )
     {
-        services.AddSingleton(
-            sp =>
-                ResettableBusActivityMonitor.CreateFor(
-                    sp.GetRequiredService<IBusControl>(),
-                    inactivityWaitTime ?? TimeSpan.FromSeconds(1)
-                )
+        services.AddSingleton(sp =>
+            ResettableBusActivityMonitor.CreateFor(
+                sp.GetRequiredService<IBusControl>(),
+                inactivityWaitTime ?? TimeSpan.FromSeconds(1)
+            )
         );
         services.AddSingleton<IBusActivityMonitor>(sp => sp.GetRequiredService<ResettableBusActivityMonitor>());
 

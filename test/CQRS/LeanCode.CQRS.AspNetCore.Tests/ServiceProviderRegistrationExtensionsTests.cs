@@ -53,8 +53,8 @@ public class ServiceProviderRegistrationExtensionsTests
     [Fact]
     public void Registers_local_executors_on_request()
     {
-        var sp = BuildProvider(
-            c => c.WithLocalCommands(_ => { }).WithLocalQueries(_ => { }).WithLocalOperations(_ => { })
+        var sp = BuildProvider(c =>
+            c.WithLocalCommands(_ => { }).WithLocalQueries(_ => { }).WithLocalOperations(_ => { })
         );
 
         sp.Should().HaveService<ILocalCommandExecutor>();
@@ -65,11 +65,10 @@ public class ServiceProviderRegistrationExtensionsTests
     [Fact]
     public void Registers_keyed_local_executors_on_request()
     {
-        var sp = BuildProvider(
-            c =>
-                c.WithKeyedLocalCommands("commands", _ => { })
-                    .WithKeyedLocalQueries("queries", _ => { })
-                    .WithKeyedLocalOperations("operations", _ => { })
+        var sp = BuildProvider(c =>
+            c.WithKeyedLocalCommands("commands", _ => { })
+                .WithKeyedLocalQueries("queries", _ => { })
+                .WithKeyedLocalOperations("operations", _ => { })
         );
 
         sp.Should().HaveKeyedService<ILocalCommandExecutor>("commands");
@@ -121,8 +120,7 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
     public AndConstraint<ServiceProviderAssertions> HaveService<T>(string because = "", params object[] becauseArgs)
     {
         Execute
-            .Assertion
-            .BecauseOf(because, becauseArgs)
+            .Assertion.BecauseOf(because, becauseArgs)
             .ForCondition(Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
         return new AndConstraint<ServiceProviderAssertions>(this);
@@ -135,8 +133,7 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
     )
     {
         Execute
-            .Assertion
-            .BecauseOf(because, becauseArgs)
+            .Assertion.BecauseOf(because, becauseArgs)
             .ForCondition(
                 Subject.GetRequiredService<IServiceProviderIsKeyedService>().IsKeyedService(typeof(T), serviceKey)
             )
@@ -147,8 +144,7 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
     public AndConstraint<ServiceProviderAssertions> NotHaveService<T>(string because = "", params object[] becauseArgs)
     {
         Execute
-            .Assertion
-            .BecauseOf(because, becauseArgs)
+            .Assertion.BecauseOf(because, becauseArgs)
             .ForCondition(!Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
         return new AndConstraint<ServiceProviderAssertions>(this);

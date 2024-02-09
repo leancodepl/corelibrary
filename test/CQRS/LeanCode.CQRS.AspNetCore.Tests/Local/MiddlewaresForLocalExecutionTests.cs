@@ -41,11 +41,9 @@ public class MiddlewaresForLocalExecutionTests
         var result = await executor.RunAsync(new ExceptionTranslationCommand(), new());
         result.WasSuccessful.Should().BeFalse();
         result
-            .ValidationErrors
-            .Should()
+            .ValidationErrors.Should()
             .ContainSingle()
-            .Which
-            .Should()
+            .Which.Should()
             .BeEquivalentTo(new ValidationError("", "Message", 100));
     }
 
@@ -57,11 +55,9 @@ public class MiddlewaresForLocalExecutionTests
         var result = await executor.RunAsync(new ValidatedCommand(), new());
         result.WasSuccessful.Should().BeFalse();
         result
-            .ValidationErrors
-            .Should()
+            .ValidationErrors.Should()
             .ContainSingle()
-            .Which
-            .Should()
+            .Which.Should()
             .BeEquivalentTo(new ValidationError("", "FromValidator", 101));
     }
 
@@ -117,7 +113,7 @@ public class ExceptionTranslationCommandHandler : ICommandHandler<ExceptionTrans
 public class ValidatedCommandValidator : ICommandValidator<ValidatedCommand>, ICommandValidatorWrapper
 {
     public Task<ValidationResult> ValidateAsync(HttpContext httpContext, ValidatedCommand command) =>
-        Task.FromResult(new ValidationResult([ new ValidationError("", "FromValidator", 101) ]));
+        Task.FromResult(new ValidationResult([new ValidationError("", "FromValidator", 101)]));
 
     public Task<ValidationResult> ValidateAsync(HttpContext appContext, ICommand command) =>
         ValidateAsync(appContext, (ValidatedCommand)command);

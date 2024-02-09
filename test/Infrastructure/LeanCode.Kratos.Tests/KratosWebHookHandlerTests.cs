@@ -41,8 +41,8 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Correctly_serializes_identity_responses()
     {
-        var handler = new KratosWebHookTestHandler(
-            ctx => KratosWebHookHandlerBase.WriteIdentityResponseAsync(ctx, Identity)
+        var handler = new KratosWebHookTestHandler(ctx =>
+            KratosWebHookHandlerBase.WriteIdentityResponseAsync(ctx, Identity)
         );
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = ApiKey });
 
