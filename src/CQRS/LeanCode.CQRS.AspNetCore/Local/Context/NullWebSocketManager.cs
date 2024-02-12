@@ -10,7 +10,7 @@ internal class NullWebSocketManager : WebSocketManager
 
     public override bool IsWebSocketRequest => false;
 
-    public override IList<string> WebSocketRequestedProtocols { get; } = new ReadOnlyCollection<string>([ ]);
+    public override IList<string> WebSocketRequestedProtocols { get; } = new ReadOnlyCollection<string>([]);
 
     private NullWebSocketManager() { }
 

@@ -47,9 +47,8 @@ public class FixCancellationTokenNamingCodeAction : CodeAction
                 // Find all references to the old parameter name replace them.
                 var references = containingMethod
                     .DescendantNodes()
-                    .Where(
-                        node =>
-                            node is IdentifierNameSyntax identifier && identifier.Identifier.Text == oldIdentifierText
+                    .Where(node =>
+                        node is IdentifierNameSyntax identifier && identifier.Identifier.Text == oldIdentifierText
                     )
                     .Append(parameter);
 

@@ -22,19 +22,18 @@ public class AuditLogsPublisher
             var now = Time.NowWithOffset;
 
             await Task.WhenAll(
-                entitiesChanged.Select(
-                    e =>
-                        bus.Publish(
-                            new AuditLogMessage(
-                                e,
-                                actionName,
-                                now,
-                                actorId,
-                                Activity.Current?.TraceId.ToString(),
-                                Activity.Current?.SpanId.ToString()
-                            ),
-                            cancellationToken
-                        )
+                entitiesChanged.Select(e =>
+                    bus.Publish(
+                        new AuditLogMessage(
+                            e,
+                            actionName,
+                            now,
+                            actorId,
+                            Activity.Current?.TraceId.ToString(),
+                            Activity.Current?.SpanId.ToString()
+                        ),
+                        cancellationToken
+                    )
                 )
             );
         }

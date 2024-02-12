@@ -67,6 +67,6 @@ public class UserIdExtractorsTests
     {
         var claim = new Claim(UserIdClaim, userId);
 
-        return new ClaimsPrincipal(new ClaimsIdentity([ claim ]));
+        return new ClaimsPrincipal(new ClaimsIdentity([claim]));
     }
 }

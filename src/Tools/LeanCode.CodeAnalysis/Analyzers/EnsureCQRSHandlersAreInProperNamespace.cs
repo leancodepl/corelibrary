@@ -76,8 +76,8 @@ public class EnsureCQRSHandlersAreInProperNamespace : DiagnosticAnalyzer
 
         foreach (var type in namespaceSymbol.GetTypeMembers())
         {
-            var implementedContracts = type.AllInterfaces
-                .Where(i => CqrsHandlerTypes.Contains(i.GetFullNamespaceName()))
+            var implementedContracts = type
+                .AllInterfaces.Where(i => CqrsHandlerTypes.Contains(i.GetFullNamespaceName()))
                 .Select(i => i.TypeArguments.First());
 
             foreach (var c in implementedContracts)
@@ -165,9 +165,10 @@ public class EnsureCQRSHandlersAreInProperNamespace : DiagnosticAnalyzer
         {
             if (
                 node is BaseNamespaceDeclarationSyntax namespaceDeclaration
-                && SymbolEqualityComparer
-                    .Default
-                    .Equals(semanticModel.GetDeclaredSymbol(namespaceDeclaration), namespaceSymbol)
+                && SymbolEqualityComparer.Default.Equals(
+                    semanticModel.GetDeclaredSymbol(namespaceDeclaration),
+                    namespaceSymbol
+                )
             )
             {
                 return namespaceDeclaration;

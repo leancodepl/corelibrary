@@ -44,8 +44,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
         );
 
         res.IsValid.Should().BeFalse();
-        res.Errors
-            .Should()
+        res.Errors.Should()
             .BeEquivalentTo(
                 new ValidationError[]
                 {

@@ -91,134 +91,114 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
 
     private static void DefineCommand(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
-        apiDescription
-            .ParameterDescriptions
-            .Add(
-                new()
-                {
-                    IsRequired = true,
-                    Source = BindingSource.Body,
-                    Type = metadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
-                }
-            );
+        apiDescription.ParameterDescriptions.Add(
+            new()
+            {
+                IsRequired = true,
+                Source = BindingSource.Body,
+                Type = metadata.ObjectType,
+                ModelMetadata = CreateModelMetadata(metadata.ObjectType),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(typeof(CommandResult)),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 200,
-                    Type = typeof(CommandResult),
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(typeof(CommandResult)),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 200,
+                Type = typeof(CommandResult),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(typeof(CommandResult)),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 422,
-                    Type = typeof(CommandResult),
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(typeof(CommandResult)),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 422,
+                Type = typeof(CommandResult),
+            }
+        );
     }
 
     private static void DefineQuery(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
-        apiDescription
-            .ParameterDescriptions
-            .Add(
-                new()
-                {
-                    IsRequired = true,
-                    Source = BindingSource.Body,
-                    Type = metadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
-                }
-            );
+        apiDescription.ParameterDescriptions.Add(
+            new()
+            {
+                IsRequired = true,
+                Source = BindingSource.Body,
+                Type = metadata.ObjectType,
+                ModelMetadata = CreateModelMetadata(metadata.ObjectType),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(metadata.ResultType),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 200,
-                    Type = metadata.ResultType,
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(metadata.ResultType),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 200,
+                Type = metadata.ResultType,
+            }
+        );
     }
 
     private static void DefineOperation(CQRSObjectMetadata metadata, ApiDescription apiDescription)
     {
-        apiDescription
-            .ParameterDescriptions
-            .Add(
-                new()
-                {
-                    IsRequired = true,
-                    Source = BindingSource.Body,
-                    Type = metadata.ObjectType,
-                    ModelMetadata = CreateModelMetadata(metadata.ObjectType),
-                }
-            );
+        apiDescription.ParameterDescriptions.Add(
+            new()
+            {
+                IsRequired = true,
+                Source = BindingSource.Body,
+                Type = metadata.ObjectType,
+                ModelMetadata = CreateModelMetadata(metadata.ObjectType),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(metadata.ResultType),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 200,
-                    Type = metadata.ResultType,
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(metadata.ResultType),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 200,
+                Type = metadata.ResultType,
+            }
+        );
     }
 
     private static void AddCommonResponses(ApiDescription apiDescription)
     {
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(typeof(void)),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 400,
-                    Type = typeof(void),
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(typeof(void)),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 400,
+                Type = typeof(void),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(typeof(void)),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 401,
-                    Type = typeof(void),
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(typeof(void)),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 401,
+                Type = typeof(void),
+            }
+        );
 
-        apiDescription
-            .SupportedResponseTypes
-            .Add(
-                new()
-                {
-                    ModelMetadata = CreateModelMetadata(typeof(void)),
-                    ApiResponseFormats =  [ new() { MediaType = ApplicationJson } ],
-                    StatusCode = 403,
-                    Type = typeof(void),
-                }
-            );
+        apiDescription.SupportedResponseTypes.Add(
+            new()
+            {
+                ModelMetadata = CreateModelMetadata(typeof(void)),
+                ApiResponseFormats = [new() { MediaType = ApplicationJson }],
+                StatusCode = 403,
+                Type = typeof(void),
+            }
+        );
     }
 
     private static CQRSBodyModelMetadata CreateModelMetadata(Type type) => new(ModelMetadataIdentity.ForType(type));

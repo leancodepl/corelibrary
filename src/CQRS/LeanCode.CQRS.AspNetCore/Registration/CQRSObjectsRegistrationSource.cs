@@ -29,13 +29,11 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         var contracts = contractsCatalog
-            .Assemblies
-            .SelectMany(a => a.DefinedTypes)
+            .Assemblies.SelectMany(a => a.DefinedTypes)
             .Where(t => IsCommand(t) || IsQuery(t) || IsOperation(t));
 
         var handlers = handlersCatalog
-            .Assemblies
-            .SelectMany(a => a.DefinedTypes)
+            .Assemblies.SelectMany(a => a.DefinedTypes)
             .SelectMany(EnumerateHandledObjects)
             .ToLookup(h => h.ObjectType);
 
@@ -105,8 +103,8 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
 
     private static bool ValidateContractType(TypeInfo type)
     {
-        var implementedContractInterfaces = type.ImplementedInterfaces.Where(
-            i => IsGenericType(i, typeof(IQuery<>)) || i == typeof(ICommand) || IsGenericType(i, typeof(IOperation<>))
+        var implementedContractInterfaces = type.ImplementedInterfaces.Where(i =>
+            IsGenericType(i, typeof(IQuery<>)) || i == typeof(ICommand) || IsGenericType(i, typeof(IOperation<>))
         );
 
         return implementedContractInterfaces.Count() == 1;
@@ -114,36 +112,32 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
 
     private static IEnumerable<HandlerDefinition> EnumerateHandledObjects(TypeInfo t)
     {
-        var handledQueries = t.ImplementedInterfaces
-            .Where(qh => IsGenericType(qh, typeof(IQueryHandler<,>)))
-            .Select(
-                qh =>
-                    new HandlerDefinition(
-                        CQRSObjectKind.Query,
-                        t,
-                        qh.GenericTypeArguments[0],
-                        qh.GenericTypeArguments[1]
-                    )
-            );
+        var handledQueries = t
+            .ImplementedInterfaces.Where(qh => IsGenericType(qh, typeof(IQueryHandler<,>)))
+            .Select(qh => new HandlerDefinition(
+                CQRSObjectKind.Query,
+                t,
+                qh.GenericTypeArguments[0],
+                qh.GenericTypeArguments[1]
+            ));
 
-        var handledCommands = t.ImplementedInterfaces
-            .Where(ch => IsGenericType(ch, typeof(ICommandHandler<>)))
-            .Select(
-                ch =>
-                    new HandlerDefinition(CQRSObjectKind.Command, t, ch.GenericTypeArguments[0], typeof(CommandResult))
-            );
+        var handledCommands = t
+            .ImplementedInterfaces.Where(ch => IsGenericType(ch, typeof(ICommandHandler<>)))
+            .Select(ch => new HandlerDefinition(
+                CQRSObjectKind.Command,
+                t,
+                ch.GenericTypeArguments[0],
+                typeof(CommandResult)
+            ));
 
-        var handledOperations = t.ImplementedInterfaces
-            .Where(oh => IsGenericType(oh, typeof(IOperationHandler<,>)))
-            .Select(
-                oh =>
-                    new HandlerDefinition(
-                        CQRSObjectKind.Operation,
-                        t,
-                        oh.GenericTypeArguments[0],
-                        oh.GenericTypeArguments[1]
-                    )
-            );
+        var handledOperations = t
+            .ImplementedInterfaces.Where(oh => IsGenericType(oh, typeof(IOperationHandler<,>)))
+            .Select(oh => new HandlerDefinition(
+                CQRSObjectKind.Operation,
+                t,
+                oh.GenericTypeArguments[0],
+                oh.GenericTypeArguments[1]
+            ));
 
         return handledQueries.Concat(handledCommands).Concat(handledOperations);
     }
@@ -164,8 +158,8 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
     }
 
     private static bool ImplementsGenericType(TypeInfo type, Type implementedType) =>
-        type.ImplementedInterfaces.Any(
-            i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == implementedType
+        type.ImplementedInterfaces.Any(i =>
+            i.IsConstructedGenericType && i.GetGenericTypeDefinition() == implementedType
         );
 
     private static bool IsGenericType(Type type, Type genericType)

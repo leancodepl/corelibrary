@@ -48,14 +48,15 @@ public class SendGridRazorClientTests
 
         var localizer = Substitute.For<IStringLocalizer>();
 
-        localizer[default, default].ReturnsForAnyArgs(ci =>
-        {
-            var culture = ci.Arg<CultureInfo>();
-            var cultureName = culture == CultureInfo.InvariantCulture ? "InvariantCulture" : culture.Name;
-            var keyName = ci.Arg<string>();
+        localizer[default, default]
+            .ReturnsForAnyArgs(ci =>
+            {
+                var culture = ci.Arg<CultureInfo>();
+                var cultureName = culture == CultureInfo.InvariantCulture ? "InvariantCulture" : culture.Name;
+                var keyName = ci.Arg<string>();
 
-            return $"[{cultureName}] {keyName}";
-        });
+                return $"[{cultureName}] {keyName}";
+            });
 
         client = new SendGridRazorClient(new SendGridClient(Options), renderer, localizer);
     }

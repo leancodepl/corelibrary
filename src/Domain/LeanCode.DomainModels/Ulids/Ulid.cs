@@ -53,8 +53,7 @@ public readonly record struct Ulid
     // https://en.wikipedia.org/wiki/Base32
     private static readonly ImmutableArray<char> Base32Text = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".ToImmutableArray();
     private static readonly ImmutableArray<byte> Base32Bytes = Encoding
-        .UTF8
-        .GetBytes(Base32Text.ToArray())
+        .UTF8.GetBytes(Base32Text.ToArray())
         .ToImmutableArray();
 
     private static readonly ImmutableArray<byte> CharToBase32 = new byte[]

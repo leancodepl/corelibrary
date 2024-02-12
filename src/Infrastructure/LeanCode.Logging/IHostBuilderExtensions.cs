@@ -49,16 +49,11 @@ public static class IHostBuilderExtensions
                 var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
 
                 var loggerConfiguration = new LoggerConfiguration()
-                    .ReadFrom
-                    .Configuration(configuration)
-                    .Enrich
-                    .FromLogContext()
-                    .Enrich
-                    .WithProperty("project", projectName)
-                    .Enrich
-                    .WithProperty("app_name", appName)
-                    .MinimumLevel
-                    .Is(minLogLevel)
+                    .ReadFrom.Configuration(configuration)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("project", projectName)
+                    .Enrich.WithProperty("app_name", appName)
+                    .MinimumLevel.Is(minLogLevel)
                     .DestructureCommonObjects(destructurers);
 
                 if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
@@ -66,14 +61,10 @@ public static class IHostBuilderExtensions
                     var internalLogLevel =
                         minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
                     loggerConfiguration
-                        .MinimumLevel
-                        .Override("Microsoft", internalLogLevel)
-                        .MinimumLevel
-                        .Override("System", internalLogLevel)
-                        .MinimumLevel
-                        .Override("Azure.Identity", internalLogLevel)
-                        .MinimumLevel
-                        .Override("Azure.Core", internalLogLevel);
+                        .MinimumLevel.Override("Microsoft", internalLogLevel)
+                        .MinimumLevel.Override("System", internalLogLevel)
+                        .MinimumLevel.Override("Azure.Identity", internalLogLevel)
+                        .MinimumLevel.Override("Azure.Core", internalLogLevel);
                 }
 
                 if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)

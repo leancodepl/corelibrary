@@ -36,8 +36,7 @@ public class CollectionExtensionsTests
             .ConditionalWhere(a => a.Name == Parrot.Name, true)
             .Should()
             .ContainSingle()
-            .Which
-            .Should()
+            .Which.Should()
             .Be(Parrot);
     }
 

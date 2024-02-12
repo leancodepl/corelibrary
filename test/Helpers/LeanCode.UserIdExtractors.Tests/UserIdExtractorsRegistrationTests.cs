@@ -31,8 +31,8 @@ public class UserIdExtractorsRegistrationTests
     [Fact]
     public void Raw_typed_IUserIdExtractor_is_correctly_registered()
     {
-        var serviceProvider = BuildServiceProvider(
-            services => services.AddRawTypedUserIdExtractor<Guid, TestGuidId>(UserIdClaim)
+        var serviceProvider = BuildServiceProvider(services =>
+            services.AddRawTypedUserIdExtractor<Guid, TestGuidId>(UserIdClaim)
         );
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestGuidId>>();
 
@@ -43,8 +43,8 @@ public class UserIdExtractorsRegistrationTests
     [Fact]
     public void Prefixed_typed_IUserIdExtractor_is_correctly_registered()
     {
-        var serviceProvider = BuildServiceProvider(
-            services => services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
+        var serviceProvider = BuildServiceProvider(services =>
+            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
         );
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestPrefixedGuidId>>();
 
@@ -55,8 +55,8 @@ public class UserIdExtractorsRegistrationTests
     [Fact]
     public void Non_generic_IUserIdExtractor_is_registered_for_other_user_id_types()
     {
-        var serviceProvider = BuildServiceProvider(
-            services => services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
+        var serviceProvider = BuildServiceProvider(services =>
+            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
         );
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor>();
 

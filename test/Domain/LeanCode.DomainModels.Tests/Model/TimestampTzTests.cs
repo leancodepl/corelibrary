@@ -155,8 +155,7 @@ public class TimestampTzTests
 
         document.RootElement.ValueKind.Should().Be(JsonValueKind.Object);
         document
-            .RootElement
-            .EnumerateObject()
+            .RootElement.EnumerateObject()
             .Should()
             .BeEquivalentTo(
                 [

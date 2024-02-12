@@ -13,8 +13,7 @@ public class TimestampTzExpressionInterceptorTests
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
         TimestampTzExpressionRewriter
-            .LocalTimestampWithoutOffsetProperty
-            .GetGetMethod()
+            .LocalTimestampWithoutOffsetProperty.GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
             .Be(timestampTz.LocalTimestampWithoutOffset);
@@ -26,8 +25,7 @@ public class TimestampTzExpressionInterceptorTests
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
         TimestampTzExpressionRewriter
-            .UtcTimestampProperty
-            .GetGetMethod()
+            .UtcTimestampProperty.GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
             .Be(timestampTz.UtcTimestamp);
@@ -39,8 +37,7 @@ public class TimestampTzExpressionInterceptorTests
         var timestampTz = new TimestampTz(DateTime.UtcNow, "Europe/Warsaw");
 
         TimestampTzExpressionRewriter
-            .TimeZoneIdProperty
-            .GetGetMethod()
+            .TimeZoneIdProperty.GetGetMethod()
             .Invoke(timestampTz, null)
             .Should()
             .Be(timestampTz.TimeZoneId);
@@ -60,8 +57,7 @@ public class TimestampTzExpressionInterceptorTests
         var utcNow = DateTime.UtcNow;
 
         TimestampTzExpressionRewriter
-            .ConvertDateTimeBySystemTimeZoneIdMethod
-            .Invoke(null, [ utcNow, "Europe/Warsaw" ])
+            .ConvertDateTimeBySystemTimeZoneIdMethod.Invoke(null, [utcNow, "Europe/Warsaw"])
             .Should()
             .Be(TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcNow, "Europe/Warsaw"));
     }
@@ -75,8 +71,7 @@ public class TimestampTzExpressionInterceptorTests
             TimeZoneInfo.ConvertTimeBySystemTimeZoneId(tstz.UtcTimestamp.UtcDateTime, tstz.TimeZoneId);
 
         TimestampTzExpressionInterceptorDbContextOptionsBuilderExtensions
-            .Interceptor
-            .QueryCompilationStarting(input, default)
+            .Interceptor.QueryCompilationStarting(input, default)
             .Should()
             .BeEquivalentTo(expectedOutput);
     }

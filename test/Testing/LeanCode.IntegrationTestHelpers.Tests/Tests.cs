@@ -63,8 +63,7 @@ public class Tests : IAsyncLifetime
 
         authResult.IsAuthenticated.Should().BeTrue();
         authResult
-            .Claims
-            .Should()
+            .Claims.Should()
             .BeEquivalentTo(
                 new[]
                 {

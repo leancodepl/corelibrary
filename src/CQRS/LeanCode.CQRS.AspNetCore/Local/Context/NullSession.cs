@@ -11,7 +11,7 @@ internal class NullSession : ISession
 
     public string Id => "";
 
-    public IEnumerable<string> Keys => [ ];
+    public IEnumerable<string> Keys => [];
 
     private NullSession() { }
 

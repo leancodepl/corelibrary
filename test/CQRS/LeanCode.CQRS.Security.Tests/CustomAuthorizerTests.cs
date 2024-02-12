@@ -47,8 +47,8 @@ public class CustomAuthorizerTests
         var customAuthorizer = new CustomAuthorizer();
 
         await customAuthorizer
-            .Awaiting(
-                c => ((IHttpContextCustomAuthorizer)c).CheckIfAuthorizedAsync(httpContext, new object(), new object())
+            .Awaiting(c =>
+                ((IHttpContextCustomAuthorizer)c).CheckIfAuthorizedAsync(httpContext, new object(), new object())
             )
             .Should()
             .ThrowAsync<InvalidCastException>();

@@ -21,9 +21,9 @@ internal class NullHeaderDictionary : IHeaderDictionary
         set { }
     }
 
-    public ICollection<string> Keys { get; } = new ReadOnlyCollection<string>([ ]);
+    public ICollection<string> Keys { get; } = new ReadOnlyCollection<string>([]);
 
-    public ICollection<StringValues> Values { get; } = new ReadOnlyCollection<StringValues>([ ]);
+    public ICollection<StringValues> Values { get; } = new ReadOnlyCollection<StringValues>([]);
 
     public int Count => 0;
 

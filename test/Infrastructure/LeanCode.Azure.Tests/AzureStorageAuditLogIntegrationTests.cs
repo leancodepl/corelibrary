@@ -43,7 +43,7 @@ public class AzureStorageAuditLogIntegrationTests
         await storage.StoreEventAsync(
             new AuditLogMessage(
                 new(
-                    [ id.ToString() ],
+                    [id.ToString()],
                     type,
                     JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                     JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
@@ -75,7 +75,7 @@ public class AzureStorageAuditLogIntegrationTests
             await storage.StoreEventAsync(
                 new AuditLogMessage(
                     new(
-                        [ id.ToString() ],
+                        [id.ToString()],
                         type,
                         JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                         JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
@@ -112,7 +112,7 @@ public class AzureStorageAuditLogIntegrationTests
             await storage.StoreEventAsync(
                 new AuditLogMessage(
                     new(
-                        [ id.ToString() ],
+                        [id.ToString()],
                         type,
                         JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
                         JsonSerializer.SerializeToDocument(new { Shadow = "property" }),

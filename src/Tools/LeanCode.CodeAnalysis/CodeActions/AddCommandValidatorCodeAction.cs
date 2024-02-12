@@ -45,9 +45,10 @@ public class AddCommandValidatorCodeAction : CodeAction
         var handlerSyntax =
             root.FindNode(handlerSpan).FirstAncestorOrSelf<ClassDeclarationSyntax>()
             ?? throw new InvalidOperationException("Cannot find parent class.");
-        var concreteHandler = editor
-            .SemanticModel
-            .GetDeclaredSymbol(handlerSyntax, cancellationToken: cancellationToken)!;
+        var concreteHandler = editor.SemanticModel.GetDeclaredSymbol(
+            handlerSyntax,
+            cancellationToken: cancellationToken
+        )!;
         var handlerInteface =
             concreteHandler.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerFullTypeName)
             ?? throw new InvalidOperationException("Cannot find handler interface implementation.");
