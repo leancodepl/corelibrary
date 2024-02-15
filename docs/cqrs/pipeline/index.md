@@ -11,42 +11,69 @@ The LeanCode CoreLibrary utilizes ASP.NET middlewares to create customized pipel
 
 ## Configuration
 
-CQRS objects can only be registered in the ASP.NET request pipeline via endpoint routing. To register use `IEndpointRouteBuilder.MapRemoteCQRS(...)` extension method. In `MapRemoteCQRS(...)` you can configure the inner CQRS pipeline. In the following example, app is configured to handle:
+CQRS objects need to be registered in two places:
+
+1. Handlers need to be registered in DI,
+2. Routes for CQRS objects execution need to be registered in ASP.NET Core routing as endpoints.
+
+### DI
+
+To register handlers in DI, use [AddCQRS(...)] calls. There, you need to specify two `TypesCatalog`s:
+
+1. One that contains all available contracts,
+2. One that contains all necessary handlers.
+
+You cannot call [AddCQRS(...)] twice - all objects need to be registered in one go.
+
+```csharp
+public override void ConfigureServices(IServiceCollection services)
+{
+    services.AddCQRS(TypesCatalog.Of<ExampleCommand>(), TypesCatalog.Of<ExampleHandler>());
+}
+```
+
+[AddCQRS(...)] returns aa [CQRSServicesBuilder] that allows to further modify CQRS registration by, e.g., adding objects one-by-one, registering predefined libraries like [force update](../../features/force_update/index.md) or registering [local executors](../local_execution/index.md).
+
+### Endpoints
+
+CQRS objects can be registered in the ASP.NET request pipeline via endpoint routing. To register, use [MapRemoteCQRS(...)] extension method. In `MapRemoteCQRS(...)` you can configure the inner CQRS pipeline. In the following example, app is configured to handle:
 
 - [Commands] at `/api/command/FullyQualifiedName`
 - [Queries] at `/api/query/FullyQualifiedName`
 - [Operations] at `/api/operation/FullyQualifiedName`
 
+Endpoint routing cannot execute handlers that are not in DI, thus the `MapRemoteCQRS(...)` call will ignore objects that were not found by `AddCQRS(...)`.
+
 ```csharp
-    protected override void ConfigureApp(IApplicationBuilder app)
-    {
-        // . . .
-        app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRemoteCQRS(
-                    "/api",
-                    cqrs =>
-                    {
-                        cqrs.Commands = c =>
-                            c.CQRSTrace()
-                            .Secure()
-                            .Validate()
-                            .CommitTransaction<CoreDbContext>()
-                            .PublishEvents();
+protected override void ConfigureApp(IApplicationBuilder app)
+{
+    // . . .
+    app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapRemoteCQRS(
+                "/api",
+                cqrs =>
+                {
+                    cqrs.Commands = c =>
+                        c.CQRSTrace()
+                        .Secure()
+                        .Validate()
+                        .CommitTransaction<CoreDbContext>()
+                        .PublishEvents();
 
-                        cqrs.Queries = c =>
-                            c.CQRSTrace()
-                            .Secure();
+                    cqrs.Queries = c =>
+                        c.CQRSTrace()
+                        .Secure();
 
-                        cqrs.Operations = c =>
-                            c.CQRSTrace()
-                            .Secure()
-                            .CommitTransaction<CoreDbContext>()
-                            .PublishEvents();
-                    }
-                );
-            });
-    }
+                    cqrs.Operations = c =>
+                        c.CQRSTrace()
+                        .Secure()
+                        .CommitTransaction<CoreDbContext>()
+                        .PublishEvents();
+                }
+            );
+        });
+}
 ```
 
 !!! tip
@@ -54,21 +81,21 @@ CQRS objects can only be registered in the ASP.NET request pipeline via endpoint
 
 In this code snippet, you can specify which middlewares to use for handling commands, queries, and operations. Several middlewares are added in the example:
 
-| Method                           | Middleware                             | Responsibility              |
-|------------------------------- |--------------------------------------- |---------------------------- |
-| [CQRSTrace()]                  | [CQRSTracingMiddleware]                | Tracing                     |
-| [Secure()]                     | [CQRSSecurityMiddleware]               | Authorization               |
-| [Validate()]                   | [CQRSValidationMiddleware]             | Validation                  |
-| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware]  | Saving changes to the database  |
-| [PublishEvents()]              | [EventsPublisherMiddleware]            | Publishing domain events to MassTransit    |
+| Method                          | Middleware                             | Responsibility                             |
+|-------------------------------- |--------------------------------------- |------------------------------------------- |
+| [CQRSTrace()]                   | [CQRSTracingMiddleware]                | Tracing                                    |
+| [Secure()]                      | [CQRSSecurityMiddleware]               | Authorization                              |
+| [Validate()]                    | [CQRSValidationMiddleware]             | Validation                                 |
+| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware]  | Saving changes to the database             |
+| [PublishEvents()]               | [EventsPublisherMiddleware]            | Publishing domain events to MassTransit    |
 
 The order in which these middlewares are added determines the sequence of execution. Additionally, there are a few other middlewares provided by library that can be incorporated into CQRS pipeline, although they are not covered in this basic example:
 
-| Method                             | Middleware                               | Responsibility                                            |
-|----------------------------------- |----------------------------------------- |--------------------------------------------------------- |
+| Method                               | Middleware                               | Responsibility                                            |
+|------------------------------------- |----------------------------------------- |---------------------------------------------------------- |
 | [LogCQRSResponses()]                 | [ResponseLoggerMiddleware]               | Logging responses                                         |
 | [LogCQRSResponsesOnNonProduction()]  | [NonProductionResponseLoggerMiddleware]  | Logging responses on non-production environments          |
-| [TranslateExceptions()]              | [CQRSExceptionTranslationMiddleware]     | Capturing and translating exceptions into error codes  |
+| [TranslateExceptions()]              | [CQRSExceptionTranslationMiddleware]     | Capturing and translating exceptions into error codes     |
 
 ## Request handling
 
@@ -96,15 +123,15 @@ sequenceDiagram
     Note over final: Execute handler
     Note over final: Set result in CQRSRequestPayload
 
-    final ->> middle:
+    final ->> middle: #0160;
     Note over middle: Custom middlewares, e.g. events publication
 
-    middle ->> start:
+    middle ->> start: #0160;
 
     Note over start: Set response headers
     Note over start: Serialize result
 
-    start ->> aspnet:
+    start ->> aspnet: #0160;
 
 ```
 
@@ -114,6 +141,8 @@ Subsequently, the pipeline executes additional custom middlewares, responsible f
 
 [EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
 
+[AddCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L17
+[CQRSServicesBuilder]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L46
 [MapRemoteCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
 [CQRSTrace()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
 [Validate()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L38
