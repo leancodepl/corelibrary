@@ -13,3 +13,11 @@ updates:
           - "*"
         exclude-patterns:
           - "Microsoft.*"
+  - package-ecosystem: "pip"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-packages:
+        patterns:
+          - "*"
