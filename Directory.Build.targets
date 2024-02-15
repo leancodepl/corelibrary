@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <EntityFrameworkCoreVersion>8.0.1</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>8.0.1</AspNetCoreVersion>
+    <EntityFrameworkCoreVersion>8.0.2</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>8.0.2</AspNetCoreVersion>
     <ExtensionsVersion>8.0.0</ExtensionsVersion>
 
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
@@ -12,7 +12,7 @@
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>4.4.0</CodeAnalysisVersion>
 
-    <DomainModelsTestsNetCoreAppRefVersion>8.0.1</DomainModelsTestsNetCoreAppRefVersion>
+    <DomainModelsTestsNetCoreAppRefVersion>8.0.2</DomainModelsTestsNetCoreAppRefVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,13 +28,13 @@
     <PackageReference Update="Autofac" Version="8.0.0" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
 
-    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.7.1" />
-    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.0" />
+    <PackageReference Update="Microsoft.Extensions.Azure" Version="1.7.2" />
+    <PackageReference Update="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.1" />
     <PackageReference Update="Azure.Data.Tables" Version="12.8.3" />
     <PackageReference Update="Azure.Storage.Blobs" Version="12.19.1" />
     <PackageReference Update="Azure.Identity" Version="1.10.4" />
-    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.5.0" />
-    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+    <PackageReference Update="Azure.Security.KeyVault.Keys" Version="4.6.0" />
+    <PackageReference Update="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
 
     <PackageReference Update="Serilog" Version="3.1.1" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="8.0.0" />
@@ -48,7 +48,7 @@
     <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="$(SystemIdentityModelVersion)" />
 
     <PackageReference Update="FirebaseAdmin" Version="2.4.0" />
-    <PackageReference Update="Google.Cloud.Firestore" Version="3.5.0" />
+    <PackageReference Update="Google.Cloud.Firestore" Version="3.5.1" />
 
     <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.5" />
 
@@ -60,7 +60,7 @@
     <PackageReference Update="Dapper" Version="2.1.28" />
     <PackageReference Update="FluentValidation" Version="11.9.0" />
     <PackageReference Update="Polly" Version="8.3.0" />
-    <PackageReference Update="Sendgrid" Version="9.29.1" />
+    <PackageReference Update="Sendgrid" Version="9.29.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,7 +70,7 @@
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
-    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.26" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor.Language" Version="6.0.27" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
@@ -99,15 +99,15 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Options" Version="8.0.1" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
 
     <PackageReference Update="Microsoft.Extensions.Telemetry.Testing" Version="8.0.0-rc.2.23510.2" />
-    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.1.0" />
+    <PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="8.2.0" />
 
     <PackageReference Update="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
-    <PackageReference Update="Npgsql" Version="8.0.1" />
+    <PackageReference Update="Npgsql" Version="8.0.2" />
     <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Update="Google.Apis.Auth" Version="1.66.0" />
 
@@ -122,7 +122,7 @@
 
     <PackageReference Update="OpenTelemetry" Version="1.7.0" />
     <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
-    <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.0" />
+    <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
 
     <PackageReference Update="NUlid" Version="1.7.1" />
   </ItemGroup>
