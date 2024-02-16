@@ -40,6 +40,8 @@ nav:
       - ./cqrs/authorization/index.md
     - Validation:
       - ./cqrs/validation/index.md
+    - Local execution:
+      - ./cqrs/local_execution/index.md
   - Domain:
     - ./domain/index.md
     - Aggregate:
