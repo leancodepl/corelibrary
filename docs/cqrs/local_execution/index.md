@@ -4,7 +4,7 @@ The LeanCode CoreLibrary utilizes ASP.NET Core to model the pipeline, which enab
 
 ## Theory
 
-Being able to call CQRS objects locally without going through HTTP pipeline is achieved by using a separate ASP.NET Core pipeline that is used with mocked [HttpContext]. This enables us to re-use all the middlewares created for normal HTTP execution (which applies to all middlewares provided by the CoreLibrary) without changes. This option also enables using the same handlers as the normal executions.
+Being able to call CQRS objects locally without going through HTTP pipeline is achieved by using a separate ASP.NET Core pipeline that is used with custom [HttpContext]. This enables us to re-use all the middlewares created for normal HTTP execution (which applies to all middlewares provided by the CoreLibrary) without changes. This option also enables using the same handlers as the normal executions.
 
 Nevertheless, the local execution only mimics the HTTP pipeline. Local execution does not involve proper request/response, thus it comes with limitations:
 
@@ -35,10 +35,27 @@ To use local execution, you have to explicitly register local executors (query/c
 public override void ConfigureServices(IServiceCollection services)
 {
     services
-        .AddCQRS(TypesCatalog.Of<ExampleCommand>(), TypesCatalog.Of<ExampleHandler>())
-        .WithLocalCommands(c => c.Secure().Validate().TranslateExceptions().CommitTransaction<CoreDbContext>())
-        .WithLocalQueries(c => c.Validate().TranslateExceptions())
-        .WithLocalOperations(c => c.Secure().TranslateExceptions().CommitTransaction<CoreDbContext>());
+        .AddCQRS(
+            TypesCatalog.Of<ExampleCommand>(),
+            TypesCatalog.Of<ExampleHandler>())
+
+        // Registers executor for local commands
+        .WithLocalCommands(c => c
+            .Secure()
+            .Validate()
+            .TranslateExceptions()
+            .CommitTransaction<CoreDbContext>())
+
+        // Registers executor for local queries
+        .WithLocalQueries(c => c
+            .Validate()
+            .TranslateExceptions())
+
+        // Registers executor for local operations
+        .WithLocalOperations(c => c
+            .Secure()
+            .TranslateExceptions()
+            .CommitTransaction<CoreDbContext>());
 }
 ```
 
@@ -55,7 +72,7 @@ To call local objects, use `ILocalCommandExecutor`/`ILocalQueryExecutor`/`ILocal
 
 Executors return a value that corresponds to the result of the object being executed (e.g. `CommandResult` or query/operation result).
 
-The example below uses query from [Query](../query/index.md) tutorial:
+The example below uses query from the [Query](../query/index.md) tutorial:
 
 ```csharp
 public class ProcessProjectDataCH : ICommandHandler<ProcessProjectData>
@@ -69,7 +86,8 @@ public class ProcessProjectDataCH : ICommandHandler<ProcessProjectData>
 
     public Task ExecuteAsync(HttpContext context, ProcessProjectData command)
     {
-        // We call external (local) query to gather data. We call the query as the same user that calls this command.
+        // We call external (local) query to gather data.
+        // We call the query as the same user that calls this command.
         var projects = await queries.GetAsync(
             new AllProjects { NameFilter = "[IMPORTANT]" },
             context.User,
