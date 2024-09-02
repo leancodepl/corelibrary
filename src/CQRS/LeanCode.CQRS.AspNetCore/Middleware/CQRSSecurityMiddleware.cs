@@ -28,7 +28,10 @@ public class CQRSSecurityMiddleware
 
         if (customAuthorizers.Count > 0 && !(user.Identity?.IsAuthenticated ?? false))
         {
-            logger.Warning("The current user is not authenticated and the object requires authorization");
+            logger.Warning(
+                "The current user is not authenticated and the object {@Object} requires authorization",
+                payload.Payload
+            );
 
             payload.SetResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
             metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
@@ -54,8 +57,8 @@ public class CQRSSecurityMiddleware
             if (!authorized)
             {
                 logger.Warning(
-                    "User is not authorized for {ObjectType}, authorizer {AuthorizerType} did not pass",
-                    cqrsMetadata.ObjectType.FullName,
+                    "User is not authorized for {@Object}, authorizer {AuthorizerType} did not pass",
+                    payload.Payload,
                     customAuthorizer.GetType().FullName
                 );
 

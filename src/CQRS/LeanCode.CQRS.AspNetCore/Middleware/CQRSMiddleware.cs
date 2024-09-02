@@ -58,8 +58,6 @@ public class CQRSMiddleware
         {
             await next(httpContext);
             await SerializeResultAsync(httpContext, cqrsEndpoint);
-
-            logger.Information("{ObjectKind} {@Object} executed successfully", objectType, obj);
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -107,8 +105,13 @@ public class CQRSMiddleware
 
             if (httpContext.Response.StatusCode < 400)
             {
-                // assuming that in other cases the middleware itself will report appropriate metric
+                // assuming that in other cases the middleware itself will log & report appropriate metric
                 metrics.CQRSSuccess();
+                logger.Information(
+                    "{ObjectKind} {@Object} executed successfully",
+                    objectMetadata.ObjectKind,
+                    payload.Payload
+                );
             }
         }
         else
