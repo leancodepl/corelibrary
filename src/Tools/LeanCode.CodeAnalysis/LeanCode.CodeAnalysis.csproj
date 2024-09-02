@@ -6,7 +6,8 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <!-- It needs to target .NETStandard, otherwise it won't work in Omnisharp. See next comment for details. -->
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <!-- It also needs to be .NETStandard 2.0, because msbuild in Visual Studio does not support 2.1. -->
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
