@@ -138,6 +138,10 @@
     <PackageReference Update="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Bcl.Memory" Version="9.0.0-preview.7.24405.7" />
+  </ItemGroup>
+
   <PropertyGroup>
     <CodeAnalysisSettingsLocation>$(MSBuildThisFileDirectory)</CodeAnalysisSettingsLocation>
     <CodeAnalysisRuleSet>$(CodeAnalysisSettingsLocation)LeanCode.CodeAnalysis.ruleset</CodeAnalysisRuleSet>
