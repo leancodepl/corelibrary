@@ -35,7 +35,7 @@ public static class MissingFileMethods
         await stream.WriteAsync(preamble, 0, preamble.Length, cancellationToken);
         if (contents is not null)
         {
-            var encoded = Encoding.Default.GetBytes(contents);
+            var encoded = encoding.GetBytes(contents);
             await stream.WriteAsync(encoded, 0, encoded.Length, cancellationToken);
         }
     }
