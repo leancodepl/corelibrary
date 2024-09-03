@@ -45,14 +45,14 @@ public class SuggestCommandsHaveValidators : DiagnosticAnalyzer
 
         var tree = type.DeclaringSyntaxReferences.First().SyntaxTree;
 
-        if (!CommandIsValidated(commandType, tree, context.SemanticModel))
+        if (!CommandIsValidated(commandType!, tree, context.SemanticModel))
         {
-            var diagnostic = Diagnostic.Create(Rule, type.Locations[0], commandType.Name);
+            var diagnostic = Diagnostic.Create(Rule, type.Locations[0], commandType!.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }
 
-    private static bool IsCommandHandler(INamedTypeSymbol type, [NotNullWhen(true)] out INamedTypeSymbol? commandType)
+    private static bool IsCommandHandler(INamedTypeSymbol type, out INamedTypeSymbol? commandType)
     {
         var handler = type.AllInterfaces.FirstOrDefault(i => i.GetFullNamespaceName() == HandlerTypeName);
 
