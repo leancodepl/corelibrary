@@ -1,9 +1,10 @@
 // Based on https://github.com/dotnet/runtime/blob/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/System.Private.CoreLib/src/System/IO/File.cs
 // as linked by docs on 02.09.2024
 
+global using File = LeanCode.CodeAnalysis.NetStandard21Compatibility.MissingFileMethods;
 using System.Text;
 
-namespace System.IO;
+namespace LeanCode.CodeAnalysis.NetStandard21Compatibility;
 
 public static class MissingFileMethods
 {
@@ -11,6 +12,8 @@ public static class MissingFileMethods
         encoderShouldEmitUTF8Identifier: false,
         throwOnInvalidBytes: true
     );
+
+    public static void Delete(string path) => System.IO.File.Delete(path);
 
     public static Task WriteAllTextAsync(
         string path,
@@ -30,9 +33,11 @@ public static class MissingFileMethods
             throw new ArgumentException("Path is invalid");
         }
 
-        using var stream = File.OpenWrite(path);
+        using var stream = System.IO.File.OpenWrite(path);
+
         var preamble = encoding.GetPreamble();
         await stream.WriteAsync(preamble, 0, preamble.Length, cancellationToken);
+
         if (contents is not null)
         {
             var encoded = encoding.GetBytes(contents);

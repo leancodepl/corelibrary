@@ -115,7 +115,7 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
                     }
 
                     var updatedText = (await document.GetTextAsync(cancellationToken)).ToString();
-                    await MissingFileMethods.WriteAllTextAsync(newPath, updatedText, cancellationToken);
+                    await File.WriteAllTextAsync(newPath, updatedText, cancellationToken);
                     File.Delete(document.FilePath);
                 }
             }
