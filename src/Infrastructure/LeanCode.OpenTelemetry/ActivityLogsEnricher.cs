@@ -8,6 +8,7 @@ using Serilog.Events;
 
 namespace LeanCode.OpenTelemetry;
 
+[Obsolete("This class is deprecated. ASP.NET Core automatically adds trace and span IDs to logs.")]
 public class ActivityLogsEnricher : ILogEventEnricher
 {
     private readonly string traceIdKey;
@@ -57,6 +58,8 @@ public static class LoggerEnrichmentConfigurationExtensions
     /// <summary>
     /// Enrich log events with <c>SpanId</c> and <c>TraceId</c> from current activity (<see cref="Activity.Current" />)
     /// </summary>
+
+    [Obsolete("This method is deprecated. ASP.NET Core automatically adds trace and span IDs to logs.")]
     public static LoggerConfiguration FromCurrentActivity(
         this LoggerEnrichmentConfiguration config,
         string spanIdKey = "dd.span_id",
