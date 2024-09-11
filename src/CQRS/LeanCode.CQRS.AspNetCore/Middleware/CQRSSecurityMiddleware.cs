@@ -1,6 +1,7 @@
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
+using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
@@ -41,12 +42,12 @@ public class CQRSSecurityMiddleware
         foreach (var customAuthorizerDefinition in customAuthorizers)
         {
             var authorizerType = customAuthorizerDefinition.Authorizer;
-            var customAuthorizer = context.RequestServices.GetService(authorizerType) as IHttpContextCustomAuthorizer;
+            using var activity = LeanCodeActivitySource.StartMiddleware("Security", authorizerType.FullName);
+            activity?.SetTag("authorizer.type", authorizerType.FullName);
 
-            if (customAuthorizer is null)
-            {
-                throw new CustomAuthorizerNotFoundException(authorizerType);
-            }
+            var customAuthorizer =
+                context.RequestServices.GetService(authorizerType) as IHttpContextCustomAuthorizer
+                ?? throw new CustomAuthorizerNotFoundException(authorizerType);
 
             var authorized = await customAuthorizer.CheckIfAuthorizedAsync(
                 context,
@@ -56,6 +57,7 @@ public class CQRSSecurityMiddleware
 
             if (!authorized)
             {
+                activity?.SetTag("authorizer.authorized", false);
                 logger.Warning(
                     "User is not authorized for {@Object}, authorizer {AuthorizerType} did not pass",
                     payload.Payload,
@@ -65,6 +67,10 @@ public class CQRSSecurityMiddleware
                 payload.SetResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
                 metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
                 return;
+            }
+            else
+            {
+                activity?.SetTag("authorizer.authorized", true);
             }
         }
 

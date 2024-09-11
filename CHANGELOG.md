@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
-## 8.1 (Unreleased)
+## 8.1
 * `LeanCode.Kratos` has switched from official (and at the time outdated) client package `Ory.Kratos.Client` to our own `LeanCode.Kratos.Client` that is maintained at https://github.com/leancodepl/dotnet-kratos-client and with this the usage has changed:
-  * Underlying JSON (de)serializer is now STJ instead of JSON.NET
-  * Values returned from client's API calls are now wrapped in response objects that provide additional info
-  * Models were rebuilt, adding support for NRT and wrapping optional properties in `Option<T>` (importantly, the latter can change how identity metadata should be read)
-  * The client comes with its own DI registration extensions, changing how it should be added to DI container
+* Underlying JSON (de)serializer is now STJ instead of JSON.NET
+* Values returned from client's API calls are now wrapped in response objects that provide additional info
+* Models were rebuilt, adding support for NRT and wrapping optional properties in `Option<T>` (importantly, the latter can change how identity metadata should be read)
+* The client comes with its own DI registration extensions, changing how it should be added to DI container
+* Better tracing across CQRS executions
 
 ## 8.0
 

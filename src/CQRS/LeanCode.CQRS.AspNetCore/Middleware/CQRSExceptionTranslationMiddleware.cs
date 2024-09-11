@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Execution;
+using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
@@ -35,6 +36,9 @@ public class CQRSExceptionTranslationMiddleware
         }
         catch (CommandExecutionInvalidException ex)
         {
+            using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
+            activity?.SetTag("error.code", ex.ErrorCode);
+
             var result = WrapInCommandResult(ex);
             logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
             var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
