@@ -1,8 +1,8 @@
-using System;
 using System.Diagnostics;
 
 namespace LeanCode.OpenTelemetry.Datadog;
 
+[Obsolete("This class is deprecated. Datadog now supports proper W3C trace context.")]
 public static class DatadogIdConverter
 {
     public static ulong ToDatadogFormat(this ActivitySpanId spanId)

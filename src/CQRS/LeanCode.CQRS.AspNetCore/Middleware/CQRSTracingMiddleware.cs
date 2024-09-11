@@ -18,8 +18,12 @@ public class CQRSTracingMiddleware
     {
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
 
-        using var activity = LeanCodeActivitySource.ActivitySource.StartActivity("pipeline.action");
-        activity?.AddTag("object", cqrsMetadata.ObjectType.FullName);
+        using var activity = LeanCodeActivitySource.Start(
+            $"{cqrsMetadata.ObjectKind}Handler {cqrsMetadata.HandlerType.FullName}"
+        );
+        activity?.AddTag("object.kind", cqrsMetadata.ObjectKind.ToString());
+        activity?.AddTag("object.type", cqrsMetadata.ObjectType.FullName);
+        activity?.AddTag("object.handler", cqrsMetadata.HandlerType.FullName);
 
         try
         {
