@@ -6,6 +6,7 @@ using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -116,6 +117,8 @@ namespace LeanCode.CQRS.AspNetCore.Tests
             ctx.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
             var cqrsMetadata = ctx.GetCQRSObjectMetadata();
             cqrsMetadata.ObjectType.Should().Be(typeof(TObject));
+
+            ctx.GetEndpoint().Should().BeOfType<RouteEndpoint>().Subject.RoutePattern.RawText.Should().Be(path);
         }
 
         private async Task VerifyWrongPath(string path, string method = "POST", int statusCode = 404)

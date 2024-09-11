@@ -62,13 +62,14 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
 
     private IEnumerable<(string Name, RoutePattern Pattern)> RoutesFor(CQRSObjectMetadata obj)
     {
-        var kindSegment = obj.ObjectKind switch
+        var kindString = obj.ObjectKind switch
         {
-            CQRSObjectKind.Command => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("command")),
-            CQRSObjectKind.Query => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("query")),
-            CQRSObjectKind.Operation => RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart("operation")),
+            CQRSObjectKind.Command => "command",
+            CQRSObjectKind.Query => "query",
+            CQRSObjectKind.Operation => "operation",
             _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}")
         };
+        var kindSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(kindString));
 
         var typeName = obj.ObjectType.FullName!;
 
@@ -82,7 +83,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
         RoutePattern Path(string name)
         {
             var typeSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(name));
-            var path = RoutePatternFactory.Pattern(kindSegment, typeSegment);
+            var path = RoutePatternFactory.Pattern($"{kindString}/{name}", kindSegment, typeSegment);
             return RoutePatternFactory.Combine(basePath, path);
         }
     }
