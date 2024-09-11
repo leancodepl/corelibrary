@@ -5,7 +5,6 @@ using LeanCode.CQRS.Execution;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.CQRS.AspNetCore.Local;
@@ -41,8 +40,10 @@ public abstract class MiddlewareBasedLocalExecutor
     {
         var metadata = objectSource.MetadataFor(obj.GetType());
 
-        using var activity = LeanCodeActivitySource.ActivitySource.StartActivity("pipeline.action.local");
-        activity?.AddTag("object", metadata.ObjectType.FullName);
+        using var activity = LeanCodeActivitySource.StartExecution("Local", metadata.ObjectType.FullName);
+        activity?.AddTag("object.kind", metadata.ObjectKind.ToString());
+        activity?.AddTag("object.type", metadata.ObjectType.FullName);
+        activity?.AddTag("object.handler", metadata.HandlerType.FullName);
 
         await using var scope = serviceProvider.CreateAsyncScope();
 

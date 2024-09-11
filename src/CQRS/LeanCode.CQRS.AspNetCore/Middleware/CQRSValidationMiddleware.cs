@@ -1,6 +1,7 @@
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
+using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
@@ -32,7 +33,11 @@ public class CQRSValidationMiddleware
 
         if (validator is not null)
         {
+            using var activity = LeanCodeActivitySource.StartMiddleware("Validation");
+            activity?.SetTag("validation.validator", validator.GetType().FullName);
+
             var result = await validator.ValidateAsync(httpContext, (ICommand)payload.Payload);
+            activity?.SetTag("validation.valid", result.IsValid);
 
             if (!result.IsValid)
             {
