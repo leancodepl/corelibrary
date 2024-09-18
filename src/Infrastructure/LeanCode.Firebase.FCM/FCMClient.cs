@@ -72,7 +72,7 @@ public class FCMClient<TUserId>
                 userId,
                 message.Tokens.Count
             );
-            var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+            var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
             await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
         }
     }
@@ -98,7 +98,7 @@ public class FCMClient<TUserId>
                 userIds.Count,
                 message.Tokens.Count
             );
-            var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+            var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
             await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
         }
     }
@@ -111,7 +111,7 @@ public class FCMClient<TUserId>
     {
         logger.Debug("Sending {Count} push messages", messages.Count());
 
-        var response = await messaging.SendAllAsync(messages, dryRun, cancellationToken);
+        var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
         await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
     }
 
@@ -123,7 +123,7 @@ public class FCMClient<TUserId>
     {
         logger.Debug("Sending multicast push message to {Count} targets", message.Tokens.Count);
 
-        var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+        var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
         await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
     }
 
