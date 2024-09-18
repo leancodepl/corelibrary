@@ -99,7 +99,7 @@ jobs:
           files: test/TestResults/*.xml
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Unit Test Results
           path: test/TestResults/*.xml
@@ -113,7 +113,7 @@ jobs:
           zip -j "$ZIP" "$PWD"/packed/*.nupkg
       - name: Publish artifacts
         if: ${{ needs.prepare.outputs.publish_artifacts == '1' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
           path: ${{ needs.prepare.outputs.artifacts_name }}
