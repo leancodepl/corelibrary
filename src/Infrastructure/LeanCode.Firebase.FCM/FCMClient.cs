@@ -57,7 +57,7 @@ namespace LeanCode.Firebase.FCM
                 logger.Debug(
                     "Sending push notification to user {UserId} that targets {Count} devices",
                     userId, message.Tokens.Count);
-                var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+                var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
                 await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
             }
         }
@@ -76,7 +76,7 @@ namespace LeanCode.Firebase.FCM
                 logger.Debug(
                     "Sending push notification to user {Count} users, targeting {Count} devices",
                     userIds.Count, message.Tokens.Count);
-                var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+                var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
                 await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
             }
         }
@@ -85,7 +85,7 @@ namespace LeanCode.Firebase.FCM
         {
             logger.Debug("Sending {Count} push messages", messages.Count());
 
-            var response = await messaging.SendAllAsync(messages, dryRun, cancellationToken);
+            var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
             await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
         }
 
@@ -93,7 +93,7 @@ namespace LeanCode.Firebase.FCM
         {
             logger.Debug("Sending multicast push message to {Count} targets", message.Tokens.Count);
 
-            var response = await messaging.SendMulticastAsync(message, dryRun, cancellationToken);
+            var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
             await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
         }
 
