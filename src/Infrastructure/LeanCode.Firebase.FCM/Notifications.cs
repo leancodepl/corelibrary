@@ -1,11 +1,20 @@
-using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 
 namespace LeanCode.Firebase.FCM;
 
 public static class Notifications
 {
+    private static ImmutableDictionary<Type, Func<object, string>> formatters = ImmutableDictionary<
+        Type,
+        Func<object, string>
+    >.Empty;
+
+    public static void FormatUsing<T>(Func<T, string> formatter)
+    {
+        formatters = formatters.Add(typeof(T), o => formatter((T)o));
+    }
+
     private const string TypeField = "Type";
 
     /// <summary>
@@ -26,21 +35,24 @@ public static class Notifications
 
                 if (value is not null)
                 {
-                    if (value is Enum @enum)
-                    {
-                        var strValue = Convert
-                            .ToInt32(@enum, System.Globalization.CultureInfo.InvariantCulture)
-                            .ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        result.Add(prop.Name, strValue);
-                    }
-                    else
-                    {
-                        result.Add(prop.Name, value.ToString()!);
-                    }
+                    var formatter = formatters.GetValueOrDefault(value.GetType(), DefaultValueFormatter);
+                    result.Add(prop.Name, formatter(value));
                 }
             }
         }
 
         return result;
+    }
+
+    private static string DefaultValueFormatter(object value)
+    {
+        if (value is Enum @enum)
+        {
+            return @enum.ToString("D");
+        }
+        else
+        {
+            return value.ToString()!;
+        }
     }
 }

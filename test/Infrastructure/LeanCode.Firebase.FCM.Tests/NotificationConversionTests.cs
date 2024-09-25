@@ -1,3 +1,5 @@
+using System.Globalization;
+using FluentAssertions;
 using Xunit;
 
 namespace LeanCode.Firebase.FCM.Tests;
@@ -11,7 +13,7 @@ public class NotificationConversionTests
     {
         var data = Notifications.ToNotificationData(new { Field = IntEnum.Second });
 
-        Assert.Equal("1", data["Field"]);
+        data.Should().ContainKey("Field").WhoseValue.Should().Be("1");
     }
 
     [Fact]
@@ -19,7 +21,18 @@ public class NotificationConversionTests
     {
         var data = Notifications.ToNotificationData(new { Field = ByteEnum.Second });
 
-        Assert.Equal("1", data["Field"]);
+        data.Should().ContainKey("Field").WhoseValue.Should().Be("1");
+    }
+
+    [Fact]
+    public void Applies_custom_value_formatters()
+    {
+        Notifications.FormatUsing<DateTimeOffset>(d => d.ToString("O", CultureInfo.InvariantCulture));
+
+        var date = new DateTimeOffset(2024, 9, 25, 13, 56, 48, TimeSpan.FromHours(2));
+        var data = Notifications.ToNotificationData(new { Date = date });
+
+        data.Should().ContainKey("Date").WhoseValue.Should().Be("2024-09-25T13:56:48.0000000+02:00");
     }
 
     private enum IntEnum
