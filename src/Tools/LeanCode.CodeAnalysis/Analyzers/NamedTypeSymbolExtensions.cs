@@ -8,17 +8,13 @@ public static class NamedTypeSymbolExtensions
     private const string AuthorizeWhenTypeName = "LeanCode.Contracts.Security.AuthorizeWhenAttribute";
     private const string AllowUnauthorizedTypeName = "LeanCode.Contracts.Security.AllowUnauthorizedAttribute";
 
-    public static bool ImplementsInterfaceOrBaseClass(this INamedTypeSymbol typeSymbol, string type)
+    public static bool ImplementsInterfaceOrBaseClass(this INamedTypeSymbol? typeSymbol, string type)
     {
         if (typeSymbol == null)
         {
             return false;
         }
-        else if (typeSymbol.GetFullNamespaceName() == type)
-        {
-            return true;
-        }
-        else if (typeSymbol.BaseType?.GetFullNamespaceName() == type)
+        else if (typeSymbol.GetTypeAndBaseClasses().Any(t => t.GetFullNamespaceName() == type))
         {
             return true;
         }
@@ -32,6 +28,17 @@ public static class NamedTypeSymbolExtensions
         }
 
         return false;
+    }
+
+    private static IEnumerable<INamedTypeSymbol> GetTypeAndBaseClasses(this INamedTypeSymbol typeSymbol)
+    {
+        var type = typeSymbol;
+
+        while (type is not null)
+        {
+            yield return type;
+            type = type.BaseType;
+        }
     }
 
     public static string GetFullNamespaceName(this INamedTypeSymbol type)
