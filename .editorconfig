@@ -7,19 +7,19 @@ insert_final_newline = true
 indent_style = space
 trim_trailing_whitespace = true
 
-[*.{ts, tsx, js}]
+[*.{ts,tsx,js}]
 indent_size = 4
 
-[*.{less, sass, scss}]
+[*.{less,sass,scss}]
 indent_size = 4
 
-[*.{json, yml}]
+[*.{json,yml}]
 indent_size = 2
 
-[*.{xml, targets, csproj, props}]
+[*.{xml,targets,csproj,props}]
 indent_size = 2
 
-[*.{cshtml, cstxt}]
+[*.{cshtml,cstxt}]
 insert_final_newline = false
 
 [*.{cs}]

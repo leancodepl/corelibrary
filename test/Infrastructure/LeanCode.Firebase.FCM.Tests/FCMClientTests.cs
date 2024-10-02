@@ -7,8 +7,8 @@ namespace LeanCode.Firebase.FCM.Tests;
 
 public class FCMClientTests
 {
-    public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY");
-    public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN");
+    public static readonly string Key = Environment.GetEnvironmentVariable("FCM_KEY")!; // Nullability handled via [FCMFact]
+    public static readonly string Token = Environment.GetEnvironmentVariable("FCM_TOKEN")!;
 
     private static readonly Guid UserId = Guid.NewGuid();
 
