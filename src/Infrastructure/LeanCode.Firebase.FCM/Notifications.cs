@@ -2,7 +2,7 @@ namespace LeanCode.Firebase.FCM;
 
 public static class Notifications
 {
-    private static readonly NotificationDataConverter SharedConverter = new();
+    private static readonly NotificationDataConverter SharedConverter = NotificationDataConverter.New().Build();
 
     /// <summary>
     /// Converts POCO object to a notification data dictionary. Does not support hierarchical

@@ -1,20 +1,16 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.Reflection;
 
 namespace LeanCode.Firebase.FCM;
 
 public sealed class NotificationDataConverter
 {
+    private readonly FrozenDictionary<Type, Func<object, string>> formatters;
     private const string TypeField = "Type";
 
-    private ImmutableDictionary<Type, Func<object, string>> formatters = ImmutableDictionary<
-        Type,
-        Func<object, string>
-    >.Empty;
-
-    public void FormatUsing<T>(Func<T, string> formatter)
+    private NotificationDataConverter(FrozenDictionary<Type, Func<object, string>> formatters)
     {
-        formatters = formatters.Add(typeof(T), o => formatter((T)o));
+        this.formatters = formatters;
     }
 
     /// <summary>
@@ -35,13 +31,21 @@ public sealed class NotificationDataConverter
 
                 if (value is not null)
                 {
-                    var formatter = formatters.GetValueOrDefault(value.GetType(), DefaultValueFormatter);
+                    var formatter = formatters.GetValueOrDefault(GetEffectiveType(value), DefaultValueFormatter);
                     result.Add(prop.Name, formatter(value));
                 }
             }
         }
 
         return result;
+    }
+
+    public static Builder New() => new();
+
+    private static Type GetEffectiveType(object value)
+    {
+        var type = value.GetType();
+        return Nullable.GetUnderlyingType(value.GetType()) ?? type;
     }
 
     private static string DefaultValueFormatter(object value)
@@ -54,5 +58,21 @@ public sealed class NotificationDataConverter
         {
             return value.ToString()!;
         }
+    }
+
+    public class Builder
+    {
+        private readonly Dictionary<Type, Func<object, string>> formatters = new();
+
+        internal Builder() { }
+
+        public Builder AddFormatter<T>(Func<T, string> formatter)
+            where T : notnull
+        {
+            formatters.Add(typeof(T), o => formatter((T)o));
+            return this;
+        }
+
+        public NotificationDataConverter Build() => new(formatters.ToFrozenDictionary());
     }
 }

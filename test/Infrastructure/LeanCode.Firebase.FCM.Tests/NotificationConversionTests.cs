@@ -6,13 +6,10 @@ namespace LeanCode.Firebase.FCM.Tests;
 
 public class NotificationConversionTests
 {
-    private readonly NotificationDataConverter converter;
-
-    public NotificationConversionTests()
-    {
-        converter = new();
-        converter.FormatUsing<DateTimeOffset>(d => d.ToString("O", CultureInfo.InvariantCulture));
-    }
+    private readonly NotificationDataConverter converter = NotificationDataConverter
+        .New()
+        .AddFormatter<DateTimeOffset>(d => d.ToString("O", CultureInfo.InvariantCulture))
+        .Build();
 
     [Fact]
     public void Converts_int_enum_correctly()
@@ -35,6 +32,15 @@ public class NotificationConversionTests
     {
         var date = new DateTimeOffset(2024, 9, 25, 13, 56, 48, TimeSpan.FromHours(2));
         var data = converter.ToNotificationData(new { Date = date });
+
+        data.Should().ContainKey("Date").WhoseValue.Should().Be("2024-09-25T13:56:48.0000000+02:00");
+    }
+
+    [Fact]
+    public void Applies_custom_value_formatters_for_nullable_types()
+    {
+        var date = new DateTimeOffset(2024, 9, 25, 13, 56, 48, TimeSpan.FromHours(2));
+        var data = converter.ToNotificationData(new { Date = (DateTimeOffset?)date });
 
         data.Should().ContainKey("Date").WhoseValue.Should().Be("2024-09-25T13:56:48.0000000+02:00");
     }
