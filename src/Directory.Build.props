@@ -23,7 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(SolutionDir)LICENSE"  Pack="true" />
     <ProjectReference Include="../../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj"
                       Condition="'$(MSBuildProjectName)' != 'LeanCode.CodeAnalysis'
                                 And '$(TargetFramework)' == 'net8.0'">
