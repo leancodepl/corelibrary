@@ -54,7 +54,7 @@
 
     <PackageReference Update="ConfigCat.Client" Version="9.0.1" />
 
-    <PackageReference Update="LeanCode.Kratos.Client" Version="1.2.0" />
+    <PackageReference Update="LeanCode.Kratos.Client" Version="1.2.0-fix.1" />
 
     <PackageReference Update="Cronos" Version="0.8.3" />
     <PackageReference Update="Dapper" Version="2.1.28" />
