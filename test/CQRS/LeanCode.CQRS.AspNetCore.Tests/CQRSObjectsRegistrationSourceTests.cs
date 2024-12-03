@@ -74,8 +74,8 @@ public class CQRSObjectsRegistrationSourceTests
         var cqrsObject = cqrsObjects.Should().ContainSingle(o => o.ObjectType == typeof(TQuery)).Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Query);
-        cqrsObject.ResultType.Should().Be(typeof(TResult));
-        cqrsObject.HandlerType.Should().Be(typeof(THandler));
+        cqrsObject.ResultType.Should().Be<TResult>();
+        cqrsObject.HandlerType.Should().Be<THandler>();
     }
 
     private void AssertRegistered<TCommand, THandler>()
@@ -85,8 +85,8 @@ public class CQRSObjectsRegistrationSourceTests
         var cqrsObject = cqrsObjects.Should().ContainSingle(o => o.ObjectType == typeof(TCommand)).Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Command);
-        cqrsObject.ResultType.Should().Be(typeof(CommandResult));
-        cqrsObject.HandlerType.Should().Be(typeof(THandler));
+        cqrsObject.ResultType.Should().Be<CommandResult>();
+        cqrsObject.HandlerType.Should().Be<THandler>();
     }
 
     private void AssertNotRegistered<T>()

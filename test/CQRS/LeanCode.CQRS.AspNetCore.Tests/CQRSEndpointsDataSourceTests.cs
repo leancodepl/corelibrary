@@ -116,7 +116,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
             ctx.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
             var cqrsMetadata = ctx.GetCQRSObjectMetadata();
-            cqrsMetadata.ObjectType.Should().Be(typeof(TObject));
+            cqrsMetadata.ObjectType.Should().Be<TObject>();
 
             ctx.GetEndpoint().Should().BeOfType<RouteEndpoint>().Subject.RoutePattern.RawText.Should().Be(path);
         }

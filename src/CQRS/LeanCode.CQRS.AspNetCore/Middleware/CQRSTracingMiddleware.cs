@@ -1,7 +1,7 @@
+using System.Diagnostics;
 using LeanCode.CQRS.Execution;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
-using OpenTelemetry.Trace;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
@@ -29,11 +29,11 @@ public class CQRSTracingMiddleware
         try
         {
             await next(httpContext);
-            activity?.SetStatus(Status.Ok);
+            activity?.SetStatus(ActivityStatusCode.Ok);
         }
         catch
         {
-            activity?.SetStatus(Status.Error);
+            activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
     }

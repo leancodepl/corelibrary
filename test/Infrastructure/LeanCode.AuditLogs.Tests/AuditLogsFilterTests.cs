@@ -9,7 +9,7 @@ public sealed class AuditLogsFilterTests
     private const string ConsumerName = "Test.Consumer.Name";
 
     [Fact]
-    public async void Extracts_changes_after_pipeline_execution()
+    public async Task Extracts_changes_after_pipeline_execution()
     {
         using var dbContext = new TestDbContext();
         var publisher = Substitute.For<AuditLogsPublisher>();

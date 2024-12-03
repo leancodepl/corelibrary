@@ -188,3 +188,5 @@ dotnet_naming_symbols.everything_else.applicable_accessibilities   = *
 
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1724.severity = none
+dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.IDE0058.severity = none

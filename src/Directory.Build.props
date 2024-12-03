@@ -25,7 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="../../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj"
                       Condition="'$(MSBuildProjectName)' != 'LeanCode.CodeAnalysis'
-                                And '$(TargetFramework)' == 'net8.0'">
+                                And '$(TargetFramework)' == 'net9.0'">
         <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         <OutputItemType>Analyzer</OutputItemType>
     </ProjectReference>
