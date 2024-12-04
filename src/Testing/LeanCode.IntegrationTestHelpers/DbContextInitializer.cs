@@ -1,29 +1,25 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polly;
 using Polly.Retry;
 
 namespace LeanCode.IntegrationTestHelpers;
 
-public class DbContextInitializer<T> : IHostedService
+public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHostedService
     where T : DbContext
 {
     private static readonly AsyncRetryPolicy CreatePolicy = Policy
         .Handle<SqlException>(e => e.Number == 5177)
-        .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), });
+        .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3),]);
 
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
 
-    private readonly T context;
-
-    public DbContextInitializer(T context)
-    {
-        this.context = context;
-    }
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        using var scope = serviceProvider.CreateAsyncScope();
+        using var context = scope.ServiceProvider.GetRequiredService<T>();
         logger.Information("Creating database for context {ContextType}", context.GetType());
         // HACK: should mitigate (slightly) the bug in MSSQL that prevents us from creating
         // new databases.
@@ -40,6 +36,8 @@ public class DbContextInitializer<T> : IHostedService
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
+        using var scope = serviceProvider.CreateAsyncScope();
+        using var context = scope.ServiceProvider.GetRequiredService<T>();
         logger.Information("Dropping database for context {ContextType}", context.GetType());
         await context.Database.EnsureDeletedAsync(cancellationToken);
     }
