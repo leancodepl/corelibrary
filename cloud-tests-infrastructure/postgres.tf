@@ -46,7 +46,8 @@ resource "azurerm_postgresql_flexible_server_database" "database" {
 
 locals {
   npg_connection_string = join("", [
-    "Host=${azurerm_postgresql_flexible_server.server.fqdn};SSL Mode=VerifyFull;",
+    "Host=${azurerm_postgresql_flexible_server.server.fqdn};",
+    "SSL Mode=Require;",
     "Database=${azurerm_postgresql_flexible_server_database.database.name};",
     "Username=${azurerm_postgresql_flexible_server_active_directory_administrator.sp.principal_name};",
   ])
