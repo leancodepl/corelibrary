@@ -3,7 +3,6 @@ using System.Text.Json;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore;
-using LeanCode.CQRS.MassTransitRelay.LockProviders;
 using MassTransit;
 using MassTransit.Testing;
 using MassTransit.Testing.Implementations;
@@ -95,7 +94,6 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
         cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
         {
-            outboxCfg.LockStatementProvider = new CustomSqliteLockStatementProvider();
             outboxCfg.UseBusOutbox();
         });
 

@@ -1,7 +1,6 @@
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.MassTransitRelay;
-using LeanCode.CQRS.MassTransitRelay.LockProviders;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.IntegrationTestHelpers;
