@@ -8,15 +8,15 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   access_tier              = "Hot"
 
-  allow_nested_items_to_be_public = true
-  enable_https_traffic_only       = true
+  allow_nested_items_to_be_public  = true
+  https_traffic_only_enabled       = true
+  cross_tenant_replication_enabled = false
 
   min_tls_version = "TLS1_2"
 }
 
 resource "azurerm_storage_container" "container" {
-
-  storage_account_name = azurerm_storage_account.storage.name
+  storage_account_id = azurerm_storage_account.storage.id
 
   name                  = local.blob_storage_container_name
   container_access_type = "private"

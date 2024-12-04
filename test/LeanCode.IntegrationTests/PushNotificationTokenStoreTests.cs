@@ -10,6 +10,7 @@ namespace LeanCode.IntegrationTests;
 public class PushNotificationTokenStoreTests : IAsyncLifetime
 {
     private readonly TestApp app;
+    private AsyncServiceScope scope = default!;
     private PushNotificationTokenStore<TestDbContext, Guid> store = default!;
 
     public PushNotificationTokenStoreTests()
@@ -142,12 +143,14 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await app.InitializeAsync();
+        scope = app.Services.CreateAsyncScope();
 
-        store = new(app.Services.GetRequiredService<TestDbContext>());
+        store = new(scope.ServiceProvider.GetRequiredService<TestDbContext>());
     }
 
     public async Task DisposeAsync()
     {
+        await scope.DisposeAsync();
         await app.DisposeAsync();
     }
 }

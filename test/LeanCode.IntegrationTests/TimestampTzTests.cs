@@ -12,8 +12,6 @@ public class TimestampTzTests : IAsyncLifetime
 {
     private static readonly DateOnly Date = new(2023, 10, 5);
 
-    private readonly TestApp app;
-
     private readonly Meeting meeting1 =
         new()
         {
@@ -30,6 +28,8 @@ public class TimestampTzTests : IAsyncLifetime
             StartTime = new(Date.ToDateTime(new(14, 0), DateTimeKind.Utc), "America/Los_Angeles")
         };
 
+    private readonly TestApp app;
+    private AsyncServiceScope scope;
     private TestDbContext dbContext;
 
     public TimestampTzTests()
@@ -72,7 +72,9 @@ public class TimestampTzTests : IAsyncLifetime
     {
         await app.InitializeAsync();
 
-        dbContext = app.Services.GetRequiredService<TestDbContext>();
+        scope = app.Services.CreateAsyncScope();
+
+        dbContext = scope.ServiceProvider.GetRequiredService<TestDbContext>();
 
         dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll;
 
@@ -82,5 +84,9 @@ public class TimestampTzTests : IAsyncLifetime
         await dbContext.SaveChangesAsync();
     }
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public async Task DisposeAsync()
+    {
+        await scope.DisposeAsync();
+        await app.DisposeAsync();
+    }
 }

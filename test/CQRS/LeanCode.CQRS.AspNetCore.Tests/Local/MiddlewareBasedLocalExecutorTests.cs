@@ -165,8 +165,8 @@ public class LocalCommandHandler : ICommandHandler<LocalCommand>
         if (command.CheckMetadata)
         {
             context.GetCQRSObjectMetadata().ObjectKind.Should().Be(CQRSObjectKind.Command);
-            context.GetCQRSObjectMetadata().ObjectType.Should().Be(typeof(LocalCommand));
-            context.GetCQRSObjectMetadata().HandlerType.Should().Be(typeof(LocalCommandHandler));
+            context.GetCQRSObjectMetadata().ObjectType.Should().Be<LocalCommand>();
+            context.GetCQRSObjectMetadata().HandlerType.Should().Be<LocalCommandHandler>();
         }
 
         return Task.CompletedTask;

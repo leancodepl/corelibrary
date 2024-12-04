@@ -8,7 +8,7 @@ namespace LeanCode.AuditLogs.Tests;
 public sealed class AuditLogsMiddlewareTests
 {
     [Fact]
-    public async void Extracts_changes_after_pipeline_execution()
+    public async Task Extracts_changes_after_pipeline_execution()
     {
         const string RequestPath = "/test.request.path";
         using var dbContext = new TestDbContext();

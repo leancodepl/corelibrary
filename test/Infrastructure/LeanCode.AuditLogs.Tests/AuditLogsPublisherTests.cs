@@ -16,7 +16,7 @@ public class AuditLogsPublisherTests : IDisposable
     }
 
     [Fact]
-    public async void Check_if_publisher_does_nothing_when_nothing_changed()
+    public async Task Check_if_publisher_does_nothing_when_nothing_changed()
     {
         var bus = Substitute.For<IBus>();
         await auditLogsPublisher.ExtractAndPublishAsync(dbContext, bus, string.Empty, default);
@@ -25,7 +25,7 @@ public class AuditLogsPublisherTests : IDisposable
     }
 
     [Fact]
-    public async void Check_if_publishes_change()
+    public async Task Check_if_publishes_change()
     {
         dbContext.TestEntities.Add(TestEntity.Create("id"));
         var bus = Substitute.For<IBus>();

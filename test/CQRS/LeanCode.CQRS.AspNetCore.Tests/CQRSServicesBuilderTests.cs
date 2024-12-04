@@ -101,8 +101,8 @@ public class CQRSServicesBuilderTests
         var cqrsObject = registrationSource.Objects.Should().ContainSingle(o => o.ObjectType == typeof(TQuery)).Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Query);
-        cqrsObject.ResultType.Should().Be(typeof(TResult));
-        cqrsObject.HandlerType.Should().Be(typeof(THandler));
+        cqrsObject.ResultType.Should().Be<TResult>();
+        cqrsObject.HandlerType.Should().Be<THandler>();
     }
 
     private void AssertCommandRegistered<TCommand, THandler>()
@@ -112,8 +112,8 @@ public class CQRSServicesBuilderTests
         var cqrsObject = registrationSource.Objects.Should().ContainSingle(o => o.ObjectType == typeof(TCommand)).Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Command);
-        cqrsObject.ResultType.Should().Be(typeof(CommandResult));
-        cqrsObject.HandlerType.Should().Be(typeof(THandler));
+        cqrsObject.ResultType.Should().Be<CommandResult>();
+        cqrsObject.HandlerType.Should().Be<THandler>();
     }
 
     private void AssertOperationRegistered<TOperation, TResult, THandler>()
@@ -126,8 +126,8 @@ public class CQRSServicesBuilderTests
             .Which;
 
         cqrsObject.ObjectKind.Should().Be(CQRSObjectKind.Operation);
-        cqrsObject.ResultType.Should().Be(typeof(TResult));
-        cqrsObject.HandlerType.Should().Be(typeof(THandler));
+        cqrsObject.ResultType.Should().Be<TResult>();
+        cqrsObject.HandlerType.Should().Be<THandler>();
     }
 
     private void AssertNotRegistered<T>()

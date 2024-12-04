@@ -19,11 +19,6 @@ public class SendGridRazorClientTests
 
     private static readonly string EmailTo = Environment.GetEnvironmentVariable("SENDGRID_EMAILTO");
 
-    private static readonly SendGridClientOptions Options = new SendGridClientOptions
-    {
-        ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY"),
-    };
-
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true, };
 
     private readonly SendGridRazorClient client;
@@ -58,14 +53,18 @@ public class SendGridRazorClientTests
                 return $"[{cultureName}] {keyName}";
             });
 
-        client = new SendGridRazorClient(new SendGridClient(Options), renderer, localizer);
+        client = new SendGridRazorClient(
+            new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY"), }),
+            renderer,
+            localizer
+        );
     }
 
     internal sealed class SendGridFactAttribute : FactAttribute
     {
         public SendGridFactAttribute()
         {
-            if (string.IsNullOrEmpty(Options.ApiKey))
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SENDGRID_APIKEY")))
             {
                 Skip = "API key not set";
             }

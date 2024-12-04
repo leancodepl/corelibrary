@@ -55,7 +55,11 @@ public class CQRSApiDescriptionProviderTests
         var allDescriptors = ListApisFor<Query>();
 
         var query = allDescriptors.Should().ContainSingle().Which;
-        query.ParameterDescriptions.Should().ContainSingle().Which.Should().BeEquivalentTo(RequestOf<Query>());
+        query
+            .ParameterDescriptions.Should()
+            .ContainSingle()
+            .Which.Should()
+            .BeEquivalentTo(RequestOf<Query>(), opts => opts.IncludingInternalProperties());
     }
 
     [Fact]
@@ -67,7 +71,8 @@ public class CQRSApiDescriptionProviderTests
         query
             .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),]
+                [ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),],
+                opts => opts.IncludingInternalProperties()
             );
     }
 
@@ -91,7 +96,11 @@ public class CQRSApiDescriptionProviderTests
         var allDescriptors = ListApisFor<Command>();
 
         var query = allDescriptors.Should().ContainSingle().Which;
-        query.ParameterDescriptions.Should().ContainSingle().Which.Should().BeEquivalentTo(RequestOf<Command>());
+        query
+            .ParameterDescriptions.Should()
+            .ContainSingle()
+            .Which.Should()
+            .BeEquivalentTo(RequestOf<Command>(), opts => opts.IncludingInternalProperties());
     }
 
     [Fact]
@@ -109,7 +118,8 @@ public class CQRSApiDescriptionProviderTests
                     ResponseOfVoid(400),
                     ResponseOfVoid(401),
                     ResponseOfVoid(403),
-                ]
+                ],
+                opts => opts.IncludingInternalProperties()
             );
     }
 
@@ -133,7 +143,11 @@ public class CQRSApiDescriptionProviderTests
         var allDescriptors = ListApisFor<Operation>();
 
         var query = allDescriptors.Should().ContainSingle().Which;
-        query.ParameterDescriptions.Should().ContainSingle().Which.Should().BeEquivalentTo(RequestOf<Operation>());
+        query
+            .ParameterDescriptions.Should()
+            .ContainSingle()
+            .Which.Should()
+            .BeEquivalentTo(RequestOf<Operation>(), opts => opts.IncludingInternalProperties());
     }
 
     [Fact]
@@ -145,7 +159,8 @@ public class CQRSApiDescriptionProviderTests
         query
             .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),]
+                [ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),],
+                opts => opts.IncludingInternalProperties()
             );
     }
 
