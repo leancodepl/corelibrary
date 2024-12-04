@@ -4,6 +4,7 @@
     <NoStyleCop>1</NoStyleCop>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NoPackageAnalysis>true</NoPackageAnalysis>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 
     <!-- It needs to target .NETStandard, otherwise it won't work in Omnisharp. See next comment for details. -->
     <TargetFramework>netstandard2.1</TargetFramework>

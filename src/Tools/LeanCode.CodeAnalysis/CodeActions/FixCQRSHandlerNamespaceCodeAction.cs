@@ -71,6 +71,11 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "MicrosoftCodeAnalysisCorrectness",
+        "RS1035:Do not use APIs banned for analyzers",
+        Justification = "Required to make this action work."
+    )]
     private static async Task MoveDocumentToContractMatchingFolderIfNecessaryAsync(
         Document? document,
         string expectedNamespace,
