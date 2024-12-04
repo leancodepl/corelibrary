@@ -39,7 +39,7 @@ public class EnsureCommandValidatorsFollowNamingConvention : DiagnosticAnalyzer
 
         if (TryGetCommandValidator(type, out var commandValidator))
         {
-            var expectedName = GetCommandValidatorExpectedName(commandValidator);
+            var expectedName = GetCommandValidatorExpectedName(commandValidator!);
 
             if (type.Name != expectedName)
             {
@@ -61,10 +61,7 @@ public class EnsureCommandValidatorsFollowNamingConvention : DiagnosticAnalyzer
         );
     }
 
-    private static bool TryGetCommandValidator(
-        INamedTypeSymbol type,
-        [NotNullWhen(true)] out INamedTypeSymbol? commandValidator
-    )
+    private static bool TryGetCommandValidator(INamedTypeSymbol type, out INamedTypeSymbol? commandValidator)
     {
         var validator = GetImplementedValidator(type);
 
