@@ -1,6 +1,7 @@
 using LeanCode.DomainModels.EF;
 using LeanCode.IntegrationTestHelpers;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -39,7 +40,10 @@ public class SqlServerTestDatabaseConfig : TestDatabaseConfig
         builder.UseSqlServer(config.GetValue<string>("SqlServer:ConnectionString"));
     }
 
-    public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator) { }
+    public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
+    {
+        configurator.LockStatementProvider = new SqlServerLockStatementProvider();
+    }
 }
 
 public class PostgresTestConfig : TestDatabaseConfig
@@ -52,5 +56,8 @@ public class PostgresTestConfig : TestDatabaseConfig
         builder.UseNpgsql(config.GetValue<string>("Postgres:ConnectionString")).AddTimestampTzExpressionInterceptor();
     }
 
-    public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator) { }
+    public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
+    {
+        configurator.LockStatementProvider = new PostgresLockStatementProvider();
+    }
 }

@@ -4,6 +4,7 @@ using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Testing;
 using MassTransit.Testing.Implementations;
 using Microsoft.AspNetCore.Builder;
@@ -94,6 +95,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
 
         cfg.AddEntityFrameworkOutbox<TestDbContext>(outboxCfg =>
         {
+            outboxCfg.LockStatementProvider = new SqliteLockStatementProvider();
             outboxCfg.UseBusOutbox();
         });
 

@@ -6,9 +6,7 @@ using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.Startup.MicrosoftDI;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
