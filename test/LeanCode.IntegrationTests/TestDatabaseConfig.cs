@@ -1,7 +1,7 @@
-using LeanCode.CQRS.MassTransitRelay.LockProviders;
 using LeanCode.DomainModels.EF;
 using LeanCode.IntegrationTestHelpers;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -42,7 +42,7 @@ public class SqlServerTestDatabaseConfig : TestDatabaseConfig
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
     {
-        configurator.LockStatementProvider = new CustomSqlServerLockStatementProvider();
+        configurator.LockStatementProvider = new SqlServerLockStatementProvider();
     }
 }
 
@@ -58,6 +58,6 @@ public class PostgresTestConfig : TestDatabaseConfig
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
     {
-        configurator.LockStatementProvider = new CustomPostgresLockStatementProvider();
+        configurator.LockStatementProvider = new PostgresLockStatementProvider();
     }
 }

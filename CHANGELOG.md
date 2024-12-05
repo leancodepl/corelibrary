@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
+## 9.0-preview
+
+* Upgrade to .NET 9
+* Remove custom MassTransit lock providers as they are no longer needed
+
 ## 8.1
+
 * `LeanCode.Kratos` has switched from official (and at the time outdated) client package `Ory.Kratos.Client` to our own `LeanCode.Kratos.Client` that is maintained at https://github.com/leancodepl/dotnet-kratos-client and with this the usage has changed:
 * Underlying JSON (de)serializer is now STJ instead of JSON.NET
 * Values returned from client's API calls are now wrapped in response objects that provide additional info
