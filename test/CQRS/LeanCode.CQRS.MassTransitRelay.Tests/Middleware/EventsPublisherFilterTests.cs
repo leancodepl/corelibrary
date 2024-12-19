@@ -49,12 +49,9 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime
         Assert.Equal(TestConsumer.Event, evt.MessageObject);
     }
 
-    public Task InitializeAsync() => Task.CompletedTask;
+    public ValueTask InitializeAsync() => ValueTask.CompletedTask;
 
-    public async Task DisposeAsync()
-    {
-        await harness.Stop();
-    }
+    public async ValueTask DisposeAsync() => await harness.Stop();
 
     private sealed class TestMsg { }
 

@@ -140,7 +140,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Empty(result);
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await app.InitializeAsync();
         scope = app.Services.CreateAsyncScope();
@@ -148,7 +148,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         store = new(scope.ServiceProvider.GetRequiredService<TestDbContext>());
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await scope.DisposeAsync();
         await app.DisposeAsync();

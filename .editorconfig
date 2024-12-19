@@ -193,3 +193,6 @@ dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1724.severity = none
 dotnet_diagnostic.CA1515.severity = none
 dotnet_diagnostic.IDE0058.severity = none
+
+# Disable temporarily
+dotnet_diagnostic.xUnit1051.severity = none

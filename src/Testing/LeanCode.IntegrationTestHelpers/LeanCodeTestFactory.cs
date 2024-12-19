@@ -94,15 +94,13 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
             });
     }
 
-    public virtual async Task InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
         // Since we can't really run async variants of the Start/Stop methods of webhost
         // (neither TestServer nor WebApplicationFactory allows that - they just Start using
         // sync-over-async approach), we at least do that in controlled manner.
         await Task.Run(() => Server.Services.ToString()).ConfigureAwait(false);
     }
-
-    Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
 
     public override async ValueTask DisposeAsync()
     {

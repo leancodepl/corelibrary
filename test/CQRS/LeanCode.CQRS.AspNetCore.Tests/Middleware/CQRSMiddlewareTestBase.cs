@@ -88,9 +88,9 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
         metric.Should().Be(0, "there should be no success metrics");
     }
 
-    public Task InitializeAsync() => Host.StartAsync();
+    public async ValueTask InitializeAsync() => await Host.StartAsync();
 
-    public Task DisposeAsync() => Host.StopAsync();
+    public async ValueTask DisposeAsync() => await Host.StopAsync();
 
     public void Dispose()
     {

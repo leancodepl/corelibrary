@@ -7,7 +7,6 @@ using Xunit;
 
 namespace LeanCode.IntegrationTests;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1001", Justification = "Disposed with `IAsyncLifetime`.")]
 public class TimestampTzTests : IAsyncLifetime
 {
     private static readonly DateOnly Date = new(2023, 10, 5);
@@ -68,7 +67,7 @@ public class TimestampTzTests : IAsyncLifetime
             );
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await app.InitializeAsync();
 
@@ -84,8 +83,9 @@ public class TimestampTzTests : IAsyncLifetime
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
+        await dbContext.DisposeAsync();
         await scope.DisposeAsync();
         await app.DisposeAsync();
     }

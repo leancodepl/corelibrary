@@ -50,9 +50,9 @@ public class EFRepositoryTests : IAsyncLifetime
         foundEntity.Should().BeNull();
     }
 
-    public Task InitializeAsync() => app.InitializeAsync();
+    public async ValueTask InitializeAsync() => await app.InitializeAsync();
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public ValueTask DisposeAsync() => app.DisposeAsync();
 
     private sealed class EntityRepository : EFRepository<Entity, Guid, TestDbContext>
     {

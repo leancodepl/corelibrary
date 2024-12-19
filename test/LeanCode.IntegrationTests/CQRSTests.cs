@@ -69,7 +69,7 @@ public class CQRSTests : IAsyncLifetime
             );
     }
 
-    public Task InitializeAsync() => app.InitializeAsync();
+    public async ValueTask InitializeAsync() => await app.InitializeAsync();
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public ValueTask DisposeAsync() => app.DisposeAsync();
 }
