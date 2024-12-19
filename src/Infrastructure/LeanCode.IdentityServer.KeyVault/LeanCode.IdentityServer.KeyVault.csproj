@@ -8,9 +8,9 @@
     <PackageReference Include="IdentityServer4" />
     <PackageReference Include="Microsoft.Extensions.Azure" />
 
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="5.7.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" VersionOverride="5.7.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" VersionOverride="5.7.0" />
+    <PackageReference Include="Newtonsoft.Json" VersionOverride="13.0.3" />
   </ItemGroup>
 
 </Project>
