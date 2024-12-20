@@ -134,7 +134,9 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore
-        run: dotnet restore
+        run: |
+          dotnet restore
+          dotnet tool restore
       - name: Unit tests
         run: dotnet test
       - name: Azure Test
