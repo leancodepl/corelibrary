@@ -1,5 +1,4 @@
 #!/usr/bin/env -S docker compose -f
-version: "3.6"
 services:
   #### Tests
   test:

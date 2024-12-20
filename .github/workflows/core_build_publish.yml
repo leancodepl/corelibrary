@@ -156,7 +156,6 @@ jobs:
       - name: Integration Test - Postgres
         run: dotnet test -- --explicit on --filter-trait 'category=integration'
         env:
-          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
           Postgres__ConnectionStringBase: Host=localhost;Username=postgres;Password=Passw12#
           LeanCodeIntegrationTests__Database: postgres
       - name: Upload coverage to Codecov

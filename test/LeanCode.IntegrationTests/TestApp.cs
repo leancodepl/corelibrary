@@ -36,6 +36,7 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        base.ConfigureWebHost(builder);
         builder.UseSolutionRelativeContentRoot("test/LeanCode.IntegrationTests");
     }
 
