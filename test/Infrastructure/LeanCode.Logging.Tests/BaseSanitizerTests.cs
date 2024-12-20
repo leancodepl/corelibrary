@@ -35,14 +35,16 @@ public class BaseSanitizerTests
     {
         SanitizeRight(Payload.Workable);
 
-        factory.Received(1).CreatePropertyValue(RightSanitizer.Result, true);
+        factory
+            .Received(1)
+            .CreatePropertyValue(Arg.Is<Payload>((Payload p) => p.Value == RightSanitizer.Result.Value), true);
     }
 
     [Fact]
     public void Returns_true_with_factory_result_when_sanitizing_object()
     {
         var expResult = Substitute.For<LogEventPropertyValue>();
-        factory.CreatePropertyValue(default, default).ReturnsForAnyArgs(expResult);
+        factory.CreatePropertyValue(default).ReturnsForAnyArgs(expResult);
 
         var (res, result) = SanitizeRight(Payload.Workable);
 
@@ -65,7 +67,7 @@ public class BaseSanitizerTests
 
 public class RightSanitizer : BaseSanitizer<Payload>
 {
-    public static readonly Payload Result = new Payload { Value = Placeholder };
+    public static Payload Result => new() { Value = Placeholder };
 
     protected override Payload TrySanitize(Payload obj)
     {
@@ -98,8 +100,8 @@ public class WrongSanitizer : BaseSanitizer<Payload>
 
 public class Payload
 {
-    public static readonly Payload Workable = new Payload { Value = "NOT PLACEHOLDER" };
-    public static readonly Payload Sanitized = new Payload { Value = RightSanitizer.Placeholder };
+    public static Payload Workable => new() { Value = "NOT PLACEHOLDER" };
+    public static Payload Sanitized => new() { Value = RightSanitizer.Placeholder };
 
     public string Value { get; set; }
 }
