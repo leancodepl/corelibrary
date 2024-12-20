@@ -149,7 +149,7 @@ jobs:
           CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME: ${{ secrets.CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME }}
           CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME: ${{ secrets.CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME }}
       - name: Integration Test - SQL Server
-        run: dotnet test -- --explicit on --filter-trait 'category=integration'
+        run: dotnet test -- --explicit on --filter-query '/[(category=integration)&(database!=postgres)]'
         env:
           SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
           LeanCodeIntegrationTests__Database: sqlserver
