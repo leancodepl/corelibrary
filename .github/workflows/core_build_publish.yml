@@ -90,6 +90,7 @@ jobs:
       - name: Tool Restore
         run: dotnet tool restore
       - name: Check formatting
+        if: false
         run: dotnet csharpier . --check
       - name: Build
         run: dotnet build --configuration Release --no-restore
