@@ -49,6 +49,7 @@ public sealed class FacebookClientTests : IDisposable
 
 internal sealed class FacebookFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "facebook";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
         ["FACEBOOK_APP_SECRET", "FACEBOOK_TOKEN"];
 }

@@ -168,6 +168,7 @@ public class AzureStorageAuditLogIntegrationTests
 
 public sealed class AzureStorageFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "azure";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
         [
             Env.TenantIdKey,

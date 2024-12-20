@@ -117,6 +117,7 @@ public class SendGridRazorClientTests
 
 internal sealed class SendGridFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "sendgrid";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
         ["SENDGRID_APIKEY", "SENDGRID_EMAILTO"];
 }

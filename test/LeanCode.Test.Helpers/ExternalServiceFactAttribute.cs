@@ -8,8 +8,15 @@ namespace LeanCode.Test.Helpers;
 public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttribute, IBeforeAfterTestAttribute
 {
     protected abstract IReadOnlyCollection<string> RequiredEnvVariables { get; }
+    protected abstract string ServiceType { get; }
 
-    public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() => [new("category", "external")];
+    public ExternalServiceFactAttribute()
+    {
+        Explicit = true;
+    }
+
+    public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() =>
+        [new("category", "external"), new("service", ServiceType)];
 
     public void After(MethodInfo methodUnderTest, IXunitTest test) { }
 
@@ -19,7 +26,7 @@ public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttrib
 
         if (skipReason != null)
         {
-            Assert.Skip(skipReason);
+            Assert.Fail(skipReason);
         }
     }
 

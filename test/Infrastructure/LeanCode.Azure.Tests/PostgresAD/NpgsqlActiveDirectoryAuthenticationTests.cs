@@ -28,6 +28,7 @@ public class NpgsqlActiveDirectoryAuthenticationTests
 
 public sealed class PostgresFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "npgsql";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
         [Env.TenantIdKey, Env.ClientIdKey, Env.ClientSecretKey, Env.NpgsqlConnectionStringKey];
 }

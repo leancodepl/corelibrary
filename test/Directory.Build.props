@@ -6,7 +6,19 @@
 
   <PropertyGroup>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <!--
+      The first three parameters must be here in this file on a single line, otherwise the cmdline parsing will fail.
+    -->
+    <TestingPlatformCommandLineArguments>
+      $(TestingPlatformCommandLineArguments)
+      --report-ctrf --coverage --ignore-exit-code 8
+      --results-directory $(MSBuildThisFileDirectory)/../TestResults
+      --coverage-output-format xml
+      --coverage-settings $(MSBuildThisFileDirectory)/coverage.xml
+      --report-ctrf-filename $(MSBuildProjectName).json
+      --coverage-output $(MSBuildProjectName).xml
+    </TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +26,7 @@
 
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Microsoft.Testing.Platform" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
 
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.analyzers" />

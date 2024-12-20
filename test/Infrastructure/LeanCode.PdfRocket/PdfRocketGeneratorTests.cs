@@ -52,5 +52,6 @@ public class PdfRocketGeneratorTests
 
 internal sealed class PdfRocketFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "pdf-rocket";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } = ["PDF_ROCKET_API_KEY"];
 }

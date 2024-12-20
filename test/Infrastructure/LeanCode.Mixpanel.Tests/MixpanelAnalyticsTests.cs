@@ -43,6 +43,7 @@ public class MixpanelAnalyticsTests
 
 internal sealed class MixpanelFactAttribute : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "mixpanel";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
         ["MIXPANEL_APIKEY", "MIXPANEL_TOKEN"];
 }
