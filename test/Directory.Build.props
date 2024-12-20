@@ -14,10 +14,10 @@
       $(TestingPlatformCommandLineArguments)
       --report-ctrf --coverage --ignore-exit-code 8
       --results-directory $(MSBuildThisFileDirectory)/../TestResults
-      --coverage-output-format xml
+      --coverage-output-format cobertura
       --coverage-settings $(MSBuildThisFileDirectory)/coverage.xml
-      --report-ctrf-filename $(MSBuildProjectName)-$([System.Guid]::NewGuid()).json
-      --coverage-output $(MSBuildProjectName)-$([System.Guid]::NewGuid()).xml
+      --report-ctrf-filename $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).json
+      --coverage-output $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).xml
     </TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
