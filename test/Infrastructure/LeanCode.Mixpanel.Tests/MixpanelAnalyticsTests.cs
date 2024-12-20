@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.Mixpanel.Tests;
@@ -38,19 +39,10 @@ public class MixpanelAnalyticsTests
             Guid.NewGuid().ToString()
         );
     }
+}
 
-    internal sealed class MixpanelFactAttribute : FactAttribute
-    {
-        public MixpanelFactAttribute()
-        {
-            if (string.IsNullOrEmpty(Configuration.ApiKey))
-            {
-                Skip = "API key not set";
-            }
-            else if (string.IsNullOrEmpty(Configuration.Token))
-            {
-                Skip = "Token not set";
-            }
-        }
-    }
+internal sealed class MixpanelFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        ["MIXPANEL_APIKEY", "MIXPANEL_TOKEN"];
 }

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LeanCode.ExternalIdentityProviders.Facebook;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.ExternalIdentityProviders.Tests.Facebook;
@@ -13,15 +14,16 @@ public sealed class FacebookClientTests : IDisposable
         new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
     private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? "";
 
+    private readonly HttpClient httpClient;
     private readonly FacebookClient client;
 
-    [SuppressMessage("?", "CA2000", Justification = "References don't go out of scope.")]
     public FacebookClientTests()
     {
-        client = new FacebookClient(Config, new HttpClient { BaseAddress = new Uri(FacebookClient.ApiBase), });
+        httpClient = new HttpClient { BaseAddress = new Uri(FacebookClient.ApiBase), };
+        client = new FacebookClient(Config, httpClient);
     }
 
-    public void Dispose() => ((IDisposable)client).Dispose();
+    public void Dispose() => httpClient.Dispose();
 
     [FacebookFact]
     public async Task Downloads_user_info_correctly()
@@ -43,19 +45,10 @@ public sealed class FacebookClientTests : IDisposable
 
         Assert.NotEmpty(user.Photo);
     }
+}
 
-    internal sealed class FacebookFactAttribute : FactAttribute
-    {
-        public FacebookFactAttribute()
-        {
-            if (string.IsNullOrEmpty(Config.AppSecret))
-            {
-                Skip = "API key not set";
-            }
-            else if (string.IsNullOrEmpty(AccessToken))
-            {
-                Skip = "No token provided";
-            }
-        }
-    }
+internal sealed class FacebookFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        ["FACEBOOK_APP_SECRET", "FACEBOOK_TOKEN"];
 }

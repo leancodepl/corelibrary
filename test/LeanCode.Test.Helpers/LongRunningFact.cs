@@ -1,16 +1,16 @@
 using Xunit;
+using Xunit.v3;
 
 namespace LeanCode.Test.Helpers;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-public sealed class LongRunningFact : FactAttribute
+public sealed class LongRunningFact : FactAttribute, ITraitAttribute
 {
-#if EXCLUDE_LONG_RUNNING_TESTS
-    public LongRunningFact()
-    {
-        Skip = "Long running test";
-    }
-#else
-    public LongRunningFact() { }
-#endif
+    public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() => [new("category", "long-running")];
+}
+
+public class LongRunningFactTest
+{
+    [LongRunningFact]
+    public void Long_running_test() { }
 }

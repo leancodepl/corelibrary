@@ -2,5 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.PdfRocket/LeanCode.PdfRocket.csproj" />
+    <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 </Project>

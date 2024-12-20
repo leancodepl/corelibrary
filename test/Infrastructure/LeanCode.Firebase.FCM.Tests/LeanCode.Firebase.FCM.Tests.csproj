@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />
+    <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

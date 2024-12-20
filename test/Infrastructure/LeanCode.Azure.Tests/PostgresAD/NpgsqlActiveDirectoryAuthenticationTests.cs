@@ -1,22 +1,10 @@
 ﻿using FluentAssertions;
 using LeanCode.Npgsql.ActiveDirectory;
+using LeanCode.Test.Helpers;
 using Npgsql;
 using Xunit;
 
 namespace LeanCode.Azure.Tests.PostgresAD;
-
-public sealed class PostgresFactAttribute : FactAttribute
-{
-    public PostgresFactAttribute()
-    {
-        Skip = Env.SkipIfVariablesNotSet(
-            Env.TenantIdKey,
-            Env.ClientIdKey,
-            Env.ClientSecretKey,
-            Env.NpgsqlConnectionStringKey
-        );
-    }
-}
 
 public class NpgsqlActiveDirectoryAuthenticationTests
 {
@@ -36,4 +24,10 @@ public class NpgsqlActiveDirectoryAuthenticationTests
         var result = await command.ExecuteScalarAsync();
         result.Should().Be(1);
     }
+}
+
+public sealed class PostgresFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        [Env.TenantIdKey, Env.ClientIdKey, Env.ClientSecretKey, Env.NpgsqlConnectionStringKey];
 }

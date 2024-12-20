@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using LeanCode.Localization.StringLocalizers;
 using LeanCode.SendGrid;
+using LeanCode.Test.Helpers;
 using LeanCode.ViewRenderer;
 using NSubstitute;
 using SendGrid;
@@ -54,25 +55,10 @@ public class SendGridRazorClientTests
             });
 
         client = new SendGridRazorClient(
-            new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY"), }),
+            new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY") ?? "unset", }),
             renderer,
             localizer
         );
-    }
-
-    internal sealed class SendGridFactAttribute : FactAttribute
-    {
-        public SendGridFactAttribute()
-        {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SENDGRID_APIKEY")))
-            {
-                Skip = "API key not set";
-            }
-            else if (string.IsNullOrEmpty(EmailTo))
-            {
-                Skip = "No recipient provided";
-            }
-        }
     }
 
     [SendGridFact]
@@ -127,4 +113,10 @@ public class SendGridRazorClientTests
     {
         public string Value { get; set; } = "Html";
     }
+}
+
+internal sealed class SendGridFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        ["SENDGRID_APIKEY", "SENDGRID_EMAILTO"];
 }

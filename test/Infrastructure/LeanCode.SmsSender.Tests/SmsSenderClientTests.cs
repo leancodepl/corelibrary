@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.SmsSender.Tests;
@@ -53,19 +54,10 @@ public class SmsSenderClientTests
 
         return new(config, client);
     }
+}
 
-    internal sealed class SmsApiFactAttribute : FactAttribute
-    {
-        public SmsApiFactAttribute()
-        {
-            if (string.IsNullOrEmpty(Token))
-            {
-                Skip = "OAuth token not set";
-            }
-            else if (string.IsNullOrEmpty(PhoneNumber))
-            {
-                Skip = "No recipient provided";
-            }
-        }
-    }
+internal sealed class SmsApiFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        ["SMSAPI_TOKEN", "SMSAPI_PHONENUMBERTO"];
 }

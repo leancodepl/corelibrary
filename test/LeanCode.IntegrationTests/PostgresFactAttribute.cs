@@ -1,9 +1,8 @@
-using Xunit;
+using LeanCode.Test.Helpers;
 
 namespace LeanCode.IntegrationTests;
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed class PostgresFactAttribute : FactAttribute
+public sealed class PostgresFactAttribute : IntegrationFactAttribute
 {
     public PostgresFactAttribute()
     {

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.SendGrid/LeanCode.SendGrid.csproj" />
+    <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

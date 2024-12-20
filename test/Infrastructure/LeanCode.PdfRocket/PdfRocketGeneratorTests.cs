@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.PdfRocket.Tests;
@@ -9,17 +10,6 @@ namespace LeanCode.PdfRocket.Tests;
 public class PdfRocketGeneratorTests
 {
     private static readonly string ApiKey = Environment.GetEnvironmentVariable("PDF_ROCKET_API_KEY") ?? "";
-
-    internal sealed class PdfRocketFactAttribute : FactAttribute
-    {
-        public PdfRocketFactAttribute()
-        {
-            if (string.IsNullOrEmpty(ApiKey))
-            {
-                Skip = "PdfRocket tests require setting PDF_ROCKET_API_KEY variable";
-            }
-        }
-    }
 
     private readonly PdfRocketGenerator generator;
 
@@ -58,4 +48,9 @@ public class PdfRocketGeneratorTests
         using var file = File.OpenWrite($"{Guid.NewGuid()}.pdf");
         await stream.CopyToAsync(file);
     }
+}
+
+internal sealed class PdfRocketFactAttribute : ExternalServiceFactAttribute
+{
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } = ["PDF_ROCKET_API_KEY"];
 }

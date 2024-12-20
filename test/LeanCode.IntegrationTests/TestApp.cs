@@ -4,6 +4,8 @@ using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Logging;
 using LeanCode.Startup.MicrosoftDI;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 
 namespace LeanCode.IntegrationTests;
@@ -30,6 +32,11 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
         yield return typeof(App.Startup).Assembly;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseSolutionRelativeContentRoot("test/LeanCode.IntegrationTests");
     }
 
     protected override IHostBuilder CreateHostBuilder()
