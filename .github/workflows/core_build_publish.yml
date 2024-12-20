@@ -170,7 +170,12 @@ jobs:
           # Strip BOM first :clown:
           find TestResults -name '*.json' | xargs -n 1 sed -i "$(printf '1s/^\357\273\277//')"
           npx ctrf merge TestResults --output merged.json
-          npx github-actions-ctrf summary failed-folded skipped suite-folded annotate pull-request TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf summary TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf failed-folded TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf skipped TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf suite-folded TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf annotate TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+          npx github-actions-ctrf pull-request TestResults/merged.json --update-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

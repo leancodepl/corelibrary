@@ -16,8 +16,8 @@
       --results-directory $(MSBuildThisFileDirectory)/../TestResults
       --coverage-output-format xml
       --coverage-settings $(MSBuildThisFileDirectory)/coverage.xml
-      --report-ctrf-filename $(MSBuildProjectName).json
-      --coverage-output $(MSBuildProjectName).xml
+      --report-ctrf-filename $(MSBuildProjectName)-$([System.Guid]::NewGuid()).json
+      --coverage-output $(MSBuildProjectName)-$([System.Guid]::NewGuid()).xml
     </TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
