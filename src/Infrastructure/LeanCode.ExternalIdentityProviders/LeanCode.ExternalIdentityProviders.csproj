@@ -11,9 +11,9 @@
     <PackageReference Include="Serilog" />
 
     <!-- Packages required by IdentityServer4, but with patched versions -->
-    <PackageReference Include="System.Text.Encodings.Web" VersionOverride="4.7.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" VersionOverride="5.7.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" VersionOverride="5.7.0" />
+    <PackageReference Include="System.Text.Encodings.Web" VersionOverride="9.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" VersionOverride="8.3.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" VersionOverride="8.3.0" />
   </ItemGroup>
 
 </Project>
