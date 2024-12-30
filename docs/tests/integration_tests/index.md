@@ -63,6 +63,10 @@ public class ExampleAppTestApp : LeanCodeTestFactory<Startup>
     {
         base.ConfigureWebHost(builder);
 
+        // Remember to set correct content root path. This is the easiest option.
+        builder.UseSolutionRelativeContentRoot(
+            "tests/ExampleApp.IntegrationTests/ExampleApp.IntegrationTests.csproj");
+
         builder.ConfigureServices(services =>
         {
             // Incorporate a hosted service responsible for creating
@@ -76,19 +80,6 @@ public class ExampleAppTestApp : LeanCodeTestFactory<Startup>
         });
     }
 }
-```
-
-Following `ItemGroup` must be added to the integration test project's `.csproj` file. This group facilitates the discovery of the content root for the web application being tested.
-
-```xml
-  <ItemGroup>
-    <WebApplicationFactoryContentRootAttribute
-      Include="ExampleApp.IntegrationTests"
-      AssemblyName="ExampleApp.IntegrationTests"
-      ContentRootPath="$(MSBuildProjectDirectory)"
-      ContentRootTest="ExampleApp.IntegrationTests.csproj"
-      Priority="-1" />
-  </ItemGroup>
 ```
 
 ## Authentication handler
@@ -185,7 +176,7 @@ public class AuthenticatedExampleAppTestApp : ExampleAppTestApp
 
     public AuthenticatedExampleAppTestApp() { }
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         AuthenticateAsTestSuperUser();
 
@@ -241,7 +232,7 @@ public class UnauthenticatedExampleAppTestApp : ExampleAppTestApp
     public HttpCommandsExecutor Command { get; private set; } = default!;
     public HttpOperationsExecutor Operation { get; private set; } = default!;
 
-    public override async Task InitializeAsync()
+    public override async ValueTaskTask InitializeAsync()
     {
         await base.InitializeAsync();
 
@@ -294,9 +285,9 @@ public class Tests : IAsyncLifetime
         Assert.Matches("^project_[0-7][0-9A-HJKMNP-TV-Z]{25}$", project.Id);
     }
 
-    public Task InitializeAsync() => app.InitializeAsync();
+    public ValueTask InitializeAsync() => app.InitializeAsync();
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public ValueTask DisposeAsync() => app.DisposeAsync();
 }
 
 public static class ApiClientHelpers
