@@ -232,7 +232,7 @@ public class UnauthenticatedExampleAppTestApp : ExampleAppTestApp
     public HttpCommandsExecutor Command { get; private set; } = default!;
     public HttpOperationsExecutor Operation { get; private set; } = default!;
 
-    public override async ValueTaskTask InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
 
