@@ -1,19 +1,14 @@
-using Xunit;
+using LeanCode.Test.Helpers;
 
 namespace LeanCode.AzureIdentity.Tests;
 
-public sealed class AzureIdentityFact : FactAttribute
+public sealed class AzureIdentityFact : ExternalServiceFactAttribute
 {
+    protected override string ServiceType => "azure-identity";
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; }
+
     public AzureIdentityFact(params string[] requiredEnvVariables)
     {
-        if (!VariablesSet(requiredEnvVariables))
-        {
-            Skip = "Azure Identity configuration not set";
-        }
-    }
-
-    private static bool VariablesSet(string[] variables)
-    {
-        return variables.All(v => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(v)));
+        RequiredEnvVariables = requiredEnvVariables.ToHashSet();
     }
 }

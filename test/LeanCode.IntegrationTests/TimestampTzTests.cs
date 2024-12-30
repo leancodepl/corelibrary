@@ -7,7 +7,6 @@ using Xunit;
 
 namespace LeanCode.IntegrationTests;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1001", Justification = "Disposed with `IAsyncLifetime`.")]
 public class TimestampTzTests : IAsyncLifetime
 {
     private static readonly DateOnly Date = new(2023, 10, 5);
@@ -38,7 +37,7 @@ public class TimestampTzTests : IAsyncLifetime
         dbContext = null!;
     }
 
-    [PostgresFact]
+    [PostgresOnlyFact]
     public async Task Sorting_by_UtcTimestamp_returns_results_in_expected_order()
     {
         var orderedByUtc = await dbContext.Meetings.OrderBy(m => m.StartTime.UtcTimestamp).ToListAsync();
@@ -46,7 +45,7 @@ public class TimestampTzTests : IAsyncLifetime
         orderedByUtc.Should().BeEquivalentTo([meeting1, meeting2], options => options.WithStrictOrdering());
     }
 
-    [PostgresFact]
+    [PostgresOnlyFact]
     public async Task Sorting_by_LocalTimestampWithoutOffset_returns_results_in_expected_order()
     {
         var orderedByLocal = await dbContext
@@ -56,7 +55,7 @@ public class TimestampTzTests : IAsyncLifetime
         orderedByLocal.Should().BeEquivalentTo([meeting2, meeting1], options => options.WithStrictOrdering());
     }
 
-    [PostgresFact]
+    [PostgresOnlyFact]
     public void Sorting_by_LocalTimestampWithoutOffset_generates_SQL_with_expected_AT_TIME_ZONE_operator()
     {
         dbContext
@@ -68,7 +67,7 @@ public class TimestampTzTests : IAsyncLifetime
             );
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await app.InitializeAsync();
 
@@ -84,8 +83,9 @@ public class TimestampTzTests : IAsyncLifetime
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
+        await dbContext.DisposeAsync();
         await scope.DisposeAsync();
         await app.DisposeAsync();
     }

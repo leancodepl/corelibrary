@@ -125,7 +125,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         host.Dispose();
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await dbConnection.OpenAsync();
 
@@ -136,7 +136,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
         await host.StartAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await host.StopAsync();
         await dbConnection.CloseAsync();

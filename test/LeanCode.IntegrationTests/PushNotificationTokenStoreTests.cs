@@ -1,12 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.Firebase.FCM;
 using LeanCode.IntegrationTests.App;
+using LeanCode.Test.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LeanCode.IntegrationTests;
 
-[SuppressMessage("?", "CA1001", Justification = "Disposal is handled by IAsyncLifetime interface.")]
 public class PushNotificationTokenStoreTests : IAsyncLifetime
 {
     private readonly TestApp app;
@@ -18,7 +18,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         app = new TestApp();
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Gets_freshly_saved_token()
     {
         const string Token = "token";
@@ -30,7 +30,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Equal(new() { Token }, result);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Gets_multiple_freshly_saved_token()
     {
         const string Token1 = "token1";
@@ -44,7 +44,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Equal(new() { Token1, Token2 }, result);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Gets_tokens_for_multiple_users()
     {
         const string Token1 = "token1";
@@ -67,7 +67,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Equal(Token2, secondToken);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Removes_single_token()
     {
         const string Token1 = "token1";
@@ -82,7 +82,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Equal(new() { Token2 }, result);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Removes_user_tokens()
     {
         const string Token1 = "token1";
@@ -103,7 +103,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Equal(new() { Token2 }, result2);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Removes_multiple_tokens()
     {
         const string Token1 = "token1";
@@ -123,7 +123,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Empty(result2);
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Removes_all_user_tokens()
     {
         const string Token1 = "token1";
@@ -140,7 +140,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         Assert.Empty(result);
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await app.InitializeAsync();
         scope = app.Services.CreateAsyncScope();
@@ -148,7 +148,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         store = new(scope.ServiceProvider.GetRequiredService<TestDbContext>());
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await scope.DisposeAsync();
         await app.DisposeAsync();

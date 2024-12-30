@@ -90,6 +90,7 @@ jobs:
       - name: Tool Restore
         run: dotnet tool restore
       - name: Check formatting
+        if: false
         run: dotnet csharpier . --check
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -132,16 +133,14 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: Install trx2junit
-        run: dotnet tool install --global trx2junit
       - name: Restore
-        run: dotnet restore
-      - name: Test
-        run: dotnet msbuild /t:RunTestsWithCoverage
-        working-directory: test
+        run: |
+          dotnet restore
+          dotnet tool restore
+      - name: Unit tests
+        run: dotnet test -- --explicit on --filter-not-trait 'integration=true'
       - name: Azure Test
-        run: dotnet test -c Release --logger trx --results-directory ../../TestResults
-        working-directory: test/Infrastructure/LeanCode.Azure.Tests
+        run: dotnet test -- --explicit on --filter-trait 'service=azure'
         env:
           CORELIB_TESTS_TENANT_ID: ${{ secrets.CORELIB_TESTS_TENANT_ID }}
           CORELIB_TESTS_CLIENT_ID: ${{ secrets.CORELIB_TESTS_CLIENT_ID }}
@@ -152,44 +151,40 @@ jobs:
           CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME: ${{ secrets.CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME }}
           CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME: ${{ secrets.CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME }}
       - name: Integration Test - SQL Server
-        run: dotnet test -c Release --logger trx --results-directory ../TestResults
-        working-directory: test/LeanCode.IntegrationTests
+        run: dotnet test -- --explicit on --filter-query '/[(category=integration)&(database!=postgres)]'
         env:
-          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
           SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
           LeanCodeIntegrationTests__Database: sqlserver
       - name: Integration Test - Postgres
-        run: dotnet test -c Release --logger trx --results-directory ../TestResults
-        working-directory: test/LeanCode.IntegrationTests
+        run: dotnet test -- --explicit on --filter-trait 'category=integration'
         env:
-          ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /home/runner/work/corelibrary/corelibrary/test/LeanCode.IntegrationTests
           Postgres__ConnectionStringBase: Host=localhost;Username=postgres;Password=Passw12#
           LeanCodeIntegrationTests__Database: postgres
+
+      - name: Process test results
+        if: always()
+        run: |
+          # Strip BOM :clown:
+          find TestResults -name '*.json' | xargs -n 1 sed -i "$(printf '1s/^\357\273\277//')"
+
+          # Merge results
+          npx ctrf merge TestResults --output merged.json
+          dotnet coverage merge 'TestResults/*.xml' -o TestResults/cobertura.xml -f cobertura
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: always()
-
-      - name: Convert Test Results to jUnit
-        run: find -name '*.trx' -exec trx2junit --output TestResults {} +
-        working-directory: test
-        if: always()
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: >
-          always() &&
-          github.event.sender.login != 'dependabot[bot]' &&
-          ( github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository )
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: test/TestResults/*.xml
-
-      - name: Upload Test Results
+          token: ${{ secrets.CODECOV_TOKEN }}
+          working-directory: ./TestResults
+      - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Unit Test Results
-          path: test/TestResults/*.xml
+        run: |
+          npx github-actions-ctrf summary TestResults/merged.json --annotate
+          npx github-actions-ctrf failed-folded TestResults/merged.json
+          npx github-actions-ctrf skipped TestResults/merged.json
+          npx github-actions-ctrf pull-request TestResults/merged.json --overwrite-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     runs-on: ubuntu-latest

@@ -106,7 +106,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
         host.Dispose();
     }
 
-    public Task InitializeAsync() => host.StartAsync();
+    public async ValueTask InitializeAsync() => await host.StartAsync();
 
-    public Task DisposeAsync() => host.StopAsync();
+    public async ValueTask DisposeAsync() => await host.StopAsync();
 }

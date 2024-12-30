@@ -5,6 +5,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
 using LeanCode.AuditLogs;
+using LeanCode.Test.Helpers;
 using LeanCode.TimeProvider;
 using Xunit;
 
@@ -19,18 +20,21 @@ public class AzureStorageAuditLogIntegrationTests
     {
         var credential = Env.GetTokenCredential();
         blobServiceClient = new BlobServiceClient(
-            new Uri(Environment.GetEnvironmentVariable(Env.AzureBlobStorageServiceUriKey)!),
+            new Uri(Environment.GetEnvironmentVariable(Env.AzureBlobStorageServiceUriKey) ?? "https://unset"),
             credential
         );
         storage = new AzureBlobAuditLogStorage(
             blobServiceClient,
             new TableServiceClient(
-                new Uri(Environment.GetEnvironmentVariable(Env.AzureTableStorageServiceUriKey)!),
+                new Uri(
+                    Environment.GetEnvironmentVariable(Env.AzureTableStorageServiceUriKey)
+                        ?? "https://UNSET.table.core.windows.net/"
+                ),
                 credential
             ),
             new(
-                Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)!,
-                Environment.GetEnvironmentVariable(Env.AzureTableStorageTableNameKey)!
+                Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey) ?? "unset",
+                Environment.GetEnvironmentVariable(Env.AzureTableStorageTableNameKey) ?? "unset"
             )
         );
     }
@@ -162,16 +166,15 @@ public class AzureStorageAuditLogIntegrationTests
     }
 }
 
-public sealed class AzureStorageFactAttribute : FactAttribute
+public sealed class AzureStorageFactAttribute : ExternalServiceFactAttribute
 {
-    public AzureStorageFactAttribute()
-    {
-        Skip ??= Env.SkipIfVariablesNotSet(
+    protected override string ServiceType => "azure";
+    protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
+        [
             Env.TenantIdKey,
             Env.ClientIdKey,
             Env.ClientSecretKey,
             Env.AzureBlobStorageServiceUriKey,
             Env.AzureTableStorageServiceUriKey
-        );
-    }
+        ];
 }

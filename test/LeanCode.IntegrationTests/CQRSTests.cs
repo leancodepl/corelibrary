@@ -3,6 +3,7 @@ using FluentAssertions.Execution;
 using LeanCode.CQRS.RemoteHttp.Client;
 using LeanCode.IntegrationTestHelpers;
 using LeanCode.IntegrationTests.App;
+using LeanCode.Test.Helpers;
 using Xunit;
 
 namespace LeanCode.IntegrationTests;
@@ -17,7 +18,7 @@ public class CQRSTests : IAsyncLifetime
         app = new TestApp();
     }
 
-    [Fact]
+    [IntegrationFact]
     public async Task Test_basic_cqrs_flows()
     {
         await RunUnauthorizedCommandsAsync();
@@ -69,7 +70,7 @@ public class CQRSTests : IAsyncLifetime
             );
     }
 
-    public Task InitializeAsync() => app.InitializeAsync();
+    public async ValueTask InitializeAsync() => await app.InitializeAsync();
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public ValueTask DisposeAsync() => app.DisposeAsync();
 }

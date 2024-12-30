@@ -67,9 +67,9 @@ public sealed class ScopedFiltersTests : IAsyncLifetime, IDisposable
         Assert.NotEqual(f11, f21);
     }
 
-    public Task InitializeAsync() => bus.StartAsync();
+    public async ValueTask InitializeAsync() => await bus.StartAsync();
 
-    public Task DisposeAsync() => bus.StopAsync();
+    public async ValueTask DisposeAsync() => await bus.StopAsync();
 
     private sealed class TestService
     {

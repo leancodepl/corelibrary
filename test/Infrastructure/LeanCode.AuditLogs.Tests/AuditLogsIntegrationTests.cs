@@ -174,13 +174,13 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
             .Match(s => s.As<AuditLogMessage>().SpanId != null && s.As<AuditLogMessage>().TraceId != null);
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await host.StartAsync();
         await harness.Start();
     }
 
-    public Task DisposeAsync() => host.StopAsync();
+    public async ValueTask DisposeAsync() => await host.StopAsync();
 
     public void Dispose()
     {

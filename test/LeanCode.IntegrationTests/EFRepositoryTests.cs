@@ -1,6 +1,7 @@
 using FluentAssertions;
 using LeanCode.DomainModels.EF;
 using LeanCode.IntegrationTests.App;
+using LeanCode.Test.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -11,7 +12,7 @@ public class EFRepositoryTests : IAsyncLifetime
 {
     private readonly TestApp app = new();
 
-    [Fact]
+    [IntegrationFact]
     public async Task Default_implementation_of_EFRepository_works()
     {
         var entity = new Entity { Id = Guid.NewGuid(), Value = "test value" };
@@ -50,9 +51,9 @@ public class EFRepositoryTests : IAsyncLifetime
         foundEntity.Should().BeNull();
     }
 
-    public Task InitializeAsync() => app.InitializeAsync();
+    public async ValueTask InitializeAsync() => await app.InitializeAsync();
 
-    public Task DisposeAsync() => app.DisposeAsync().AsTask();
+    public ValueTask DisposeAsync() => app.DisposeAsync();
 
     private sealed class EntityRepository : EFRepository<Entity, Guid, TestDbContext>
     {

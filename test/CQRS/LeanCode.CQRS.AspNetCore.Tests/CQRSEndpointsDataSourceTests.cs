@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
+using Xunit.Internal;
 
 namespace LeanCode.CQRS.AspNetCore.Tests
 {
@@ -200,9 +201,9 @@ namespace LeanCode.CQRS.AspNetCore.Tests
             host.Dispose();
         }
 
-        public Task InitializeAsync() => host.StartAsync();
+        public async ValueTask InitializeAsync() => await host.StartAsync();
 
-        public Task DisposeAsync() => host.StopAsync();
+        public async ValueTask DisposeAsync() => await host.StopAsync();
 
         private sealed class MockExecutorFactory : IObjectExecutorFactory
         {

@@ -14,19 +14,12 @@ public static class Env
     public const string AzureBlobStorageContainerNameKey = "CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME";
     public const string AzureTableStorageTableNameKey = "CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME";
 
-    public static string SkipIfVariablesNotSet(params string[] variables)
-    {
-        return variables.Any(v => string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(v)))
-            ? $"Set `{string.Join(",", variables)}` env variables first"
-            : null;
-    }
-
     public static TokenCredential GetTokenCredential()
     {
         return new ClientSecretCredential(
-            Environment.GetEnvironmentVariable(TenantIdKey),
-            Environment.GetEnvironmentVariable(ClientIdKey),
-            Environment.GetEnvironmentVariable(ClientSecretKey)
+            Environment.GetEnvironmentVariable(TenantIdKey) ?? "unset",
+            Environment.GetEnvironmentVariable(ClientIdKey) ?? "unset",
+            Environment.GetEnvironmentVariable(ClientSecretKey) ?? "unset"
         );
     }
 }

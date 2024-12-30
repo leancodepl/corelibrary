@@ -4,15 +4,32 @@
     <NoWarn>CA1812</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <!--
+      The first three parameters must be here in this file on a single line, otherwise the cmdline parsing will fail.
+    -->
+    <TestingPlatformCommandLineArguments>
+      $(TestingPlatformCommandLineArguments)
+      --report-ctrf --coverage --ignore-exit-code 8
+      --results-directory $(MSBuildThisFileDirectory)/../TestResults
+      --coverage-output-format cobertura
+      --coverage-settings $(MSBuildThisFileDirectory)/coverage.xml
+      --report-ctrf-filename $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).json
+      --coverage-output $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).xml
+    </TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FluentAssertions" />
 
     <PackageReference Include="NSubstitute" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Platform" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
 
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.analyzers" />
-    <PackageReference Include="xunit.runner.visualstudio" Condition="'$(TargetFramework)' == 'net9.0'" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
