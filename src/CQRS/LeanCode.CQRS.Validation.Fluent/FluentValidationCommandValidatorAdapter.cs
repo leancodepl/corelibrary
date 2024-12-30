@@ -43,7 +43,7 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
             ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
         )
         {
-            RootContextData = { [ValidationContextExtensions.HttpContextKey] = httpContext, }
+            RootContextData = { [ValidationContextExtensions.HttpContextKey] = httpContext },
         };
     }
 }

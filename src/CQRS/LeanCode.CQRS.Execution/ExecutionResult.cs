@@ -10,7 +10,7 @@ public readonly record struct ExecutionResult
     public bool HasPayload { get; private init; }
     public object? Payload { get; private init; }
 
-    public static ExecutionResult Empty(int code) => new() { StatusCode = code, };
+    public static ExecutionResult Empty(int code) => new() { StatusCode = code };
 
     public static ExecutionResult WithPayload(object? payload, int code = 200) =>
         new()

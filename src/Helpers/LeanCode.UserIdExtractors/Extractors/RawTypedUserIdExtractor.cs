@@ -18,7 +18,7 @@ public sealed class RawTypedUserIdExtractor<TBacking, TId> : IUserIdExtractor<TI
     {
         { typeof(int), s => int.Parse(s, CultureInfo.InvariantCulture) },
         { typeof(long), s => long.Parse(s, CultureInfo.InvariantCulture) },
-        { typeof(Guid), s => Guid.Parse(s) }
+        { typeof(Guid), s => Guid.Parse(s) },
     }.ToFrozenDictionary();
 
     public RawTypedUserIdExtractor(string userIdClaim)

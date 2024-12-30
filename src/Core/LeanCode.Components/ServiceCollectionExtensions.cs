@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
         var implementationTypes = catalog
             .Assemblies.SelectMany(a => a.DefinedTypes)
             .Where(IsConcrete)
-            .Select(type => new { Type = type, ImplementedServices = GetImplementedGenericTypes(type, genericType), })
+            .Select(type => new { Type = type, ImplementedServices = GetImplementedGenericTypes(type, genericType) })
             .Where(t => t.ImplementedServices.Any());
 
         foreach (var type in implementationTypes)

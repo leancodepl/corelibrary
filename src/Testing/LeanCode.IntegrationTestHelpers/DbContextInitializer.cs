@@ -12,7 +12,7 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
 {
     private static readonly AsyncRetryPolicy CreatePolicy = Policy
         .Handle<SqlException>(e => e.Number == 5177)
-        .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3),]);
+        .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3)]);
 
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
 

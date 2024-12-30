@@ -69,7 +69,7 @@ public class AddEntityCH : ICommandHandler<AddEntity>
 
     public Task ExecuteAsync(HttpContext context, AddEntity command)
     {
-        var entity = new Entity { Id = Guid.NewGuid(), Value = command.Value, };
+        var entity = new Entity { Id = Guid.NewGuid(), Value = command.Value };
         DomainEvents.Raise(new EntityAdded(entity));
 
         dbContext.Entities.Add(entity);

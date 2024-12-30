@@ -16,13 +16,12 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
     private readonly ILogger logger = Log.ForContext<AzureBlobAuditLogStorage>();
 
     private static ReadOnlySpan<byte> NewLineBytes => "\n"u8;
-    private static readonly JsonSerializerOptions Options =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-        };
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+    };
 
     private readonly BlobServiceClient blobClient;
     private readonly TableServiceClient tableClient;

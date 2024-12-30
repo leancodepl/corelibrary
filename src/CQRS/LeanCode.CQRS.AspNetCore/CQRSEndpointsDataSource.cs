@@ -55,7 +55,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
                 CQRSObjectKind.Command => commandsPipeline,
                 CQRSObjectKind.Query => queriesPipeline,
                 CQRSObjectKind.Operation => operationsPipeline,
-                _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}")
+                _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}"),
             };
         }
     }
@@ -67,7 +67,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
             CQRSObjectKind.Command => "command",
             CQRSObjectKind.Query => "query",
             CQRSObjectKind.Operation => "operation",
-            _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}")
+            _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}"),
         };
         var kindSegment = RoutePatternFactory.Segment(RoutePatternFactory.LiteralPart(kindString));
 

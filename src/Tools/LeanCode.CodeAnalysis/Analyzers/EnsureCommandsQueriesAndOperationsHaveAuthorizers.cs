@@ -15,35 +15,32 @@ public class EnsureCommandsQueriesAndOperationsHaveAuthorizers : DiagnosticAnaly
     private const string QueryTypeName = "LeanCode.Contracts.IQuery";
     private const string OperationTypeName = "LeanCode.Contracts.IOperation";
 
-    private static readonly DiagnosticDescriptor CommandRule =
-        new(
-            DiagnosticsIds.CommandsShouldHaveAuthorizers,
-            "Command should be authorized",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor CommandRule = new(
+        DiagnosticsIds.CommandsShouldHaveAuthorizers,
+        "Command should be authorized",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 
-    private static readonly DiagnosticDescriptor QueryRule =
-        new(
-            DiagnosticsIds.QueriesShouldHaveAuthorizers,
-            "Query should be authorized",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor QueryRule = new(
+        DiagnosticsIds.QueriesShouldHaveAuthorizers,
+        "Query should be authorized",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 
-    private static readonly DiagnosticDescriptor OperationRule =
-        new(
-            DiagnosticsIds.OperationsShouldHaveAuthorizers,
-            "Operation should be authorized",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor OperationRule = new(
+        DiagnosticsIds.OperationsShouldHaveAuthorizers,
+        "Operation should be authorized",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(CommandRule, QueryRule, OperationRule);

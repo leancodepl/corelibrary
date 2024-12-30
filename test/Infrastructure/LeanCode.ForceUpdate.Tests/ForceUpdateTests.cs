@@ -43,7 +43,7 @@ public class ForceUpdateTests
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
-            new VersionSupport { Platform = PlatformDTO.IOS, Version = "0.9", }
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "0.9" }
         );
 
         result
@@ -64,7 +64,7 @@ public class ForceUpdateTests
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
-            new VersionSupport { Platform = PlatformDTO.Android, Version = "2.2", }
+            new VersionSupport { Platform = PlatformDTO.Android, Version = "2.2" }
         );
 
         result
@@ -85,7 +85,7 @@ public class ForceUpdateTests
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
-            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.4", }
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.4" }
         );
 
         result
@@ -106,7 +106,7 @@ public class ForceUpdateTests
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
-            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.x", }
+            new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.x" }
         );
 
         result.Should().BeNull();

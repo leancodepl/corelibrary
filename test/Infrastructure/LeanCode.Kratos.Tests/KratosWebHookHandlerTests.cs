@@ -92,44 +92,43 @@ public class KratosWebHookHandlerTests
     private static readonly DateTime Timestamp = DateTime
         .Parse(TimestampString, CultureInfo.InvariantCulture)
         .ToUniversalTime();
-    private static readonly Identity Identity =
-        new()
+    private static readonly Identity Identity = new()
+    {
+        Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+        CreatedAt = Timestamp,
+        UpdatedAt = Timestamp,
+        SchemaId = "user",
+        SchemaUrl = new("https://auth.local.lncd.pl/schemas/dXNlcg"),
+        State = IdentityState.Active,
+        RecoveryAddresses = new(1)
         {
-            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-            CreatedAt = Timestamp,
-            UpdatedAt = Timestamp,
-            SchemaId = "user",
-            SchemaUrl = new("https://auth.local.lncd.pl/schemas/dXNlcg"),
-            State = IdentityState.Active,
-            RecoveryAddresses = new(1)
+            new()
             {
-                new()
-                {
-                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-                    CreatedAt = Timestamp,
-                    UpdatedAt = Timestamp,
-                    Via = AddressType.Email,
-                    Value = Email,
-                },
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+                CreatedAt = Timestamp,
+                UpdatedAt = Timestamp,
+                Via = AddressType.Email,
+                Value = Email,
             },
-            VerifiableAddresses = new(1)
+        },
+        VerifiableAddresses = new(1)
+        {
+            new()
             {
-                new()
-                {
-                    Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
-                    CreatedAt = Timestamp,
-                    UpdatedAt = Timestamp,
-                    Via = AddressType.Email,
-                    Value = Email,
-                    Status = AddressStatus.Completed,
-                    VerifiedAt = Timestamp,
-                    Verified = true,
-                },
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                CreatedAt = Timestamp,
+                UpdatedAt = Timestamp,
+                Via = AddressType.Email,
+                Value = Email,
+                Status = AddressStatus.Completed,
+                VerifiedAt = Timestamp,
+                Verified = true,
             },
-            Traits = JsonSerializer.SerializeToElement(new Dictionary<string, string> { ["email"] = Email }),
-            MetadataPublic = null,
-            MetadataAdmin = null,
-        };
+        },
+        Traits = JsonSerializer.SerializeToElement(new Dictionary<string, string> { ["email"] = Email }),
+        MetadataPublic = null,
+        MetadataAdmin = null,
+    };
 
     private static async Task<HttpContext> RunAsync(
         KratosWebHookTestHandler handler,

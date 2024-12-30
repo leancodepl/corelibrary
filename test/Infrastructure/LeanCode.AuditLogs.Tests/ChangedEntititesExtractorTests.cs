@@ -8,13 +8,12 @@ namespace LeanCode.AuditLogs.Tests;
 
 public class ChangedEntitiesExtractorTests : IDisposable
 {
-    private static readonly JsonSerializerOptions Options =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-        };
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+    };
 
     private const string SomeId = "some_id";
     private readonly TestDbContext dbContext;

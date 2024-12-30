@@ -10,8 +10,9 @@ namespace LeanCode.ExternalIdentityProviders.Tests.Facebook;
 
 public sealed class FacebookClientTests : IDisposable
 {
-    private static readonly FacebookConfiguration Config =
-        new(Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? "");
+    private static readonly FacebookConfiguration Config = new(
+        Environment.GetEnvironmentVariable("FACEBOOK_APP_SECRET") ?? ""
+    );
     private static readonly string AccessToken = Environment.GetEnvironmentVariable("FACEBOOK_TOKEN") ?? "";
 
     private readonly HttpClient httpClient;
@@ -19,7 +20,7 @@ public sealed class FacebookClientTests : IDisposable
 
     public FacebookClientTests()
     {
-        httpClient = new HttpClient { BaseAddress = new Uri(FacebookClient.ApiBase), };
+        httpClient = new HttpClient { BaseAddress = new Uri(FacebookClient.ApiBase) };
         client = new FacebookClient(Config, httpClient);
     }
 

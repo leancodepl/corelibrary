@@ -31,8 +31,10 @@ public static class ServiceCollectionRegistrationExtensions
             {
                 CQRSObjectKind.Command => typeof(ICommandHandler<>).MakeGenericType(obj.ObjectType),
                 CQRSObjectKind.Query => typeof(IQueryHandler<,>).MakeGenericType(obj.ObjectType, obj.ResultType),
-                CQRSObjectKind.Operation
-                    => typeof(IOperationHandler<,>).MakeGenericType(obj.ObjectType, obj.ResultType),
+                CQRSObjectKind.Operation => typeof(IOperationHandler<,>).MakeGenericType(
+                    obj.ObjectType,
+                    obj.ResultType
+                ),
                 _ => throw new InvalidOperationException("Unexpected object kind"),
             };
         }

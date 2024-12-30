@@ -15,7 +15,7 @@ public class EnsureCQRSHandlersAreInProperNamespace : DiagnosticAnalyzer
     [
         "LeanCode.CQRS.Execution.ICommandHandler`1",
         "LeanCode.CQRS.Execution.IQueryHandler`2",
-        "LeanCode.CQRS.Execution.IOperationHandler`2"
+        "LeanCode.CQRS.Execution.IOperationHandler`2",
     ];
 
     private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(

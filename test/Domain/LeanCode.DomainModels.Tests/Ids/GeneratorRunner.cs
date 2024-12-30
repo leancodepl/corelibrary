@@ -15,7 +15,7 @@ public static class GeneratorRunner
         LoadRefLib("System.Memory"),
         LoadRefLib("System.Runtime"),
         LoadRefLib("System.Text.Json"),
-        MetadataReference.CreateFromFile(typeof(TypedIdAttribute).Assembly.Location)
+        MetadataReference.CreateFromFile(typeof(TypedIdAttribute).Assembly.Location),
     };
 
     private static PortableExecutableReference LoadRefLib(string name)

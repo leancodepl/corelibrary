@@ -20,7 +20,7 @@ public class CQRSApiDescriptionProviderTests
     private static readonly Dictionary<string, string?> ExpectedRouteValues = new() { ["controller"] = "CQRS" };
     private static readonly List<ApiRequestFormat> ExpectedRequestFormat =
     [
-        new ApiRequestFormat { MediaType = "application/json" }
+        new ApiRequestFormat { MediaType = "application/json" },
     ];
 
     [Fact]
@@ -71,7 +71,7 @@ public class CQRSApiDescriptionProviderTests
         query
             .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),],
+                [ResponseOf<QueryResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403)],
                 opts => opts.IncludingInternalProperties()
             );
     }
@@ -159,7 +159,7 @@ public class CQRSApiDescriptionProviderTests
         query
             .SupportedResponseTypes.Should()
             .BeEquivalentTo(
-                [ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403),],
+                [ResponseOf<OperationResultDTO>(200), ResponseOfVoid(400), ResponseOfVoid(401), ResponseOfVoid(403)],
                 opts => opts.IncludingInternalProperties()
             );
     }

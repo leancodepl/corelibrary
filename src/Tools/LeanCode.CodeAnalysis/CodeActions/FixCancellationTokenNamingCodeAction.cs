@@ -60,16 +60,12 @@ public class FixCancellationTokenNamingCodeAction : CodeAction
                     {
                         return oldNode switch
                         {
-                            ParameterSyntax parameter
-                                => parameter.WithIdentifier(
-                                    SyntaxFactory.Identifier(
-                                        CancellationTokensShouldFollowNamingConvention.ParameterName
-                                    )
-                                ),
-                            _
-                                => SyntaxFactory.IdentifierName(
-                                    CancellationTokensShouldFollowNamingConvention.ParameterName
-                                ),
+                            ParameterSyntax parameter => parameter.WithIdentifier(
+                                SyntaxFactory.Identifier(CancellationTokensShouldFollowNamingConvention.ParameterName)
+                            ),
+                            _ => SyntaxFactory.IdentifierName(
+                                CancellationTokensShouldFollowNamingConvention.ParameterName
+                            ),
                         };
                     }
                 );

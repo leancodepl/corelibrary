@@ -88,7 +88,7 @@ public static class CollectionExtensions
                 right,
                 leftKeySelector,
                 rightKeySelector,
-                (l, r) => new Grouping<TLeft, TRight> { Key = l, Values = r, }
+                (l, r) => new Grouping<TLeft, TRight> { Key = l, Values = r }
             )
             .SelectMany(g => g.Values.DefaultIfEmpty(), lambda);
     }
@@ -105,7 +105,7 @@ public static class CollectionExtensions
                 right,
                 leftKeySelector,
                 rightKeySelector,
-                (l, r) => new Grouping<TLeft, TRight> { Key = l, Values = r, }
+                (l, r) => new Grouping<TLeft, TRight> { Key = l, Values = r }
             )
             .SelectMany(g => g.Values.DefaultIfEmpty(), (g, r) => resultSelector(g.Key, r));
     }

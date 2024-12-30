@@ -180,7 +180,7 @@ public readonly record struct Ulid
         28,
         29,
         30,
-        31
+        31,
     }.ToImmutableArray();
 
     public static readonly Ulid MinValue = new Ulid(

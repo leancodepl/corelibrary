@@ -12,7 +12,7 @@ public class ViewLocatorTests
 
     private static readonly RazorViewRendererOptions BothTXT = new RazorViewRendererOptions(
         ".cstxt",
-        new[] { "./Views/A", "./Views/B", }
+        new[] { "./Views/A", "./Views/B" }
     );
 
     [Fact]

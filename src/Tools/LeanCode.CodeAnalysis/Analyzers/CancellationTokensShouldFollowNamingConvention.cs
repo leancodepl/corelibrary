@@ -12,15 +12,14 @@ public class CancellationTokensShouldFollowNamingConvention : DiagnosticAnalyzer
     internal const string TypeName = "CancellationToken";
     internal const string ParameterName = "cancellationToken";
 
-    private static readonly DiagnosticDescriptor Rule =
-        new(
-            DiagnosticsIds.CancellationTokensShouldFollowNamingConvention,
-            "CancellationTokens should follow naming convention",
-            "`{0}` should follow `{1}` naming convention",
-            "Naming",
-            DiagnosticSeverity.Warning,
-            true
-        );
+    private static readonly DiagnosticDescriptor Rule = new(
+        DiagnosticsIds.CancellationTokensShouldFollowNamingConvention,
+        "CancellationTokens should follow naming convention",
+        "`{0}` should follow `{1}` naming convention",
+        "Naming",
+        DiagnosticSeverity.Warning,
+        true
+    );
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Rule);
 

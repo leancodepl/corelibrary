@@ -32,17 +32,16 @@ internal class ObjectExecutorFactory : IObjectExecutorFactory
     {
         return kind switch
         {
-            CQRSObjectKind.Command
-                => ExecuteCommandMethod.MakeGenericMethod(objectType, handlerType).CreateDelegate<ObjectExecutor>(),
-            CQRSObjectKind.Query
-                => ExecuteQueryMethod
-                    .MakeGenericMethod(objectType, GetResultType(typeof(IQuery<>)), handlerType)
-                    .CreateDelegate<ObjectExecutor>(),
-            CQRSObjectKind.Operation
-                => ExecuteOperationMethod
-                    .MakeGenericMethod(objectType, GetResultType(typeof(IOperation<>)), handlerType)
-                    .CreateDelegate<ObjectExecutor>(),
-            _ => throw new InvalidOperationException($"Unexpected object kind: {kind}.")
+            CQRSObjectKind.Command => ExecuteCommandMethod
+                .MakeGenericMethod(objectType, handlerType)
+                .CreateDelegate<ObjectExecutor>(),
+            CQRSObjectKind.Query => ExecuteQueryMethod
+                .MakeGenericMethod(objectType, GetResultType(typeof(IQuery<>)), handlerType)
+                .CreateDelegate<ObjectExecutor>(),
+            CQRSObjectKind.Operation => ExecuteOperationMethod
+                .MakeGenericMethod(objectType, GetResultType(typeof(IOperation<>)), handlerType)
+                .CreateDelegate<ObjectExecutor>(),
+            _ => throw new InvalidOperationException($"Unexpected object kind: {kind}."),
         };
 
         Type GetResultType(Type interfaceType) =>

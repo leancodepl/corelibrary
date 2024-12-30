@@ -36,7 +36,7 @@ internal sealed class ShortcircuitingJsonHandler : HttpMessageHandler
 
     private static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage req)
     {
-        var clone = new HttpRequestMessage(req.Method, req.RequestUri) { Version = req.Version, };
+        var clone = new HttpRequestMessage(req.Method, req.RequestUri) { Version = req.Version };
 
         if (req.Content != null)
         {

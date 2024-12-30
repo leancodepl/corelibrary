@@ -11,21 +11,19 @@ public class TimestampTzTests : IAsyncLifetime
 {
     private static readonly DateOnly Date = new(2023, 10, 5);
 
-    private readonly Meeting meeting1 =
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "First",
-            StartTime = new(Date.ToDateTime(new(10, 0), DateTimeKind.Utc), "Asia/Tokyo")
-        };
+    private readonly Meeting meeting1 = new()
+    {
+        Id = Guid.NewGuid(),
+        Name = "First",
+        StartTime = new(Date.ToDateTime(new(10, 0), DateTimeKind.Utc), "Asia/Tokyo"),
+    };
 
-    private readonly Meeting meeting2 =
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Second",
-            StartTime = new(Date.ToDateTime(new(14, 0), DateTimeKind.Utc), "America/Los_Angeles")
-        };
+    private readonly Meeting meeting2 = new()
+    {
+        Id = Guid.NewGuid(),
+        Name = "Second",
+        StartTime = new(Date.ToDateTime(new(14, 0), DateTimeKind.Utc), "America/Los_Angeles"),
+    };
 
     private readonly TestApp app;
     private AsyncServiceScope scope;

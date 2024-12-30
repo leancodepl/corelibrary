@@ -14,10 +14,13 @@ public class SmsSenderClientTests
     private static readonly string Token = Environment.GetEnvironmentVariable("SMSAPI_TOKEN");
     private static readonly string PhoneNumber = Environment.GetEnvironmentVariable("SMSAPI_PHONENUMBERTO");
 
-    private static readonly SmsApiConfiguration Config = new(Token, "") { FastMode = false, TestMode = false, };
+    private static readonly SmsApiConfiguration Config = new(Token, "") { FastMode = false, TestMode = false };
 
-    private static readonly SmsApiConfiguration ConfigWithUnregisteredSender =
-        new(Token, Guid.NewGuid().ToString()) { FastMode = false, TestMode = false, };
+    private static readonly SmsApiConfiguration ConfigWithUnregisteredSender = new(Token, Guid.NewGuid().ToString())
+    {
+        FastMode = false,
+        TestMode = false,
+    };
 
     private readonly SmsApiClient client;
     private readonly SmsApiClient clientWithUnregisteredSender;

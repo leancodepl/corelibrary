@@ -55,7 +55,7 @@ public class TestEntity : IAggregateRoot<string>
 
     public static TestEntity Create(string id)
     {
-        return new() { Id = id, SomeString = "initial_value", };
+        return new() { Id = id, SomeString = "initial_value" };
     }
 
     public void AddOwnedEntities()
