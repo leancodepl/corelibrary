@@ -138,7 +138,7 @@ jobs:
           dotnet restore
           dotnet tool restore
       - name: Unit tests
-        run: dotnet test
+        run: dotnet test -- --explicit on --filter-not-trait 'integration=true'
       - name: Azure Test
         run: dotnet test -- --explicit on --filter-trait 'service=azure'
         env:

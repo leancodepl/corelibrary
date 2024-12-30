@@ -11,5 +11,6 @@ public class IntegrationFactAttribute : FactAttribute, ITraitAttribute
         Explicit = true;
     }
 
-    public virtual IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() => [new("category", "integration")];
+    public virtual IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() =>
+        [new("category", "integration"), new("integration", "true")];
 }

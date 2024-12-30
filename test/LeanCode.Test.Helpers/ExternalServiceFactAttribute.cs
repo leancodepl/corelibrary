@@ -16,7 +16,7 @@ public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttrib
     }
 
     public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() =>
-        [new("category", "external"), new("service", ServiceType)];
+        [new("category", "external"), new("service", ServiceType), new("integration", "true")];
 
     public void After(MethodInfo methodUnderTest, IXunitTest test) { }
 
