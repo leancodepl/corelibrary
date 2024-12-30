@@ -7,7 +7,7 @@
     <ExtensionsVersion>9.0.0</ExtensionsVersion>
 
     <IdentityServerVersion>4.1.2</IdentityServerVersion>
-    <MassTransitVersion>8.3.2</MassTransitVersion>
+    <MassTransitVersion>8.3.4</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Autofac" Version="8.1.1" />
+    <PackageVersion Include="Autofac" Version="8.2.0" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
 
     <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.9.0" />
@@ -37,12 +37,12 @@
     <PackageVersion Include="Azure.Security.KeyVault.Keys" Version="4.7.0" />
     <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
 
-    <PackageVersion Include="Serilog" Version="4.1.0" />
-    <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Serilog" Version="4.2.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0" />
-    <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Seq" Version="9.0.0" />
 
     <PackageVersion Include="IdentityModel" Version="7.0.0" />
 
@@ -55,7 +55,7 @@
 
     <PackageVersion Include="LeanCode.Kratos.Client" Version="1.2.0-fix.2" />
 
-    <PackageVersion Include="Cronos" Version="0.8.4" />
+    <PackageVersion Include="Cronos" Version="0.9.0" />
     <PackageVersion Include="Dapper" Version="2.1.35" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="Polly" Version="8.5.0" />
@@ -106,8 +106,8 @@
 
     <PackageVersion Include="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
 
-    <PackageVersion Include="Npgsql" Version="9.0.1" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+    <PackageVersion Include="Npgsql" Version="9.0.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
     <PackageVersion Include="Google.Apis.Auth" Version="1.68.0" />
 
     <PackageVersion Include="IdentityServer4" Version="$(IdentityServerVersion)" />
@@ -121,7 +121,7 @@
 
     <PackageVersion Include="OpenTelemetry" Version="1.10.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
 
     <PackageVersion Include="NUlid" Version="1.7.2" />
   </ItemGroup>
