@@ -80,10 +80,10 @@ If you want to build release configuration of the library, you need to specify w
 
 ### Testing
 
-The framework can be unit-tested by `cd`ing into `test` folder and calling
+The framework can be unit-tested by running the following command in the root of the repository:
 
 ```sh
-dotnet msbuild /t:RunTests
+dotnet test
 ```
 
 Moreover, there are some integration-style tests that require external services. They can be tested with `docker` and `docker-compose` tools. Currently there is one integration-test suite:
@@ -93,7 +93,10 @@ Moreover, there are some integration-style tests that require external services.
 It has a `docker` folder that contains necessary configuration. You can run the suite using:
 
 ```sh
-docker-compose run test
+# For running tests with SQL Server
+$ DB=sqlserver docker-compose run test
+# For running tests with PostgreSQL
+$ DB=postgres docker-compose run test
 ```
 
 ### Publishing
@@ -120,8 +123,7 @@ The project is divided into the main directories:
 
  1. `src` with the source code,
  2. `test` with test,
- 3. `benchmarks` with benchmarking project,
- 4. `docs` with this documentation.
+ 3. `docs` with this documentation.
 
 Plus there are some files in the root directory (SLN, config files & READMEs).
 
@@ -142,7 +144,7 @@ The `src` folder that contains the main source code is then divided into:
 
 CoreLib build system mostly MSBuild-based, with some help of CI system to orchestrate build/test/publish process (see [Building & Testing](./building_and_testing.md) for more details).
 
-We leverage .NET Core's MSBuild `Directory.Build.targets` files to centrally manage dependency versions. It is forbidden to directly specify `Version` in `csproj`s. Instead, one adds simple `<ProjectReference Include="NAME" />` and then `<ProjectReference Update="NAME" Version="VALID_VERSION" />` in `Directory.Build.targets` in the CoreLib root. This immensely helps avoiding dependency conflicts down the road.
+We leverage [Central Package Management]'s `Directory.Packages.props` files to centrally manage dependency versions. It is forbidden to directly specify `Version` in `csproj`s.
 
 Besides `.targets` file, we use central `Directory.Build.props` to manage some of the project properties. Check [/Directory.Build.props], [/src/Directory.Build.props] and [/test/Directory.Build.props] what is being centrally set.
 
@@ -160,7 +162,7 @@ Or you can just modify the following project template (most of the projects use 
 
 </Project>
 ```
-
+[Central Package Management]: https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management
 [/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/Directory.Build.props
 [/src/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/Directory.Build.props
 [/test/Directory.Build.props]: https://github.com/leancodepl/corelibrary/blob/HEAD/test/Directory.Build.props

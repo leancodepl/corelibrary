@@ -12,6 +12,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Remove LeanCode.IdentityServer.KeyVault
 * Remove LeanCode.ExternalIdentityProviders
 * Remove LeanCode.PdfRocket
+* Remove StyleCop completely
 
 ## 8.1
 
