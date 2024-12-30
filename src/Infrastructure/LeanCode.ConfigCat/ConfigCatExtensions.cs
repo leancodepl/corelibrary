@@ -93,10 +93,13 @@ public static class ConfigCatExtensions
             var flagOverrides = options switch
             {
                 { FlagOverridesJsonObject: { } json }
-                    when JsonSerializer.Deserialize<IDictionary<string, object>>(json) is { } dictionary
-                    => FlagOverrides.LocalDictionary(dictionary, watchChanges: false, OverrideBehaviour.LocalOnly),
-                { FlagOverridesFilePath: { Length: > 0 } filePath }
-                    => FlagOverrides.LocalFile(filePath, autoReload: true, OverrideBehaviour.LocalOnly),
+                    when JsonSerializer.Deserialize<IDictionary<string, object>>(json) is { } dictionary =>
+                    FlagOverrides.LocalDictionary(dictionary, watchChanges: false, OverrideBehaviour.LocalOnly),
+                { FlagOverridesFilePath: { Length: > 0 } filePath } => FlagOverrides.LocalFile(
+                    filePath,
+                    autoReload: true,
+                    OverrideBehaviour.LocalOnly
+                ),
                 _ => null,
             };
 

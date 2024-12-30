@@ -32,7 +32,7 @@ public class MixpanelAnalytics
         return TrackAsync(
             newId,
             "$create_alias",
-            new Dictionary<string, object>() { ["distinct_id"] = oldId, ["alias"] = newId, },
+            new Dictionary<string, object>() { ["distinct_id"] = oldId, ["alias"] = newId },
             cancellationToken: cancellationToken
         );
     }
@@ -143,7 +143,7 @@ public class MixpanelAnalytics
             properties["distinct_id"] = userId;
         }
 
-        var data = new Dictionary<string, object?>() { ["event"] = name, ["properties"] = properties, };
+        var data = new Dictionary<string, object?>() { ["event"] = name, ["properties"] = properties };
 
         logger.Verbose("Sending Mixpanel event {EventName} for user {UserId}", name, userId);
 

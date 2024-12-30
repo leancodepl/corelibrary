@@ -22,31 +22,30 @@ public class KratosAuthenticationHandlerTests
 
     private sealed record class MetadataPublic(bool IsAdmin);
 
-    private readonly KratosSession session =
-        new(
-            active: true,
-            authenticatedAt: DateTime.UnixEpoch.AddSeconds(1),
-            authenticationMethods: new(
-                new(1)
-                {
-                    new(KratosAuthenticatorAssuranceLevel.Aal1, DateTime.UnixEpoch.AddSeconds(1), MethodEnum.Password)
-                }
-            ),
-            authenticatorAssuranceLevel: KratosAuthenticatorAssuranceLevel.Aal1,
-            expiresAt: DateTime.UnixEpoch.AddSeconds(3),
-            id: Guid.NewGuid().ToString(),
-            identity: new(
-                new(
-                    id: Guid.NewGuid().ToString(),
-                    metadataPublic: new MetadataPublic(true),
-                    schemaId: "user",
-                    schemaUrl: "https://auth.local.lncd.pl/schemas/dXNlcg",
-                    state: KratosIdentity.StateEnum.Active,
-                    traits: new Traits("test@leancode.pl")
-                )
-            ),
-            issuedAt: DateTime.UnixEpoch.AddSeconds(2)
-        );
+    private readonly KratosSession session = new(
+        active: true,
+        authenticatedAt: DateTime.UnixEpoch.AddSeconds(1),
+        authenticationMethods: new(
+            new(1)
+            {
+                new(KratosAuthenticatorAssuranceLevel.Aal1, DateTime.UnixEpoch.AddSeconds(1), MethodEnum.Password),
+            }
+        ),
+        authenticatorAssuranceLevel: KratosAuthenticatorAssuranceLevel.Aal1,
+        expiresAt: DateTime.UnixEpoch.AddSeconds(3),
+        id: Guid.NewGuid().ToString(),
+        identity: new(
+            new(
+                id: Guid.NewGuid().ToString(),
+                metadataPublic: new MetadataPublic(true),
+                schemaId: "user",
+                schemaUrl: "https://auth.local.lncd.pl/schemas/dXNlcg",
+                state: KratosIdentity.StateEnum.Active,
+                traits: new Traits("test@leancode.pl")
+            )
+        ),
+        issuedAt: DateTime.UnixEpoch.AddSeconds(2)
+    );
 
     private readonly IToSessionApiResponse sessionResponse;
 

@@ -9,7 +9,7 @@ public partial class JsonStringEnumConvertersTests
     [JsonConverter(typeof(JsonCamelCaseStringEnumConverter<CamelCase>))]
     public enum CamelCase
     {
-        ExampleValue
+        ExampleValue,
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public partial class JsonStringEnumConvertersTests
     [JsonConverter(typeof(JsonKebabCaseLowerStringEnumConverter<KebabCaseLower>))]
     public enum KebabCaseLower
     {
-        ExampleValue
+        ExampleValue,
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public partial class JsonStringEnumConvertersTests
     [JsonConverter(typeof(JsonKebabCaseUpperStringEnumConverter<KebabCaseUpper>))]
     public enum KebabCaseUpper
     {
-        ExampleValue
+        ExampleValue,
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public partial class JsonStringEnumConvertersTests
     [JsonConverter(typeof(JsonSnakeCaseLowerStringEnumConverter<SnakeCaseLower>))]
     public enum SnakeCaseLower
     {
-        ExampleValue
+        ExampleValue,
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public partial class JsonStringEnumConvertersTests
     [JsonConverter(typeof(JsonSnakeCaseUpperStringEnumConverter<SnakeCaseUpper>))]
     public enum SnakeCaseUpper
     {
-        ExampleValue
+        ExampleValue,
     }
 
     [Fact]

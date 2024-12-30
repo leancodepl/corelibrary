@@ -175,6 +175,6 @@ public sealed class AzureStorageFactAttribute : ExternalServiceFactAttribute
             Env.ClientIdKey,
             Env.ClientSecretKey,
             Env.AzureBlobStorageServiceUriKey,
-            Env.AzureTableStorageServiceUriKey
+            Env.AzureTableStorageServiceUriKey,
         ];
 }

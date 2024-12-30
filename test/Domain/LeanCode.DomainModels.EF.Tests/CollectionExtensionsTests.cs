@@ -17,8 +17,8 @@ public class CollectionExtensionsTests
     private static readonly Species ParrotS4 = new("parrot", 4);
     private static readonly Species ParrotS5 = new("parrot", 5);
     private static readonly Species ParrotS6 = new("parrot", 6);
-    private readonly IEnumerable<Animal> animals = new[] { Parrot, Dog, Dash, Cat, Dog, Dash, };
-    private readonly IEnumerable<Species> species = new[] { DogS1, DogS2, CatS, ParrotS4, ParrotS5, ParrotS6, };
+    private readonly IEnumerable<Animal> animals = new[] { Parrot, Dog, Dash, Cat, Dog, Dash };
+    private readonly IEnumerable<Species> species = new[] { DogS1, DogS2, CatS, ParrotS4, ParrotS5, ParrotS6 };
 
     [Fact]
     public void ConditionalWhere_does_nothing_when_the_predicate_is_false()
@@ -60,11 +60,11 @@ public class CollectionExtensionsTests
         animals
             .OrderBy(c => c.Name, false, new ReverseComparer())
             .Should()
-            .BeEquivalentTo(new[] { Dog, Dog, Dash, Dash, Cat, Parrot, });
+            .BeEquivalentTo(new[] { Dog, Dog, Dash, Dash, Cat, Parrot });
         animals
             .OrderBy(c => c.Name, true, new ReverseComparer())
             .Should()
-            .BeEquivalentTo(new[] { Parrot, Cat, Dash, Dash, Dog, Dog, });
+            .BeEquivalentTo(new[] { Parrot, Cat, Dash, Dash, Dog, Dog });
     }
 
     [Fact]
@@ -74,25 +74,25 @@ public class CollectionExtensionsTests
             .OrderBy(c => c.LegsCount, false)
             .ThenBy(c => c.Name, true)
             .Should()
-            .BeEquivalentTo(new[] { Parrot, Dash, Dash, Dog, Dog, Cat, });
+            .BeEquivalentTo(new[] { Parrot, Dash, Dash, Dog, Dog, Cat });
         animals
             .OrderBy(c => c.LegsCount, true)
             .ThenBy(c => c.Name, false)
             .Should()
-            .BeEquivalentTo(new[] { Cat, Dog, Dog, Dash, Dash, Parrot, });
+            .BeEquivalentTo(new[] { Cat, Dog, Dog, Dash, Dash, Parrot });
 
         animals
             .AsQueryable()
             .OrderBy(c => c.LegsCount, false)
             .ThenBy(c => c.Name, true)
             .Should()
-            .BeEquivalentTo(new[] { Parrot, Dash, Dash, Dog, Dog, Cat, });
+            .BeEquivalentTo(new[] { Parrot, Dash, Dash, Dog, Dog, Cat });
         animals
             .AsQueryable()
             .OrderBy(c => c.LegsCount, true)
             .ThenBy(c => c.Name, false)
             .Should()
-            .BeEquivalentTo(new[] { Cat, Dog, Dog, Dash, Dash, Parrot, });
+            .BeEquivalentTo(new[] { Cat, Dog, Dog, Dash, Dash, Parrot });
     }
 
     [Fact]
@@ -104,16 +104,16 @@ public class CollectionExtensionsTests
             .BeEquivalentTo(
                 new[]
                 {
-                    new { Animal = Parrot, Species = (Species?)ParrotS4, },
-                    new { Animal = Parrot, Species = (Species?)ParrotS5, },
-                    new { Animal = Parrot, Species = (Species?)ParrotS6, },
-                    new { Animal = Dog, Species = (Species?)DogS1, },
-                    new { Animal = Dog, Species = (Species?)DogS2, },
-                    new { Animal = Dash, Species = null as Species, },
-                    new { Animal = Cat, Species = (Species?)CatS, },
-                    new { Animal = Dog, Species = (Species?)DogS1, },
-                    new { Animal = Dog, Species = (Species?)DogS2, },
-                    new { Animal = Dash, Species = null as Species, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS4 },
+                    new { Animal = Parrot, Species = (Species?)ParrotS5 },
+                    new { Animal = Parrot, Species = (Species?)ParrotS6 },
+                    new { Animal = Dog, Species = (Species?)DogS1 },
+                    new { Animal = Dog, Species = (Species?)DogS2 },
+                    new { Animal = Dash, Species = null as Species },
+                    new { Animal = Cat, Species = (Species?)CatS },
+                    new { Animal = Dog, Species = (Species?)DogS1 },
+                    new { Animal = Dog, Species = (Species?)DogS2 },
+                    new { Animal = Dash, Species = null as Species },
                 }
             );
         animals
@@ -123,16 +123,16 @@ public class CollectionExtensionsTests
             .BeEquivalentTo(
                 new[]
                 {
-                    new { Animal = Parrot, Species = (Species?)ParrotS4, },
-                    new { Animal = Parrot, Species = (Species?)ParrotS5, },
-                    new { Animal = Parrot, Species = (Species?)ParrotS6, },
-                    new { Animal = Dog, Species = (Species?)DogS1, },
-                    new { Animal = Dog, Species = (Species?)DogS2, },
-                    new { Animal = Dash, Species = null as Species, },
-                    new { Animal = Cat, Species = (Species?)CatS, },
-                    new { Animal = Dog, Species = (Species?)DogS1, },
-                    new { Animal = Dog, Species = (Species?)DogS2, },
-                    new { Animal = Dash, Species = null as Species, },
+                    new { Animal = Parrot, Species = (Species?)ParrotS4 },
+                    new { Animal = Parrot, Species = (Species?)ParrotS5 },
+                    new { Animal = Parrot, Species = (Species?)ParrotS6 },
+                    new { Animal = Dog, Species = (Species?)DogS1 },
+                    new { Animal = Dog, Species = (Species?)DogS2 },
+                    new { Animal = Dash, Species = null as Species },
+                    new { Animal = Cat, Species = (Species?)CatS },
+                    new { Animal = Dog, Species = (Species?)DogS1 },
+                    new { Animal = Dog, Species = (Species?)DogS2 },
+                    new { Animal = Dash, Species = null as Species },
                 }
             );
     }

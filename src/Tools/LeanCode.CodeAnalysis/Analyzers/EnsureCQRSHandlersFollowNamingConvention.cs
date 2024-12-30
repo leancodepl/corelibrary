@@ -17,35 +17,32 @@ public class EnsureCQRSHandlersFollowNamingConvention : DiagnosticAnalyzer
     private const string QueryHandlerSuffix = "QH";
     private const string OperationHandlerSuffix = "OH";
 
-    private static readonly DiagnosticDescriptor CommandHandlerRule =
-        new(
-            DiagnosticsIds.CommandHandlersShouldFollowNamingConvention,
-            "Command handlers should follow naming convention",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor CommandHandlerRule = new(
+        DiagnosticsIds.CommandHandlersShouldFollowNamingConvention,
+        "Command handlers should follow naming convention",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 
-    private static readonly DiagnosticDescriptor QueryHandlerRule =
-        new(
-            DiagnosticsIds.QueryHandlersShouldFollowNamingConvention,
-            "Query handlers should follow naming convention",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor QueryHandlerRule = new(
+        DiagnosticsIds.QueryHandlersShouldFollowNamingConvention,
+        "Query handlers should follow naming convention",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 
-    private static readonly DiagnosticDescriptor OperationHandlerRule =
-        new(
-            DiagnosticsIds.OperationHandlersShouldFollowNamingConvention,
-            "Operation handlers should follow naming convention",
-            MessageFormat,
-            Category,
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor OperationHandlerRule = new(
+        DiagnosticsIds.OperationHandlersShouldFollowNamingConvention,
+        "Operation handlers should follow naming convention",
+        MessageFormat,
+        Category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(CommandHandlerRule, QueryHandlerRule, OperationHandlerRule);

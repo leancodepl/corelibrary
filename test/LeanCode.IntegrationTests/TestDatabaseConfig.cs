@@ -22,10 +22,9 @@ public abstract class TestDatabaseConfig
         {
             "sqlserver" => new SqlServerTestDatabaseConfig(),
             "postgres" => new PostgresTestConfig(),
-            _
-                => throw new InvalidOperationException(
-                    $"Set the database provider (sqlserver|postgres) via {ConfigEnvName} env variable"
-                ),
+            _ => throw new InvalidOperationException(
+                $"Set the database provider (sqlserver|postgres) via {ConfigEnvName} env variable"
+            ),
         };
     }
 }

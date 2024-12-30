@@ -19,10 +19,7 @@ public class EnsureValidatorsFollowNamingConventionTests : DiagnosticVerifier
     {
         var source = await File.ReadAllTextAsync($"TestSamples/Rejected/CQRS/Validators.cs");
 
-        var diags = new[]
-        {
-            new DiagnosticResult(DiagnosticsIds.CommandValidatorsShouldFollowNamingConvention, 9, 13),
-        };
+        var diags = new[] { new DiagnosticResult(DiagnosticsIds.CommandValidatorsShouldFollowNamingConvention, 9, 13) };
 
         await VerifyDiagnostics(source, diags);
     }

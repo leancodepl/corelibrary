@@ -41,7 +41,7 @@ public static class UserManager
     public static async Task<Guid> AddUserAsync(this UserManager<User> users)
     {
         var id = Guid.NewGuid();
-        var user = new User { Id = id, UserName = id.ToString("N"), };
+        var user = new User { Id = id, UserName = id.ToString("N") };
         await users.CreateAsync(user);
         return id;
     }

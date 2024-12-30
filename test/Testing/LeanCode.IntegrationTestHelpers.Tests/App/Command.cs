@@ -22,7 +22,7 @@ public class CommandCH : ICommandHandler<Command>
 
     public Task ExecuteAsync(HttpContext context, Command command)
     {
-        dbContext.Entities.Add(new Entity { Id = command.Id, Data = command.Data, });
+        dbContext.Entities.Add(new Entity { Id = command.Id, Data = command.Data });
         return dbContext.SaveChangesAsync();
     }
 }

@@ -11,16 +11,15 @@ public interface ISerializer
 
 public sealed class Utf8JsonSerializer : ISerializer
 {
-    public static readonly JsonSerializerOptions DefaultOptions =
-        new()
+    public static readonly JsonSerializerOptions DefaultOptions = new()
+    {
+        Converters =
         {
-            Converters =
-            {
-                new JsonLaxDateOnlyConverter(),
-                new JsonLaxTimeOnlyConverter(),
-                new JsonLaxDateTimeOffsetConverter(),
-            },
-        };
+            new JsonLaxDateOnlyConverter(),
+            new JsonLaxTimeOnlyConverter(),
+            new JsonLaxDateTimeOffsetConverter(),
+        },
+    };
 
     private readonly JsonSerializerOptions? options;
 

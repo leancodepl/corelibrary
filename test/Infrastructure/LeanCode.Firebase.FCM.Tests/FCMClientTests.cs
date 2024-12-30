@@ -30,7 +30,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification { Title = "Test title", Body = "Test body", },
+            Notification = new Notification { Title = "Test title", Body = "Test body" },
         };
 
         await client.SendToUserAsync(UserId, message);
@@ -41,7 +41,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification { Title = "Test title", Body = "Test body", },
+            Notification = new Notification { Title = "Test title", Body = "Test body" },
         };
 
         await client.SendToUsersAsync(new HashSet<Guid> { UserId }, message);
@@ -52,7 +52,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification { Title = "Test title", Body = "Test body", },
+            Notification = new Notification { Title = "Test title", Body = "Test body" },
         };
 
         await client.SendToUserAsync(Guid.NewGuid(), message);
@@ -63,7 +63,7 @@ public class FCMClientTests
     {
         var message = new MulticastMessage
         {
-            Notification = new Notification { Title = "Test title", Body = "Test body", },
+            Notification = new Notification { Title = "Test title", Body = "Test body" },
         };
 
         await client.SendToUserAsync(UserId, message);

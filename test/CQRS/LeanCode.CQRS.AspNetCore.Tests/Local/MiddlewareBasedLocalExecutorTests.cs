@@ -103,7 +103,7 @@ public class MiddlewareBasedLocalExecutorTests
     [Fact]
     public async Task Decodes_401_status_code()
     {
-        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "401", };
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "401" };
 
         var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
         await act.Should().ThrowAsync<UnauthenticatedCQRSRequestException>();
@@ -112,7 +112,7 @@ public class MiddlewareBasedLocalExecutorTests
     [Fact]
     public async Task Decodes_403_status_code()
     {
-        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "403", };
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "403" };
 
         var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
         await act.Should().ThrowAsync<UnauthorizedCQRSRequestException>();
@@ -121,7 +121,7 @@ public class MiddlewareBasedLocalExecutorTests
     [Fact]
     public async Task Decodes_499_status_code_as_unknown()
     {
-        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "499", };
+        var headers = new HeaderDictionary { [LocalHandlerMiddleware.StatusHeader] = "499" };
 
         var act = () => executor.RunAsync(new LocalCommand(), new ClaimsPrincipal(), headers);
         var exc = await act.Should().ThrowAsync<UnknownStatusCodeException>();

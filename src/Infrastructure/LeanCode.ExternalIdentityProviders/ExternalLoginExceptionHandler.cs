@@ -38,8 +38,11 @@ public class ExternalLoginExceptionHandler
             {
                 TokenValidationError.Invalid => new("", "The token is invalid.", ErrorCodeInvalidToken),
 
-                TokenValidationError.OtherConnected
-                    => new("", "Other account is already connected with this token.", ErrorCodeOtherConnected),
+                TokenValidationError.OtherConnected => new(
+                    "",
+                    "Other account is already connected with this token.",
+                    ErrorCodeOtherConnected
+                ),
 
                 _ => new("", "Cannot perform external login.", ErrorCodeOther),
             };

@@ -228,10 +228,10 @@ public static class SendGridRazorMessageExtensions
     {
         message.TrackingSettings = new TrackingSettings
         {
-            ClickTracking = new ClickTracking { Enable = false, },
-            Ganalytics = new Ganalytics { Enable = false, },
-            OpenTracking = new OpenTracking { Enable = false, },
-            SubscriptionTracking = new SubscriptionTracking { Enable = false, },
+            ClickTracking = new ClickTracking { Enable = false },
+            Ganalytics = new Ganalytics { Enable = false },
+            OpenTracking = new OpenTracking { Enable = false },
+            SubscriptionTracking = new SubscriptionTracking { Enable = false },
         };
 
         return message;

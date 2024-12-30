@@ -37,7 +37,7 @@ public class ConfigCatToMSLoggerAdapter : IConfigCatLogger
             CCLogLevel.Warning => MSLogLevel.Warning,
             CCLogLevel.Info => MSLogLevel.Information,
             CCLogLevel.Debug => MSLogLevel.Debug,
-            _ => MSLogLevel.None
+            _ => MSLogLevel.None,
         };
 
         var logValues = new LogValues(ref message);

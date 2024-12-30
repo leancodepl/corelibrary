@@ -11,15 +11,14 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
     private const string CustomPrefixField = "CustomPrefix";
     private const string SkipRandomGeneratorField = "SkipRandomGenerator";
 
-    private static readonly DiagnosticDescriptor InvalidTypeRule =
-        new(
-            "LNCD0005",
-            "Typed id must be `readonly partial record struct`",
-            @"`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
-            "Domain",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true
-        );
+    private static readonly DiagnosticDescriptor InvalidTypeRule = new(
+        "LNCD0005",
+        "Typed id must be `readonly partial record struct`",
+        @"`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
+        "Domain",
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

@@ -187,7 +187,7 @@ public class UlidTest
         var b = Ulid.NewUlid(new DateTimeOffset(2023, 1, 1, 0, 0, 2, TimeSpan.Zero));
         var c = Ulid.NewUlid(new DateTimeOffset(2023, 1, 1, 0, 0, 3, TimeSpan.Zero));
 
-        var strings = new[] { a.ToString(), b.ToString(), c.ToString(), };
+        var strings = new[] { a.ToString(), b.ToString(), c.ToString() };
         strings.Should().BeInAscendingOrder(x => x);
     }
 }

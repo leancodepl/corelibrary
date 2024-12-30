@@ -21,7 +21,7 @@ public sealed class NotificationDataConverter
     {
         var type = data.GetType();
 
-        var result = new Dictionary<string, string>() { [TypeField] = type.Name, };
+        var result = new Dictionary<string, string>() { [TypeField] = type.Name };
 
         foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {

@@ -62,7 +62,7 @@ public class PdfRocketGenerator
     private async Task<Stream> GenerateAsync(string source, PdfOptions? options, CancellationToken cancellationToken)
     {
         using var content = GetContent(source, options);
-        using var request = new HttpRequestMessage(HttpMethod.Post, "pdf") { Content = content, };
+        using var request = new HttpRequestMessage(HttpMethod.Post, "pdf") { Content = content };
 
         using var response = await client.SendAsync(
             request,

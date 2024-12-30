@@ -7,12 +7,37 @@ public class JsonLaxDateTimeOffsetConverterTests
 {
     private static readonly JsonSerializerOptions LaxSerializerOptions = new();
 
-    private static readonly DateTimeOffset SampleDateTimeOffsetWithZeroOffset =
-        new(2021, 12, 15, 12, 34, 56, 115, TimeSpan.Zero);
-    private static readonly DateTimeOffset SampleDateTimeOffsetWithZeroOffsetAndGreaterPrecision =
-        new(2021, 12, 15, 12, 34, 56, 115, 12, TimeSpan.Zero);
-    private static readonly DateTimeOffset SampleDateTimeOffsetWithNonZeroOffset =
-        new(2021, 12, 15, 12, 34, 56, 115, TimeSpan.FromHours(1));
+    private static readonly DateTimeOffset SampleDateTimeOffsetWithZeroOffset = new(
+        2021,
+        12,
+        15,
+        12,
+        34,
+        56,
+        115,
+        TimeSpan.Zero
+    );
+    private static readonly DateTimeOffset SampleDateTimeOffsetWithZeroOffsetAndGreaterPrecision = new(
+        2021,
+        12,
+        15,
+        12,
+        34,
+        56,
+        115,
+        12,
+        TimeSpan.Zero
+    );
+    private static readonly DateTimeOffset SampleDateTimeOffsetWithNonZeroOffset = new(
+        2021,
+        12,
+        15,
+        12,
+        34,
+        56,
+        115,
+        TimeSpan.FromHours(1)
+    );
 
     static JsonLaxDateTimeOffsetConverterTests()
     {

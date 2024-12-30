@@ -7,13 +7,12 @@ namespace LeanCode.AuditLogs;
 
 public static class ChangedEntitiesExtractor
 {
-    private static readonly JsonSerializerOptions Options =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-        };
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+    };
 
     public static IReadOnlyList<EntityData> Extract(DbContext dbContext)
     {
@@ -38,7 +37,7 @@ public static class ChangedEntitiesExtractor
                         {
                             p.Metadata.Name,
                             p.OriginalValue,
-                            p.CurrentValue
+                            p.CurrentValue,
                         }),
                     Options
                 ),

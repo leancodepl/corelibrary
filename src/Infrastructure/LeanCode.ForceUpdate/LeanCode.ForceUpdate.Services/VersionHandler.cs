@@ -22,8 +22,10 @@ public class VersionHandler
     {
         var (minimumRequiredVersion, currentlySupportedVersion) = platform switch
         {
-            PlatformDTO.Android
-                => (androidConfiguration.MinimumRequiredVersion, androidConfiguration.CurrentlySupportedVersion),
+            PlatformDTO.Android => (
+                androidConfiguration.MinimumRequiredVersion,
+                androidConfiguration.CurrentlySupportedVersion
+            ),
             PlatformDTO.IOS => (iOSConfiguration.MinimumRequiredVersion, iOSConfiguration.CurrentlySupportedVersion),
             _ => throw new InvalidOperationException($"Invalid platform: {platform}."),
         };

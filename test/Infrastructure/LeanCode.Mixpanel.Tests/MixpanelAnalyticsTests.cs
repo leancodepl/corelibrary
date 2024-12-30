@@ -24,7 +24,7 @@ public class MixpanelAnalyticsTests
     public MixpanelAnalyticsTests()
     {
         analytics = new MixpanelAnalytics(
-            new HttpClient { BaseAddress = new Uri("https://api.mixpanel.com"), },
+            new HttpClient { BaseAddress = new Uri("https://api.mixpanel.com") },
             Configuration
         );
     }

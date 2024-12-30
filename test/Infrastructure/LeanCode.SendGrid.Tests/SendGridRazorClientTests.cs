@@ -20,7 +20,7 @@ public class SendGridRazorClientTests
 
     private static readonly string EmailTo = Environment.GetEnvironmentVariable("SENDGRID_EMAILTO");
 
-    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true, };
+    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
     private readonly SendGridRazorClient client;
 
@@ -55,7 +55,7 @@ public class SendGridRazorClientTests
             });
 
         client = new SendGridRazorClient(
-            new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY") ?? "unset", }),
+            new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY") ?? "unset" }),
             renderer,
             localizer
         );

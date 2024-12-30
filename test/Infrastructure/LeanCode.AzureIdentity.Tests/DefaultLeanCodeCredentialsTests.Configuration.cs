@@ -50,7 +50,7 @@ public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     [Fact]
     public void Throws_if_more_than_one_authorization_method_specified()
     {
-        var config = new AzureCredentialConfiguration { UseManagedIdentity = true, UseAzureCLI = true, };
+        var config = new AzureCredentialConfiguration { UseManagedIdentity = true, UseAzureCLI = true };
 
         Assert.Throws<InvalidOperationException>(() => DefaultLeanCodeCredential.Create(config));
     }

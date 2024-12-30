@@ -12,7 +12,7 @@ public class MassTransitRegistrationConfigurationExtensionsTests
     public void Registers_consumers_with_definition_from_assembly()
     {
         configurator.AddConsumersWithDefaultConfiguration(
-            new[] { typeof(Consumer1).Assembly, },
+            new[] { typeof(Consumer1).Assembly },
             typeof(DefaultConsumerDefinition<>)
         );
 

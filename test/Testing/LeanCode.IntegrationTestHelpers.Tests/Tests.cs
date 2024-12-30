@@ -49,7 +49,7 @@ public class Tests : IAsyncLifetime
                     new("sub", "test_id"),
                     new("role", "user"),
                     new("role", "admin"),
-                    new("other_claim", "other_claim_value")
+                    new("other_claim", "other_claim_value"),
                 },
                 TestAuthenticationHandler.SchemeName,
                 "sub",
@@ -69,7 +69,7 @@ public class Tests : IAsyncLifetime
                     KeyValuePair.Create("sub", "test_id"),
                     KeyValuePair.Create("role", "user"),
                     KeyValuePair.Create("role", "admin"),
-                    KeyValuePair.Create("other_claim", "other_claim_value")
+                    KeyValuePair.Create("other_claim", "other_claim_value"),
                 }
             );
     }

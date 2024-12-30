@@ -26,7 +26,7 @@ public class EnsureCQRSHandlersAreInProperNamespaceTests : DiagnosticVerifier
         var contractSource = await File.ReadAllTextAsync($"TestSamples/Accepted/Contracts/{contractsFile}.cs");
         var handlerSource = await File.ReadAllTextAsync($"TestSamples/Rejected/CQRS/{handlersFile}.cs");
 
-        var diags = new[] { new DiagnosticResult(DiagnosticsIds.CQRSHandlersShouldBeInProperNamespace, 4, 0), };
+        var diags = new[] { new DiagnosticResult(DiagnosticsIds.CQRSHandlersShouldBeInProperNamespace, 4, 0) };
 
         await VerifyDiagnostics(new[] { contractSource, handlerSource }, diags);
     }

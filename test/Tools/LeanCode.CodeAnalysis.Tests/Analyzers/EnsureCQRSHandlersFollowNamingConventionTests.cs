@@ -25,7 +25,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
         var diags = new[]
         {
             new DiagnosticResult(DiagnosticsIds.CommandHandlersShouldFollowNamingConvention, 6, 13),
-            new DiagnosticResult(DiagnosticsIds.CommandHandlersShouldFollowNamingConvention, 11, 13)
+            new DiagnosticResult(DiagnosticsIds.CommandHandlersShouldFollowNamingConvention, 11, 13),
         };
 
         await VerifyDiagnostics(source, diags);
@@ -39,7 +39,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
         var diags = new[]
         {
             new DiagnosticResult(DiagnosticsIds.QueryHandlersShouldFollowNamingConvention, 6, 13),
-            new DiagnosticResult(DiagnosticsIds.QueryHandlersShouldFollowNamingConvention, 11, 13)
+            new DiagnosticResult(DiagnosticsIds.QueryHandlersShouldFollowNamingConvention, 11, 13),
         };
 
         await VerifyDiagnostics(source, diags);
@@ -53,7 +53,7 @@ public class EnsureCQRSHandlersFollowNamingConventionTests : DiagnosticVerifier
         var diags = new[]
         {
             new DiagnosticResult(DiagnosticsIds.OperationHandlersShouldFollowNamingConvention, 6, 13),
-            new DiagnosticResult(DiagnosticsIds.OperationHandlersShouldFollowNamingConvention, 12, 13)
+            new DiagnosticResult(DiagnosticsIds.OperationHandlersShouldFollowNamingConvention, 12, 13),
         };
 
         await VerifyDiagnostics(source, diags);

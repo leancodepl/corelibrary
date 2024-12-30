@@ -11,7 +11,7 @@ public class GoogleAuthService
 
     public GoogleAuthService(GoogleAuthConfiguration config)
     {
-        settings = new() { Audience = config.ClientIds, };
+        settings = new() { Audience = config.ClientIds };
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(

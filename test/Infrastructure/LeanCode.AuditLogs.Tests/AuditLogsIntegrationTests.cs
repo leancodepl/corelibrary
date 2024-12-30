@@ -24,13 +24,12 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
     private const string ActorId = "actor_id";
     private const string TestPath = "/test";
     private const string AuthorizedTestPath = "/authorized-test";
-    private static readonly JsonSerializerOptions Options =
-        new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-        };
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+    };
 
     private readonly IHost host;
     private readonly ITestHarness harness;
@@ -169,7 +168,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
             .Should()
             .ContainSingle()
             .Which.Context.Message.Should()
-            .BeEquivalentTo(new { ActorId, }, opt => opt.ComparingByMembers<JsonElement>())
+            .BeEquivalentTo(new { ActorId }, opt => opt.ComparingByMembers<JsonElement>())
             .And.Subject.Should()
             .Match(s => s.As<AuditLogMessage>().SpanId != null && s.As<AuditLogMessage>().TraceId != null);
     }

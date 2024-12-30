@@ -10,14 +10,13 @@ namespace LeanCode.DomainModels.Model;
 [Obsolete]
 internal sealed class TypedIdConverterAttribute : JsonConverterAttribute
 {
-    private static readonly Dictionary<Type, Type> Converters =
-        new()
-        {
-            [typeof(Id<>)] = typeof(IdConverter<>),
-            [typeof(IId<>)] = typeof(IIdConverter<>),
-            [typeof(LId<>)] = typeof(LIdConverter<>),
-            [typeof(SId<>)] = typeof(SIdConverter<>),
-        };
+    private static readonly Dictionary<Type, Type> Converters = new()
+    {
+        [typeof(Id<>)] = typeof(IdConverter<>),
+        [typeof(IId<>)] = typeof(IIdConverter<>),
+        [typeof(LId<>)] = typeof(LIdConverter<>),
+        [typeof(SId<>)] = typeof(SIdConverter<>),
+    };
 
     public override JsonConverter CreateConverter(Type typeToConvert)
     {
