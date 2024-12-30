@@ -9,6 +9,9 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
 * Upgrade to .NET 9
 * Remove custom MassTransit lock providers as they are no longer needed
+* Remove LeanCode.IdentityServer.KeyVault
+* Remove LeanCode.ExternalIdentityProviders
+* Remove LeanCode.PdfRocket
 
 ## 8.1
 
