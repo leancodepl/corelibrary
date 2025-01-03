@@ -14,6 +14,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Remove LeanCode.PdfRocket
 * Remove StyleCop completely
 * JSON serializer for CQRS now shares options with ASP.NET Core's `JsonOptions` by default
+* Integrates with Microsoft.AspNetCore.OpenApi better
 
 ## 8.1
 
