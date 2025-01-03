@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" />
+
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
+
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+
+    <ProjectReference Include="../src/Core/LeanCode.Components/LeanCode.Components.csproj" />
+
+    <ProjectReference Include="../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <ProjectReference Include="../src/CQRS/LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
+    <ProjectReference Include="../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+  </ItemGroup>
+
+</Project>

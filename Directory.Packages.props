@@ -63,6 +63,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
 
     <!-- TODO: migrate to v7 (whatever that is) -->
     <PackageVersion Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.36" />
@@ -107,6 +108,9 @@
     <PackageVersion Include="OpenTelemetry" Version="1.10.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
+
+    <PackageVersion Include="Swashbuckle.AspNetCore.ReDoc" Version="7.2.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
 
     <PackageVersion Include="NUlid" Version="1.7.2" />
   </ItemGroup>
