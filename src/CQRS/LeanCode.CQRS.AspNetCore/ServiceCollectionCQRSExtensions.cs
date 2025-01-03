@@ -6,10 +6,12 @@ using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
+using LeanCode.Serialization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace LeanCode.CQRS.AspNetCore;
 
@@ -18,10 +20,22 @@ public static class ServiceCollectionCQRSExtensions
     public static CQRSServicesBuilder AddCQRS(
         this IServiceCollection serviceCollection,
         TypesCatalog contractsCatalog,
-        TypesCatalog handlersCatalog
+        TypesCatalog handlersCatalog,
+        bool configureJsonOptions = true
     )
     {
-        serviceCollection.AddSingleton<ISerializer>(_ => new Utf8JsonSerializer(Utf8JsonSerializer.DefaultOptions));
+        if (configureJsonOptions)
+        {
+            serviceCollection.ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonLaxDateOnlyConverter());
+                options.SerializerOptions.Converters.Add(new JsonLaxTimeOnlyConverter());
+                options.SerializerOptions.Converters.Add(new JsonLaxDateTimeOffsetConverter());
+                options.SerializerOptions.PropertyNamingPolicy = null;
+            });
+        }
+
+        serviceCollection.AddSingleton<ISerializer, Utf8JsonSerializer>();
 
         var objectsSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         objectsSource.AddCQRSObjects(contractsCatalog, handlersCatalog);
