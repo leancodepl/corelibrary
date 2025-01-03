@@ -1,5 +1,7 @@
 using System.Text.Json;
 using LeanCode.Serialization;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 
 namespace LeanCode.CQRS.AspNetCore.Serialization;
 
@@ -9,35 +11,26 @@ public interface ISerializer
     ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken);
 }
 
-public sealed class Utf8JsonSerializer : ISerializer
+public sealed class Utf8JsonSerializer(IOptions<JsonOptions> options) : ISerializer
 {
-    public static readonly JsonSerializerOptions DefaultOptions = new()
-    {
-        Converters =
-        {
-            new JsonLaxDateOnlyConverter(),
-            new JsonLaxTimeOnlyConverter(),
-            new JsonLaxDateTimeOffsetConverter(),
-        },
-    };
-
-    private readonly JsonSerializerOptions? options;
-
-    public Utf8JsonSerializer(JsonSerializerOptions? options)
-    {
-        this.options = options;
-    }
-
-    public Utf8JsonSerializer()
-        : this(null) { }
-
     public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken)
     {
-        return JsonSerializer.DeserializeAsync(utf8Json, returnType, options, cancellationToken);
+        return JsonSerializer.DeserializeAsync(
+            utf8Json,
+            returnType,
+            options.Value.SerializerOptions,
+            cancellationToken
+        );
     }
 
     public Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken cancellationToken)
     {
-        return JsonSerializer.SerializeAsync(utf8Json, value, inputType, options, cancellationToken);
+        return JsonSerializer.SerializeAsync(
+            utf8Json,
+            value,
+            inputType,
+            options.Value.SerializerOptions,
+            cancellationToken
+        );
     }
 }
