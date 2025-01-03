@@ -59,7 +59,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 EndpointMetadata =
                 [
                     metadata,
-                    new EndpointTags(configuration.TagsMapping(routeEndpoint, metadata), metadata),
+                    new EndpointTags(configuration.TagsMapping(routeEndpoint, metadata)),
                     new EndpointSummary(configuration.SummaryMapping(routeEndpoint, metadata)),
                     new EndpointDescription(configuration.DescriptionMapping(routeEndpoint, metadata)),
                 ],

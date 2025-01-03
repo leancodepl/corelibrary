@@ -1,9 +1,7 @@
-using System.Text.Json;
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.TestBed.Api;
-using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

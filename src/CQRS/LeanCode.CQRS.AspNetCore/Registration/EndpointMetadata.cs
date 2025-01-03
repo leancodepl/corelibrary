@@ -1,21 +1,10 @@
-using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http.Metadata;
 
 namespace LeanCode.CQRS.AspNetCore.Registration;
 
-internal class EndpointTags : ITagsMetadata
+internal class EndpointTags(IReadOnlyList<string> tags) : ITagsMetadata
 {
-    public IReadOnlyList<string> Tags { get; }
-
-    public EndpointTags(IReadOnlyCollection<string> userTags, CQRSObjectMetadata metadata)
-    {
-        Tags = userTags.Concat(GetPredefinedTags(metadata)).ToList();
-    }
-
-    private static IEnumerable<string> GetPredefinedTags(CQRSObjectMetadata metadata)
-    {
-        yield return metadata.ObjectKind.ToString();
-    }
+    public IReadOnlyList<string> Tags => tags;
 }
 
 internal class EndpointSummary(string summary) : IEndpointSummaryMetadata

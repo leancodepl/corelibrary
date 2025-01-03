@@ -5,8 +5,8 @@ namespace LeanCode.CQRS.AspNetCore.Registration;
 
 public class CQRSApiDescriptionConfiguration
 {
-    public Func<RouteEndpoint, CQRSObjectMetadata, IReadOnlyCollection<string>> TagsMapping { get; init; } =
-        static (_, _) => Array.Empty<string>();
+    public Func<RouteEndpoint, CQRSObjectMetadata, IReadOnlyList<string>> TagsMapping { get; init; } =
+        ApiDescriptionTags.FullNamespace;
 
     public Func<RouteEndpoint, CQRSObjectMetadata, string> SummaryMapping { get; init; } =
         static (_, m) => m.ObjectType.FullName ?? "";
