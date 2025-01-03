@@ -4,6 +4,7 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
@@ -17,7 +18,6 @@ public class CQRSApiDescriptionProviderTests
 {
     private const string BasePath = "cqrs";
 
-    private static readonly Dictionary<string, string?> ExpectedRouteValues = new() { ["controller"] = "CQRS" };
     private static readonly List<ApiRequestFormat> ExpectedRequestFormat =
     [
         new ApiRequestFormat { MediaType = "application/json" },
@@ -45,8 +45,9 @@ public class CQRSApiDescriptionProviderTests
         query.HttpMethod.Should().Be("POST");
         query.RelativePath.Should().Be($"{BasePath}/query/{typeof(Query).FullName}");
         query.ActionDescriptor.DisplayName.Should().Be($"Query {typeof(Query).FullName}");
-        query.ActionDescriptor.RouteValues.Should().BeEquivalentTo(ExpectedRouteValues);
         query.SupportedRequestFormats.Should().BeEquivalentTo(ExpectedRequestFormat);
+
+        ShouldContainMetadata(query);
     }
 
     [Fact]
@@ -81,13 +82,14 @@ public class CQRSApiDescriptionProviderTests
     {
         var allDescriptors = ListApisFor<Command>();
 
-        var query = allDescriptors.Should().ContainSingle().Which;
+        var command = allDescriptors.Should().ContainSingle().Which;
 
-        query.HttpMethod.Should().Be("POST");
-        query.RelativePath.Should().Be($"{BasePath}/command/{typeof(Command).FullName}");
-        query.ActionDescriptor.DisplayName.Should().Be($"Command {typeof(Command).FullName}");
-        query.ActionDescriptor.RouteValues.Should().BeEquivalentTo(ExpectedRouteValues);
-        query.SupportedRequestFormats.Should().BeEquivalentTo(ExpectedRequestFormat);
+        command.HttpMethod.Should().Be("POST");
+        command.RelativePath.Should().Be($"{BasePath}/command/{typeof(Command).FullName}");
+        command.ActionDescriptor.DisplayName.Should().Be($"Command {typeof(Command).FullName}");
+        command.SupportedRequestFormats.Should().BeEquivalentTo(ExpectedRequestFormat);
+
+        ShouldContainMetadata(command);
     }
 
     [Fact]
@@ -128,13 +130,14 @@ public class CQRSApiDescriptionProviderTests
     {
         var allDescriptors = ListApisFor<Operation>();
 
-        var query = allDescriptors.Should().ContainSingle().Which;
+        var operation = allDescriptors.Should().ContainSingle().Which;
 
-        query.HttpMethod.Should().Be("POST");
-        query.RelativePath.Should().Be($"{BasePath}/operation/{typeof(Operation).FullName}");
-        query.ActionDescriptor.DisplayName.Should().Be($"Operation {typeof(Operation).FullName}");
-        query.ActionDescriptor.RouteValues.Should().BeEquivalentTo(ExpectedRouteValues);
-        query.SupportedRequestFormats.Should().BeEquivalentTo(ExpectedRequestFormat);
+        operation.HttpMethod.Should().Be("POST");
+        operation.RelativePath.Should().Be($"{BasePath}/operation/{typeof(Operation).FullName}");
+        operation.ActionDescriptor.DisplayName.Should().Be($"Operation {typeof(Operation).FullName}");
+        operation.SupportedRequestFormats.Should().BeEquivalentTo(ExpectedRequestFormat);
+
+        ShouldContainMetadata(operation);
     }
 
     [Fact]
@@ -164,6 +167,14 @@ public class CQRSApiDescriptionProviderTests
             );
     }
 
+    private static void ShouldContainMetadata(ApiDescription obj) =>
+        obj
+            .ActionDescriptor.EndpointMetadata.Should()
+            .ContainItemsAssignableTo<CQRSObjectMetadata>()
+            .And.ContainItemsAssignableTo<ITagsMetadata>()
+            .And.ContainItemsAssignableTo<IEndpointSummaryMetadata>()
+            .And.ContainItemsAssignableTo<IEndpointDescriptionMetadata>();
+
     private static object RequestOf<T>()
     {
         return new
@@ -192,7 +203,6 @@ public class CQRSApiDescriptionProviderTests
         {
             ApiResponseFormats = new[] { new { MediaType = "application/json" } },
             StatusCode = statusCode,
-            Type = typeof(void),
             ModelMetadata = new { Identity = new { ModelType = typeof(void) } },
         };
     }

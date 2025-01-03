@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Text;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -55,7 +56,13 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
             ActionDescriptor = new ActionDescriptor
             {
                 DisplayName = routeEndpoint.DisplayName,
-                RouteValues = configuration.RouteValuesMapping(routeEndpoint),
+                EndpointMetadata =
+                [
+                    metadata,
+                    new EndpointTags(configuration.TagsMapping(routeEndpoint, metadata), metadata),
+                    new EndpointSummary(configuration.SummaryMapping(routeEndpoint, metadata)),
+                    new EndpointDescription(configuration.DescriptionMapping(routeEndpoint, metadata)),
+                ],
             },
         };
         apiDescription.SupportedRequestFormats.Add(new() { MediaType = ApplicationJson });
@@ -181,7 +188,6 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 ModelMetadata = CreateModelMetadata(typeof(void)),
                 ApiResponseFormats = [new() { MediaType = ApplicationJson }],
                 StatusCode = 400,
-                Type = typeof(void),
             }
         );
 
@@ -191,7 +197,6 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 ModelMetadata = CreateModelMetadata(typeof(void)),
                 ApiResponseFormats = [new() { MediaType = ApplicationJson }],
                 StatusCode = 401,
-                Type = typeof(void),
             }
         );
 
@@ -201,7 +206,6 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
                 ModelMetadata = CreateModelMetadata(typeof(void)),
                 ApiResponseFormats = [new() { MediaType = ApplicationJson }],
                 StatusCode = 403,
-                Type = typeof(void),
             }
         );
     }
