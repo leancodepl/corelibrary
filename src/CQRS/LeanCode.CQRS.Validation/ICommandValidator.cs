@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using Microsoft.AspNetCore.Http;

@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using LeanCode.OpenTelemetry.Datadog;
 using Serilog;

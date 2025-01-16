@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LeanCode.CQRS.Security;
 
 namespace LeanCode.IntegrationTests.App;

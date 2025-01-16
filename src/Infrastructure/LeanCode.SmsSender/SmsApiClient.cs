@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
 
 namespace LeanCode.SmsSender;

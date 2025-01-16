@@ -1,7 +1,5 @@
 using System.Security.Claims;
-using System.Threading.Tasks;
 using LeanCode.Contracts.Security;
-using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.Security;
 

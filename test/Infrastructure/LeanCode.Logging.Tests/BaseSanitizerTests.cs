@@ -1,4 +1,3 @@
-using System;
 using NSubstitute;
 using Serilog.Core;
 using Serilog.Events;

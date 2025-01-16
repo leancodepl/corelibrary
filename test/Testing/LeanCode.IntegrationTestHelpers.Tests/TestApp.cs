@@ -2,7 +2,6 @@ using System.Reflection;
 using LeanCode.IntegrationTestHelpers.Tests.App;
 using LeanCode.Logging;
 using LeanCode.Startup.MicrosoftDI;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

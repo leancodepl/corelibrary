@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using LeanCode.CQRS.Security;
-using LeanCode.CQRS.Security.Exceptions;
-using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.Security.Tests;

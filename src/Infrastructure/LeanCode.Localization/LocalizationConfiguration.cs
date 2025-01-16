@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.Localization;
 
 public sealed class LocalizationConfiguration

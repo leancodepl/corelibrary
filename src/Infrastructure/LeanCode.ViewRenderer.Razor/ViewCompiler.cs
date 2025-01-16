@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.AspNetCore.Razor.Language;

@@ -1,5 +1,3 @@
-using System.Diagnostics.Metrics;
-
 namespace LeanCode.OpenTelemetry;
 
 public static class LeanCodeMetrics

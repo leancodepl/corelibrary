@@ -1,4 +1,3 @@
-using System;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.DomainModels.EventsExecution.TestHelpers.Tests;

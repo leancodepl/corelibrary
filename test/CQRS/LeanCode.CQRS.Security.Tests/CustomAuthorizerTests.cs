@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using FluentAssertions;
-using LeanCode.CQRS.Security;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Xunit;

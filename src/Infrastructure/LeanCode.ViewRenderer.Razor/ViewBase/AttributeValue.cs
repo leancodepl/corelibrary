@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.ViewRenderer.Razor.ViewBase;
 
 public class AttributeValue

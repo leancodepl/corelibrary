@@ -1,6 +1,5 @@
 using System.Globalization;
 using FirebaseAdmin.Messaging;
-using LeanCode.Firebase;
 using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;

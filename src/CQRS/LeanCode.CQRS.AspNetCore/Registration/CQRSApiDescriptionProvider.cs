@@ -2,7 +2,6 @@ using System.Collections.Immutable;
 using System.Text;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

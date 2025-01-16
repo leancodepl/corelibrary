@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using static System.Net.HttpStatusCode;
 
 namespace LeanCode.CQRS.RemoteHttp.Client;

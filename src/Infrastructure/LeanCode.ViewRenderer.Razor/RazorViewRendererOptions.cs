@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace LeanCode.ViewRenderer.Razor;
 
 public class RazorViewRendererOptions

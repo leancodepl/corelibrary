@@ -1,6 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using LeanCode.SmsSender.Exceptions;
 using LeanCode.Test.Helpers;
 using Xunit;

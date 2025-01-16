@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using LeanCode.Firebase.FCM;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Test.Helpers;

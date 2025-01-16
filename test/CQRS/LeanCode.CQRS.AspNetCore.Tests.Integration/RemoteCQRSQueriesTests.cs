@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using LeanCode.Contracts;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
