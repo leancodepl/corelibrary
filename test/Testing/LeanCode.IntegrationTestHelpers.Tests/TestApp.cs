@@ -7,13 +7,24 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog.Events;
 
 namespace LeanCode.IntegrationTestHelpers.Tests;
 
 public class TestApp : LeanCodeTestFactory<App.Startup>
 {
-    protected override ConfigurationOverrides Configuration { get; } =
-        new("SqlServer__ConnectionStringBase", "SqlServer:ConnectionString", Serilog.Events.LogEventLevel.Error, false);
+    protected override TestConnectionString ConnectionStringConfig { get; } =
+        new("SqlServer:ConnectionStringBase", "SqlServer:ConnectionString");
+
+    protected override ConfigurationOverrides ConfigurationOverrides { get; } =
+        new(
+            new()
+            {
+                [IHostBuilderExtensions.MinimumLogLevelKey] = "Error",
+                [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = "false",
+                ["SqlServer:ConnectionStringBase"] = "",
+            }
+        );
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
@@ -31,7 +42,8 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
         builder
             .ConfigureAppConfiguration(config =>
             {
-                config.Add(Configuration);
+                config.Add(ConfigurationOverrides);
+                config.Add(ConnectionStringConfig);
             })
             .ConfigureServices(services =>
             {

@@ -14,7 +14,10 @@ namespace LeanCode.IntegrationTestHelpers;
 public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TStartup>
     where TStartup : class
 {
-    protected abstract ConfigurationOverrides Configuration { get; }
+    protected abstract TestConnectionString ConnectionStringConfig { get; }
+
+    protected virtual ConfigurationOverrides ConfigurationOverrides { get; } =
+        ConfigurationOverrides.LoggingOverrides();
 
     public virtual JsonSerializerOptions JsonOptions { get; }
 
@@ -81,7 +84,8 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
         builder
             .ConfigureAppConfiguration(config =>
             {
-                config.Add(Configuration);
+                config.Add(ConfigurationOverrides);
+                config.Add(ConnectionStringConfig);
             })
             .ConfigureServices(services =>
             {
