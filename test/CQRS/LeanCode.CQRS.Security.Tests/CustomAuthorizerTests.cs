@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CQRS.Default.Tests.Security;
+namespace LeanCode.CQRS.Security.Tests;
 
 public class CustomAuthorizerTests
 {

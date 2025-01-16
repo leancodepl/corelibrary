@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LeanCode.DomainModels.Model;
 
 public static class DomainEvents
@@ -9,6 +11,7 @@ public static class DomainEvents
         EventInterceptor = interceptor;
     }
 
+    [SuppressMessage("?", "CA1030", Justification = "Convention for `DomainEvents`.")]
     public static void Raise<TEvent>(TEvent domainEvent)
         where TEvent : class, IDomainEvent
     {

@@ -8,7 +8,7 @@ using LeanCode.CQRS.Security.Exceptions;
 using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CQRS.Default.Tests.Security;
+namespace LeanCode.CQRS.Security.Tests;
 
 public class ClaimsPrincipalTests
 {

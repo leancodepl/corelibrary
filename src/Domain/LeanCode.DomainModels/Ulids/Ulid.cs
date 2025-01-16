@@ -355,6 +355,7 @@ public readonly record struct Ulid
     // HACK: We assume the layout of a Guid is the following:
     // Int32, Int16, Int16, Int8, Int8, Int8, Int8, Int8, Int8, Int8, Int8
     // source: https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.Private.CoreLib/src/System/Guid.cs
+    [SuppressMessage("?", "CA1720", Justification = "Vendored code.")]
     public Ulid(Guid guid)
     {
         Span<byte> buf = stackalloc byte[16];

@@ -180,7 +180,7 @@ public class MixpanelAnalytics
         var url =
             $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
-        using var rawResponse = await client.GetAsync(url, cancellationToken);
+        using var rawResponse = await client.GetAsync(new Uri(url), cancellationToken);
         var content = await rawResponse.Content.ReadAsStringAsync(cancellationToken);
         if (content == "1")
         {

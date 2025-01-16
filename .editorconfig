@@ -192,6 +192,16 @@ dotnet_naming_symbols.everything_else.applicable_accessibilities   = *
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1724.severity = none
 dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1816.severity = none
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1032.severity = none
+dotnet_diagnostic.CA1034.severity = none
+dotnet_diagnostic.CA1019.severity = none
+dotnet_diagnostic.CA1308.severity = none
 dotnet_diagnostic.IDE0058.severity = none
 
 # Disable temporarily

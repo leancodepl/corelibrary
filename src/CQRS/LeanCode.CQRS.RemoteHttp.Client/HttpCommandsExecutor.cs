@@ -30,7 +30,7 @@ public class HttpCommandsExecutor
     {
         using var content = JsonContent.Create(command, command.GetType(), options: serializerOptions);
         using var response = await client.PostAsync(
-            "command/" + command.GetType().FullName,
+            new Uri("command/" + command.GetType().FullName, UriKind.Relative),
             content,
             cancellationToken
         );
