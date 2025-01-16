@@ -12,9 +12,9 @@ public class IntegrationTestsConfigurationTests
         var customConnectionStringKey = "CustomConnectionStringKey";
         var customConnectionStringBaseKey = "CustomConnectionStringBaseKey";
 
-        var configurationOverrides = new ConfigurationOverrides(
+        var configurationOverrides = new TestConnectionString(
             connectionStringKey: customConnectionStringKey,
-            connectionStringBase: customConnectionStringBaseKey
+            connectionStringBaseKey: customConnectionStringBaseKey
         );
 
         var config = new ConfigurationBuilder().Add(configurationOverrides).Build();
