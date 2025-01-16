@@ -14,10 +14,17 @@ namespace LeanCode.IntegrationTestHelpers.Tests;
 public class TestApp : LeanCodeTestFactory<App.Startup>
 {
     protected override TestConnectionString ConnectionStringConfig { get; } =
-        new("SqlServer__ConnectionStringBase", "SqlServer:ConnectionString");
+        new("SqlServer:ConnectionStringBase", "SqlServer:ConnectionString");
 
     protected override ConfigurationOverrides ConfigurationOverrides { get; } =
-        ConfigurationOverrides.LoggingOverrides(LogEventLevel.Error, false);
+        new(
+            new()
+            {
+                [IHostBuilderExtensions.MinimumLogLevelKey] = "Error",
+                [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = "false",
+                ["SqlServer:ConnectionStringBase"] = "",
+            }
+        );
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {
@@ -35,8 +42,8 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
         builder
             .ConfigureAppConfiguration(config =>
             {
-                config.Add(ConnectionStringConfig);
                 config.Add(ConfigurationOverrides);
+                config.Add(ConnectionStringConfig);
             })
             .ConfigureServices(services =>
             {

@@ -84,8 +84,8 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
         builder
             .ConfigureAppConfiguration(config =>
             {
-                config.Add(ConnectionStringConfig);
                 config.Add(ConfigurationOverrides);
+                config.Add(ConnectionStringConfig);
             })
             .ConfigureServices(services =>
             {

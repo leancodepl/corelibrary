@@ -27,8 +27,7 @@ public class TestApp : LeanCodeTestFactory<App.Startup>
         }
     }
 
-    protected override TestConnectionString ConnectionStringConfig =>
-        TestDatabaseConfig.Create().GetConfigurationOverrides();
+    protected override TestConnectionString ConnectionStringConfig => TestDatabaseConfig.Create().GetConnectionString();
 
     protected override IEnumerable<Assembly> GetTestAssemblies()
     {

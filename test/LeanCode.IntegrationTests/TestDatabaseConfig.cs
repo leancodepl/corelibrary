@@ -12,7 +12,7 @@ public abstract class TestDatabaseConfig
 {
     public const string ConfigEnvName = "LeanCodeIntegrationTests__Database";
 
-    public abstract TestConnectionString GetConfigurationOverrides();
+    public abstract TestConnectionString GetConnectionString();
     public abstract void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config);
     public abstract void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator);
 
@@ -31,8 +31,8 @@ public abstract class TestDatabaseConfig
 
 public class SqlServerTestDatabaseConfig : TestDatabaseConfig
 {
-    public override TestConnectionString GetConfigurationOverrides() =>
-        new("SqlServer__ConnectionStringBase", "SqlServer:ConnectionString");
+    public override TestConnectionString GetConnectionString() =>
+        new("SqlServer:ConnectionStringBase", "SqlServer:ConnectionString");
 
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
@@ -47,8 +47,8 @@ public class SqlServerTestDatabaseConfig : TestDatabaseConfig
 
 public class PostgresTestConfig : TestDatabaseConfig
 {
-    public override TestConnectionString GetConfigurationOverrides() =>
-        new("Postgres__ConnectionStringBase", "Postgres:ConnectionString");
+    public override TestConnectionString GetConnectionString() =>
+        new("Postgres:ConnectionStringBase", "Postgres:ConnectionString");
 
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
