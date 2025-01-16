@@ -36,7 +36,7 @@ public class TestConnectionString(string connectionStringBaseKey, string connect
             var baseConnStr =
                 parentConfig[connectionStringBaseKey]
                 ?? throw new KeyNotFoundException(
-                    $"Cannot find base connection stirng under key {connectionStringBaseKey}"
+                    $"Cannot find base connection string under key {connectionStringBaseKey}"
                 );
 
             var dbName = $"integration_tests_{Guid.NewGuid():N}";
