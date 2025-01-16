@@ -16,8 +16,8 @@ internal class LocalCallContext : HttpContext, IDisposable
 
     public override IFeatureCollection Features => features;
 
-    public override ClaimsPrincipal User { get; set; }
-    public override string TraceIdentifier { get; set; }
+    public sealed override ClaimsPrincipal User { get; set; }
+    public sealed override string TraceIdentifier { get; set; }
     public override HttpRequest Request { get; }
     public override HttpResponse Response { get; }
 

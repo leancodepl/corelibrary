@@ -206,3 +206,10 @@ dotnet_diagnostic.IDE0058.severity = none
 
 # Disable temporarily
 dotnet_diagnostic.xUnit1051.severity = none
+
+# Rider
+resharper_inconsistent_naming_highlighting=hint
+
+[test-bed/**/*.cs]
+resharper_not_null_or_required_member_is_not_initialized_highlighting = none
+resharper_class_never_instantiated_global_highlighting = none

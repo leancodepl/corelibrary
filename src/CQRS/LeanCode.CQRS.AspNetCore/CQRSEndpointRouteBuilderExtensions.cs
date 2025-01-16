@@ -40,9 +40,9 @@ public class CQRSPipelineBuilder
 {
     public Func<CQRSObjectMetadata, bool> ObjectsFilter { get; set; } = _ => true;
 
-    public Action<ICQRSApplicationBuilder> Commands { get; set; } = app => { };
-    public Action<ICQRSApplicationBuilder> Queries { get; set; } = app => { };
-    public Action<ICQRSApplicationBuilder> Operations { get; set; } = app => { };
+    public Action<ICQRSApplicationBuilder> Commands { get; set; } = _ => { };
+    public Action<ICQRSApplicationBuilder> Queries { get; set; } = _ => { };
+    public Action<ICQRSApplicationBuilder> Operations { get; set; } = _ => { };
 
     private readonly IEndpointRouteBuilder routeBuilder;
 

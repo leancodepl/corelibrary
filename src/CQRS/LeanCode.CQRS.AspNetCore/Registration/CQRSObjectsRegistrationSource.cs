@@ -44,9 +44,9 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
                 continue;
             }
 
-            var handlerCandidates = handlers[contract];
+            var handlerCandidates = handlers[contract].ToList();
 
-            if (handlerCandidates.Count() != 1)
+            if (handlerCandidates.Count != 1)
             {
                 // TODO: shouldn't we throw here?
                 continue;
