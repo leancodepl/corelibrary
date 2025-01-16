@@ -15,6 +15,8 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Remove StyleCop completely
 * JSON serializer for CQRS now shares options with ASP.NET Core's `JsonOptions` by default
 * Integrates with Microsoft.AspNetCore.OpenApi better
+* Connection string injection is extracted from `ConfigurationOverrides` into `TestConnectionString` source
+* `DbContextInitializer` works with Npgsql now
 
 ## 8.1
 
