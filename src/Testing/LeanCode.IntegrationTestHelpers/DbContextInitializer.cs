@@ -2,6 +2,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using Polly;
 using Polly.Retry;
 
@@ -12,14 +13,15 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
 {
     private static readonly AsyncRetryPolicy CreatePolicy = Policy
         .Handle<SqlException>(e => e.Number == 5177)
+        .Or<NpgsqlException>(e => e.IsTransient)
         .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3)]);
 
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        using var scope = serviceProvider.CreateAsyncScope();
-        using var context = scope.ServiceProvider.GetRequiredService<T>();
+        await using var scope = serviceProvider.CreateAsyncScope();
+        await using var context = scope.ServiceProvider.GetRequiredService<T>();
         logger.Information("Creating database for context {ContextType}", context.GetType());
         // HACK: should mitigate (slightly) the bug in MSSQL that prevents us from creating
         // new databases.
@@ -29,6 +31,20 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
             {
                 await context.Database.EnsureDeletedAsync(token);
                 await context.Database.EnsureCreatedAsync(token);
+
+                if (context.Database.GetDbConnection() is NpgsqlConnection connection)
+                {
+                    if (connection.State == System.Data.ConnectionState.Closed)
+                    {
+                        await connection.OpenAsync(token);
+                        await connection.ReloadTypesAsync();
+                        await connection.CloseAsync();
+                    }
+                    else
+                    {
+                        await connection.ReloadTypesAsync();
+                    }
+                }
             },
             cancellationToken
         );
@@ -36,9 +52,9 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        using var scope = serviceProvider.CreateAsyncScope();
-        using var context = scope.ServiceProvider.GetRequiredService<T>();
+        await using var scope = serviceProvider.CreateAsyncScope();
+        await using var context = scope.ServiceProvider.GetRequiredService<T>();
         logger.Information("Dropping database for context {ContextType}", context.GetType());
-        await context.Database.EnsureDeletedAsync(cancellationToken);
+        await context.Database.EnsureDeletedAsync(CancellationToken.None);
     }
 }

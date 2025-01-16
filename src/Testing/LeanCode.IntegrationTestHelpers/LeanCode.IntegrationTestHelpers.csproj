@@ -24,6 +24,7 @@
     <PackageReference Include="IdentityModel" />
 
     <PackageReference Include="Polly" />
+    <PackageReference Include="Npgsql" />
   </ItemGroup>
 
 </Project>
