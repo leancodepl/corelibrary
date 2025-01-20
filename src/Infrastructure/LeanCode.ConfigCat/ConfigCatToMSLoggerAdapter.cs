@@ -78,7 +78,7 @@ public class ConfigCatToMSLoggerAdapter : IConfigCatLogger
             }
         }
 
-        public int Count => (Message.ArgNames?.Length ?? 0) + 1;
+        public int Count => Message.ArgNames.Length + 1;
 
         public IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
         {

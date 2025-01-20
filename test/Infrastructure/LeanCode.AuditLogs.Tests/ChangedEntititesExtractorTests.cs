@@ -38,7 +38,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .BeEquivalentTo(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     EntityState = "Added",
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
@@ -67,7 +67,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .BeEquivalentTo(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -94,7 +94,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .BeEquivalentTo(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Deleted",
@@ -138,7 +138,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -168,7 +168,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -196,7 +196,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -222,7 +222,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -250,7 +250,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -278,7 +278,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
             .ContainEquivalentOf(
                 new
                 {
-                    Ids = new string[] { SomeId },
+                    Ids = new[] { SomeId },
                     Type = typeof(TestEntity).FullName,
                     Changes = JsonSerializer.SerializeToDocument(testEntity, Options),
                     EntityState = "Modified",
@@ -303,7 +303,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
         dbContext.TestEntities.Add(TestEntity.Create(SomeId));
         dbContext.SaveChanges();
 
-        var testEntity = dbContext.TestEntities.Find(SomeId);
+        dbContext.TestEntities.Find(SomeId);
 
         var changes = ChangedEntitiesExtractor.Extract(dbContext);
         changes.Should().BeEmpty();
@@ -314,7 +314,7 @@ public class ChangedEntitiesExtractorTests : IDisposable
         Dispose(true);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool _)
     {
         dbContext.Dispose();
     }

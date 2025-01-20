@@ -1,4 +1,4 @@
 namespace LeanCode.Firebase.FCM;
 
-public sealed record class PushNotificationTokenEntity<TUserId>(TUserId UserId, string Token, DateTime DateCreated)
-    where TUserId : notnull, IEquatable<TUserId>;
+public sealed record PushNotificationTokenEntity<TUserId>(TUserId UserId, string Token, DateTime DateCreated)
+    where TUserId : IEquatable<TUserId>;

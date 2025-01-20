@@ -21,7 +21,7 @@ public class AuditLogsPublisherTests : IDisposable
         var bus = Substitute.For<IBus>();
         await auditLogsPublisher.ExtractAndPublishAsync(dbContext, bus, string.Empty, default);
 
-        await bus.DidNotReceiveWithAnyArgs().Publish(default!, default!);
+        await bus.DidNotReceiveWithAnyArgs().Publish(default!);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class AuditLogsPublisherTests : IDisposable
         var bus = Substitute.For<IBus>();
         await auditLogsPublisher.ExtractAndPublishAsync(dbContext, bus, string.Empty, default);
 
-        await bus.ReceivedWithAnyArgs(1).Publish((AuditLogMessage)default!, default!);
+        await bus.ReceivedWithAnyArgs(1).Publish((AuditLogMessage)default!);
     }
 
     public void Dispose()

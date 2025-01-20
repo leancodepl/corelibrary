@@ -12,11 +12,11 @@ public class ModelBuilderExtensionsTests_OptimisticConcurrency
     {
         using (var db = new ExplicitlyContext())
         {
-            var ent = db.Model.FindEntityType(typeof(ExplicitlyImplemented).FullName);
-            var prop = ent.FindProperty("DateModified");
+            var ent = db.Model.FindEntityType(typeof(ExplicitlyImplemented).FullName!);
+            var prop = ent!.FindProperty("DateModified");
             Assert.Equal(
                 "<LeanCode.DomainModels.Model.IOptimisticConcurrency.DateModified>k__BackingField",
-                prop.FieldInfo.Name
+                prop!.FieldInfo!.Name
             );
         }
     }
@@ -26,18 +26,22 @@ public class ModelBuilderExtensionsTests_OptimisticConcurrency
     {
         using (var db = new ImplicitlyContext())
         {
-            var ent = db.Model.FindEntityType(typeof(ImplicitlyImplemented).FullName);
-            var prop = ent.FindProperty("DateModified");
-            Assert.Equal("<DateModified>k__BackingField", prop.FieldInfo.Name);
+            var ent = db.Model.FindEntityType(typeof(ImplicitlyImplemented).FullName!);
+            var prop = ent!.FindProperty("DateModified");
+            Assert.Equal("<DateModified>k__BackingField", prop!.FieldInfo!.Name);
         }
     }
 
     [Fact]
     public void When_DateModified_is_implemented_differently_Fails()
     {
-        using (var db = new WrongDateModifiedContext())
+        WrongDateModifiedContext db;
+
+        using (db = new WrongDateModifiedContext())
         {
-            Assert.Throws<InvalidOperationException>(() => db.Model.FindEntityType(typeof(WrongDateModified).FullName));
+            Assert.Throws<InvalidOperationException>(
+                () => db.Model.FindEntityType(typeof(WrongDateModified).FullName!)
+            );
         }
     }
 }

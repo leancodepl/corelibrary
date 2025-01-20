@@ -30,9 +30,12 @@ public static class IdentityTraceAttributesMiddleware
                         }
                     }
 
-                    var userRoles = httpContext.User.Claims.Where(c => c.Type == roleClaim).Select(c => c.Value);
+                    var userRoles = httpContext
+                        .User.Claims.Where(c => c.Type == roleClaim)
+                        .Select(c => c.Value)
+                        .ToList();
 
-                    if (userRoles.Any())
+                    if (userRoles.Count != 0)
                     {
                         activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey, userRoles);
 

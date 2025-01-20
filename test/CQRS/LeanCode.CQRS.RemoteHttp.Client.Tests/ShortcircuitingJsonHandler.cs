@@ -40,12 +40,9 @@ internal sealed class ShortcircuitingJsonHandler : HttpMessageHandler
             ms.Position = 0;
             clone.Content = new StreamContent(ms);
 
-            if (req.Content.Headers != null)
+            foreach (var h in req.Content.Headers)
             {
-                foreach (var h in req.Content.Headers)
-                {
-                    clone.Content.Headers.Add(h.Key, h.Value);
-                }
+                clone.Content.Headers.Add(h.Key, h.Value);
             }
         }
 

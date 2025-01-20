@@ -15,7 +15,7 @@ public static class LeanProgram
         return new HostBuilder()
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureAppConfiguration(
-                (hostingContext, config) =>
+                (_, config) =>
                 {
                     config.AddEnvironmentVariables();
                 }

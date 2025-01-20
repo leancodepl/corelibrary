@@ -15,7 +15,7 @@ public sealed class ResettableBusActivityMonitor
 {
     private readonly object mutex = new object();
     private readonly AsyncManualResetEvent inactive = new(true);
-    private readonly RollingTimer timer;
+    private readonly RollingTimer rollingTimer;
 
     private volatile int consumersInFlight;
     private volatile int receiversInFlight;
@@ -27,7 +27,7 @@ public sealed class ResettableBusActivityMonitor
 
     public ResettableBusActivityMonitor(TimeSpan inactivityWaitTime)
     {
-        timer = new RollingTimer(OnTimer, inactivityWaitTime);
+        rollingTimer = new RollingTimer(OnTimer, inactivityWaitTime);
     }
 
     public static ResettableBusActivityMonitor CreateFor(IBusControl bus, TimeSpan inactivityWaitTime)
@@ -83,7 +83,7 @@ public sealed class ResettableBusActivityMonitor
         Decrement(ref publishInFlight);
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1063", Justification = "We want clean API.")]
-    void IDisposable.Dispose() => timer.Dispose();
+    void IDisposable.Dispose() => rollingTimer.Dispose();
 
     private Task Increment(ref int counter)
     {
@@ -91,7 +91,7 @@ public sealed class ResettableBusActivityMonitor
         {
             Interlocked.Increment(ref counter);
             inactive.Reset();
-            timer.Stop();
+            rollingTimer.Stop();
         }
 
         return Task.CompletedTask;
@@ -105,7 +105,7 @@ public sealed class ResettableBusActivityMonitor
 
             if (HasStabilized)
             {
-                timer.Restart();
+                rollingTimer.Restart();
             }
         }
 

@@ -17,7 +17,7 @@ public static class IHostBuilderExtensions
     )
     {
         return builder.ConfigureAppConfiguration(
-            (context, builder) =>
+            (_, builder) =>
             {
                 ConfigureAzureKeyVault(builder, credential, keyVaultKeyOverride, manager);
             }

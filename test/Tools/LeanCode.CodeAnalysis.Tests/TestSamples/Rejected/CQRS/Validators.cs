@@ -7,7 +7,4 @@ namespace LeanCode.CodeAnalysis.Tests.TestSamples.Rejected.CQRS;
 // to check if it implements `ICommand` interface.
 public class ValidatorCommand : ICommand { }
 
-public class WrongName : AbstractValidator<ValidatorCommand>
-{
-    public WrongName() { }
-}
+public class WrongName : AbstractValidator<ValidatorCommand> { }

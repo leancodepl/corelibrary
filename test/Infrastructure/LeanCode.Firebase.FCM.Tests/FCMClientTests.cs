@@ -16,12 +16,11 @@ public class FCMClientTests
         FirebaseConfiguration.Prepare(Key)
     );
 
-    private readonly StubStore store;
     private readonly FCMClient<Guid> client;
 
     public FCMClientTests()
     {
-        store = new StubStore(UserId, Token);
+        var store = new StubStore(UserId, Token);
         client = new FCMClient<Guid>(Messaging, store, Substitute.For<IStringLocalizer>());
     }
 

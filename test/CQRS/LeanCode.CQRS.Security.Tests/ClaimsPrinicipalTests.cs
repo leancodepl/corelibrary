@@ -113,11 +113,10 @@ public class ClaimsPrincipalTests
     private sealed class RoleRegistration : IRoleRegistration
     {
         public IEnumerable<Role> Roles { get; } =
-            new Role[]
-            {
+            [
                 new Role(Reg.User, Permissions.List, Permissions.Read),
                 new Role(Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update),
                 new Role(Reg.Contributor, Permissions.Update),
-            };
+            ];
     }
 }

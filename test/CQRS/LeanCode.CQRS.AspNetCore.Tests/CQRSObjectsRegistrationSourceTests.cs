@@ -57,7 +57,6 @@ public class CQRSObjectsRegistrationSourceTests
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>(),
             TypesCatalog.Of<CQRSObjectsRegistrationSourceTests>()
         );
-        var firstCount = registrationSource.Objects.Count;
 
         var act = () =>
             registrationSource.AddCQRSObjects(

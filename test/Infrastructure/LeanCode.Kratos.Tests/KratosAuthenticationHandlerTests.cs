@@ -18,9 +18,9 @@ namespace LeanCode.Kratos.Tests;
 
 public class KratosAuthenticationHandlerTests
 {
-    private sealed record class Traits(string Email);
+    private sealed record Traits(string Email);
 
-    private sealed record class MetadataPublic(bool IsAdmin);
+    private sealed record MetadataPublic(bool IsAdmin);
 
     private readonly KratosSession session = new(
         active: true,
@@ -275,7 +275,7 @@ public class KratosAuthenticationHandlerTests
                 cfg.RoleClaimType = "role";
                 cfg.NameClaimType = "sub";
 
-                cfg.ClaimsExtractor = (s, o, c) => { };
+                cfg.ClaimsExtractor = (_, _, _) => { };
 
                 configureAuthenticationOptions?.Invoke(cfg);
             });

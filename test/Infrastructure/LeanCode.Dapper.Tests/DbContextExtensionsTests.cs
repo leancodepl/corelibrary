@@ -55,6 +55,7 @@ public class DbContextExtensionsTests
 
     private abstract class BaseContext : DbContext
     {
+        // ReSharper disable once UnusedMember.Local
         public DbSet<Entity> Entities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

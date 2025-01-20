@@ -1,6 +1,6 @@
 namespace LeanCode.CQRS.Security;
 
-public interface IAuthorizerResolver<TAppContext>
+public interface IAuthorizerResolver
 {
     ICustomAuthorizerWrapper? FindAuthorizer(Type authorizerType, Type objectType);
 }

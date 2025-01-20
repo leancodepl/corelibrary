@@ -12,7 +12,7 @@ public static class FCMServiceCollectionExtensions
         this IServiceCollection services,
         Action<FCMBuilder<TUserId>> config
     )
-        where TUserId : notnull, IEquatable<TUserId>
+        where TUserId : IEquatable<TUserId>
     {
         services.TryAddSingleton(s => FirebaseMessaging.GetMessaging(s.GetRequiredService<FirebaseApp>()));
         services.TryAddTransient<FCMClient<TUserId>>();
@@ -23,7 +23,7 @@ public static class FCMServiceCollectionExtensions
 }
 
 public class FCMBuilder<TUserId>
-    where TUserId : notnull, IEquatable<TUserId>
+    where TUserId : IEquatable<TUserId>
 {
     public IServiceCollection Services { get; }
 

@@ -44,7 +44,7 @@ public class JsonLaxDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
     {
         Span<char> buffer = stackalloc char[MaxDateTimeOffsetBufferSize];
-        var success = value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
+        value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(JsonEncodedText.Encode(buffer[..written], JavaScriptEncoder.UnsafeRelaxedJsonEscaping));
     }
 }

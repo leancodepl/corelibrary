@@ -43,7 +43,7 @@ public class JsonLaxDateOnlyConverter : JsonConverter<DateOnly>
     public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
     {
         Span<char> buffer = stackalloc char[MaxDateOnlyBufferSize];
-        var success = value.TryFormat(buffer, out var written, "o", CultureInfo.InvariantCulture);
+        value.TryFormat(buffer, out var written, "o", CultureInfo.InvariantCulture);
         writer.WriteStringValue(JsonEncodedText.Encode(buffer[..written], JavaScriptEncoder.UnsafeRelaxedJsonEscaping));
     }
 }

@@ -117,20 +117,15 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
     public ServiceProviderAssertions(ServiceProvider subject)
         : base(subject) { }
 
-    public AndConstraint<ServiceProviderAssertions> HaveService<T>(string because = "", params object[] becauseArgs)
+    public void HaveService<T>(string because = "", params object[] becauseArgs)
     {
         Execute
             .Assertion.BecauseOf(because, becauseArgs)
             .ForCondition(Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
-        return new AndConstraint<ServiceProviderAssertions>(this);
     }
 
-    public AndConstraint<ServiceProviderAssertions> HaveKeyedService<T>(
-        object? serviceKey,
-        string because = "",
-        params object[] becauseArgs
-    )
+    public void HaveKeyedService<T>(object? serviceKey, string because = "", params object[] becauseArgs)
     {
         Execute
             .Assertion.BecauseOf(because, becauseArgs)
@@ -138,16 +133,14 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
                 Subject.GetRequiredService<IServiceProviderIsKeyedService>().IsKeyedService(typeof(T), serviceKey)
             )
             .FailWith("Expected to have {0} registered as key {1}{reason}", typeof(T), serviceKey);
-        return new AndConstraint<ServiceProviderAssertions>(this);
     }
 
-    public AndConstraint<ServiceProviderAssertions> NotHaveService<T>(string because = "", params object[] becauseArgs)
+    public void NotHaveService<T>(string because = "", params object[] becauseArgs)
     {
         Execute
             .Assertion.BecauseOf(because, becauseArgs)
             .ForCondition(!Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
-        return new AndConstraint<ServiceProviderAssertions>(this);
     }
 }
 

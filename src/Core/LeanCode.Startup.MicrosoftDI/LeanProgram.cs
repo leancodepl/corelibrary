@@ -13,7 +13,7 @@ public static class LeanProgram
     {
         return new HostBuilder()
             .ConfigureAppConfiguration(
-                (hostingContext, config) =>
+                (_, config) =>
                 {
                     config.AddEnvironmentVariables();
                 }

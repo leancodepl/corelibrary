@@ -5,7 +5,7 @@ using LeanCode.Localization.StringLocalizers;
 namespace LeanCode.Firebase.FCM;
 
 public class FCMClient<TUserId>
-    where TUserId : notnull, IEquatable<TUserId>
+    where TUserId : IEquatable<TUserId>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient<TUserId>>();
 
@@ -109,10 +109,11 @@ public class FCMClient<TUserId>
         CancellationToken cancellationToken = default
     )
     {
-        logger.Debug("Sending {Count} push messages", messages.Count());
+        var messagesList = messages.ToList();
+        logger.Debug("Sending {Count} push messages", messagesList.Count);
 
-        var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
-        await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
+        var response = await messaging.SendEachAsync(messagesList, dryRun, cancellationToken);
+        await HandleBatchResponseAsync(response, messagesList.Select(m => m.Token), cancellationToken);
     }
 
     public virtual async Task SendMulticastAsync(

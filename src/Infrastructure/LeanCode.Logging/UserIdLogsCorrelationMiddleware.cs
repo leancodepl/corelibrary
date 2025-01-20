@@ -24,7 +24,7 @@ public static class UserIdLogsCorrelationMiddleware
 
     private static IDisposable? UserId(HttpContext httpCtx, string? userIdClaim)
     {
-        if (httpCtx?.User.Identity?.IsAuthenticated ?? false)
+        if (httpCtx.User.Identity?.IsAuthenticated ?? false)
         {
             var userId = httpCtx.User.FindFirstValue(userIdClaim ?? "sub");
 

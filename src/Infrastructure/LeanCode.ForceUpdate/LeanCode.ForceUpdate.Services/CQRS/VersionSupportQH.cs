@@ -26,7 +26,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
 
     public async Task<VersionSupportDTO?> ExecuteAsync(HttpContext context, VersionSupport query)
     {
-        if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined<PlatformDTO>(query.Platform))
+        if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(query.Platform))
         {
             logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
             return null;

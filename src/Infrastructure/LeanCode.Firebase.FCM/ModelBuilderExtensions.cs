@@ -8,12 +8,12 @@ public static class ModelBuilderExtensions
         this ModelBuilder builder,
         bool setTokenColumnMaxLength
     )
-        where TUserId : notnull, IEquatable<TUserId>
+        where TUserId : IEquatable<TUserId>
     {
         builder.Entity<PushNotificationTokenEntity<TUserId>>(c =>
         {
             c.HasKey(e => new { e.UserId, e.Token });
-            c.HasIndex(e => e.Token).IsUnique(true);
+            c.HasIndex(e => e.Token).IsUnique();
 
             c.Property(e => e.UserId).ValueGeneratedNever();
 

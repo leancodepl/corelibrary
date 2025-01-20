@@ -61,7 +61,7 @@ public class TestStartupWithTrueParameter : LeanStartup
 public class TestStartupWithFalseParameter : LeanStartup
 {
     protected override IReadOnlyList<IAppModule> Modules { get; }
-    protected override bool CloseAndFlushLogger { get; }
+    protected override bool CloseAndFlushLogger { get; } = true;
 
     public TestStartupWithFalseParameter(IConfiguration config)
         : base(config)

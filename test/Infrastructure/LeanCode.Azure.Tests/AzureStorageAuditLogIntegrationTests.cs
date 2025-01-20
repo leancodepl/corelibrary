@@ -93,7 +93,7 @@ public class AzureStorageAuditLogIntegrationTests
             );
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(
+        blobServiceClient.GetBlobContainerClient(
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
@@ -130,7 +130,7 @@ public class AzureStorageAuditLogIntegrationTests
             );
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(
+        blobServiceClient.GetBlobContainerClient(
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 

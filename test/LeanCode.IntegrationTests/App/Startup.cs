@@ -17,7 +17,7 @@ public class Startup : LeanStartup
     private static readonly TypesCatalog CQRSTypes = TypesCatalog.Of<Startup>();
     private readonly TestDatabaseConfig testDatabaseConfig;
 
-    protected override bool CloseAndFlushLogger { get; }
+    protected override bool CloseAndFlushLogger { get; } = true;
 
     public Startup(IConfiguration config)
         : base(config)

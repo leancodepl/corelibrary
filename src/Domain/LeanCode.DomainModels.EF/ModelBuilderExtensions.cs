@@ -71,7 +71,7 @@ public static class ModelBuilderExtensions
     )
         where TEntity : class, IOptimisticConcurrency
     {
-        builder.Entity<TEntity>().IsOptimisticConcurrent(useExplicitBackingFields, addRowVersion);
+        builder.Entity<TEntity>().IsOptimisticConcurrent<TEntity, TRowVersion>(useExplicitBackingFields, addRowVersion);
     }
 
     private static string GetBackingFieldFor<TEntity>(string fieldName)

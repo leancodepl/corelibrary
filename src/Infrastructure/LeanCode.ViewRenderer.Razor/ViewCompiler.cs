@@ -189,7 +189,7 @@ internal class ViewCompiler
             {
                 builder.SetBaseType(typeof(BaseView).FullName);
                 builder.ConfigureClass(
-                    (doc, @class) =>
+                    (_, @class) =>
                     {
                         @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
                         @class.Modifiers.Clear();

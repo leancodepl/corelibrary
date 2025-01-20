@@ -20,7 +20,7 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithSender(this SendGridRazorMessage message, string email)
     {
-        message.SetFrom(email, null);
+        message.SetFrom(email);
 
         return message;
     }
@@ -41,7 +41,7 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithRecipient(this SendGridRazorMessage message, string email)
     {
-        message.AddTo(email, null);
+        message.AddTo(email);
 
         return message;
     }
@@ -79,7 +79,7 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithCarbonCopyRecipient(this SendGridRazorMessage message, string email)
     {
-        message.AddCc(email, null);
+        message.AddCc(email);
 
         return message;
     }
@@ -117,7 +117,7 @@ public static class SendGridRazorMessageExtensions
 
     public static SendGridRazorMessage WithBlindCarbonCopyRecipient(this SendGridRazorMessage message, string email)
     {
-        message.AddBcc(email, null);
+        message.AddBcc(email);
 
         return message;
     }

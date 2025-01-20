@@ -27,8 +27,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
 
         FinalPipeline = ctx =>
         {
-            ctx.GetCQRSRequestPayload()
-                .SetResult(ExecutionResult.WithPayload(CommandResult.Success, StatusCodes.Status200OK));
+            ctx.GetCQRSRequestPayload().SetResult(ExecutionResult.WithPayload(CommandResult.Success));
             return Task.CompletedTask;
         };
     }

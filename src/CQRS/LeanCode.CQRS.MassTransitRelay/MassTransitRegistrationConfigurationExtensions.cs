@@ -31,7 +31,7 @@ public static class MassTransitRegistrationConfigurationExtensions
     )
     {
         var outer = types.Where(RegistrationMetadata.IsConsumer);
-        var inner = types.Where((Type x) => x.HasInterface(typeof(IConsumerDefinition<>)));
+        var inner = types.Where(x => x.HasInterface(typeof(IConsumerDefinition<>)));
         var enumerable =
             from c in outer
             join d in inner on c equals d.GetClosingArgument(typeof(IConsumerDefinition<>)) into dc

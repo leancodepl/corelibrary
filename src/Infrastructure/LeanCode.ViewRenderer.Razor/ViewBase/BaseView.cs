@@ -81,16 +81,13 @@ public abstract class BaseView
 
     protected void WriteTo(TextWriter writer, object value)
     {
-        if (value != null)
+        if (value is HelperResult helperResult)
         {
-            if (value is HelperResult helperResult)
-            {
-                helperResult.WriteTo(writer);
-            }
-            else
-            {
-                WriteTo(writer, Stringify(value));
-            }
+            helperResult.WriteTo(writer);
+        }
+        else
+        {
+            WriteTo(writer, Stringify(value));
         }
     }
 
@@ -105,7 +102,7 @@ public abstract class BaseView
     {
         if (!string.IsNullOrEmpty(value))
         {
-            writer?.Write(value);
+            writer.Write(value);
         }
     }
 

@@ -44,7 +44,7 @@ public class JsonLaxTimeOnlyConverter : JsonConverter<TimeOnly>
     public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options)
     {
         Span<char> buffer = stackalloc char[MaxTimeOnlyBufferSize];
-        var success = value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
+        value.TryFormat(buffer, out var written, format, CultureInfo.InvariantCulture);
         writer.WriteStringValue(JsonEncodedText.Encode(buffer[..written], JavaScriptEncoder.UnsafeRelaxedJsonEscaping));
     }
 }

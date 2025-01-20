@@ -130,8 +130,8 @@ public class LocalHttpRequestTests
     public void Headers_dictionary_is_passed_further()
     {
         var headers = new HeaderDictionary { ["X-TEST"] = "test" };
-        var request = new LocalHttpRequest(Substitute.For<HttpContext>(), headers);
+        var localHttpRequest = new LocalHttpRequest(Substitute.For<HttpContext>(), headers);
 
-        request.Headers.Should().BeSameAs(headers);
+        localHttpRequest.Headers.Should().BeSameAs(headers);
     }
 }

@@ -11,7 +11,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App;
 
 public class Startup : LeanStartup
 {
-    protected override bool CloseAndFlushLogger { get; }
+    protected override bool CloseAndFlushLogger { get; } = true;
 
     public Startup(IConfiguration config)
         : base(config) { }
@@ -38,6 +38,6 @@ public class Startup : LeanStartup
     {
         app.UseRouting();
         app.UseAuthentication();
-        app.UseEndpoints(e => e.MapRemoteCQRS("/api", cqrs => { }));
+        app.UseEndpoints(e => e.MapRemoteCQRS("/api", _ => { }));
     }
 }

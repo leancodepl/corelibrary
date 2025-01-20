@@ -60,7 +60,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
         var validator = Substitute.For<IValidator>();
         var httpContext = MockHttpContext();
         var command = new Command();
-        var adapter = new FluentValidationCommandValidatorAdapter<Command>(validator);
+        var validatorAdapter = new FluentValidationCommandValidatorAdapter<Command>(validator);
 
         HttpContext interceptedHttpContext = null;
         _ = validator
@@ -70,7 +70,7 @@ public class AdapterWithAsyncValidatorIntegrationTests
             )
             .Returns(new ValidationResult());
 
-        await adapter.ValidateAsync(httpContext, command);
+        await validatorAdapter.ValidateAsync(httpContext, command);
 
         interceptedHttpContext.Should().BeSameAs(httpContext);
     }

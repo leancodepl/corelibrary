@@ -1,6 +1,7 @@
 #nullable enable
 using LeanCode.CQRS.MassTransitRelay.Middleware;
 using LeanCode.DomainModels.Model;
+using LeanCode.TimeProvider;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,7 +65,7 @@ public sealed class EventsPublisherFilterTests : IAsyncLifetime
 
     private sealed class TestConsumer : IConsumer<TestMsg>
     {
-        public static readonly TestEvent Event = new() { Id = Guid.NewGuid() };
+        public static readonly TestEvent Event = new() { Id = Guid.NewGuid(), DateOccurred = Time.UtcNow };
 
         public Task Consume(ConsumeContext<TestMsg> context)
         {

@@ -23,6 +23,9 @@ public sealed class ConfigCatInitializer : BackgroundService
         {
             await configCatClient.GetAllKeysAsync(stoppingToken);
         }
-        catch { }
+        catch
+        {
+            // We don't want any exceptions to be propagated.
+        }
     }
 }

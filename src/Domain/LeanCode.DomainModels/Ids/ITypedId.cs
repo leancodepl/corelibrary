@@ -16,15 +16,15 @@ public interface IPrefixedTypedId<TSelf>
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
     string Value { get; }
-    public static abstract int RawLength { get; }
-    public static abstract TSelf Parse(string v);
-    public static abstract bool IsValid(string? v);
+    static abstract int RawLength { get; }
+    static abstract TSelf Parse(string v);
+    static abstract bool IsValid(string? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract Expression<Func<string, TSelf>> FromDatabase { get; }
+    static abstract Expression<Func<string, TSelf>> FromDatabase { get; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
+    static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
 
 [SuppressMessage("?", "CA1000", Justification = "Roslyn bug.")]
@@ -39,11 +39,11 @@ public interface IRawTypedId<TBacking, TSelf>
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
-    public static abstract TSelf Parse(TBacking v);
+    static abstract TSelf Parse(TBacking v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract Expression<Func<TBacking, TSelf>> FromDatabase { get; }
+    static abstract Expression<Func<TBacking, TSelf>> FromDatabase { get; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
+    static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }

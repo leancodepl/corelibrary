@@ -14,7 +14,9 @@ namespace LeanCode.DomainModels.Model;
 public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEntity>>
     where TEntity : class, IEntity<Id<TEntity>>
 {
+#pragma warning disable UnassignedReadonlyField
     public static readonly Id<TEntity> Empty;
+#pragma warning restore UnassignedReadonlyField
 
     public Guid Value { get; }
 
@@ -63,7 +65,9 @@ public readonly struct Id<TEntity> : IEquatable<Id<TEntity>>, IComparable<Id<TEn
 public readonly struct IId<TEntity> : IEquatable<IId<TEntity>>, IComparable<IId<TEntity>>
     where TEntity : class, IEntity<IId<TEntity>>
 {
+#pragma warning disable UnassignedReadonlyField
     public static readonly IId<TEntity> Empty;
+#pragma warning restore UnassignedReadonlyField
 
     public int Value { get; }
 

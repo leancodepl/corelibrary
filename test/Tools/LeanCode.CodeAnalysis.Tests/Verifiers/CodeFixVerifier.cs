@@ -33,7 +33,7 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         var context = new CodeFixContext(
             document,
             analyzerDiagnostics[0],
-            (a, d) => actions.Add(a),
+            (a, _) => actions.Add(a),
             CancellationToken.None
         );
         await codeFixProvider.RegisterCodeFixesAsync(context);
@@ -48,7 +48,8 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
             document = await ApplyFix(document, actions[(int)fixToApply]);
         }
 
-        var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
+        var compilerDiagnosticsList = compilerDiagnostics.ToList();
+        var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnosticsList, await GetCompilerDiagnostics(document));
 
         if (!allowNewCompilerDiagnostics && newCompilerDiagnostics.Any())
         {
@@ -59,7 +60,7 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
                     document.Project.Solution.Workspace
                 )
             );
-            newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, await GetCompilerDiagnostics(document));
+            newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnosticsList, await GetCompilerDiagnostics(document));
 
             throw new Xunit.Sdk.XunitException(
                 string.Format(

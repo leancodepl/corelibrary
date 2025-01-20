@@ -41,12 +41,14 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
 
     public virtual void DeleteRange(IEnumerable<TEntity> entities)
     {
-        foreach (var oc in entities.OfType<IOptimisticConcurrency>())
+        var entitiesList = entities.ToList();
+
+        foreach (var oc in entitiesList.OfType<IOptimisticConcurrency>())
         {
             oc.DateModified = Time.UtcNow;
         }
 
-        DbSet.RemoveRange(entities);
+        DbSet.RemoveRange(entitiesList);
     }
 
     public virtual void Update(TEntity entity)

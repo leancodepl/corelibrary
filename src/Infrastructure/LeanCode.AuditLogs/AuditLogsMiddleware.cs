@@ -25,7 +25,7 @@ public class AuditLogsMiddleware<TDbContext>
         await auditLogsPublisher.ExtractAndPublishAsync(
             dbContext,
             bus,
-            httpContext.Request.Path.ToString()!,
+            httpContext.Request.Path.ToString(),
             httpContext.RequestAborted
         );
     }

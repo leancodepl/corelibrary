@@ -8,7 +8,7 @@ namespace LeanCode.Firebase.FCM;
 
 public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotificationTokenStore<TUserId>
     where TDbContext : DbContext
-    where TUserId : notnull, IEquatable<TUserId>
+    where TUserId : IEquatable<TUserId>
 {
     private const int MaxTokenBatchSize = IPushNotificationTokenStore<TUserId>.MaxTokenBatchSize;
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext, TUserId>>();

@@ -22,10 +22,10 @@ public static class ServiceCollectionRegistrationExtensions
     {
         serviceCollection.Add(new(obj.HandlerType, obj.HandlerType, ServiceLifetime.Scoped));
         serviceCollection.Add(
-            new(MakeHandlerInterfaceType(obj), sp => sp.GetRequiredService(obj.HandlerType), ServiceLifetime.Scoped)
+            new(MakeHandlerInterfaceType(), sp => sp.GetRequiredService(obj.HandlerType), ServiceLifetime.Scoped)
         );
 
-        Type MakeHandlerInterfaceType(CQRSObjectMetadata obj)
+        Type MakeHandlerInterfaceType()
         {
             return obj.ObjectKind switch
             {

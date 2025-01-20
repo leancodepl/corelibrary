@@ -4,7 +4,9 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 
+#pragma warning disable UnusedTypeParameter
 internal interface IGenericService<T> { }
+#pragma warning restore UnusedTypeParameter
 
 internal sealed class Type1 { }
 

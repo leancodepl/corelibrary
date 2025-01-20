@@ -208,7 +208,8 @@ public class MixpanelAnalytics
                     "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}. Mixpanel returned an error {Error}",
                     requestName,
                     userId,
-                    data
+                    data,
+                    response?.Error
                 );
             }
         }

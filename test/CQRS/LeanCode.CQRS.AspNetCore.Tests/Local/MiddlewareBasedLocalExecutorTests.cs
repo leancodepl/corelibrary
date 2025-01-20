@@ -21,8 +21,6 @@ public class MiddlewareBasedLocalExecutorTests
     private static readonly TypesCatalog ThisCatalog = TypesCatalog.Of<LocalCommand>();
 
     private readonly LocalDataStorage storage = new();
-    private readonly IServiceProvider serviceProvider;
-    private readonly ICQRSObjectSource objectSource;
 
     private readonly MiddlewareBasedLocalCommandExecutor executor;
 
@@ -36,8 +34,8 @@ public class MiddlewareBasedLocalExecutorTests
         var registrationSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);
 
-        serviceProvider = serviceCollection.BuildServiceProvider();
-        objectSource = registrationSource;
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var objectSource = registrationSource;
 
         executor = new(serviceProvider, objectSource, app => app.UseMiddleware<LocalHandlerMiddleware>());
     }

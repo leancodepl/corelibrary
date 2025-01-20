@@ -41,12 +41,7 @@ namespace LeanCode.DomainModels.Ulids;
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public readonly record struct Ulid
-    : IEquatable<Ulid>,
-        IComparable<Ulid>,
-        ISpanFormattable,
-        ISpanParsable<Ulid>,
-        IUtf8SpanFormattable
+public readonly record struct Ulid : IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>, IUtf8SpanFormattable
 {
     public const int LengthInTextElements = 26;
 
@@ -193,7 +188,9 @@ public readonly record struct Ulid
         new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 }
     );
 
+#pragma warning disable UnassignedReadonlyField
     public static readonly Ulid Empty;
+#pragma warning restore UnassignedReadonlyField
 
     // Core
 
@@ -250,8 +247,7 @@ public readonly record struct Ulid
     [IgnoreDataMember]
     [SuppressMessage("?", "CA1819", Justification = "Fresh array is allocated per call")]
     public byte[] Random =>
-        new byte[]
-        {
+        [
             randomness0,
             randomness1,
             randomness2,
@@ -262,7 +258,7 @@ public readonly record struct Ulid
             randomness7,
             randomness8,
             randomness9,
-        };
+        ];
 
     [IgnoreDataMember]
     public DateTimeOffset Time

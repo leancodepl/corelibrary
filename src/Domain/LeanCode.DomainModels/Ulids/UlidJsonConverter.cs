@@ -26,65 +26,64 @@ using System.Buffers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace LeanCode.DomainModels.Ulids
+namespace LeanCode.DomainModels.Ulids;
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class UlidJsonConverter : JsonConverter<Ulid>
 {
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public class UlidJsonConverter : JsonConverter<Ulid>
+    /// <summary>
+    /// Read a Ulid value represented by a string from JSON.
+    /// </summary>
+    public override Ulid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        /// <summary>
-        /// Read a Ulid value represented by a string from JSON.
-        /// </summary>
-        public override Ulid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        try
         {
-            try
+            if (reader.TokenType != JsonTokenType.String)
             {
-                if (reader.TokenType != JsonTokenType.String)
-                {
-                    throw new JsonException("Expected string");
-                }
-
-                if (reader.HasValueSequence)
-                {
-                    // Parse using ValueSequence
-                    var seq = reader.ValueSequence;
-                    if (seq.Length != 26)
-                    {
-                        throw new JsonException("Ulid invalid: length must be 26");
-                    }
-
-                    Span<byte> buf = stackalloc byte[26];
-                    seq.CopyTo(buf);
-                    _ = Ulid.TryParse(buf, out var ulid);
-                    return ulid;
-                }
-                else
-                {
-                    // Parse usign ValueSpan
-                    var buf = reader.ValueSpan;
-                    if (buf.Length != 26)
-                    {
-                        throw new JsonException("Ulid invalid: length must be 26");
-                    }
-
-                    _ = Ulid.TryParse(buf, out var ulid);
-                    return ulid;
-                }
+                throw new JsonException("Expected string");
             }
-            catch (IndexOutOfRangeException e)
+
+            if (reader.HasValueSequence)
             {
-                throw new JsonException("Ulid invalid: length must be 26", e);
+                // Parse using ValueSequence
+                var seq = reader.ValueSequence;
+                if (seq.Length != 26)
+                {
+                    throw new JsonException("Ulid invalid: length must be 26");
+                }
+
+                Span<byte> buf = stackalloc byte[26];
+                seq.CopyTo(buf);
+                _ = Ulid.TryParse(buf, out var ulid);
+                return ulid;
             }
-            catch (OverflowException e)
+            else
             {
-                throw new JsonException("Ulid invalid: invalid character", e);
+                // Parse usign ValueSpan
+                var buf = reader.ValueSpan;
+                if (buf.Length != 26)
+                {
+                    throw new JsonException("Ulid invalid: length must be 26");
+                }
+
+                _ = Ulid.TryParse(buf, out var ulid);
+                return ulid;
             }
         }
-
-        public override void Write(Utf8JsonWriter writer, Ulid value, JsonSerializerOptions options)
+        catch (IndexOutOfRangeException e)
         {
-            Span<byte> buf = stackalloc byte[Ulid.LengthInTextElements];
-            value.TryFormat(buf, out _, "", null);
-            writer.WriteStringValue(buf);
+            throw new JsonException("Ulid invalid: length must be 26", e);
         }
+        catch (OverflowException e)
+        {
+            throw new JsonException("Ulid invalid: invalid character", e);
+        }
+    }
+
+    public override void Write(Utf8JsonWriter writer, Ulid value, JsonSerializerOptions options)
+    {
+        Span<byte> buf = stackalloc byte[Ulid.LengthInTextElements];
+        value.TryFormat(buf, out _, "", null);
+        writer.WriteStringValue(buf);
     }
 }

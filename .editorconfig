@@ -208,8 +208,17 @@ dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.xUnit1051.severity = none
 
 # Rider
-resharper_inconsistent_naming_highlighting=hint
+resharper_inconsistent_naming_highlighting = hint
+resharper_static_member_in_generic_type_highlighting = hint
+resharper_check_namespace_highlighting = hint
+resharper_variable_hides_outer_variable_highlighting = hint
+resharper_parameter_hides_member_highlighting = hint
+resharper_not_null_or_required_member_is_not_initialized_highlighting = hint
 
-[test-bed/**/*.cs]
-resharper_not_null_or_required_member_is_not_initialized_highlighting = none
-resharper_class_never_instantiated_global_highlighting = none
+resharper_convert_type_check_pattern_to_null_check_highlighting = none
+resharper_convert_type_check_to_null_check_highlighting = none
+
+[test/**]
+resharper_equal_expression_comparison_highlighting = none
+resharper_entity_framework_model_validation_unlimited_string_length_highlighting = none
+resharper_unused_auto_property_accessor_local_highlighting = none

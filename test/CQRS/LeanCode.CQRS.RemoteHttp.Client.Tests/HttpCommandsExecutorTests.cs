@@ -29,7 +29,7 @@ public class HttpCommandsExecutorTests
         await exec.RunAsync(new ExampleCommand { RequestData = "data" });
 
         Assert.NotNull(handler.Request);
-        var content = await handler!.Request!.Content!.ReadAsStringAsync();
+        var content = await handler.Request!.Content!.ReadAsStringAsync();
         Assert.Equal("{\"RequestData\":\"data\"}", content);
     }
 

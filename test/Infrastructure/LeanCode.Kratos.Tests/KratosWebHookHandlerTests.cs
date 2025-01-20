@@ -14,7 +14,7 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Responds_with_status_code_403_without_running_inner_handler_if_api_key_is_invalid()
     {
-        var handler = new KratosWebHookTestHandler(ctx => throw new UnreachableException());
+        var handler = new KratosWebHookTestHandler(_ => throw new UnreachableException());
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = Guid.NewGuid().ToString() });
 
         Assert.Equal(403, ctx.Response.StatusCode);
@@ -32,7 +32,7 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Swallows_unhandled_exceptions_thrown_by_inner_handler_and_responds_with_status_code_500()
     {
-        var handler = new KratosWebHookTestHandler(ctx => throw new InvalidOperationException());
+        var handler = new KratosWebHookTestHandler(_ => throw new InvalidOperationException());
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = ApiKey });
 
         Assert.Equal(500, ctx.Response.StatusCode);

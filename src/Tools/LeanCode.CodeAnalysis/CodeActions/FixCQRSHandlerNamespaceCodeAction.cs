@@ -88,40 +88,43 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
             var fileName = Path.GetFileName(document.FilePath);
             var currentDirectory = Path.GetDirectoryName(document.FilePath);
 
-            var currDirectoryIdx = currentDirectory.LastIndexOf(projectName, StringComparison.InvariantCulture);
-            var expectedNamespaceIdx = expectedNamespace.StartsWith(projectName, StringComparison.InvariantCulture)
-                ? 0
-                : -1;
-
-            if (currDirectoryIdx != -1 && expectedNamespaceIdx != -1)
+            if (currentDirectory != null)
             {
-                currDirectoryIdx = currDirectoryIdx + projectName.Length;
-                expectedNamespaceIdx = expectedNamespaceIdx + projectName.Length;
+                var currDirectoryIdx = currentDirectory.LastIndexOf(projectName, StringComparison.InvariantCulture);
+                var expectedNamespaceIdx = expectedNamespace.StartsWith(projectName, StringComparison.InvariantCulture)
+                    ? 0
+                    : -1;
 
-                // Path prefix with project name.
-                var pathPrefix = currentDirectory[..currDirectoryIdx];
-                // Namespace without project name prefix.
-                var namespaceSuffix = expectedNamespace[expectedNamespaceIdx..];
-
-                // `Path.Combine` will return the second argument if it begins with a separation character.
-                var pathSuffix = namespaceSuffix
-                    .Replace('.', Path.DirectorySeparatorChar)
-                    .Trim(Path.DirectorySeparatorChar);
-
-                var newPath = Path.Combine(pathPrefix, pathSuffix, fileName);
-
-                if (newPath != document.FilePath)
+                if (currDirectoryIdx != -1 && expectedNamespaceIdx != -1)
                 {
-                    var directoryPath = Path.GetDirectoryName(newPath);
+                    currDirectoryIdx = currDirectoryIdx + projectName.Length;
+                    expectedNamespaceIdx += projectName.Length;
 
-                    if (!Directory.Exists(directoryPath))
+                    // Path prefix with project name.
+                    var pathPrefix = currentDirectory[..currDirectoryIdx];
+                    // Namespace without project name prefix.
+                    var namespaceSuffix = expectedNamespace[expectedNamespaceIdx..];
+
+                    // `Path.Combine` will return the second argument if it begins with a separation character.
+                    var pathSuffix = namespaceSuffix
+                        .Replace('.', Path.DirectorySeparatorChar)
+                        .Trim(Path.DirectorySeparatorChar);
+
+                    var newPath = Path.Combine(pathPrefix, pathSuffix, fileName);
+
+                    if (newPath != document.FilePath)
                     {
-                        Directory.CreateDirectory(directoryPath);
-                    }
+                        var directoryPath = Path.GetDirectoryName(newPath);
 
-                    var updatedText = (await document.GetTextAsync(cancellationToken)).ToString();
-                    await File.WriteAllTextAsync(newPath, updatedText, cancellationToken);
-                    File.Delete(document.FilePath);
+                        if (directoryPath != null && !Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+
+                        var updatedText = (await document.GetTextAsync(cancellationToken)).ToString();
+                        await File.WriteAllTextAsync(newPath, updatedText, cancellationToken);
+                        File.Delete(document.FilePath);
+                    }
                 }
             }
         }

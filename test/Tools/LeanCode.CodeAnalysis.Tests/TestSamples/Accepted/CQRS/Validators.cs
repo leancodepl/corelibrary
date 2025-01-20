@@ -9,13 +9,7 @@ public class ValidatorCommand : ICommand { }
 
 public class ValidatorOperation : IOperation { }
 
-public class ValidatorCommandCV : AbstractValidator<ValidatorCommand>
-{
-    public ValidatorCommandCV() { }
-}
+public class ValidatorCommandCV : AbstractValidator<ValidatorCommand> { }
 
 // Do not raise diagnostics for classes not implementing `ICommand` interface.
-public class Validator : AbstractValidator<ValidatorOperation>
-{
-    public Validator() { }
-}
+public class Validator : AbstractValidator<ValidatorOperation> { }

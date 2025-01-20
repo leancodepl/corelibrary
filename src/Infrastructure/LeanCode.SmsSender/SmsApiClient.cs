@@ -84,7 +84,7 @@ public class SmsApiClient : ISmsSender
             parameters["fast"] = "1";
         }
 
-        using var requestContent = new FormUrlEncodedContent(parameters!);
+        using var requestContent = new FormUrlEncodedContent(parameters);
         using var response = await client.PostAsync("sms.do", requestContent, cancellationToken);
 
         await using var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);

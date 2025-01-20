@@ -149,42 +149,42 @@ namespace LeanCode.CQRS.AspNetCore.Tests
                         typeof(Command),
                         typeof(CommandResult),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                     new(
                         CQRSObjectKind.Command,
                         typeof(AliasedCommand),
                         typeof(CommandResult),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                     new(
                         CQRSObjectKind.Query,
                         typeof(Query),
                         typeof(Result),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                     new(
                         CQRSObjectKind.Query,
                         typeof(AliasedQuery),
                         typeof(Result),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                     new(
                         CQRSObjectKind.Operation,
                         typeof(Operation),
                         typeof(Result),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                     new(
                         CQRSObjectKind.Operation,
                         typeof(AliasedOperation),
                         typeof(Result),
                         typeof(IgnoreHandler),
-                        (_, __) => Task.FromResult<object?>(null)
+                        (_, _) => Task.FromResult<object?>(null)
                     ),
                 ],
                 pipeline,
@@ -203,12 +203,6 @@ namespace LeanCode.CQRS.AspNetCore.Tests
         public async ValueTask InitializeAsync() => await host.StartAsync();
 
         public async ValueTask DisposeAsync() => await host.StopAsync();
-
-        private sealed class MockExecutorFactory : IObjectExecutorFactory
-        {
-            public ObjectExecutor CreateExecutorFor(CQRSObjectKind kind, Type objectType, Type handlerType) =>
-                (_, __) => Task.FromResult<object?>(null);
-        }
 
         private sealed class IgnoreHandler { }
     }

@@ -45,12 +45,14 @@ public class NotificationConversionTests
         data.Should().ContainKey("Date").WhoseValue.Should().Be("2024-09-25T13:56:48.0000000+02:00");
     }
 
+    // ReSharper disable once UnusedMember.Local
     private enum IntEnum
     {
         First = 0,
         Second = 1,
     }
 
+    // ReSharper disable once UnusedMember.Local
     private enum ByteEnum : byte
     {
         First = 0,

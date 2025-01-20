@@ -121,7 +121,7 @@ public abstract class DiagnosticVerifier : IDisposable
         return solution.GetProject(projectId);
     }
 
-    private static readonly MetadataReference[] CommonReferences = new[]
+    private static readonly MetadataReference[] CommonReferences =
     {
         MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(ICommand).Assembly.Location),

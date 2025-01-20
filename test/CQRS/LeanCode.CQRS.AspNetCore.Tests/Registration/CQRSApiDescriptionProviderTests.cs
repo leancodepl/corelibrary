@@ -237,25 +237,25 @@ public class CQRSApiDescriptionProviderTests
     }
 }
 
-public record QueryResultDTO();
+public record QueryResultDTO;
 
-public record Query() : IQuery<QueryResultDTO>;
+public record Query : IQuery<QueryResultDTO>;
 
 public class QueryQH : IQueryHandler<Query, QueryResultDTO>
 {
     public Task<QueryResultDTO> ExecuteAsync(HttpContext context, Query query) => throw new NotImplementedException();
 }
 
-public record Command() : ICommand;
+public record Command : ICommand;
 
 public class CommandCH : ICommandHandler<Command>
 {
     public Task ExecuteAsync(HttpContext context, Command command) => throw new NotImplementedException();
 }
 
-public record OperationResultDTO();
+public record OperationResultDTO;
 
-public record Operation() : IOperation<OperationResultDTO>;
+public record Operation : IOperation<OperationResultDTO>;
 
 public class OperationOH : IOperationHandler<Operation, OperationResultDTO>
 {
