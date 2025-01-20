@@ -2,9 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
-    <EntityFrameworkCoreVersion>9.0.0</EntityFrameworkCoreVersion>
-    <AspNetCoreVersion>9.0.0</AspNetCoreVersion>
-    <ExtensionsVersion>9.0.0</ExtensionsVersion>
+    <EntityFrameworkCoreVersion>9.0.1</EntityFrameworkCoreVersion>
+    <AspNetCoreVersion>9.0.1</AspNetCoreVersion>
+    <ExtensionsVersion>9.0.1</ExtensionsVersion>
 
     <MassTransitVersion>8.3.4</MassTransitVersion>
 
