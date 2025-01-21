@@ -1,6 +1,5 @@
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;

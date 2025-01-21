@@ -11,10 +11,13 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App;
 
 public class Startup : LeanStartup
 {
-    protected override bool CloseAndFlushLogger { get; } = true;
+    protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)
-        : base(config) { }
+        : base(config)
+    {
+        CloseAndFlushLogger = false;
+    }
 
     public override void ConfigureServices(IServiceCollection services)
     {
