@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using LeanCode.Components;
 using LeanCode.Contracts;
@@ -26,6 +27,7 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
 
     public CQRSObjectMetadata MetadataFor(Type type) => cachedMetadata.Value[type];
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public void AddCQRSObjects(TypesCatalog contractsCatalog, TypesCatalog handlersCatalog)
     {
         var contracts = contractsCatalog
@@ -44,9 +46,9 @@ internal class CQRSObjectsRegistrationSource : ICQRSObjectSource
                 continue;
             }
 
-            var handlerCandidates = handlers[contract].ToList();
+            var handlerCandidates = handlers[contract];
 
-            if (handlerCandidates.Count != 1)
+            if (handlerCandidates.Count() != 1)
             {
                 // TODO: shouldn't we throw here?
                 continue;
