@@ -9,11 +9,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LeanCode.Dapper;
 
-[SuppressMessage(
-    "StyleCop.CSharp.LayoutRules",
-    "SA1507:CodeMustNotContainMultipleBlankLinesInARow",
-    Justification = "Grouping of the methods improves readability."
-)]
 public static class DbContextDapperExtensions
 {
     public static async Task<TResult> WithConnectionAsync<TResult>(

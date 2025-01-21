@@ -4,11 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Mixpanel;
 
-[SuppressMessage(
-    "StyleCop.CSharp.LayoutRules",
-    "SA1507:CodeMustNotContainMultipleBlankLinesInARow",
-    Justification = "Reviewed."
-)]
 public class MixpanelAnalytics
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
