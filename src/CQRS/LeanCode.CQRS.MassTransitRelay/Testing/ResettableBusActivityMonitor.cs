@@ -13,7 +13,7 @@ public sealed class ResettableBusActivityMonitor
         IPublishObserver,
         IDisposable
 {
-    private readonly object mutex = new object();
+    private readonly Lock mutex = new();
     private readonly AsyncManualResetEvent inactive = new(true);
     private readonly RollingTimer rollingTimer;
 
