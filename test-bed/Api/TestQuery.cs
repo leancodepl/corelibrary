@@ -9,7 +9,7 @@ public class TestQuery : IQuery<TestQueryResult> { }
 public class TestQueryResult
 {
     public Guid Id { get; set; }
-    public string Property1 { get; set; }
+    public string Property1 { get; set; } = default!;
     public TestQueryResult? Inner { get; set; }
 }
 
