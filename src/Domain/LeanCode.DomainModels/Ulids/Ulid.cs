@@ -188,9 +188,8 @@ public readonly record struct Ulid : IComparable<Ulid>, ISpanFormattable, ISpanP
         new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 }
     );
 
-#pragma warning disable UnassignedReadonlyField
+    // ReSharper disable once UnassignedReadonlyField
     public static readonly Ulid Empty;
-#pragma warning restore UnassignedReadonlyField
 
     // Core
 

@@ -122,9 +122,8 @@ public class GuidTypedIdConverter<TId> : JsonConverter<TId>
 
     private bool TryGetGuidCore(ref Utf8JsonReader reader, out Guid value)
     {
-#pragma warning disable RedundantAssignment
+        // ReSharper disable once RedundantAssignment
         ReadOnlySpan<byte> span = stackalloc byte[0];
-#pragma warning restore RedundantAssignment
 
         if (reader.HasValueSequence)
         {
