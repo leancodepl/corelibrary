@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
@@ -103,17 +104,17 @@ public class FCMClient<TUserId>
         }
     }
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public virtual async Task SendAllAsync(
         IEnumerable<Message> messages,
         bool dryRun,
         CancellationToken cancellationToken = default
     )
     {
-        var messagesList = messages.ToList();
-        logger.Debug("Sending {Count} push messages", messagesList.Count);
+        logger.Debug("Sending {Count} push messages", messages.Count());
 
-        var response = await messaging.SendEachAsync(messagesList, dryRun, cancellationToken);
-        await HandleBatchResponseAsync(response, messagesList.Select(m => m.Token), cancellationToken);
+        var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
+        await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
     }
 
     public virtual async Task SendMulticastAsync(

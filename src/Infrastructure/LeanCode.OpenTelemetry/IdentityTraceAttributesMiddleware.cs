@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 
@@ -6,6 +7,7 @@ namespace LeanCode.OpenTelemetry;
 
 public static class IdentityTraceAttributesMiddleware
 {
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public static IApplicationBuilder UseIdentityTraceAttributes(
         this IApplicationBuilder builder,
         string userIdClaim = "sub",
@@ -30,12 +32,9 @@ public static class IdentityTraceAttributesMiddleware
                         }
                     }
 
-                    var userRoles = httpContext
-                        .User.Claims.Where(c => c.Type == roleClaim)
-                        .Select(c => c.Value)
-                        .ToList();
+                    var userRoles = httpContext.User.Claims.Where(c => c.Type == roleClaim).Select(c => c.Value);
 
-                    if (userRoles.Count != 0)
+                    if (userRoles.Any())
                     {
                         activity.SetUserRoleBaggage(IdentityTraceBaggageHelpers.CurrentUserRoleKey, userRoles);
 
