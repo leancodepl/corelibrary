@@ -42,7 +42,7 @@ public class TestConnectionStringTests
         config[ConnectionStringKey].Should().Contain(BaseConnectionString);
     }
 
-    private IConfiguration Build(string baseConnectionString)
+    private static IConfiguration Build(string baseConnectionString)
     {
         var builder = new ConfigurationBuilder();
         builder.Add(new ConfigurationOverrides(new() { [BaseKey] = baseConnectionString }));
