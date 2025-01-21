@@ -15,7 +15,7 @@ public sealed class ConfigCatInitializer : BackgroundService
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "?",
         "CA1031:DoNotCatchGeneralExceptionTypes",
-        Justification = "We want to prevent exceptions from propagating to ensure the application does not fail."
+        Justification = "We don't want any exceptions to be propagated, as ConfigCat already logs them."
     )]
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -25,7 +25,7 @@ public sealed class ConfigCatInitializer : BackgroundService
         }
         catch
         {
-            // We want to prevent exceptions from propagating to ensure the application does not fail.
+            // We don't want any exceptions to be propagated, as ConfigCat already logs them.
         }
     }
 }
