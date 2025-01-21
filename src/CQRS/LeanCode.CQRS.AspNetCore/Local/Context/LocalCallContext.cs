@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -16,8 +17,8 @@ internal class LocalCallContext : HttpContext, IDisposable
 
     public override IFeatureCollection Features => features;
 
-    public sealed override ClaimsPrincipal User { get; set; }
-    public sealed override string TraceIdentifier { get; set; }
+    public override ClaimsPrincipal User { get; set; }
+    public override string TraceIdentifier { get; set; }
     public override HttpRequest Request { get; }
     public override HttpResponse Response { get; }
 
@@ -49,6 +50,7 @@ internal class LocalCallContext : HttpContext, IDisposable
         set { }
     }
 
+    [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
     public LocalCallContext(
         IServiceProvider requestServices,
         ClaimsPrincipal user,
