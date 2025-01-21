@@ -11,13 +11,11 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App;
 
 public class Startup : LeanStartup
 {
+    // ReSharper disable once UnassignedGetOnlyAutoProperty
     protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)
-        : base(config)
-    {
-        CloseAndFlushLogger = false;
-    }
+        : base(config) { }
 
     public override void ConfigureServices(IServiceCollection services)
     {
