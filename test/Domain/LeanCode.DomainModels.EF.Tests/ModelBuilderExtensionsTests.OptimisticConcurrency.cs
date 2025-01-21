@@ -35,11 +35,10 @@ public class ModelBuilderExtensionsTests_OptimisticConcurrency
     [Fact]
     public void When_DateModified_is_implemented_differently_Fails()
     {
-        WrongDateModifiedContext db;
-
-        using (db = new WrongDateModifiedContext())
+        using (var db = new WrongDateModifiedContext())
         {
             Assert.Throws<InvalidOperationException>(
+                // ReSharper disable once AccessToDisposedClosure
                 () => db.Model.FindEntityType(typeof(WrongDateModified).FullName!)
             );
         }
