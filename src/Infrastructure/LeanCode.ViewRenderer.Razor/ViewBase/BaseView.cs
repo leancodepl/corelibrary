@@ -85,7 +85,8 @@ public abstract class BaseView
         {
             helperResult.WriteTo(writer);
         }
-        else
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        else if (value is not null)
         {
             WriteTo(writer, Stringify(value));
         }
