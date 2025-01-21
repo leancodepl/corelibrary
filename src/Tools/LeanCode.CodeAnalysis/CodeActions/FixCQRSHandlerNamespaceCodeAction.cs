@@ -82,13 +82,13 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
         CancellationToken cancellationToken
     )
     {
-        if (document != null && document.FilePath != null)
+        if (document is not null && document.FilePath is not null)
         {
             var projectName = document.Project.AssemblyName;
             var fileName = Path.GetFileName(document.FilePath);
             var currentDirectory = Path.GetDirectoryName(document.FilePath);
 
-            if (currentDirectory != null)
+            if (currentDirectory is not null)
             {
                 var currDirectoryIdx = currentDirectory.LastIndexOf(projectName, StringComparison.InvariantCulture);
                 var expectedNamespaceIdx = expectedNamespace.StartsWith(projectName, StringComparison.InvariantCulture)
@@ -97,7 +97,7 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
 
                 if (currDirectoryIdx != -1 && expectedNamespaceIdx != -1)
                 {
-                    currDirectoryIdx = currDirectoryIdx + projectName.Length;
+                    currDirectoryIdx += projectName.Length;
                     expectedNamespaceIdx += projectName.Length;
 
                     // Path prefix with project name.
@@ -116,7 +116,7 @@ public class FixCQRSHandlerNamespaceCodeAction : CodeAction
                     {
                         var directoryPath = Path.GetDirectoryName(newPath);
 
-                        if (directoryPath != null && !Directory.Exists(directoryPath))
+                        if (directoryPath is not null)
                         {
                             Directory.CreateDirectory(directoryPath);
                         }
