@@ -6,7 +6,7 @@ namespace LeanCode.DomainModels.Model;
 /// This type is intended to be used with PostgreSQL which supports AT TIME ZONE operator
 /// with IANA time zone IDs but cannot store both timestamp and offset in a single column.
 /// </remarks>
-public sealed record TimestampTz : ValueObject
+public sealed record class TimestampTz : ValueObject
 {
     [JsonIgnore]
     public TimeZoneInfo TimeZoneInfo => TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);

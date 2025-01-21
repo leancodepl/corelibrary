@@ -18,9 +18,9 @@ namespace LeanCode.Kratos.Tests;
 
 public class KratosAuthenticationHandlerTests
 {
-    private sealed record Traits(string Email);
+    private sealed record class Traits(string Email);
 
-    private sealed record MetadataPublic(bool IsAdmin);
+    private sealed record class MetadataPublic(bool IsAdmin);
 
     private readonly KratosSession session = new(
         active: true,

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Kratos;
 
-public sealed record KratosWebHookHandlerConfig(string ApiKey);
+public sealed record class KratosWebHookHandlerConfig(string ApiKey);
 
 public abstract class KratosWebHookHandlerBase
 {
