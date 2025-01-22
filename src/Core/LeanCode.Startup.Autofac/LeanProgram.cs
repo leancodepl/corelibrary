@@ -1,4 +1,3 @@
-using System.IO;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ public static class LeanProgram
         return new HostBuilder()
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureAppConfiguration(
-                (hostingContext, config) =>
+                (_, config) =>
                 {
                     config.AddEnvironmentVariables();
                 }

@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LeanCode.CQRS.RemoteHttp.Client.Tests;
 
@@ -45,12 +40,9 @@ internal sealed class ShortcircuitingJsonHandler : HttpMessageHandler
             ms.Position = 0;
             clone.Content = new StreamContent(ms);
 
-            if (req.Content.Headers != null)
+            foreach (var h in req.Content.Headers)
             {
-                foreach (var h in req.Content.Headers)
-                {
-                    clone.Content.Headers.Add(h.Key, h.Value);
-                }
+                clone.Content.Headers.Add(h.Key, h.Value);
             }
         }
 

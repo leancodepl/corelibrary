@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace LeanCode.ViewRenderer.Razor.ViewBase;
 
@@ -86,16 +81,14 @@ public abstract class BaseView
 
     protected void WriteTo(TextWriter writer, object value)
     {
-        if (value != null)
+        if (value is HelperResult helperResult)
         {
-            if (value is HelperResult helperResult)
-            {
-                helperResult.WriteTo(writer);
-            }
-            else
-            {
-                WriteTo(writer, Stringify(value));
-            }
+            helperResult.WriteTo(writer);
+        }
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        else if (value is not null)
+        {
+            WriteTo(writer, Stringify(value));
         }
     }
 
@@ -110,7 +103,7 @@ public abstract class BaseView
     {
         if (!string.IsNullOrEmpty(value))
         {
-            writer?.Write(value);
+            writer.Write(value);
         }
     }
 

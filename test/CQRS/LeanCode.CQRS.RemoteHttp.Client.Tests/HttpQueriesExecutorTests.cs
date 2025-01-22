@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using Xunit;
 
@@ -28,7 +25,7 @@ public class HttpQueriesExecutorTests
         await exec.GetAsync(new ExampleQuery { RequestData = "data" });
 
         Assert.NotNull(handler.Request);
-        var content = await handler!.Request!.Content!.ReadAsStringAsync();
+        var content = await handler.Request!.Content!.ReadAsStringAsync();
         Assert.Equal("{\"RequestData\":\"data\"}", content);
     }
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.CQRS.Security.Exceptions;
 
 public class InsufficientPermissionException : Exception

@@ -1,4 +1,3 @@
-using System;
 using LeanCode.DomainModels.Model;
 using LeanCode.UnitTests.TestHelpers;
 using Xunit;

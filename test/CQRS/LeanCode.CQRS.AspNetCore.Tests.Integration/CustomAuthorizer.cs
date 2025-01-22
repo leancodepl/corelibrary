@@ -7,7 +7,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Integration;
 
 public interface ICustomAuthorizerParams
 {
-    public bool FailAuthorization { get; set; }
+    bool FailAuthorization { get; set; }
 }
 
 [SuppressMessage("?", "CA1040", Justification = "Marker interface")]

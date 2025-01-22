@@ -1,9 +1,6 @@
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using LeanCode.Localization.StringLocalizers;
 using LeanCode.ViewRenderer;
 using SendGrid;

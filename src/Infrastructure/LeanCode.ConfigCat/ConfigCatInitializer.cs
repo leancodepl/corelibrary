@@ -12,17 +12,8 @@ public sealed class ConfigCatInitializer : BackgroundService
         this.configCatClient = configCatClient;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "?",
-        "CA1031:DoNotCatchGeneralExceptionTypes",
-        Justification = "We don't want any exceptions to be propagated."
-    )]
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        try
-        {
-            await configCatClient.GetAllKeysAsync(stoppingToken);
-        }
-        catch { }
+        await configCatClient.GetAllKeysAsync(stoppingToken);
     }
 }

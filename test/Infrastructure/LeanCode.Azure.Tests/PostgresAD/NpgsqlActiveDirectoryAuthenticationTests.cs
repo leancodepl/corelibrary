@@ -2,7 +2,6 @@
 using LeanCode.Npgsql.ActiveDirectory;
 using LeanCode.Test.Helpers;
 using Npgsql;
-using Xunit;
 
 namespace LeanCode.Azure.Tests.PostgresAD;
 

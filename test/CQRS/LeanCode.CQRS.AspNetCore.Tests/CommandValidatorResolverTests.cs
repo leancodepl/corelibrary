@@ -12,13 +12,12 @@ namespace LeanCode.CQRS.AspNetCore.Tests;
 public class CommandValidatorResolverTests
 {
     private readonly ICommandValidator<CommandWithValidator> validator;
-    private readonly IServiceProvider serviceProvider;
     private readonly CommandValidatorResolver resolver;
 
     public CommandValidatorResolverTests()
     {
+        var serviceProvider = Substitute.For<IServiceProvider>();
         validator = Substitute.For<ICommandValidator<CommandWithValidator>>();
-        serviceProvider = Substitute.For<IServiceProvider>();
         resolver = new CommandValidatorResolver(serviceProvider);
 
         serviceProvider.GetService(typeof(ICommandValidator<CommandWithValidator>)).Returns(validator);

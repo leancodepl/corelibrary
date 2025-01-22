@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;

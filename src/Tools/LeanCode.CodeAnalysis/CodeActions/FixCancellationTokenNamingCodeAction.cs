@@ -56,7 +56,7 @@ public class FixCancellationTokenNamingCodeAction : CodeAction
                 // the old nodes are still available, we need to replace them all at once.
                 var newRoot = root.ReplaceNodes(
                     references,
-                    (oldNode, newNode) =>
+                    (oldNode, _) =>
                     {
                         return oldNode switch
                         {

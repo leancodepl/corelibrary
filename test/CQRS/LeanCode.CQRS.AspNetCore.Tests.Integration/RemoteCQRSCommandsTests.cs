@@ -46,7 +46,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
         Assert.Equal(HttpStatusCode.OK, statusCode);
         var result = JsonSerializer.Deserialize<CommandResult?>(body);
         Assert.NotNull(result);
-        Assert.True(result!.WasSuccessful);
+        Assert.True(result.WasSuccessful);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
         Assert.Equal(HttpStatusCode.UnprocessableEntity, statusCode);
         Assert.NotNull(commandResult);
 
-        Assert.False(commandResult!.WasSuccessful);
+        Assert.False(commandResult.WasSuccessful);
         var error = Assert.Single(commandResult.ValidationErrors);
         Assert.Equal(nameof(TestCommand.FailValidation), error.PropertyName);
         Assert.Equal("Test command should pass validation", error.ErrorMessage);

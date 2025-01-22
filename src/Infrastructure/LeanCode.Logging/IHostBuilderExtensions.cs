@@ -69,7 +69,7 @@ public static class IHostBuilderExtensions
 
                 if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
                 {
-                    loggerConfiguration.WriteTo.Seq(seqEndpoint);
+                    loggerConfiguration.WriteTo.Seq(seqEndpoint, formatProvider: CultureInfo.InvariantCulture);
                 }
 
                 if (context.HostingEnvironment.IsDevelopment())

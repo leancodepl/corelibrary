@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.SmsSender.Exceptions;
 
 public abstract class ResponseException : Exception

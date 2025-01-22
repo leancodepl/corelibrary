@@ -1,4 +1,3 @@
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using FluentAssertions;
 using LeanCode.CQRS.AspNetCore.Local.Context;

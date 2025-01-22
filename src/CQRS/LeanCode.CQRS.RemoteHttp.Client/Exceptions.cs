@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 
 namespace LeanCode.CQRS.RemoteHttp.Client;

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Testing/LeanCode.DomainModels.EventsExecution.TestHelpers/LeanCode.DomainModels.EventsExecution.TestHelpers.csproj" />
+    <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 

@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading.Tasks;
-using LeanCode.CodeAnalysis.Analyzers;
 using LeanCode.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;

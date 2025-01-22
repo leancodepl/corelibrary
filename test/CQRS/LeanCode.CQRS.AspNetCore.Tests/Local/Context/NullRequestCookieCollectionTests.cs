@@ -21,7 +21,8 @@ public class NullRequestCookieCollectionTests
     [Fact]
     public void GetEnumerator_should_return_empty_enumerable()
     {
-        NullRequestCookieCollection.Empty.GetEnumerator().MoveNext().Should().BeFalse();
+        using var enumerator = NullRequestCookieCollection.Empty.GetEnumerator();
+        enumerator.MoveNext().Should().BeFalse();
     }
 
     [Fact]

@@ -35,7 +35,7 @@ public abstract class CachingEFRepository<TEntity, TIdentity, TContext> : EFRepo
     {
         // Safety: aggregates are bound to have Id as a primary key by design.
         var primaryKey = DbContext.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!;
-        return ((IDbContextDependencies)DbContext).StateManager!.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
+        return ((IDbContextDependencies)DbContext).StateManager.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
     }
 
     [SuppressMessage(
@@ -47,7 +47,7 @@ public abstract class CachingEFRepository<TEntity, TIdentity, TContext> : EFRepo
     {
         // Safety: aggregates are bound to have Id as a primary key by design.
         var primaryKey = DbContext.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!;
-        return ((IDbContextDependencies)DbContext).StateManager!.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
+        return ((IDbContextDependencies)DbContext).StateManager.TryGetEntryTyped(primaryKey, id)?.Entity as TEntity;
     }
 
     protected ValueTask<TEntity?> FindTrackedOrLoadNewAsync(TIdentity id, Func<DbSet<TEntity>, Task<TEntity?>> query)

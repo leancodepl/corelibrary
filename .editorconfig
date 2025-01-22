@@ -192,7 +192,34 @@ dotnet_naming_symbols.everything_else.applicable_accessibilities   = *
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1724.severity = none
 dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1816.severity = none
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1032.severity = none
+dotnet_diagnostic.CA1034.severity = none
+dotnet_diagnostic.CA1019.severity = none
+dotnet_diagnostic.CA1308.severity = none
 dotnet_diagnostic.IDE0058.severity = none
 
 # Disable temporarily
 dotnet_diagnostic.xUnit1051.severity = none
+
+# Rider
+resharper_inconsistent_naming_highlighting = hint
+resharper_static_member_in_generic_type_highlighting = hint
+resharper_check_namespace_highlighting = hint
+resharper_variable_hides_outer_variable_highlighting = hint
+resharper_parameter_hides_member_highlighting = hint
+resharper_not_null_or_required_member_is_not_initialized_highlighting = hint
+
+resharper_convert_type_check_pattern_to_null_check_highlighting = none
+resharper_convert_type_check_to_null_check_highlighting = none
+resharper_redundant_record_class_keyword_highlighting = none
+
+[test/**]
+resharper_equal_expression_comparison_highlighting = none
+resharper_entity_framework_model_validation_unlimited_string_length_highlighting = none
+resharper_unused_auto_property_accessor_local_highlighting = none

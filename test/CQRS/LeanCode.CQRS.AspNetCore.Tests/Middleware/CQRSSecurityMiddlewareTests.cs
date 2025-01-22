@@ -112,7 +112,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     public async Task Passes_custom_authorizer_data_to_authorizers()
     {
         var cmd = new SingleAuthorizer();
-        var httpContext = await SendPayloadAsync(cmd, AuthenticatedUser());
+        await SendPayloadAsync(cmd, AuthenticatedUser());
 
         await firstAuthorizer
             .Received()
@@ -174,9 +174,9 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     private sealed class NotImplementedAuthorizer { }
 
     // Public, so that NSubstitute could mock it
-    public interface IFirstAuthorizer { }
+    public interface IFirstAuthorizer : ICustomAuthorizer { }
 
-    public interface ISecondAuthorizer { }
+    public interface ISecondAuthorizer : ICustomAuthorizer { }
 
     public interface INotImplementedAuthorizer { }
 

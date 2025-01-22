@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using LeanCode.Firebase.FCM;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Test.Helpers;
@@ -10,7 +9,7 @@ namespace LeanCode.IntegrationTests;
 public class PushNotificationTokenStoreTests : IAsyncLifetime
 {
     private readonly TestApp app;
-    private AsyncServiceScope scope = default!;
+    private AsyncServiceScope scope;
     private PushNotificationTokenStore<TestDbContext, Guid> store = default!;
 
     public PushNotificationTokenStoreTests()

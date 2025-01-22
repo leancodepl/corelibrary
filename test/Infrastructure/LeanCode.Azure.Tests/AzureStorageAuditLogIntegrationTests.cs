@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using Azure.Data.Tables;
 using Azure.Storage.Blobs;
@@ -7,7 +6,6 @@ using FluentAssertions;
 using LeanCode.AuditLogs;
 using LeanCode.Test.Helpers;
 using LeanCode.TimeProvider;
-using Xunit;
 
 namespace LeanCode.Azure.Tests;
 
@@ -95,7 +93,7 @@ public class AzureStorageAuditLogIntegrationTests
             );
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(
+        blobServiceClient.GetBlobContainerClient(
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 
@@ -132,7 +130,7 @@ public class AzureStorageAuditLogIntegrationTests
             );
         }
 
-        var containerClient = blobServiceClient.GetBlobContainerClient(
+        blobServiceClient.GetBlobContainerClient(
             Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey)
         );
 

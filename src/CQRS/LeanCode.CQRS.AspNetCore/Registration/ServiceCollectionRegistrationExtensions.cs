@@ -25,7 +25,7 @@ public static class ServiceCollectionRegistrationExtensions
             new(MakeHandlerInterfaceType(obj), sp => sp.GetRequiredService(obj.HandlerType), ServiceLifetime.Scoped)
         );
 
-        Type MakeHandlerInterfaceType(CQRSObjectMetadata obj)
+        static Type MakeHandlerInterfaceType(CQRSObjectMetadata obj)
         {
             return obj.ObjectKind switch
             {

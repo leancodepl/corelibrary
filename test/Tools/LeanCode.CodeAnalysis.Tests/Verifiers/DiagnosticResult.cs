@@ -1,4 +1,3 @@
-using System;
 using Microsoft.CodeAnalysis;
 
 namespace LeanCode.CodeAnalysis.Tests.Verifiers;

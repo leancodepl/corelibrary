@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.ViewRenderer;
 
 public class ViewNotFoundException : Exception

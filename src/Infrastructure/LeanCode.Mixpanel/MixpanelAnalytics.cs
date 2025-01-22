@@ -1,19 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LeanCode.Mixpanel;
 
-[SuppressMessage(
-    "StyleCop.CSharp.LayoutRules",
-    "SA1507:CodeMustNotContainMultipleBlankLinesInARow",
-    Justification = "Reviewed."
-)]
 public class MixpanelAnalytics
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MixpanelAnalytics>();
@@ -180,7 +169,7 @@ public class MixpanelAnalytics
         var url =
             $"{uri}/?data={dataString}&verbose={(configuration.VerboseErrors ? "1" : "0")}&api_key={configuration.ApiKey}";
 
-        using var rawResponse = await client.GetAsync(url, cancellationToken);
+        using var rawResponse = await client.GetAsync(new Uri(url), cancellationToken);
         var content = await rawResponse.Content.ReadAsStringAsync(cancellationToken);
         if (content == "1")
         {
@@ -213,7 +202,8 @@ public class MixpanelAnalytics
                     "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}. Mixpanel returned an error {Error}",
                     requestName,
                     userId,
-                    data
+                    data,
+                    response?.Error
                 );
             }
         }

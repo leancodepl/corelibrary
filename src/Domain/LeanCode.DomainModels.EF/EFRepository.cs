@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.DomainModels.DataAccess;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
@@ -39,6 +40,7 @@ public abstract class EFRepository<TEntity, TIdentity, TContext> : IRepository<T
         DbSet.Remove(entity);
     }
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public virtual void DeleteRange(IEnumerable<TEntity> entities)
     {
         foreach (var oc in entities.OfType<IOptimisticConcurrency>())

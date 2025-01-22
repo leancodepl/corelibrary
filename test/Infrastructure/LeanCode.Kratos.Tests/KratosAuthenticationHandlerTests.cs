@@ -275,7 +275,7 @@ public class KratosAuthenticationHandlerTests
                 cfg.RoleClaimType = "role";
                 cfg.NameClaimType = "sub";
 
-                cfg.ClaimsExtractor = (s, o, c) => { };
+                cfg.ClaimsExtractor = (_, _, _) => { };
 
                 configureAuthenticationOptions?.Invoke(cfg);
             });

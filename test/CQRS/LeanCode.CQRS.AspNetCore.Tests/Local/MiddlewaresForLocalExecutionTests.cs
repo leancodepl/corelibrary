@@ -88,14 +88,14 @@ public class MiddlewaresForLocalExecutionTests
     }
 }
 
-public record DummyCommand() : ICommand;
+public record DummyCommand : ICommand;
 
-public record ExceptionTranslationCommand() : ICommand;
+public record ExceptionTranslationCommand : ICommand;
 
-public record ValidatedCommand() : ICommand;
+public record ValidatedCommand : ICommand;
 
 [AuthorizeWhenHasAnyOf("invalid")]
-public record SecuredCommand() : ICommand;
+public record SecuredCommand : ICommand;
 
 public class DummyCommandHandler : ICommandHandler<DummyCommand>
 {
@@ -126,7 +126,7 @@ public class ValidatedCommandHandler : ICommandHandler<ValidatedCommand>
 
 public class CommandValidatorResolver : ICommandValidatorResolver
 {
-    public ICommandValidatorWrapper? FindCommandValidator(Type commandType) => new ValidatedCommandValidator();
+    public ICommandValidatorWrapper FindCommandValidator(Type commandType) => new ValidatedCommandValidator();
 }
 
 public class SecureCommandHandler : ICommandHandler<SecuredCommand>

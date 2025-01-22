@@ -6,12 +6,10 @@ namespace LeanCode.UserIdExtractors.Tests;
 
 public class UserIdExtractorsRegistrationTests
 {
-    private const string UserIdClaim = "sub";
-
     [Fact]
     public void String_IUserIdExtractor_is_correctly_registered()
     {
-        var serviceProvider = BuildServiceProvider(services => services.AddStringUserIdExtractor(UserIdClaim));
+        var serviceProvider = BuildServiceProvider(services => services.AddStringUserIdExtractor());
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<string>>();
 
         Assert.NotNull(userIdExtractor);
@@ -21,7 +19,7 @@ public class UserIdExtractorsRegistrationTests
     [Fact]
     public void Guid_IUserIdExtractor_is_correctly_registered()
     {
-        var serviceProvider = BuildServiceProvider(services => services.AddGuidUserIdExtractor(UserIdClaim));
+        var serviceProvider = BuildServiceProvider(services => services.AddGuidUserIdExtractor());
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<Guid>>();
 
         Assert.NotNull(userIdExtractor);
@@ -31,9 +29,7 @@ public class UserIdExtractorsRegistrationTests
     [Fact]
     public void Raw_typed_IUserIdExtractor_is_correctly_registered()
     {
-        var serviceProvider = BuildServiceProvider(services =>
-            services.AddRawTypedUserIdExtractor<Guid, TestGuidId>(UserIdClaim)
-        );
+        var serviceProvider = BuildServiceProvider(services => services.AddRawTypedUserIdExtractor<Guid, TestGuidId>());
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestGuidId>>();
 
         Assert.NotNull(userIdExtractor);
@@ -44,7 +40,7 @@ public class UserIdExtractorsRegistrationTests
     public void Prefixed_typed_IUserIdExtractor_is_correctly_registered()
     {
         var serviceProvider = BuildServiceProvider(services =>
-            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
+            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>()
         );
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor<TestPrefixedGuidId>>();
 
@@ -56,7 +52,7 @@ public class UserIdExtractorsRegistrationTests
     public void Non_generic_IUserIdExtractor_is_registered_for_other_user_id_types()
     {
         var serviceProvider = BuildServiceProvider(services =>
-            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>(UserIdClaim)
+            services.AddPrefixedUserIdExtractor<TestPrefixedGuidId>()
         );
         var userIdExtractor = serviceProvider.GetService<IUserIdExtractor>();
 

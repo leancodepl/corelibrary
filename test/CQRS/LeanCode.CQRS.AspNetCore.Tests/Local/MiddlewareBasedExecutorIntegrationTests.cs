@@ -32,14 +32,14 @@ public class MiddlewareBasedExecutorIntegrationTests : IDisposable, IAsyncLifeti
                     .ConfigureServices(services =>
                     {
                         services.AddRouting();
-                        services.AddCQRS(ThisCatalog, ThisCatalog).WithLocalQueries(q => { });
+                        services.AddCQRS(ThisCatalog, ThisCatalog).WithLocalQueries(_ => { });
                     })
                     .Configure(app =>
                     {
                         app.UseRouting()
                             .UseEndpoints(e =>
                             {
-                                e.MapRemoteCQRS("/cqrs", cqrs => { });
+                                e.MapRemoteCQRS("/cqrs", _ => { });
                             });
                     });
             })

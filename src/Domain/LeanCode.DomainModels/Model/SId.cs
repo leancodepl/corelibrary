@@ -38,7 +38,7 @@ public readonly struct SId<TEntity> : IEquatable<SId<TEntity>>, IComparable<SId<
     public static SId<TEntity> New() => new(Guid.NewGuid());
 
     [return: NotNullIfNotNull("id")]
-    public static SId<TEntity>? FromNullable(string? id) => id is string v ? From(v) : (SId<TEntity>?)null;
+    public static SId<TEntity>? FromNullable(string? id) => id is string v ? From(v) : null;
 
     public static bool TryParse(string? v, out SId<TEntity> id)
     {
@@ -88,7 +88,7 @@ public readonly struct SId<TEntity> : IEquatable<SId<TEntity>>, IComparable<SId<
     {
         if (IsValid(v))
         {
-            id = new SId<TEntity>(v!);
+            id = new SId<TEntity>(v);
             return true;
         }
         else if (Guid.TryParse(v, out var guid))

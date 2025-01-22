@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using LeanCode.CQRS.Security;
-using LeanCode.CQRS.Security.Exceptions;
-using NSubstitute;
 using Xunit;
 
-namespace LeanCode.CQRS.Default.Tests.Security;
+namespace LeanCode.CQRS.Security.Tests;
 
 public class ClaimsPrincipalTests
 {
@@ -120,11 +113,10 @@ public class ClaimsPrincipalTests
     private sealed class RoleRegistration : IRoleRegistration
     {
         public IEnumerable<Role> Roles { get; } =
-            new Role[]
-            {
+            [
                 new Role(Reg.User, Permissions.List, Permissions.Read),
                 new Role(Reg.Admin, Permissions.Create, Permissions.List, Permissions.Read, Permissions.Update),
                 new Role(Reg.Contributor, Permissions.Update),
-            };
+            ];
     }
 }

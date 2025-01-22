@@ -1,4 +1,3 @@
-using System;
 using LeanCode.Localization.StringLocalizers;
 using Xunit;
 using static System.Globalization.CultureInfo;

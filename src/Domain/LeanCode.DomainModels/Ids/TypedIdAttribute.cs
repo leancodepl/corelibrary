@@ -6,7 +6,7 @@ namespace LeanCode.DomainModels.Ids;
 /// <remarks>
 /// See <see href="../../../../docs/domain/ids.md">documentation</see> for more details.
 /// </remarks>
-public enum TypedIdFormat : int
+public enum TypedIdFormat
 {
     /// <summary>
     /// Raw <see cref="int" />, without prefix. It's backing type is <see cref="int" />.

@@ -1,8 +1,4 @@
-using System;
-using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 
 namespace LeanCode.ViewRenderer.Razor;
@@ -27,7 +23,7 @@ internal class RazorViewRenderer : IViewRenderer
     {
         logger.Debug("Rendering view {ViewName}", viewName);
 
-        await RenderAsync(outputStream, viewName, model, null, 0);
+        await RenderAsync(outputStream, viewName, model, null);
 
         logger.Information("View {ViewName} rendered", viewName);
     }
@@ -46,13 +42,7 @@ internal class RazorViewRenderer : IViewRenderer
         }
     }
 
-    private async Task RenderAsync(
-        Stream outputStream,
-        string viewName,
-        object model,
-        BaseView? childView,
-        int childSize
-    )
+    private async Task RenderAsync(Stream outputStream, string viewName, object model, BaseView? childView)
     {
         var compiledView = await cache.GetOrCompileAsync(viewName);
 
@@ -72,7 +62,7 @@ internal class RazorViewRenderer : IViewRenderer
         {
             logger.Debug("View {ViewName} has a layout {Layout}, delegating work", viewName, compiledView.Layout);
 
-            await RenderAsync(outputStream, compiledView.Layout, model, view, childSize + compiledView.ProjectedSize);
+            await RenderAsync(outputStream, compiledView.Layout, model, view);
         }
     }
 }

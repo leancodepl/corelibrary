@@ -1,6 +1,5 @@
 using System.Globalization;
 using FirebaseAdmin.Messaging;
-using LeanCode.Firebase;
 using LeanCode.Localization.StringLocalizers;
 using NSubstitute;
 using Xunit;
@@ -50,11 +49,11 @@ public class FCMClientLocalizationTests
     [Fact]
     public void Localizes_ImageUrl_correctly()
     {
-        const string Key = "URL";
-        const string Value = "formatted image url";
+        const string Key = "https://example.com/image.jpg";
+        const string Value = "https://example.com/image_en.jpg";
         stringLocalizer[Culture, Key].Returns(Value);
 
-        var n = client.Localize(Culture).ImageUrl(Key, System.Array.Empty<object>()).Build();
+        var n = client.Localize(Culture).ImageUrl(new Uri(Key), []).Build();
 
         Assert.Equal(Value, n.ImageUrl);
     }
@@ -62,9 +61,9 @@ public class FCMClientLocalizationTests
     [Fact]
     public void Does_not_localize_raw_url()
     {
-        const string Value = "raw image url";
+        const string Value = "https://example.com/image.jpg";
 
-        var n = client.Localize(Culture).RawImageUrl(Value).Build();
+        var n = client.Localize(Culture).RawImageUrl(new Uri(Value)).Build();
 
         Assert.Equal(Value, n.ImageUrl);
     }

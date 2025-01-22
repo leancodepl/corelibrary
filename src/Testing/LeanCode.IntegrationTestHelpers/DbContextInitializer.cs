@@ -37,12 +37,12 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
                     if (connection.State == System.Data.ConnectionState.Closed)
                     {
                         await connection.OpenAsync(token);
-                        await connection.ReloadTypesAsync();
+                        await connection.ReloadTypesAsync(token);
                         await connection.CloseAsync();
                     }
                     else
                     {
-                        await connection.ReloadTypesAsync();
+                        await connection.ReloadTypesAsync(token);
                     }
                 }
             },

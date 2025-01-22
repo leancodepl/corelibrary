@@ -1,9 +1,6 @@
-using System;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using LeanCode.Localization.StringLocalizers;
 using LeanCode.SendGrid;
 using LeanCode.Test.Helpers;
@@ -48,7 +45,7 @@ public class SendGridRazorClientTests
             .ReturnsForAnyArgs(ci =>
             {
                 var culture = ci.Arg<CultureInfo>();
-                var cultureName = culture == CultureInfo.InvariantCulture ? "InvariantCulture" : culture.Name;
+                var cultureName = Equals(culture, CultureInfo.InvariantCulture) ? "InvariantCulture" : culture.Name;
                 var keyName = ci.Arg<string>();
 
                 return $"[{cultureName}] {keyName}";
@@ -68,8 +65,8 @@ public class SendGridRazorClientTests
             .WithSender(EmailFrom, "LeanCode Tester")
             .WithRecipient(EmailTo)
             .WithSubject("email.subject.test")
-            .WithPlainTextContent(new EmailTextVM { })
-            .WithHtmlContent(new EmailHtmlVM { })
+            .WithPlainTextContent(new EmailTextVM())
+            .WithHtmlContent(new EmailHtmlVM())
             .WithAttachment(
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
                 "Attachment.txt",
@@ -87,8 +84,8 @@ public class SendGridRazorClientTests
             .WithSender(EmailFrom, "LeanCode Tester")
             // .WithRecipient(EmailTo) omitted on purpose to cause a failure
             .WithSubject("email.subject.test")
-            .WithPlainTextContent(new EmailTextVM { })
-            .WithHtmlContent(new EmailHtmlVM { })
+            .WithPlainTextContent(new EmailTextVM())
+            .WithHtmlContent(new EmailHtmlVM())
             .WithAttachment(
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
                 "Attachment.txt",
@@ -104,11 +101,13 @@ public class SendGridRazorClientTests
         );
     }
 
+    // ReSharper disable once UnusedMember.Local
     private sealed class EmailTextVM
     {
         public string Value { get; set; } = "Text";
     }
 
+    // ReSharper disable once UnusedMember.Local
     private sealed class EmailHtmlVM
     {
         public string Value { get; set; } = "Html";

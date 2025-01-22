@@ -1,8 +1,4 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using LeanCode.Test.Helpers;
-using Xunit;
 
 namespace LeanCode.Mixpanel.Tests;
 

@@ -11,13 +11,12 @@ namespace LeanCode.CQRS.AspNetCore.Tests;
 
 public class CQRSServicesBuilderTests
 {
-    private readonly ServiceCollection services;
     private readonly CQRSObjectsRegistrationSource registrationSource;
     private readonly CQRSServicesBuilder builder;
 
     public CQRSServicesBuilderTests()
     {
-        services = new();
+        var services = new ServiceCollection();
         registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
         registrationSource.AddCQRSObjects(
             TypesCatalog.Of<CQRSServicesBuilder>(),

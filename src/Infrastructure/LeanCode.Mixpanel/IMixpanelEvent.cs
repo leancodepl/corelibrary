@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace LeanCode.Mixpanel;
 
 public interface IMixpanelEvent

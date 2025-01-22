@@ -1,4 +1,3 @@
-using System.Linq;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 

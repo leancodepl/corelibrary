@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.AspNetCore.Razor.Language;
@@ -194,7 +189,7 @@ internal class ViewCompiler
             {
                 builder.SetBaseType(typeof(BaseView).FullName);
                 builder.ConfigureClass(
-                    (doc, @class) =>
+                    (_, @class) =>
                     {
                         @class.ClassName = "View_" + Guid.NewGuid().ToString("N");
                         @class.Modifiers.Clear();

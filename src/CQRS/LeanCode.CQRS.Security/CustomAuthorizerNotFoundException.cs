@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.CQRS.Security;
 
 public class CustomAuthorizerNotFoundException : Exception

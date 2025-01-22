@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.DomainModels.Model;
 
 public interface IDomainEvent

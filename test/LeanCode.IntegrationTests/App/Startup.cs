@@ -17,6 +17,7 @@ public class Startup : LeanStartup
     private static readonly TypesCatalog CQRSTypes = TypesCatalog.Of<Startup>();
     private readonly TestDatabaseConfig testDatabaseConfig;
 
+    // ReSharper disable once UnassignedGetOnlyAutoProperty
     protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)

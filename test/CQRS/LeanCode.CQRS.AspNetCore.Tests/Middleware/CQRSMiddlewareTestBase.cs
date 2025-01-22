@@ -21,7 +21,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
     protected IHost Host { get; }
     protected TestServer Server { get; }
 
-    protected RequestDelegate FinalPipeline { get; set; } = ctx => Task.CompletedTask;
+    protected RequestDelegate FinalPipeline { get; set; } = _ => Task.CompletedTask;
 
     protected virtual void ConfigureServices(IServiceCollection services) { }
 

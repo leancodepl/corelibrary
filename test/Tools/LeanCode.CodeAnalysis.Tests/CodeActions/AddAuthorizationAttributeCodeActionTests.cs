@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using LeanCode.CodeAnalysis.Analyzers;
 using LeanCode.CodeAnalysis.CodeFixProviders;
 using LeanCode.CodeAnalysis.Tests.Verifiers;

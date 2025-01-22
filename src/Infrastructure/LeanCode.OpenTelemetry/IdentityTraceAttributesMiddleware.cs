@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 
@@ -6,6 +7,7 @@ namespace LeanCode.OpenTelemetry;
 
 public static class IdentityTraceAttributesMiddleware
 {
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public static IApplicationBuilder UseIdentityTraceAttributes(
         this IApplicationBuilder builder,
         string userIdClaim = "sub",

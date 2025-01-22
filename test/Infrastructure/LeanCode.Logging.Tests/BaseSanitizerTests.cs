@@ -1,4 +1,3 @@
-using System;
 using NSubstitute;
 using Serilog.Core;
 using Serilog.Events;
@@ -35,9 +34,7 @@ public class BaseSanitizerTests
     {
         SanitizeRight(Payload.Workable);
 
-        factory
-            .Received(1)
-            .CreatePropertyValue(Arg.Is<Payload>((Payload p) => p.Value == RightSanitizer.Result.Value), true);
+        factory.Received(1).CreatePropertyValue(Arg.Is((Payload p) => p.Value == RightSanitizer.Result.Value), true);
     }
 
     [Fact]

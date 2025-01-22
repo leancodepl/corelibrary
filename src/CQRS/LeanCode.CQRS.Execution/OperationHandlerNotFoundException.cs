@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.CQRS.Execution;
 
 public class OperationHandlerNotFoundException : Exception

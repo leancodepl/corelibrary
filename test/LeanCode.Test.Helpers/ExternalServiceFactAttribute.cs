@@ -10,7 +10,7 @@ public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttrib
     protected abstract IReadOnlyCollection<string> RequiredEnvVariables { get; }
     protected abstract string ServiceType { get; }
 
-    public ExternalServiceFactAttribute()
+    protected ExternalServiceFactAttribute()
     {
         Explicit = true;
     }

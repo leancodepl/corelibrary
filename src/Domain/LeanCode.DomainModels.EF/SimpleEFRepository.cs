@@ -5,8 +5,8 @@ namespace LeanCode.DomainModels.EF;
 
 public sealed class SimpleEFRepository<TEntity, TIdentity, TContext> : EFRepository<TEntity, TIdentity, TContext>
     where TEntity : class, IAggregateRoot<TIdentity>
-    where TIdentity : notnull, IEquatable<TIdentity>
-    where TContext : notnull, DbContext
+    where TIdentity : IEquatable<TIdentity>
+    where TContext : DbContext
 {
     public SimpleEFRepository(TContext dbContext)
         : base(dbContext) { }

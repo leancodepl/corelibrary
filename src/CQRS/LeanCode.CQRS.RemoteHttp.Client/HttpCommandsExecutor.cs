@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 
@@ -30,7 +25,7 @@ public class HttpCommandsExecutor
     {
         using var content = JsonContent.Create(command, command.GetType(), options: serializerOptions);
         using var response = await client.PostAsync(
-            "command/" + command.GetType().FullName,
+            new Uri("command/" + command.GetType().FullName, UriKind.Relative),
             content,
             cancellationToken
         );

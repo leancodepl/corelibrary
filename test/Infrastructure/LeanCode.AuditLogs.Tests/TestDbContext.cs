@@ -106,6 +106,7 @@ public class OwnedEntity
     public int SomeInt { get; set; }
     public string SomeString { get; set; } = null!;
 
+    // ReSharper disable once UnusedMember.Local
     private OwnedEntity() { }
 
     public OwnedEntity(int someInt, string someString)
@@ -119,7 +120,7 @@ public class IncludedEntity
 {
     public TestEntity TestEntity { get; private init; } = null!;
     public string TestEntityId { get; private init; } = null!;
-    public int SomeInt { get; set; }
+    public int SomeInt { get; private init; }
     public string SomeString { get; set; } = null!;
 
     private IncludedEntity() { }

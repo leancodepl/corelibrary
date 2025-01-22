@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 using LeanCode.DomainModels.Model;
 
 namespace LeanCode.UnitTests.TestHelpers;
@@ -26,6 +24,7 @@ public static class EventsInterceptor
         }
     }
 
+    [SuppressMessage("?", "CA1720", Justification = "Convention for EventsInterceptor.")]
     public static SingleStorage<TEvent> Single<TEvent>()
         where TEvent : class, IDomainEvent
     {

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
@@ -22,7 +20,8 @@ public static class Helpers
         var stmt = BuildUsing(namespaceName);
         var namespaces = root.DescendantNodes()
             .OfType<UsingDirectiveSyntax>()
-            .OrderBy(n => n.Name.ToString(), NamespaceComparer)
+            .Where(n => n.Name != null) // Skip usings without names for comparison e.g. using x = (X.Y.Z, A.B.C)
+            .OrderBy(n => n.Name!.ToString(), NamespaceComparer)
             .ToArray();
 
         if (namespaces.Length == 0)
@@ -32,7 +31,7 @@ public static class Helpers
         }
 
         var toInsert = namespaces
-            .SkipWhile(ns => NamespaceComparer.Compare(ns.Name.ToString(), namespaceName) < 0)
+            .SkipWhile(ns => NamespaceComparer.Compare(ns.Name!.ToString(), namespaceName) < 0)
             .FirstOrDefault();
 
         if (toInsert != null)

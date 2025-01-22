@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -49,6 +50,7 @@ internal class LocalCallContext : HttpContext, IDisposable
         set { }
     }
 
+    [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
     public LocalCallContext(
         IServiceProvider requestServices,
         ClaimsPrincipal user,

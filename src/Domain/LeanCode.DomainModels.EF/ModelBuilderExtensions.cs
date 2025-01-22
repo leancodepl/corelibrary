@@ -1,5 +1,3 @@
-using System;
-using System.Linq.Expressions;
 using System.Reflection;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
@@ -73,7 +71,7 @@ public static class ModelBuilderExtensions
     )
         where TEntity : class, IOptimisticConcurrency
     {
-        builder.Entity<TEntity>().IsOptimisticConcurrent(useExplicitBackingFields, addRowVersion);
+        builder.Entity<TEntity>().IsOptimisticConcurrent<TEntity, TRowVersion>(useExplicitBackingFields, addRowVersion);
     }
 
     private static string GetBackingFieldFor<TEntity>(string fieldName)

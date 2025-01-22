@@ -1,8 +1,5 @@
-using System;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 using LeanCode.Contracts;
 
 namespace LeanCode.CQRS.RemoteHttp.Client;
@@ -27,7 +24,11 @@ public class HttpQueriesExecutor
     )
     {
         using var content = JsonContent.Create(query, query.GetType(), options: serializerOptions);
-        using var response = await client.PostAsync("query/" + query.GetType().FullName, content, cancellationToken);
+        using var response = await client.PostAsync(
+            new Uri("query/" + query.GetType().FullName, UriKind.Relative),
+            content,
+            cancellationToken
+        );
 
         response.HandleCommonCQRSErrors<QueryNotFoundException, InvalidQueryException>();
 

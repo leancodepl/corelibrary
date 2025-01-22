@@ -2,7 +2,7 @@ namespace LeanCode.AuditLogs;
 
 public interface IAuditLogStorage
 {
-    public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken);
+    Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken);
 }
 
 public record AuditLogMessage(

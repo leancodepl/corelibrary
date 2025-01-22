@@ -150,7 +150,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var query = new Query();
         SetDeserializerResult<Query>(query);
 
-        FinalPipeline = ctx => throw new InvalidOperationException();
+        FinalPipeline = _ => throw new InvalidOperationException();
 
         var httpContext = await SendAsync();
 
@@ -164,7 +164,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var query = new Query();
         SetDeserializerResult<Query>(query);
 
-        object? interceptedPayload = null!;
+        object interceptedPayload = null!;
 
         FinalPipeline = ctx =>
         {

@@ -1,9 +1,9 @@
 namespace LeanCode.Firebase.FCM;
 
 public interface IPushNotificationTokenStore<TUserId>
-    where TUserId : notnull, IEquatable<TUserId>
+    where TUserId : IEquatable<TUserId>
 {
-    public const int MaxTokenBatchSize = 100;
+    const int MaxTokenBatchSize = 100;
 
     Task<List<string>> GetTokensAsync(TUserId userId, CancellationToken cancellationToken = default);
 

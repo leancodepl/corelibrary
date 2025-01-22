@@ -85,7 +85,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                                     }
                                 );
                             });
-                        app.Run(ctx =>
+                        app.Run(_ =>
                         {
                             return Task.CompletedTask;
                         });

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 
@@ -36,7 +35,7 @@ public class SendGridLocalizedRazorMessage : SendGridRazorMessage
 
     internal override IEnumerable<string> GetTemplateNames(string templateBaseName)
     {
-        for (var c = Culture; c != CultureInfo.InvariantCulture; c = c.Parent)
+        for (var c = Culture; !Equals(c, CultureInfo.InvariantCulture); c = c.Parent)
         {
             yield return $"{templateBaseName}.{c.Name}";
         }

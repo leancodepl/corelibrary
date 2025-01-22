@@ -41,12 +41,7 @@ namespace LeanCode.DomainModels.Ulids;
 [DebuggerDisplay("{ToString(),nq}")]
 [System.Text.Json.Serialization.JsonConverter(typeof(UlidJsonConverter))]
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-public readonly record struct Ulid
-    : IEquatable<Ulid>,
-        IComparable<Ulid>,
-        ISpanFormattable,
-        ISpanParsable<Ulid>,
-        IUtf8SpanFormattable
+public readonly record struct Ulid : IComparable<Ulid>, ISpanFormattable, ISpanParsable<Ulid>, IUtf8SpanFormattable
 {
     public const int LengthInTextElements = 26;
 
@@ -193,6 +188,7 @@ public readonly record struct Ulid
         new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 }
     );
 
+    // ReSharper disable once UnassignedReadonlyField
     public static readonly Ulid Empty;
 
     // Core
@@ -250,8 +246,7 @@ public readonly record struct Ulid
     [IgnoreDataMember]
     [SuppressMessage("?", "CA1819", Justification = "Fresh array is allocated per call")]
     public byte[] Random =>
-        new byte[]
-        {
+        [
             randomness0,
             randomness1,
             randomness2,
@@ -262,7 +257,7 @@ public readonly record struct Ulid
             randomness7,
             randomness8,
             randomness9,
-        };
+        ];
 
     [IgnoreDataMember]
     public DateTimeOffset Time
@@ -355,6 +350,7 @@ public readonly record struct Ulid
     // HACK: We assume the layout of a Guid is the following:
     // Int32, Int16, Int16, Int8, Int8, Int8, Int8, Int8, Int8, Int8, Int8
     // source: https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.Private.CoreLib/src/System/Guid.cs
+    [SuppressMessage("?", "CA1720", Justification = "Vendored code.")]
     public Ulid(Guid guid)
     {
         Span<byte> buf = stackalloc byte[16];

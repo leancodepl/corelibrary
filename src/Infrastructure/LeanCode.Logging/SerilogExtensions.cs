@@ -29,6 +29,6 @@ internal static class SerilogExtensions
             .Where(t => typeof(TType).IsAssignableFrom(t) && t.IsPublic && t.GetConstructor(Type.EmptyTypes) != null)
             .Select(Activator.CreateInstance)
             .Cast<TType>()
-            .ToList()!;
+            .ToList();
     }
 }

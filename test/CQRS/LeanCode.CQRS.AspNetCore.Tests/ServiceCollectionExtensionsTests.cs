@@ -4,6 +4,7 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests;
 
+// ReSharper disable once UnusedTypeParameter
 internal interface IGenericService<T> { }
 
 internal sealed class Type1 { }

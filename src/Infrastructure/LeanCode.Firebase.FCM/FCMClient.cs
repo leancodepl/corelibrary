@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
@@ -5,7 +6,7 @@ using LeanCode.Localization.StringLocalizers;
 namespace LeanCode.Firebase.FCM;
 
 public class FCMClient<TUserId>
-    where TUserId : notnull, IEquatable<TUserId>
+    where TUserId : IEquatable<TUserId>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient<TUserId>>();
 
@@ -103,6 +104,7 @@ public class FCMClient<TUserId>
         }
     }
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public virtual async Task SendAllAsync(
         IEnumerable<Message> messages,
         bool dryRun,

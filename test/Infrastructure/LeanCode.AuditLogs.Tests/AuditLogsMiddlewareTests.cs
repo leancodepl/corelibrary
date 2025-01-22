@@ -14,9 +14,9 @@ public sealed class AuditLogsMiddlewareTests
         using var dbContext = new TestDbContext();
         var bus = Substitute.For<IBus>();
         var publisher = Substitute.For<AuditLogsPublisher>();
-        var middleware = new AuditLogsMiddleware<TestDbContext>(c => Task.CompletedTask);
+        var middleware = new AuditLogsMiddleware<TestDbContext>(_ => Task.CompletedTask);
         var httpContext = Substitute.For<HttpContext>();
-        httpContext.Request.Path.Returns(PathString.FromUriComponent(RequestPath));
+        httpContext.Request.Path.Returns(PathString.FromUriComponent(new Uri(RequestPath)));
 
         await middleware.InvokeAsync(httpContext, dbContext, bus, publisher);
 

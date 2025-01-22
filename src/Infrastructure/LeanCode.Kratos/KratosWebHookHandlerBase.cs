@@ -10,7 +10,7 @@ namespace LeanCode.Kratos;
 
 public sealed record class KratosWebHookHandlerConfig(string ApiKey);
 
-public abstract partial class KratosWebHookHandlerBase
+public abstract class KratosWebHookHandlerBase
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<KratosWebHookHandlerBase>();
 

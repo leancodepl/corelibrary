@@ -62,7 +62,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
     {
         var now = TimeProvider.Time.UtcNow;
         var next =
-            action.When.GetNextOccurrence(now, false)
+            action.When.GetNextOccurrence(now)
             ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");
         return next - now;
     }

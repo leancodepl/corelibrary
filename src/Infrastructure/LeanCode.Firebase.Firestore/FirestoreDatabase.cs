@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FirebaseAdmin;
 using Google.Api.Gax;
 using Google.Cloud.Firestore;

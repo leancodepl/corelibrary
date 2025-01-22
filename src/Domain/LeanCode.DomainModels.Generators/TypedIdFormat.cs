@@ -1,6 +1,6 @@
 namespace LeanCode.DomainModels.Generators;
 
-public enum TypedIdFormat : int
+public enum TypedIdFormat
 {
     RawInt = 0,
     RawLong = 1,

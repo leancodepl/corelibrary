@@ -11,6 +11,7 @@ namespace LeanCode.IntegrationTestHelpers.Tests.App;
 
 public class Startup : LeanStartup
 {
+    // ReSharper disable once UnassignedGetOnlyAutoProperty
     protected override bool CloseAndFlushLogger { get; }
 
     public Startup(IConfiguration config)
@@ -38,6 +39,6 @@ public class Startup : LeanStartup
     {
         app.UseRouting();
         app.UseAuthentication();
-        app.UseEndpoints(e => e.MapRemoteCQRS("/api", cqrs => { }));
+        app.UseEndpoints(e => e.MapRemoteCQRS("/api", _ => { }));
     }
 }

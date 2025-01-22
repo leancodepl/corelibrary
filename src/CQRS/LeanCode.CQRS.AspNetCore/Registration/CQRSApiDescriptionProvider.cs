@@ -1,8 +1,8 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -213,6 +213,7 @@ internal sealed class CQRSApiDescriptionProvider : IApiDescriptionProvider
     private static CQRSBodyModelMetadata CreateModelMetadata(Type type) => new(ModelMetadataIdentity.ForType(type));
 }
 
+[SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
 internal sealed class CQRSBodyModelMetadata : ModelMetadata
 {
     public CQRSBodyModelMetadata(ModelMetadataIdentity identity)
@@ -222,7 +223,7 @@ internal sealed class CQRSBodyModelMetadata : ModelMetadata
         ImmutableDictionary<object, object>.Empty;
     public override string? BinderModelName { get; }
     public override Type? BinderType { get; }
-    public override BindingSource? BindingSource => BindingSource.Body;
+    public override BindingSource BindingSource => BindingSource.Body;
     public override bool ConvertEmptyStringToNull { get; }
     public override string? DataTypeName { get; }
     public override string? Description { get; }

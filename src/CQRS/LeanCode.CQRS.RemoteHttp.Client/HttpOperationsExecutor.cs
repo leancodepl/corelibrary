@@ -25,7 +25,7 @@ public class HttpOperationsExecutor
     {
         using var content = JsonContent.Create(operation, operation.GetType(), options: serializerOptions);
         using var response = await client.PostAsync(
-            "operation/" + operation.GetType().FullName,
+            new Uri("operation/" + operation.GetType().FullName, UriKind.Relative),
             content,
             cancellationToken
         );
