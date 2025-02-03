@@ -22,7 +22,7 @@ public class LoggerInjectionTests
     [Fact]
     public void Logger_is_correctly_added_to_DI_container()
     {
-        var logger = serviceProvider.GetRequiredService<ILogger<LoggerInjectionTests>>();
+        var logger = serviceProvider.GetService<ILogger<LoggerInjectionTests>>();
 
         Assert.NotNull(logger);
     }
