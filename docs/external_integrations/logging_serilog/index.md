@@ -61,4 +61,27 @@ public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 }
 ```
 
+You can also use the `ILogger<T>` interface to inject a logger, which serves as a generic wrapper around `Serilog.Log.ForContext<T>()`. This logger is registered in the DI container when the `ConfigureDefaultLogging` method is called.
+
+```csharp
+public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
+{
+    private readonly ILogger<UpdateProjectNameCH> logger;
+
+    public UpdateProjectNameCH(ILogger<UpdateProjectNameCH> logger)
+    {
+        this.logger = logger;
+    }
+
+    public Task ExecuteAsync(HttpContext context, UpdateProjectName command)
+    {
+        // . . .
+
+        logger.Information(
+            "Project's {ProjectId} name has been updated",
+            project.Id);
+    }
+}
+```
+
 [Seq]: https://datalust.co/seq
