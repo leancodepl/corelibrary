@@ -93,7 +93,7 @@ public static class IHostBuilderExtensions
             )
             .ConfigureServices(services =>
             {
-                services.AddTransient(typeof(ILogger<>), typeof(Logger<>));
+                services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             });
     }
 }
