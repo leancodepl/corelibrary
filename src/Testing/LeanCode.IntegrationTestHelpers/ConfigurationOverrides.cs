@@ -1,3 +1,4 @@
+using LeanCode.Logging.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Serilog.Events;
 
@@ -13,8 +14,8 @@ public class ConfigurationOverrides(Dictionary<string, string?> customValues) : 
         return new ConfigurationOverrides(
             new Dictionary<string, string?>
             {
-                [Logging.IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
-                [Logging.IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
+                [IHostBuilderExtensions.MinimumLogLevelKey] = minimumLevel.ToString(),
+                [IHostBuilderExtensions.EnableDetailedInternalLogsKey] = enableInternalLogs.ToString(),
             }
         );
     }

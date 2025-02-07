@@ -1,16 +1,17 @@
+using LeanCode.Logging;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests;
 
 public class RazorViewRendererTests
 {
-    private readonly RazorViewRendererOptions options = new RazorViewRendererOptions("./Views/Renderer");
+    private static readonly RazorViewRendererOptions Options = new("./Views/Renderer");
 
     private readonly RazorViewRenderer renderer;
 
     public RazorViewRendererTests()
     {
-        renderer = new RazorViewRenderer(options);
+        renderer = new(Options, NullLogger<RazorViewRenderer>.Instance);
     }
 
     [Fact]

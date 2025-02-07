@@ -7,6 +7,7 @@ using LeanCode.CQRS.AspNetCore.Local;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -65,6 +66,7 @@ public class MiddlewaresForLocalExecutionTests
     public static ILocalCommandExecutor BuildWith(Action<ICQRSApplicationBuilder> configure)
     {
         var serviceCollection = new ServiceCollection();
+        serviceCollection.AddLogging(logging => logging.AddNullLeanCodeLogger());
         serviceCollection.AddMetrics();
         serviceCollection.AddScoped<IMiddlewareFactory>(sp => new MiddlewareFactory(sp));
         serviceCollection.AddScoped<LocalHandlerMiddleware>();

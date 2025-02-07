@@ -4,6 +4,7 @@ using System.Text.Json;
 using LeanCode.Kratos.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Primitives;
 using Xunit;
 
@@ -151,13 +152,13 @@ public class KratosWebHookHandlerTests
         public new string ApiKeyHeaderName => base.ApiKeyHeaderName;
 
         public KratosWebHookTestHandler(Func<HttpContext, Task> handler)
-            : base(new(ApiKey))
+            : base(new(ApiKey), NullLogger<KratosWebHookTestHandler>.Instance)
         {
             this.handler = handler;
         }
 
         public KratosWebHookTestHandler(Action<HttpContext> handler)
-            : base(new(ApiKey))
+            : base(new(ApiKey), NullLogger<KratosWebHookTestHandler>.Instance)
         {
             this.handler = ctx =>
             {

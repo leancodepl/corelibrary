@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentAssertions;
 using LeanCode.CQRS.MassTransitRelay;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using MassTransit;
 using MassTransit.Testing;
@@ -13,7 +14,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Trace;
-using Serilog;
 using Xunit;
 
 namespace LeanCode.AuditLogs.Tests;
@@ -51,7 +51,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                                 builder.AddAspNetCoreInstrumentation();
                             });
                         cfg.AddDbContext<TestDbContext>();
-                        cfg.AddTransient<IAuditLogStorage, StubAuditLogStorage>();
+                        cfg.AddTransient<IAuditLogStorage, NullAuditLogStorage>();
                         cfg.AddTransient<AuditLogsPublisher>();
                         cfg.AddMassTransitTestHarness(ConfigureMassTransit);
                         cfg.AddRouting();
@@ -91,6 +91,7 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
                         });
                     });
             })
+            .ConfigureLogging(logging => logging.AddNullLeanCodeLogger())
             .Build();
 
         server = host.GetTestServer();
@@ -200,24 +201,9 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
         }
     }
 
-    internal sealed class StubAuditLogStorage : IAuditLogStorage
+    internal sealed class NullAuditLogStorage : IAuditLogStorage
     {
-        private readonly ILogger logger = Log.ForContext<StubAuditLogStorage>();
-
-        public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken)
-        {
-            logger.Information(
-                "StubAuditLog: Changes found {UserId} {ActionName} {Type} {State} {@PrimaryKey} {@EntryChanged} {DateOccurred}",
-                auditLogMessage.ActorId,
-                auditLogMessage.ActionName,
-                auditLogMessage.EntityChanged.Type,
-                auditLogMessage.EntityChanged.EntityState,
-                auditLogMessage.EntityChanged.Ids.Select(id => id.ToString()).ToList(),
-                auditLogMessage.EntityChanged.Changes,
-                auditLogMessage.DateOccurred
-            );
-
-            return Task.CompletedTask;
-        }
+        public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
     }
 }

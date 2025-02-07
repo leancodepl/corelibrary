@@ -1,16 +1,12 @@
 using System.Buffers;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
-using Serilog.Formatting.Compact;
 
-namespace LeanCode.Logging;
+namespace LeanCode.Logging.AspNetCore;
 
 public static class IHostBuilderExtensions
 {
@@ -32,6 +28,7 @@ public static class IHostBuilderExtensions
         this IHostBuilder builder,
         string projectName,
         Assembly[]? destructurers = null,
+        bool preserveStaticLogger = false,
         Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null
     )
     {
@@ -41,7 +38,13 @@ public static class IHostBuilderExtensions
             entryAssembly.GetName().Name
             ?? throw new InvalidOperationException("Failed to read entry assembly's simple name.");
 
-        return builder.ConfigureDefaultLogging(projectName, appName, destructurers, additionalLoggingConfiguration);
+        return builder.ConfigureDefaultLogging(
+            projectName,
+            appName,
+            destructurers,
+            preserveStaticLogger,
+            additionalLoggingConfiguration
+        );
     }
 
     public static IHostBuilder ConfigureDefaultLogging(
@@ -49,6 +52,7 @@ public static class IHostBuilderExtensions
         string projectName,
         string appName,
         Assembly[]? destructurers = null,
+        bool preserveStaticLogger = false,
         Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null
     )
     {
@@ -56,48 +60,21 @@ public static class IHostBuilderExtensions
             (context, logging) =>
             {
                 var configuration = context.Configuration;
-                var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
+                var logger = logging.AddLeanCodeLogging(
+                    context.Configuration,
+                    projectName,
+                    appName,
+                    formatConsoleLogsAsJson: !context.HostingEnvironment.IsDevelopment(),
+                    destructurers: destructurers,
+                    additionalLoggingConfiguration: additionalLoggingConfiguration is null
+                        ? null
+                        : lc => additionalLoggingConfiguration(context, lc)
+                );
 
-                var loggerConfiguration = new LoggerConfiguration()
-                    .ReadFrom.Configuration(configuration)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithProperty("project", projectName)
-                    .Enrich.WithProperty("app_name", appName)
-                    .MinimumLevel.Is(minLogLevel)
-                    .DestructureCommonObjects(destructurers);
-
-                if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+                if (preserveStaticLogger)
                 {
-                    var internalLogLevel =
-                        minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
-                    loggerConfiguration
-                        .MinimumLevel.Override("Microsoft", internalLogLevel)
-                        .MinimumLevel.Override("System", internalLogLevel)
-                        .MinimumLevel.Override("Azure.Identity", internalLogLevel)
-                        .MinimumLevel.Override("Azure.Core", internalLogLevel)
-                        .FilterOutSqlLogsWithOutboxOrInboxTables(internalLogLevel);
+                    Log.Logger = logger;
                 }
-
-                if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
-                {
-                    loggerConfiguration.WriteTo.Seq(seqEndpoint, formatProvider: CultureInfo.InvariantCulture);
-                }
-
-                if (context.HostingEnvironment.IsDevelopment())
-                {
-                    loggerConfiguration.WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    loggerConfiguration.WriteTo.Console(new RenderedCompactJsonFormatter());
-                }
-
-                additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
-
-                Log.Logger = loggerConfiguration.CreateLogger();
-
-                logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
-                logging.AddSerilog();
             }
         );
     }

@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using LeanCode.Components;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.Logging.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -53,6 +54,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         });
                     });
             })
+            .ConfigureDefaultLogging("test")
             .Build();
 
         server = host.GetTestServer();

@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.SmsSender.Exceptions;
 using LeanCode.Test.Helpers;
 using Xunit;
@@ -52,7 +53,7 @@ public class SmsSenderClientTests
 
         SmsApiClient.ConfigureHttpClient(config, client);
 
-        return new(config, client);
+        return new(config, client, NullLogger<SmsApiClient>.Instance);
     }
 }
 

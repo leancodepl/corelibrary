@@ -45,8 +45,7 @@ Once configured, leverage Serilog for logging purposes in your application:
 ```csharp
 public class UpdateProjectNameCH : ICommandHandler<UpdateProjectName>
 {
-    private readonly Serilog.ILogger logger =
-        Serilog.Log.ForContext<UpdateProjectNameCH>();
+    private readonly ILogger<UpdateProjectNameCH> logger;
 
     // . . .
 

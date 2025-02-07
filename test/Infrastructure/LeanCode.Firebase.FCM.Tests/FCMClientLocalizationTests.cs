@@ -1,6 +1,7 @@
 using System.Globalization;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -19,7 +20,13 @@ public class FCMClientLocalizationTests
     public FCMClientLocalizationTests()
     {
         stringLocalizer = Substitute.For<IStringLocalizer>();
-        client = new FCMClient<Guid>(Messaging, Substitute.For<IPushNotificationTokenStore<Guid>>(), stringLocalizer);
+
+        client = new FCMClient<Guid>(
+            Messaging,
+            Substitute.For<IPushNotificationTokenStore<Guid>>(),
+            stringLocalizer,
+            NullLogger<FCMClient<Guid>>.Instance
+        );
     }
 
     [Fact]

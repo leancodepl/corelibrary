@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 
-namespace LeanCode.Logging;
+namespace LeanCode.Logging.AspNetCore;
 
 public static class UserIdLogsCorrelationMiddleware
 {

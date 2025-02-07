@@ -5,6 +5,7 @@ using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -36,6 +37,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
     protected override void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton(_ => validatorResolver);
+        services.AddLogging(logging => logging.AddNullLeanCodeLogger());
     }
 
     [Fact]

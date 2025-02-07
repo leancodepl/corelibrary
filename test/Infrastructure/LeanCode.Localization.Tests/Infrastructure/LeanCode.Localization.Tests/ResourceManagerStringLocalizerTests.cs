@@ -1,4 +1,5 @@
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using Xunit;
 using static System.Globalization.CultureInfo;
 
@@ -11,7 +12,8 @@ public class ResourceManagerStringLocalizerTests
     public ResourceManagerStringLocalizerTests()
     {
         stringLocalizer = new ResourceManagerStringLocalizer(
-            new LocalizationConfiguration(resourceSource: typeof(ResourceManagerStringLocalizerTests))
+            new LocalizationConfiguration(resourceSource: typeof(ResourceManagerStringLocalizerTests)),
+            NullLogger<ResourceManagerStringLocalizer>.Instance
         );
     }
 

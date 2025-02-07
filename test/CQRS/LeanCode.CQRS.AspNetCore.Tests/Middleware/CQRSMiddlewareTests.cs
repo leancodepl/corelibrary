@@ -5,6 +5,7 @@ using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -30,6 +31,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
     {
         serializer.ContentType.Returns("application/json");
         services.AddSingleton(_ => serializer);
+        services.AddLogging(logging => logging.AddNullLeanCodeLogger());
     }
 
     [Fact]
