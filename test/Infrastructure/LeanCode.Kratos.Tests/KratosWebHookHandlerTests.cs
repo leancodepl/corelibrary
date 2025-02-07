@@ -13,11 +13,11 @@ namespace LeanCode.Kratos.Tests;
 
 public class KratosWebHookHandlerTests
 {
-    private readonly ILogger<KratosWebHookTestHandler> logger;
+    private readonly ILogger<KratosWebHookHandlerBase> logger;
 
     public KratosWebHookHandlerTests()
     {
-        logger = Substitute.For<ILogger<KratosWebHookTestHandler>>();
+        logger = Substitute.For<ILogger<KratosWebHookHandlerBase>>();
     }
 
     [Fact]
@@ -154,19 +154,19 @@ public class KratosWebHookHandlerTests
         return httpContext;
     }
 
-    public sealed class KratosWebHookTestHandler : KratosWebHookHandlerBase
+    private sealed class KratosWebHookTestHandler : KratosWebHookHandlerBase
     {
         private readonly Func<HttpContext, Task> handler;
 
         public new string ApiKeyHeaderName => base.ApiKeyHeaderName;
 
-        public KratosWebHookTestHandler(ILogger<KratosWebHookTestHandler> logger, Func<HttpContext, Task> handler)
+        public KratosWebHookTestHandler(ILogger<KratosWebHookHandlerBase> logger, Func<HttpContext, Task> handler)
             : base(logger, new(ApiKey))
         {
             this.handler = handler;
         }
 
-        public KratosWebHookTestHandler(ILogger<KratosWebHookTestHandler> logger, Action<HttpContext> handler)
+        public KratosWebHookTestHandler(ILogger<KratosWebHookHandlerBase> logger, Action<HttpContext> handler)
             : base(logger, new(ApiKey))
         {
             this.handler = ctx =>
