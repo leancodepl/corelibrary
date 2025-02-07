@@ -3,8 +3,10 @@ using FluentAssertions;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace LeanCode.ForceUpdate.Tests;
@@ -16,25 +18,32 @@ public class ForceUpdateTests
     private const string IOSMinimumRequiredVersion = "1.0";
     private const string IOSCurrentlySupportedVersion = "1.3";
 
-    private readonly ServiceProvider serviceProvider;
+    private readonly IServiceProvider serviceProvider;
 
     public ForceUpdateTests()
     {
-        var services = new ServiceCollection();
-        services
-            .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
-            .AddForceUpdate(
-                new AndroidVersionsConfiguration(
-                    new Version(AndroidMinimumRequiredVersion),
-                    new Version(AndroidCurrentlySupportedVersion)
-                ),
-                new IOSVersionsConfiguration(
-                    new Version(IOSMinimumRequiredVersion),
-                    new Version(IOSCurrentlySupportedVersion)
-                )
-            );
+        var hostBuilder = Host.CreateDefaultBuilder()
+            .ConfigureDefaultLogging("test", new[] { typeof(ForceUpdateTests).Assembly });
 
-        this.serviceProvider = services.BuildServiceProvider();
+        hostBuilder.ConfigureServices(services =>
+        {
+            services
+                .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
+                .AddForceUpdate(
+                    new AndroidVersionsConfiguration(
+                        new Version(AndroidMinimumRequiredVersion),
+                        new Version(AndroidCurrentlySupportedVersion)
+                    ),
+                    new IOSVersionsConfiguration(
+                        new Version(IOSMinimumRequiredVersion),
+                        new Version(IOSCurrentlySupportedVersion)
+                    )
+                );
+        });
+
+        var host = hostBuilder.Build();
+
+        serviceProvider = host.Services;
     }
 
     [Fact]

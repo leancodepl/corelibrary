@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests;
@@ -14,10 +16,17 @@ public class ViewLocatorTests
         new[] { "./Views/A", "./Views/B" }
     );
 
+    private readonly ILogger<ViewLocator> logger;
+
+    public ViewLocatorTests()
+    {
+        logger = Substitute.For<ILogger<ViewLocator>>();
+    }
+
     [Fact]
     public void Returns_non_existing_item_if_view_cannot_be_located()
     {
-        var locator = new ViewLocator(BothDefault);
+        var locator = new ViewLocator(logger, BothDefault);
 
         Assert.False(locator.GetItem("NonExistingView", null).Exists);
     }
@@ -46,12 +55,12 @@ public class ViewLocatorTests
         AssertPath("ViewB", "./Views/B/ViewB.cstxt", BothTXT);
     }
 
-    private static void AssertPath(string viewName, string relativeLocation, RazorViewRendererOptions opts = null)
+    private void AssertPath(string viewName, string relativeLocation, RazorViewRendererOptions opts = null)
     {
         opts = opts ?? BothDefault;
 
         var expected = Path.GetFullPath(relativeLocation);
-        var real = new ViewLocator(opts).GetItem(viewName, null);
+        var real = new ViewLocator(logger, opts).GetItem(viewName, null);
         Assert.Equal(expected, real.PhysicalPath);
     }
 }

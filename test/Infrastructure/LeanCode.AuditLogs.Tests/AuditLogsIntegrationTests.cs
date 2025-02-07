@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using OpenTelemetry.Trace;
-using Serilog;
 using Xunit;
 
 namespace LeanCode.AuditLogs.Tests;
@@ -202,11 +203,16 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
 
     internal sealed class StubAuditLogStorage : IAuditLogStorage
     {
-        private readonly ILogger logger = Log.ForContext<StubAuditLogStorage>();
+        private readonly ILogger<StubAuditLogStorage> logger;
+
+        public StubAuditLogStorage()
+        {
+            logger = Substitute.For<ILogger<StubAuditLogStorage>>();
+        }
 
         public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken)
         {
-            logger.Information(
+            logger.LogInformation(
                 "StubAuditLog: Changes found {UserId} {ActionName} {Type} {State} {@PrimaryKey} {@EntryChanged} {DateOccurred}",
                 auditLogMessage.ActorId,
                 auditLogMessage.ActionName,

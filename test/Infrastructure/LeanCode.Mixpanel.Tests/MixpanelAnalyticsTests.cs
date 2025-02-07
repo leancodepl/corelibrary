@@ -1,4 +1,6 @@
 using LeanCode.Test.Helpers;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace LeanCode.Mixpanel.Tests;
 
@@ -19,7 +21,10 @@ public class MixpanelAnalyticsTests
     )]
     public MixpanelAnalyticsTests()
     {
+        var logger = Substitute.For<ILogger<MixpanelAnalytics>>();
+
         analytics = new MixpanelAnalytics(
+            logger,
             new HttpClient { BaseAddress = new Uri("https://api.mixpanel.com") },
             Configuration
         );

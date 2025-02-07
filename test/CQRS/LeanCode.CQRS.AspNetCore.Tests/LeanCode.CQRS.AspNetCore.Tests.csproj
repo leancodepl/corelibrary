@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+        <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
     </ItemGroup>
 
     <ItemGroup>

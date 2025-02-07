@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests;
@@ -10,7 +12,18 @@ public class RazorViewRendererTests
 
     public RazorViewRendererTests()
     {
-        renderer = new RazorViewRenderer(options);
+        var razorViewRendererLogger = Substitute.For<ILogger<RazorViewRenderer>>();
+        var compiledViewsCacheLogger = Substitute.For<ILogger<CompiledViewsCache>>();
+        var viewLocatorLogger = Substitute.For<ILogger<ViewLocator>>();
+        var viewCompilerLogger = Substitute.For<ILogger<ViewCompiler>>();
+
+        renderer = new RazorViewRenderer(
+            razorViewRendererLogger,
+            compiledViewsCacheLogger,
+            viewLocatorLogger,
+            viewCompilerLogger,
+            options
+        );
     }
 
     [Fact]

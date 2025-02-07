@@ -7,8 +7,10 @@ using LeanCode.CQRS.AspNetCore.Local;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
@@ -72,19 +74,26 @@ public class MiddlewaresForLocalExecutionTests
 
     public static ILocalCommandExecutor BuildWith(Action<ICQRSApplicationBuilder> configure)
     {
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddMetrics();
-        serviceCollection.AddScoped<IMiddlewareFactory>(sp => new MiddlewareFactory(sp));
-        serviceCollection.AddScoped<LocalHandlerMiddleware>();
-        serviceCollection.AddScoped<CQRSMetrics>();
-        serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+        var hostBuilder = Host.CreateDefaultBuilder()
+            .ConfigureDefaultLogging("test", new[] { typeof(MiddlewaresForLocalExecutionTests).Assembly });
 
-        var registrationSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
-        registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);
+        CQRSObjectsRegistrationSource? registrationSource = null;
 
-        var serviceProvider = serviceCollection.BuildServiceProvider();
+        hostBuilder.ConfigureServices(services =>
+        {
+            services.AddMetrics();
+            services.AddScoped<IMiddlewareFactory>(sp => new MiddlewareFactory(sp));
+            services.AddScoped<LocalHandlerMiddleware>();
+            services.AddScoped<CQRSMetrics>();
+            services.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
 
-        return new MiddlewareBasedLocalCommandExecutor(serviceProvider, registrationSource, configure);
+            registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
+            registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);
+        });
+
+        var host = hostBuilder.Build();
+
+        return new MiddlewareBasedLocalCommandExecutor(host.Services, registrationSource!, configure);
     }
 }
 

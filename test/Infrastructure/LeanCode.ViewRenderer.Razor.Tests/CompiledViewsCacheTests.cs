@@ -1,4 +1,6 @@
 using LeanCode.Test.Helpers;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests;
@@ -12,7 +14,11 @@ public class CompiledViewsCacheTests
 
     public CompiledViewsCacheTests()
     {
-        cache = new CompiledViewsCache(Options);
+        var compiledViewsCacheLogger = Substitute.For<ILogger<CompiledViewsCache>>();
+        var viewLocatorLogger = Substitute.For<ILogger<ViewLocator>>();
+        var viewCompilerLogger = Substitute.For<ILogger<ViewCompiler>>();
+
+        cache = new CompiledViewsCache(compiledViewsCacheLogger, viewLocatorLogger, viewCompilerLogger, Options);
     }
 
     [Fact]

@@ -1,5 +1,7 @@
 using System.Text;
 using LeanCode.ViewRenderer.Razor.ViewBase;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.ViewRenderer.Razor.Tests;
@@ -11,8 +13,11 @@ public class ViewCompilerTests
 
     public ViewCompilerTests()
     {
-        locator = new ViewLocator(new RazorViewRendererOptions("./Views/Compiler/"));
-        compiler = new ViewCompiler(locator);
+        var viewLocatorLogger = Substitute.For<ILogger<ViewLocator>>();
+        var viewCompilerLogger = Substitute.For<ILogger<ViewCompiler>>();
+
+        locator = new ViewLocator(viewLocatorLogger, new RazorViewRendererOptions("./Views/Compiler/"));
+        compiler = new ViewCompiler(viewCompilerLogger, locator);
     }
 
     [Fact]

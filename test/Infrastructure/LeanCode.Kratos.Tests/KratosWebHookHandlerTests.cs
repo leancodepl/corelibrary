@@ -4,17 +4,26 @@ using System.Text.Json;
 using LeanCode.Kratos.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.Kratos.Tests;
 
 public class KratosWebHookHandlerTests
 {
+    private readonly ILogger<KratosWebHookTestHandler> logger;
+
+    public KratosWebHookHandlerTests()
+    {
+        logger = Substitute.For<ILogger<KratosWebHookTestHandler>>();
+    }
+
     [Fact]
     public async Task Responds_with_status_code_403_without_running_inner_handler_if_api_key_is_invalid()
     {
-        var handler = new KratosWebHookTestHandler(_ => throw new UnreachableException());
+        var handler = new KratosWebHookTestHandler(logger, _ => throw new UnreachableException());
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = Guid.NewGuid().ToString() });
 
         Assert.Equal(403, ctx.Response.StatusCode);
@@ -23,7 +32,7 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Runs_inner_handler_if_api_key_is_valid()
     {
-        var handler = new KratosWebHookTestHandler(ctx => ctx.Response.StatusCode = 200);
+        var handler = new KratosWebHookTestHandler(logger, ctx => ctx.Response.StatusCode = 200);
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = ApiKey });
 
         Assert.Equal(200, ctx.Response.StatusCode);
@@ -32,7 +41,7 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Swallows_unhandled_exceptions_thrown_by_inner_handler_and_responds_with_status_code_500()
     {
-        var handler = new KratosWebHookTestHandler(_ => throw new InvalidOperationException());
+        var handler = new KratosWebHookTestHandler(logger, _ => throw new InvalidOperationException());
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = ApiKey });
 
         Assert.Equal(500, ctx.Response.StatusCode);
@@ -41,8 +50,9 @@ public class KratosWebHookHandlerTests
     [Fact]
     public async Task Correctly_serializes_identity_responses()
     {
-        var handler = new KratosWebHookTestHandler(ctx =>
-            KratosWebHookHandlerBase.WriteIdentityResponseAsync(ctx, Identity)
+        var handler = new KratosWebHookTestHandler(
+            logger,
+            ctx => KratosWebHookHandlerBase.WriteIdentityResponseAsync(ctx, Identity)
         );
         var ctx = await RunAsync(handler, new() { [handler.ApiKeyHeaderName] = ApiKey });
 
@@ -144,20 +154,20 @@ public class KratosWebHookHandlerTests
         return httpContext;
     }
 
-    private sealed class KratosWebHookTestHandler : KratosWebHookHandlerBase
+    public sealed class KratosWebHookTestHandler : KratosWebHookHandlerBase
     {
         private readonly Func<HttpContext, Task> handler;
 
         public new string ApiKeyHeaderName => base.ApiKeyHeaderName;
 
-        public KratosWebHookTestHandler(Func<HttpContext, Task> handler)
-            : base(new(ApiKey))
+        public KratosWebHookTestHandler(ILogger<KratosWebHookTestHandler> logger, Func<HttpContext, Task> handler)
+            : base(logger, new(ApiKey))
         {
             this.handler = handler;
         }
 
-        public KratosWebHookTestHandler(Action<HttpContext> handler)
-            : base(new(ApiKey))
+        public KratosWebHookTestHandler(ILogger<KratosWebHookTestHandler> logger, Action<HttpContext> handler)
+            : base(logger, new(ApiKey))
         {
             this.handler = ctx =>
             {

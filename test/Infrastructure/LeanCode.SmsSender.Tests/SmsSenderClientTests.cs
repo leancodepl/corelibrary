@@ -1,5 +1,8 @@
 using LeanCode.SmsSender.Exceptions;
 using LeanCode.Test.Helpers;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using Serilog.Extensions.Logging;
 using Xunit;
 
 namespace LeanCode.SmsSender.Tests;
@@ -48,11 +51,13 @@ public class SmsSenderClientTests
     )]
     private static SmsApiClient CreateSmsApiClient(SmsApiConfiguration config)
     {
+        var logger = Substitute.For<ILogger<SmsApiClient>>();
+
         HttpClient client = new();
 
         SmsApiClient.ConfigureHttpClient(config, client);
 
-        return new(config, client);
+        return new(logger, config, client);
     }
 }
 

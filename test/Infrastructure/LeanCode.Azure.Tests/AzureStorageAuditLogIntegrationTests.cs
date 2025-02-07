@@ -6,6 +6,8 @@ using FluentAssertions;
 using LeanCode.AuditLogs;
 using LeanCode.Test.Helpers;
 using LeanCode.TimeProvider;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace LeanCode.Azure.Tests;
 
@@ -16,12 +18,14 @@ public class AzureStorageAuditLogIntegrationTests
 
     public AzureStorageAuditLogIntegrationTests()
     {
+        var logger = Substitute.For<ILogger<AzureBlobAuditLogStorage>>();
         var credential = Env.GetTokenCredential();
         blobServiceClient = new BlobServiceClient(
             new Uri(Environment.GetEnvironmentVariable(Env.AzureBlobStorageServiceUriKey) ?? "https://unset"),
             credential
         );
         storage = new AzureBlobAuditLogStorage(
+            logger,
             blobServiceClient,
             new TableServiceClient(
                 new Uri(
