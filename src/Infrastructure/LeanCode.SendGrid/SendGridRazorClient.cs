@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 using LeanCode.Localization.StringLocalizers;
 using LeanCode.ViewRenderer;
+using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -18,14 +19,20 @@ public class SendGridRazorClient
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridRazorClient>();
+    private readonly ILogger<SendGridRazorClient> logger;
 
     private readonly SendGridClient client;
     private readonly IViewRenderer renderer;
     private readonly IStringLocalizer localizer;
 
-    public SendGridRazorClient(SendGridClient client, IViewRenderer renderer, IStringLocalizer localizer)
+    public SendGridRazorClient(
+        ILogger<SendGridRazorClient> logger,
+        SendGridClient client,
+        IViewRenderer renderer,
+        IStringLocalizer localizer
+    )
     {
+        this.logger = logger;
         this.client = client;
         this.renderer = renderer;
         this.localizer = localizer;
@@ -80,7 +87,7 @@ public class SendGridRazorClient
 
             if (msg.PlainTextContent is null)
             {
-                logger.Error("Failed to render all plain text views for {ViewName}.", viewName);
+                logger.LogError("Failed to render all plain text views for {ViewName}.", viewName);
 
                 throw new ViewNotFoundException(viewName, "Failed to render all plain text views.");
             }
@@ -96,7 +103,7 @@ public class SendGridRazorClient
 
             if (msg.HtmlContent is null)
             {
-                logger.Error("Failed to render all HTML views for {ViewName}.", viewName);
+                logger.LogError("Failed to render all HTML views for {ViewName}.", viewName);
 
                 throw new ViewNotFoundException(viewName, "Failed to render all HTML views.");
             }

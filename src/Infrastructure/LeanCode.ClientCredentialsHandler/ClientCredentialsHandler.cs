@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using IdentityModel.Client;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ClientCredentialsHandler;
 
@@ -9,7 +10,7 @@ public class ClientCredentialsHandler : DelegatingHandler
 {
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ClientCredentialsHandler>();
+    private readonly ILogger<ClientCredentialsHandler> logger;
 
     private readonly string tokenEndpoint;
     private readonly ClientCredentialsConfiguration config;
@@ -41,9 +42,10 @@ public class ClientCredentialsHandler : DelegatingHandler
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Disposed by parent class.")]
-    public ClientCredentialsHandler(ClientCredentialsConfiguration config)
+    public ClientCredentialsHandler(ILogger<ClientCredentialsHandler> logger, ClientCredentialsConfiguration config)
         : base(new HttpClientHandler())
     {
+        this.logger = logger;
         this.config = config;
 
         httpClient = new HttpClient();
@@ -113,7 +115,7 @@ public class ClientCredentialsHandler : DelegatingHandler
         {
             try
             {
-                logger.Debug("Requesting access token");
+                logger.LogDebug("Requesting access token");
 
                 using var request = new ClientCredentialsTokenRequest
                 {
@@ -126,7 +128,7 @@ public class ClientCredentialsHandler : DelegatingHandler
 
                 if (!response.IsError)
                 {
-                    logger.Information("New access token retrieved");
+                    logger.LogInformation("New access token retrieved");
 
                     accessToken = response.AccessToken;
 
@@ -134,7 +136,7 @@ public class ClientCredentialsHandler : DelegatingHandler
                 }
                 else
                 {
-                    logger.Fatal(
+                    logger.LogCritical(
                         "Cannot get access token - server rejected the request with error {Error}",
                         response.ErrorDescription
                     );
@@ -144,7 +146,7 @@ public class ClientCredentialsHandler : DelegatingHandler
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex, "Cannot connect to auth server");
+                logger.LogCritical(ex, "Cannot connect to auth server");
 
                 throw;
             }

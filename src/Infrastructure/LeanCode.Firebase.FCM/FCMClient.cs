@@ -2,24 +2,27 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.Firebase.FCM;
 
 public class FCMClient<TUserId>
     where TUserId : IEquatable<TUserId>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient<TUserId>>();
+    private readonly ILogger<FCMClient<TUserId>> logger;
 
     private readonly FirebaseMessaging messaging;
     private readonly IPushNotificationTokenStore<TUserId> tokenStore;
     private readonly IStringLocalizer stringLocalizer;
 
     public FCMClient(
+        ILogger<FCMClient<TUserId>> logger,
         FirebaseMessaging messaging,
         IPushNotificationTokenStore<TUserId> tokenStore,
         IStringLocalizer stringLocalizer
     )
     {
+        this.logger = logger;
         this.messaging = messaging;
         this.tokenStore = tokenStore;
         this.stringLocalizer = stringLocalizer;
@@ -64,11 +67,11 @@ public class FCMClient<TUserId>
 
         if (message.Tokens.Count == 0)
         {
-            logger.Information("Cannot send push to user {UserId} - no tokens", userId);
+            logger.LogInformation("Cannot send push to user {UserId} - no tokens", userId);
         }
         else
         {
-            logger.Debug(
+            logger.LogDebug(
                 "Sending push notification to user {UserId} that targets {Count} devices",
                 userId,
                 message.Tokens.Count
@@ -90,11 +93,11 @@ public class FCMClient<TUserId>
 
         if (message.Tokens.Count == 0)
         {
-            logger.Information("Cannot send push to users {UserIds} - no tokens", userIds);
+            logger.LogInformation("Cannot send push to users {UserIds} - no tokens", userIds);
         }
         else
         {
-            logger.Debug(
+            logger.LogDebug(
                 "Sending push notification to user {Count} users, targeting {Count} devices",
                 userIds.Count,
                 message.Tokens.Count
@@ -111,7 +114,7 @@ public class FCMClient<TUserId>
         CancellationToken cancellationToken = default
     )
     {
-        logger.Debug("Sending {Count} push messages", messages.Count());
+        logger.LogDebug("Sending {Count} push messages", messages.Count());
 
         var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
         await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
@@ -123,7 +126,7 @@ public class FCMClient<TUserId>
         CancellationToken cancellationToken = default
     )
     {
-        logger.Debug("Sending multicast push message to {Count} targets", message.Tokens.Count);
+        logger.LogDebug("Sending multicast push message to {Count} targets", message.Tokens.Count);
 
         var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
         await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
@@ -143,9 +146,9 @@ public class FCMClient<TUserId>
             .ToList();
         if (tokensToRemove.Count != 0)
         {
-            logger.Debug("Some PN tokens have to be removed because they either expired or are wrongly configured");
+            logger.LogDebug("Some PN tokens have to be removed because they either expired or are wrongly configured");
             await tokenStore.RemoveTokensAsync(tokensToRemove, cancellationToken);
-            logger.Warning(
+            logger.LogWarning(
                 "{Count} tokens removed from token store because of either expired or are wrongly configured",
                 tokensToRemove.Count
             );
@@ -154,7 +157,7 @@ public class FCMClient<TUserId>
         // And just throw _something_ in case of error
         if (response.FailureCount > tokensToRemove.Count)
         {
-            logger.Warning(
+            logger.LogWarning(
                 "There was {Count} failures in sending the push notification",
                 response.FailureCount - tokensToRemove.Count
             );

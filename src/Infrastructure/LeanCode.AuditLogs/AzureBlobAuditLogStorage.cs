@@ -6,14 +6,14 @@ using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.AuditLogs;
 
 public class AzureBlobAuditLogStorage : IAuditLogStorage
 {
     private const string SuffixKey = "Suffix";
-    private readonly ILogger logger = Log.ForContext<AzureBlobAuditLogStorage>();
+    private readonly ILogger<AzureBlobAuditLogStorage> logger;
 
     private static ReadOnlySpan<byte> NewLineBytes => "\n"u8;
     private static readonly JsonSerializerOptions Options = new()
@@ -28,11 +28,13 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
     private readonly AzureBlobAuditLogStorageConfiguration config;
 
     public AzureBlobAuditLogStorage(
+        ILogger<AzureBlobAuditLogStorage> logger,
         BlobServiceClient blobClient,
         TableServiceClient tableClient,
         AzureBlobAuditLogStorageConfiguration config
     )
     {
+        this.logger = logger;
         this.blobClient = blobClient;
         this.tableClient = tableClient;
         this.config = config;
@@ -57,7 +59,7 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
         using var stream = Serialize(auditLogMessage);
         await blob.AppendBlockAsync(stream, cancellationToken: cancellationToken);
 
-        logger.Verbose("Log append to the blob {BlobName}", blob.Name);
+        logger.LogDebug("Log append to the blob {BlobName}", blob.Name);
     }
 
     private async Task<AppendBlobClient> CreateBlobAsync(

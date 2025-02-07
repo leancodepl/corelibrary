@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.PeriodicService;
 
@@ -7,11 +8,12 @@ public class PeriodicHostedService<TAction> : BackgroundService
     where TAction : IPeriodicAction
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PeriodicHostedService<TAction>>();
+    private readonly ILogger<PeriodicHostedService<TAction>> logger;
 
-    public PeriodicHostedService(IServiceProvider serviceProvider)
+    public PeriodicHostedService(IServiceProvider serviceProvider, ILogger<PeriodicHostedService<TAction>> logger)
     {
         this.serviceProvider = serviceProvider;
+        this.logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +25,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
             executionNo++;
             if (!stoppingToken.IsCancellationRequested)
             {
-                logger.Debug("Periodic action executed, waiting {Delay} for the next run", delay);
+                logger.LogDebug("Periodic action executed, waiting {Delay} for the next run", delay);
                 await Task.Delay(delay, stoppingToken);
             }
         }
@@ -51,7 +53,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Cannot run periodic action, exception has been thrown");
+                logger.LogError(ex, "Cannot run periodic action, exception has been thrown");
             }
         }
 

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using LeanCode.SmsSender.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.SmsSender;
 
@@ -28,7 +29,7 @@ public class SmsApiClient : ISmsSender
         999 /* Internal system error */
     );
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
+    private readonly ILogger<SmsApiClient> logger;
 
     private readonly SmsApiConfiguration config;
     private readonly HttpClient client;
@@ -50,8 +51,9 @@ public class SmsApiClient : ISmsSender
         }
     }
 
-    public SmsApiClient(SmsApiConfiguration config, HttpClient client)
+    public SmsApiClient(ILogger<SmsApiClient> logger, SmsApiConfiguration config, HttpClient client)
     {
+        this.logger = logger;
         this.config = config;
         this.client = client;
     }
@@ -63,7 +65,7 @@ public class SmsApiClient : ISmsSender
     )]
     public async Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default)
     {
-        logger.Verbose("Sending SMS using SMS Api");
+        logger.LogDebug("Sending SMS using SMS Api");
 
         var parameters = new Dictionary<string, string?>
         {
@@ -98,7 +100,7 @@ public class SmsApiClient : ISmsSender
             throw new SerializationException("Failed to parse error message.", e);
         }
 
-        logger.Information("SMS sent successfully");
+        logger.LogInformation("SMS sent successfully");
     }
 
     private static void HandleResponse(JsonElement response)

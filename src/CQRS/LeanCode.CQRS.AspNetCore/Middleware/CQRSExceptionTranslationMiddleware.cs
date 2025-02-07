@@ -4,18 +4,23 @@ using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Execution;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class CQRSExceptionTranslationMiddleware
 {
-    private readonly ILogger logger = Log.ForContext<CQRSExceptionTranslationMiddleware>();
+    private readonly ILogger<CQRSExceptionTranslationMiddleware> logger;
     private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
 
-    public CQRSExceptionTranslationMiddleware(CQRSMetrics metrics, RequestDelegate next)
+    public CQRSExceptionTranslationMiddleware(
+        ILogger<CQRSExceptionTranslationMiddleware> logger,
+        CQRSMetrics metrics,
+        RequestDelegate next
+    )
     {
+        this.logger = logger;
         this.metrics = metrics;
         this.next = next;
     }
@@ -40,7 +45,7 @@ public class CQRSExceptionTranslationMiddleware
             activity?.SetTag("error.code", ex.ErrorCode);
 
             var result = WrapInCommandResult(ex);
-            logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
+            logger.LogWarning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
             var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
             cqrsPayload.SetResult(executionResult);
             metrics.CQRSFailure(CQRSMetrics.ValidationFailure);

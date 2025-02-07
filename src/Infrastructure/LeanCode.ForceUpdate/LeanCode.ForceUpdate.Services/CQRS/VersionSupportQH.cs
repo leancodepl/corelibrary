@@ -1,24 +1,27 @@
 using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using VersionSupport = LeanCode.ForceUpdate.Contracts.VersionSupport;
 
 namespace LeanCode.ForceUpdate.Services.CQRS;
 
 public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<VersionSupportQH>();
+    private readonly ILogger<VersionSupportQH> logger;
 
     private readonly AndroidVersionsConfiguration androidConfiguration;
     private readonly IOSVersionsConfiguration iOSConfiguration;
     private readonly VersionHandler versionHandler;
 
     public VersionSupportQH(
+        ILogger<VersionSupportQH> logger,
         IOSVersionsConfiguration iOSConfiguration,
         AndroidVersionsConfiguration androidConfiguration,
         VersionHandler versionHandler
     )
     {
+        this.logger = logger;
         this.iOSConfiguration = iOSConfiguration;
         this.androidConfiguration = androidConfiguration;
         this.versionHandler = versionHandler;
@@ -28,7 +31,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
     {
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(query.Platform))
         {
-            logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
+            logger.LogWarning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
             return null;
         }
 

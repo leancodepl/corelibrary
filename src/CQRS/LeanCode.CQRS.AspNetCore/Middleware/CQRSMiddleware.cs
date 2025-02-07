@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
@@ -10,14 +10,20 @@ public class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
-    private readonly ILogger logger = Log.ForContext<CQRSMiddleware>();
+    private readonly ILogger<CQRSMiddleware> logger;
 
     private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSMiddleware(CQRSMetrics metrics, ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(
+        ILogger<CQRSMiddleware> logger,
+        CQRSMetrics metrics,
+        ISerializer serializer,
+        RequestDelegate next
+    )
     {
+        this.logger = logger;
         this.metrics = metrics;
         this.serializer = serializer;
         this.next = next;
@@ -37,7 +43,7 @@ public class CQRSMiddleware
         }
         catch (Exception ex)
         {
-            logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
+            logger.LogWarning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
@@ -45,7 +51,7 @@ public class CQRSMiddleware
 
         if (obj is null)
         {
-            logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
+            logger.LogWarning("Client sent an empty object for type {Type}, ignoring", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
             return;
@@ -60,11 +66,11 @@ public class CQRSMiddleware
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
-            logger.Debug(ex, "{ObjectKind} {@Object} cancelled", objectType, obj);
+            logger.LogDebug(ex, "{ObjectKind} {@Object} cancelled", objectType, obj);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
+            logger.LogError(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             metrics.CQRSFailure(CQRSMetrics.InternalError);
         }
@@ -76,7 +82,7 @@ public class CQRSMiddleware
 
         if (payload.Result is null)
         {
-            logger.Warning("CQRS execution ended with no result");
+            logger.LogWarning("CQRS execution ended with no result");
             metrics.CQRSFailure(CQRSMetrics.InternalError);
             return;
         }
@@ -106,7 +112,7 @@ public class CQRSMiddleware
             {
                 // assuming that in other cases the middleware itself will log & report appropriate metric
                 metrics.CQRSSuccess();
-                logger.Information(
+                logger.LogInformation(
                     "{ObjectKind} {@Object} executed successfully",
                     objectMetadata.ObjectKind,
                     payload.Payload

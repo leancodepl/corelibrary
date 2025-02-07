@@ -1,17 +1,19 @@
 using System.Globalization;
 using System.Resources;
+using Microsoft.Extensions.Logging;
 using static System.Globalization.CultureInfo;
 
 namespace LeanCode.Localization.StringLocalizers;
 
 public class ResourceManagerStringLocalizer : IStringLocalizer
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ResourceManagerStringLocalizer>();
+    private readonly ILogger<ResourceManagerStringLocalizer> logger;
 
     private readonly ResourceManager resourceManager;
 
-    public ResourceManagerStringLocalizer(LocalizationConfiguration cfg)
+    public ResourceManagerStringLocalizer(ILogger<ResourceManagerStringLocalizer> logger, LocalizationConfiguration cfg)
     {
+        this.logger = logger;
         resourceManager = new ResourceManager(cfg.ResourceSource);
     }
 
@@ -21,7 +23,7 @@ public class ResourceManagerStringLocalizer : IStringLocalizer
     {
         get
         {
-            logger.Verbose(
+            logger.LogDebug(
                 "Retrieving string {Name} for culture {Culture}",
                 name,
                 culture.Name.Length == 0 ? nameof(InvariantCulture) : culture.Name
@@ -39,7 +41,9 @@ public class ResourceManagerStringLocalizer : IStringLocalizer
                     || e is MissingSatelliteAssemblyException
                 )
             {
-                logger.Error(e, e.Message.TrimEnd('.'));
+#pragma warning disable CA2254
+                logger.LogError(e, e.Message.TrimEnd('.'));
+#pragma warning restore CA2254
 
                 throw new LocalizedResourceNotFoundException(e);
             }

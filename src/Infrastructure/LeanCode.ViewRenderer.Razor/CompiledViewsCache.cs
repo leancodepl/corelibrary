@@ -1,10 +1,11 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class CompiledViewsCache
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CompiledViewsCache>();
+    private readonly ILogger<CompiledViewsCache> logger;
 
     private readonly ViewLocator locator;
     private readonly ViewCompiler compiler;
@@ -15,22 +16,28 @@ internal class CompiledViewsCache
     private readonly ConcurrentDictionary<string, TaskCompletionSource<CompiledView>> buildCache =
         new ConcurrentDictionary<string, TaskCompletionSource<CompiledView>>();
 
-    public CompiledViewsCache(RazorViewRendererOptions opts)
+    public CompiledViewsCache(
+        ILogger<CompiledViewsCache> logger,
+        ILogger<ViewLocator> viewLocatorlogger,
+        ILogger<ViewCompiler> viewCompilerLogger,
+        RazorViewRendererOptions opts
+    )
     {
-        locator = new ViewLocator(opts);
-        compiler = new ViewCompiler(locator);
+        this.logger = logger;
+        locator = new ViewLocator(viewLocatorlogger, opts);
+        compiler = new ViewCompiler(viewCompilerLogger, locator);
     }
 
     public ValueTask<CompiledView> GetOrCompileAsync(string viewName)
     {
         if (cache.TryGetValue(viewName, out var compiled))
         {
-            logger.Verbose("View type for {ViewName} retrieved from cache", viewName);
+            logger.LogDebug("View type for {ViewName} retrieved from cache", viewName);
 
             return new ValueTask<CompiledView>(compiled);
         }
 
-        logger.Verbose("View type for {ViewName} is not in cache, compiling", viewName);
+        logger.LogDebug("View type for {ViewName} is not in cache, compiling", viewName);
 
         var tcs = new TaskCompletionSource<CompiledView>();
 
@@ -41,7 +48,7 @@ internal class CompiledViewsCache
             return new ValueTask<CompiledView>(WrappedCompileAsync(viewName, tcs));
         }
 
-        logger.Verbose("View type for {ViewName} is being compiled, waiting", viewName);
+        logger.LogDebug("View type for {ViewName} is being compiled, waiting", viewName);
 
         return new ValueTask<CompiledView>(newTcs.Task);
     }
@@ -77,11 +84,11 @@ internal class CompiledViewsCache
         var item = locator.GetItem(viewName, null);
         if (!item.Exists)
         {
-            logger.Debug("Cannot locate view {ViewName}", viewName);
+            logger.LogDebug("Cannot locate view {ViewName}", viewName);
             throw new ViewNotFoundException(viewName, "Cannot locate view.");
         }
 
-        logger.Information(
+        logger.LogInformation(
             "View {ViewName} located at {ViewPath}, running real compilation",
             viewName,
             item.PhysicalPath

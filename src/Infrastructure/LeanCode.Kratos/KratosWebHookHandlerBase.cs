@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.Kratos.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.Kratos;
 
@@ -12,12 +13,13 @@ public sealed record class KratosWebHookHandlerConfig(string ApiKey);
 
 public abstract class KratosWebHookHandlerBase
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<KratosWebHookHandlerBase>();
+    private readonly ILogger<KratosWebHookHandlerBase> logger;
 
     private readonly KratosWebHookHandlerConfig config;
 
-    protected KratosWebHookHandlerBase(KratosWebHookHandlerConfig config)
+    protected KratosWebHookHandlerBase(ILogger<KratosWebHookHandlerBase> logger, KratosWebHookHandlerConfig config)
     {
+        this.logger = logger;
         this.config = config;
     }
 
@@ -40,13 +42,13 @@ public abstract class KratosWebHookHandlerBase
             }
             else
             {
-                logger.Error("Invalid Api Key");
+                logger.LogError("Invalid Api Key");
                 ctx.Response.StatusCode = 403;
             }
         }
         catch (Exception e)
         {
-            logger.Error(e, "Failed to process webhook");
+            logger.LogError(e, "Failed to process webhook");
             ctx.Response.StatusCode = 500;
         }
     }
