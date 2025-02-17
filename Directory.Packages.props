@@ -6,7 +6,7 @@
     <AspNetCoreVersion>9.0.0</AspNetCoreVersion>
     <ExtensionsVersion>9.0.0</ExtensionsVersion>
 
-    <MassTransitVersion>8.3.4</MassTransitVersion>
+    <MassTransitVersion>8.3.6</MassTransitVersion>
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
@@ -105,8 +105,8 @@
     <PackageVersion Include="MassTransit" Version="$(MassTransitVersion)" />
     <PackageVersion Include="MassTransit.EntityFrameworkCore" Version="$(MassTransitVersion)" />
 
-    <PackageVersion Include="OpenTelemetry" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
+    <PackageVersion Include="OpenTelemetry" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
 
     <PackageVersion Include="Swashbuckle.AspNetCore.ReDoc" Version="7.2.0" />
@@ -121,7 +121,7 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.13.1" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="xunit.v3" Version="1.0.0" />
-    <PackageVersion Include="xunit.analyzers" Version="1.18.0" />
+    <PackageVersion Include="xunit.analyzers" Version="1.20.0" />
 
     <PackageVersion Include="Microsoft.NETCore.App.Ref" Version="$(DomainModelsTestsNetCoreAppRefVersion)" />
   </ItemGroup>
