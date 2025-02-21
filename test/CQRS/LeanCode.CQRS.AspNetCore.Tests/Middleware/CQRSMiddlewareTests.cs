@@ -27,6 +27,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
     protected override void ConfigureServices(IServiceCollection services)
     {
+        serializer.ContentType.Returns("application/json");
         services.AddSingleton(_ => serializer);
     }
 
