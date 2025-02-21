@@ -7,12 +7,15 @@ namespace LeanCode.CQRS.AspNetCore.Serialization;
 
 public interface ISerializer
 {
+    string ContentType { get; }
     Task SerializeAsync(Stream utf8Json, object value, Type inputType, CancellationToken cancellationToken);
     ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken);
 }
 
 public sealed class Utf8JsonSerializer(IOptions<JsonOptions> options) : ISerializer
 {
+    public string ContentType => "application/json; charset=utf-8";
+
     public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType, CancellationToken cancellationToken)
     {
         return JsonSerializer.DeserializeAsync(
