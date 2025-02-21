@@ -87,7 +87,7 @@ public class CQRSMiddleware
 
         if (result.HasPayload)
         {
-            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.ContentType = serializer.ContentType;
             if (result.Payload is null)
             {
                 await httpContext.Response.Body.WriteAsync(NullString);

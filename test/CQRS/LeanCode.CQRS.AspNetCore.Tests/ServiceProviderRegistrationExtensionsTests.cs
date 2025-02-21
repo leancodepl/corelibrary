@@ -95,6 +95,8 @@ public class ServiceProviderRegistrationExtensionsTests
 
     internal sealed class CustomSerializer : ISerializer
     {
+        public string ContentType => throw new NotImplementedException();
+
         public ValueTask<object?> DeserializeAsync(
             Stream utf8Json,
             Type returnType,
