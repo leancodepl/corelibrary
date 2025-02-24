@@ -1,5 +1,4 @@
 using LeanCode.Localization.StringLocalizers;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 using static System.Globalization.CultureInfo;
@@ -12,7 +11,7 @@ public class ResourceManagerStringLocalizerTests
 
     public ResourceManagerStringLocalizerTests()
     {
-        var logger = Substitute.For<ILogger<ResourceManagerStringLocalizer>>();
+        var logger = Substitute.For<Serilog.ILogger>();
 
         stringLocalizer = new ResourceManagerStringLocalizer(
             logger,

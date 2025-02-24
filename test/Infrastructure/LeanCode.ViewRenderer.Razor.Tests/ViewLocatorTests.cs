@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -16,11 +15,11 @@ public class ViewLocatorTests
         new[] { "./Views/A", "./Views/B" }
     );
 
-    private readonly ILogger<ViewLocator> logger;
+    private readonly Serilog.ILogger logger;
 
     public ViewLocatorTests()
     {
-        logger = Substitute.For<ILogger<ViewLocator>>();
+        logger = Substitute.For<Serilog.ILogger>();
     }
 
     [Fact]

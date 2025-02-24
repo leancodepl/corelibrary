@@ -1,21 +1,17 @@
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class NonProductionResponseLoggerMiddleware
 {
-    private readonly ILogger<NonProductionResponseLoggerMiddleware> logger;
+    private readonly Serilog.ILogger logger;
     private readonly IHostEnvironment environment;
 
-    public NonProductionResponseLoggerMiddleware(
-        ILogger<NonProductionResponseLoggerMiddleware> logger,
-        IHostEnvironment env
-    )
+    public NonProductionResponseLoggerMiddleware(Serilog.ILogger logger, IHostEnvironment env)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<NonProductionResponseLoggerMiddleware>();
         environment = env;
     }
 
@@ -27,7 +23,7 @@ public class NonProductionResponseLoggerMiddleware
 
         if (!environment.IsProduction())
         {
-            logger.LogInformation("Request executed with response {@Response}", payload.Result);
+            logger.Information("Request executed with response {@Response}", payload.Result);
         }
     }
 }

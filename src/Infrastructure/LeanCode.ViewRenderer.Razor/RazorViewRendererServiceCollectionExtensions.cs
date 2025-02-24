@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
@@ -12,10 +11,7 @@ public static class RazorViewRendererServiceCollectionExtensions
     )
     {
         services.TryAddSingleton<IViewRenderer>(sp => new RazorViewRenderer(
-            sp.GetRequiredService<ILogger<RazorViewRenderer>>(),
-            sp.GetRequiredService<ILogger<CompiledViewsCache>>(),
-            sp.GetRequiredService<ILogger<ViewLocator>>(),
-            sp.GetRequiredService<ILogger<ViewCompiler>>(),
+            sp.GetRequiredService<Serilog.ILogger>(),
             config
         ));
         return services;

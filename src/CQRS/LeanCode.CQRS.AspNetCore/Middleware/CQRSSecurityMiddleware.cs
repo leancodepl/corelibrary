@@ -3,7 +3,6 @@ using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
@@ -11,13 +10,13 @@ public class CQRSSecurityMiddleware
 {
     private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
-    private readonly ILogger<CQRSSecurityMiddleware> logger;
+    private readonly Serilog.ILogger logger;
 
-    public CQRSSecurityMiddleware(CQRSMetrics metrics, RequestDelegate next, ILogger<CQRSSecurityMiddleware> logger)
+    public CQRSSecurityMiddleware(CQRSMetrics metrics, RequestDelegate next, Serilog.ILogger logger)
     {
         this.metrics = metrics;
         this.next = next;
-        this.logger = logger;
+        this.logger = logger.ForContext<CQRSSecurityMiddleware>();
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -30,7 +29,7 @@ public class CQRSSecurityMiddleware
 
         if (customAuthorizers.Count > 0 && !(user.Identity?.IsAuthenticated ?? false))
         {
-            logger.LogWarning(
+            logger.Warning(
                 "The current user is not authenticated and the object {@Object} requires authorization",
                 payload.Payload
             );
@@ -59,7 +58,7 @@ public class CQRSSecurityMiddleware
             if (!authorized)
             {
                 activity?.SetTag("authorizer.authorized", false);
-                logger.LogWarning(
+                logger.Warning(
                     "User is not authorized for {@Object}, authorizer {AuthorizerType} did not pass",
                     payload.Payload,
                     customAuthorizer.GetType().FullName

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -42,52 +43,58 @@ public static class IHostBuilderExtensions
         Action<HostBuilderContext, LoggerConfiguration>? additionalLoggingConfiguration = null
     )
     {
-        return builder.ConfigureLogging(
-            (context, logging) =>
-            {
-                var configuration = context.Configuration;
-                var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
-
-                var loggerConfiguration = new LoggerConfiguration()
-                    .ReadFrom.Configuration(configuration)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithProperty("project", projectName)
-                    .Enrich.WithProperty("app_name", appName)
-                    .MinimumLevel.Is(minLogLevel)
-                    .DestructureCommonObjects(destructurers);
-
-                if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+        return builder
+            .ConfigureServices(
+                (context, services) =>
                 {
-                    var internalLogLevel =
-                        minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
-                    loggerConfiguration
-                        .MinimumLevel.Override("Microsoft", internalLogLevel)
-                        .MinimumLevel.Override("System", internalLogLevel)
-                        .MinimumLevel.Override("Azure.Identity", internalLogLevel)
-                        .MinimumLevel.Override("Azure.Core", internalLogLevel);
-                }
+                    var configuration = context.Configuration;
+                    var minLogLevel = configuration.GetValue(MinimumLogLevelKey, LogEventLevel.Verbose);
 
-                if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
+                    var loggerConfiguration = new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("project", projectName)
+                        .Enrich.WithProperty("app_name", appName)
+                        .MinimumLevel.Is(minLogLevel)
+                        .DestructureCommonObjects(destructurers);
+
+                    if (!configuration.GetValue<bool>(EnableDetailedInternalLogsKey))
+                    {
+                        var internalLogLevel =
+                            minLogLevel > InternalDefaultLogLevel ? minLogLevel : InternalDefaultLogLevel;
+                        loggerConfiguration
+                            .MinimumLevel.Override("Microsoft", internalLogLevel)
+                            .MinimumLevel.Override("System", internalLogLevel)
+                            .MinimumLevel.Override("Azure.Identity", internalLogLevel)
+                            .MinimumLevel.Override("Azure.Core", internalLogLevel);
+                    }
+
+                    if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
+                    {
+                        loggerConfiguration.WriteTo.Seq(seqEndpoint, formatProvider: CultureInfo.InvariantCulture);
+                    }
+
+                    if (context.HostingEnvironment.IsDevelopment())
+                    {
+                        loggerConfiguration.WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        loggerConfiguration.WriteTo.Console(new RenderedCompactJsonFormatter());
+                    }
+
+                    additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
+
+                    Log.Logger = loggerConfiguration.CreateLogger();
+                    services.AddSingleton(Log.Logger);
+                }
+            )
+            .ConfigureLogging(
+                (context, logging) =>
                 {
-                    loggerConfiguration.WriteTo.Seq(seqEndpoint, formatProvider: CultureInfo.InvariantCulture);
+                    logging.AddConfiguration(context.Configuration.GetSection(SystemLoggersEntryName));
+                    logging.AddSerilog();
                 }
-
-                if (context.HostingEnvironment.IsDevelopment())
-                {
-                    loggerConfiguration.WriteTo.Console(formatProvider: CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    loggerConfiguration.WriteTo.Console(new RenderedCompactJsonFormatter());
-                }
-
-                additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
-
-                Log.Logger = loggerConfiguration.CreateLogger();
-
-                logging.AddConfiguration(configuration.GetSection(SystemLoggersEntryName));
-                logging.AddSerilog();
-            }
-        );
+            );
     }
 }

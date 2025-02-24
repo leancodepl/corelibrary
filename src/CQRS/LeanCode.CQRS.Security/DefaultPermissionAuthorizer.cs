@@ -1,18 +1,17 @@
 using System.Security.Claims;
 using LeanCode.Contracts.Security;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.Security;
 
 public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, IHasPermissions
 {
-    private readonly ILogger<DefaultPermissionAuthorizer> logger;
+    private readonly Serilog.ILogger logger;
 
     private readonly RoleRegistry registry;
 
-    public DefaultPermissionAuthorizer(ILogger<DefaultPermissionAuthorizer> logger, RoleRegistry registry)
+    public DefaultPermissionAuthorizer(Serilog.ILogger logger, RoleRegistry registry)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<DefaultPermissionAuthorizer>();
         this.registry = registry;
     }
 
@@ -25,7 +24,7 @@ public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, I
     {
         if (!user.HasPermission(registry, customData ?? Array.Empty<string>()))
         {
-            logger.LogWarning(
+            logger.Warning(
                 "User does not have sufficient permissions ({Permissions}) to run {@Object}",
                 customData,
                 obj

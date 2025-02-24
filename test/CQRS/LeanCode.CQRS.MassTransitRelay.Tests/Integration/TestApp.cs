@@ -3,6 +3,7 @@ using System.Text.Json;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore;
+using LeanCode.Logging;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Testing;
@@ -80,6 +81,7 @@ public sealed class TestApp : IAsyncLifetime, IDisposable
                         });
                     });
             })
+            .ConfigureDefaultLogging("test")
             .Build();
 
         server = host.GetTestServer();

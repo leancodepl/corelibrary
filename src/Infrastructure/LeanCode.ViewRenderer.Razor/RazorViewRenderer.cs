@@ -1,25 +1,18 @@
 using System.Text;
 using LeanCode.ViewRenderer.Razor.ViewBase;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class RazorViewRenderer : IViewRenderer
 {
-    private readonly ILogger<RazorViewRenderer> logger;
+    private readonly Serilog.ILogger logger;
 
     private readonly CompiledViewsCache cache;
 
-    public RazorViewRenderer(
-        ILogger<RazorViewRenderer> logger,
-        ILogger<CompiledViewsCache> compiledViewsCacheLogger,
-        ILogger<ViewLocator> viewLocatorLogger,
-        ILogger<ViewCompiler> viewCompilerLogger,
-        RazorViewRendererOptions options
-    )
+    public RazorViewRenderer(Serilog.ILogger logger, RazorViewRendererOptions options)
     {
         this.logger = logger;
-        cache = new CompiledViewsCache(compiledViewsCacheLogger, viewLocatorLogger, viewCompilerLogger, options);
+        cache = new CompiledViewsCache(logger, options);
     }
 
     public async Task RenderToStreamAsync(
@@ -29,11 +22,11 @@ internal class RazorViewRenderer : IViewRenderer
         CancellationToken cancellationToken = default
     )
     {
-        logger.LogDebug("Rendering view {ViewName}", viewName);
+        logger.Debug("Rendering view {ViewName}", viewName);
 
         await RenderAsync(outputStream, viewName, model, null);
 
-        logger.LogInformation("View {ViewName} rendered", viewName);
+        logger.Information("View {ViewName} rendered", viewName);
     }
 
     public async Task<string> RenderToStringAsync(
@@ -62,13 +55,13 @@ internal class RazorViewRenderer : IViewRenderer
 
         if (string.IsNullOrEmpty(compiledView.Layout))
         {
-            logger.LogDebug("Executing view object for view {ViewName}", viewName);
+            logger.Debug("Executing view object for view {ViewName}", viewName);
 
             await view.ExecuteAsync(outputStream);
         }
         else
         {
-            logger.LogDebug("View {ViewName} has a layout {Layout}, delegating work", viewName, compiledView.Layout);
+            logger.Debug("View {ViewName} has a layout {Layout}, delegating work", viewName, compiledView.Layout);
 
             await RenderAsync(outputStream, compiledView.Layout, model, view);
         }

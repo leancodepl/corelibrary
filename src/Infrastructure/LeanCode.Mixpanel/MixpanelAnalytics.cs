@@ -1,19 +1,18 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.Mixpanel;
 
 public class MixpanelAnalytics
 {
-    private readonly ILogger<MixpanelAnalytics> logger;
+    private readonly Serilog.ILogger logger;
 
     private readonly HttpClient client;
     private readonly MixpanelConfiguration configuration;
 
-    public MixpanelAnalytics(ILogger<MixpanelAnalytics> logger, HttpClient client, MixpanelConfiguration configuration)
+    public MixpanelAnalytics(Serilog.ILogger logger, HttpClient client, MixpanelConfiguration configuration)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<MixpanelAnalytics>();
         this.configuration = configuration;
         this.client = client;
     }
@@ -136,7 +135,7 @@ public class MixpanelAnalytics
 
         var data = new Dictionary<string, object?>() { ["event"] = name, ["properties"] = properties };
 
-        logger.LogDebug("Sending Mixpanel event {EventName} for user {UserId}", name, userId);
+        logger.Verbose("Sending Mixpanel event {EventName} for user {UserId}", name, userId);
 
         return MakeRequestAsync(userId, isImport ? "import" : "track", name, data, cancellationToken);
     }
@@ -148,7 +147,7 @@ public class MixpanelAnalytics
         CancellationToken cancellationToken = default
     )
     {
-        logger.LogDebug("Engaging Mixpanel operation {Name} for user {UserId}", operation, userId);
+        logger.Verbose("Engaging Mixpanel operation {Name} for user {UserId}", operation, userId);
         var data = new Dictionary<string, object?>()
         {
             ["$token"] = configuration.Token,
@@ -175,11 +174,11 @@ public class MixpanelAnalytics
         var content = await rawResponse.Content.ReadAsStringAsync(cancellationToken);
         if (content == "1")
         {
-            logger.LogDebug("Mixpanel request {RequestName} for user {UserId} sent successfully", requestName, userId);
+            logger.Debug("Mixpanel request {RequestName} for user {UserId} sent successfully", requestName, userId);
         }
         else if (content == "0")
         {
-            logger.LogWarning(
+            logger.Warning(
                 "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}",
                 requestName,
                 userId,
@@ -192,7 +191,7 @@ public class MixpanelAnalytics
 
             if (response?.Status == MixpanelResponse.Success)
             {
-                logger.LogInformation(
+                logger.Information(
                     "Mixpanel request {RequestName} for user {UserId} sent successfully",
                     requestName,
                     userId
@@ -200,7 +199,7 @@ public class MixpanelAnalytics
             }
             else
             {
-                logger.LogWarning(
+                logger.Warning(
                     "Error sending mixpanel request {RequestName} for user {UserId} with data: {@EventData}. Mixpanel returned an error {Error}",
                     requestName,
                     userId,

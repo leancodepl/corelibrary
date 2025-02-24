@@ -5,7 +5,6 @@ using LeanCode.Localization.StringLocalizers;
 using LeanCode.SendGrid;
 using LeanCode.Test.Helpers;
 using LeanCode.ViewRenderer;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SendGrid;
 using Xunit;
@@ -52,7 +51,7 @@ public class SendGridRazorClientTests
                 return $"[{cultureName}] {keyName}";
             });
 
-        var logger = Substitute.For<ILogger<SendGridRazorClient>>();
+        var logger = Substitute.For<Serilog.ILogger>();
 
         client = new SendGridRazorClient(
             logger,

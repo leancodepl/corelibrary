@@ -1,17 +1,16 @@
 using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class ViewLocator : RazorProject
 {
-    private readonly ILogger<ViewLocator> logger;
+    private readonly Serilog.ILogger logger;
 
     private readonly RazorViewRendererOptions options;
 
-    public ViewLocator(ILogger<ViewLocator> logger, RazorViewRendererOptions options)
+    public ViewLocator(Serilog.ILogger logger, RazorViewRendererOptions options)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<ViewLocator>();
         this.options = options;
     }
 
@@ -25,7 +24,7 @@ internal class ViewLocator : RazorProject
     {
         if (fileKind != null)
         {
-            logger.LogWarning("GetItem: `fileKind` parameter ignored: {FileKind}", fileKind);
+            logger.Warning("GetItem: `fileKind` parameter ignored: {FileKind}", fileKind);
         }
 
         if (LocateFile(GetFileName(path)) is var (basePath, fullPath, fileName))

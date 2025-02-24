@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -12,18 +11,9 @@ public class RazorViewRendererTests
 
     public RazorViewRendererTests()
     {
-        var razorViewRendererLogger = Substitute.For<ILogger<RazorViewRenderer>>();
-        var compiledViewsCacheLogger = Substitute.For<ILogger<CompiledViewsCache>>();
-        var viewLocatorLogger = Substitute.For<ILogger<ViewLocator>>();
-        var viewCompilerLogger = Substitute.For<ILogger<ViewCompiler>>();
+        var logger = Substitute.For<Serilog.ILogger>();
 
-        renderer = new RazorViewRenderer(
-            razorViewRendererLogger,
-            compiledViewsCacheLogger,
-            viewLocatorLogger,
-            viewCompilerLogger,
-            options
-        );
+        renderer = new RazorViewRenderer(logger, options);
     }
 
     [Fact]

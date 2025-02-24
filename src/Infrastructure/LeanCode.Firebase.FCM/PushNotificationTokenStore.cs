@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.Firebase.FCM;
 
@@ -12,16 +11,13 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
     where TUserId : IEquatable<TUserId>
 {
     private const int MaxTokenBatchSize = IPushNotificationTokenStore<TUserId>.MaxTokenBatchSize;
-    private readonly ILogger<PushNotificationTokenStore<TDbContext, TUserId>> logger;
+    private readonly Serilog.ILogger logger;
 
     private readonly TDbContext dbContext;
 
-    public PushNotificationTokenStore(
-        ILogger<PushNotificationTokenStore<TDbContext, TUserId>> logger,
-        TDbContext dbContext
-    )
+    public PushNotificationTokenStore(Serilog.ILogger logger, TDbContext dbContext)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<PushNotificationTokenStore<TDbContext, TUserId>>();
         this.dbContext = dbContext;
     }
 
@@ -95,7 +91,7 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
                 cancellationToken
             );
 
-            logger.LogInformation("Added push notification token for user {UserId} to the store", userId);
+            logger.Information("Added push notification token for user {UserId} to the store", userId);
 
             string GetTokensTableName()
             {
@@ -119,7 +115,7 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Something went wrong when adding push notification token for user {UserId}", userId);
+            logger.Error(ex, "Something went wrong when adding push notification token for user {UserId}", userId);
             throw;
         }
     }
@@ -140,16 +136,16 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
 
             if (removed == 0)
             {
-                logger.LogInformation("Could not find push notification token for user {UserId} to remove", userId);
+                logger.Information("Could not find push notification token for user {UserId} to remove", userId);
             }
             else
             {
-                logger.LogInformation("Removed push notification token for user {UserId} from the store", userId);
+                logger.Information("Removed push notification token for user {UserId} from the store", userId);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Something went wrong when deleting push notification token for user {UserId}", userId);
+            logger.Error(ex, "Something went wrong when deleting push notification token for user {UserId}", userId);
         }
     }
 
@@ -169,16 +165,16 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
 
             if (removed == 0)
             {
-                logger.LogInformation("Could not find push notification token to remove");
+                logger.Information("Could not find push notification token to remove");
             }
             else
             {
-                logger.LogInformation("Removed push notification token from the store");
+                logger.Information("Removed push notification token from the store");
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Something went wrong when deleting push notification token");
+            logger.Error(ex, "Something went wrong when deleting push notification token");
         }
     }
 
@@ -196,11 +192,11 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
                 .Where(e => tokens.Contains(e.Token))
                 .ExecuteDeleteAsync(cancellationToken);
 
-            logger.LogInformation("Removed {Count} push notification tokens from the store", removed);
+            logger.Information("Removed {Count} push notification tokens from the store", removed);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Something went wrong when deleting push notification tokens");
+            logger.Error(ex, "Something went wrong when deleting push notification tokens");
         }
     }
 
@@ -218,11 +214,11 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
                 .Where(e => (object)e.UserId == (object)userId)
                 .ExecuteDeleteAsync(cancellationToken);
 
-            logger.LogInformation("Removed {Count} push notification tokens from the store", removed);
+            logger.Information("Removed {Count} push notification tokens from the store", removed);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Something went wrong when deleting push notification tokens");
+            logger.Error(ex, "Something went wrong when deleting push notification tokens");
         }
     }
 }

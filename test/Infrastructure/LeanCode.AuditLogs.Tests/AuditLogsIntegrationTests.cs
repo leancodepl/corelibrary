@@ -203,16 +203,16 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
 
     internal sealed class StubAuditLogStorage : IAuditLogStorage
     {
-        private readonly ILogger<StubAuditLogStorage> logger;
+        private readonly Serilog.ILogger logger;
 
         public StubAuditLogStorage()
         {
-            logger = Substitute.For<ILogger<StubAuditLogStorage>>();
+            logger = Substitute.For<Serilog.ILogger>();
         }
 
         public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken)
         {
-            logger.LogInformation(
+            logger.Information(
                 "StubAuditLog: Changes found {UserId} {ActionName} {Type} {State} {@PrimaryKey} {@EntryChanged} {DateOccurred}",
                 auditLogMessage.ActorId,
                 auditLogMessage.ActionName,

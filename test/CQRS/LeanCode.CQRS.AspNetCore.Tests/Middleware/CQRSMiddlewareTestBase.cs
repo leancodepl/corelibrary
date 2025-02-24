@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using FluentAssertions;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +44,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
                         app.Run(ctx => FinalPipeline(ctx));
                     });
             })
+            .ConfigureDefaultLogging("test")
             .Build();
 
         Server = Host.GetTestServer();

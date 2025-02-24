@@ -4,7 +4,6 @@ using System.Text.Json;
 using LeanCode.Kratos.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using NSubstitute;
 using Xunit;
@@ -13,11 +12,11 @@ namespace LeanCode.Kratos.Tests;
 
 public class KratosWebHookHandlerTests
 {
-    private readonly ILogger<KratosWebHookHandlerBase> logger;
+    private readonly Serilog.ILogger logger;
 
     public KratosWebHookHandlerTests()
     {
-        logger = Substitute.For<ILogger<KratosWebHookHandlerBase>>();
+        logger = Substitute.For<Serilog.ILogger>();
     }
 
     [Fact]
@@ -160,13 +159,13 @@ public class KratosWebHookHandlerTests
 
         public new string ApiKeyHeaderName => base.ApiKeyHeaderName;
 
-        public KratosWebHookTestHandler(ILogger<KratosWebHookHandlerBase> logger, Func<HttpContext, Task> handler)
+        public KratosWebHookTestHandler(Serilog.ILogger logger, Func<HttpContext, Task> handler)
             : base(logger, new(ApiKey))
         {
             this.handler = handler;
         }
 
-        public KratosWebHookTestHandler(ILogger<KratosWebHookHandlerBase> logger, Action<HttpContext> handler)
+        public KratosWebHookTestHandler(Serilog.ILogger logger, Action<HttpContext> handler)
             : base(logger, new(ApiKey))
         {
             this.handler = ctx =>

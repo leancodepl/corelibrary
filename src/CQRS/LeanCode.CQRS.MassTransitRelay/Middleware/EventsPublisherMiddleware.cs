@@ -1,23 +1,18 @@
 using LeanCode.DomainModels.Model;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.CQRS.MassTransitRelay.Middleware;
 
 public class EventsPublisherMiddleware
 {
-    private readonly ILogger<EventsPublisherMiddleware> logger;
+    private readonly Serilog.ILogger logger;
     private readonly RequestDelegate next;
     private readonly AsyncEventsInterceptor interceptor;
 
-    public EventsPublisherMiddleware(
-        ILogger<EventsPublisherMiddleware> logger,
-        RequestDelegate next,
-        AsyncEventsInterceptor interceptor
-    )
+    public EventsPublisherMiddleware(Serilog.ILogger logger, RequestDelegate next, AsyncEventsInterceptor interceptor)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<EventsPublisherMiddleware>();
         this.next = next;
         this.interceptor = interceptor;
     }
@@ -38,7 +33,7 @@ public class EventsPublisherMiddleware
         CancellationToken cancellationToken
     )
     {
-        logger.LogDebug("Publishing {Count} raised events", events.Count);
+        logger.Debug("Publishing {Count} raised events", events.Count);
         var conversationId = Guid.NewGuid();
 
         var publishTasks = events.Select(evt =>
@@ -55,7 +50,7 @@ public class EventsPublisherMiddleware
         CancellationToken cancellationToken
     )
     {
-        logger.LogDebug("Publishing event of type {DomainEvent}", evt.GetType());
+        logger.Debug("Publishing event of type {DomainEvent}", evt.GetType());
         return publishEndpoint.Publish(
             (object)evt, // Cast is necessary to publish the event as it's type, not an `IDomainEvent`
             publishCtx =>

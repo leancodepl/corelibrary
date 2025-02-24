@@ -5,6 +5,7 @@
     <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
     <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
     <ProjectReference Include="../../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

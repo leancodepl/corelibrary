@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Extensions.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
@@ -30,7 +29,7 @@ internal class ViewCompiler
 {
     private const string FilePreamble = @"@using System";
 
-    private readonly ILogger<ViewCompiler> logger;
+    private readonly Serilog.ILogger logger;
 
     private static readonly List<PortableExecutableReference> References = new[]
     {
@@ -56,25 +55,25 @@ internal class ViewCompiler
 
     private readonly RazorProjectEngine engine;
 
-    public ViewCompiler(ILogger<ViewCompiler> logger, ViewLocator locator)
+    public ViewCompiler(Serilog.ILogger logger, ViewLocator locator)
     {
-        this.logger = logger;
+        this.logger = logger.ForContext<ViewCompiler>();
         engine = PrepareEngine(locator);
     }
 
     public async Task<CompiledView> CompileAsync(RazorProjectItem item)
     {
-        logger.LogDebug("Compiling view {ViewPath}", item.PhysicalPath);
+        logger.Debug("Compiling view {ViewPath}", item.PhysicalPath);
 
         var code = await GenerateCodeAsync(item);
 
-        logger.LogDebug("Code for view {ViewPath} generated", item.PhysicalPath);
+        logger.Debug("Code for view {ViewPath} generated", item.PhysicalPath);
 
         var assembly = await Task.Run(() => GenerateAssembly(item.PhysicalPath, code));
 
         var type = assembly.GetExportedTypes()[0];
 
-        logger.LogInformation(
+        logger.Information(
             "View {ViewPath} compiled to assembly {Assembly} to type {Type}",
             item.PhysicalPath,
             assembly,
@@ -102,7 +101,7 @@ internal class ViewCompiler
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Cannot parse syntax tree for view {ViewPath}", fullPath);
+            logger.Warning(ex, "Cannot parse syntax tree for view {ViewPath}", fullPath);
 
             throw new CompilationFailedException(fullPath, "Cannot parse syntax tree.", ex);
         }
@@ -121,11 +120,11 @@ internal class ViewCompiler
                     .Diagnostics.Select(d => d.GetMessage(CultureInfo.InvariantCulture))
                     .ToList();
 
-                logger.LogWarning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
+                logger.Warning("Cannot emit IL to in-memory stream for view {ViewPath}, errors:", fullPath);
 
                 foreach (var err in errors)
                 {
-                    logger.LogWarning("\t {Error}", err);
+                    logger.Warning("\t {Error}", err);
                 }
 
                 throw new CompilationFailedException(fullPath, errors, "Cannot compile the generated code.");
@@ -139,7 +138,7 @@ internal class ViewCompiler
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
+                logger.Warning(ex, "Cannot load compiled assembly for view {ViewPath}", fullPath);
 
                 throw new CompilationFailedException(fullPath, "Cannot load generated assembly.", ex);
             }
@@ -154,11 +153,11 @@ internal class ViewCompiler
         {
             var errors = genResult.Diagnostics.Select(d => d.ToString()).ToList();
 
-            logger.LogWarning("Cannot generate code for the view {ViewPath}, errors:", item.PhysicalPath);
+            logger.Warning("Cannot generate code for the view {ViewPath}, errors:", item.PhysicalPath);
 
             foreach (var err in errors)
             {
-                logger.LogWarning("\t {Error}", err);
+                logger.Warning("\t {Error}", err);
             }
 
             throw new CompilationFailedException(
@@ -171,11 +170,11 @@ internal class ViewCompiler
         {
             var diags = genResult.Diagnostics.Select(d => d.ToString()).ToList();
 
-            logger.LogInformation("Diagnostics for {ViewPath} compilation:", item.PhysicalPath);
+            logger.Information("Diagnostics for {ViewPath} compilation:", item.PhysicalPath);
 
             foreach (var diag in diags)
             {
-                logger.LogInformation("\t {Diagnostic}", diag);
+                logger.Information("\t {Diagnostic}", diag);
             }
         }
 
