@@ -1,10 +1,11 @@
 using System.Collections.Concurrent;
+using LeanCode.Logging;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class CompiledViewsCache
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<CompiledViewsCache> logger;
 
     private readonly ViewLocator locator;
     private readonly ViewCompiler compiler;
@@ -15,11 +16,16 @@ internal class CompiledViewsCache
     private readonly ConcurrentDictionary<string, TaskCompletionSource<CompiledView>> buildCache =
         new ConcurrentDictionary<string, TaskCompletionSource<CompiledView>>();
 
-    public CompiledViewsCache(Serilog.ILogger logger, RazorViewRendererOptions opts)
+    public CompiledViewsCache(
+        ILogger<CompiledViewsCache> logger,
+        ILogger<ViewLocator> viewLocatorLogger,
+        ILogger<ViewCompiler> viewCompilerLogger,
+        RazorViewRendererOptions opts
+    )
     {
-        this.logger = logger.ForContext<CompiledViewsCache>();
-        locator = new ViewLocator(logger.ForContext<ViewLocator>(), opts);
-        compiler = new ViewCompiler(logger.ForContext<ViewCompiler>(), locator);
+        this.logger = logger;
+        locator = new ViewLocator(viewLocatorLogger, opts);
+        compiler = new ViewCompiler(viewCompilerLogger, locator);
     }
 
     public ValueTask<CompiledView> GetOrCompileAsync(string viewName)

@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 
@@ -9,13 +10,17 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class CQRSExceptionTranslationMiddleware
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<CQRSExceptionTranslationMiddleware> logger;
     private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
 
-    public CQRSExceptionTranslationMiddleware(Serilog.ILogger logger, CQRSMetrics metrics, RequestDelegate next)
+    public CQRSExceptionTranslationMiddleware(
+        ILogger<CQRSExceptionTranslationMiddleware> logger,
+        CQRSMetrics metrics,
+        RequestDelegate next
+    )
     {
-        this.logger = logger.ForContext<CQRSExceptionTranslationMiddleware>();
+        this.logger = logger;
         this.metrics = metrics;
         this.next = next;
     }

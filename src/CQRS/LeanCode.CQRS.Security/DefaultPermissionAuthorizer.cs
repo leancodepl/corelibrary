@@ -1,17 +1,18 @@
 using System.Security.Claims;
 using LeanCode.Contracts.Security;
+using LeanCode.Logging;
 
 namespace LeanCode.CQRS.Security;
 
 public class DefaultPermissionAuthorizer : CustomAuthorizer<object, string[]>, IHasPermissions
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<DefaultPermissionAuthorizer> logger;
 
     private readonly RoleRegistry registry;
 
-    public DefaultPermissionAuthorizer(Serilog.ILogger logger, RoleRegistry registry)
+    public DefaultPermissionAuthorizer(ILogger<DefaultPermissionAuthorizer> logger, RoleRegistry registry)
     {
-        this.logger = logger.ForContext<DefaultPermissionAuthorizer>();
+        this.logger = logger;
         this.registry = registry;
     }
 

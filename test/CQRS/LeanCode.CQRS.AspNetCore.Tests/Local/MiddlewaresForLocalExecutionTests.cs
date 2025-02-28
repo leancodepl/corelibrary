@@ -11,6 +11,7 @@ using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog.Core;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
@@ -86,6 +87,8 @@ public class MiddlewaresForLocalExecutionTests
             services.AddScoped<LocalHandlerMiddleware>();
             services.AddScoped<CQRSMetrics>();
             services.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+            services.AddSingleton(Logger.None);
+            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
             registrationSource = new CQRSObjectsRegistrationSource(services, new ObjectExecutorFactory());
             registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);

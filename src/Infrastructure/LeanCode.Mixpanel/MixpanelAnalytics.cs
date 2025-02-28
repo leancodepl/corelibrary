@@ -1,18 +1,19 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LeanCode.Logging;
 
 namespace LeanCode.Mixpanel;
 
 public class MixpanelAnalytics
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<MixpanelAnalytics> logger;
 
     private readonly HttpClient client;
     private readonly MixpanelConfiguration configuration;
 
-    public MixpanelAnalytics(Serilog.ILogger logger, HttpClient client, MixpanelConfiguration configuration)
+    public MixpanelAnalytics(ILogger<MixpanelAnalytics> logger, HttpClient client, MixpanelConfiguration configuration)
     {
-        this.logger = logger.ForContext<MixpanelAnalytics>();
+        this.logger = logger;
         this.configuration = configuration;
         this.client = client;
     }

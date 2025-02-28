@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 using NSubstitute;
 
@@ -20,7 +21,7 @@ public class MixpanelAnalyticsTests
     )]
     public MixpanelAnalyticsTests()
     {
-        var logger = Substitute.For<Serilog.ILogger>();
+        var logger = Substitute.For<ILogger<MixpanelAnalytics>>();
 
         analytics = new MixpanelAnalytics(
             logger,

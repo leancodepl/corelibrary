@@ -1,18 +1,19 @@
 using System.Globalization;
 using System.Resources;
+using LeanCode.Logging;
 using static System.Globalization.CultureInfo;
 
 namespace LeanCode.Localization.StringLocalizers;
 
 public class ResourceManagerStringLocalizer : IStringLocalizer
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<ResourceManagerStringLocalizer> logger;
 
     private readonly ResourceManager resourceManager;
 
-    public ResourceManagerStringLocalizer(Serilog.ILogger logger, LocalizationConfiguration cfg)
+    public ResourceManagerStringLocalizer(ILogger<ResourceManagerStringLocalizer> logger, LocalizationConfiguration cfg)
     {
-        this.logger = logger.ForContext<ResourceManagerStringLocalizer>();
+        this.logger = logger;
         resourceManager = new ResourceManager(cfg.ResourceSource);
     }
 

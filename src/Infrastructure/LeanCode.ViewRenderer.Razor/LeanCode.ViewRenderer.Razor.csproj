@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
   </ItemGroup>
 
@@ -9,8 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" />
-
     <PackageReference Include="System.Runtime.Loader" />
     <PackageReference Include="System.Dynamic.Runtime" />
 

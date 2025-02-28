@@ -1,5 +1,6 @@
 using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using VersionSupport = LeanCode.ForceUpdate.Contracts.VersionSupport;
 
@@ -7,20 +8,20 @@ namespace LeanCode.ForceUpdate.Services.CQRS;
 
 public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?>
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<VersionSupportQH> logger;
 
     private readonly AndroidVersionsConfiguration androidConfiguration;
     private readonly IOSVersionsConfiguration iOSConfiguration;
     private readonly VersionHandler versionHandler;
 
     public VersionSupportQH(
-        Serilog.ILogger logger,
+        ILogger<VersionSupportQH> logger,
         IOSVersionsConfiguration iOSConfiguration,
         AndroidVersionsConfiguration androidConfiguration,
         VersionHandler versionHandler
     )
     {
-        this.logger = logger.ForContext<VersionSupportQH>();
+        this.logger = logger;
         this.iOSConfiguration = iOSConfiguration;
         this.androidConfiguration = androidConfiguration;
         this.versionHandler = versionHandler;

@@ -3,8 +3,6 @@ using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
-using Serilog;
-using ILogger = Serilog.ILogger;
 
 namespace LeanCode.TestBed.Api;
 
@@ -33,7 +31,12 @@ public class TestCommandCV : AbstractValidator<TestCommand>
 
 public class TestCommandCH : ICommandHandler<TestCommand>
 {
-    private readonly ILogger logger = Log.ForContext<TestCommandCH>();
+    private readonly Logging.ILogger<TestCommandCH> logger;
+
+    public TestCommandCH(Logging.ILogger<TestCommandCH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task ExecuteAsync(HttpContext context, TestCommand command)
     {

@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 using NSubstitute;
 using Xunit;
@@ -13,9 +14,12 @@ public class CompiledViewsCacheTests
 
     public CompiledViewsCacheTests()
     {
-        var logger = Substitute.For<Serilog.ILogger>();
-
-        cache = new CompiledViewsCache(logger, Options);
+        cache = new CompiledViewsCache(
+            Substitute.For<ILogger<CompiledViewsCache>>(),
+            Substitute.For<ILogger<ViewLocator>>(),
+            Substitute.For<ILogger<ViewCompiler>>(),
+            Options
+        );
     }
 
     [Fact]

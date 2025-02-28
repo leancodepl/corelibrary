@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.Kratos.Model;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Kratos;
@@ -12,13 +13,13 @@ public sealed record class KratosWebHookHandlerConfig(string ApiKey);
 
 public abstract class KratosWebHookHandlerBase
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<KratosWebHookHandlerBase> logger;
 
     private readonly KratosWebHookHandlerConfig config;
 
-    protected KratosWebHookHandlerBase(Serilog.ILogger logger, KratosWebHookHandlerConfig config)
+    protected KratosWebHookHandlerBase(ILogger<KratosWebHookHandlerBase> logger, KratosWebHookHandlerConfig config)
     {
-        this.logger = logger.ForContext<KratosWebHookHandlerBase>();
+        this.logger = logger;
         this.config = config;
     }
 

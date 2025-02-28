@@ -1,4 +1,5 @@
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Localization;
@@ -11,7 +12,7 @@ public static class LocalizationServiceProviderExtensions
     )
     {
         services.AddSingleton<IStringLocalizer>(sp => new ResourceManagerStringLocalizer(
-            sp.GetRequiredService<Serilog.ILogger>(),
+            sp.GetRequiredService<ILogger<ResourceManagerStringLocalizer>>(),
             config
         ));
         return services;

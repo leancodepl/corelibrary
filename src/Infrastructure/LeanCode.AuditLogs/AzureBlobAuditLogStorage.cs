@@ -6,13 +6,14 @@ using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
+using LeanCode.Logging;
 
 namespace LeanCode.AuditLogs;
 
 public class AzureBlobAuditLogStorage : IAuditLogStorage
 {
     private const string SuffixKey = "Suffix";
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<AzureBlobAuditLogStorage> logger;
 
     private static ReadOnlySpan<byte> NewLineBytes => "\n"u8;
     private static readonly JsonSerializerOptions Options = new()
@@ -27,13 +28,13 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
     private readonly AzureBlobAuditLogStorageConfiguration config;
 
     public AzureBlobAuditLogStorage(
-        Serilog.ILogger logger,
+        ILogger<AzureBlobAuditLogStorage> logger,
         BlobServiceClient blobClient,
         TableServiceClient tableClient,
         AzureBlobAuditLogStorageConfiguration config
     )
     {
-        this.logger = logger.ForContext<AzureBlobAuditLogStorage>();
+        this.logger = logger;
         this.blobClient = blobClient;
         this.tableClient = tableClient;
         this.config = config;

@@ -1,5 +1,6 @@
 using LeanCode.Firebase.FCM;
 using LeanCode.IntegrationTests.App;
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -145,7 +146,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
         scope = app.Services.CreateAsyncScope();
 
         store = new(
-            scope.ServiceProvider.GetRequiredService<Serilog.ILogger>(),
+            scope.ServiceProvider.GetRequiredService<ILogger<PushNotificationTokenStore<TestDbContext, Guid>>>(),
             scope.ServiceProvider.GetRequiredService<TestDbContext>()
         );
     }

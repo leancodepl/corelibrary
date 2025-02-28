@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Encodings.Web;
+using LeanCode.Logging;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.AspNetCore.Razor.Language;
@@ -29,7 +30,7 @@ internal class ViewCompiler
 {
     private const string FilePreamble = @"@using System";
 
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<ViewCompiler> logger;
 
     private static readonly List<PortableExecutableReference> References = new[]
     {
@@ -55,9 +56,9 @@ internal class ViewCompiler
 
     private readonly RazorProjectEngine engine;
 
-    public ViewCompiler(Serilog.ILogger logger, ViewLocator locator)
+    public ViewCompiler(ILogger<ViewCompiler> logger, ViewLocator locator)
     {
-        this.logger = logger.ForContext<ViewCompiler>();
+        this.logger = logger;
         engine = PrepareEngine(locator);
     }
 

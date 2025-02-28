@@ -1,16 +1,17 @@
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class ResponseLoggerMiddleware
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<ResponseLoggerMiddleware> logger;
     private readonly RequestDelegate next;
 
-    public ResponseLoggerMiddleware(Serilog.ILogger logger, RequestDelegate next)
+    public ResponseLoggerMiddleware(ILogger<ResponseLoggerMiddleware> logger, RequestDelegate next)
     {
-        this.logger = logger.ForContext<ResponseLoggerMiddleware>();
+        this.logger = logger;
         this.next = next;
     }
 

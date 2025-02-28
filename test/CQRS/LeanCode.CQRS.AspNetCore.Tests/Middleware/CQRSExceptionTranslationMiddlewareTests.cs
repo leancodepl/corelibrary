@@ -3,13 +3,22 @@ using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog.Core;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTestBase<CQRSExceptionTranslationMiddleware>
 {
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton(Logger.None);
+        services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+    }
+
     [Fact]
     public async Task If_CommandExecutionInvalidException_is_thrown_its_translated()
     {

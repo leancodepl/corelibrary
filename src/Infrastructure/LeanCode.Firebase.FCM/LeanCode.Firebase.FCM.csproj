@@ -6,12 +6,12 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
     <ProjectReference Include="../LeanCode.Firebase/LeanCode.Firebase.csproj" />
     <ProjectReference Include="../LeanCode.Localization/LeanCode.Localization.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
   </ItemGroup>

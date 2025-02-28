@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
+  </ItemGroup>
 
+  <ItemGroup>
     <PackageReference Include="Cronos" />
-    <PackageReference Include="Serilog" />
 
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>

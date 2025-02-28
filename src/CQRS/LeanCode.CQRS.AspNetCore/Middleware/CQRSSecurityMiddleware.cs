@@ -1,6 +1,7 @@
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 
@@ -10,13 +11,13 @@ public class CQRSSecurityMiddleware
 {
     private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<CQRSSecurityMiddleware> logger;
 
-    public CQRSSecurityMiddleware(CQRSMetrics metrics, RequestDelegate next, Serilog.ILogger logger)
+    public CQRSSecurityMiddleware(CQRSMetrics metrics, RequestDelegate next, ILogger<CQRSSecurityMiddleware> logger)
     {
         this.metrics = metrics;
         this.next = next;
-        this.logger = logger.ForContext<CQRSSecurityMiddleware>();
+        this.logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)

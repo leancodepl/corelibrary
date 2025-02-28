@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -11,9 +12,13 @@ public class RazorViewRendererTests
 
     public RazorViewRendererTests()
     {
-        var logger = Substitute.For<Serilog.ILogger>();
-
-        renderer = new RazorViewRenderer(logger, options);
+        renderer = new RazorViewRenderer(
+            Substitute.For<ILogger<RazorViewRenderer>>(),
+            Substitute.For<ILogger<CompiledViewsCache>>(),
+            Substitute.For<ILogger<ViewLocator>>(),
+            Substitute.For<ILogger<ViewCompiler>>(),
+            options
+        );
     }
 
     [Fact]

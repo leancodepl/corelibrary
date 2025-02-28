@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using LeanCode.SendGrid;
 using LeanCode.Test.Helpers;
 using LeanCode.ViewRenderer;
@@ -51,7 +52,7 @@ public class SendGridRazorClientTests
                 return $"[{cultureName}] {keyName}";
             });
 
-        var logger = Substitute.For<Serilog.ILogger>();
+        var logger = Substitute.For<ILogger<SendGridRazorClient>>();
 
         client = new SendGridRazorClient(
             logger,

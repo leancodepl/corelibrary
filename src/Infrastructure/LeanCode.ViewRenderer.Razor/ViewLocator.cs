@@ -1,16 +1,17 @@
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Razor.Language;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class ViewLocator : RazorProject
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<ViewLocator> logger;
 
     private readonly RazorViewRendererOptions options;
 
-    public ViewLocator(Serilog.ILogger logger, RazorViewRendererOptions options)
+    public ViewLocator(ILogger<ViewLocator> logger, RazorViewRendererOptions options)
     {
-        this.logger = logger.ForContext<ViewLocator>();
+        this.logger = logger;
         this.options = options;
     }
 

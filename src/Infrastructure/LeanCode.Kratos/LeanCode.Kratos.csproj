@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
     <PackageReference Include="LeanCode.Kratos.Client" />
-    <PackageReference Include="Serilog" />
 
     <ProjectReference Include="../LeanCode.Serialization/LeanCode.Serialization.csproj" />
   </ItemGroup>

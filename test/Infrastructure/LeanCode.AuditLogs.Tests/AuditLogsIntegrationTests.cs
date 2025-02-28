@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentAssertions;
 using LeanCode.CQRS.MassTransitRelay;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using MassTransit;
 using MassTransit.Testing;
@@ -203,11 +204,11 @@ public sealed class AuditLogsIntegrationTests : IAsyncLifetime, IDisposable
 
     internal sealed class StubAuditLogStorage : IAuditLogStorage
     {
-        private readonly Serilog.ILogger logger;
+        private readonly Logging.ILogger<StubAuditLogStorage> logger;
 
         public StubAuditLogStorage()
         {
-            logger = Substitute.For<Serilog.ILogger>();
+            logger = Substitute.For<Logging.ILogger<StubAuditLogStorage>>();
         }
 
         public Task StoreEventAsync(AuditLogMessage auditLogMessage, CancellationToken cancellationToken)

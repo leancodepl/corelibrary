@@ -85,8 +85,10 @@ public static class IHostBuilderExtensions
 
                     additionalLoggingConfiguration?.Invoke(context, loggerConfiguration);
 
-                    Log.Logger = loggerConfiguration.CreateLogger();
-                    services.AddSingleton(Log.Logger);
+                    var logger = loggerConfiguration.CreateLogger();
+
+                    services.AddSingleton<Serilog.ILogger>(logger);
+                    services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
                 }
             )
             .ConfigureLogging(

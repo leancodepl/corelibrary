@@ -1,6 +1,7 @@
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 
@@ -8,14 +9,14 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class CQRSValidationMiddleware
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<CQRSValidationMiddleware> logger;
 
     private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
 
-    public CQRSValidationMiddleware(Serilog.ILogger logger, CQRSMetrics metrics, RequestDelegate next)
+    public CQRSValidationMiddleware(ILogger<CQRSValidationMiddleware> logger, CQRSMetrics metrics, RequestDelegate next)
     {
-        this.logger = logger.ForContext<CQRSValidationMiddleware>();
+        this.logger = logger;
         this.metrics = metrics;
         this.next = next;
     }

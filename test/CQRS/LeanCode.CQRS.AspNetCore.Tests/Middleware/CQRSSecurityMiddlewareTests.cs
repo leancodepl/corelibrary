@@ -5,9 +5,11 @@ using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Middleware;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using Serilog.Core;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
@@ -39,6 +41,8 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     {
         services.AddSingleton(_ => (firstAuthorizer as IFirstAuthorizer)!);
         services.AddSingleton(_ => (secondAuthorizer as ISecondAuthorizer)!);
+        services.AddSingleton(Logger.None);
+        services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
     }
 
     [Fact]

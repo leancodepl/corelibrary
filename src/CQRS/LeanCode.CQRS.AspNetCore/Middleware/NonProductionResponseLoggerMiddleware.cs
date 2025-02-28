@@ -1,4 +1,5 @@
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
@@ -6,12 +7,15 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class NonProductionResponseLoggerMiddleware
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<NonProductionResponseLoggerMiddleware> logger;
     private readonly IHostEnvironment environment;
 
-    public NonProductionResponseLoggerMiddleware(Serilog.ILogger logger, IHostEnvironment env)
+    public NonProductionResponseLoggerMiddleware(
+        ILogger<NonProductionResponseLoggerMiddleware> logger,
+        IHostEnvironment env
+    )
     {
-        this.logger = logger.ForContext<NonProductionResponseLoggerMiddleware>();
+        this.logger = logger;
         environment = env;
     }
 

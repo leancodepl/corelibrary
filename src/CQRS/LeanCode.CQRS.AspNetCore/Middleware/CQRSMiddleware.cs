@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
@@ -9,15 +10,20 @@ public class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<CQRSMiddleware> logger;
 
     private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
 
-    public CQRSMiddleware(Serilog.ILogger logger, CQRSMetrics metrics, ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(
+        ILogger<CQRSMiddleware> logger,
+        CQRSMetrics metrics,
+        ISerializer serializer,
+        RequestDelegate next
+    )
     {
-        this.logger = logger.ForContext<CQRSMiddleware>();
+        this.logger = logger;
         this.metrics = metrics;
         this.serializer = serializer;
         this.next = next;

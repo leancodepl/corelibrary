@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -15,11 +16,11 @@ public class ViewLocatorTests
         new[] { "./Views/A", "./Views/B" }
     );
 
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<ViewLocator> logger;
 
     public ViewLocatorTests()
     {
-        logger = Substitute.For<Serilog.ILogger>();
+        logger = Substitute.For<ILogger<ViewLocator>>();
     }
 
     [Fact]

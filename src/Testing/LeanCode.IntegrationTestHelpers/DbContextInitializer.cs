@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +17,12 @@ public class DbContextInitializer<T> : IHostedService
         .Or<NpgsqlException>(e => e.IsTransient)
         .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3)]);
 
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger<DbContextInitializer<T>> logger;
     private readonly IServiceProvider serviceProvider;
 
-    public DbContextInitializer(Serilog.ILogger logger, IServiceProvider serviceProvider)
+    public DbContextInitializer(ILogger<DbContextInitializer<T>> logger, IServiceProvider serviceProvider)
     {
-        this.logger = logger.ForContext<DbContextInitializer<T>>();
+        this.logger = logger;
         this.serviceProvider = serviceProvider;
     }
 
