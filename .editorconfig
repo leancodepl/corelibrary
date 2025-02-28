@@ -202,7 +202,6 @@ dotnet_diagnostic.CA1032.severity = none
 dotnet_diagnostic.CA1034.severity = none
 dotnet_diagnostic.CA1019.severity = none
 dotnet_diagnostic.CA1308.severity = none
-dotnet_diagnostic.CA1848.severity = none
 dotnet_diagnostic.IDE0058.severity = none
 
 # Rider

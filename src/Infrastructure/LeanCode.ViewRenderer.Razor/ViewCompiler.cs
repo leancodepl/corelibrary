@@ -175,7 +175,7 @@ internal class ViewCompiler
 
             foreach (var diag in diags)
             {
-                logger.Information("\t {Diagnostic}", diag);
+                logger.Warning("\t {Diagnostic}", diag);
             }
         }
 
