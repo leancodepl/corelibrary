@@ -103,7 +103,7 @@ public static class IHostBuilderExtensions
                 logging.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
                 logging.AddConfiguration(context.Configuration.GetSection(SystemLoggersEntryName));
-                logging.AddSerilog(logger);
+                logging.AddSerilog(logger, dispose: true);
             }
         );
     }
