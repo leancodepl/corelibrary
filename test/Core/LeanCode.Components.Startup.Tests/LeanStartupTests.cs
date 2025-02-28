@@ -14,7 +14,10 @@ public class LeanStartupTests
     [Fact]
     public async Task Sink_closes_when_we_start_the_app_with_closeAndFlushLogger_parameter_set_as_true()
     {
-        var host = LeanProgram.BuildMinimalHost<TestStartupWithTrueParameter>().ConfigureDefaultLogging("test").Build();
+        var host = LeanProgram
+            .BuildMinimalHost<TestStartupWithTrueParameter>()
+            .ConfigureDefaultLogging("test", destructurers: null, preserveStaticLogger: true)
+            .Build();
 
         await host.StartAsync();
 
@@ -31,7 +34,7 @@ public class LeanStartupTests
     {
         var host = LeanProgram
             .BuildMinimalHost<TestStartupWithFalseParameter>()
-            .ConfigureDefaultLogging("test")
+            .ConfigureDefaultLogging("test", destructurers: null, preserveStaticLogger: true)
             .Build();
 
         await host.StartAsync();
