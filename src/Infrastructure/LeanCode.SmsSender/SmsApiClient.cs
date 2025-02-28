@@ -65,7 +65,7 @@ public class SmsApiClient : ISmsSender
     )]
     public async Task SendAsync(string message, string phoneNumber, CancellationToken cancellationToken = default)
     {
-        logger.Debug("Sending SMS using SMS Api");
+        logger.Verbose("Sending SMS using SMS Api");
 
         var parameters = new Dictionary<string, string?>
         {
