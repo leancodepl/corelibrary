@@ -3,14 +3,14 @@
   "isRoot": true,
   "tools": {
     "csharpier": {
-      "version": "0.30.4",
+      "version": "0.30.6",
       "commands": [
         "dotnet-csharpier"
       ],
       "rollForward": false
     },
     "dotnet-coverage": {
-      "version": "17.13.1",
+      "version": "17.14.2",
       "commands": [
         "dotnet-coverage"
       ],
