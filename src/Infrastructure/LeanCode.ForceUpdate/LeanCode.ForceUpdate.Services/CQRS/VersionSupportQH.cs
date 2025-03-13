@@ -5,7 +5,7 @@ using VersionSupport = LeanCode.ForceUpdate.Contracts.VersionSupport;
 
 namespace LeanCode.ForceUpdate.Services.CQRS;
 
-public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?>
+public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO>
 {
     private readonly Serilog.ILogger logger = Serilog.Log.ForContext<VersionSupportQH>();
 
@@ -24,22 +24,29 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO?
         this.versionHandler = versionHandler;
     }
 
-    public async Task<VersionSupportDTO?> ExecuteAsync(HttpContext context, VersionSupport query)
+    public async Task<VersionSupportDTO> ExecuteAsync(HttpContext context, VersionSupport query)
     {
+        var (minimum, current) = GetVersions(query.Platform);
+
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(query.Platform))
         {
             logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
-            return null;
+            return new VersionSupportDTO
+            {
+                CurrentlySupportedVersion = current.ToString(),
+                MinimumRequiredVersion = minimum.ToString(),
+                Result = VersionSupportResultDTO.UpToDate,
+            };
         }
-
-        var (minimum, current) = GetVersions(query.Platform);
-
-        return new VersionSupportDTO
+        else
         {
-            CurrentlySupportedVersion = current.ToString(),
-            MinimumRequiredVersion = minimum.ToString(),
-            Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
-        };
+            return new VersionSupportDTO
+            {
+                CurrentlySupportedVersion = current.ToString(),
+                MinimumRequiredVersion = minimum.ToString(),
+                Result = await versionHandler.CheckVersionAsync(version, query.Platform, context),
+            };
+        }
     }
 
     private (Version Minimum, Version Current) GetVersions(PlatformDTO platform)
