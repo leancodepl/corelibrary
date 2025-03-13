@@ -101,7 +101,7 @@ public class ForceUpdateTests
     }
 
     [Fact]
-    public async Task Version_support_returns_null_for_invalid_version()
+    public async Task Version_support_returns_up_to_date_result_for_invalid_version()
     {
         var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
@@ -109,6 +109,15 @@ public class ForceUpdateTests
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.x" }
         );
 
-        result.Should().BeNull();
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = IOSCurrentlySupportedVersion,
+                    MinimumRequiredVersion = IOSMinimumRequiredVersion,
+                    Result = VersionSupportResultDTO.UpToDate,
+                }
+            );
     }
 }
