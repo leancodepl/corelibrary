@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="../LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
 
     <PackageReference Include="Cronos" />

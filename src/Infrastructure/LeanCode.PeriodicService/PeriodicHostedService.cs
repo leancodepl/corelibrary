@@ -1,3 +1,4 @@
+using LeanCode.OpenTelemetry;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -41,6 +42,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
     )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
+        using var activity = LeanCodeActivitySource.Start($"periodic action - {typeof(TAction).Name}");
         await using var scope = serviceProvider.CreateAsyncScope();
         var service = scope.ServiceProvider.GetRequiredService<TAction>();
         if (!service.SkipFirstExecution || executionNo > 0)
@@ -51,6 +53,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
             }
             catch (Exception ex)
             {
+                activity?.AddException(ex);
                 logger.Error(ex, "Cannot run periodic action, exception has been thrown");
             }
         }
