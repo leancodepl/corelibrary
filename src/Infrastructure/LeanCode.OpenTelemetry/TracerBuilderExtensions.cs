@@ -4,8 +4,14 @@ namespace LeanCode.OpenTelemetry;
 
 public static class TracerProviderBuilderExtensions
 {
-    public static TracerProviderBuilder AddLeanCodeTelemetry(this TracerProviderBuilder builder)
+    public static TracerProviderBuilder AddLeanCodeInstrumentation(this TracerProviderBuilder builder)
     {
         return builder.AddSource(LeanCodeActivitySource.ActivitySource.Name);
+    }
+
+    [Obsolete($"Use {nameof(AddLeanCodeInstrumentation)} instead.")]
+    public static TracerProviderBuilder AddLeanCodeTelemetry(this TracerProviderBuilder builder)
+    {
+        return builder.AddLeanCodeInstrumentation();
     }
 }
