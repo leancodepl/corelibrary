@@ -17,6 +17,7 @@ public class ForceUpdateTests
     private const string IOSCurrentlySupportedVersion = "1.3";
 
     private readonly ServiceProvider serviceProvider;
+    private readonly IQueryHandler<VersionSupport, VersionSupportDTO> handler;
 
     public ForceUpdateTests()
     {
@@ -34,13 +35,13 @@ public class ForceUpdateTests
                 )
             );
 
-        this.serviceProvider = services.BuildServiceProvider();
+        serviceProvider = services.BuildServiceProvider();
+        handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO>>();
     }
 
     [Fact]
-    public async Task Version_smaller_then_minimum_required_is_not_supported()
+    public async Task Version_smaller_than_minimum_required_is_not_supported()
     {
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "0.9" }
@@ -59,9 +60,8 @@ public class ForceUpdateTests
     }
 
     [Fact]
-    public async Task Update_is_suggested_for_version_between_minium_and_current()
+    public async Task Update_is_suggested_for_version_between_minimum_and_current()
     {
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
             new VersionSupport { Platform = PlatformDTO.Android, Version = "2.2" }
@@ -82,7 +82,6 @@ public class ForceUpdateTests
     [Fact]
     public async Task Version_above_currently_supported_is_up_to_date()
     {
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.4" }
@@ -101,14 +100,44 @@ public class ForceUpdateTests
     }
 
     [Fact]
-    public async Task Version_support_returns_null_for_invalid_version()
+    public async Task Returns_up_to_date_result_for_invalid_version()
     {
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<VersionSupport, VersionSupportDTO?>>();
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
             new VersionSupport { Platform = PlatformDTO.IOS, Version = "1.x" }
         );
 
-        result.Should().BeNull();
+        result.Should().BeEquivalentTo(new { Result = VersionSupportResultDTO.UpToDate });
+    }
+
+    [Fact]
+    public async Task Returns_zero_version_if_platform_cannot_be_deduced()
+    {
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = (PlatformDTO)100, Version = "1.0" }
+        );
+
+        result.Should().BeEquivalentTo(new { CurrentlySupportedVersion = "0.0.0", MinimumRequiredVersion = "0.0.0" });
+    }
+
+    [Fact]
+    public async Task If_both_version_and_platform_are_invalid_returns_UpToDate_response_with_fake_version()
+    {
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = (PlatformDTO)100, Version = "1.x" }
+        );
+
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = "0.0.0",
+                    MinimumRequiredVersion = "0.0.0",
+                    Result = VersionSupportResultDTO.UpToDate,
+                }
+            );
     }
 }
