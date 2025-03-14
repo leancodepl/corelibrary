@@ -40,7 +40,7 @@ public class ForceUpdateTests
     }
 
     [Fact]
-    public async Task Version_smaller_then_minimum_required_is_not_supported()
+    public async Task Version_smaller_than_minimum_required_is_not_supported()
     {
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
@@ -60,7 +60,7 @@ public class ForceUpdateTests
     }
 
     [Fact]
-    public async Task Update_is_suggested_for_version_between_minium_and_current()
+    public async Task Update_is_suggested_for_version_between_minimum_and_current()
     {
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
