@@ -26,20 +26,19 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO>
 
     public async Task<VersionSupportDTO> ExecuteAsync(HttpContext context, VersionSupport query)
     {
-        var (minimum, current) = GetVersions(query.Platform);
-
         if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(query.Platform))
         {
             logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
             return new VersionSupportDTO
             {
-                CurrentlySupportedVersion = current.ToString(),
-                MinimumRequiredVersion = minimum.ToString(),
+                CurrentlySupportedVersion = "0.0.0",
+                MinimumRequiredVersion = "0.0.0",
                 Result = VersionSupportResultDTO.UpToDate,
             };
         }
         else
         {
+            var (minimum, current) = GetVersions(query.Platform);
             return new VersionSupportDTO
             {
                 CurrentlySupportedVersion = current.ToString(),
