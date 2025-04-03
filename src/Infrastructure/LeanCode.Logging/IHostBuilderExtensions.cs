@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -13,17 +14,19 @@ namespace LeanCode.Logging;
 
 public static class IHostBuilderExtensions
 {
-    private static readonly SearchValues<string> OutboxInboxTablesToFilterOut = SearchValues.Create(
-        new[] { "InboxState", "OutboxState", "OutboxMessage" },
-        StringComparison.InvariantCulture
-    );
-
     public const string SystemLoggersEntryName = "Serilog:SystemLoggers";
     public const string MinimumLogLevelKey = "Logging:MinimumLevel";
     public const string EnableDetailedInternalLogsKey = "Logging:EnableDetailedInternalLogs";
     public const string SeqEndpointKey = "Logging:SeqEndpoint";
 
     public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
+
+    public static readonly ImmutableArray<string> OutboxInboxTablesToFilterOut =
+    [
+        "InboxState",
+        "OutboxState",
+        "OutboxMessage",
+    ];
 
     public static IHostBuilder ConfigureDefaultLogging(
         this IHostBuilder builder,
@@ -99,15 +102,21 @@ public static class IHostBuilderExtensions
         );
     }
 
-    private static LoggerConfiguration FilterOutSqlLogsWithOutboxOrInboxTables(
+    public static LoggerConfiguration FilterOutSqlLogsWithOutboxOrInboxTables(
         this LoggerConfiguration loggerConfiguration,
-        LogEventLevel logLevel
+        LogEventLevel logLevel,
+        string[]? tablesToFilterOverride = null
     )
     {
         var fromSourcePredicate = Matching.FromSource("Microsoft.EntityFrameworkCore.Database.Command");
+
+        var tablesToFilter = SearchValues.Create(
+            tablesToFilterOverride is null ? OutboxInboxTablesToFilterOut.AsSpan() : tablesToFilterOverride.AsSpan(),
+            StringComparison.InvariantCulture
+        );
         var containingTablesPredicate = Matching.WithProperty<string>(
             "commandText",
-            t => t.AsSpan().ContainsAny(OutboxInboxTablesToFilterOut)
+            t => t.AsSpan().ContainsAny(tablesToFilter)
         );
 
         loggerConfiguration.Filter.ByExcluding(le =>
