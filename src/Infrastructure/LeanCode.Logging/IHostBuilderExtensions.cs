@@ -112,7 +112,7 @@ public static class IHostBuilderExtensions
 
         var tablesToFilter = SearchValues.Create(
             tablesToFilterOverride is null ? OutboxInboxTablesToFilterOut.AsSpan() : tablesToFilterOverride.AsSpan(),
-            StringComparison.InvariantCulture
+            StringComparison.Ordinal
         );
         var containingTablesPredicate = Matching.WithProperty<string>(
             "commandText",
