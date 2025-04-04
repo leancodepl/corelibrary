@@ -42,7 +42,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
     )]
     private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
-        using var activity = LeanCodeActivitySource.StartExecution("periodic action", typeof(TAction).Name);
+        using var activity = LeanCodeActivitySource.StartExecution("Periodic action", typeof(TAction).Name);
         await using var scope = serviceProvider.CreateAsyncScope();
         var service = scope.ServiceProvider.GetRequiredService<TAction>();
         if (!service.SkipFirstExecution || executionNo > 0)
