@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
@@ -70,6 +71,7 @@ public class CQRSSecurityMiddleware
             }
             else
             {
+                activity?.SetStatus(ActivityStatusCode.Ok);
                 activity?.SetTag("authorizer.authorized", true);
             }
         }

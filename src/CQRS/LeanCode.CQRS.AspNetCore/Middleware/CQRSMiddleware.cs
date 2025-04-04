@@ -80,7 +80,11 @@ public class CQRSMiddleware
         }
     }
 
-    private async Task SerializeResultAsync(HttpContext httpContext, CQRSObjectMetadata objectMetadata, Activity? activity)
+    private async Task SerializeResultAsync(
+        HttpContext httpContext,
+        CQRSObjectMetadata objectMetadata,
+        Activity? activity
+    )
     {
         var payload = httpContext.GetCQRSRequestPayload();
 

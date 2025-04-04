@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
@@ -46,6 +47,10 @@ public class CQRSValidationMiddleware
                 payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
                 metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
                 return;
+            }
+            else
+            {
+                activity?.SetStatus(ActivityStatusCode.Ok);
             }
         }
 
