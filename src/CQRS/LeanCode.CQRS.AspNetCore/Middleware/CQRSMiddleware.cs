@@ -49,7 +49,7 @@ public class CQRSMiddleware
         {
             logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            MarkError(CQRSMetrics.InternalError, activity, ex);
+            MarkError(CQRSMetrics.SerializationFailure, activity, ex);
             return;
         }
 
@@ -132,7 +132,7 @@ public class CQRSMiddleware
 
     private void MarkError(string failureReason, Activity? activity, Exception? exception = null)
     {
-        metrics.CQRSFailure(CQRSMetrics.InternalError);
+        metrics.CQRSFailure(failureReason);
         activity?.SetStatus(ActivityStatusCode.Error);
         activity?.AddTag(CQRSMetrics.FailureReasonKey, failureReason);
 
