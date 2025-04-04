@@ -48,7 +48,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.NETCore.App.Ref" Version="9.0.3" />
+
     <!-- TODO: migrate to v7 (whatever that is) -->
     <PackageVersion Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.36" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersion)" />
