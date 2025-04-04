@@ -1,3 +1,5 @@
+using System.Buffers;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -5,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Serilog.Filters;
 using Serilog.Formatting.Compact;
 
 namespace LeanCode.Logging;
@@ -17,6 +20,13 @@ public static class IHostBuilderExtensions
     public const string SeqEndpointKey = "Logging:SeqEndpoint";
 
     public const LogEventLevel InternalDefaultLogLevel = LogEventLevel.Warning;
+
+    public static readonly ImmutableArray<string> OutboxInboxTablesToFilterOut =
+    [
+        "InboxState",
+        "OutboxState",
+        "OutboxMessage",
+    ];
 
     public static IHostBuilder ConfigureDefaultLogging(
         this IHostBuilder builder,
@@ -64,7 +74,8 @@ public static class IHostBuilderExtensions
                         .MinimumLevel.Override("Microsoft", internalLogLevel)
                         .MinimumLevel.Override("System", internalLogLevel)
                         .MinimumLevel.Override("Azure.Identity", internalLogLevel)
-                        .MinimumLevel.Override("Azure.Core", internalLogLevel);
+                        .MinimumLevel.Override("Azure.Core", internalLogLevel)
+                        .FilterOutSqlLogsWithOutboxOrInboxTables(internalLogLevel);
                 }
 
                 if (configuration.GetValue<string>(SeqEndpointKey) is string seqEndpoint)
@@ -89,5 +100,29 @@ public static class IHostBuilderExtensions
                 logging.AddSerilog();
             }
         );
+    }
+
+    public static LoggerConfiguration FilterOutSqlLogsWithOutboxOrInboxTables(
+        this LoggerConfiguration loggerConfiguration,
+        LogEventLevel logLevel,
+        string[]? tablesToFilterOverride = null
+    )
+    {
+        var fromSourcePredicate = Matching.FromSource("Microsoft.EntityFrameworkCore.Database.Command");
+
+        var tablesToFilter = SearchValues.Create(
+            tablesToFilterOverride is null ? OutboxInboxTablesToFilterOut.AsSpan() : tablesToFilterOverride.AsSpan(),
+            StringComparison.Ordinal
+        );
+        var containingTablesPredicate = Matching.WithProperty<string>(
+            "commandText",
+            t => t.AsSpan().ContainsAny(tablesToFilter)
+        );
+
+        loggerConfiguration.Filter.ByExcluding(le =>
+            le.Level < logLevel && fromSourcePredicate(le) && containingTablesPredicate(le)
+        );
+
+        return loggerConfiguration;
     }
 }
