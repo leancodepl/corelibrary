@@ -73,11 +73,10 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
     )
     {
         var foundActivities = activities
-            .Where(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal)).ToList();
+            .Where(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal))
+            .ToList();
 
-        foundActivities
-            .Should()
-            .NotBeEmpty("there should be some activities for middleware execution");
+        foundActivities.Should().NotBeEmpty("there should be some activities for middleware execution");
 
         if (activityStatusCode is not null)
         {
@@ -86,7 +85,9 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
 
         if (failureReason is not null)
         {
-            foundActivities.Should().AllSatisfy(a => a.GetTagItem(CQRSMetrics.FailureReasonKey).Should().Be(failureReason));
+            foundActivities
+                .Should()
+                .AllSatisfy(a => a.GetTagItem(CQRSMetrics.FailureReasonKey).Should().Be(failureReason));
         }
 
         if (exceptionShouldBeRecorded)

@@ -68,7 +68,10 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         if (isPositive)
         {
             AssertAuthorizationSuccess(httpContext);
-            VerifyActivity($"middleware - Security - {typeof(IFirstAuthorizer).FullName}", activityStatusCode: ActivityStatusCode.Ok);
+            VerifyActivity(
+                $"middleware - Security - {typeof(IFirstAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
         }
         else
         {
@@ -96,8 +99,14 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         if (expectSuccess)
         {
             AssertAuthorizationSuccess(httpContext);
-            VerifyActivity($"middleware - Security - {typeof(IFirstAuthorizer).FullName}", activityStatusCode: ActivityStatusCode.Ok);
-            VerifyActivity($"middleware - Security - {typeof(ISecondAuthorizer).FullName}", activityStatusCode: ActivityStatusCode.Ok);
+            VerifyActivity(
+                $"middleware - Security - {typeof(IFirstAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
+            VerifyActivity(
+                $"middleware - Security - {typeof(ISecondAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
         }
         else
         {

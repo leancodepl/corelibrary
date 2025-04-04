@@ -68,7 +68,6 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
         var ctx = await SendAsync(cmd);
 
         AssertCommandResultFailure(ctx, error1, error2);
-
     }
 
     private void SetValidationResult(ICommand command, ValidationResult result)
