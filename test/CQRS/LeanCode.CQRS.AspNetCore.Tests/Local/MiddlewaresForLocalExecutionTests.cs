@@ -18,14 +18,6 @@ public class MiddlewaresForLocalExecutionTests
     private static readonly TypesCatalog ThisCatalog = TypesCatalog.Of<MiddlewaresForLocalExecutionTests>();
 
     [Fact]
-    public async Task Tracing_middleware_works()
-    {
-        var executor = BuildWith(c => c.CQRSTrace());
-
-        await executor.RunAsync(new DummyCommand(), new());
-    }
-
-    [Fact]
     public async Task Response_logging_middleware_works()
     {
         var executor = BuildWith(c => c.LogCQRSResponses());

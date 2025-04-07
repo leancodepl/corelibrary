@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
+using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
@@ -28,6 +30,14 @@ public class CQRSMiddleware
     {
         var cqrsEndpoint = httpContext.GetCQRSObjectMetadata();
 
+        using var activity = LeanCodeActivitySource.StartExecution(
+            cqrsEndpoint.ObjectKind.ToString(),
+            cqrsEndpoint.HandlerType.FullName
+        );
+        activity?.AddTag("object.kind", cqrsEndpoint.ObjectKind.ToString());
+        activity?.AddTag("object.type", cqrsEndpoint.ObjectType.FullName);
+        activity?.AddTag("object.handler", cqrsEndpoint.HandlerType.FullName);
+
         var objectType = cqrsEndpoint.ObjectType;
         object? obj;
 
@@ -39,7 +49,7 @@ public class CQRSMiddleware
         {
             logger.Warning(ex, "Cannot deserialize object body from the request stream for type {Type}", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
+            MarkError(CQRSMetrics.SerializationFailure, activity, ex);
             return;
         }
 
@@ -47,7 +57,7 @@ public class CQRSMiddleware
         {
             logger.Warning("Client sent an empty object for type {Type}, ignoring", objectType);
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            metrics.CQRSFailure(CQRSMetrics.SerializationFailure);
+            MarkError(CQRSMetrics.SerializationFailure, activity);
             return;
         }
 
@@ -56,7 +66,7 @@ public class CQRSMiddleware
         try
         {
             await next(httpContext);
-            await SerializeResultAsync(httpContext, cqrsEndpoint);
+            await SerializeResultAsync(httpContext, cqrsEndpoint, activity);
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -66,18 +76,22 @@ public class CQRSMiddleware
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            metrics.CQRSFailure(CQRSMetrics.InternalError);
+            MarkError(CQRSMetrics.InternalError, activity, ex);
         }
     }
 
-    private async Task SerializeResultAsync(HttpContext httpContext, CQRSObjectMetadata objectMetadata)
+    private async Task SerializeResultAsync(
+        HttpContext httpContext,
+        CQRSObjectMetadata objectMetadata,
+        Activity? activity
+    )
     {
         var payload = httpContext.GetCQRSRequestPayload();
 
         if (payload.Result is null)
         {
             logger.Warning("CQRS execution ended with no result");
-            metrics.CQRSFailure(CQRSMetrics.InternalError);
+            MarkError(CQRSMetrics.InternalError, activity);
             return;
         }
 
@@ -106,6 +120,7 @@ public class CQRSMiddleware
             {
                 // assuming that in other cases the middleware itself will log & report appropriate metric
                 metrics.CQRSSuccess();
+                activity?.SetStatus(ActivityStatusCode.Ok);
                 logger.Information(
                     "{ObjectKind} {@Object} executed successfully",
                     objectMetadata.ObjectKind,
@@ -115,7 +130,19 @@ public class CQRSMiddleware
         }
         else
         {
-            metrics.CQRSFailure(CQRSMetrics.InternalError);
+            MarkError(CQRSMetrics.InternalError, activity);
+        }
+    }
+
+    private void MarkError(string failureReason, Activity? activity, Exception? exception = null)
+    {
+        metrics.CQRSFailure(failureReason);
+        activity?.SetStatus(ActivityStatusCode.Error);
+        activity?.AddTag(CQRSMetrics.FailureReasonKey, failureReason);
+
+        if (exception is not null)
+        {
+            activity?.AddException(exception);
         }
     }
 }

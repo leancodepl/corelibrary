@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using LeanCode.Contracts;
@@ -39,6 +40,12 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var httpContext = await SendAsync();
 
         httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status400BadRequest);
+        VerifyActivity(
+            $"{QueryMetadata.ObjectKind} - {QueryMetadata.HandlerType.FullName}",
+            activityStatusCode: ActivityStatusCode.Error,
+            failureReason: CQRSMetrics.SerializationFailure,
+            exceptionShouldBeRecorded: true
+        );
         VerifyCQRSFailureMetrics(CQRSMetrics.SerializationFailure, 1);
     }
 
@@ -50,6 +57,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var httpContext = await SendAsync();
 
         httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status400BadRequest);
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.SerializationFailure);
         VerifyCQRSFailureMetrics(CQRSMetrics.SerializationFailure, 1);
     }
 
@@ -70,6 +78,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         await serializer
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
         VerifyCQRSSuccessMetrics(1);
     }
 
@@ -92,6 +101,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
 
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
         VerifyCQRSSuccessMetrics(1);
     }
 
@@ -109,6 +119,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
         await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(default!, default!, default!, default!);
 
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
         VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
@@ -131,6 +142,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
             .Received()
             .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
 
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
         VerifyCQRSSuccessMetrics(1);
     }
 
@@ -142,6 +154,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
         await SendAsync();
         await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(null!, null!, null!, default);
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
         VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
@@ -156,6 +169,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var httpContext = await SendAsync();
 
         httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status500InternalServerError);
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
         VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 
@@ -217,6 +231,20 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
             payload.SetResult(ExecutionResult.Empty(code));
             return Task.CompletedTask;
         };
+    }
+
+    private void VerifyActivity(
+        ActivityStatusCode? activityStatusCode = null,
+        string? failureReason = null,
+        bool exceptionShouldBeRecorded = false
+    )
+    {
+        VerifyActivity(
+            $"{QueryMetadata.ObjectKind} - {QueryMetadata.HandlerType.FullName}",
+            activityStatusCode,
+            failureReason,
+            exceptionShouldBeRecorded
+        );
     }
 
     public class Query : IQuery<QueryResult> { }

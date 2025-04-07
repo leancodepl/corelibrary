@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
@@ -81,6 +82,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
             .ShouldContainCommandResult()
             .ShouldBeSuccessful();
 
+        VerifyActivity("middleware - Validation", activityStatusCode: ActivityStatusCode.Ok);
         VerifyNoCQRSSuccessMetrics();
         VerifyNoCQRSFailureMetrics();
     }
@@ -92,6 +94,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
             .ShouldContainCommandResult()
             .ShouldFailWithValidationErrors(errors);
 
+        VerifyActivity("middleware - Validation");
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
     }
 

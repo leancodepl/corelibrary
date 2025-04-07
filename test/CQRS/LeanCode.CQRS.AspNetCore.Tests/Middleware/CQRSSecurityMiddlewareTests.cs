@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using LeanCode.Contracts;
@@ -67,10 +68,15 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         if (isPositive)
         {
             AssertAuthorizationSuccess(httpContext);
+            VerifyActivity(
+                $"middleware - Security - {typeof(IFirstAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
         }
         else
         {
             AssertAuthorizationFailure(httpContext);
+            VerifyActivity($"middleware - Security - {typeof(IFirstAuthorizer).FullName}");
         }
     }
 
@@ -93,10 +99,19 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         if (expectSuccess)
         {
             AssertAuthorizationSuccess(httpContext);
+            VerifyActivity(
+                $"middleware - Security - {typeof(IFirstAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
+            VerifyActivity(
+                $"middleware - Security - {typeof(ISecondAuthorizer).FullName}",
+                activityStatusCode: ActivityStatusCode.Ok
+            );
         }
         else
         {
             AssertAuthorizationFailure(httpContext);
+            VerifyActivity("middleware - Security");
         }
     }
 
@@ -106,6 +121,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         await Assert.ThrowsAsync<CustomAuthorizerNotFoundException>(
             () => SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser())
         );
+        VerifyActivity($"middleware - Security - {typeof(INotImplementedAuthorizer).FullName}");
     }
 
     [Fact]

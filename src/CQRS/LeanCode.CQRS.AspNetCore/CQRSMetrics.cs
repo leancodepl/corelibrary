@@ -6,6 +6,7 @@ namespace LeanCode.CQRS.AspNetCore;
 
 public class CQRSMetrics
 {
+    public const string FailureReasonKey = "reason";
     public const string SerializationFailure = "serialization";
     public const string AuthorizationFailure = "authorization";
     public const string ValidationFailure = "validation";
@@ -29,5 +30,6 @@ public class CQRSMetrics
 
     public void CQRSSuccess() => cqrsSuccess.Add(1);
 
-    public void CQRSFailure(string reason) => cqrsFailure.Add(1, KeyValuePair.Create("reason", reason as object)!);
+    public void CQRSFailure(string reason) =>
+        cqrsFailure.Add(1, KeyValuePair.Create(FailureReasonKey, reason as object)!);
 }

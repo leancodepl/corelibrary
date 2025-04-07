@@ -59,12 +59,6 @@ public static class CQRSApplicationBuilderExtensions
         return builder;
     }
 
-    public static ICQRSApplicationBuilder CQRSTrace(this ICQRSApplicationBuilder builder)
-    {
-        builder.UseMiddleware<CQRSTracingMiddleware>();
-        return builder;
-    }
-
     public static ICQRSApplicationBuilder TranslateExceptions(this ICQRSApplicationBuilder builder)
     {
         builder.UseMiddleware<CQRSExceptionTranslationMiddleware>();
