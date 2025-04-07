@@ -17,6 +17,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Integrates with Microsoft.AspNetCore.OpenApi better
 * Connection string injection is extracted from `ConfigurationOverrides` into `TestConnectionString` source
 * `DbContextInitializer` works with Npgsql now
+* Remove `CQRSTracingMiddleware` and merge it functionality into `CQRSMiddleware`, recording exceptions where possible
 
 ## 8.1
 
