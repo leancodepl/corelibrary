@@ -67,7 +67,12 @@ public class SendGridRazorClient
     {
         if (msg is SendGridLocalizedRazorMessage lrmsg)
         {
-            lrmsg.Subject = LocalizeSubject(lrmsg.Culture, lrmsg.Subject, lrmsg.SubjectFormatArgs);
+            lrmsg.Subject ??= LocalizeSubject(
+                lrmsg.Culture,
+                lrmsg.LocalizedSubjectKey
+                    ?? throw new InvalidOperationException("Subject and LocalizedSubjectKey are null."),
+                lrmsg.SubjectFormatArgs
+            );
         }
 
         if (msg.PlainTextContentModel is object plainTextModel)

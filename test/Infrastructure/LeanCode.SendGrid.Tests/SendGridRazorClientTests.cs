@@ -59,7 +59,7 @@ public class SendGridRazorClientTests
     }
 
     [SendGridFact]
-    public async Task Sends_email_correctly()
+    public async Task Sends_localized_email_correctly()
     {
         var msg = new SendGridLocalizedRazorMessage("pl")
             .WithSender(EmailFrom, "LeanCode Tester")
@@ -67,11 +67,20 @@ public class SendGridRazorClientTests
             .WithSubject("email.subject.test")
             .WithPlainTextContent(new EmailTextVM())
             .WithHtmlContent(new EmailHtmlVM())
-            .WithAttachment(
-                Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
-                "Attachment.txt",
-                "text/plain"
-            )
+            .WithAttachment(Convert.ToBase64String("Attachment content."u8.ToArray()), "Attachment.txt", "text/plain")
+            .WithNoTracking();
+
+        await client.SendEmailAsync(msg);
+    }
+
+    [SendGridFact]
+    public async Task Sends_email_with_literal_subject_correctly()
+    {
+        var msg = new SendGridLocalizedRazorMessage("pl")
+            .WithSender(EmailFrom, "LeanCode Tester")
+            .WithRecipient(EmailTo)
+            .WithLiteralSubject("Test email with literal subject")
+            .WithPlainTextContent(new EmailTextVM())
             .WithNoTracking();
 
         await client.SendEmailAsync(msg);
@@ -86,11 +95,7 @@ public class SendGridRazorClientTests
             .WithSubject("email.subject.test")
             .WithPlainTextContent(new EmailTextVM())
             .WithHtmlContent(new EmailHtmlVM())
-            .WithAttachment(
-                Convert.ToBase64String(Encoding.UTF8.GetBytes("Attachment content.")),
-                "Attachment.txt",
-                "text/plain"
-            )
+            .WithAttachment(Convert.ToBase64String("Attachment content."u8.ToArray()), "Attachment.txt", "text/plain")
             .WithNoTracking();
 
         var exception = await Assert.ThrowsAsync<SendGridException>(() => client.SendEmailAsync(msg));

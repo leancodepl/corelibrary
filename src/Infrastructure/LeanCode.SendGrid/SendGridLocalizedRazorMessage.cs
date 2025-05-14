@@ -9,6 +9,9 @@ public class SendGridLocalizedRazorMessage : SendGridRazorMessage
     internal CultureInfo Culture { get; private set; }
 
     [JsonIgnore]
+    public string? LocalizedSubjectKey { get; set; }
+
+    [JsonIgnore]
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "?",
         "CA1819",
@@ -26,10 +29,9 @@ public class SendGridLocalizedRazorMessage : SendGridRazorMessage
         Culture = cultureInfo.IsReadOnly ? cultureInfo : CultureInfo.ReadOnly(cultureInfo);
     }
 
-    public void SetGlobalSubject(string subjectKey, object[]? subjectFormatArgs)
+    public void SetLocalizedSubject(string subjectKey, object[]? subjectFormatArgs)
     {
-        SetGlobalSubject(subjectKey);
-
+        LocalizedSubjectKey = subjectKey;
         SubjectFormatArgs = subjectFormatArgs;
     }
 
