@@ -136,7 +136,7 @@ public static class SendGridRazorMessageExtensions
     {
         if (message is SendGridLocalizedRazorMessage localized)
         {
-            localized.SetGlobalSubject(subject, null);
+            localized.SetLocalizedSubject(subject, null);
         }
         else
         {
@@ -154,13 +154,20 @@ public static class SendGridRazorMessageExtensions
     {
         if (message is SendGridLocalizedRazorMessage localized)
         {
-            localized.SetGlobalSubject(subject, formatArgs);
+            localized.SetLocalizedSubject(subject, formatArgs);
         }
         else
         {
             var formatted = string.Format(System.Globalization.CultureInfo.InvariantCulture, subject, formatArgs);
             message.SetGlobalSubject(formatted);
         }
+
+        return message;
+    }
+
+    public static SendGridRazorMessage WithLiteralSubject(this SendGridRazorMessage message, string subject)
+    {
+        message.SetGlobalSubject(subject);
 
         return message;
     }
