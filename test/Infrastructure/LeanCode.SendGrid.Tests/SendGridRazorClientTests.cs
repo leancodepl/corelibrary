@@ -67,7 +67,7 @@ public class SendGridRazorClientTests
             .WithSubject("email.subject.test")
             .WithPlainTextContent(new EmailTextVM())
             .WithHtmlContent(new EmailHtmlVM())
-            .WithAttachment(Convert.ToBase64String("Attachment content."u8.ToArray()), "Attachment.txt", "text/plain")
+            .WithAttachment(Convert.ToBase64String("Attachment content."u8), "Attachment.txt", "text/plain")
             .WithNoTracking();
 
         await client.SendEmailAsync(msg);
@@ -95,7 +95,7 @@ public class SendGridRazorClientTests
             .WithSubject("email.subject.test")
             .WithPlainTextContent(new EmailTextVM())
             .WithHtmlContent(new EmailHtmlVM())
-            .WithAttachment(Convert.ToBase64String("Attachment content."u8.ToArray()), "Attachment.txt", "text/plain")
+            .WithAttachment(Convert.ToBase64String("Attachment content."u8), "Attachment.txt", "text/plain")
             .WithNoTracking();
 
         var exception = await Assert.ThrowsAsync<SendGridException>(() => client.SendEmailAsync(msg));
