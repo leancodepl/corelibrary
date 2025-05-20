@@ -2,9 +2,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Http;
-using Serilog;
 
 namespace LeanCode.CQRS.AspNetCore.Middleware;
 
@@ -12,17 +12,22 @@ public class CQRSMiddleware
 {
     private static readonly byte[] NullString = "null"u8.ToArray();
 
-    private readonly ILogger logger = Log.ForContext<CQRSMiddleware>();
-
     private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
+    private readonly ILogger<CQRSMiddleware> logger;
 
-    public CQRSMiddleware(CQRSMetrics metrics, ISerializer serializer, RequestDelegate next)
+    public CQRSMiddleware(
+        CQRSMetrics metrics,
+        ISerializer serializer,
+        RequestDelegate next,
+        ILogger<CQRSMiddleware> logger
+    )
     {
         this.metrics = metrics;
         this.serializer = serializer;
         this.next = next;
+        this.logger = logger;
     }
 
     [SuppressMessage("?", "CA1031", Justification = "The handler is an exception boundary.")]

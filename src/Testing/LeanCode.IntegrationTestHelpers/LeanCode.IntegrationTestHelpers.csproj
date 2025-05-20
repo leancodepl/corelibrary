@@ -4,7 +4,7 @@
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
     <ProjectReference Include="../../CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
     <ProjectReference Include="../../Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj" />
-    <ProjectReference Include="../../Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
+    <ProjectReference Include="../../Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
   </ItemGroup>
 

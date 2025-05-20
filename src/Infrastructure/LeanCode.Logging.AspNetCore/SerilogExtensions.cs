@@ -2,7 +2,7 @@ using System.Reflection;
 using Serilog;
 using Serilog.Core;
 
-namespace LeanCode.Logging;
+namespace LeanCode.Logging.AspNetCore;
 
 internal static class SerilogExtensions
 {

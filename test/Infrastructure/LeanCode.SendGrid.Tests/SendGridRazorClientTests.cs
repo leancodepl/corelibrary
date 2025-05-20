@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using LeanCode.SendGrid;
 using LeanCode.Test.Helpers;
 using LeanCode.ViewRenderer;
@@ -54,7 +55,8 @@ public class SendGridRazorClientTests
         client = new SendGridRazorClient(
             new SendGridClient(new() { ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY") ?? "unset" }),
             renderer,
-            localizer
+            localizer,
+            NullLogger<SendGridRazorClient>.Instance
         );
     }
 

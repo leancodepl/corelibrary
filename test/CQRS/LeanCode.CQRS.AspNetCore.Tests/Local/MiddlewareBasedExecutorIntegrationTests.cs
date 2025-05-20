@@ -5,6 +5,7 @@ using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Local;
 using LeanCode.CQRS.Execution;
+using LeanCode.Logging.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +44,7 @@ public class MiddlewareBasedExecutorIntegrationTests : IDisposable, IAsyncLifeti
                             });
                     });
             })
+            .ConfigureDefaultLogging("test")
             .Build();
 
         server = host.GetTestServer();

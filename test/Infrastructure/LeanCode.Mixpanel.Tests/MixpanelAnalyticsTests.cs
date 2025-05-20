@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 
 namespace LeanCode.Mixpanel.Tests;
@@ -21,7 +22,8 @@ public class MixpanelAnalyticsTests
     {
         analytics = new MixpanelAnalytics(
             new HttpClient { BaseAddress = new Uri("https://api.mixpanel.com") },
-            Configuration
+            Configuration,
+            NullLogger<MixpanelAnalytics>.Instance
         );
     }
 

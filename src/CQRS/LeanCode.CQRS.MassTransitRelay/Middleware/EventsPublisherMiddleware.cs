@@ -1,4 +1,5 @@
 using LeanCode.DomainModels.Model;
+using LeanCode.Logging;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 
@@ -6,14 +7,19 @@ namespace LeanCode.CQRS.MassTransitRelay.Middleware;
 
 public class EventsPublisherMiddleware
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<EventsPublisherMiddleware>();
     private readonly RequestDelegate next;
     private readonly AsyncEventsInterceptor interceptor;
+    private readonly ILogger<EventsPublisherMiddleware> logger;
 
-    public EventsPublisherMiddleware(RequestDelegate next, AsyncEventsInterceptor interceptor)
+    public EventsPublisherMiddleware(
+        RequestDelegate next,
+        AsyncEventsInterceptor interceptor,
+        ILogger<EventsPublisherMiddleware> logger
+    )
     {
         this.next = next;
         this.interceptor = interceptor;
+        this.logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext httpContext, IPublishEndpoint publishEndpoint)

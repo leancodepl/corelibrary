@@ -5,4 +5,7 @@
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Serilog.Extensions.Logging" />
+  </ItemGroup>
 </Project>

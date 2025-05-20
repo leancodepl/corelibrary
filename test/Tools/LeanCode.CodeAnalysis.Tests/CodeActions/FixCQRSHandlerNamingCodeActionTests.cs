@@ -15,17 +15,20 @@ public class FixCQRSHandlerNamingCodeActionTests : CodeFixVerifier
         var source =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class WrongCommandHandlerName : ICommandHandler<FirstCommand>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongCommandHandlerName>();
+    private readonly ILogger<WrongCommandHandlerName> logger;
 
-    public WrongCommandHandlerName() { }
+    public WrongCommandHandlerName(ILogger<WrongCommandHandlerName> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task ExecuteAsync(HttpContext context, FirstCommand command) => throw new NotImplementedException();
 }";
@@ -33,17 +36,20 @@ public class WrongCommandHandlerName : ICommandHandler<FirstCommand>
         var expected =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class FirstCommandCH : ICommandHandler<FirstCommand>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstCommandCH>();
+    private readonly ILogger<FirstCommandCH> logger;
 
-    public FirstCommandCH() { }
+    public FirstCommandCH(ILogger<FirstCommandCH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task ExecuteAsync(HttpContext context, FirstCommand command) => throw new NotImplementedException();
 }";
@@ -58,17 +64,20 @@ public class FirstCommandCH : ICommandHandler<FirstCommand>
         var source =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class WrongQueryHandlerName : IQueryHandler<FirstQuery, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongQueryHandlerName>();
+    private readonly ILogger<FirstCommandCH> logger;
 
-    public WrongQueryHandlerName() { }
+    public WrongQueryHandlerName(ILogger<FirstCommandCH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
@@ -76,17 +85,20 @@ public class WrongQueryHandlerName : IQueryHandler<FirstQuery, bool>
         var expected =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class FirstQueryQH : IQueryHandler<FirstQuery, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstQueryQH>();
+    private readonly ILogger<FirstCommandCH> logger;
 
-    public FirstQueryQH() { }
+    public FirstQueryQH(ILogger<FirstCommandCH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 }";
@@ -101,17 +113,20 @@ public class FirstQueryQH : IQueryHandler<FirstQuery, bool>
         var source =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class WrongOperationHandlerName : IOperationHandler<FirstOperation, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<WrongOperationHandlerName>();
+    private readonly ILogger<WrongOperationHandlerName> logger;
 
-    public WrongOperationHandlerName() { }
+    public WrongOperationHandlerName(ILogger<WrongOperationHandlerName> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
@@ -119,17 +134,20 @@ public class WrongOperationHandlerName : IOperationHandler<FirstOperation, bool>
         var expected =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class FirstOperationOH : IOperationHandler<FirstOperation, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FirstOperationOH>();
+    private readonly ILogger<FirstOperationOH> logger;
 
-    public FirstOperationOH() { }
+    public FirstOperationOH(ILogger<FirstOperationOH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstOperation operation) => throw new NotImplementedException();
 }";
@@ -144,17 +162,20 @@ public class FirstOperationOH : IOperationHandler<FirstOperation, bool>
         var source =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class MultipleQueries : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueries>();
+    private readonly ILogger<MultipleQueries> logger;
 
-    public MultipleQueries() { }
+    public MultipleQueries(ILogger<MultipleQueries> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 
@@ -164,17 +185,20 @@ public class MultipleQueries : IQueryHandler<FirstQuery, bool>, IQueryHandler<Se
         var expected =
             @"
 using LeanCode.CQRS.Execution;
+using Leancode.Logging;
 using Microsoft.AspNetCore.Http;
 using LeanCode.CodeAnalysis.Tests.Data;
-using Serilog;
 
 namespace Test;
 
 public class MultipleQueriesQH : IQueryHandler<FirstQuery, bool>, IQueryHandler<SecondQuery, bool>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MultipleQueriesQH>();
+    private readonly ILogger<MultipleQueriesQH> logger;
 
-    public MultipleQueriesQH() { }
+    public MultipleQueriesQH(ILogger<MultipleQueriesQH> logger)
+    {
+        this.logger = logger;
+    }
 
     public Task<bool> ExecuteAsync(HttpContext context, FirstQuery query) => throw new NotImplementedException();
 

@@ -1,5 +1,6 @@
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -21,7 +22,12 @@ public class FCMClientTests
     public FCMClientTests()
     {
         var store = new StubStore(UserId, Token);
-        client = new FCMClient<Guid>(Messaging, store, Substitute.For<IStringLocalizer>());
+        client = new FCMClient<Guid>(
+            Messaging,
+            store,
+            Substitute.For<IStringLocalizer>(),
+            NullLogger<FCMClient<Guid>>.Instance
+        );
     }
 
     [FCMFact]

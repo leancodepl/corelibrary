@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LeanCode.Kratos.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace LeanCode.Kratos;
 
@@ -12,13 +13,13 @@ public sealed record class KratosWebHookHandlerConfig(string ApiKey);
 
 public abstract class KratosWebHookHandlerBase
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<KratosWebHookHandlerBase>();
-
     private readonly KratosWebHookHandlerConfig config;
+    private readonly ILogger<KratosWebHookHandlerBase> logger;
 
-    protected KratosWebHookHandlerBase(KratosWebHookHandlerConfig config)
+    protected KratosWebHookHandlerBase(KratosWebHookHandlerConfig config, ILogger<KratosWebHookHandlerBase> logger)
     {
         this.config = config;
+        this.logger = logger;
     }
 
     protected virtual string ApiKeyHeaderName => "X-Api-Key";
@@ -40,13 +41,13 @@ public abstract class KratosWebHookHandlerBase
             }
             else
             {
-                logger.Error("Invalid Api Key");
+                logger.InvalidApiKey();
                 ctx.Response.StatusCode = 403;
             }
         }
         catch (Exception e)
         {
-            logger.Error(e, "Failed to process webhook");
+            logger.FailedToProcessWebhook(e);
             ctx.Response.StatusCode = 500;
         }
     }
@@ -102,3 +103,12 @@ public record struct DetailedMessage(
     [property: JsonPropertyName("type")] string Type,
     [property: JsonPropertyName("context")] JsonElement? Context
 );
+
+internal static partial class Log
+{
+    [LoggerMessage(LogLevel.Error, "Invalid Api Key")]
+    public static partial void InvalidApiKey(this ILogger logger);
+
+    [LoggerMessage(LogLevel.Error, "Failed to process webhook")]
+    public static partial void FailedToProcessWebhook(this ILogger logger, Exception e);
+}

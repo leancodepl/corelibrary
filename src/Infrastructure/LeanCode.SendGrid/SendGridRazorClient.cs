@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net;
 using System.Text.Json;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 using LeanCode.ViewRenderer;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -18,17 +19,22 @@ public class SendGridRazorClient
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendGridRazorClient>();
-
     private readonly SendGridClient client;
     private readonly IViewRenderer renderer;
     private readonly IStringLocalizer localizer;
+    private readonly ILogger<SendGridRazorClient> logger;
 
-    public SendGridRazorClient(SendGridClient client, IViewRenderer renderer, IStringLocalizer localizer)
+    public SendGridRazorClient(
+        SendGridClient client,
+        IViewRenderer renderer,
+        IStringLocalizer localizer,
+        ILogger<SendGridRazorClient> logger
+    )
     {
         this.client = client;
         this.renderer = renderer;
         this.localizer = localizer;
+        this.logger = logger;
     }
 
     public virtual async Task SendEmailAsync(SendGridMessage msg, CancellationToken cancellationToken = default)

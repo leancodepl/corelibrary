@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using LeanCode.AzureIdentity;
-using LeanCode.Logging;
+using LeanCode.Logging.AspNetCore;
 using LeanCode.Startup.MicrosoftDI;
 using Microsoft.Extensions.Hosting;
 

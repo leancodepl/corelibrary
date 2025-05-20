@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
+using LeanCode.Logging;
 using LeanCode.SmsSender.Exceptions;
 
 namespace LeanCode.SmsSender;
@@ -28,10 +29,9 @@ public class SmsApiClient : ISmsSender
         999 /* Internal system error */
     );
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SmsApiClient>();
-
     private readonly SmsApiConfiguration config;
     private readonly HttpClient client;
+    private readonly ILogger<SmsApiClient> logger;
 
     public static void ConfigureHttpClient(SmsApiConfiguration config, HttpClient client)
     {
@@ -50,10 +50,11 @@ public class SmsApiClient : ISmsSender
         }
     }
 
-    public SmsApiClient(SmsApiConfiguration config, HttpClient client)
+    public SmsApiClient(SmsApiConfiguration config, HttpClient client, ILogger<SmsApiClient> logger)
     {
         this.config = config;
         this.client = client;
+        this.logger = logger;
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(

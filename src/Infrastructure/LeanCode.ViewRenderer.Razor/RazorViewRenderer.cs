@@ -1,17 +1,18 @@
 using System.Text;
+using LeanCode.Logging;
 using LeanCode.ViewRenderer.Razor.ViewBase;
 
 namespace LeanCode.ViewRenderer.Razor;
 
 internal class RazorViewRenderer : IViewRenderer
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<RazorViewRenderer>();
-
     private readonly CompiledViewsCache cache;
+    private readonly ILogger<RazorViewRenderer> logger;
 
-    public RazorViewRenderer(RazorViewRendererOptions options)
+    public RazorViewRenderer(RazorViewRendererOptions options, ILogger<RazorViewRenderer> logger)
     {
-        cache = new CompiledViewsCache(options);
+        cache = new(options, logger.ForContext<CompiledViewsCache>());
+        this.logger = logger;
     }
 
     public async Task RenderToStreamAsync(

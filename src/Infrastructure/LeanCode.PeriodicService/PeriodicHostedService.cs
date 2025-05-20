@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.OpenTelemetry;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,11 +9,12 @@ public class PeriodicHostedService<TAction> : BackgroundService
     where TAction : IPeriodicAction
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PeriodicHostedService<TAction>>();
+    private readonly ILogger<PeriodicHostedService<TAction>> logger;
 
-    public PeriodicHostedService(IServiceProvider serviceProvider)
+    public PeriodicHostedService(IServiceProvider serviceProvider, ILogger<PeriodicHostedService<TAction>> logger)
     {
         this.serviceProvider = serviceProvider;
+        this.logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

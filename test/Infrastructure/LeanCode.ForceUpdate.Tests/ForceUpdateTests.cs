@@ -3,6 +3,7 @@ using FluentAssertions;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;
+using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -16,13 +17,15 @@ public class ForceUpdateTests
     private const string IOSMinimumRequiredVersion = "1.0";
     private const string IOSCurrentlySupportedVersion = "1.3";
 
-    private readonly ServiceProvider serviceProvider;
+    private readonly IServiceProvider serviceProvider;
     private readonly IQueryHandler<VersionSupport, VersionSupportDTO> handler;
 
     public ForceUpdateTests()
     {
         var services = new ServiceCollection();
+
         services
+            .AddLogging(logging => logging.AddNullLeanCodeLogger())
             .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
             .AddForceUpdate(
                 new AndroidVersionsConfiguration(

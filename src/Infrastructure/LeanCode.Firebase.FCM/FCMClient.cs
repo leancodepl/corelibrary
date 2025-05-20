@@ -2,27 +2,29 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using FirebaseAdmin.Messaging;
 using LeanCode.Localization.StringLocalizers;
+using LeanCode.Logging;
 
 namespace LeanCode.Firebase.FCM;
 
 public class FCMClient<TUserId>
     where TUserId : IEquatable<TUserId>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<FCMClient<TUserId>>();
-
     private readonly FirebaseMessaging messaging;
     private readonly IPushNotificationTokenStore<TUserId> tokenStore;
     private readonly IStringLocalizer stringLocalizer;
+    private readonly ILogger<FCMClient<TUserId>> logger;
 
     public FCMClient(
         FirebaseMessaging messaging,
         IPushNotificationTokenStore<TUserId> tokenStore,
-        IStringLocalizer stringLocalizer
+        IStringLocalizer stringLocalizer,
+        ILogger<FCMClient<TUserId>> logger
     )
     {
         this.messaging = messaging;
         this.tokenStore = tokenStore;
         this.stringLocalizer = stringLocalizer;
+        this.logger = logger;
     }
 
     public virtual LocalizedNotification Localize(CultureInfo culture) => new(stringLocalizer, culture);

@@ -4,6 +4,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
 using LeanCode.AuditLogs;
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 using LeanCode.TimeProvider;
 
@@ -33,7 +34,8 @@ public class AzureStorageAuditLogIntegrationTests
             new(
                 Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey) ?? "unset",
                 Environment.GetEnvironmentVariable(Env.AzureTableStorageTableNameKey) ?? "unset"
-            )
+            ),
+            NullLogger<AzureBlobAuditLogStorage>.Instance
         );
     }
 

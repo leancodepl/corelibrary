@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using LeanCode.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,13 +12,16 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
     where TUserId : IEquatable<TUserId>
 {
     private const int MaxTokenBatchSize = IPushNotificationTokenStore<TUserId>.MaxTokenBatchSize;
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<PushNotificationTokenStore<TDbContext, TUserId>>();
-
     private readonly TDbContext dbContext;
+    private readonly ILogger<PushNotificationTokenStore<TDbContext, TUserId>> logger;
 
-    public PushNotificationTokenStore(TDbContext dbContext)
+    public PushNotificationTokenStore(
+        TDbContext dbContext,
+        ILogger<PushNotificationTokenStore<TDbContext, TUserId>> logger
+    )
     {
         this.dbContext = dbContext;
+        this.logger = logger;
     }
 
     public Task<List<string>> GetTokensAsync(TUserId userId, CancellationToken cancellationToken = default)

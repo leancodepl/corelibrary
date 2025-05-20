@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using IdentityModel.Client;
+using LeanCode.Logging;
 
 namespace LeanCode.ClientCredentialsHandler;
 
@@ -9,12 +10,11 @@ public class ClientCredentialsHandler : DelegatingHandler
 {
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ClientCredentialsHandler>();
-
     private readonly string tokenEndpoint;
     private readonly ClientCredentialsConfiguration config;
     private readonly SemaphoreSlim tokenLock = new SemaphoreSlim(1, 1);
     private readonly HttpClient httpClient;
+    private readonly ILogger<ClientCredentialsHandler> logger;
 
     private string? accessToken;
 
@@ -41,10 +41,11 @@ public class ClientCredentialsHandler : DelegatingHandler
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2000", Justification = "Disposed by parent class.")]
-    public ClientCredentialsHandler(ClientCredentialsConfiguration config)
+    public ClientCredentialsHandler(ClientCredentialsConfiguration config, ILogger<ClientCredentialsHandler> logger)
         : base(new HttpClientHandler())
     {
         this.config = config;
+        this.logger = logger;
 
         httpClient = new HttpClient();
         tokenEndpoint = UrlHelper.Concat(config.ServerAddress, "connect/token");

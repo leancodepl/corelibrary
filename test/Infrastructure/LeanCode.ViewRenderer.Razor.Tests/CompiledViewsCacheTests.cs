@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 using Xunit;
 
@@ -6,13 +7,13 @@ namespace LeanCode.ViewRenderer.Razor.Tests;
 public class CompiledViewsCacheTests
 {
     private const string View = "Simple";
-    private static readonly RazorViewRendererOptions Options = new RazorViewRendererOptions("./Views/Cache");
+    private static readonly RazorViewRendererOptions Options = new("./Views/Cache");
 
     private readonly CompiledViewsCache cache;
 
     public CompiledViewsCacheTests()
     {
-        cache = new CompiledViewsCache(Options);
+        cache = new(Options, NullLogger<CompiledViewsCache>.Instance);
     }
 
     [Fact]

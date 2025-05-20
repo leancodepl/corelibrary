@@ -1,3 +1,4 @@
+using LeanCode.Logging;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,7 @@ using Polly.Retry;
 
 namespace LeanCode.IntegrationTestHelpers;
 
-public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHostedService
+public class DbContextInitializer<T> : IHostedService
     where T : DbContext
 {
     private static readonly AsyncRetryPolicy CreatePolicy = Policy
@@ -16,7 +17,14 @@ public class DbContextInitializer<T>(IServiceProvider serviceProvider) : IHosted
         .Or<NpgsqlException>(e => e.IsTransient)
         .WaitAndRetryAsync([TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3)]);
 
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<DbContextInitializer<T>>();
+    private readonly IServiceProvider serviceProvider;
+    private readonly ILogger<DbContextInitializer<T>> logger;
+
+    public DbContextInitializer(IServiceProvider serviceProvider, ILogger<DbContextInitializer<T>> logger)
+    {
+        this.serviceProvider = serviceProvider;
+        this.logger = logger;
+    }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
