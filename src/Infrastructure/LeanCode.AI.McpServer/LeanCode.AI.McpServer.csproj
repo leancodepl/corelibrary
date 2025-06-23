@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
+    <PackageReference Include="ModelContextProtocol" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.AI.Contracts/LeanCode.AI.Contracts.csproj" />
+    <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+    <ProjectReference Include="../../CQRS/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
+  </ItemGroup>
+</Project>

@@ -79,6 +79,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
 
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.6.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(ExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
@@ -98,6 +99,8 @@
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="$(ExtensionsVersion)" />
 
     <PackageVersion Include="Microsoft.Extensions.WebEncoders" Version="$(AspNetCoreVersion)" />
+
+    <PackageVersion Include="ModelContextProtocol" Version="0.2.0-preview.3" />
 
     <PackageVersion Include="Npgsql" Version="9.0.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
