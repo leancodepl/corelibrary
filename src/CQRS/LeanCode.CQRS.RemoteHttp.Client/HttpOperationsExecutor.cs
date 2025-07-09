@@ -18,7 +18,7 @@ public class HttpOperationsExecutor
         this.serializerOptions = serializerOptions ?? new JsonSerializerOptions();
     }
 
-    public virtual async Task<TResult> GetAsync<TResult>(
+    public virtual async Task<TResult> RunAsync<TResult>(
         IOperation<TResult> operation,
         CancellationToken cancellationToken = default
     )
