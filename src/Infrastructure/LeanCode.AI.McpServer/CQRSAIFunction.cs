@@ -164,6 +164,6 @@ public class OperationAIFunction<TExecutor, TOperation, TResult> : CQRSAIFunctio
         CancellationToken cancellationToken
     )
     {
-        return HandleErrorsAsync(() => executor.GetAsync(cqrsObject, cancellationToken));
+        return HandleErrorsAsync(() => executor.RunAsync(cqrsObject, cancellationToken));
     }
 }

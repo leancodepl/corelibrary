@@ -11,7 +11,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, handler) = Prepare(HttpStatusCode.OK, "{}");
 
-        await exec.GetAsync(new ExampleOperation());
+        await exec.RunAsync(new ExampleOperation());
 
         Assert.NotNull(handler.Request);
         Assert.Equal(
@@ -25,7 +25,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, handler) = Prepare(HttpStatusCode.OK, "{}");
 
-        await exec.GetAsync(new ExampleOperation { RequestData = "data" });
+        await exec.RunAsync(new ExampleOperation { RequestData = "data" });
 
         Assert.NotNull(handler.Request);
         var content = await handler.Request!.Content!.ReadAsStringAsync();
@@ -37,7 +37,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, _) = Prepare(HttpStatusCode.OK, "{\"Data\":\"data\"}");
 
-        var result = await exec.GetAsync(new ExampleOperation());
+        var result = await exec.RunAsync(new ExampleOperation());
 
         Assert.NotNull(result);
         Assert.Equal("data", result.Data);
@@ -48,7 +48,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, _) = Prepare(HttpStatusCode.OK, "null");
 
-        var result = await exec.GetAsync(new ExampleOperation());
+        var result = await exec.RunAsync(new ExampleOperation());
 
         Assert.Null(result);
     }
@@ -94,7 +94,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, _) = Prepare(HttpStatusCode.OK, "[{\"");
 
-        await Assert.ThrowsAsync<MalformedResponseException>(() => exec.GetAsync(new ExampleOperation()));
+        await Assert.ThrowsAsync<MalformedResponseException>(() => exec.RunAsync(new ExampleOperation()));
     }
 
     private static async Task TestExceptionAsync<TException>(HttpStatusCode statusCode)
@@ -102,7 +102,7 @@ public class HttpOperationsExecutorTests
     {
         var (exec, _) = Prepare(statusCode, string.Empty);
 
-        await Assert.ThrowsAsync<TException>(() => exec.GetAsync(new ExampleOperation()));
+        await Assert.ThrowsAsync<TException>(() => exec.RunAsync(new ExampleOperation()));
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
