@@ -4,6 +4,13 @@
 
 Recommended reading for some additional context: [Storing UTC is not a silver bullet](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/).
 
+## Packages
+
+| Package | Link | Application in section |
+| --- | ----------- | ----------- |
+| LeanCode.DomainModels | [![NuGet version (LeanCode.DomainModels)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels) | `TimestampTz` |
+| LeanCode.DomainModels.EF | [![NuGet version (LeanCode.DomainModels.EF)](https://img.shields.io/nuget/vpre/LeanCode.DomainModels.EF.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/LeanCode.DomainModels.EF) | `TimestampTzExpressionInterceptorDbContextOptionsBuilderExtensions` |
+
 ## Definition
 
 The type exposes the following public API:
@@ -65,6 +72,7 @@ migrationBuilder.Sql(
 ## Limitations
 
 * This type does not account for the variable nature of time zone rules. When attempting to store a point of time when some future event is supposed to take place, keep in mind that it may be defined by the _local_ time in some time zone. If rules governing that time zone change, that local time may no longer map to the same instant. In such cases, consider additionally storing the local timestamp in a separate column. See the blog post linked at the top for details.
+* `LocalTimestampWithOffset` cannot be evaluated in Postgres. Therefore, avoid writing queries that do things like ordering by this property, or otherwise rely on it being usable DB-side. However, as with other properties that aren't understood by EF, it can be used in the query's final projection, simply causing client-side evaluation.
 * Support for different calendar systems is out of scope.
 
 ## FAQ

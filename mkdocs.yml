@@ -56,6 +56,8 @@ nav:
       - ./domain/id/index.md
     - Time provider:
       - ./domain/time_provider/index.md
+    - TimestampTz:
+      - ./domain/timestamp_tz/index.md
   - External integrations:
     - Authorization - Ory Kratos:
       - ./external_integrations/authorization_ory_kratos/index.md
