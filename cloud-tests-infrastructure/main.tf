@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.12"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.13.1"
+    }
   }
 }
 
@@ -40,6 +44,14 @@ resource "azuread_service_principal" "tests" {
   client_id = azuread_application.tests.client_id
 }
 
+
+resource "time_rotating" "sp_secret_rotation" {
+  rotation_years = 1
+}
+
 resource "azuread_service_principal_password" "tests" {
   service_principal_id = azuread_service_principal.tests.id
+  rotate_when_changed = {
+    time = time_rotating.sp_secret_rotation.id
+  }
 }
