@@ -243,36 +243,33 @@ public class SynchronizeEnumDtoCodeAction : CodeAction
         {
             return true;
         }
-
         if (value1 is null || value2 is null)
         {
             return false;
         }
 
-        // This handles cases where enums have different underlying types (byte, short, int, etc.)
-        if (value1.GetType() != value2.GetType())
+        var type1 = value1.GetType();
+        var type2 = value2.GetType();
+
+        if (!type1.IsEnum || !type2.IsEnum)
         {
-            try
-            {
-                var converted1 = Convert.ToInt64(value1, CultureInfo.InvariantCulture);
-                var converted2 = Convert.ToInt64(value2, CultureInfo.InvariantCulture);
-                return converted1 == converted2;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-            catch (InvalidCastException)
-            {
-                return false;
-            }
+            return value1.Equals(value2);
         }
 
-        return value1.Equals(value2);
+        try
+        {
+            var underlyingValue1 = Convert.ToInt64(value1, CultureInfo.InvariantCulture);
+            var underlyingValue2 = Convert.ToInt64(value2, CultureInfo.InvariantCulture);
+            return underlyingValue1 == underlyingValue2;
+        }
+        catch (OverflowException)
+        {
+            return false;
+        }
+        catch (InvalidCastException)
+        {
+            return false;
+        }
     }
 
     private static long GetEnumMemberValue(EnumMemberDeclarationSyntax member)
