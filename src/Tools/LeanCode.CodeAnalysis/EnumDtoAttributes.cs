@@ -9,7 +9,7 @@ namespace LeanCode.CodeAnalysis;
 /// When applied, the enum will not be checked for consistency with its base enum.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
-public sealed class IgnoreEnumDtoAttribute : Attribute { }
+public sealed class IgnoreEnumDtoAttribute : Attribute;
 
 /// <summary>
 /// Attribute that specifies which enum values from the base enum should be excluded
@@ -47,7 +47,7 @@ public sealed class ExcludeMembersAttribute : Attribute
 /// When applied, the analyzer will not require a corresponding value in the base enum.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
-public sealed class IgnoreEnumValueAttribute : Attribute { }
+public sealed class IgnoreEnumValueAttribute : Attribute;
 
 /// <summary>
 /// Attribute that specifies which enum value(s) from the base enum this DTO enum value corresponds to.
