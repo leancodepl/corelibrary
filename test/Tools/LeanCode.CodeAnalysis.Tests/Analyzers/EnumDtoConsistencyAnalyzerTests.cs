@@ -371,6 +371,37 @@ public class EnumDtoConsistencyAnalyzerTests : DiagnosticVerifier
         await VerifyDiagnostics(source);
     }
 
+    [Fact]
+    public async Task Enum_dto_with_duplicated_member_should_pass()
+    {
+        var source =
+            AttributeDefinitions
+            + """
+
+                namespace Test;
+
+                public enum Status
+                {
+                    None = 0,
+                    InProgress = 1,
+                    Completed = 2,
+                    Cancelled = 3
+                }
+
+                public enum StatusDTO
+                {
+                    None = 0,
+                    InProgress = 1,
+                    Completed = 2,
+                    Cancelled = 3,
+                    [LeanCode.CodeAnalysis.IgnoreEnumValue]
+                    CancelledDuplicated = Cancelled
+                }
+                """;
+
+        await VerifyDiagnostics(source);
+    }
+
     protected override DiagnosticAnalyzer GetDiagnosticAnalyzer()
     {
         return new EnumDtoConsistencyAnalyzer();
