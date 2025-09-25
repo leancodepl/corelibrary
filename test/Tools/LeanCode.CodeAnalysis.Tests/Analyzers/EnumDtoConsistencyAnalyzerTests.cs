@@ -109,7 +109,7 @@ public class EnumDtoConsistencyAnalyzerTests : DiagnosticVerifier
                     Cancelled = 3
                 }
 
-                [LeanCode.CodeAnalysis.ExcludeMembers(Status.Completed, Status.Cancelled)]
+                [LeanCode.CodeAnalysis.ExcludeMembers(2, 3)]
                 public enum StatusDTO
                 {
                     None = 0,
@@ -226,11 +226,11 @@ public class EnumDtoConsistencyAnalyzerTests : DiagnosticVerifier
                 public enum StatusDTO
                 {
                     None = 0,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.InProgress)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(1)]
                     InProgress = 2,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 3,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Cancelled)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(3)]
                     Cancelled = 4
                 }
                 """;
@@ -259,9 +259,9 @@ public class EnumDtoConsistencyAnalyzerTests : DiagnosticVerifier
                 {
                     None = 0,
                     InProgress = 1,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 3,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Cancelled)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(3)]
                     Cancelled = 2
                 }
                 """;
@@ -288,9 +288,9 @@ public class EnumDtoConsistencyAnalyzerTests : DiagnosticVerifier
 
                 public enum StatusDTO
                 {
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.None, Status.InProgress)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(0, 1)]
                     InProgress = 0,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 1,
                     Cancelled = 3
                 }

@@ -342,6 +342,10 @@ public class SynchronizeEnumDtoCodeAction : CodeAction
         SemanticModel model
     )
     {
+        var baseMemberValue = Convert
+            .ToInt64(baseMember.ConstantValue, CultureInfo.InvariantCulture)
+            .ToString(CultureInfo.InvariantCulture);
+
         foreach (var existingMember in existingMembers.Values)
         {
             if (!HasEnumValueCorrespondsAttribute(existingMember, model))
@@ -350,7 +354,7 @@ public class SynchronizeEnumDtoCodeAction : CodeAction
             }
 
             var correspondingValues = GetCorrespondingValuesFromAttribute(existingMember, model);
-            if (correspondingValues.Contains(baseMember.Name))
+            if (correspondingValues.Contains(baseMemberValue))
             {
                 return true;
             }
@@ -380,10 +384,13 @@ public class SynchronizeEnumDtoCodeAction : CodeAction
                         {
                             foreach (var argument in attribute.ArgumentList.Arguments)
                             {
-                                if (argument.Expression is MemberAccessExpressionSyntax memberAccess)
+                                if (argument.Expression is LiteralExpressionSyntax literal)
                                 {
-                                    var memberName = memberAccess.Name.Identifier.ValueText;
-                                    correspondingValues.Add(memberName);
+                                    if (literal.Token.IsKind(SyntaxKind.NumericLiteralToken))
+                                    {
+                                        var value = literal.Token.ValueText;
+                                        correspondingValues.Add(value);
+                                    }
                                 }
                             }
                         }

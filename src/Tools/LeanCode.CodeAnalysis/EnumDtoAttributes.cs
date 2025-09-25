@@ -18,20 +18,21 @@ public sealed class IgnoreEnumDtoAttribute : Attribute;
 /// <remarks>
 /// This attribute can only be applied to enums whose names end with "DTO".
 /// The excluded values are specified as parameters and correspond to values
-/// from the base enum (without "DTO" suffix).
+/// from the base enum (without "DTO" suffix). Only integer values are supported.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
 public sealed class ExcludeMembersAttribute : Attribute
 {
     /// <summary>
     /// The enum values from the base enum that should be excluded from consistency checking.
+    /// Integer values corresponding to enum members.
     /// </summary>
     public object[] IgnoredValues { get; }
 
     /// <summary>
     /// Initializes a new instance of the ExcludeMembersAttribute class.
     /// </summary>
-    /// <param name="ignoredValues">The enum values to exclude from consistency checking.</param>
+    /// <param name="ignoredValues">The integer values of enum members to exclude from consistency checking.</param>
     public ExcludeMembersAttribute(params object[] ignoredValues)
     {
         IgnoredValues = ignoredValues;
@@ -55,20 +56,21 @@ public sealed class IgnoreEnumValueAttribute : Attribute;
 /// <remarks>
 /// This attribute can only be applied to enum values within enums whose names end with "DTO".
 /// When applied, the analyzer will check that this DTO enum value matches the specified base enum value(s)
-/// instead of requiring a matching name and value.
+/// instead of requiring a matching name and value. Only integer values are supported.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
 public sealed class EnumValueCorrespondsAttribute : Attribute
 {
     /// <summary>
     /// The enum values from the base enum that this DTO enum value corresponds to.
+    /// Integer values corresponding to enum members.
     /// </summary>
     public object[] CorrespondingValues { get; }
 
     /// <summary>
     /// Initializes a new instance of the EnumValueCorrespondsAttribute class.
     /// </summary>
-    /// <param name="correspondingValues">The base enum values this DTO enum value corresponds to.</param>
+    /// <param name="correspondingValues">The integer values of base enum members this DTO enum value corresponds to.</param>
     public EnumValueCorrespondsAttribute(params object[] correspondingValues)
     {
         CorrespondingValues = correspondingValues;

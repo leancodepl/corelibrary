@@ -213,11 +213,11 @@ public class SynchronizeEnumDtoCodeActionTests : CodeFixVerifier
                 public enum StatusDTO
                 {
                     None = 0,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.InProgress)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(1)]
                     InProgress = 2,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 3,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Cancelled)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(3)]
                     Cancelled = 4
                 }
                 """;
@@ -242,7 +242,7 @@ public class SynchronizeEnumDtoCodeActionTests : CodeFixVerifier
                     Cancelled = 3
                 }
 
-                [LeanCode.CodeAnalysis.ExcludeMembers(Status.None, Status.InProgress)]
+                [LeanCode.CodeAnalysis.ExcludeMembers(0, 1)]
                 public enum StatusDTO
                 {
                     WrongMember = 999,
@@ -265,7 +265,7 @@ public class SynchronizeEnumDtoCodeActionTests : CodeFixVerifier
                     Cancelled = 3
                 }
 
-                [LeanCode.CodeAnalysis.ExcludeMembers(Status.None, Status.InProgress)]
+                [LeanCode.CodeAnalysis.ExcludeMembers(0, 1)]
                 public enum StatusDTO
                 {
                     Completed = 2,
@@ -295,12 +295,12 @@ public class SynchronizeEnumDtoCodeActionTests : CodeFixVerifier
                     Archived = 4
                 }
 
-                [LeanCode.CodeAnalysis.ExcludeMembers(Status.Archived)]
+                [LeanCode.CodeAnalysis.ExcludeMembers(4)]
                 public enum StatusDTO
                 {
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.None, Status.InProgress)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(0, 1)]
                     InProgress = 0,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 1,
                     Cancelled = 999,
                     [LeanCode.CodeAnalysis.IgnoreEnumValue]
@@ -323,12 +323,12 @@ public class SynchronizeEnumDtoCodeActionTests : CodeFixVerifier
                     Archived = 4
                 }
 
-                [LeanCode.CodeAnalysis.ExcludeMembers(Status.Archived)]
+                [LeanCode.CodeAnalysis.ExcludeMembers(4)]
                 public enum StatusDTO
                 {
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.None, Status.InProgress)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(0, 1)]
                     InProgress = 0,
-                    [LeanCode.CodeAnalysis.EnumValueCorresponds(Status.Completed)]
+                    [LeanCode.CodeAnalysis.EnumValueCorresponds(2)]
                     Completed = 1,
                     Cancelled = 3,
                     [LeanCode.CodeAnalysis.IgnoreEnumValue]
