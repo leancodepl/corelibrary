@@ -21,25 +21,29 @@ public class PeriodicHostedService<TAction> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var executionNo = 0;
+
         while (!stoppingToken.IsCancellationRequested)
         {
             var nextOccurrence = await ExecuteOnceAsync(executionNo, stoppingToken);
+            executionNo++;
 
-            if (!stoppingToken.IsCancellationRequested)
+            await WaitForNextOccurrenceAsync(nextOccurrence, stoppingToken);
+        }
+    }
+
+    private async Task WaitForNextOccurrenceAsync(DateTimeOffset nextOccurrence, CancellationToken cancellationToken)
+    {
+        if (!cancellationToken.IsCancellationRequested)
+        {
+            logger.Debug("Periodic action executed, the next run will be at {NextOccurrence}", nextOccurrence);
+            do
             {
-                logger.Debug(
-                    "Periodic action executed, the next run will be at {NextOccurrence}",
-                    nextOccurrence
-                );
-                do
-                {
-                    var now = TimeProvider.Time.UtcNow;
-                    var delay = nextOccurrence - now < MinDelay ? MinDelay : nextOccurrence - now;
+                var now = TimeProvider.Time.UtcNow;
+                var delay = nextOccurrence - now < MinDelay ? MinDelay : nextOccurrence - now;
 
-                    await Task.Delay(delay, stoppingToken);
-                }
-                while (!stoppingToken.IsCancellationRequested && TimeProvider.Time.UtcNow <= nextOccurrence);
-            }
+                await Task.Delay(delay, cancellationToken);
+            } while (!cancellationToken.IsCancellationRequested && TimeProvider.Time.UtcNow <= nextOccurrence);
         }
     }
 
@@ -48,12 +52,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
         "CA1031",
         Justification = "The method is an exception boundary."
     )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "?",
-        "LNCD0006",
-        Justification = "Convention for `PeriodicAction`."
-    )]
-    private async Task<DateTimeOffset> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
+    private async Task<DateTimeOffset> ExecuteOnceAsync(int executionNo, CancellationToken cancellationToken)
     {
         using var activity = LeanCodeActivitySource.StartExecution("Periodic action", typeof(TAction).Name);
         await using var scope = serviceProvider.CreateAsyncScope();
@@ -63,7 +62,7 @@ public class PeriodicHostedService<TAction> : BackgroundService
         {
             try
             {
-                await service.ExecuteAsync(stoppingToken);
+                await service.ExecuteAsync(cancellationToken);
             }
             catch (Exception ex)
             {
