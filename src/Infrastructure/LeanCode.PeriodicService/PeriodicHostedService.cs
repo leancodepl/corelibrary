@@ -8,6 +8,8 @@ namespace LeanCode.PeriodicService;
 public class PeriodicHostedService<TAction> : BackgroundService
     where TAction : IPeriodicAction
 {
+    private static readonly TimeSpan MinDelay = TimeSpan.FromMilliseconds(10);
+
     private readonly IServiceProvider serviceProvider;
     private readonly ILogger<PeriodicHostedService<TAction>> logger;
 
@@ -19,15 +21,24 @@ public class PeriodicHostedService<TAction> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var executionNo = 0;
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delay = await ExecuteOnceAsync(executionNo, stoppingToken);
-            executionNo++;
+            var nextOccurrence = await ExecuteOnceAsync(executionNo, stoppingToken);
+
             if (!stoppingToken.IsCancellationRequested)
             {
-                logger.Debug("Periodic action executed, waiting {Delay} for the next run", delay);
-                await Task.Delay(delay, stoppingToken);
+                logger.Debug(
+                    "Periodic action executed, the next run will be at {NextOccurrence}",
+                    nextOccurrence
+                );
+                do
+                {
+                    var now = TimeProvider.Time.UtcNow;
+                    var delay = nextOccurrence - now < MinDelay ? MinDelay : nextOccurrence - now;
+
+                    await Task.Delay(delay, stoppingToken);
+                }
+                while (!stoppingToken.IsCancellationRequested && TimeProvider.Time.UtcNow <= nextOccurrence);
             }
         }
     }
@@ -42,11 +53,12 @@ public class PeriodicHostedService<TAction> : BackgroundService
         "LNCD0006",
         Justification = "Convention for `PeriodicAction`."
     )]
-    private async Task<TimeSpan> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
+    private async Task<DateTimeOffset> ExecuteOnceAsync(int executionNo, CancellationToken stoppingToken)
     {
         using var activity = LeanCodeActivitySource.StartExecution("Periodic action", typeof(TAction).Name);
         await using var scope = serviceProvider.CreateAsyncScope();
         var service = scope.ServiceProvider.GetRequiredService<TAction>();
+
         if (!service.SkipFirstExecution || executionNo > 0)
         {
             try
@@ -60,15 +72,15 @@ public class PeriodicHostedService<TAction> : BackgroundService
             }
         }
 
-        return CalculateDelay(service);
+        return CalculateNextOccurrence(service);
     }
 
-    private static TimeSpan CalculateDelay(IPeriodicAction action)
+    private static DateTimeOffset CalculateNextOccurrence(IPeriodicAction action)
     {
         var now = TimeProvider.Time.UtcNow;
         var next =
             action.When.GetNextOccurrence(now)
             ?? throw new InvalidOperationException("Cannot get next occurrence of the task.");
-        return next - now;
+        return next;
     }
 }
