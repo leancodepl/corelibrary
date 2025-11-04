@@ -10,8 +10,6 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 public class CQRSMiddleware
 {
-    private static readonly byte[] NullString = "null"u8.ToArray();
-
     private readonly CQRSMetrics metrics;
     private readonly ISerializer serializer;
     private readonly RequestDelegate next;
@@ -66,12 +64,12 @@ public class CQRSMiddleware
             return;
         }
 
-        httpContext.SetCQRSRequestPayload(obj);
+        var requestPayload = httpContext.SetCQRSRequestPayload(obj);
 
         try
         {
             await next(httpContext);
-            await SerializeResultAsync(httpContext, cqrsEndpoint, activity);
+            // await SerializeResultAsync(httpContext, cqrsEndpoint, activity);
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -81,8 +79,23 @@ public class CQRSMiddleware
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            MarkError(CQRSMetrics.InternalError, activity, ex);
         }
+
+        if (httpContext.Response.StatusCode < 400)
+        {
+            metrics.CQRSSuccess();
+            activity?.SetStatus(ActivityStatusCode.Ok);
+            logger.Information(
+                "{ObjectKind} {@Object} executed successfully",
+                cqrsEndpoint.ObjectKind,
+                requestPayload.Payload
+            );
+        }
+        else if (httpContext.Response.StatusCode >= 500)
+        {
+            MarkError(CQRSMetrics.InternalError, activity);
+        }
+        // assuming that in other cases the middleware itself will log & report appropriate metric
     }
 
     private async Task SerializeResultAsync(
@@ -91,52 +104,52 @@ public class CQRSMiddleware
         Activity? activity
     )
     {
-        var payload = httpContext.GetCQRSRequestPayload();
-
-        if (payload.Result is null)
-        {
-            logger.Warning("CQRS execution ended with no result");
-            MarkError(CQRSMetrics.InternalError, activity);
-            return;
-        }
-
-        var result = payload.Result.Value;
-
-        httpContext.Response.StatusCode = result.StatusCode;
-
-        if (result.HasPayload)
-        {
-            httpContext.Response.ContentType = serializer.ContentType;
-            if (result.Payload is null)
-            {
-                await httpContext.Response.Body.WriteAsync(NullString);
-            }
-            else
-            {
-                await serializer.SerializeAsync(
-                    httpContext.Response.Body,
-                    result.Payload,
-                    objectMetadata.ResultType,
-                    httpContext.RequestAborted
-                );
-            }
-
-            if (httpContext.Response.StatusCode < 400)
-            {
-                // assuming that in other cases the middleware itself will log & report appropriate metric
-                metrics.CQRSSuccess();
-                activity?.SetStatus(ActivityStatusCode.Ok);
-                logger.Information(
-                    "{ObjectKind} {@Object} executed successfully",
-                    objectMetadata.ObjectKind,
-                    payload.Payload
-                );
-            }
-        }
-        else
-        {
-            MarkError(CQRSMetrics.InternalError, activity);
-        }
+        // var payload = httpContext.GetCQRSRequestPayload();
+        //
+        // if (payload.Result is null)
+        // {
+        //     logger.Warning("CQRS execution ended with no result");
+        //     MarkError(CQRSMetrics.InternalError, activity);
+        //     return;
+        // }
+        //
+        // var result = payload.Result.Value;
+        //
+        // httpContext.Response.StatusCode = result.StatusCode;
+        //
+        // if (result.HasPayload)
+        // {
+        //     httpContext.Response.ContentType = serializer.ContentType;
+        //     if (result.Payload is null)
+        //     {
+        //         await httpContext.Response.Body.WriteAsync(NullString);
+        //     }
+        //     else
+        //     {
+        //         await serializer.SerializeAsync(
+        //             httpContext.Response.Body,
+        //             result.Payload,
+        //             objectMetadata.ResultType,
+        //             httpContext.RequestAborted
+        //         );
+        //     }
+        //
+        //     if (httpContext.Response.StatusCode < 400)
+        //     {
+        //         // assuming that in other cases the middleware itself will log & report appropriate metric
+        //         metrics.CQRSSuccess();
+        //         activity?.SetStatus(ActivityStatusCode.Ok);
+        //         logger.Information(
+        //             "{ObjectKind} {@Object} executed successfully",
+        //             objectMetadata.ObjectKind,
+        //             payload.Payload
+        //         );
+        //     }
+        // }
+        // else
+        // {
+        //     MarkError(CQRSMetrics.InternalError, activity);
+        // }
     }
 
     private void MarkError(string failureReason, Activity? activity, Exception? exception = null)

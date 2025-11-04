@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using LeanCode.Contracts.Security;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.Logging;
@@ -21,7 +22,7 @@ public class CQRSSecurityMiddleware
         this.logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, ISerializer serializer)
     {
         var cqrsMetadata = context.GetCQRSObjectMetadata();
         var payload = context.GetCQRSRequestPayload();
@@ -38,6 +39,7 @@ public class CQRSSecurityMiddleware
 
             payload.SetResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
             metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
+            await serializer.SerializeCQRSResultAsync(context);
             return;
         }
 
@@ -68,6 +70,7 @@ public class CQRSSecurityMiddleware
 
                 payload.SetResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
                 metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
+                await serializer.SerializeCQRSResultAsync(context);
                 return;
             }
             else

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Middleware;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.Logging;
@@ -42,6 +43,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         services.AddSingleton(_ => (firstAuthorizer as IFirstAuthorizer)!);
         services.AddSingleton(_ => (secondAuthorizer as ISecondAuthorizer)!);
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
+        services.AddSingleton(Substitute.For<ISerializer>());
     }
 
     [Fact]

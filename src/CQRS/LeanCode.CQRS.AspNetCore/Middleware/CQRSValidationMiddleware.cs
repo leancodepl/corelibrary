@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using LeanCode.Contracts;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
 using LeanCode.Logging;
@@ -21,7 +22,7 @@ public class CQRSValidationMiddleware
         this.logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver)
+    public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver, ISerializer serializer)
     {
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var payload = httpContext.GetCQRSRequestPayload();
@@ -47,6 +48,7 @@ public class CQRSValidationMiddleware
                 var commandResult = CommandResult.NotValid(result);
                 payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
                 metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
+                await serializer.SerializeCQRSResultAsync(httpContext);
                 return;
             }
             else

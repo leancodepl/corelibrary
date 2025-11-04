@@ -5,11 +5,13 @@ using LeanCode.Contracts.Security;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Local;
 using LeanCode.CQRS.AspNetCore.Registration;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
 using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
@@ -72,6 +74,7 @@ public class MiddlewaresForLocalExecutionTests
         serviceCollection.AddScoped<LocalHandlerMiddleware>();
         serviceCollection.AddScoped<CQRSMetrics>();
         serviceCollection.AddScoped<ICommandValidatorResolver, CommandValidatorResolver>();
+        serviceCollection.AddSingleton(Substitute.For<ISerializer>());
 
         var registrationSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);

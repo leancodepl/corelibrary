@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
 using LeanCode.Logging;
@@ -38,6 +39,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
     {
         services.AddSingleton(_ => validatorResolver);
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
+        services.AddSingleton(Substitute.For<ISerializer>());
     }
 
     [Fact]
