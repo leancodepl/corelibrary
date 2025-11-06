@@ -3,13 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Middleware;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
@@ -17,27 +14,43 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 [SuppressMessage(category: "?", "CA1034", Justification = "Nesting public types for better tests separation")]
 public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 {
+    private static readonly QueryResult FinalResult = new() { Value = 42 };
+
     private static readonly CQRSObjectMetadata QueryMetadata = new(
         CQRSObjectKind.Query,
         typeof(Query),
         typeof(QueryResult),
         typeof(IgnoreType),
-        (_, _) => Task.FromResult<object?>(null)
+        (_, _) => Task.FromResult<object?>(FinalResult)
     );
 
-    private readonly ISerializer serializer = Substitute.For<ISerializer>();
+    private Func<HttpContext, ExecutionResult?> IntermediatePipeline { get; set; } = _ => null;
 
     protected override void ConfigureServices(IServiceCollection services)
     {
-        serializer.ContentType.Returns("application/json");
-        services.AddSingleton(_ => serializer);
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
+    }
+
+    public CQRSMiddlewareTests()
+        : base()
+    {
+        FinalPipeline = ctx =>
+        {
+            if (IntermediatePipeline(ctx) is { } result)
+            {
+                return ctx.CompleteCQRSExecutionResult(result);
+            }
+            else
+            {
+                return CQRSPipelineFinalizer.HandleAsync(ctx);
+            }
+        };
     }
 
     [Fact]
     public async Task Returns_400BadRequest_if_cannot_deserialize_request_body()
     {
-        SetDeserializerResult<Query>(new InvalidOperationException("Failed to deserialize"));
+        Serializer.SetDeserializeException<Query>(new InvalidOperationException("Failed to deserialize"));
 
         var httpContext = await SendAsync();
 
@@ -54,7 +67,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
     [Fact]
     public async Task Returns_400BadRequest_if_deserialized_body_is_null()
     {
-        SetDeserializerResult<Query>(null as Query);
+        Serializer.SetDeserializeResult<Query>(null);
 
         var httpContext = await SendAsync();
 
@@ -63,110 +76,99 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         VerifyCQRSFailureMetrics(CQRSMetrics.SerializationFailure, 1);
     }
 
-    // [Fact]
-    // public async Task Deserializes_request_then_passes_payload_to_further_pipeline_then_serializes_result()
-    // {
-    //     var query = new Query();
-    //     var queryResult = new QueryResult();
-    //
-    //     SetDeserializerResult<Query>(query);
-    //     SetPipelineResultSuccess(queryResult);
-    //
-    //     var httpContext = await SendAsync();
-    //
-    //     httpContext
-    //         .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
-    //         .ShouldHaveResponseContentType("application/json");
-    //     await serializer
-    //         .Received()
-    //         .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
-    //     VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
-    //     VerifyCQRSSuccessMetrics(1);
-    // }
+    [Fact]
+    public async Task Deserializes_request_then_passes_payload_to_further_pipeline_then_serializes_result()
+    {
+        var query = new Query();
 
-    // [Fact]
-    // public async Task Allows_for_custom_result_code_for_execution_success()
-    // {
-    //     var query = new Query();
-    //     var queryResult = new QueryResult();
-    //
-    //     SetDeserializerResult<Query>(query);
-    //     SetPipelineResultSuccess(queryResult, StatusCodes.Status202Accepted);
-    //
-    //     var httpContext = await SendAsync();
-    //
-    //     httpContext
-    //         .ShouldHaveResponseStatusCode(StatusCodes.Status202Accepted)
-    //         .ShouldHaveResponseContentType("application/json");
-    //
-    //     await serializer
-    //         .Received()
-    //         .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
-    //
-    //     VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
-    //     VerifyCQRSSuccessMetrics(1);
-    // }
+        Serializer.SetDeserializeResult(query);
 
-    // [Fact]
-    // public async Task Returns_failure_code_and_does_not_serialize_result_for_failure()
-    // {
-    //     var query = new Query();
-    //
-    //     SetDeserializerResult<Query>(query);
-    //     SetPipelineResultFailure(StatusCodes.Status418ImATeapot);
-    //
-    //     var httpContext = await SendAsync();
-    //
-    //     httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status418ImATeapot).ShouldHaveResponseContentType(null);
-    //
-    //     await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(default!, default!, default!, default!);
-    //
-    //     VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
-    //     VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
-    // }
+        var httpContext = await SendAsync();
 
-    // [Fact]
-    // public async Task Enforces_serialized_response_type_according_to_cqrs_metadata()
-    // {
-    //     var query = new Query();
-    //     var queryResult = new QueryRuntimeResult();
-    //
-    //     SetDeserializerResult<Query>(query);
-    //     SetPipelineResultSuccess(queryResult);
-    //
-    //     var httpContext = await SendAsync();
-    //
-    //     httpContext
-    //         .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
-    //         .ShouldHaveResponseContentType("application/json");
-    //
-    //     await serializer
-    //         .Received()
-    //         .SerializeAsync(Arg.Any<Stream>(), queryResult, typeof(QueryResult), Arg.Any<CancellationToken>());
-    //
-    //     VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
-    //     VerifyCQRSSuccessMetrics(1);
-    // }
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
+            .ShouldContainExecutionResult(StatusCodes.Status200OK, FinalResult);
+        Serializer.ShouldHaveSerialized(FinalResult);
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
+        VerifyCQRSSuccessMetrics(1);
+    }
 
-    // [Fact]
-    // public async Task Skips_serializing_result_if_it_was_not_set()
-    // {
-    //     var query = new Query();
-    //     SetDeserializerResult<Query>(query);
-    //
-    //     await SendAsync();
-    //     await serializer.DidNotReceiveWithAnyArgs().SerializeAsync(null!, null!, null!, default);
-    //     VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
-    //     VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
-    // }
+    [Fact]
+    public async Task Allows_for_custom_result_code_for_execution_success()
+    {
+        var query = new Query();
+        var queryResult = new QueryResult();
+
+        Serializer.SetDeserializeResult(query);
+        IntermediatePipeline = _ => ExecutionResult.WithPayload(queryResult, StatusCodes.Status202Accepted);
+
+        var httpContext = await SendAsync();
+
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status202Accepted)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
+            .ShouldContainExecutionResult(StatusCodes.Status202Accepted, queryResult);
+
+        Serializer.ShouldHaveSerialized(queryResult);
+
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
+        VerifyCQRSSuccessMetrics(1);
+    }
+
+    [Fact]
+    public async Task Returns_failure_code_when_intermediate_pipeline_returns_failure()
+    {
+        var query = new Query();
+
+        Serializer.SetDeserializeResult(query);
+        IntermediatePipeline = _ => ExecutionResult.Empty(StatusCodes.Status418ImATeapot);
+
+        var httpContext = await SendAsync();
+
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status418ImATeapot)
+            .ShouldContainExecutionResult(StatusCodes.Status418ImATeapot);
+
+        // Intermediate middlewares are responsible for serializing the result if there is any,
+        // so we don't need to verify that.
+
+        VerifyActivity();
+        // Intermediate middlewares are responsible for collecting controlled failure metrics and logging,
+        // so we don't need to verify that.
+        VerifyNoCQRSSuccessMetrics();
+        VerifyNoCQRSFailureMetrics();
+    }
+
+    [Fact]
+    public async Task Enforces_serialized_response_type_according_to_cqrs_metadata()
+    {
+        var query = new Query();
+        var queryResult = new QueryRuntimeResult();
+
+        Serializer.SetDeserializeResult(query);
+        IntermediatePipeline = _ => ExecutionResult.WithPayload(queryResult, StatusCodes.Status200OK);
+
+        var httpContext = await SendAsync();
+
+        httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
+            .ShouldContainExecutionResult(StatusCodes.Status200OK, queryResult);
+
+        Serializer.ShouldHaveSerialized(queryResult, typeof(QueryResult));
+
+        VerifyActivity(activityStatusCode: ActivityStatusCode.Ok);
+        VerifyCQRSSuccessMetrics(1);
+    }
 
     [Fact]
     public async Task Returns_500InternalServerError_if_pipeline_execution_thrown_an_exception()
     {
         var query = new Query();
-        SetDeserializerResult<Query>(query);
+        Serializer.SetDeserializeResult(query);
 
-        FinalPipeline = _ => throw new InvalidOperationException();
+        IntermediatePipeline = _ => throw new InvalidOperationException();
 
         var httpContext = await SendAsync();
 
@@ -179,15 +181,15 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
     public async Task Correctly_passes_payload_and_context()
     {
         var query = new Query();
-        SetDeserializerResult<Query>(query);
+        Serializer.SetDeserializeResult(query);
 
         object interceptedPayload = null!;
 
-        FinalPipeline = ctx =>
+        IntermediatePipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
             interceptedPayload = payload.Payload;
-            return Task.CompletedTask;
+            return null;
         };
 
         await SendAsync();
@@ -201,28 +203,6 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
             config?.Invoke(ctx);
             ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(QueryMetadata));
         });
-    }
-
-    private void SetDeserializerResult<TResult>(object? obj)
-    {
-        serializer.DeserializeAsync(Arg.Any<Stream>(), typeof(TResult), Arg.Any<CancellationToken>()).Returns(obj);
-    }
-
-    private void SetDeserializerResult<TResult>(Exception ex)
-    {
-        // Silence CA2012: Use ValueTasks correctly
-        var result = serializer.DeserializeAsync(Arg.Any<Stream>(), typeof(TResult), Arg.Any<CancellationToken>());
-        result.Throws(ex);
-    }
-
-    private void SetPipelineResultSuccess(object? obj, int code = 200)
-    {
-        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(obj, code));
-    }
-
-    private void SetPipelineResultFailure(int code)
-    {
-        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.Empty(code));
     }
 
     private void VerifyActivity(
@@ -239,11 +219,14 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         );
     }
 
-    public class Query : IQuery<QueryResult> { }
+    private sealed class Query : IQuery<QueryResult>;
 
-    public class QueryResult { }
+    private class QueryResult
+    {
+        public int Value { get; set; }
+    }
 
-    public class QueryRuntimeResult : QueryResult { }
+    private sealed class QueryRuntimeResult : QueryResult;
 
-    public class IgnoreType { }
+    private sealed class IgnoreType;
 }

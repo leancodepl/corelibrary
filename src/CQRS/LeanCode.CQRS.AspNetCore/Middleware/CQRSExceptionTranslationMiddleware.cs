@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.Logging;
 using LeanCode.OpenTelemetry;

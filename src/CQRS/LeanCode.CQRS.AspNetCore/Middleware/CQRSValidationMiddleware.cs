@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using LeanCode.Contracts;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
 using LeanCode.Logging;

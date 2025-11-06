@@ -4,7 +4,6 @@ using System.Security.Claims;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Middleware;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.Logging;
@@ -39,7 +38,6 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         services.AddSingleton(_ => (firstAuthorizer as IFirstAuthorizer)!);
         services.AddSingleton(_ => (secondAuthorizer as ISecondAuthorizer)!);
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
-        services.AddSingleton(Substitute.For<ISerializer>());
     }
 
     [Fact]
@@ -137,7 +135,10 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
     private void AssertAuthorizationSuccess(HttpContext context)
     {
-        context.ShouldContainExecutionResult(StatusCodes.Status200OK);
+        context
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
+            .ShouldContainExecutionResult(StatusCodes.Status200OK);
 
         VerifyNoCQRSSuccessMetrics();
         VerifyNoCQRSFailureMetrics();
@@ -145,7 +146,8 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
     private void AssertAuthorizationFailure(HttpContext context, int errorCode = StatusCodes.Status403Forbidden)
     {
-        context.ShouldContainExecutionResult(errorCode);
+        context.ShouldHaveResponseStatusCode(errorCode).ShouldContainExecutionResult(errorCode);
+
         VerifyCQRSFailureMetrics(CQRSMetrics.AuthorizationFailure, 1);
     }
 
@@ -177,24 +179,24 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         authorizer.CheckIfAuthorizedAsync(null!, null!, null).ReturnsForAnyArgs(result);
     }
 
-    public class NoAuthorization : ICommand { }
+    private sealed class NoAuthorization : ICommand;
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer), SingleAuthorizerCustomData)]
-    public class SingleAuthorizer : ICommand { }
+    private sealed class SingleAuthorizer : ICommand;
 
     [AuthorizeWhenCustom(typeof(IFirstAuthorizer))]
     [AuthorizeWhenCustom(typeof(ISecondAuthorizer))]
-    public class MultipleAuthorizers : ICommand { }
+    private sealed class MultipleAuthorizers : ICommand;
 
     [AuthorizeWhenCustom(typeof(INotImplementedAuthorizer))]
-    private sealed class NotImplementedAuthorizer { }
+    private sealed class NotImplementedAuthorizer;
 
     // Public, so that NSubstitute could mock it
-    public interface IFirstAuthorizer : ICustomAuthorizer { }
+    public interface IFirstAuthorizer : ICustomAuthorizer;
 
-    public interface ISecondAuthorizer : ICustomAuthorizer { }
+    public interface ISecondAuthorizer : ICustomAuthorizer;
 
-    public interface INotImplementedAuthorizer { }
+    public interface INotImplementedAuthorizer;
 
     public sealed class AuthorizeWhenCustomAttribute : AuthorizeWhenAttribute
     {
@@ -202,5 +204,5 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
             : base(authorizerType, customData) { }
     }
 
-    public class IgnoreType { }
+    private sealed class IgnoreType;
 }

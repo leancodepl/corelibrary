@@ -2,24 +2,19 @@ using FluentAssertions;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTestBase<CQRSExceptionTranslationMiddleware>
 {
-    private readonly ISerializer serializer = Substitute.For<ISerializer>();
-
     protected override void ConfigureServices(IServiceCollection services)
     {
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
-        services.AddSingleton(serializer);
     }
 
     [Fact]
@@ -29,10 +24,14 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
 
         var httpContext = await SendAsync();
 
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status422UnprocessableEntity)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status422UnprocessableEntity)
-            .ShouldContainCommandResult()
-            .ShouldFailWithValidationErrors(new ValidationError("", "error message", 23));
+            .ShouldContainCommandResult();
+        commandResult.ShouldFailWithValidationErrors(new ValidationError("", "error message", 23));
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
     }
@@ -55,10 +54,14 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
 
         var httpContext = await SendAsync();
 
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status200OK)
-            .ShouldContainCommandResult()
-            .ShouldBeSuccessful();
+            .ShouldContainCommandResult();
+        commandResult.ShouldBeSuccessful();
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 0);
     }
@@ -80,7 +83,7 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
         });
     }
 
-    private sealed class Command : ICommand { }
+    private sealed class Command : ICommand;
 
-    private sealed class Ignore { }
+    private sealed class Ignore;
 }

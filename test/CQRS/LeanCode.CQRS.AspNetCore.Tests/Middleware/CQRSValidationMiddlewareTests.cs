@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation;
 using LeanCode.Logging;
@@ -35,7 +34,6 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
     {
         services.AddSingleton(_ => validatorResolver);
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
-        services.AddSingleton(Substitute.For<ISerializer>());
     }
 
     [Fact]
@@ -43,7 +41,13 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
     {
         var ctx = await SendAsync(new UnvalidatedCommand());
 
-        ctx.ShouldContainExecutionResult(StatusCodes.Status200OK).ShouldContainCommandResult().ShouldBeSuccessful();
+        var commandResult = ctx.ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
+            .ShouldContainExecutionResult(StatusCodes.Status200OK)
+            .ShouldContainCommandResult();
+        commandResult.ShouldBeSuccessful();
+
+        Serializer.ShouldHaveSerialized(commandResult);
     }
 
     [Fact]
@@ -77,10 +81,14 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
 
     private void AssertCommandResultSuccess(HttpContext httpContext)
     {
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status200OK)
-            .ShouldContainCommandResult()
-            .ShouldBeSuccessful();
+            .ShouldContainCommandResult();
+        commandResult.ShouldBeSuccessful();
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyActivity("middleware - Validation", activityStatusCode: ActivityStatusCode.Ok);
         VerifyNoCQRSSuccessMetrics();
@@ -89,10 +97,14 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
 
     private void AssertCommandResultFailure(HttpContext httpContext, params ValidationError[] errors)
     {
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status422UnprocessableEntity)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status422UnprocessableEntity)
-            .ShouldContainCommandResult()
-            .ShouldFailWithValidationErrors(errors);
+            .ShouldContainCommandResult();
+        commandResult.ShouldFailWithValidationErrors(errors);
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyActivity("middleware - Validation");
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
@@ -115,9 +127,9 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
         });
     }
 
-    public class UnvalidatedCommand : ICommand { }
+    private sealed class UnvalidatedCommand : ICommand;
 
-    public class ValidatedCommand : ICommand { }
+    private sealed class ValidatedCommand : ICommand;
 
-    public class IgnoreType { }
+    private sealed class IgnoreType;
 }

@@ -78,8 +78,10 @@ public class CQRSMiddleware
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            MarkError(CQRSMetrics.InternalError, activity);
         }
 
+        // assuming that in other cases the middleware itself will log & report appropriate metric
         if (httpContext.Response.StatusCode < 400)
         {
             metrics.CQRSSuccess();
@@ -90,11 +92,6 @@ public class CQRSMiddleware
                 requestPayload.Payload
             );
         }
-        else if (httpContext.Response.StatusCode >= 500)
-        {
-            MarkError(CQRSMetrics.InternalError, activity);
-        }
-        // assuming that in other cases the middleware itself will log & report appropriate metric
     }
 
     private void MarkError(string failureReason, Activity? activity, Exception? exception = null)

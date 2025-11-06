@@ -14,12 +14,20 @@ public static class TestHelpers
         return new Endpoint(null, new EndpointMetadataCollection(obj), obj.ObjectType.Name);
     }
 
-    public static ExecutionResult ShouldContainExecutionResult(this HttpContext httpContext, int statusCode)
+    public static ExecutionResult ShouldContainExecutionResult(
+        this HttpContext httpContext,
+        int statusCode,
+        object? payload = null
+    )
     {
         var result = httpContext.GetCQRSExecutionResult();
 
         result.Should().NotBeNull("because httpContext should contain cqrs execution result");
         result!.Value.StatusCode.Should().Be(statusCode);
+        if (payload is not null)
+        {
+            result.Value.Payload.Should().Be(payload);
+        }
 
         return result.Value;
     }
