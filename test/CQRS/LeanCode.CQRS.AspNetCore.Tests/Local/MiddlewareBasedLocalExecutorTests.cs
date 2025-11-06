@@ -5,12 +5,10 @@ using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Local;
 using LeanCode.CQRS.AspNetCore.Registration;
-using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Local;
@@ -32,7 +30,6 @@ public class MiddlewareBasedLocalExecutorTests
         serviceCollection.AddSingleton(storage);
         serviceCollection.AddScoped<IMiddlewareFactory>(sp => new MiddlewareFactory(sp));
         serviceCollection.AddScoped<LocalHandlerMiddleware>();
-        serviceCollection.AddSingleton(Substitute.For<ISerializer>());
 
         var registrationSource = new CQRSObjectsRegistrationSource(serviceCollection, new ObjectExecutorFactory());
         registrationSource.AddCQRSObjects(ThisCatalog, ThisCatalog);
