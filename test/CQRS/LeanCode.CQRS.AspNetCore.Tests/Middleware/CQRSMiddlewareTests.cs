@@ -217,22 +217,12 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
     private void SetPipelineResultSuccess(object? obj, int code = 200)
     {
-        FinalPipeline = ctx =>
-        {
-            var payload = ctx.GetCQRSRequestPayload();
-            payload.SetResult(ExecutionResult.WithPayload(obj, code));
-            return Task.CompletedTask;
-        };
+        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(obj, code));
     }
 
     private void SetPipelineResultFailure(int code)
     {
-        FinalPipeline = ctx =>
-        {
-            var payload = ctx.GetCQRSRequestPayload();
-            payload.SetResult(ExecutionResult.Empty(code));
-            return Task.CompletedTask;
-        };
+        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.Empty(code));
     }
 
     private void VerifyActivity(

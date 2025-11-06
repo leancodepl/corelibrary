@@ -178,18 +178,17 @@ public class LocalHandlerMiddleware : IMiddleware
 {
     public const string StatusHeader = "X-Status";
 
-    public Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         if (context.Request.Headers.TryGetValue(StatusHeader, out var value))
         {
             var code = int.Parse(value!, CultureInfo.InvariantCulture);
-            context.GetCQRSRequestPayload().SetResult(ExecutionResult.Empty(code));
-            return Task.CompletedTask;
+            await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(code));
         }
         else
         {
             context.RequestServices.GetRequiredService<LocalDataStorage>().Middlewares.Add(this);
-            return next(context);
+            await next(context);
         }
     }
 }

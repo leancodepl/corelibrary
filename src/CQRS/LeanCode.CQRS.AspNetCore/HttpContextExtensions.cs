@@ -1,22 +1,31 @@
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.CQRS.AspNetCore.Serialization;
+namespace LeanCode.CQRS.AspNetCore;
 
-public static class ISerializerExtensions
+public static class HttpContextExtensions
 {
     private static readonly ReadOnlyMemory<byte> NullString = "null"u8.ToArray();
 
-    public static async Task SerializeCQRSResultAsync(this ISerializer serializer, HttpContext httpContext)
+    public static async Task CompleteCQRSExecutionResult(
+        this HttpContext httpContext,
+        ExecutionResult result
+    )
+    {
+        httpContext.Features.Set(result);
+        var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
+        await SerializeCQRSResultAsync(httpContext, result, serializer);
+    }
+
+    private static async Task SerializeCQRSResultAsync(
+        HttpContext httpContext,
+        ExecutionResult result,
+        ISerializer serializer
+    )
     {
         var objectMetadata = httpContext.GetCQRSObjectMetadata();
-        var payload = httpContext.GetCQRSRequestPayload();
-
-        if (payload.Result is not { } result)
-        {
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return;
-        }
 
         httpContext.Response.StatusCode = result.StatusCode;
         if (!result.HasPayload)

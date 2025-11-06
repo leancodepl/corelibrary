@@ -18,7 +18,7 @@ public class ResponseLoggerMiddleware
     public async Task InvokeAsync(HttpContext httpContext)
     {
         await next(httpContext);
-        var result = httpContext.GetCQRSRequestPayload().Result;
+        var result = httpContext.GetCQRSExecutionResult();
         logger.Information("Request executed with response {@Response}", result);
     }
 }

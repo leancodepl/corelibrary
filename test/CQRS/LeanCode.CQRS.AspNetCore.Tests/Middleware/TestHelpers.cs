@@ -16,13 +16,12 @@ public static class TestHelpers
 
     public static ExecutionResult ShouldContainExecutionResult(this HttpContext httpContext, int statusCode)
     {
-        var cqrsPayload = httpContext.GetCQRSRequestPayload();
+        var result = httpContext.GetCQRSExecutionResult();
 
-        cqrsPayload.Result.Should().NotBeNull("because httpContext should contain cqrs execution result");
-        var result = cqrsPayload.Result!.Value;
-        result.StatusCode.Should().Be(statusCode);
+        result.Should().NotBeNull("because httpContext should contain cqrs execution result");
+        result!.Value.StatusCode.Should().Be(statusCode);
 
-        return result;
+        return result.Value;
     }
 
     public static CommandResult ShouldContainCommandResult(this ExecutionResult executionResult)

@@ -26,7 +26,7 @@ public class CQRSExceptionTranslationMiddleware
         this.logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, ISerializer serializer)
+    public async Task InvokeAsync(HttpContext httpContext)
     {
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var cqrsPayload = httpContext.GetCQRSRequestPayload();
@@ -46,11 +46,11 @@ public class CQRSExceptionTranslationMiddleware
             activity?.SetTag("error.code", ex.ErrorCode);
 
             var result = WrapInCommandResult(ex);
-            logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
-            var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
-            cqrsPayload.SetResult(executionResult);
             metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
-            await serializer.SerializeCQRSResultAsync(httpContext);
+            logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
+
+            var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
+            await httpContext.CompleteCQRSExecutionResult(executionResult);
         }
     }
 

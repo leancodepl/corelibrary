@@ -31,11 +31,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
     public CQRSSecurityMiddlewareTests()
     {
-        FinalPipeline = ctx =>
-        {
-            ctx.GetCQRSRequestPayload().SetResult(ExecutionResult.WithPayload(null));
-            return Task.CompletedTask;
-        };
+        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(null));
     }
 
     protected override void ConfigureServices(IServiceCollection services)

@@ -22,7 +22,7 @@ public class CQRSValidationMiddleware
         this.logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver, ISerializer serializer)
+    public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver)
     {
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var payload = httpContext.GetCQRSRequestPayload();
@@ -44,11 +44,13 @@ public class CQRSValidationMiddleware
 
             if (!result.IsValid)
             {
-                logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
-                var commandResult = CommandResult.NotValid(result);
-                payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
                 metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
-                await serializer.SerializeCQRSResultAsync(httpContext);
+                logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
+
+                var commandResult = CommandResult.NotValid(result);
+                await httpContext.CompleteCQRSExecutionResult(
+                    ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity)
+                );
                 return;
             }
             else

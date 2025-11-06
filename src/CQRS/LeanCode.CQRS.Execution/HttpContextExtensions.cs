@@ -24,6 +24,16 @@ public static class HttpContextExtensions
         return cqrsRequestPayload;
     }
 
+    public static ExecutionResult? GetCQRSExecutionResult(this HttpContext httpContext)
+    {
+        return httpContext.Features.Get<ExecutionResult>();
+    }
+
+    public static ExecutionResult GetCQRSRequiredExecutionResult(this HttpContext httpContext)
+    {
+        return httpContext.Features.GetRequiredFeature<ExecutionResult>();
+    }
+
     public static void SetCQRSObjectMetadataForLocalExecution(this HttpContext httpContext, CQRSObjectMetadata metadata)
     {
         httpContext.Features.Set(metadata);
