@@ -10,10 +10,7 @@ public static class HttpContextExtensions
 {
     private static readonly ReadOnlyMemory<byte> NullString = "null"u8.ToArray();
 
-    public static async Task CompleteCQRSExecutionResult(
-        this HttpContext httpContext,
-        ExecutionResult result
-    )
+    public static async Task CompleteCQRSExecutionResult(this HttpContext httpContext, ExecutionResult result)
     {
         httpContext.Features.Set(result);
 

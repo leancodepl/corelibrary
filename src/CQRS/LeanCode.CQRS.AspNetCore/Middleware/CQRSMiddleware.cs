@@ -69,7 +69,6 @@ public class CQRSMiddleware
         try
         {
             await next(httpContext);
-            // await SerializeResultAsync(httpContext, cqrsEndpoint, activity);
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {
@@ -96,60 +95,6 @@ public class CQRSMiddleware
             MarkError(CQRSMetrics.InternalError, activity);
         }
         // assuming that in other cases the middleware itself will log & report appropriate metric
-    }
-
-    private async Task SerializeResultAsync(
-        HttpContext httpContext,
-        CQRSObjectMetadata objectMetadata,
-        Activity? activity
-    )
-    {
-        // var payload = httpContext.GetCQRSRequestPayload();
-        //
-        // if (payload.Result is null)
-        // {
-        //     logger.Warning("CQRS execution ended with no result");
-        //     MarkError(CQRSMetrics.InternalError, activity);
-        //     return;
-        // }
-        //
-        // var result = payload.Result.Value;
-        //
-        // httpContext.Response.StatusCode = result.StatusCode;
-        //
-        // if (result.HasPayload)
-        // {
-        //     httpContext.Response.ContentType = serializer.ContentType;
-        //     if (result.Payload is null)
-        //     {
-        //         await httpContext.Response.Body.WriteAsync(NullString);
-        //     }
-        //     else
-        //     {
-        //         await serializer.SerializeAsync(
-        //             httpContext.Response.Body,
-        //             result.Payload,
-        //             objectMetadata.ResultType,
-        //             httpContext.RequestAborted
-        //         );
-        //     }
-        //
-        //     if (httpContext.Response.StatusCode < 400)
-        //     {
-        //         // assuming that in other cases the middleware itself will log & report appropriate metric
-        //         metrics.CQRSSuccess();
-        //         activity?.SetStatus(ActivityStatusCode.Ok);
-        //         logger.Information(
-        //             "{ObjectKind} {@Object} executed successfully",
-        //             objectMetadata.ObjectKind,
-        //             payload.Payload
-        //         );
-        //     }
-        // }
-        // else
-        // {
-        //     MarkError(CQRSMetrics.InternalError, activity);
-        // }
     }
 
     private void MarkError(string failureReason, Activity? activity, Exception? exception = null)
