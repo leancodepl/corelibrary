@@ -1,3 +1,4 @@
+using LeanCode.CQRS.AspNetCore.Local.Context;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,12 @@ public static class HttpContextExtensions
     )
     {
         httpContext.Features.Set(result);
+
+        if (httpContext.Response is NullHttpResponse)
+        {
+            return;
+        }
+
         var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
         await SerializeCQRSResultAsync(httpContext, result, serializer);
     }
