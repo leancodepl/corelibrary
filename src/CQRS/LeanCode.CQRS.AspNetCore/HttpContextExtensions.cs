@@ -40,7 +40,7 @@ public static class HttpContextExtensions
         httpContext.Response.ContentType = serializer.ContentType;
         if (result.Payload is null)
         {
-            await httpContext.Response.Body.WriteAsync(NullString);
+            await httpContext.Response.Body.WriteAsync(NullString, httpContext.RequestAborted);
         }
         else
         {
