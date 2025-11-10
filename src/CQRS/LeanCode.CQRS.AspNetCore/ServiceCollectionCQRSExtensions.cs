@@ -4,13 +4,18 @@ using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Registration;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.CQRS.Execution;
+using LeanCode.CQRS.OutputCaching;
+using LeanCode.CQRS.OutputCaching.BasePolicies;
+using LeanCode.CQRS.OutputCaching.Registration;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation;
 using LeanCode.Serialization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace LeanCode.CQRS.AspNetCore;
 
@@ -106,6 +111,32 @@ public class CQRSServicesBuilder
         where THandler : IOperationHandler<TOperation, TResult>
     {
         objectsSource.AddCQRSObject(CQRSObjectKind.Operation, typeof(TOperation), typeof(TResult), typeof(THandler));
+        return this;
+    }
+
+    public CQRSServicesBuilder WithOutputCaching(TypesCatalog policiesCatalog)
+    {
+        if (Services.Any(d => d.ServiceType == typeof(CQRSOutputCacheRegistry)))
+        {
+            throw new InvalidOperationException("Output caching has already been configured.");
+        }
+
+        var builder = new CQRSOutputCacheRegistryBuilder();
+
+        foreach (var policy in CQRSOutputCacheRegistryBuilder.EnumeratePolicies(policiesCatalog.Assemblies))
+        {
+            builder.Register(policy.ContractType, policy.PolicyType);
+            Services.AddTransient(policy.PolicyType);
+        }
+
+        var registry = builder.Build(objectsSource.Objects);
+
+        Services.AddSingleton(registry);
+        Services.AddSingleton<ICQRSEndpointMetadataProvider>(registry);
+        Services.AddSingleton<IConfigureOptions<OutputCacheOptions>>(sp => new CQRSOutputCacheOptionsConfigurator(
+            sp.GetRequiredService<CQRSOutputCacheRegistry>()
+        ));
+
         return this;
     }
 
