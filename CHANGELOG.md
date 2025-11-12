@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 
-## 9.0-preview
+## 9.0
 
 * Upgrade to .NET 9
 * Remove custom MassTransit lock providers as they are no longer needed
