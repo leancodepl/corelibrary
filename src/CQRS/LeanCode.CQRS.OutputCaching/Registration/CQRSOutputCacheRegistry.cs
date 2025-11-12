@@ -1,6 +1,5 @@
-using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using LeanCode.Contracts;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.OutputCaching.BasePolicies;
 using Microsoft.AspNetCore.OutputCaching;
@@ -9,35 +8,76 @@ namespace LeanCode.CQRS.OutputCaching.Registration;
 
 public sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
 {
-    public ImmutableDictionary<Type, PolicyDescriptor> PolicyForObject { get; }
+    private readonly Dictionary<Type, Type> policyForObject = new();
+    public IReadOnlyDictionary<Type, Type> PolicyForObject => policyForObject;
 
-    public CQRSOutputCacheRegistry(IReadOnlyDictionary<Type, PolicyDescriptor> policyForObject)
+    public static IEnumerable<(Type ContractType, Type PolicyType)> EnumeratePolicies(IEnumerable<Assembly> assemblies)
     {
-        PolicyForObject = policyForObject.ToImmutableDictionary();
+        return assemblies
+            .SelectMany(a => a.DefinedTypes)
+            .Where(t => !t.IsAbstract && !t.IsInterface)
+            .SelectMany(
+                t =>
+                    t.ImplementedInterfaces.Where(i =>
+                        i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>)
+                    ),
+                (t, i) => (ContractType: i.GenericTypeArguments[0], PolicyType: t.AsType())
+            );
+    }
+
+    public static bool IsValidPolicyCQRSObject(Type cqrsObjectType)
+    {
+        return cqrsObjectType
+            .GetInterfaces()
+            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>) || i.GetGenericTypeDefinition() == typeof(IOperation<>));
+    }
+
+    public static bool IsValidPolicyType(Type policyType)
+    {
+        return policyType
+            .GetInterfaces()
+            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
+    }
+
+    public void Register(Type contractType, Type policyType)
+    {
+        ArgumentNullException.ThrowIfNull(contractType);
+        ArgumentNullException.ThrowIfNull(policyType);
+
+        if (!IsValidPolicyCQRSObject(contractType))
+        {
+            throw new ArgumentException(
+                $"Type {contractType.FullName} must implement IQuery<> or IOperation<>.",
+                nameof(contractType)
+            );
+        }
+
+        if (!IsValidPolicyType(policyType))
+        {
+            throw new ArgumentException(
+                $"Type {policyType.FullName} must implement ICQRSOutputCachePolicy<>.",
+                nameof(policyType)
+            );
+        }
+
+        if (!policyForObject.TryAdd(contractType, policyType))
+        {
+            throw new InvalidOperationException(
+                $"Multiple caching policies for {contractType.FullName} are specified: Policy 1 - {policyForObject[contractType].FullName}, Policy 2 - {policyType.FullName}."
+            );
+        }
     }
 
     public IEnumerable<object> GetAdditionalEndpointMetadata(CQRSObjectMetadata metadata)
     {
-        if (
-            metadata.ObjectKind == CQRSObjectKind.Command
-            || metadata.ObjectType.GetCustomAttribute<CacheOutputAttribute>() is null
-        )
-        {
-            return [];
-        }
-
-        if (!PolicyForObject.TryGetValue(metadata.ObjectType, out var descriptor))
+        if (!PolicyForObject.TryGetValue(metadata.ObjectType, out var policy))
         {
             throw new InvalidOperationException(
                 $"No output cache policy registered for {metadata.ObjectType.FullName}."
             );
         }
 
-        var policyName = CQRSOutputCachePolicyName.For(descriptor.PolicyType);
+        var policyName = CQRSOutputCachePolicyName.For(policy);
         return [new OutputCacheAttribute { PolicyName = policyName }];
     }
-
-
-
-    public sealed record PolicyDescriptor(Type ContractType, Type PolicyType);
 }

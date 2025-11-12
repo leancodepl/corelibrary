@@ -121,15 +121,13 @@ public class CQRSServicesBuilder
             throw new InvalidOperationException("Output caching has already been configured.");
         }
 
-        var builder = new CQRSOutputCacheRegistryBuilder();
+        var registry = new CQRSOutputCacheRegistry();
 
-        foreach (var policy in CQRSOutputCacheRegistryBuilder.EnumeratePolicies(policiesCatalog.Assemblies))
+        foreach (var policy in CQRSOutputCacheRegistry.EnumeratePolicies(policiesCatalog.Assemblies))
         {
-            builder.Register(policy.ContractType, policy.PolicyType);
+            registry.Register(policy.ContractType, policy.PolicyType);
             Services.AddTransient(policy.PolicyType);
         }
-
-        var registry = builder.Build(objectsSource.Objects);
 
         Services.AddSingleton(registry);
         Services.AddSingleton<ICQRSEndpointMetadataProvider>(registry);

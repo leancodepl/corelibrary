@@ -14,10 +14,10 @@ public sealed class CQRSOutputCacheOptionsConfigurator : IConfigureOptions<Outpu
 
     public void Configure(OutputCacheOptions options)
     {
-        foreach (var descriptor in registry.PolicyForObject.Values)
+        foreach (var policyType in registry.PolicyForObject.Values)
         {
-            var name = CQRSOutputCachePolicyName.For(descriptor.PolicyType);
-            options.AddPolicy(name, builder => builder.AddPolicy(descriptor.PolicyType), true);
+            var name = CQRSOutputCachePolicyName.For(policyType);
+            options.AddPolicy(name, builder => builder.AddPolicy(policyType), true);
         }
     }
 }
