@@ -64,7 +64,7 @@ Here is the list of available major versions of the library (as of 2024-08-16):
 | v7.0    | 7.0       |                   |            | Unmaintained      |
 | v8.0    | 8.0       |                   |            | Unmaintained      |
 | v8.1    | 8.0       |                   | &#x2714;   |                   |
-| v9.0    | 9.0       | &#x2714;          |            |                   |
+| v9.0    | 9.0       |                   | &#x2714;   |                   |
 
 ## Building & Testing
 
