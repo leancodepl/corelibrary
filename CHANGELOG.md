@@ -18,6 +18,16 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Connection string injection is extracted from `ConfigurationOverrides` into `TestConnectionString` source
 * `DbContextInitializer` works with Npgsql now
 * Remove `CQRSTracingMiddleware` and merge it functionality into `CQRSMiddleware`, recording exceptions where possible
+* `DbContextInitializer` works with Npgsql now
+* Add MCP server tools support with new `LeanCode.AI.Contracts` and `LeanCode.AI.McpServer` packages
+* Specifying literal subjects in `SendGridLocalizedRazorMessage` is allowed
+* Outbox and Inbox related SQL logs are filtered out
+* Standard names for configuring OTel instrumentation are used
+* Trace on periodic execution is opened
+* Specifying content type in ISerializer is allowed
+* Loggers can be injected with DI
+* `PeriodicService` is ensured to never run before next occurence
+* `HttpOperationsExecutor.GetAsync` is renamed to `RunAsync`
 
 ## 8.1
 
