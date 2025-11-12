@@ -93,23 +93,6 @@ public static class CollectionExtensions
             .SelectMany(g => g.Values.DefaultIfEmpty(), lambda);
     }
 
-    public static IEnumerable<TResult> LeftJoin<TLeft, TRight, TKey, TResult>(
-        this IEnumerable<TLeft> left,
-        IEnumerable<TRight> right,
-        Func<TLeft, TKey> leftKeySelector,
-        Func<TRight, TKey> rightKeySelector,
-        Func<TLeft, TRight?, TResult> resultSelector
-    )
-    {
-        return left.GroupJoin(
-                right,
-                leftKeySelector,
-                rightKeySelector,
-                (l, r) => new Grouping<TLeft, TRight> { Key = l, Values = r }
-            )
-            .SelectMany(g => g.Values.DefaultIfEmpty(), (g, r) => resultSelector(g.Key, r));
-    }
-
     private struct Grouping<TKey, TValue>
     {
         public TKey Key { get; set; }
