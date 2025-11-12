@@ -1,14 +1,46 @@
 namespace LeanCode.CQRS.OutputCaching.Registration;
 
-internal static class TypeDistanceCalculator
+internal static class TypeDistanceComparer
 {
-    public static int GetDistance(Type from, Type to)
+    public static TypeDistanceComparison Compare(Type from1, Type from2, Type to)
     {
-        if (!to.IsAssignableFrom(from))
+        ArgumentNullException.ThrowIfNull(from1);
+        ArgumentNullException.ThrowIfNull(from2);
+        ArgumentNullException.ThrowIfNull(to);
+
+        if (!from1.IsAssignableFrom(to))
         {
-            return -1;
+            throw new ArgumentException($"{from1.FullName} is not assignable from {to.FullName}.", nameof(from1));
         }
 
+        if (!from2.IsAssignableFrom(to))
+        {
+            throw new ArgumentException($"{from2.FullName} is not assignable from {to.FullName}.", nameof(from2));
+        }
+
+        if (from1 == from2)
+        {
+            return TypeDistanceComparison.Equal;
+        }
+
+        var from1AssignableFrom2 = from1.IsAssignableFrom(from2);
+        var from2AssignableFrom1 = from2.IsAssignableFrom(from1);
+
+        if (from1AssignableFrom2 && !from2AssignableFrom1)
+        {
+            return TypeDistanceComparison.SecondCloser;
+        }
+
+        if (from2AssignableFrom1 && !from1AssignableFrom2)
+        {
+            return TypeDistanceComparison.FirstCloser;
+        }
+
+        return TypeDistanceComparison.Equal;
+    }
+
+    private static int GetDistance(Type from, Type to)
+    {
         if (from == to)
         {
             return 0;
@@ -21,6 +53,7 @@ internal static class TypeDistanceCalculator
     {
         var current = from;
         var distance = 0;
+
         while (current is not null)
         {
             if (current == to)
@@ -32,7 +65,7 @@ internal static class TypeDistanceCalculator
             distance++;
         }
 
-        return -1;
+        return int.MaxValue;
     }
 
     private static int InterfaceDistance(Type from, Type to)
@@ -71,6 +104,13 @@ internal static class TypeDistanceCalculator
             }
         }
 
-        return -1;
+        return int.MaxValue;
     }
+}
+
+internal enum TypeDistanceComparison
+{
+    FirstCloser = -1,
+    Equal = 0,
+    SecondCloser = 1,
 }

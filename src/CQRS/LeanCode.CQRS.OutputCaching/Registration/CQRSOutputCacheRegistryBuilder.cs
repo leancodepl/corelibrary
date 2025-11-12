@@ -11,13 +11,13 @@ public sealed class CQRSOutputCacheRegistryBuilder
 
     public static IEnumerable<(Type ContractType, Type PolicyType)> EnumeratePolicies(IEnumerable<Assembly> assemblies)
     {
-        return assemblies.SelectMany(a => a.DefinedTypes)
+        return assemblies
+            .SelectMany(a => a.DefinedTypes)
             .Where(t => !t.IsAbstract && !t.IsInterface)
             .SelectMany(
                 t =>
                     t.ImplementedInterfaces.Where(i =>
-                        i.IsConstructedGenericType
-                        && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>)
+                        i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>)
                     ),
                 (t, i) => (ContractType: i.GenericTypeArguments[0], PolicyType: t.AsType())
             );
@@ -48,7 +48,8 @@ public sealed class CQRSOutputCacheRegistryBuilder
         if (!descriptors.TryAdd(contractType, descriptor))
         {
             throw new InvalidOperationException(
-                $"Multiple caching policies for {contractType.FullName} are specified: Policy 1 - {descriptors[contractType].PolicyType.FullName}, Policy 2 - {policyType.FullName}.");
+                $"Multiple caching policies for {contractType.FullName} are specified: Policy 1 - {descriptors[contractType].PolicyType.FullName}, Policy 2 - {policyType.FullName}."
+            );
         }
 
         descriptorList.Add(descriptor);
@@ -80,9 +81,7 @@ public sealed class CQRSOutputCacheRegistryBuilder
         }
 
         CQRSOutputCacheRegistry.PolicyDescriptor? best = null;
-        var bestDistance = int.MaxValue;
-        CQRSOutputCacheRegistry.PolicyDescriptor? previousBest = null;
-        var previousBestDistance = int.MaxValue;
+        CQRSOutputCacheRegistry.PolicyDescriptor? otherEqualToBest = null;
 
         foreach (var candidate in descriptorList)
         {
@@ -91,18 +90,25 @@ public sealed class CQRSOutputCacheRegistryBuilder
                 continue;
             }
 
-            var distance = TypeDistanceCalculator.GetDistance(contractType, candidate.ContractType);
-            if (distance < 0)
+            if (best is null)
             {
+                best = candidate;
                 continue;
             }
 
-            if (distance <= bestDistance)
+            var comparison = TypeDistanceComparer.Compare(best.ContractType, candidate.ContractType, contractType);
+
+            switch (comparison)
             {
-                previousBest = best;
-                previousBestDistance = bestDistance;
-                best = candidate;
-                bestDistance = distance;
+                case TypeDistanceComparison.FirstCloser:
+                    break;
+                case TypeDistanceComparison.SecondCloser:
+                    best = candidate;
+                    otherEqualToBest = null;
+                    break;
+                case TypeDistanceComparison.Equal:
+                    otherEqualToBest = candidate;
+                    break;
             }
         }
 
@@ -111,10 +117,10 @@ public sealed class CQRSOutputCacheRegistryBuilder
             throw new InvalidOperationException($"No output cache policy registered for {contractType.FullName}.");
         }
 
-        if (bestDistance == previousBestDistance)
+        if (otherEqualToBest is not null)
         {
             throw new InvalidOperationException(
-                $"Multiple output cache policies match {contractType.FullName} at the same specificity: {best.ContractType.FullName} and {previousBest!.ContractType.FullName}."
+                $"Multiple output cache policies match {contractType.FullName} at the same specificity: {best.ContractType.FullName} and {otherEqualToBest.ContractType.FullName}."
             );
         }
 
