@@ -1,6 +1,6 @@
 namespace LeanCode.CQRS.OutputCaching.Registration;
 
-public static class CQRSOutputCachePolicyName
+internal static class CQRSOutputCachePolicyName
 {
     public static string For(Type objectType)
     {

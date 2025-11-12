@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace LeanCode.CQRS.OutputCaching.Registration;
 
-public sealed class CQRSOutputCacheOptionsConfigurator : IConfigureOptions<OutputCacheOptions>
+internal sealed class CQRSOutputCacheOptionsConfigurator : IConfigureOptions<OutputCacheOptions>
 {
     private readonly CQRSOutputCacheRegistry registry;
 

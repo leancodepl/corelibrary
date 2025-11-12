@@ -114,30 +114,6 @@ public class CQRSServicesBuilder
         return this;
     }
 
-    public CQRSServicesBuilder WithOutputCaching(TypesCatalog policiesCatalog)
-    {
-        if (Services.Any(d => d.ServiceType == typeof(CQRSOutputCacheRegistry)))
-        {
-            throw new InvalidOperationException("Output caching has already been configured.");
-        }
-
-        var registry = new CQRSOutputCacheRegistry();
-
-        foreach (var policy in CQRSOutputCacheRegistry.EnumeratePolicies(policiesCatalog.Assemblies))
-        {
-            registry.Register(policy.ContractType, policy.PolicyType);
-            Services.AddTransient(policy.PolicyType);
-        }
-
-        Services.AddSingleton(registry);
-        Services.AddSingleton<ICQRSEndpointMetadataProvider>(registry);
-        Services.AddSingleton<IConfigureOptions<OutputCacheOptions>>(sp => new CQRSOutputCacheOptionsConfigurator(
-            sp.GetRequiredService<CQRSOutputCacheRegistry>()
-        ));
-
-        return this;
-    }
-
     public CQRSServicesBuilder WithLocalCommands(Action<ICQRSApplicationBuilder> configure)
     {
         Services.AddSingleton<Local.ILocalCommandExecutor>(s => new Local.MiddlewareBasedLocalCommandExecutor(

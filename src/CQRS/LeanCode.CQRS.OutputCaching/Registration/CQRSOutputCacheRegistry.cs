@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.Registration;
 
-public sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
+internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
 {
     private readonly Dictionary<Type, Type> policyForObject = new();
     public IReadOnlyDictionary<Type, Type> PolicyForObject => policyForObject;
@@ -25,21 +25,21 @@ public sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
             );
     }
 
-    public static bool IsValidPolicyCQRSObject(Type cqrsObjectType)
+    private static bool IsValidPolicyCQRSObject(Type cqrsObjectType)
     {
         return cqrsObjectType
             .GetInterfaces()
             .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>) || i.GetGenericTypeDefinition() == typeof(IOperation<>));
     }
 
-    public static bool IsValidPolicyType(Type policyType)
+    private static bool IsValidPolicyType(Type policyType)
     {
         return policyType
             .GetInterfaces()
             .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
     }
 
-    public void Register(Type contractType, Type policyType)
+    internal void Register(Type contractType, Type policyType)
     {
         ArgumentNullException.ThrowIfNull(contractType);
         ArgumentNullException.ThrowIfNull(policyType);
@@ -72,9 +72,7 @@ public sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
     {
         if (!PolicyForObject.TryGetValue(metadata.ObjectType, out var policy))
         {
-            throw new InvalidOperationException(
-                $"No output cache policy registered for {metadata.ObjectType.FullName}."
-            );
+            return [];
         }
 
         var policyName = CQRSOutputCachePolicyName.For(policy);
