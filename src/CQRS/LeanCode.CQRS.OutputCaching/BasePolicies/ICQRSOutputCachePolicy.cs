@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
 public interface ICQRSOutputCachePolicy<TObject> : IOutputCachePolicy
-    where TObject : notnull;
-
-public static class ICQRSOutputCachePolicyExtensions
+    where TObject : notnull
 {
-    public static TObject GetPayload<TObject>(this ICQRSOutputCachePolicy<TObject> _, HttpContext context)
-        where TObject : notnull
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000")]
+    public static sealed TObject GetPayload(HttpContext context)
     {
         return (TObject)context.GetCQRSRequestPayload().Payload;
     }

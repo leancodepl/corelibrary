@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
@@ -24,4 +25,7 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
     {
         return ValueTask.CompletedTask;
     }
+
+    public TObject GetPayload(HttpContext context) =>
+        ICQRSOutputCachePolicy<TObject>.GetPayload(context);
 }
