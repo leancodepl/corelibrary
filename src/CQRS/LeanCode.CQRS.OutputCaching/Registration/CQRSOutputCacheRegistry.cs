@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.OutputCaching.Registration;
 
 internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
 {
-    private readonly Dictionary<Type, Type> policyForObject = new();
+    private readonly Dictionary<Type, Type> policyForObject = [];
     public IReadOnlyDictionary<Type, Type> PolicyForObject => policyForObject;
 
     public static IEnumerable<(Type ContractType, Type PolicyType)> EnumeratePolicies(IEnumerable<Assembly> assemblies)
@@ -18,9 +18,8 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
             .Where(t => !t.IsAbstract && !t.IsInterface)
             .SelectMany(
                 t =>
-                    t.ImplementedInterfaces.Where(i =>
-                        i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>)
-                    ),
+                    GetImplementedCQRSOutputCachePolicies(t.AsType())
+                        .Where(i => IsValidPolicyCQRSObject(i.GenericTypeArguments[0])),
                 (t, i) => (ContractType: i.GenericTypeArguments[0], PolicyType: t.AsType())
             );
     }
@@ -30,16 +29,24 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
         return cqrsObjectType
             .GetInterfaces()
             .Any(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>)
-                || i.GetGenericTypeDefinition() == typeof(IOperation<>)
+                i.IsConstructedGenericType
+                && (
+                    i.GetGenericTypeDefinition() == typeof(IQuery<>)
+                    || i.GetGenericTypeDefinition() == typeof(IOperation<>)
+                )
             );
     }
 
     private static bool IsValidPolicyType(Type policyType)
     {
+        return GetImplementedCQRSOutputCachePolicies(policyType).Any();
+    }
+
+    private static IEnumerable<Type> GetImplementedCQRSOutputCachePolicies(Type policyType)
+    {
         return policyType
             .GetInterfaces()
-            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
+            .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
     }
 
     internal void Register(Type contractType, Type policyType)
