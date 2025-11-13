@@ -6,7 +6,7 @@
 
     <LangVersion>preview</LangVersion>
     <OutputType>library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <DebugType>portable</DebugType>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <ImplicitUsings>enable</ImplicitUsings>
