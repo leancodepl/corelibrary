@@ -9,5 +9,6 @@ public abstract class CQRSOperationOutputCachePolicy<TOperation, TResult>
     where TOperation : IOperation<TResult>
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000")]
-    public static TResult? GetResult(HttpContext context) => ICQRSOperationOutputCachePolicy<TOperation, TResult>.GetResult(context);
+    public static TResult? GetResult(HttpContext context) =>
+        ICQRSOperationOutputCachePolicy<TOperation, TResult>.GetResult(context);
 }

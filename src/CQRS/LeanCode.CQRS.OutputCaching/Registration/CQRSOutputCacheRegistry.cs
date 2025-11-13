@@ -29,7 +29,10 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
     {
         return cqrsObjectType
             .GetInterfaces()
-            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>) || i.GetGenericTypeDefinition() == typeof(IOperation<>));
+            .Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQuery<>)
+                || i.GetGenericTypeDefinition() == typeof(IOperation<>)
+            );
     }
 
     private static bool IsValidPolicyType(Type policyType)

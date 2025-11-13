@@ -13,7 +13,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCQRSOutputCache(
         this IServiceCollection services,
         TypesCatalog catalog,
-        bool registerOutputCache = true)
+        bool registerOutputCache = true
+    )
     {
         return services.AddCQRSOutputCache(catalog.Assemblies, registerOutputCache);
     }
@@ -21,7 +22,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCQRSOutputCache(
         this IServiceCollection services,
         IEnumerable<Assembly> assemblies,
-        bool registerOutputCache = true)
+        bool registerOutputCache = true
+    )
     {
         if (registerOutputCache)
         {

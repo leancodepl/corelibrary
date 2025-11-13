@@ -26,6 +26,5 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
         return ValueTask.CompletedTask;
     }
 
-    public TObject GetPayload(HttpContext context) =>
-        ICQRSOutputCachePolicy<TObject>.GetPayload(context);
+    public TObject GetPayload(HttpContext context) => ICQRSOutputCachePolicy<TObject>.GetPayload(context);
 }
