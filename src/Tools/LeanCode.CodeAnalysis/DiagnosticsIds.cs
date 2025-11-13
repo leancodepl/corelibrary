@@ -13,4 +13,5 @@ public static class DiagnosticsIds
     public const string OperationHandlersShouldFollowNamingConvention = "LNCD0009";
     public const string CommandValidatorsShouldFollowNamingConvention = "LNCD0010";
     public const string CQRSHandlersShouldBeInProperNamespace = "LNCD0011";
+    public const string EnumDtoShouldMatchBaseEnum = "LNCD0012";
 }
