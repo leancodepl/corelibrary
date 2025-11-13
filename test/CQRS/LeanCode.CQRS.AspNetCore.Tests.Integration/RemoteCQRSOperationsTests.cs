@@ -40,7 +40,7 @@ public class RemoteCQRSOperationsTests : RemoteCQRSTestsBase
     {
         var (body, statusCode) = await SendAsync(
             "/cqrs/operation/LeanCode.CQRS.AspNetCore.Tests.Integration.TestOperation",
-            @"{ ""X"": 2, ""Y"": 3 }"
+            """{ "X": 2, "Y": 3 }"""
         );
 
         Assert.Equal(HttpStatusCode.OK, statusCode);
@@ -74,7 +74,7 @@ public class RemoteCQRSOperationsTests : RemoteCQRSTestsBase
     {
         var (_, statusCode) = await SendAsync(
             "/cqrs/operation/LeanCode.CQRS.AspNetCore.Tests.Integration.TestOperation",
-            @"{ ""FailAuthorization"": true }"
+            """{ "FailAuthorization": true }"""
         );
 
         Assert.Equal(HttpStatusCode.Forbidden, statusCode);

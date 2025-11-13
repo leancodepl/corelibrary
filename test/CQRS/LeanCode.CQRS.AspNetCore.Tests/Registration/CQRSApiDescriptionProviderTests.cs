@@ -226,7 +226,7 @@ public class CQRSApiDescriptionProviderTests
         var regSource = new CQRSObjectsRegistrationSource(new ServiceCollection(), new ObjectExecutorFactory());
         regSource.AddCQRSObjects(selfCatalog, selfCatalog);
 
-        var dataSource = new CQRSEndpointsDataSource("/" + BasePath);
+        var dataSource = new CQRSEndpointsDataSource("/" + BasePath, []);
         dataSource.AddEndpointsFor(
             regSource.Objects.Where(o => o.ObjectType == forObject),
             _ => Task.CompletedTask,
