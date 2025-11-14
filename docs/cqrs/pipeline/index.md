@@ -55,19 +55,18 @@ protected override void ConfigureApp(IApplicationBuilder app)
                 cqrs =>
                 {
                     cqrs.Commands = c =>
-                        c.CQRSTrace()
-                        .Secure()
+                        c.Secure()
                         .Validate()
                         .CommitTransaction<CoreDbContext>()
                         .PublishEvents();
 
                     cqrs.Queries = c =>
-                        c.CQRSTrace()
-                        .Secure();
+                        c.Secure()
+                        .CacheOutput();
 
                     cqrs.Operations = c =>
-                        c.CQRSTrace()
-                        .Secure()
+                        c.Secure()
+                        .CacheOutput()
                         .CommitTransaction<CoreDbContext>()
                         .PublishEvents();
                 }
@@ -81,13 +80,13 @@ protected override void ConfigureApp(IApplicationBuilder app)
 
 In this code snippet, you can specify which middlewares to use for handling commands, queries, and operations. Several middlewares are added in the example:
 
-| Method                          | Middleware                             | Responsibility                             |
-|-------------------------------- |--------------------------------------- |------------------------------------------- |
-| [CQRSTrace()]                   | [CQRSTracingMiddleware]                | Tracing                                    |
-| [Secure()]                      | [CQRSSecurityMiddleware]               | Authorization                              |
-| [Validate()]                    | [CQRSValidationMiddleware]             | Validation                                 |
-| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware]  | Saving changes to the database             |
-| [PublishEvents()]               | [EventsPublisherMiddleware]            | Publishing domain events to MassTransit    |
+| Method                          | Middleware                            | Responsibility                             |
+|-------------------------------- |---------------------------------------|------------------------------------------- |
+| [Secure()]                      | [CQRSSecurityMiddleware]              | Authorization                              |
+| [Validate()]                    | [CQRSValidationMiddleware]            | Validation                                 |
+| [CacheOutput()]                 | [OutputCacheMiddleware]               | Caching query and operation responses      |
+| [CommitTransaction&lt;T&gt;()]  | [CommitDatabaseTransactionMiddleware] | Saving changes to the database             |
+| [PublishEvents()]               | [EventsPublisherMiddleware]           | Publishing domain events to MassTransit    |
 
 The order in which these middlewares are added determines the sequence of execution. Additionally, there are a few other middlewares provided by library that can be incorporated into CQRS pipeline, although they are not covered in this basic example:
 
@@ -144,17 +143,17 @@ Subsequently, the pipeline executes additional custom middlewares, responsible f
 [AddCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L17
 [CQRSServicesBuilder]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L46
 [MapRemoteCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSEndpointRouteBuilderExtensions.cs#L13
-[CQRSTrace()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
 [Validate()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L38
 [Secure()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L44
-[LogCQRSResponsesOnNonProduction()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L50
-[LogCQRSResponses()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L56
+[CacheOutput()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L50
+[LogCQRSResponsesOnNonProduction()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L56
+[LogCQRSResponses()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L62
 [TranslateExceptions()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/CQRSApplicationBuilder.cs#L68
 [CommitTransaction&lt;T&gt;()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L9
 [PublishEvents()]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/MassTransitRelayApplicationBuilderExtensions.cs#L16
-[CQRSTracingMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSTracingMiddleware.cs
 [CQRSSecurityMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSSecurityMiddleware.cs
 [CQRSValidationMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSValidationMiddleware.cs
+[OutputCacheMiddleware]: https://github.com/dotnet/aspnetcore/blob/main/src/Middleware/OutputCaching/src/OutputCacheMiddleware.cs
 [CommitDatabaseTransactionMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/CommitDatabaseTransactionMiddleware.cs
 [EventsPublisherMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.MassTransitRelay/Middleware/EventsPublisherMiddleware.cs
 [NonProductionResponseLoggerMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/NonProductionResponseLoggerMiddleware.cs
@@ -168,3 +167,4 @@ Subsequently, the pipeline executes additional custom middlewares, responsible f
 [Operations]: ../operation/index.md
 [authorization]: ../authorization/index.md
 [validation]: ../validation/index.md
+[output-caching]: ../output_caching/index.md
