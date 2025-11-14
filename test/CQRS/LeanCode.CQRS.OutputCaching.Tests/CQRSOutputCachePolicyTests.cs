@@ -17,7 +17,7 @@ public class CQRSOutputCachePolicyTests
 
         var policy = new TestQueryOCP();
 
-        policy.GetPayload(context).Should().BeSameAs(query);
+        policy.GetRequestPayload(context).Should().BeSameAs(query);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class CQRSOutputCachePolicyTests
         var result = new TestResult();
         context.Features.Set(ExecutionResult.WithPayload(result));
 
-        var cacheResult = CQRSQueryOutputCachePolicy<TestQuery, TestResult>.GetResult(context);
+        var cacheResult = CQRSQueryOutputCachePolicy<TestQuery, TestResult>.GetResultPayload(context);
 
         cacheResult.Should().BeSameAs(result);
     }

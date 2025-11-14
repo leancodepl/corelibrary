@@ -8,7 +8,7 @@ public interface ICQRSOutputCachePolicy<TObject> : IOutputCachePolicy
     where TObject : notnull
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000")]
-    public static sealed TObject GetPayload(HttpContext context)
+    public static sealed TObject GetRequestPayload(HttpContext context)
     {
         return (TObject)context.GetCQRSRequestPayload().Payload;
     }

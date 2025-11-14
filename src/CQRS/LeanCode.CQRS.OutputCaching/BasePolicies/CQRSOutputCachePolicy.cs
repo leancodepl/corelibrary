@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
-// TODO: Implement some sensible base policy behavior.
 [SuppressMessage("?", "CA1725")]
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
@@ -26,5 +25,5 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
         return ValueTask.CompletedTask;
     }
 
-    public TObject GetPayload(HttpContext context) => ICQRSOutputCachePolicy<TObject>.GetPayload(context);
+    public TObject GetRequestPayload(HttpContext context) => ICQRSOutputCachePolicy<TObject>.GetRequestPayload(context);
 }

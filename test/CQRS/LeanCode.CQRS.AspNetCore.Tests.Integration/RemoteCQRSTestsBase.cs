@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using LeanCode.Components;
+using LeanCode.CQRS.AspNetCore.Tests.Integration.OutputCache;
+using LeanCode.CQRS.OutputCaching;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.Logging.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +23,9 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
     private readonly IHost host;
     private readonly TestServer server;
 
-    protected RemoteCQRSTestsBase()
+    protected int minimalApiInvocationCount = 0;
+
+    protected RemoteCQRSTestsBase(bool enableMinimalApi = false)
     {
         host = new HostBuilder()
             .ConfigureWebHost(webHost =>
@@ -35,22 +39,37 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                         cfg.AddRouting();
                         cfg.AddCQRS(TypesCatalog.Of<TestCommand>(), TypesCatalog.Of<TestCommandHandler>());
                         cfg.AddFluentValidation(TypesCatalog.Of<TestCommandValidator>());
+                        cfg.AddCQRSOutputCache(TypesCatalog.Of<CachedTestQueryPolicy>());
                     })
                     .Configure(app =>
                     {
                         app.UseRouting();
                         app.Use(MockAuthorization);
+                        app.UseWhen(
+                            ctx =>
+                                enableMinimalApi
+                                && !ctx.Request.Path.StartsWithSegments(
+                                    "/cqrs",
+                                    StringComparison.InvariantCultureIgnoreCase
+                                ),
+                            app => app.UseOutputCache()
+                        );
                         app.UseEndpoints(ep =>
                         {
                             ep.MapRemoteCQRS(
                                 "/cqrs",
                                 cqrs =>
                                 {
-                                    cqrs.Queries = q => q.Secure();
+                                    cqrs.Queries = q => q.Secure().CacheOutput();
                                     cqrs.Commands = c => c.Secure().Validate();
-                                    cqrs.Operations = o => o.Secure();
+                                    cqrs.Operations = o => o.Secure().CacheOutput();
                                 }
                             );
+
+                            if (enableMinimalApi)
+                            {
+                                ep.MapGet("/invocation-count", () => $"{++minimalApiInvocationCount}").CacheOutput();
+                            }
                         });
                     });
             })
@@ -73,11 +92,12 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
         return next(httpContext);
     }
 
-    protected async Task<(string ReponseBody, HttpStatusCode StatusCode)> SendAsync(
+    protected async Task<Response> SendAsync(
         string path,
         string body = "{}",
         HttpMethod? method = null,
-        bool isAuthenticated = true
+        bool isAuthenticated = true,
+        Dictionary<string, string>? headers = null
     )
     {
         method ??= HttpMethod.Post;
@@ -90,10 +110,18 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
 
         msg.Headers.Add(IsAuthenticatedHeader, isAuthenticated.ToString());
 
+        if (headers != null)
+        {
+            foreach (var (key, value) in headers)
+            {
+                msg.Headers.TryAddWithoutValidation(key, value);
+            }
+        }
+
         var response = await host.GetTestClient().SendAsync(msg);
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        return (responseBody, response.StatusCode);
+        return new Response(responseBody, response.StatusCode, response.Headers);
     }
 
     public void Dispose()
@@ -111,4 +139,6 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
     public async ValueTask InitializeAsync() => await host.StartAsync();
 
     public async ValueTask DisposeAsync() => await host.StopAsync();
+
+    protected record struct Response(string Body, HttpStatusCode StatusCode, HttpResponseHeaders Headers);
 }

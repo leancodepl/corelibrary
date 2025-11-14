@@ -9,14 +9,14 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_NotFound_for_non_existing_command()
     {
-        var (_, statusCode) = await SendAsync("/cqrs/query/LeanCode.NotAValidQuery");
+        var (_, statusCode, _) = await SendAsync("/cqrs/query/LeanCode.NotAValidQuery");
         Assert.Equal(HttpStatusCode.NotFound, statusCode);
     }
 
     [Fact]
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_PUT()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             method: HttpMethod.Put
         );
@@ -27,7 +27,7 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_GET()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             method: HttpMethod.Get
         );
@@ -38,7 +38,7 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_OK_with_result_on_success()
     {
-        var (body, statusCode) = await SendAsync(
+        var (body, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             """{ "X": 2, "Y": 3 }"""
         );
@@ -51,7 +51,7 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_BadRequest_if_failed_to_deserialize_object()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             "{ malformed json }"
         );
@@ -61,7 +61,7 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_Unauthorized_for_when_user_is_not_authenticated()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             isAuthenticated: false
         );
@@ -72,7 +72,7 @@ public class RemoteCQRSQueriesTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_Forbidden_if_authorizer_fails()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/query/LeanCode.CQRS.AspNetCore.Tests.Integration.TestQuery",
             @"{ ""FailAuthorization"": true }"
         );
