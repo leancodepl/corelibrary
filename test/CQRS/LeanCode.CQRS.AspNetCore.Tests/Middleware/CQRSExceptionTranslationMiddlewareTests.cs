@@ -24,10 +24,14 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
 
         var httpContext = await SendAsync();
 
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status422UnprocessableEntity)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status422UnprocessableEntity)
-            .ShouldContainCommandResult()
-            .ShouldFailWithValidationErrors(new ValidationError("", "error message", 23));
+            .ShouldContainCommandResult();
+        commandResult.ShouldFailWithValidationErrors(new ValidationError("", "error message", 23));
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
     }
@@ -46,18 +50,18 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
     [Fact]
     public async Task Regular_flow_is_not_interrupted()
     {
-        FinalPipeline = ctx =>
-        {
-            ctx.GetCQRSRequestPayload().SetResult(ExecutionResult.WithPayload(CommandResult.Success));
-            return Task.CompletedTask;
-        };
+        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(CommandResult.Success));
 
         var httpContext = await SendAsync();
 
-        httpContext
+        var commandResult = httpContext
+            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
+            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status200OK)
-            .ShouldContainCommandResult()
-            .ShouldBeSuccessful();
+            .ShouldContainCommandResult();
+        commandResult.ShouldBeSuccessful();
+
+        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 0);
     }
@@ -79,7 +83,7 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
         });
     }
 
-    private sealed class Command : ICommand { }
+    private sealed class Command : ICommand;
 
-    private sealed class Ignore { }
+    private sealed class Ignore;
 }

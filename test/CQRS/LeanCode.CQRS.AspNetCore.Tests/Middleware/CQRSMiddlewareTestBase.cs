@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
 using FluentAssertions;
+using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.Logging.AspNetCore;
 using LeanCode.OpenTelemetry;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
     private readonly ActivityListener activityListener;
     private readonly MetricCollector<int> cqrsSuccessMetricCollector;
     private readonly MetricCollector<int> cqrsFailureMetricCollector;
+    protected SerializerMock Serializer { get; }
     protected IHost Host { get; }
     protected TestServer Server { get; }
 
@@ -32,6 +34,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
 
     protected CQRSMiddlewareTestBase()
     {
+        Serializer = new();
         Host = new HostBuilder()
             .ConfigureWebHost(webHost =>
             {
@@ -40,6 +43,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
                     .ConfigureServices(services =>
                     {
                         services.AddSingleton<CQRSMetrics>();
+                        services.AddSingleton<ISerializer>(Serializer);
                         ConfigureServices(services);
                     })
                     .Configure(app =>

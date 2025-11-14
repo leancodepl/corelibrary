@@ -14,15 +14,22 @@ public static class TestHelpers
         return new Endpoint(null, new EndpointMetadataCollection(obj), obj.ObjectType.Name);
     }
 
-    public static ExecutionResult ShouldContainExecutionResult(this HttpContext httpContext, int statusCode)
+    public static ExecutionResult ShouldContainExecutionResult(
+        this HttpContext httpContext,
+        int statusCode,
+        object? payload = null
+    )
     {
-        var cqrsPayload = httpContext.GetCQRSRequestPayload();
+        var result = httpContext.GetCQRSExecutionResult();
 
-        cqrsPayload.Result.Should().NotBeNull("because httpContext should contain cqrs execution result");
-        var result = cqrsPayload.Result!.Value;
-        result.StatusCode.Should().Be(statusCode);
+        result.Should().NotBeNull("because httpContext should contain cqrs execution result");
+        result!.Value.StatusCode.Should().Be(statusCode);
+        if (payload is not null)
+        {
+            result.Value.Payload.Should().Be(payload);
+        }
 
-        return result;
+        return result.Value;
     }
 
     public static CommandResult ShouldContainCommandResult(this ExecutionResult executionResult)

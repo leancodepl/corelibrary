@@ -23,11 +23,11 @@ public class NonProductionResponseLoggerMiddleware
     {
         await next(httpContext);
 
-        var payload = httpContext.GetCQRSRequestPayload();
+        var result = httpContext.GetCQRSExecutionResult();
 
         if (!hostEnvironment.IsProduction())
         {
-            logger.Information("Request executed with response {@Response}", payload.Result);
+            logger.Information("Request executed with response {@Response}", result);
         }
     }
 }

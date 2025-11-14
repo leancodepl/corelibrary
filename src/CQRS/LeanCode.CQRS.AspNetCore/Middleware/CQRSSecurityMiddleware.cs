@@ -31,13 +31,13 @@ public class CQRSSecurityMiddleware
 
         if (customAuthorizers.Count > 0 && !(user.Identity?.IsAuthenticated ?? false))
         {
+            metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
             logger.Warning(
                 "The current user is not authenticated and the object {@Object} requires authorization",
                 payload.Payload
             );
 
-            payload.SetResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
-            metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
+            await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
             return;
         }
 
@@ -60,14 +60,14 @@ public class CQRSSecurityMiddleware
             if (!authorized)
             {
                 activity?.SetTag("authorizer.authorized", false);
+                metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
                 logger.Warning(
                     "User is not authorized for {@Object}, authorizer {AuthorizerType} did not pass",
                     payload.Payload,
                     customAuthorizer.GetType().FullName
                 );
 
-                payload.SetResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
-                metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
+                await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
                 return;
             }
             else

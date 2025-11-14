@@ -62,7 +62,7 @@ public abstract class MiddlewareBasedLocalExecutor
 
         localContext.CallAborted.ThrowIfCancellationRequested();
 
-        return Decode<TResult>(obj, localContext.GetCQRSRequestPayload().Result!.Value);
+        return Decode<TResult>(obj, localContext.GetCQRSRequiredExecutionResult());
     }
 
     private static T Decode<T>(object payload, ExecutionResult result)

@@ -43,10 +43,13 @@ public class CQRSValidationMiddleware
 
             if (!result.IsValid)
             {
-                logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
-                var commandResult = CommandResult.NotValid(result);
-                payload.SetResult(ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity));
                 metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
+                logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
+
+                var commandResult = CommandResult.NotValid(result);
+                await httpContext.CompleteCQRSExecutionResult(
+                    ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity)
+                );
                 return;
             }
             else
