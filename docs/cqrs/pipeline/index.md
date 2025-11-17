@@ -76,7 +76,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
 ```
 
 !!! tip
-    To learn about ASP.NET middlewares and how you can implement them, visit [here](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/).
+    To learn about ASP.NET middlewares and how you can implement them, visit the [ASP.NET Core Middleware documentation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/).
 
 In this code snippet, you can specify which middlewares to use for handling commands, queries, and operations. Several middlewares are added in the example:
 
@@ -136,7 +136,7 @@ sequenceDiagram
 
 The process begins with the invocation of common ASP.NET middlewares, such as `UseAuthentication` and `UseCors`, prior to the execution of the [MapRemoteCQRS(...)] method. This method, adds the [CQRSMiddleware], initiating the pipeline. During this stage, the request undergoes deserialization and the [CQRSRequestPayload] is set on `HttpContext`.
 
-Subsequently, the pipeline executes additional custom middlewares, responsible for tasks like [validation] and [authorization]. Following the successful execution of these middlewares, the specific handler is invoked inside [CQRSPipelineFinalizer]. Upon handler execution, the result is assigned to the [CQRSRequestPayload].
+Subsequently, the pipeline executes additional custom middlewares, responsible for tasks like [authorization], [validation] or [output-caching]. Following the successful execution of these middlewares, the specific handler is invoked inside [CQRSPipelineFinalizer]. Upon handler execution, the result is assigned to the [CQRSRequestPayload].
 
 [EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
 

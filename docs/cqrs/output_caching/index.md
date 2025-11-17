@@ -1,6 +1,6 @@
 # Output Caching
 
-Output caching is a performance optimization technique that stores the complete HTTP response of queries and operations. When a subsequent identical request arrives, the cached response is served directly without executing the handler, reducing database load and improving response times.
+Output caching is a performance optimization technique that stores the complete HTTP response of CQRS [query] or [operation]. When a subsequent identical request arrives, the cached response is served directly without executing the handler, reducing database load and improving response times.
 
 LeanCode CoreLibrary integrates ASP.NET Core's built-in [OutputCaching middleware](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-9.0) into the CQRS pipeline, placing it at the correct position where cache policies have access to the fully deserialized CQRS request and response objects. This provides a type-safe way to define caching behavior per query or operation based on the actual request payload, not just HTTP-level data.
 
@@ -47,6 +47,7 @@ public override void ConfigureServices(IServiceCollection services)
 ```
 
 The `AddCQRSOutputCache` method:
+
 - Automatically discovers all cache policies in the specified assemblies
 - Registers them with the DI container
 - Configures the ASP.NET Core OutputCache middleware to use them
@@ -90,48 +91,44 @@ protected override void ConfigureApp(IApplicationBuilder app)
 ```
 
 !!! danger "Do NOT Use app.UseOutputCache() for CQRS Endpoints"
-    You **must not** call `app.UseOutputCache()` globally when using output caching with CQRS endpoints. The `.CacheOutput()` method in the CQRS pipeline automatically adds the OutputCache middleware at the correct position in the pipeline - **after** the CQRS request payload has been deserialized and is available to cache policies.
-
-    Adding `app.UseOutputCache()` globally would add the middleware in the wrong place (before CQRS deserialization), preventing cache policies from accessing the request payload and breaking the caching functionality.
+    You **must not** call `app.UseOutputCache()` globally when using output caching with CQRS endpoints. The `.CacheOutput()` method in the CQRS pipeline automatically adds the OutputCache middleware at the correct position in the pipeline - **after** the CQRS request payload has been deserialized and is available to cache policies. Adding `app.UseOutputCache()` globally would add the middleware in the wrong place (before CQRS deserialization), preventing cache policies from accessing the request payload and breaking the caching functionality.
 
 !!! tip "CacheOutput() Placement"
-The `.CacheOutput()` method should typically be called after security middlewares. This ensures that only authorized requests may get cached responses, so that reduces a class of potential bugs.
+    The `.CacheOutput()` method should typically be called after security middlewares. This ensures that only authorized requests may get cached responses, so that reduces a class of potential bugs.
 
 !!! tip "Mixed Scenarios: CQRS + Other Endpoints"
     If you need output caching for **both** CQRS endpoints and non-CQRS endpoints (e.g., minimal APIs, controllers), use `app.UseWhen()` to apply the middleware **only** to non-CQRS endpoints:
 
-    ```csharp
-    protected override void ConfigureApp(IApplicationBuilder app)
+```csharp
+protected override void ConfigureApp(IApplicationBuilder app)
+{
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    // Apply output caching ONLY to non-CQRS endpoints
+    app.UseWhen(
+        ctx => !ctx.Request.Path.StartsWithSegments("/api/cqrs"),
+        app => app.UseOutputCache()
+    );
+
+    app.UseEndpoints(endpoints =>
     {
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        // Apply output caching ONLY to non-CQRS endpoints
-        app.UseWhen(
-            ctx => !ctx.Request.Path.StartsWithSegments("/api/cqrs"),
-            app => app.UseOutputCache()
-        );
-
-        app.UseEndpoints(endpoints =>
+        // CQRS endpoints use .CacheOutput() in their pipeline
+        endpoints.MapRemoteCQRS("/api/cqrs", cqrs =>
         {
-            // CQRS endpoints use .CacheOutput() in their pipeline
-            endpoints.MapRemoteCQRS("/api/cqrs", cqrs =>
-            {
-                cqrs.Queries = q => q.Secure().CacheOutput();
-                cqrs.Operations = o => o.Secure().CacheOutput();
-            });
-
-            // Other endpoints can use .CacheOutput() attribute
-            endpoints.MapGet("/api/health", () => "OK").CacheOutput();
+            cqrs.Queries = q => q.Secure().CacheOutput();
+            cqrs.Operations = o => o.Secure().CacheOutput();
         });
-    }
-    ```
+
+        // Other endpoints can use .CacheOutput() attribute
+        endpoints.MapGet("/api/health", () => "OK").CacheOutput();
+    });
+}
+```
 
 !!! important "Cache Policies Are Required"
-    Simply adding `.CacheOutput()` to the pipeline is **not enough** to enable caching. Each query or operation you want to cache **must** have a corresponding cache policy class that implements `ICQRSOutputCachePolicy<TObject>`. Without a policy, the query/operation will execute normally without any caching.
-
-    Queries and operations without policies are not affected by the `.CacheOutput()` middleware and execute as if caching was not enabled.
+    Simply adding `.CacheOutput()` to the pipeline is **not enough** to enable caching. Each query or operation you want to cache **must** have a corresponding cache policy class that implements `ICQRSOutputCachePolicy<TObject>`. Without a policy, the query/operation will execute normally without any caching. Queries and operations without policies are not affected by the `.CacheOutput()` middleware and execute as if caching was not enabled.
 
 ## Creating Cache Policies
 
@@ -257,6 +254,7 @@ Cache policies can override three methods that correspond to different stages of
 ### CacheRequestAsync
 
 Called **before** checking if a cached response exists. This is where you:
+
 - Enable or disable caching for the request
 - Configure cache key variation rules
 - Set expiration times
@@ -287,6 +285,7 @@ public override ValueTask CacheRequestAsync(
 ### ServeFromCacheAsync
 
 Called when a cached entry is **found** and about to be served. Use this to:
+
 - Modify response headers before serving from cache
 - Conditionally prevent serving from cache
 
@@ -305,6 +304,7 @@ public override ValueTask ServeFromCacheAsync(
 ### ServeResponseAsync
 
 Called after the handler executes and **before** storing the response in cache. Use this to:
+
 - Inspect the result and conditionally disable caching
 - Modify cache behavior based on the response
 
@@ -550,4 +550,3 @@ public async Task Query_is_cached_correctly()
 [local execution]: ../local_execution/index.md
 [query]: ../query/index.md
 [operation]: ../operation/index.md
-

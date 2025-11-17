@@ -40,12 +40,14 @@ Moreover, CoreLibrary provides extension methods for `HttpContext`, which can be
 
 * `GetCQRSEndpoint()`: This method returns [CQRSObjectMetadata] which provides access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
 
-* `GetCQRSRequestPayload()`: This `HttpContext` extension method, returns [CQRSRequestPayload] which contains information about the request payload and the execution result, if the request was handled.
+* `GetCQRSRequestPayload()`: This `HttpContext` extension method returns [CQRSRequestPayload], which contains information about the request payload.
 
-* `CompleteCQRSExecutionResult()`: This method should be called when a custom middleware short-circuits the pipeline and needs to return a result payload. It properly sets the execution result and serializes it to the response body. If your middleware returns a response without calling the next middleware, use this method to ensure the response is correctly formatted.
+* `GetCQRSExecutionResult()`: This `HttpContext` extension method returns the [ExecutionResult], if it was produced by the CQRS pipeline after processing the request.
+
+* `CompleteCQRSExecutionResult()`: This method should be called when a custom middleware short-circuits the pipeline and needs to return a result payload. It properly sets the [ExecutionResult] and serializes it to the response body. If your middleware returns a response without calling the next middleware, use this method to ensure the response is correctly formatted.
 
 !!! warning "Short-Circuiting Middlewares"
-    If your custom middleware short-circuits the pipeline (i.e., doesn't call `await next(context)`) and needs to return a CQRS result payload, you **must** call `await context.CompleteCQRSExecutionResult(result)` ([CompleteCQRSExecutionResult]) to properly serialize the response. Simply setting the response manually will not work correctly with the CQRS pipeline.
+    If your custom middleware short-circuits the pipeline (i.e., doesn't call `await next(context)`) and needs to return a CQRS result payload, you **must** call `await context.CompleteCQRSExecutionResult(result)` ([CompleteCQRSExecutionResult]) to properly serialize the response. Simply setting the response manually will not work correctly with the CQRS pipeline in local execution.
 
 Here's an example of a middleware that short-circuits and returns a cached result:
 
