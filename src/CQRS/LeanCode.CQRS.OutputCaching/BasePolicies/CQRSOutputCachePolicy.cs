@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
-[SuppressMessage("?", "CA1725")]
+[SuppressMessage("Microsoft.Naming", "CA1725")]
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {

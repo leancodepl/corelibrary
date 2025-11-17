@@ -7,7 +7,7 @@ namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 public interface ICQRSOutputCachePolicy<TObject> : IOutputCachePolicy
     where TObject : notnull
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1000")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000")]
     public static sealed TObject GetRequestPayload(HttpContext context)
     {
         return (TObject)context.GetCQRSRequestPayload().Payload;
