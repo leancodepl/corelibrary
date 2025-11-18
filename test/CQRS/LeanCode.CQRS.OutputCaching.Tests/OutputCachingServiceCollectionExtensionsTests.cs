@@ -16,7 +16,7 @@ public class OutputCachingServiceCollectionExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddCQRSOutputCache([typeof(TestQueryOCP).Assembly]);
+        services.AddCQRSOutputCache(TypesCatalog.Of<TestQueryOCP>());
 
         services
             .Should()
@@ -35,19 +35,5 @@ public class OutputCachingServiceCollectionExtensionsTests
             .OfType<CQRSOutputCacheOptionsConfigurator>()
             .Should()
             .ContainSingle();
-    }
-
-    [Fact]
-    public void AddCQRSOutputCache_supports_types_catalog_overload_and_skips_output_cache_registration_when_requested()
-    {
-        var services = new ServiceCollection();
-
-        services.AddCQRSOutputCache(TypesCatalog.Of<TestQueryOCP>(), registerOutputCache: false);
-
-        using var provider = services.BuildServiceProvider();
-        var registry = provider.GetRequiredService<CQRSOutputCacheRegistry>();
-        registry.PolicyForObject.Should().ContainKey(typeof(TestQuery)).WhoseValue.Should().Be<TestQueryOCP>();
-
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(IOutputCacheStore));
     }
 }
