@@ -24,29 +24,15 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
             );
     }
 
-    private static bool IsValidPolicyCQRSObject(Type cqrsObjectType)
+    public IEnumerable<object> GetAdditionalEndpointMetadata(CQRSObjectMetadata metadata)
     {
-        return cqrsObjectType
-            .GetInterfaces()
-            .Any(i =>
-                i.IsConstructedGenericType
-                && (
-                    i.GetGenericTypeDefinition() == typeof(IQuery<>)
-                    || i.GetGenericTypeDefinition() == typeof(IOperation<>)
-                )
-            );
-    }
+        if (!PolicyForObject.TryGetValue(metadata.ObjectType, out var policy))
+        {
+            return [];
+        }
 
-    private static bool IsValidPolicyType(Type policyType)
-    {
-        return GetImplementedCQRSOutputCachePolicies(policyType).Any();
-    }
-
-    private static IEnumerable<Type> GetImplementedCQRSOutputCachePolicies(Type policyType)
-    {
-        return policyType
-            .GetInterfaces()
-            .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
+        var policyName = CQRSOutputCachePolicyName.For(policy);
+        return [new OutputCacheAttribute { PolicyName = policyName }];
     }
 
     internal void Register(Type contractType, Type policyType)
@@ -75,14 +61,28 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
         }
     }
 
-    public IEnumerable<object> GetAdditionalEndpointMetadata(CQRSObjectMetadata metadata)
+    private static bool IsValidPolicyCQRSObject(Type cqrsObjectType)
     {
-        if (!PolicyForObject.TryGetValue(metadata.ObjectType, out var policy))
-        {
-            return [];
-        }
+        return cqrsObjectType
+            .GetInterfaces()
+            .Any(i =>
+                i.IsConstructedGenericType
+                && (
+                    i.GetGenericTypeDefinition() == typeof(IQuery<>)
+                    || i.GetGenericTypeDefinition() == typeof(IOperation<>)
+                )
+            );
+    }
 
-        var policyName = CQRSOutputCachePolicyName.For(policy);
-        return [new OutputCacheAttribute { PolicyName = policyName }];
+    private static bool IsValidPolicyType(Type policyType)
+    {
+        return GetImplementedCQRSOutputCachePolicies(policyType).Any();
+    }
+
+    private static IEnumerable<Type> GetImplementedCQRSOutputCachePolicies(Type policyType)
+    {
+        return policyType
+            .GetInterfaces()
+            .Where(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(ICQRSOutputCachePolicy<>));
     }
 }
