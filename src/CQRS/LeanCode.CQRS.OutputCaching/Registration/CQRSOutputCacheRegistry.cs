@@ -51,9 +51,6 @@ internal sealed class CQRSOutputCacheRegistry : ICQRSEndpointMetadataProvider
 
     internal void Register(Type contractType, Type policyType)
     {
-        ArgumentNullException.ThrowIfNull(contractType);
-        ArgumentNullException.ThrowIfNull(policyType);
-
         if (!IsValidPolicyCQRSObject(contractType))
         {
             throw new ArgumentException(
