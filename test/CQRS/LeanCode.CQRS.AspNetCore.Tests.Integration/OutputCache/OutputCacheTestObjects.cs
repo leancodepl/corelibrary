@@ -20,13 +20,13 @@ public class CachedTestOperation : IOperation<TestOperationResult>
     public string? VaryByValue { get; set; }
 }
 
-public class CachedTestQueryPolicy : CQRSQueryOutputCachePolicy<CachedTestQuery, TestQueryResult>
+public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
 {
     public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
         await base.CacheRequestAsync(context, cancellationToken);
 
-        var query = GetRequestPayload(context.HttpContext);
+        var query = context.HttpContext.GetCQRSRequestPayload<CachedTestQuery>();
         if (!string.IsNullOrEmpty(query.VaryByValue))
         {
             context.AllowCacheLookup = true;
@@ -37,8 +37,8 @@ public class CachedTestQueryPolicy : CQRSQueryOutputCachePolicy<CachedTestQuery,
 
     public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
-        var result = GetResultPayload(context.HttpContext);
-        if (result is { Sum: < 0 })
+        var result = context.HttpContext.GetCQRSRequiredResultPayload<TestQueryResult>();
+        if (result.Sum < 0)
         {
             context.AllowCacheStorage = false;
         }
@@ -46,13 +46,13 @@ public class CachedTestQueryPolicy : CQRSQueryOutputCachePolicy<CachedTestQuery,
     }
 }
 
-public class CachedTestOperationPolicy : CQRSOperationOutputCachePolicy<CachedTestOperation, TestOperationResult>
+public class CachedTestOperationPolicy : CQRSOutputCachePolicy<CachedTestOperation>
 {
     public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
         await base.CacheRequestAsync(context, cancellationToken);
 
-        var operation = GetRequestPayload(context.HttpContext);
+        var operation = context.HttpContext.GetCQRSRequestPayload<CachedTestOperation>();
         if (!string.IsNullOrEmpty(operation.VaryByValue))
         {
             context.AllowCacheLookup = true;
@@ -63,7 +63,7 @@ public class CachedTestOperationPolicy : CQRSOperationOutputCachePolicy<CachedTe
 
     public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
     {
-        var result = GetResultPayload(context.HttpContext);
+        var result = context.HttpContext.GetCQRSRequiredResultPayload<TestOperationResult>();
         if (result is { Sum: < 0 })
         {
             context.AllowCacheStorage = false;

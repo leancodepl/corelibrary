@@ -1,29 +1,24 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
-[SuppressMessage("Microsoft.Naming", "CA1725")]
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
-    public virtual ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public virtual ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         context.EnableOutputCaching = true;
         context.AllowLocking = true;
         return ValueTask.CompletedTask;
     }
 
-    public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         return ValueTask.CompletedTask;
     }
 
-    public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         return ValueTask.CompletedTask;
     }
-
-    public TObject GetRequestPayload(HttpContext context) => ICQRSOutputCachePolicy<TObject>.GetRequestPayload(context);
 }

@@ -8,7 +8,7 @@ internal sealed class TestQuery : IQuery<TestResult>;
 
 internal sealed class TestResult;
 
-internal sealed class TestQueryOCP : CQRSQueryOutputCachePolicy<TestQuery, TestResult>;
+internal sealed class TestQueryOCP : CQRSOutputCachePolicy<TestQuery>;
 
 internal sealed class NonCQRSOCP : IOutputCachePolicy
 {
@@ -28,7 +28,7 @@ internal sealed class TestOperation : IOperation<TestOperationResult>;
 
 internal sealed class TestOperationResult;
 
-internal sealed class TestOperationOCP : CQRSOperationOutputCachePolicy<TestOperation, TestOperationResult>;
+internal sealed class TestOperationOCP : CQRSOutputCachePolicy<TestOperation>;
 
 internal sealed class InvalidOCP;
 

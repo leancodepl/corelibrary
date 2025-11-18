@@ -17,6 +17,11 @@ public static class HttpContextExtensions
         return httpContext.Features.GetRequiredFeature<CQRSRequestPayload>();
     }
 
+    public static TPayload GetCQRSRequestPayload<TPayload>(this HttpContext httpContext)
+    {
+        return (TPayload)httpContext.GetCQRSRequestPayload().Payload;
+    }
+
     public static CQRSRequestPayload SetCQRSRequestPayload(this HttpContext httpContext, object payload)
     {
         var cqrsRequestPayload = new CQRSRequestPayload(payload);
@@ -29,9 +34,19 @@ public static class HttpContextExtensions
         return httpContext.Features.Get<ExecutionResult>();
     }
 
+    public static TPayload? GetCQRSResultPayload<TPayload>(this HttpContext httpContext)
+    {
+        return httpContext.GetCQRSExecutionResult() is { Payload: { } payload } ? (TPayload)payload : default;
+    }
+
     public static ExecutionResult GetCQRSRequiredExecutionResult(this HttpContext httpContext)
     {
         return httpContext.Features.GetRequiredFeature<ExecutionResult>();
+    }
+
+    public static TPayload GetCQRSRequiredResultPayload<TPayload>(this HttpContext httpContext)
+    {
+        return (TPayload)httpContext.GetCQRSRequiredExecutionResult().Payload!;
     }
 
     public static void SetCQRSObjectMetadataForLocalExecution(this HttpContext httpContext, CQRSObjectMetadata metadata)
