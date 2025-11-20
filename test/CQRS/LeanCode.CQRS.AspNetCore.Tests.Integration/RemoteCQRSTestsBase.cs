@@ -23,7 +23,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
     private readonly IHost host;
     private readonly TestServer server;
 
-    protected int minimalApiInvocationCount = 0;
+    private int minimalApiInvocationCount;
 
     protected RemoteCQRSTestsBase(bool enableMinimalApi = false)
     {

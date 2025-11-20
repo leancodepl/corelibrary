@@ -22,9 +22,9 @@ public class CachedTestOperation : IOperation<TestOperationResult>
 
 public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
 {
-    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
-        await base.CacheRequestAsync(context, cancellationToken);
+        await base.CacheRequestAsync(context, cancellation);
 
         var query = context.HttpContext.GetCQRSRequestPayload<CachedTestQuery>();
         if (!string.IsNullOrEmpty(query.VaryByValue))
@@ -35,22 +35,22 @@ public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
         }
     }
 
-    public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         var result = context.HttpContext.GetCQRSRequiredResultPayload<TestQueryResult>();
         if (result.Sum < 0)
         {
             context.AllowCacheStorage = false;
         }
-        return base.ServeResponseAsync(context, cancellationToken);
+        return base.ServeResponseAsync(context, cancellation);
     }
 }
 
 public class CachedTestOperationPolicy : CQRSOutputCachePolicy<CachedTestOperation>
 {
-    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
-        await base.CacheRequestAsync(context, cancellationToken);
+        await base.CacheRequestAsync(context, cancellation);
 
         var operation = context.HttpContext.GetCQRSRequestPayload<CachedTestOperation>();
         if (!string.IsNullOrEmpty(operation.VaryByValue))
@@ -61,14 +61,14 @@ public class CachedTestOperationPolicy : CQRSOutputCachePolicy<CachedTestOperati
         }
     }
 
-    public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellationToken)
+    public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         var result = context.HttpContext.GetCQRSRequiredResultPayload<TestOperationResult>();
         if (result is { Sum: < 0 })
         {
             context.AllowCacheStorage = false;
         }
-        return base.ServeResponseAsync(context, cancellationToken);
+        return base.ServeResponseAsync(context, cancellation);
     }
 }
 
