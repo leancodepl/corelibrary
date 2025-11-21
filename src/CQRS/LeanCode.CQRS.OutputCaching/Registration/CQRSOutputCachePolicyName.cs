@@ -1,6 +1,10 @@
 namespace LeanCode.CQRS.OutputCaching.Registration;
 
-internal static class CQRSOutputCachePolicyName
+public static class CQRSOutputCachePolicyName
 {
-    public static string For(Type objectType) => $"cqrs:{objectType.FullName}";
+    private const string Prefix = "cqrs:";
+
+    public static string For(Type objectType) => $"{Prefix}{objectType.FullName}";
+
+    public static string GetObjectTypeString(string policyName) => policyName[Prefix.Length..];
 }
