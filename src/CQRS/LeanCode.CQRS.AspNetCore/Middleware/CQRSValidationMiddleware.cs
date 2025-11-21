@@ -32,32 +32,31 @@ public class CQRSValidationMiddleware
         }
 
         var validator = resolver.FindCommandValidator(cqrsMetadata.ObjectType);
-
-        if (validator is not null)
+        if (validator is null)
         {
-            using var activity = LeanCodeActivitySource.StartMiddleware("Validation");
-            activity?.SetTag("validation.validator", validator.GetType().FullName);
-
-            var result = await validator.ValidateAsync(httpContext, (ICommand)payload.Payload);
-            activity?.SetTag("validation.valid", result.IsValid);
-
-            if (!result.IsValid)
-            {
-                metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
-                logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
-
-                var commandResult = CommandResult.NotValid(result);
-                await httpContext.CompleteCQRSExecutionResult(
-                    ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity)
-                );
-                return;
-            }
-            else
-            {
-                activity?.SetStatus(ActivityStatusCode.Ok);
-            }
+            await next(httpContext);
+            return;
         }
 
+        using var activity = LeanCodeActivitySource.StartMiddleware("Validation");
+        activity?.SetTag("validation.validator", validator.GetType().FullName);
+
+        var result = await validator.ValidateAsync(httpContext, (ICommand)payload.Payload);
+        activity?.SetTag("validation.valid", result.IsValid);
+
+        if (!result.IsValid)
+        {
+            metrics.CQRSFailure(CQRSMetrics.ValidationFailure);
+            logger.Warning("Command {@Command} is not valid with result {@Result}", payload.Payload, result);
+
+            var commandResult = CommandResult.NotValid(result);
+            await httpContext.CompleteCQRSExecutionResult(
+                ExecutionResult.WithPayload(commandResult, StatusCodes.Status422UnprocessableEntity)
+            );
+            return;
+        }
+
+        activity?.SetStatus(ActivityStatusCode.Ok);
         await next(httpContext);
     }
 }

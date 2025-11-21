@@ -35,13 +35,13 @@ public class CQRSExceptionTranslationMiddleware
             throw new InvalidOperationException("CQRSExceptionTranslationMiddleware may be used only for commands.");
         }
 
+        using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
         try
         {
             await next(httpContext);
         }
         catch (CommandExecutionInvalidException ex)
         {
-            using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
             activity?.SetTag("error.code", ex.ErrorCode);
 
             var result = WrapInCommandResult(ex);
