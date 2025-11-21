@@ -10,14 +10,17 @@ namespace LeanCode.CQRS.AspNetCore.Middleware;
 
 internal class CQRSOutputCachingObservabilityMiddleware
 {
+    private readonly CQRSMetrics metrics;
     private readonly RequestDelegate next;
     private readonly ILogger<CQRSOutputCachingObservabilityMiddleware> logger;
 
     public CQRSOutputCachingObservabilityMiddleware(
+        CQRSMetrics metrics,
         RequestDelegate next,
         ILogger<CQRSOutputCachingObservabilityMiddleware> logger
     )
     {
+        this.metrics = metrics;
         this.next = next;
         this.logger = logger;
     }
@@ -53,11 +56,13 @@ internal class CQRSOutputCachingObservabilityMiddleware
 
             if (IsServedFromCache(httpContext))
             {
+                metrics.CQRSOutputCacheHit();
                 activity.SetTag("output_cache.served_from_cache", true);
                 logger.Debug("Object {@Object} served from output cache", payload.Payload);
             }
             else
             {
+                metrics.CQRSOutputCacheMiss();
                 activity.SetTag("output_cache.served_from_cache", false);
 
                 // Not served from cache, so if cache storage was allowed, it was actually stored
