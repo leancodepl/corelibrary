@@ -38,13 +38,19 @@ Custom middlewares can further augment the pipeline by employing the `UseMiddlew
 
 Moreover, CoreLibrary provides extension methods for `HttpContext`, which can be useful when creating middlewares:
 
-* `GetCQRSEndpoint()`: This method returns [CQRSObjectMetadata] which provides access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
+* `GetCQRSObjectMetadata()`: This method returns [CQRSObjectMetadata] which provides access to metadata about the endpoint, providing details such as object types, result types, and handler types involved in the request.
 
-* `GetCQRSRequestPayload()`: This `HttpContext` extension method returns [CQRSRequestPayload], which contains information about the request payload.
+* `GetCQRSRequestPayload()`: This `HttpContext` extension method returns [CQRSRequestPayload], which contains information about the request payload. A generic version `GetCQRSRequestPayload<TPayload>()` is also available to get the strongly-typed payload directly.
 
-* `GetCQRSExecutionResult()`: This `HttpContext` extension method returns the [ExecutionResult], if it was produced by the CQRS pipeline after processing the request.
+* `GetCQRSExecutionResult()`: This `HttpContext` extension method returns the [ExecutionResult] (nullable), if it was produced by the CQRS pipeline after processing the request.
 
-* `CompleteCQRSExecutionResult()`: This method should be called when a custom middleware short-circuits the pipeline and needs to return a result payload. It properly sets the [ExecutionResult] and serializes it to the response body. If your middleware returns a response without calling the next middleware, use this method to ensure the response is correctly formatted.
+* `GetCQRSRequiredExecutionResult()`: Similar to `GetCQRSExecutionResult()`, but returns a non-nullable [ExecutionResult] and throws if not present.
+
+* `GetCQRSResultPayload<TPayload>()`: Returns the strongly-typed result payload if available, or `default` if the execution result is not present or has no payload.
+
+* `GetCQRSRequiredResultPayload<TPayload>()`: Returns the strongly-typed result payload, throwing an exception if the execution result or payload is not present.
+
+* `CompleteCQRSExecutionResult(ExecutionResult result)`: This method should be called when a custom middleware short-circuits the pipeline and needs to return a result payload. It properly sets the [ExecutionResult] and serializes it to the response body. If your middleware returns a response without calling the next middleware, use this method to ensure the response is correctly formatted.
 
 !!! warning "Short-Circuiting Middlewares"
     If your custom middleware short-circuits the pipeline (i.e., doesn't call `await next(context)`) and needs to return a CQRS result payload, you **must** call `await context.CompleteCQRSExecutionResult(result)` ([CompleteCQRSExecutionResult]) to properly serialize the response. Simply setting the response manually will not work correctly with the CQRS pipeline in local execution.
