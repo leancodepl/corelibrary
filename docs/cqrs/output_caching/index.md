@@ -116,7 +116,7 @@ protected override void ConfigureApp(IApplicationBuilder app)
     This ensures that only authorized requests may get cached responses, so that reduces a class of potential bugs.
 
 !!! tip "Mixed Scenarios: CQRS + Other Endpoints"
-    If you need output caching for **both** CQRS endpoints and non-CQRS endpoints (e.g., minimal APIs, controllers), use `app.UseWhen()` to apply the middleware **only** to non-CQRS endpoints:
+    If you need output caching for **both** CQRS endpoints and non-CQRS endpoints (e.g., minimal APIs, controllers), make sure to apply the `UseOutputCache()` middleware **only** to non-CQRS endpoints. You can use eg. `UseWhen(...)` or `Map(...)` for that as shown below:
 
 ```csharp
 protected override void ConfigureApp(IApplicationBuilder app)
@@ -140,6 +140,33 @@ protected override void ConfigureApp(IApplicationBuilder app)
             cqrs.Operations = o => o.Secure().CacheOutput();
         });
 
+        // Other endpoints can use .CacheOutput() attribute
+        endpoints.MapGet("/api/health", () => "OK").CacheOutput();
+    });
+}
+```
+
+or
+
+```csharp
+protected override void ConfigureApp(IApplicationBuilder app)
+{
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.Map("/api/cqrs", app => UseEndpoints(endpoints =>
+        // CQRS endpoints use .CacheOutput() in their pipeline
+        endpoints.MapRemoteCQRS("/", cqrs =>
+        {
+            cqrs.Queries = q => q.Secure().CacheOutput();
+            cqrs.Operations = o => o.Secure().CacheOutput();
+        })));
+
+    // Apply output caching ONLY to non-CQRS endpoints
+    app.UseOutputCache();
+    app.UseEndpoints(endpoints =>
+    {
         // Other endpoints can use .CacheOutput() attribute
         endpoints.MapGet("/api/health", () => "OK").CacheOutput();
     });
