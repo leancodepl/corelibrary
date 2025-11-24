@@ -51,7 +51,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(includeOutputCacheMetadata: false);
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyNoCQRSCacheHitMetrics();
             VerifyNoCQRSCacheMissMetrics();
@@ -64,7 +64,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new());
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
@@ -73,7 +73,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
 
         await SendRequestAsync(query: new());
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyCQRSCacheHitMetrics(1);
@@ -86,7 +86,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new() { EnableOutputCaching = false });
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyNoCQRSCacheHitMetrics();
             VerifyNoCQRSCacheMissMetrics();
@@ -99,7 +99,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new() { AllowCacheStoreAfterExecution = false });
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
@@ -112,7 +112,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new() { LookUpInCache = false });
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
@@ -125,7 +125,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new() { LookUpInCache = false, AllowCacheStoreBeforeExecution = false });
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
@@ -143,7 +143,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     {
         await SendRequestAsync(query: new() { AllowLocking = false });
 
-        using (var _ = new AssertionScope())
+        using (new AssertionScope())
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
