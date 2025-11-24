@@ -497,6 +497,26 @@ public class GetProjectHandler : IQueryHandler<GetProjectQuery, ProjectDTO>
 
 When the middleware caches this response, it stores the ETag. On subsequent requests with `If-None-Match` headers, it automatically returns `304 Not Modified` if the ETag matches.
 
+## Cache Eviction
+
+Look up the official [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-10.0#use-tags-to-evict-cache-entries) for details on cache eviction.
+
+In order to set up tags for cache eviction set them in your cache policy:
+
+```csharp
+public override ValueTask CacheRequestCoreAsync(
+    OutputCacheContext context,
+    CancellationToken cancellationToken)
+{
+    // Enable caching
+    context.AllowCacheLookup = true;
+    context.AllowCacheStorage = true;
+    // Set tags for eviction
+    context.Tags.Add("projects");
+    return ValueTask.CompletedTask;
+}
+```
+
 ## Advanced Configuration
 
 ### Custom Cache Store
