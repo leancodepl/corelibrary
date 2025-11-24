@@ -48,6 +48,8 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
         commandResult.ShouldBeSuccessful();
 
         Serializer.ShouldHaveSerialized(commandResult);
+
+        VerifyNoActivity("middleware - Validation");
     }
 
     [Fact]
@@ -67,7 +69,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
         var error2 = new ValidationError("PropertyName2", "ErrorMessage2", 12);
 
         var cmd = new ValidatedCommand();
-        SetValidationResult(cmd, new ValidationResult(new[] { error1, error2 }));
+        SetValidationResult(cmd, new ValidationResult([error1, error2]));
 
         var ctx = await SendAsync(cmd);
 

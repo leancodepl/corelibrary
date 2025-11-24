@@ -22,10 +22,8 @@ public class CachedTestOperation : IOperation<TestOperationResult>
 
 public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
 {
-    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
+    public override ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation)
     {
-        await base.CacheRequestAsync(context, cancellation);
-
         var query = context.HttpContext.GetCQRSRequestPayload<CachedTestQuery>();
         if (!string.IsNullOrEmpty(query.VaryByValue))
         {
@@ -33,6 +31,7 @@ public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
             context.AllowCacheStorage = true;
             context.CacheVaryByRules.VaryByValues["custom"] = query.VaryByValue;
         }
+        return ValueTask.CompletedTask;
     }
 
     public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
@@ -48,10 +47,8 @@ public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>
 
 public class CachedTestOperationPolicy : CQRSOutputCachePolicy<CachedTestOperation>
 {
-    public override async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
+    public override ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation)
     {
-        await base.CacheRequestAsync(context, cancellation);
-
         var operation = context.HttpContext.GetCQRSRequestPayload<CachedTestOperation>();
         if (!string.IsNullOrEmpty(operation.VaryByValue))
         {
@@ -59,6 +56,7 @@ public class CachedTestOperationPolicy : CQRSOutputCachePolicy<CachedTestOperati
             context.AllowCacheStorage = true;
             context.CacheVaryByRules.VaryByValues["custom"] = operation.VaryByValue;
         }
+        return ValueTask.CompletedTask;
     }
 
     public override ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)

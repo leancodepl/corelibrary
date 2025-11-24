@@ -17,8 +17,11 @@ using Xunit;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
+public abstract class CQRSMiddlewareTestBase<TMiddleware>()
+    : CQRSMiddlewareTestBase(app => app.UseMiddleware<TMiddleware>());
+
 [SuppressMessage("?", "CA1063", Justification = "Demands a Dispose(bool) pattern which is not applicable")]
-public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDisposable
+public abstract class CQRSMiddlewareTestBase : IAsyncLifetime, IDisposable
 {
     private readonly ConcurrentBag<Activity> activities;
     private readonly ActivityListener activityListener;
@@ -32,7 +35,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
 
     protected virtual void ConfigureServices(IServiceCollection services) { }
 
-    protected CQRSMiddlewareTestBase()
+    protected CQRSMiddlewareTestBase(Action<IApplicationBuilder> configureMiddleware)
     {
         Serializer = new();
         Host = new HostBuilder()
@@ -48,7 +51,7 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
                     })
                     .Configure(app =>
                     {
-                        app.UseMiddleware<TMiddleware>();
+                        configureMiddleware(app);
                         app.Run(ctx => FinalPipeline(ctx));
                     });
             })
@@ -75,31 +78,48 @@ public abstract class CQRSMiddlewareTestBase<TMiddleware> : IAsyncLifetime, IDis
         string operationNamePrefix,
         ActivityStatusCode? activityStatusCode = null,
         string? failureReason = null,
-        bool exceptionShouldBeRecorded = false
-    )
+        bool exceptionShouldBeRecorded = false,
+        IReadOnlyDictionary<string, object?>? additionalTags = null)
     {
-        var foundActivities = activities
+        var activity = activities
             .Where(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal))
-            .ToList();
+            .MaxBy(a => a.StartTimeUtc);
 
-        foundActivities.Should().NotBeEmpty("there should be some activities for middleware execution");
+        activity.Should().NotBeNull("there should be some activities for middleware execution");
 
         if (activityStatusCode is not null)
         {
-            foundActivities.Should().AllSatisfy(a => a.Status.Should().Be(activityStatusCode.Value));
+            activity.Status.Should().Be(activityStatusCode.Value);
         }
 
         if (failureReason is not null)
         {
-            foundActivities
-                .Should()
-                .AllSatisfy(a => a.GetTagItem(CQRSMetrics.FailureReasonKey).Should().Be(failureReason));
+            activity.GetTagItem(CQRSMetrics.FailureReasonKey).Should().Be(failureReason);
         }
 
         if (exceptionShouldBeRecorded)
         {
-            foundActivities.Should().AllSatisfy(a => a.Events.Should().Contain(e => e.Name == "exception"));
+            activity.Events.Should().Contain(e => e.Name == "exception");
         }
+
+        if (additionalTags is not null)
+        {
+            if (additionalTags.Where(t => t.Value is not null) is var expectedTags && expectedTags.Any())
+            {
+                activity.TagObjects.Should().Contain(expectedTags);
+            }
+
+            if (additionalTags.Where(t => t.Value is null).Select(t => t.Key) is var unexpectedTags && unexpectedTags.Any())
+            {
+                activity.TagObjects.Should().NotContainKeys(unexpectedTags);
+            }
+        }
+    }
+
+    protected void VerifyNoActivity(string operationNamePrefix)
+    {
+        activities
+            .FirstOrDefault(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal)).Should().BeNull("there should be no activities for middleware execution");
     }
 
     protected void VerifyCQRSSuccessMetrics(int measuredTotal)

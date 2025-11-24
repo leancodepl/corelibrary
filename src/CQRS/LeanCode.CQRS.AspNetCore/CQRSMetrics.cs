@@ -15,9 +15,6 @@ public class CQRSMetrics
     private readonly Counter<int> cqrsSuccess;
     private readonly Counter<int> cqrsFailure;
 
-    private readonly Counter<int> cqrsOutputCacheHit;
-    private readonly Counter<int> cqrsOutputCacheMiss;
-
     [SuppressMessage(
         "?",
         "CA2000",
@@ -29,17 +26,10 @@ public class CQRSMetrics
 
         cqrsSuccess = meter.CreateCounter<int>("cqrs.success");
         cqrsFailure = meter.CreateCounter<int>("cqrs.failure");
-
-        cqrsOutputCacheHit = meter.CreateCounter<int>("cqrs.output_cache.hit");
-        cqrsOutputCacheMiss = meter.CreateCounter<int>("cqrs.output_cache.miss");
     }
 
     public void CQRSSuccess() => cqrsSuccess.Add(1);
 
     public void CQRSFailure(string reason) =>
         cqrsFailure.Add(1, KeyValuePair.Create(FailureReasonKey, reason as object)!);
-
-    public void CQRSOutputCacheHit() => cqrsOutputCacheHit.Add(1);
-
-    public void CQRSOutputCacheMiss() => cqrsOutputCacheMiss.Add(1);
 }

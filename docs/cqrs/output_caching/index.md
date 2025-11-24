@@ -207,7 +207,7 @@ public class GetProjectQuery : IQuery<ProjectDTO>
 
 public class GetProjectCachePolicy : CQRSQueryOutputCachePolicy<GetProjectQuery, ProjectDTO>
 {
-    public override ValueTask CacheRequestAsync(
+    public override ValueTask CacheRequestCoreAsync(
         OutputCacheContext context,
         CancellationToken cancellationToken)
     {
@@ -259,7 +259,7 @@ public class GenerateProjectReportOperation : IOperation<ReportDTO>
 public class GenerateProjectReportCachePolicy
     : CQRSOperationOutputCachePolicy<GenerateProjectReportOperation, ReportDTO>
 {
-    public override ValueTask CacheRequestAsync(
+    public override ValueTask CacheRequestCoreAsync(
         OutputCacheContext context,
         CancellationToken cancellationToken)
     {
@@ -306,16 +306,18 @@ public class GenerateProjectReportCachePolicy
 
 Cache policies can override three methods that correspond to different stages of the caching middleware:
 
-### CacheRequestAsync
+### CacheRequestCoreAsync
 
-Called **before** checking if a cached response exists. This is where you:
+This is `CacheRequestAsync` from the base interface, but renamed to `CacheRequestCoreAsync` in the `CQRSOutputCachePolicy` base class.
+
+Called **before** checking if a cached response exists. This is the main method where you should implement caching logic like:
 
 - Enable or disable caching for the request
 - Configure cache key variation rules
 - Set expiration times
 
 ```csharp
-public override ValueTask CacheRequestAsync(
+public override ValueTask CacheRequestCoreAsync(
     OutputCacheContext context,
     CancellationToken cancellationToken)
 {
@@ -338,9 +340,8 @@ public override ValueTask CacheRequestAsync(
 
 ### ServeFromCacheAsync
 
-Called when a cached entry is **found** and about to be served. Use this to:
+Called when a cached entry is **found** and about to be served. Use this in exceptional cases to:
 
-- Conditionally prevent serving from cache
 - Modify response headers before serving from cache
 
 ```csharp
@@ -359,8 +360,7 @@ public override ValueTask ServeFromCacheAsync(
 
 Called after the handler executes and **before** storing the response in cache. Use this to:
 
-- Inspect the result and conditionally disable caching
-- Modify cache behavior based on the response
+- Inspect the result and conditionally disable storing in cache
 
 ```csharp
 public override ValueTask ServeResponseAsync(

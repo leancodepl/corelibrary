@@ -45,6 +45,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     {
         var httpContext = await SendPayloadAsync(new NoAuthorization());
         AssertAuthorizationSuccess(httpContext);
+        VerifyNoActivity("middleware - Security");
     }
 
     [Fact]
@@ -97,6 +98,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         if (expectSuccess)
         {
             AssertAuthorizationSuccess(httpContext);
+            VerifyActivity("middleware - Security", activityStatusCode: ActivityStatusCode.Ok);
             VerifyActivity(
                 $"middleware - Security - {typeof(IFirstAuthorizer).FullName}",
                 activityStatusCode: ActivityStatusCode.Ok
@@ -109,7 +111,6 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         else
         {
             AssertAuthorizationFailure(httpContext);
-            VerifyActivity("middleware - Security");
         }
     }
 
@@ -119,6 +120,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         await Assert.ThrowsAsync<CustomAuthorizerNotFoundException>(
             () => SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser())
         );
+        VerifyActivity("middleware - Security");
         VerifyActivity($"middleware - Security - {typeof(INotImplementedAuthorizer).FullName}");
     }
 
@@ -149,6 +151,8 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         context.ShouldHaveResponseStatusCode(errorCode).ShouldContainExecutionResult(errorCode);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.AuthorizationFailure, 1);
+
+        VerifyActivity("middleware - Security");
     }
 
     private Task<HttpContext> SendPayloadAsync(object payload, ClaimsPrincipal? user = null)
