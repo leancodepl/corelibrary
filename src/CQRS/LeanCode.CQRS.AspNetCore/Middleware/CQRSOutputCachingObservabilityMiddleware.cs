@@ -10,9 +10,7 @@ internal class CQRSOutputCachingObservabilityMiddleware
 {
     private readonly RequestDelegate next;
 
-    public CQRSOutputCachingObservabilityMiddleware(
-        RequestDelegate next
-    )
+    public CQRSOutputCachingObservabilityMiddleware(RequestDelegate next)
     {
         this.next = next;
     }

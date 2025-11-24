@@ -79,7 +79,8 @@ public abstract class CQRSMiddlewareTestBase : IAsyncLifetime, IDisposable
         ActivityStatusCode? activityStatusCode = null,
         string? failureReason = null,
         bool exceptionShouldBeRecorded = false,
-        IReadOnlyDictionary<string, object?>? additionalTags = null)
+        IReadOnlyDictionary<string, object?>? additionalTags = null
+    )
     {
         var activity = activities
             .Where(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal))
@@ -109,7 +110,10 @@ public abstract class CQRSMiddlewareTestBase : IAsyncLifetime, IDisposable
                 activity.TagObjects.Should().Contain(expectedTags);
             }
 
-            if (additionalTags.Where(t => t.Value is null).Select(t => t.Key) is var unexpectedTags && unexpectedTags.Any())
+            if (
+                additionalTags.Where(t => t.Value is null).Select(t => t.Key) is var unexpectedTags
+                && unexpectedTags.Any()
+            )
             {
                 activity.TagObjects.Should().NotContainKeys(unexpectedTags);
             }
@@ -119,7 +123,9 @@ public abstract class CQRSMiddlewareTestBase : IAsyncLifetime, IDisposable
     protected void VerifyNoActivity(string operationNamePrefix)
     {
         activities
-            .FirstOrDefault(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal)).Should().BeNull("there should be no activities for middleware execution");
+            .FirstOrDefault(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal))
+            .Should()
+            .BeNull("there should be no activities for middleware execution");
     }
 
     protected void VerifyCQRSSuccessMetrics(int measuredTotal)

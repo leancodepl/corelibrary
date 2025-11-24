@@ -18,14 +18,13 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestBase
 {
-    private static readonly CQRSObjectMetadata TestMetadata =
-        new(
-            CQRSObjectKind.Query,
-            typeof(TestQuery),
-            typeof(TestQueryResult),
-            typeof(TestQueryHandler),
-            (_, _) => Task.FromResult<object?>(null)
-        );
+    private static readonly CQRSObjectMetadata TestMetadata = new(
+        CQRSObjectKind.Query,
+        typeof(TestQuery),
+        typeof(TestQueryResult),
+        typeof(TestQueryHandler),
+        (_, _) => Task.FromResult<object?>(null)
+    );
 
     private static readonly string TestPolicyName = CQRSOutputCachePolicyName.For(typeof(TestQueryOCP));
 
@@ -117,11 +116,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
-            VerifyOutputCacheActivity(
-                servedFromCache: false,
-                storedInCache: true,
-                allowCacheLookup: false
-            );
+            VerifyOutputCacheActivity(servedFromCache: false, storedInCache: true, allowCacheLookup: false);
         }
     }
 
@@ -134,7 +129,12 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
-            VerifyOutputCacheActivity(servedFromCache: false, storedInCache: false, allowCacheStorage: false, allowCacheLookup: false);
+            VerifyOutputCacheActivity(
+                servedFromCache: false,
+                storedInCache: false,
+                allowCacheStorage: false,
+                allowCacheLookup: false
+            );
         }
     }
 
@@ -147,11 +147,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
         {
             VerifyCQRSCacheMissMetrics(1);
             VerifyNoCQRSCacheHitMetrics();
-            VerifyOutputCacheActivity(
-                servedFromCache: false,
-                storedInCache: true,
-                allowLocking: false
-            );
+            VerifyOutputCacheActivity(servedFromCache: false, storedInCache: true, allowLocking: false);
         }
     }
 
@@ -196,13 +192,13 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
             ctx.Request.Method = HttpMethods.Post;
             ctx.SetCQRSRequestPayload(configuredQuery);
 
-            object[] additionalMetadata =
-                includeOutputCacheMetadata ? [new OutputCacheAttribute { PolicyName = TestPolicyName }] : [];
+            object[] additionalMetadata = includeOutputCacheMetadata
+                ? [new OutputCacheAttribute { PolicyName = TestPolicyName }]
+                : [];
 
             ctx.SetEndpoint(TestHelpers.MockCQRSEndpoint(TestMetadata, additionalMetadata));
         });
     }
-
 
     private void VerifyOutputCacheActivity(
         bool? servedFromCache,
@@ -222,7 +218,8 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
                 { "output_cache.lookup_allowed", allowCacheLookup },
                 { "output_cache.served_from_cache", servedFromCache },
                 { "output_cache.stored_in_cache", storedInCache },
-            });
+            }
+        );
     }
 
     private void VerifyNoOutputCacheActivity()

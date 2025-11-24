@@ -11,7 +11,7 @@ public static class TestHelpers
 {
     public static Endpoint MockCQRSEndpoint(CQRSObjectMetadata obj, params object[] additionalMetadata)
     {
-        return new(null, new([obj, ..additionalMetadata]), obj.ObjectType.Name);
+        return new(null, new([obj, .. additionalMetadata]), obj.ObjectType.Name);
     }
 
     public static ExecutionResult ShouldContainExecutionResult(

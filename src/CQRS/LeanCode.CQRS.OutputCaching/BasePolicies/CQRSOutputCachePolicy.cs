@@ -6,10 +6,7 @@ namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
-    public abstract ValueTask CacheRequestCoreAsync(
-        OutputCacheContext context,
-        CancellationToken cancellation
-    );
+    public abstract ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation);
 
     public async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
@@ -46,7 +43,13 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
 
         var activity = Activity.Current;
 
-        if (activity is null || !activity.OperationName.Contains(CQRSOutputCachingConsts.MiddlewareName, StringComparison.InvariantCulture))
+        if (
+            activity is null
+            || !activity.OperationName.Contains(
+                CQRSOutputCachingConsts.MiddlewareName,
+                StringComparison.InvariantCulture
+            )
+        )
         {
             return;
         }
