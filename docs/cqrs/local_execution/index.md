@@ -16,6 +16,9 @@ Nevertheless, the local execution only mimics the HTTP pipeline. Local execution
 
 We found that, albeit some features that rely on HTTP will be ignored, most of the middlewares will be fully working.
 
+!!! warning "Output Caching Not Supported"
+    ASP.NET Core's [output caching](../output_caching/index.md) is **not supported** in local execution. The OutputCaching middleware requires a real HTTP context with stream manipulation capabilities that are not available in the local execution pipeline. If you need caching with local execution, consider implementing an application-level cache instead.
+
 Local executors preserve the semantics of HTTP calls, meaning that:
 
 1. They are run in a separate DI scope,

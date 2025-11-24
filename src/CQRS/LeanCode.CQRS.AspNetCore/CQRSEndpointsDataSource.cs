@@ -12,15 +12,20 @@ namespace LeanCode.CQRS.AspNetCore;
 internal class CQRSEndpointsDataSource : EndpointDataSource
 {
     private readonly RoutePattern basePath;
-    private readonly List<Endpoint> endpoints = new();
+    private readonly List<Endpoint> endpoints = [];
+    private readonly IEnumerable<ICQRSEndpointMetadataProvider> endpointMetadataProviders;
 
     public override IChangeToken GetChangeToken() => NullChangeToken.Singleton;
 
     public override IReadOnlyList<Endpoint> Endpoints => endpoints;
 
-    public CQRSEndpointsDataSource(string basePath)
+    public CQRSEndpointsDataSource(
+        string basePath,
+        IEnumerable<ICQRSEndpointMetadataProvider> endpointMetadataProviders
+    )
     {
         this.basePath = RoutePatternFactory.Parse(basePath);
+        this.endpointMetadataProviders = endpointMetadataProviders;
     }
 
     public void AddEndpointsFor(
@@ -33,7 +38,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
         foreach (var obj in objects)
         {
             var pipeline = PipelineFor(obj);
-            var httpMetadata = new HttpMethodMetadata(new[] { HttpMethods.Post });
+            var httpMetadata = new HttpMethodMetadata([HttpMethods.Post]);
 
             foreach (var route in RoutesFor(obj))
             {
@@ -41,7 +46,7 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
                     pipeline,
                     route.Pattern,
                     0,
-                    new EndpointMetadataCollection(obj, httpMetadata),
+                    BuildMetadata(obj, httpMetadata),
                     $"{obj.ObjectKind} {route.Name}"
                 );
                 endpoints.Add(endpoint);
@@ -58,6 +63,17 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
                 _ => throw new InvalidOperationException($"Unexpected object kind: {obj.ObjectKind}"),
             };
         }
+    }
+
+    private EndpointMetadataCollection BuildMetadata(CQRSObjectMetadata metadata, HttpMethodMetadata httpMetadata)
+    {
+        return new(
+            [
+                metadata,
+                httpMetadata,
+                .. endpointMetadataProviders.SelectMany(e => e.GetAdditionalEndpointMetadata(metadata)),
+            ]
+        );
     }
 
     private IEnumerable<(string Name, RoutePattern Pattern)> RoutesFor(CQRSObjectMetadata obj)

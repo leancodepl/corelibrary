@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace LeanCode.CQRS.AspNetCore;
 
-public interface ICQRSApplicationBuilder : IApplicationBuilder { }
+public interface ICQRSApplicationBuilder : IApplicationBuilder;
 
 internal class CQRSApplicationBuilder : ICQRSApplicationBuilder
 {
@@ -44,6 +44,12 @@ public static class CQRSApplicationBuilderExtensions
     public static ICQRSApplicationBuilder Secure(this ICQRSApplicationBuilder builder)
     {
         builder.UseMiddleware<CQRSSecurityMiddleware>();
+        return builder;
+    }
+
+    public static ICQRSApplicationBuilder CacheOutput(this ICQRSApplicationBuilder builder)
+    {
+        builder.UseOutputCache();
         return builder;
     }
 

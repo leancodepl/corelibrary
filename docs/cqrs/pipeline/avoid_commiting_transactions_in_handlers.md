@@ -19,19 +19,16 @@ Let's consider following pipeline configuration:
                     cqrs =>
                     {
                         cqrs.Commands = c =>
-                            c.CQRSTrace()
-                            .Secure()
+                            c.Secure()
                             .Validate()
                             .CommitTransaction<CoreDbContext>()
                             .PublishEvents();
 
-                        cqrs.Queries = c =>
-                            c.CQRSTrace()
-                            .Secure();
+                        cqrs.Queries = q =>
+                            q.Secure();
 
-                        cqrs.Operations = c =>
-                            c.CQRSTrace()
-                            .Secure()
+                        cqrs.Operations = o =>
+                            o.Secure()
                             .CommitTransaction<CoreDbContext>()
                             .PublishEvents();
                     }

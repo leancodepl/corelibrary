@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.OutputCaching/LeanCode.CQRS.OutputCaching.csproj" />
+  </ItemGroup>
+
+</Project>
+

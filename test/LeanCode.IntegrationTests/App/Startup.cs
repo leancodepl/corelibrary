@@ -1,6 +1,7 @@
 using LeanCode.Components;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.MassTransitRelay;
+using LeanCode.CQRS.OutputCaching;
 using LeanCode.CQRS.Security;
 using LeanCode.CQRS.Validation.Fluent;
 using LeanCode.IntegrationTestHelpers;
@@ -35,6 +36,7 @@ public class Startup : LeanStartup
         services.AddRouting();
         services.AddCQRS(CQRSTypes, CQRSTypes);
         services.AddFluentValidation(CQRSTypes);
+        services.AddCQRSOutputCache(CQRSTypes);
         services.AddCQRSMassTransitIntegration(busCfg =>
         {
             busCfg.AddConsumer<EntityAddedConsumer, EntityAddedConsumerDefinition>();
@@ -65,8 +67,8 @@ public class Startup : LeanStartup
                 cfg =>
                 {
                     cfg.Commands = cmd => cmd.Secure().Validate().CommitTransaction<TestDbContext>().PublishEvents();
-                    cfg.Queries = cmd => cmd.Secure();
-                    cfg.Operations = cmd => cmd.Secure();
+                    cfg.Queries = cmd => cmd.Secure().CacheOutput();
+                    cfg.Operations = cmd => cmd.Secure().CacheOutput();
                 }
             )
         );

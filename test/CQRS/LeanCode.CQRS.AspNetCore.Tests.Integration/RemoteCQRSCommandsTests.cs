@@ -10,14 +10,14 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_NotFound_for_non_existing_command()
     {
-        var (_, statusCode) = await SendAsync("/cqrs/command/LeanCode.NotAValidCommand");
+        var (_, statusCode, _) = await SendAsync("/cqrs/command/LeanCode.NotAValidCommand");
         Assert.Equal(HttpStatusCode.NotFound, statusCode);
     }
 
     [Fact]
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_PUT()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             method: HttpMethod.Put
         );
@@ -28,7 +28,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_MethodNotAllowed_when_using_incorrect_verb_GET()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             method: HttpMethod.Get
         );
@@ -39,7 +39,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_OK_with_successful_command_result_on_success()
     {
-        var (body, statusCode) = await SendAsync(
+        var (body, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand"
         );
 
@@ -52,7 +52,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_UnprocessableEntity_with_errors_when_validation_fails()
     {
-        var (body, statusCode) = await SendAsync(
+        var (body, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             @"{ ""FailValidation"": true }"
         );
@@ -72,7 +72,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_BadRequest_if_failed_to_deserialize_object()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             "{ malformed json }"
         );
@@ -82,7 +82,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_Unauthorized_for_when_user_is_not_authenticated()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             isAuthenticated: false
         );
@@ -93,7 +93,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_Forbidden_if_authorizer_fails()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestCommand",
             @"{ ""FailAuthorization"": true }"
         );
@@ -104,7 +104,7 @@ public class RemoteCQRSCommandsTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Returns_InternalServerError_if_something_fails()
     {
-        var (_, statusCode) = await SendAsync(
+        var (_, statusCode, _) = await SendAsync(
             "/cqrs/command/LeanCode.CQRS.AspNetCore.Tests.Integration.TestFailingCommand"
         );
 

@@ -134,7 +134,7 @@ namespace LeanCode.CQRS.AspNetCore.Tests
 
         private static CQRSEndpointsDataSource PrepareEndpointsSource()
         {
-            var dataSource = new CQRSEndpointsDataSource("/cqrs");
+            var dataSource = new CQRSEndpointsDataSource("/cqrs", []);
 
             RequestDelegate pipeline = ctx =>
             {
