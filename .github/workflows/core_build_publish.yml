@@ -176,7 +176,8 @@ jobs:
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          working-directory: ./TestResults
+          files: ./TestResults/cobertura.xml
+          fail_ci_if_error: false
       - name: Upload test report
         if: always()
         run: |
