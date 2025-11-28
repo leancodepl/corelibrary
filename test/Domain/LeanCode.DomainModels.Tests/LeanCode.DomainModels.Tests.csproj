@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -11,11 +10,19 @@
 
   <ItemGroup>
     <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
-    <ProjectReference Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj" OutputItemType="Analyzer" />
+    <ProjectReference
+      Include="../../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj"
+      OutputItemType="Analyzer"
+    />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.App.Ref" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference
+      Include="Microsoft.NETCore.App.Ref"
+      IncludeAssets="none"
+      PrivateAssets="all"
+      GeneratePathProperty="true"
+    />
 
     <EmbeddedResource Include="$(PkgMicrosoft_NETCore_App_Ref)/ref/$(TargetFramework)/System.Linq.dll">
       <LogicalName>System.Linq</LogicalName>

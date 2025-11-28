@@ -23,14 +23,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj"
-                      Condition="'$(MSBuildProjectName)' != 'LeanCode.CodeAnalysis'
-                                And '$(TargetFramework)' == 'net9.0'">
-        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-        <OutputItemType>Analyzer</OutputItemType>
+    <ProjectReference
+      Include="../../Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj"
+      Condition="'$(MSBuildProjectName)' != 'LeanCode.CodeAnalysis'
+                                And '$(TargetFramework)' == 'net9.0'"
+    >
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Analyzer</OutputItemType>
     </ProjectReference>
   </ItemGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
-          Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"/>
+  <Import
+    Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
+    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"
+  />
 </Project>

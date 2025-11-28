@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" />
   </ItemGroup>
-
 </Project>

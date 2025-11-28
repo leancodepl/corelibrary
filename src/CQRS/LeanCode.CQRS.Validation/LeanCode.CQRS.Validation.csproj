@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />  
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
-
 </Project>

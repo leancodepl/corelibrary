@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <Compile Update="TestSamples/**/*.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -12,12 +11,10 @@
     <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-  </ItemGroup>
+  <ItemGroup></ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
   </ItemGroup>
-
 </Project>

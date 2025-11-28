@@ -86,8 +86,8 @@ public class JsonLaxDateTimeOffsetConverterTests
     [InlineData("\"20212-12-15T07:23:10.115Z\"")]
     public void Throws_trying_deserialize_incorrect_DateTimeOffset_using_lax_converter(string serialized)
     {
-        Assert.Throws<JsonException>(
-            () => JsonSerializer.Deserialize<DateTimeOffset>(serialized, LaxSerializerOptions)
+        Assert.Throws<JsonException>(() =>
+            JsonSerializer.Deserialize<DateTimeOffset>(serialized, LaxSerializerOptions)
         );
     }
 

@@ -116,8 +116,8 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     [Fact]
     public async Task Throws_if_object_authorizer_is_not_implemented()
     {
-        await Assert.ThrowsAsync<CustomAuthorizerNotFoundException>(
-            () => SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser())
+        await Assert.ThrowsAsync<CustomAuthorizerNotFoundException>(() =>
+            SendPayloadAsync(new NotImplementedAuthorizer(), AuthenticatedUser())
         );
         VerifyActivity("middleware - Security");
         VerifyActivity($"middleware - Security - {typeof(INotImplementedAuthorizer).FullName}");

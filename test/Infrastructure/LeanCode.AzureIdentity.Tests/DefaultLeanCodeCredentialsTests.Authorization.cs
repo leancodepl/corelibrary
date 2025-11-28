@@ -41,8 +41,8 @@ public class DefaultLeanCodeCredentialsTests_Authorization
 
     private static async Task AssertGetsTokenAsync(TokenCredential cred)
     {
-        var ex = await Record.ExceptionAsync(
-            () => cred.GetTokenAsync(new TokenRequestContext(RequestedScopes), CancellationToken.None).AsTask()
+        var ex = await Record.ExceptionAsync(() =>
+            cred.GetTokenAsync(new TokenRequestContext(RequestedScopes), CancellationToken.None).AsTask()
         );
 
         Assert.Null(ex);

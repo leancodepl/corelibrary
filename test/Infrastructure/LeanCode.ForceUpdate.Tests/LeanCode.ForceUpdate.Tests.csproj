@@ -9,7 +9,7 @@
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
   </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+  </ItemGroup>
 </Project>

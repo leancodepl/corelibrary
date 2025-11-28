@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
-        <ProjectReference Include="../../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
-        <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
-
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+  </ItemGroup>
 </Project>
