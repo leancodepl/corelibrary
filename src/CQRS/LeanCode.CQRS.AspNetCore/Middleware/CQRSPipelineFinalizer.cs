@@ -8,10 +8,9 @@ internal static class CQRSPipelineFinalizer
 {
     public static async Task HandleAsync(HttpContext context)
     {
+        using var activity = LeanCodeActivitySource.StartMiddleware("Execution");
         var metadata = context.GetCQRSObjectMetadata();
         var payload = context.GetCQRSRequestPayload();
-
-        using var activity = LeanCodeActivitySource.StartMiddleware("Execution");
 
         var result = await metadata.ObjectExecutor(context, payload);
 

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
@@ -5,20 +6,70 @@ namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
-    public virtual ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
+    public abstract ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation);
+
+    public async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         context.EnableOutputCaching = true;
         context.AllowLocking = true;
-        return ValueTask.CompletedTask;
+
+        await CacheRequestCoreAsync(context, cancellation);
+
+        // If that's false no `ServeFromCacheAsync` nor `ServeResponseAsync` will be called
+        if (!context.AllowCacheLookup && !context.AllowCacheStorage)
+        {
+            RecordSpanTagsAndMetrics(false, context);
+        }
     }
 
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
+        RecordSpanTagsAndMetrics(true, context);
         return ValueTask.CompletedTask;
     }
 
     public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
+        RecordSpanTagsAndMetrics(false, context);
         return ValueTask.CompletedTask;
+    }
+
+    private static void RecordSpanTagsAndMetrics(bool servingFromCache, OutputCacheContext context)
+    {
+        if (!context.EnableOutputCaching)
+        {
+            return;
+        }
+
+        var activity = Activity.Current;
+
+        if (
+            activity is null
+            || !activity.OperationName.Contains(
+                CQRSOutputCachingConsts.MiddlewareName,
+                StringComparison.InvariantCulture
+            )
+        )
+        {
+            return;
+        }
+
+        activity.SetTag("output_cache.locking_allowed", context.AllowLocking);
+        activity.SetTag("output_cache.storage_allowed", context.AllowCacheStorage);
+        activity.SetTag("output_cache.lookup_allowed", context.AllowCacheLookup);
+
+        if (servingFromCache)
+        {
+            CQRSOutputCacheMetrics.CacheHit();
+            activity.SetTag("output_cache.served_from_cache", true);
+        }
+        else
+        {
+            CQRSOutputCacheMetrics.CacheMiss();
+            activity.SetTag("output_cache.served_from_cache", false);
+
+            // Not served from cache, so if cache storage was allowed, it was actually stored
+            activity.SetTag("output_cache.stored_in_cache", context.AllowCacheStorage);
+        }
     }
 }

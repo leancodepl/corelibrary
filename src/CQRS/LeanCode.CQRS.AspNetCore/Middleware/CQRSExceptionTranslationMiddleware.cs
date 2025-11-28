@@ -27,6 +27,7 @@ public class CQRSExceptionTranslationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
+        using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var cqrsPayload = httpContext.GetCQRSRequestPayload();
 
@@ -41,7 +42,6 @@ public class CQRSExceptionTranslationMiddleware
         }
         catch (CommandExecutionInvalidException ex)
         {
-            using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
             activity?.SetTag("error.code", ex.ErrorCode);
 
             var result = WrapInCommandResult(ex);

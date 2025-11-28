@@ -8,7 +8,11 @@ internal sealed class TestQuery : IQuery<TestResult>;
 
 internal sealed class TestResult;
 
-internal sealed class TestQueryOCP : CQRSOutputCachePolicy<TestQuery>;
+internal sealed class TestQueryOCP : CQRSOutputCachePolicy<TestQuery>
+{
+    public override ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation) =>
+        ValueTask.CompletedTask;
+}
 
 internal sealed class NonCQRSOCP : IOutputCachePolicy
 {
@@ -22,13 +26,21 @@ internal sealed class NonCQRSOCP : IOutputCachePolicy
         throw new NotImplementedException();
 }
 
-internal sealed class RandomObjectOCP : CQRSOutputCachePolicy<string>;
+internal sealed class RandomObjectOCP : CQRSOutputCachePolicy<string>
+{
+    public override ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation) =>
+        ValueTask.CompletedTask;
+}
 
 internal sealed class TestOperation : IOperation<TestOperationResult>;
 
 internal sealed class TestOperationResult;
 
-internal sealed class TestOperationOCP : CQRSOutputCachePolicy<TestOperation>;
+internal sealed class TestOperationOCP : CQRSOutputCachePolicy<TestOperation>
+{
+    public override ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation) =>
+        ValueTask.CompletedTask;
+}
 
 internal sealed class InvalidOCP;
 

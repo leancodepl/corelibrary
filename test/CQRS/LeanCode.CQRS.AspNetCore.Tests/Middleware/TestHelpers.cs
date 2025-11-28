@@ -9,9 +9,9 @@ namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
 
 public static class TestHelpers
 {
-    public static Endpoint MockCQRSEndpoint(CQRSObjectMetadata obj)
+    public static Endpoint MockCQRSEndpoint(CQRSObjectMetadata obj, params object[] additionalMetadata)
     {
-        return new Endpoint(null, new EndpointMetadataCollection(obj), obj.ObjectType.Name);
+        return new(null, new([obj, .. additionalMetadata]), obj.ObjectType.Name);
     }
 
     public static ExecutionResult ShouldContainExecutionResult(
