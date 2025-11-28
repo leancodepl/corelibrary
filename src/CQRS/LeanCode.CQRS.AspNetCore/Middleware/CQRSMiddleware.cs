@@ -78,7 +78,7 @@ public class CQRSMiddleware
         {
             logger.Error(ex, "Cannot execute object {@Object} of type {Type}", obj, objectType);
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            MarkError(CQRSMetrics.InternalError, activity);
+            MarkError(CQRSMetrics.InternalError, activity, ex);
         }
 
         // assuming that in other cases the middleware itself will log & report appropriate metric

@@ -45,7 +45,6 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
     {
         var httpContext = await SendPayloadAsync(new NoAuthorization());
         AssertAuthorizationSuccess(httpContext);
-        VerifyNoActivity("middleware - Security");
     }
 
     [Fact]
@@ -144,6 +143,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
         VerifyNoCQRSSuccessMetrics();
         VerifyNoCQRSFailureMetrics();
+        VerifyActivity("middleware - Security");
     }
 
     private void AssertAuthorizationFailure(HttpContext context, int errorCode = StatusCodes.Status403Forbidden)
@@ -151,7 +151,6 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
         context.ShouldHaveResponseStatusCode(errorCode).ShouldContainExecutionResult(errorCode);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.AuthorizationFailure, 1);
-
         VerifyActivity("middleware - Security");
     }
 

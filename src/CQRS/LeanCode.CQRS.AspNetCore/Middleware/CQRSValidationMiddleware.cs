@@ -23,6 +23,7 @@ public class CQRSValidationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext, ICommandValidatorResolver resolver)
     {
+        using var activity = LeanCodeActivitySource.StartMiddleware("Validation");
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var payload = httpContext.GetCQRSRequestPayload();
 
@@ -34,11 +35,11 @@ public class CQRSValidationMiddleware
         var validator = resolver.FindCommandValidator(cqrsMetadata.ObjectType);
         if (validator is null)
         {
+            activity?.SetTag("validation.validator_present", false);
             await next(httpContext);
             return;
         }
 
-        using var activity = LeanCodeActivitySource.StartMiddleware("Validation");
         activity?.SetTag("validation.validator", validator.GetType().FullName);
 
         var result = await validator.ValidateAsync(httpContext, (ICommand)payload.Payload);

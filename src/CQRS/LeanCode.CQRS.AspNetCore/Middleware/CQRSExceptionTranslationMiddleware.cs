@@ -27,6 +27,7 @@ public class CQRSExceptionTranslationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
+        using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
         var cqrsMetadata = httpContext.GetCQRSObjectMetadata();
         var cqrsPayload = httpContext.GetCQRSRequestPayload();
 
@@ -35,7 +36,6 @@ public class CQRSExceptionTranslationMiddleware
             throw new InvalidOperationException("CQRSExceptionTranslationMiddleware may be used only for commands.");
         }
 
-        using var activity = LeanCodeActivitySource.StartMiddleware("ExceptionTranslation");
         try
         {
             await next(httpContext);

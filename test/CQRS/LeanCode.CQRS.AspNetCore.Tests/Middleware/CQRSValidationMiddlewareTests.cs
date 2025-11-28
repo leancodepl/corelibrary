@@ -49,7 +49,7 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
 
         Serializer.ShouldHaveSerialized(commandResult);
 
-        VerifyNoActivity("middleware - Validation");
+        VerifyActivity("middleware - Validation");
     }
 
     [Fact]

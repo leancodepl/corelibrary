@@ -105,27 +105,17 @@ public abstract class CQRSMiddlewareTestBase : IAsyncLifetime, IDisposable
 
         if (additionalTags is not null)
         {
-            if (additionalTags.Where(t => t.Value is not null) is var expectedTags && expectedTags.Any())
+            var tagsLookup = additionalTags.ToLookup(t => t.Value is not null);
+            if (tagsLookup[true].Any())
             {
-                activity.TagObjects.Should().Contain(expectedTags);
+                activity.TagObjects.Should().Contain(tagsLookup[true]);
             }
 
-            if (
-                additionalTags.Where(t => t.Value is null).Select(t => t.Key) is var unexpectedTags
-                && unexpectedTags.Any()
-            )
+            if (tagsLookup[false].Any())
             {
-                activity.TagObjects.Should().NotContainKeys(unexpectedTags);
+                activity.TagObjects.Should().NotContainKeys(tagsLookup[false].Select(t => t.Key));
             }
         }
-    }
-
-    protected void VerifyNoActivity(string operationNamePrefix)
-    {
-        activities
-            .FirstOrDefault(a => a.OperationName.StartsWith(operationNamePrefix, StringComparison.Ordinal))
-            .Should()
-            .BeNull("there should be no activities for middleware execution");
     }
 
     protected void VerifyCQRSSuccessMetrics(int measuredTotal)

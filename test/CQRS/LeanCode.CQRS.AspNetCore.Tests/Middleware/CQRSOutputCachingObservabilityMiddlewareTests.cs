@@ -47,7 +47,7 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     }
 
     [Fact]
-    public async Task Does_not_open_span_nor_collect_metrics_without_output_cache_metadata()
+    public async Task Records_span_without_policy_when_output_cache_metadata_is_missing()
     {
         await SendRequestAsync(includeOutputCacheMetadata: false);
 
@@ -55,7 +55,14 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
         {
             VerifyNoCQRSCacheHitMetrics();
             VerifyNoCQRSCacheMissMetrics();
-            VerifyNoOutputCacheActivity();
+            VerifyOutputCacheActivity(
+                servedFromCache: null,
+                policyPresent: false,
+                storedInCache: null,
+                allowCacheStorage: null,
+                allowCacheLookup: null,
+                allowLocking: null
+            );
         }
     }
 
@@ -90,7 +97,14 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
         {
             VerifyNoCQRSCacheHitMetrics();
             VerifyNoCQRSCacheMissMetrics();
-            VerifyOutputCacheActivity(null, null, null, null, null);
+            VerifyOutputCacheActivity(
+                servedFromCache: null,
+                policyPresent: null,
+                storedInCache: null,
+                allowCacheStorage: null,
+                allowCacheLookup: null,
+                allowLocking: null
+            );
         }
     }
 
@@ -202,29 +216,33 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
 
     private void VerifyOutputCacheActivity(
         bool? servedFromCache,
+        bool? policyPresent = null,
         bool? storedInCache = null,
         bool? allowCacheStorage = true,
         bool? allowCacheLookup = true,
         bool? allowLocking = true
     )
     {
-        VerifyActivity(
-            "middleware - OutputCache",
-            additionalTags: new Dictionary<string, object?>
-            {
-                { "output_cache.policy", typeof(TestQueryOCP).FullName },
-                { "output_cache.locking_allowed", allowLocking },
-                { "output_cache.storage_allowed", allowCacheStorage },
-                { "output_cache.lookup_allowed", allowCacheLookup },
-                { "output_cache.served_from_cache", servedFromCache },
-                { "output_cache.stored_in_cache", storedInCache },
-            }
-        );
-    }
+        var dict = new Dictionary<string, object?>
+        {
+            { "output_cache.locking_allowed", allowLocking },
+            { "output_cache.storage_allowed", allowCacheStorage },
+            { "output_cache.lookup_allowed", allowCacheLookup },
+            { "output_cache.served_from_cache", servedFromCache },
+            { "output_cache.stored_in_cache", storedInCache },
+        };
 
-    private void VerifyNoOutputCacheActivity()
-    {
-        VerifyNoActivity("middleware - OutputCache");
+        if (policyPresent is false)
+        {
+            dict["output_cache.policy"] = null;
+            dict["output_cache.policy_present"] = false;
+        }
+        else
+        {
+            dict["output_cache.policy"] = typeof(TestQueryOCP).FullName;
+        }
+
+        VerifyActivity("middleware - OutputCache", additionalTags: dict);
     }
 
     private sealed record TestQuery : IQuery<TestQueryResult>

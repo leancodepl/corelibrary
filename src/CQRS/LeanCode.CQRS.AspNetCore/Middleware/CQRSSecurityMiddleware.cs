@@ -23,6 +23,7 @@ public class CQRSSecurityMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        using var activity = LeanCodeActivitySource.StartMiddleware("Security");
         var cqrsMetadata = context.GetCQRSObjectMetadata();
         var payload = context.GetCQRSRequestPayload();
 
@@ -30,11 +31,11 @@ public class CQRSSecurityMiddleware
 
         if (customAuthorizers.Count == 0)
         {
+            activity?.SetTag("authorizers_present", false);
             await next(context);
             return;
         }
 
-        using var activity = LeanCodeActivitySource.StartMiddleware("Security");
         if (!(context.User.Identity?.IsAuthenticated ?? false))
         {
             activity?.SetTag("user_authenticated", false);

@@ -165,7 +165,11 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var httpContext = await SendAsync();
 
         httpContext.ShouldHaveResponseStatusCode(StatusCodes.Status500InternalServerError);
-        VerifyActivity(activityStatusCode: ActivityStatusCode.Error, failureReason: CQRSMetrics.InternalError);
+        VerifyActivity(
+            activityStatusCode: ActivityStatusCode.Error,
+            failureReason: CQRSMetrics.InternalError,
+            exceptionShouldBeRecorded: true
+        );
         VerifyCQRSFailureMetrics(CQRSMetrics.InternalError, 1);
     }
 

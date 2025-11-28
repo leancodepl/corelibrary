@@ -17,14 +17,15 @@ internal class CQRSOutputCachingObservabilityMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        if (GetOutputCachingPolicyName(httpContext) is not { } policyName)
-        {
-            await next(httpContext);
-            return;
-        }
-
         using var activity = LeanCodeActivitySource.StartMiddleware(CQRSOutputCachingConsts.MiddlewareName);
-        activity?.SetTag("output_cache.policy", CQRSOutputCachePolicyName.GetObjectTypeString(policyName));
+        if (GetOutputCachingPolicyName(httpContext) is { } policyName)
+        {
+            activity?.SetTag("output_cache.policy", CQRSOutputCachePolicyName.GetObjectTypeString(policyName));
+        }
+        else
+        {
+            activity?.SetTag("output_cache.policy_present", false);
+        }
 
         await next(httpContext);
     }
