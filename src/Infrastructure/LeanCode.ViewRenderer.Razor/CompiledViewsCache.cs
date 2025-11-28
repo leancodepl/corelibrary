@@ -39,6 +39,21 @@ internal class CompiledViewsCache
 
         if (tcs == newTcs)
         {
+            // Double-check the main cache. This handles the race condition where:
+            // 1. We checked cache above → miss
+            // 2. Another thread finished compilation, added to cache, and removed from buildCache
+            // 3. We added our TCS to buildCache (which was now empty)
+            // Without this check, we'd start a redundant compilation.
+            if (cache.TryGetValue(viewName, out compiled))
+            {
+                logger.Verbose(
+                    "View type for {ViewName} was added to cache while we were setting up compilation",
+                    viewName
+                );
+                buildCache.TryRemove(viewName, out _);
+                return new ValueTask<CompiledView>(compiled);
+            }
+
             return new ValueTask<CompiledView>(WrappedCompileAsync(viewName, tcs));
         }
 
