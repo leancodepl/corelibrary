@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Testing/LeanCode.TimeProvider.TestHelpers/LeanCode.TimeProvider.TestHelpers.csproj" />
     <ProjectReference Include="../../LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
   </ItemGroup>
-
 </Project>

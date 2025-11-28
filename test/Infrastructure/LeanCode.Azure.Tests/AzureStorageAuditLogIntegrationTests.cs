@@ -170,11 +170,11 @@ public sealed class AzureStorageFactAttribute : ExternalServiceFactAttribute
 {
     protected override string ServiceType => "azure";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
-        [
-            Env.TenantIdKey,
-            Env.ClientIdKey,
-            Env.ClientSecretKey,
-            Env.AzureBlobStorageServiceUriKey,
-            Env.AzureTableStorageServiceUriKey,
-        ];
+    [
+        Env.TenantIdKey,
+        Env.ClientIdKey,
+        Env.ClientSecretKey,
+        Env.AzureBlobStorageServiceUriKey,
+        Env.AzureTableStorageServiceUriKey,
+    ];
 }

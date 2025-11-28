@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../../Core/LeanCode.Components/LeanCode.Components.csproj" />
     <ProjectReference Include="../LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
@@ -8,5 +7,4 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
   </ItemGroup>
-
 </Project>

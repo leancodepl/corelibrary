@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Components.Autofac/LeanCode.Components.Autofac.csproj" />
     <ProjectReference Include="../../Infrastructure/LeanCode.AzureIdentity/LeanCode.AzureIdentity.csproj" />
@@ -11,5 +10,4 @@
 
     <PackageReference Include="Autofac.Extensions.DependencyInjection" />
   </ItemGroup>
-
 </Project>

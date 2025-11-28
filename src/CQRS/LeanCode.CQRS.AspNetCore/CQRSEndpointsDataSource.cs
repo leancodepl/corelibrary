@@ -67,13 +67,11 @@ internal class CQRSEndpointsDataSource : EndpointDataSource
 
     private EndpointMetadataCollection BuildMetadata(CQRSObjectMetadata metadata, HttpMethodMetadata httpMetadata)
     {
-        return new(
-            [
-                metadata,
-                httpMetadata,
-                .. endpointMetadataProviders.SelectMany(e => e.GetAdditionalEndpointMetadata(metadata)),
-            ]
-        );
+        return new([
+            metadata,
+            httpMetadata,
+            .. endpointMetadataProviders.SelectMany(e => e.GetAdditionalEndpointMetadata(metadata)),
+        ]);
     }
 
     private IEnumerable<(string Name, RoutePattern Pattern)> RoutesFor(CQRSObjectMetadata obj)

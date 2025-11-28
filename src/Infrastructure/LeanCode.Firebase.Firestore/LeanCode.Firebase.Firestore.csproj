@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" />
     <PackageReference Include="Google.Cloud.Firestore" />
@@ -9,5 +8,4 @@
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Firebase/LeanCode.Firebase.csproj" />
   </ItemGroup>
-
 </Project>

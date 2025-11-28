@@ -10,5 +10,4 @@
 
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
-
 </Project>

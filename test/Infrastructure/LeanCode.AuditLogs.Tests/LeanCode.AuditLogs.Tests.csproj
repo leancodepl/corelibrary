@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -17,5 +16,4 @@
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
   </ItemGroup>
-
 </Project>

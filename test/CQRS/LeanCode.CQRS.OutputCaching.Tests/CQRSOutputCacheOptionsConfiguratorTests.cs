@@ -21,12 +21,10 @@ public class CQRSOutputCacheOptionsConfiguratorTests
 
         configurator
             .RegisteredPolicies.Should()
-            .BeEquivalentTo(
-                [
-                    (CQRSOutputCachePolicyName.For(typeof(TestQueryOCP)), typeof(TestQueryOCP)),
-                    (CQRSOutputCachePolicyName.For(typeof(TestOperationOCP)), typeof(TestOperationOCP)),
-                ]
-            );
+            .BeEquivalentTo([
+                (CQRSOutputCachePolicyName.For(typeof(TestQueryOCP)), typeof(TestQueryOCP)),
+                (CQRSOutputCachePolicyName.For(typeof(TestOperationOCP)), typeof(TestOperationOCP)),
+            ]);
     }
 
     private sealed class RecordingConfigurator(CQRSOutputCacheRegistry registry)

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyName>LeanCode.AuditLogs</AssemblyName>
     <Nullable>enable</Nullable>
@@ -22,5 +21,4 @@
     <ProjectReference Include="../LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
     <ProjectReference Include="../../Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
   </ItemGroup>
-
 </Project>

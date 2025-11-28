@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="Sendgrid" />
   </ItemGroup>
@@ -8,5 +7,4 @@
     <ProjectReference Include="../LeanCode.Localization/LeanCode.Localization.csproj" />
     <ProjectReference Include="../LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
   </ItemGroup>
-
 </Project>

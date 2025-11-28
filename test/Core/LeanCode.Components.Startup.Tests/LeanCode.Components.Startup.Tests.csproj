@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <RootNamespace>LeanCode.Startup.Autofac.Tests</RootNamespace>
   </PropertyGroup>
@@ -8,5 +7,4 @@
     <ProjectReference Include="../../../src/Core/LeanCode.Startup.Autofac/LeanCode.Startup.Autofac.csproj" />
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
   </ItemGroup>
-
 </Project>

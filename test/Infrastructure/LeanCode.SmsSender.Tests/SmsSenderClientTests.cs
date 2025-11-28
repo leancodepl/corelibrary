@@ -61,5 +61,5 @@ internal sealed class SmsApiFactAttribute : ExternalServiceFactAttribute
 {
     protected override string ServiceType => "smsapi";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
-        ["SMSAPI_TOKEN", "SMSAPI_PHONENUMBERTO"];
+    ["SMSAPI_TOKEN", "SMSAPI_PHONENUMBERTO"];
 }

@@ -42,8 +42,8 @@ public sealed class DefaultLeanCodeCredentialsTests_Configuration : IDisposable
     [Fact]
     public void Throws_if_no_authorization_method_specified()
     {
-        Assert.Throws<InvalidOperationException>(
-            () => DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration())
+        Assert.Throws<InvalidOperationException>(() =>
+            DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration())
         );
     }
 

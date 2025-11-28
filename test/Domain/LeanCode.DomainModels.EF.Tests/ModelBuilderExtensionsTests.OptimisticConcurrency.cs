@@ -39,7 +39,8 @@ public class ModelBuilderExtensionsTests_OptimisticConcurrency
         {
             Assert.Throws<InvalidOperationException>(
                 // ReSharper disable once AccessToDisposedClosure
-                () => db.Model.FindEntityType(typeof(WrongDateModified).FullName!)
+                () =>
+                    db.Model.FindEntityType(typeof(WrongDateModified).FullName!)
             );
         }
     }

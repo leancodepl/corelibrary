@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../../../src/Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
   </ItemGroup>
-
 </Project>
