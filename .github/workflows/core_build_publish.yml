@@ -136,10 +136,12 @@ jobs:
         run: |
           dotnet restore
           dotnet tool restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
       - name: Unit tests
-        run: dotnet test -- --explicit on --filter-not-trait 'integration=true'
+        run: dotnet test --no-build --configuration Release -- --explicit on --filter-not-trait 'integration=true'
       - name: Azure Test
-        run: dotnet test -- --explicit on --filter-trait 'service=azure'
+        run: dotnet test --no-build --configuration Release -- --explicit on --filter-trait 'service=azure'
         env:
           CORELIB_TESTS_TENANT_ID: ${{ secrets.CORELIB_TESTS_TENANT_ID }}
           CORELIB_TESTS_CLIENT_ID: ${{ secrets.CORELIB_TESTS_CLIENT_ID }}
@@ -150,12 +152,12 @@ jobs:
           CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME: ${{ secrets.CORELIB_TESTS_AZURE_BLOB_STORAGE_CONTAINER_NAME }}
           CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME: ${{ secrets.CORELIB_TESTS_AZURE_TABLE_STORAGE_TABLE_NAME }}
       - name: Integration Test - SQL Server
-        run: dotnet test -- --explicit on --filter-query '/[(category=integration)&(database!=postgres)]'
+        run: dotnet test --no-build --configuration Release -- --explicit on --filter-query '/[(category=integration)&(database!=postgres)]'
         env:
           SqlServer__ConnectionStringBase: Server=localhost,1433;User Id=sa;Password=Passw12#;Encrypt=false
           LeanCodeIntegrationTests__Database: sqlserver
       - name: Integration Test - Postgres
-        run: dotnet test -- --explicit on --filter-trait 'category=integration'
+        run: dotnet test --no-build --configuration Release -- --explicit on --filter-trait 'category=integration'
         env:
           Postgres__ConnectionStringBase: Host=localhost;Username=postgres;Password=Passw12#
           LeanCodeIntegrationTests__Database: postgres

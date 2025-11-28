@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Xunit;
 using Xunit.v3;
 
@@ -10,7 +11,11 @@ public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttrib
     protected abstract IReadOnlyCollection<string> RequiredEnvVariables { get; }
     protected abstract string ServiceType { get; }
 
-    protected ExternalServiceFactAttribute()
+    protected ExternalServiceFactAttribute(
+        [CallerFilePath] string? sourceFilePath = null,
+        [CallerLineNumber] int sourceLineNumber = 0
+    )
+        : base(sourceFilePath, sourceLineNumber)
     {
         Explicit = true;
     }
@@ -24,13 +29,13 @@ public abstract class ExternalServiceFactAttribute : FactAttribute, ITraitAttrib
     {
         var skipReason = SkipIfVariablesNotSet(RequiredEnvVariables.ToHashSet());
 
-        if (skipReason != null)
+        if (skipReason is not null)
         {
             Assert.Fail(skipReason);
         }
     }
 
-    private static string SkipIfVariablesNotSet(IReadOnlySet<string> variables)
+    private static string? SkipIfVariablesNotSet(IReadOnlySet<string> variables)
     {
         return variables.Any(v => string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(v)))
             ? $"Set `{string.Join(",", variables)}` env variables first"

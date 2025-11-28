@@ -119,13 +119,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Do not update to v8, as it changed license that is mostly unusable for us -->
     <PackageVersion Include="FluentAssertions" Version="7.2.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageVersion Include="Microsoft.Testing.Platform" Version="1.9.0" />
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="xunit.v3" Version="1.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.1.0" />
     <PackageVersion Include="xunit.analyzers" Version="1.25.0" />
+    <PackageVersion Include="xunit.v3.assert" Version="3.2.0" />
+    <PackageVersion Include="xunit.v3.extensibility.core" Version="3.2.0" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.0" />
 
     <PackageVersion Include="Microsoft.NETCore.App.Ref" Version="$(DomainModelsTestsNetCoreAppRefVersion)" />
   </ItemGroup>

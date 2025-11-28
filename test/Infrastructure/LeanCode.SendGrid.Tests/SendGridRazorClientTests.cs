@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using LeanCode.Localization.StringLocalizers;
@@ -121,7 +122,10 @@ public class SendGridRazorClientTests
     }
 }
 
-internal sealed class SendGridFactAttribute : ExternalServiceFactAttribute
+internal sealed class SendGridFactAttribute(
+    [CallerFilePath] string? sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = 0
+) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {
     protected override string ServiceType => "sendgrid";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =

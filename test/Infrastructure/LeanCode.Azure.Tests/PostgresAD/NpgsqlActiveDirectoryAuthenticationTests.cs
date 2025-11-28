@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Runtime.CompilerServices;
+using FluentAssertions;
 using LeanCode.Npgsql.ActiveDirectory;
 using LeanCode.Test.Helpers;
 using Npgsql;
@@ -25,7 +26,10 @@ public class NpgsqlActiveDirectoryAuthenticationTests
     }
 }
 
-public sealed class PostgresFactAttribute : ExternalServiceFactAttribute
+public sealed class PostgresFactAttribute(
+    [CallerFilePath] string? sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = 0
+) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {
     protected override string ServiceType => "npgsql";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
