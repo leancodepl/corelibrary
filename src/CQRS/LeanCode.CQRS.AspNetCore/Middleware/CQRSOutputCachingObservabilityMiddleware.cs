@@ -20,6 +20,7 @@ internal class CQRSOutputCachingObservabilityMiddleware
         using var activity = LeanCodeActivitySource.StartMiddleware(CQRSOutputCachingConsts.MiddlewareName);
         if (GetOutputCachingPolicyName(httpContext) is { } policyName)
         {
+            activity?.SetTag("output_cache.policy_present", true);
             activity?.SetTag("output_cache.policy", CQRSOutputCachePolicyName.GetObjectTypeString(policyName));
         }
         else

@@ -31,14 +31,15 @@ public class CQRSSecurityMiddleware
 
         if (customAuthorizers.Count == 0)
         {
-            activity?.SetTag("authorizers_present", false);
+            activity?.SetTag("security.authorizers_present", false);
             await next(context);
             return;
         }
+        activity?.SetTag("security.authorizers_present", true);
 
         if (!(context.User.Identity?.IsAuthenticated ?? false))
         {
-            activity?.SetTag("user_authenticated", false);
+            activity?.SetTag("security.user_authenticated", false);
             metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
             logger.Warning(
                 "The current user is not authenticated and the object {@Object} requires authorization",
@@ -48,13 +49,13 @@ public class CQRSSecurityMiddleware
             await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
             return;
         }
-        activity?.SetTag("user_authenticated", true);
+        activity?.SetTag("security.user_authenticated", true);
 
         foreach (var customAuthorizerDefinition in customAuthorizers)
         {
             var authorizerType = customAuthorizerDefinition.Authorizer;
             using var authorizerActivity = LeanCodeActivitySource.StartMiddleware("Security", authorizerType.FullName);
-            authorizerActivity?.SetTag("authorizer.type", authorizerType.FullName);
+            authorizerActivity?.SetTag("security.authorizer.type", authorizerType.FullName);
 
             var customAuthorizer =
                 context.RequestServices.GetService(authorizerType) as IHttpContextCustomAuthorizer
@@ -68,7 +69,7 @@ public class CQRSSecurityMiddleware
 
             if (!authorized)
             {
-                authorizerActivity?.SetTag("authorizer.authorized", false);
+                authorizerActivity?.SetTag("security.authorizer.authorized", false);
                 metrics.CQRSFailure(CQRSMetrics.AuthorizationFailure);
                 logger.Warning(
                     "User is not authorized for {@Object}, authorizer {AuthorizerType} did not pass",
@@ -82,7 +83,7 @@ public class CQRSSecurityMiddleware
             else
             {
                 authorizerActivity?.SetStatus(ActivityStatusCode.Ok);
-                authorizerActivity?.SetTag("authorizer.authorized", true);
+                authorizerActivity?.SetTag("security.authorizer.authorized", true);
             }
         }
 

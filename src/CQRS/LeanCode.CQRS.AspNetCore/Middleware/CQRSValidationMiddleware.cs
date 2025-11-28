@@ -40,6 +40,7 @@ public class CQRSValidationMiddleware
             return;
         }
 
+        activity?.SetTag("validation.validator_present", true);
         activity?.SetTag("validation.validator", validator.GetType().FullName);
 
         var result = await validator.ValidateAsync(httpContext, (ICommand)payload.Payload);
