@@ -123,7 +123,7 @@ public class SendGridRazorClientTests
 }
 
 internal sealed class SendGridFactAttribute(
-    [CallerFilePath] string? sourceFilePath = null,
+    [CallerFilePath] string sourceFilePath = null,
     [CallerLineNumber] int sourceLineNumber = 0
 ) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {

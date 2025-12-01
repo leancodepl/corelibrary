@@ -8,7 +8,6 @@
     <IsPackable>false</IsPackable>
     <NoWarn>CA1812</NoWarn>
     <OutputType>Exe</OutputType>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>

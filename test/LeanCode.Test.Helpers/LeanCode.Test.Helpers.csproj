@@ -3,6 +3,7 @@
     <IsPackable>false</IsPackable>
     <OutputType>Library</OutputType>
     <IsTestProject>false</IsTestProject>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
