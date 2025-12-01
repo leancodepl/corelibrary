@@ -5,7 +5,7 @@ namespace LeanCode.AzureIdentity.Tests;
 
 public class DefaultLeanCodeCredentialsTests_Authorization
 {
-    [AzureIdentityFact("Azure__UseAzureCLI")]
+    [AzureIdentityFact(["Azure__UseAzureCLI"])]
     public async Task Authorizes_via_cli()
     {
         var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration { UseAzureCLI = true });
@@ -13,7 +13,7 @@ public class DefaultLeanCodeCredentialsTests_Authorization
         await AssertGetsTokenAsync(cred);
     }
 
-    [AzureIdentityFact("Azure__TenantId", "Azure__ClientId", "Azure__ClientSecret")]
+    [AzureIdentityFact(["Azure__TenantId", "Azure__ClientId", "Azure__ClientSecret"])]
     public async Task Authorizes_using_service_principal_secret()
     {
         var config = new AzureCredentialConfiguration
@@ -29,7 +29,7 @@ public class DefaultLeanCodeCredentialsTests_Authorization
     }
 
     // this one won't be of much use unless we run tests on Azure VM
-    [AzureIdentityFact("Azure__UseManagedIdentity")]
+    [AzureIdentityFact(["Azure__UseManagedIdentity"])]
     public async Task Authorizes_via_managed_identity()
     {
         var cred = DefaultLeanCodeCredential.Create(new AzureCredentialConfiguration { UseManagedIdentity = true });

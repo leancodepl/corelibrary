@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using LeanCode.Logging;
 using LeanCode.SmsSender.Exceptions;
 using LeanCode.Test.Helpers;
@@ -57,7 +58,10 @@ public class SmsSenderClientTests
     }
 }
 
-internal sealed class SmsApiFactAttribute : ExternalServiceFactAttribute
+internal sealed class SmsApiFactAttribute(
+    [CallerFilePath] string sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = 0
+) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {
     protected override string ServiceType => "smsapi";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =

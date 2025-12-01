@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using LeanCode.Logging;
 using LeanCode.Test.Helpers;
 
@@ -39,7 +40,10 @@ public class MixpanelAnalyticsTests
     }
 }
 
-internal sealed class MixpanelFactAttribute : ExternalServiceFactAttribute
+internal sealed class MixpanelFactAttribute(
+    [CallerFilePath] string sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = 0
+) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {
     protected override string ServiceType => "mixpanel";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =

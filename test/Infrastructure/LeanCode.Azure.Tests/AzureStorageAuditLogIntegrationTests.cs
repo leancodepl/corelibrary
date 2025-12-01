@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Azure.Data.Tables;
 using Azure.Storage.Blobs;
@@ -166,7 +167,10 @@ public class AzureStorageAuditLogIntegrationTests
     }
 }
 
-public sealed class AzureStorageFactAttribute : ExternalServiceFactAttribute
+public sealed class AzureStorageFactAttribute(
+    [CallerFilePath] string sourceFilePath = null,
+    [CallerLineNumber] int sourceLineNumber = 0
+) : ExternalServiceFactAttribute(sourceFilePath, sourceLineNumber)
 {
     protected override string ServiceType => "azure";
     protected override IReadOnlyCollection<string> RequiredEnvVariables { get; } =
