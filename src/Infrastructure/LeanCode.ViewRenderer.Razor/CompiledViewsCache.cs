@@ -50,6 +50,8 @@ internal class CompiledViewsCache
                     "View type for {ViewName} was added to cache while we were setting up compilation",
                     viewName
                 );
+                // Complete the TCS before removing - other threads may be waiting on it
+                tcs.SetResult(compiled);
                 buildCache.TryRemove(viewName, out _);
                 return new ValueTask<CompiledView>(compiled);
             }
