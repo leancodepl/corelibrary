@@ -4,6 +4,9 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 
+    <!-- Workspaces APIs are intentionally used for CodeFix providers -->
+    <NoWarn>$(NoWarn);RS1038;RS1041</NoWarn>
+
     <!-- It needs to target .NETStandard, otherwise it won't work in Omnisharp. See next comment for details. -->
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
