@@ -8,6 +8,9 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 ## 10.0
 
 * Upgrade to .NET 10
+* Response serialization moved from `CQRSMiddleware` to individual CQRS middlewares to support output caching
+* Add CQRS output caching support with new `LeanCode.CQRS.OutputCaching` package
+* Test infrastructure moved to Microsoft Testing Platform v2 and xunit v3
 
 ## 9.0
 
