@@ -50,7 +50,11 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
     [Fact]
     public async Task Regular_flow_is_not_interrupted()
     {
-        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(CommandResult.Success));
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.WithPayload(CommandResult.Success));
+            return Task.CompletedTask;
+        };
 
         var httpContext = await SendAsync();
 

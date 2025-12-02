@@ -27,7 +27,11 @@ public sealed class CQRSValidationMiddlewareTests : CQRSMiddlewareTestBase<CQRSV
         validatorResolver.FindCommandValidator(typeof(UnvalidatedCommand)).Returns(null as ICommandValidatorWrapper);
         validatorResolver.FindCommandValidator(typeof(ValidatedCommand)).Returns(validator);
 
-        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(CommandResult.Success));
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.WithPayload(CommandResult.Success));
+            return Task.CompletedTask;
+        };
     }
 
     protected override void ConfigureServices(IServiceCollection services)

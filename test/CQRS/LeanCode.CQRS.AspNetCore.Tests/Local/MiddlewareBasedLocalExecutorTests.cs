@@ -180,7 +180,7 @@ public class LocalHandlerMiddleware : IMiddleware
         if (context.Request.Headers.TryGetValue(StatusHeader, out var value))
         {
             var code = int.Parse(value!, CultureInfo.InvariantCulture);
-            await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(code));
+            context.SetCQRSExecutionResult(ExecutionResult.Empty(code));
         }
         else
         {

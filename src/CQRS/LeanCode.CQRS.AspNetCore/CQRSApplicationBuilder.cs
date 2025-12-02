@@ -49,7 +49,10 @@ public static class CQRSApplicationBuilderExtensions
 
     public static ICQRSApplicationBuilder CacheOutput(this ICQRSApplicationBuilder builder)
     {
-        builder.UseMiddleware<CQRSOutputCachingObservabilityMiddleware>().UseOutputCache();
+        builder
+            .UseMiddleware<CQRSOutputCachingObservabilityMiddleware>()
+            .UseOutputCache()
+            .UseMiddleware<CQRSResponseSerializerMiddleware>();
         return builder;
     }
 

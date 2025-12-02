@@ -10,26 +10,17 @@ public static class HttpContextExtensions
 {
     private static readonly ReadOnlyMemory<byte> NullString = "null"u8.ToArray();
 
-    public static async Task CompleteCQRSExecutionResult(this HttpContext httpContext, ExecutionResult result)
+    public static async Task SerializeCQRSResultAsync(this HttpContext httpContext)
     {
-        httpContext.Features.Set(result);
-
         if (httpContext.Response is NullHttpResponse)
         {
-            return;
+            throw new InvalidOperationException("Cannot serialize CQRS result to NullHttpResponse.");
         }
 
         var serializer = httpContext.RequestServices.GetRequiredService<ISerializer>();
-        await SerializeCQRSResultAsync(httpContext, result, serializer);
-    }
 
-    private static async Task SerializeCQRSResultAsync(
-        HttpContext httpContext,
-        ExecutionResult result,
-        ISerializer serializer
-    )
-    {
         var objectMetadata = httpContext.GetCQRSObjectMetadata();
+        var result = httpContext.GetCQRSRequiredExecutionResult();
 
         httpContext.Response.StatusCode = result.StatusCode;
         if (!result.HasPayload)

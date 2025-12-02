@@ -33,10 +33,17 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
     public CQRSMiddlewareTests()
     {
-        FinalPipeline = ctx =>
-            IntermediatePipeline(ctx) is { } result
-                ? ctx.CompleteCQRSExecutionResult(result)
-                : CQRSPipelineFinalizer.HandleAsync(ctx);
+        FinalPipeline = async ctx =>
+        {
+            if (IntermediatePipeline(ctx) is { } result)
+            {
+                ctx.SetCQRSExecutionResult(result);
+            }
+            else
+            {
+                await CQRSPipelineFinalizer.HandleAsync(ctx);
+            }
+        };
     }
 
     [Fact]

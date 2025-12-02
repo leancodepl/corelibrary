@@ -32,12 +32,20 @@ public class CQRSOutputCachingObservabilityMiddlewareTests : CQRSMiddlewareTestB
     private readonly MetricCollector<int> cqrsCacheMissMetricCollector;
 
     public CQRSOutputCachingObservabilityMiddlewareTests()
-        : base(app => app.UseMiddleware<CQRSOutputCachingObservabilityMiddleware>().UseOutputCache())
+        : base(app =>
+            app.UseMiddleware<CQRSOutputCachingObservabilityMiddleware>()
+                .UseOutputCache()
+                .UseMiddleware<CQRSResponseSerializerMiddleware>()
+        )
     {
         cqrsCacheHitMetricCollector = new(CQRSOutputCacheMetrics.CqrsOutputCacheHit);
         cqrsCacheMissMetricCollector = new(CQRSOutputCacheMetrics.CqrsOutputCacheMiss);
 
-        FinalPipeline = ctx => ctx.CompleteCQRSExecutionResult(ExecutionResult.WithPayload(new TestQueryResult(42)));
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.WithPayload(new TestQueryResult(42)));
+            return Task.CompletedTask;
+        };
     }
 
     protected override void ConfigureServices(IServiceCollection services)
