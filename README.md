@@ -3,7 +3,7 @@
 ![Corelibrary Build & Publish](https://github.com/leancodepl/corelibrary/workflows/Corelibrary%20Build%20&%20Publish/badge.svg)
 ![Nuget](https://img.shields.io/nuget/vpre/LeanCode.Components)
 ![Feedz](https://img.shields.io/feedz/v/leancode/public/LeanCode.Components)
-[![codecov](https://codecov.io/gh/leancodepl/corelibrary/branch/v5.0/graph/badge.svg?token=ROFNA3WTTD)](https://codecov.io/gh/leancodepl/corelibrary)
+[![codecov](https://codecov.io/gh/leancodepl/corelibrary/branch/v10-preview/graph/badge.svg?token=ROFNA3WTTD)](https://codecov.io/gh/leancodepl/corelibrary)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 The LeanCode Core Library is a set of helper libraries developed at [our company](https://leancode.co/) that aids our day-to-day development. Not only does it serve as a facilitator in our day-to-day coding activities, but it also encapsulates comprehensive guidelines, gathers our collective knowledge on application architecture and development best practices.
