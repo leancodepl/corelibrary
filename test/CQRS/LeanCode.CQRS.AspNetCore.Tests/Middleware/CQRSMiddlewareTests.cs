@@ -24,8 +24,6 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         (_, _) => Task.FromResult<object?>(FinalResult)
     );
 
-    private Func<HttpContext, ExecutionResult?> IntermediatePipeline { get; set; } = _ => null;
-
     protected override void ConfigureServices(IServiceCollection services)
     {
         services.AddLogging(logging => logging.AddNullLeanCodeLogger());
@@ -33,17 +31,7 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
     public CQRSMiddlewareTests()
     {
-        FinalPipeline = async ctx =>
-        {
-            if (IntermediatePipeline(ctx) is { } result)
-            {
-                ctx.SetCQRSExecutionResult(result);
-            }
-            else
-            {
-                await CQRSPipelineFinalizer.HandleAsync(ctx);
-            }
-        };
+        FinalPipeline = CQRSPipelineFinalizer.HandleAsync;
     }
 
     [Fact]
@@ -100,7 +88,11 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var queryResult = new QueryResult();
 
         Serializer.SetDeserializeResult(query);
-        IntermediatePipeline = _ => ExecutionResult.WithPayload(queryResult, StatusCodes.Status202Accepted);
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.WithPayload(queryResult, StatusCodes.Status202Accepted));
+            return Task.CompletedTask;
+        };
 
         var httpContext = await SendAsync();
 
@@ -121,7 +113,11 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var query = new Query();
 
         Serializer.SetDeserializeResult(query);
-        IntermediatePipeline = _ => ExecutionResult.Empty(StatusCodes.Status418ImATeapot);
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status418ImATeapot));
+            return Task.CompletedTask;
+        };
 
         var httpContext = await SendAsync();
 
@@ -146,7 +142,11 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         var queryResult = new QueryRuntimeResult();
 
         Serializer.SetDeserializeResult(query);
-        IntermediatePipeline = _ => ExecutionResult.WithPayload(queryResult, StatusCodes.Status200OK);
+        FinalPipeline = ctx =>
+        {
+            ctx.SetCQRSExecutionResult(ExecutionResult.WithPayload(queryResult, StatusCodes.Status200OK));
+            return Task.CompletedTask;
+        };
 
         var httpContext = await SendAsync();
 
@@ -161,13 +161,23 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
         VerifyCQRSSuccessMetrics(1);
     }
 
-    [Fact]
-    public async Task Returns_500InternalServerError_if_pipeline_execution_thrown_an_exception()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Returns_500InternalServerError_if_pipeline_execution_thrown_an_exception(
+        bool thrownAfterFinalizer
+    )
     {
         var query = new Query();
         Serializer.SetDeserializeResult(query);
-
-        IntermediatePipeline = _ => throw new InvalidOperationException();
+        FinalPipeline = async ctx =>
+        {
+            if (thrownAfterFinalizer)
+            {
+                await CQRSPipelineFinalizer.HandleAsync(ctx);
+            }
+            throw new InvalidOperationException();
+        };
 
         var httpContext = await SendAsync();
 
@@ -188,11 +198,11 @@ public sealed class CQRSMiddlewareTests : CQRSMiddlewareTestBase<CQRSMiddleware>
 
         object interceptedPayload = null!;
 
-        IntermediatePipeline = ctx =>
+        FinalPipeline = ctx =>
         {
             var payload = ctx.GetCQRSRequestPayload();
             interceptedPayload = payload.Payload;
-            return null;
+            return Task.CompletedTask;
         };
 
         await SendAsync();
