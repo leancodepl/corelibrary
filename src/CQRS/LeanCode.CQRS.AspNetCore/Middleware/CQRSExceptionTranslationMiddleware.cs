@@ -49,7 +49,7 @@ public class CQRSExceptionTranslationMiddleware
             logger.Warning("Command {@Command} is not valid with result {@Result}", cqrsPayload.Payload, result);
 
             var executionResult = ExecutionResult.WithPayload(result, StatusCodes.Status422UnprocessableEntity);
-            await httpContext.CompleteCQRSExecutionResult(executionResult);
+            httpContext.SetCQRSExecutionResult(executionResult);
         }
     }
 

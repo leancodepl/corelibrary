@@ -46,7 +46,7 @@ public class CQRSSecurityMiddleware
                 payload.Payload
             );
 
-            await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
+            context.SetCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status401Unauthorized));
             return;
         }
         activity?.SetTag("security.user_authenticated", true);
@@ -77,7 +77,7 @@ public class CQRSSecurityMiddleware
                     customAuthorizer.GetType().FullName
                 );
 
-                await context.CompleteCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
+                context.SetCQRSExecutionResult(ExecutionResult.Empty(StatusCodes.Status403Forbidden));
                 return;
             }
             else

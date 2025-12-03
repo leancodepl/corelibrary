@@ -120,15 +120,14 @@ sequenceDiagram
     middle ->> final: next()
 
     Note over final: Execute handler
-    Note over final: Set result in CQRSRequestPayload
+    Note over final: Set ExecutionResult
 
     final ->> middle: #0160;
     Note over middle: Custom middlewares, e.g. events publication
 
     middle ->> start: #0160;
 
-    Note over start: Set response headers
-    Note over start: Serialize result
+    Note over start: Serialize ExecutionResult to response
 
     start ->> aspnet: #0160;
 
@@ -136,9 +135,12 @@ sequenceDiagram
 
 The process begins with the invocation of common ASP.NET middlewares, such as `UseAuthentication` and `UseCors`, prior to the execution of the [MapRemoteCQRS(...)] method. This method, adds the [CQRSMiddleware], initiating the pipeline. During this stage, the request undergoes deserialization and the [CQRSRequestPayload] is set on `HttpContext`.
 
-Subsequently, the pipeline executes additional custom middlewares, responsible for tasks like [authorization], [validation] or [output-caching]. Following the successful execution of these middlewares, the specific handler is invoked inside [CQRSPipelineFinalizer]. Upon handler execution, the result is assigned to the [CQRSRequestPayload].
+Subsequently, the pipeline executes additional custom middlewares, responsible for tasks like [authorization], [validation] or [output-caching]. Following the successful execution of these middlewares, the specific handler is invoked inside [CQRSPipelineFinalizer]. Upon handler execution, the [ExecutionResult] is set on the `HttpContext`.
 
-[EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, response headers are configured, and the result is serialized inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
+[EventsPublisherMiddleware] then facilitates the publication of events (assuming it's added to the pipeline in [MapRemoteCQRS(...)]). Towards the conclusion of the pipeline, the [ExecutionResult] is serialized to the response inside [CQRSMiddleware]. Finally, the serialized result is returned to the client, completing the request handling process.
+
+!!! note "Serialization with Output Caching"
+    When output caching is enabled via `.CacheOutput()`, the serialization is handled differently. A [CQRSResponseSerializerMiddleware] is added after the OutputCache middleware to ensure proper serialization timing for cache storage. In this case, [CQRSMiddleware] delegates serialization to that middleware.
 
 [AddCQRS(...)]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L17
 [CQRSServicesBuilder]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/ServiceCollectionCQRSExtensions.cs#L46
@@ -162,6 +164,8 @@ Subsequently, the pipeline executes additional custom middlewares, responsible f
 [CQRSMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSMiddleware.cs
 [CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
 [CQRSPipelineFinalizer]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSPipelineFinalizer.cs
+[ExecutionResult]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/ExecutionResult.cs
+[CQRSResponseSerializerMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSResponseSerializerMiddleware.cs
 [Commands]: ../command/index.md
 [Queries]: ../query/index.md
 [Operations]: ../operation/index.md

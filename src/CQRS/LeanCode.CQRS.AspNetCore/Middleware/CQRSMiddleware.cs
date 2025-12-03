@@ -69,6 +69,11 @@ public class CQRSMiddleware
         try
         {
             await next(httpContext);
+
+            if (!httpContext.IsHttpResponseSet())
+            {
+                await httpContext.SerializeCQRSResultAsync();
+            }
         }
         catch (Exception ex) when (ex is OperationCanceledException || ex.InnerException is OperationCanceledException)
         {

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace LeanCode.CQRS.Execution;
 
 public readonly record struct ExecutionResult
@@ -12,7 +14,7 @@ public readonly record struct ExecutionResult
 
     public static ExecutionResult Empty(int code) => new() { StatusCode = code };
 
-    public static ExecutionResult WithPayload(object? payload, int code = 200) =>
+    public static ExecutionResult WithPayload(object? payload, int code = StatusCodes.Status200OK) =>
         new()
         {
             StatusCode = code,

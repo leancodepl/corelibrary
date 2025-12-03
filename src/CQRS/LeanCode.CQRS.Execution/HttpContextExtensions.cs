@@ -31,7 +31,7 @@ public static class HttpContextExtensions
 
     public static ExecutionResult? GetCQRSExecutionResult(this HttpContext httpContext)
     {
-        return httpContext.Features.Get<ExecutionResult>();
+        return httpContext.Features.Get<ExecutionResult?>();
     }
 
     public static TPayload? GetCQRSResultPayload<TPayload>(this HttpContext httpContext)
@@ -41,12 +41,23 @@ public static class HttpContextExtensions
 
     public static ExecutionResult GetCQRSRequiredExecutionResult(this HttpContext httpContext)
     {
-        return httpContext.Features.GetRequiredFeature<ExecutionResult>();
+        return httpContext.GetCQRSExecutionResult()
+            ?? throw new InvalidOperationException("Execution result is not set in HttpContext features.");
     }
 
     public static TPayload GetCQRSRequiredResultPayload<TPayload>(this HttpContext httpContext)
     {
         return (TPayload)httpContext.GetCQRSRequiredExecutionResult().Payload!;
+    }
+
+    public static void SetCQRSExecutionResult(this HttpContext httpContext, ExecutionResult result)
+    {
+        if (httpContext.GetCQRSExecutionResult() is not null)
+        {
+            throw new InvalidOperationException("The CQRS execution result has been already set.");
+        }
+
+        httpContext.Features.Set<ExecutionResult?>(result);
     }
 
     public static void SetCQRSObjectMetadataForLocalExecution(this HttpContext httpContext, CQRSObjectMetadata metadata)
