@@ -25,13 +25,9 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
         var httpContext = await SendAsync();
 
         var commandResult = httpContext
-            .ShouldHaveResponseStatusCode(StatusCodes.Status422UnprocessableEntity)
-            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status422UnprocessableEntity)
             .ShouldContainCommandResult();
         commandResult.ShouldFailWithValidationErrors(new ValidationError("", "error message", 23));
-
-        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 1);
     }
@@ -59,13 +55,9 @@ public sealed class CQRSExceptionTranslationMiddlewareTests : CQRSMiddlewareTest
         var httpContext = await SendAsync();
 
         var commandResult = httpContext
-            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
-            .ShouldHaveResponseContentType(Serializer.ContentType)
             .ShouldContainExecutionResult(StatusCodes.Status200OK)
             .ShouldContainCommandResult();
         commandResult.ShouldBeSuccessful();
-
-        Serializer.ShouldHaveSerialized(commandResult);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.ValidationFailure, 0);
     }

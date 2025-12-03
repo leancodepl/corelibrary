@@ -13,25 +13,25 @@ internal class NullHttpResponse : HttpResponse
     public override long? ContentLength
     {
         get => null;
-        set => throw new InvalidOperationException("Cannot set ContentLength on NullHttpResponse.");
+        set { }
     }
 
     public override int StatusCode
     {
         get => 0;
-        set => throw new InvalidOperationException("Cannot set StatusCode on NullHttpResponse.");
+        set { }
     }
 
     public override string? ContentType
     {
         get => null;
-        set => throw new InvalidOperationException("Cannot set ContentType on NullHttpResponse.");
+        set { }
     }
 
     public override Stream Body
     {
         get => Stream.Null;
-        set => throw new InvalidOperationException("Cannot set Body on NullHttpResponse.");
+        set { }
     }
 
     public NullHttpResponse(HttpContext context)

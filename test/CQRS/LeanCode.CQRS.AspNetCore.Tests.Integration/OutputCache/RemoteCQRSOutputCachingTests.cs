@@ -99,7 +99,7 @@ public class RemoteCQRSOutputCachingTests : RemoteCQRSTestsBase
         var (secondBody, secondStatusCode, _) = await SendAsync(
             CachedQueryPath,
             DefaultBody,
-            headers: new() { { HeaderNames.IfNoneMatch, etag } }
+            headers: new() { [HeaderNames.IfNoneMatch] = etag }
         );
         secondStatusCode.Should().Be(HttpStatusCode.NotModified);
         secondBody.Should().BeEmpty();
@@ -116,7 +116,7 @@ public class RemoteCQRSOutputCachingTests : RemoteCQRSTestsBase
         var (secondBody, secondStatusCode, secondHeaders) = await SendAsync(
             CachedQueryPath,
             DefaultBody,
-            headers: new() { { HeaderNames.IfNoneMatch, "\"different-etag\"" } }
+            headers: new() { [HeaderNames.IfNoneMatch] = "\"different-etag\"" }
         );
         secondStatusCode.Should().Be(HttpStatusCode.OK);
         secondBody.Should().NotBeEmpty();

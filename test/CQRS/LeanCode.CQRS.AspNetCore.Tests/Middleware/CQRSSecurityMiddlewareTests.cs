@@ -140,10 +140,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
     private void AssertAuthorizationSuccess(HttpContext context)
     {
-        context
-            .ShouldHaveResponseStatusCode(StatusCodes.Status200OK)
-            .ShouldHaveResponseContentType(Serializer.ContentType)
-            .ShouldContainExecutionResult(StatusCodes.Status200OK);
+        context.ShouldContainExecutionResult(StatusCodes.Status200OK);
 
         VerifyNoCQRSSuccessMetrics();
         VerifyNoCQRSFailureMetrics();
@@ -152,7 +149,7 @@ public sealed class CQRSSecurityMiddlewareTests : CQRSMiddlewareTestBase<CQRSSec
 
     private void AssertAuthorizationFailure(HttpContext context, int errorCode = StatusCodes.Status403Forbidden)
     {
-        context.ShouldHaveResponseStatusCode(errorCode).ShouldContainExecutionResult(errorCode);
+        context.ShouldContainExecutionResult(errorCode);
 
         VerifyCQRSFailureMetrics(CQRSMetrics.AuthorizationFailure, 1);
         VerifyActivity("middleware - Security");

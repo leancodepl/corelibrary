@@ -23,7 +23,7 @@ public static class TestHelpers
         var result = httpContext.GetCQRSExecutionResult();
 
         result.Should().NotBeNull("because httpContext should contain cqrs execution result");
-        result!.Value.StatusCode.Should().Be(statusCode);
+        result.Value.StatusCode.Should().Be(statusCode);
         if (payload is not null)
         {
             result.Value.Payload.Should().Be(payload);
@@ -50,7 +50,6 @@ public static class TestHelpers
     public static void ShouldFailWithValidationErrors(this CommandResult commandResult, params ValidationError[] errors)
     {
         using var _ = new AssertionScope();
-
         commandResult.WasSuccessful.Should().BeFalse();
         commandResult.ValidationErrors.Should().BeEquivalentTo(errors);
     }
