@@ -42,7 +42,7 @@ public static class HttpContextExtensions
     public static ExecutionResult GetCQRSRequiredExecutionResult(this HttpContext httpContext)
     {
         return httpContext.GetCQRSExecutionResult()
-            ?? throw new InvalidOperationException("Execution result is not set is HttpContext features.");
+            ?? throw new InvalidOperationException("Execution result is not set in HttpContext features.");
     }
 
     public static TPayload GetCQRSRequiredResultPayload<TPayload>(this HttpContext httpContext)
