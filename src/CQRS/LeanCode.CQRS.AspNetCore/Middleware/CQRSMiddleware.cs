@@ -70,7 +70,7 @@ public class CQRSMiddleware
         {
             await next(httpContext);
 
-            if (httpContext.Response is { HasStarted: false, StatusCode: StatusCodes.Status200OK })
+            if (!httpContext.IsHttpResponseSet())
             {
                 await httpContext.SerializeCQRSResultAsync();
             }

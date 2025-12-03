@@ -14,7 +14,7 @@ public class CQRSResponseSerializerMiddleware
     public async Task InvokeAsync(HttpContext httpContext)
     {
         await next(httpContext);
-        if (!httpContext.Response.HasStarted)
+        if (!httpContext.IsHttpResponseSet())
         {
             await httpContext.SerializeCQRSResultAsync();
         }

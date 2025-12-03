@@ -10,6 +10,13 @@ public static class HttpContextExtensions
 {
     private static readonly ReadOnlyMemory<byte> NullString = "null"u8.ToArray();
 
+    public static bool IsHttpResponseSet(this HttpContext httpContext)
+    {
+        var response = httpContext.Response;
+
+        return response.HasStarted || response.StatusCode != StatusCodes.Status200OK || response.ContentLength.HasValue;
+    }
+
     public static async Task SerializeCQRSResultAsync(this HttpContext httpContext)
     {
         if (httpContext.Response is NullHttpResponse)
