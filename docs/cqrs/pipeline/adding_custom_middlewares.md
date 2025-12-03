@@ -50,10 +50,10 @@ Moreover, CoreLibrary provides extension methods for `HttpContext`, which can be
 
 * `GetCQRSRequiredResultPayload<TPayload>()`: Returns the strongly-typed result payload, throwing an exception if the execution result or payload is not present.
 
-* `CompleteCQRSExecutionResult(ExecutionResult result)`: This method should be called when a custom middleware short-circuits the pipeline and needs to return a result payload. It properly sets the [ExecutionResult] and serializes it to the response body. If your middleware returns a response without calling the next middleware, use this method to ensure the response is correctly formatted.
+* `SetCQRSExecutionResult(ExecutionResult result)`: This method sets the [ExecutionResult] in the HttpContext features. Use this when your middleware needs to short-circuit the pipeline and return a result. The response will be automatically serialized at the pipeline boundary (by [CQRSMiddleware]).
 
-!!! warning "Short-Circuiting Middlewares"
-    If your custom middleware short-circuits the pipeline (i.e., doesn't call `await next(context)`) and needs to return a CQRS result payload, you **must** call `await context.CompleteCQRSExecutionResult(result)` ([CompleteCQRSExecutionResult]) to properly serialize the response. Simply setting the response manually will not work correctly with the CQRS pipeline in local execution.
+!!! tip "Short-Circuiting Middlewares"
+    If your custom middleware short-circuits the pipeline (i.e., doesn't call `await next(context)`), you have two options: **set the `ExecutionResult`** by calling `context.SetCQRSExecutionResult(result)` and then `return` (serialization is handled automatically by [CQRSMiddleware]), or **write the response directly** to `context.Response` if you need more control (e.g., streaming). In the latter case, you do not have to set the `ExecutionResult` - the [CQRSMiddleware] will skip serialization if the response has already started.
 
 Here's an example of a middleware that short-circuits and returns a cached result:
 
@@ -62,7 +62,7 @@ public class CustomCachedResultMiddleware : IMiddleware
 {
     private readonly IResultCache cache;
 
-    public CachedResultMiddleware(IResultCache cache)
+    public CustomCachedResultMiddleware(IResultCache cache)
     {
         this.cache = cache;
     }
@@ -74,10 +74,9 @@ public class CustomCachedResultMiddleware : IMiddleware
 
         if (cache.TryGet(cacheKey, out var cachedResult))
         {
-            // Short-circuit: return cached result without calling next()
-            await context.CompleteCQRSExecutionResult(
-                new ExecutionResult(200, cachedResult, hasPayload: true)
-            );
+            // Short-circuit: set result and return without calling next()
+            // Serialization is handled automatically by CQRSMiddleware
+            context.SetCQRSExecutionResult(ExecutionResult.WithPayload(cachedResult));
             return;
         }
 
@@ -85,10 +84,10 @@ public class CustomCachedResultMiddleware : IMiddleware
         await next(context);
 
         // Cache the result after execution
-        var result = context.GetCQRSRequestPayload().Result;
+        var result = context.GetCQRSExecutionResult();
         if (result?.StatusCode == 200)
         {
-            cache.Set(cacheKey, result.Payload);
+            cache.Set(cacheKey, result.Value.Payload);
         }
     }
 }
@@ -132,4 +131,4 @@ After configuration above, you can integrate `EmployeeBlockerMiddleware` into th
 [CQRSObjectMetadata]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSObjectMetadata.cs
 [CQRSRequestPayload]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/CQRSRequestPayload.cs
 [ExecutionResult]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.Execution/ExecutionResult.cs
-[CompleteCQRSExecutionResult]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/HttpContextExtensions.cs#L13
+[CQRSMiddleware]: https://github.com/leancodepl/corelibrary/blob/HEAD/src/CQRS/LeanCode.CQRS.AspNetCore/Middleware/CQRSMiddleware.cs
