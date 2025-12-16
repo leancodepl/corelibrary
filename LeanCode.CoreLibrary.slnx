@@ -1,0 +1,190 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/LeanCode.Components.Autofac/LeanCode.Components.Autofac.csproj" />
+    <Project Path="src/Core/LeanCode.Components/LeanCode.Components.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Core/LeanCode.Startup.Autofac/LeanCode.Startup.Autofac.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Core/LeanCode.Startup.MicrosoftDI/LeanCode.Startup.MicrosoftDI.csproj" />
+  </Folder>
+  <Folder Name="/src/CQRS/">
+    <Project Path="src/CQRS/LeanCode.CQRS.Annotations/LeanCode.CQRS.Annotations.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.AspNetCore/LeanCode.CQRS.AspNetCore.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.Execution/LeanCode.CQRS.Execution.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.OutputCaching/LeanCode.CQRS.OutputCaching.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.RemoteHttp.Client/LeanCode.CQRS.RemoteHttp.Client.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.ScopedTransaction/LeanCode.CQRS.ScopedTransaction.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.Security/LeanCode.CQRS.Security.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
+    <Project Path="src/CQRS/LeanCode.CQRS.Validation/LeanCode.CQRS.Validation.csproj" />
+  </Folder>
+  <Folder Name="/src/Domain/">
+    <Project Path="src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj" />
+    <Project Path="src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/Helpers/">
+    <Project Path="src/Helpers/LeanCode.UrlHelper/LeanCode.UrlHelper.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Helpers/LeanCode.UserIdExtractors/LeanCode.UserIdExtractors.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/LeanCode.AI.Contracts/LeanCode.AI.Contracts.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.AI.McpServer/LeanCode.AI.McpServer.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.AuditLogs/LeanCode.AuditLogs.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.AzureIdentity/LeanCode.AzureIdentity.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.ClientCredentialsHandler/LeanCode.ClientCredentialsHandler.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Infrastructure/LeanCode.ConfigCat/LeanCode.ConfigCat.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Dapper/LeanCode.Dapper.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Infrastructure/LeanCode.EFMigrator/LeanCode.EFMigrator.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Firebase.Firestore/LeanCode.Firebase.Firestore.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Firebase/LeanCode.Firebase.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.ForceUpdate.Contracts/LeanCode.ForceUpdate.Contracts.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.ForceUpdate/LeanCode.ForceUpdate.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Kratos/LeanCode.Kratos.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Localization/LeanCode.Localization.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Logging.AspNetCore/LeanCode.Logging.AspNetCore.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Logging/LeanCode.Logging.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Mixpanel/LeanCode.Mixpanel.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Infrastructure/LeanCode.Npgsql.ActiveDirectory/LeanCode.Npgsql.ActiveDirectory.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.OpenTelemetry/LeanCode.OpenTelemetry.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.PeriodicService/LeanCode.PeriodicService.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.SendGrid/LeanCode.SendGrid.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.SmsSender/LeanCode.SmsSender.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Infrastructure/LeanCode.ViewRenderer.Razor/LeanCode.ViewRenderer.Razor.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Infrastructure/LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/Testing/">
+    <Project Path="src/Testing/LeanCode.DomainModels.EventsExecution.TestHelpers/LeanCode.DomainModels.EventsExecution.TestHelpers.csproj" />
+    <Project Path="src/Testing/LeanCode.IntegrationTestHelpers/LeanCode.IntegrationTestHelpers.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Testing/LeanCode.TimeProvider.TestHelpers/LeanCode.TimeProvider.TestHelpers.csproj" />
+  </Folder>
+  <Folder Name="/src/Tools/">
+    <Project Path="src/Tools/LeanCode.CodeAnalysis/LeanCode.CodeAnalysis.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/LeanCode.IntegrationTests/LeanCode.IntegrationTests.csproj" />
+    <Project Path="test/LeanCode.Test.Helpers/LeanCode.Test.Helpers.csproj" />
+    <Project Path="test/LeanCode.TestCoverage.Tests/LeanCode.TestCoverage.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Core/">
+    <Project Path="test/Core/LeanCode.Components.Startup.Tests/LeanCode.Components.Startup.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/CQRS/">
+    <Project Path="test/CQRS/LeanCode.CQRS.AspNetCore.Tests.Integration/LeanCode.CQRS.AspNetCore.Tests.Integration.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.AspNetCore.Tests/LeanCode.CQRS.AspNetCore.Tests.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.MassTransitRelay.Tests/LeanCode.CQRS.MassTransitRelay.Tests.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.OutputCaching.Tests/LeanCode.CQRS.OutputCaching.Tests.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.RemoteHttp.Client.Tests/LeanCode.CQRS.RemoteHttp.Client.Tests.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.Security.Tests/LeanCode.CQRS.Security.Tests.csproj" />
+    <Project Path="test/CQRS/LeanCode.CQRS.Validation.Fluent.Tests/LeanCode.CQRS.Validation.Fluent.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Domain/">
+    <Project Path="test/Domain/LeanCode.DomainModels.EF.Tests/LeanCode.DomainModels.EF.Tests.csproj" />
+    <Project Path="test/Domain/LeanCode.DomainModels.EventsExecution.TestHelpers.Tests/LeanCode.DomainModels.EventsExecution.TestHelpers.Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="test/Domain/LeanCode.DomainModels.Tests/LeanCode.DomainModels.Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="test/Domain/LeanCode.TimeProvider.Tests/LeanCode.TimeProvider.Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/test/Helpers/">
+    <Project Path="test/Helpers/LeanCode.UserIdExtractors.Tests/LeanCode.UserIdExtractors.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Infrastructure/">
+    <Project Path="test/Infrastructure/LeanCode.AuditLogs.Tests/LeanCode.AuditLogs.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Azure.Tests/LeanCode.Azure.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.AzureIdentity.Tests/LeanCode.AzureIdentity.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Dapper.Tests/LeanCode.Dapper.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Firebase.FCM.Tests/LeanCode.Firebase.FCM.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.ForceUpdate.Tests/LeanCode.ForceUpdate.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Kratos.Tests/LeanCode.Kratos.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Localization.Tests/LeanCode.Localization.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Logging.AspNetCore.Tests/LeanCode.Logging.AspNetCore.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Logging.Tests/LeanCode.Logging.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Mixpanel.Tests/LeanCode.Mixpanel.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.SendGrid.Tests/LeanCode.SendGrid.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.Serialization.Tests/LeanCode.Serialization.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.SmsSender.Tests/LeanCode.SmsSender.Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="test/Infrastructure/LeanCode.ViewRenderer.Razor.Tests/LeanCode.ViewRenderer.Razor.Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/test/Testing/">
+    <Project Path="test/Testing/LeanCode.IntegrationTestHelpers.Tests/LeanCode.IntegrationTestHelpers.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Tools/">
+    <Project Path="test/Tools/LeanCode.CodeAnalysis.Tests/LeanCode.CodeAnalysis.Tests.csproj" />
+  </Folder>
+  <Project Path="test-bed/LeanCode.TestBed.csproj" />
+  <Properties Name="SolutionProperties">
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|Any CPU.ActiveCfg" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|Any CPU.Build.0" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|x64.ActiveCfg" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|x64.Build.0" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|x86.ActiveCfg" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Debug|x86.Build.0" Value="Debug|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|Any CPU.ActiveCfg" Value="Release|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|Any CPU.Build.0" Value="Release|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|x64.ActiveCfg" Value="Release|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|x64.Build.0" Value="Release|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|x86.ActiveCfg" Value="Release|Any CPU" />
+    <Property Name="{11E2CD09-C021-4007-A204-E9FAD23B33EC}.Release|x86.Build.0" Value="Release|Any CPU" />
+  </Properties>
+</Solution>
