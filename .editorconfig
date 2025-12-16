@@ -25,7 +25,7 @@ insert_final_newline = false
 [*.tf]
 indent_size = 2
 
-[*.{cs}]
+[*.cs]
 indent_size = 4
 
 dotnet_style_qualification_for_field                                     = false : suggestion
