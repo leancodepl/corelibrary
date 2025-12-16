@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Upload
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: Event File
         path: ${{ github.event_path }}
@@ -80,9 +80,9 @@ jobs:
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore
@@ -127,9 +127,9 @@ jobs:
         ports:
           - "5432:5432"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore
@@ -161,15 +161,12 @@ jobs:
         env:
           Postgres__ConnectionStringBase: Host=localhost;Username=postgres;Password=Passw12#
           LeanCodeIntegrationTests__Database: postgres
-
       - name: Process test results
         if: always()
         run: |
           # Strip BOM :clown:
           find TestResults -name '*.json' | xargs -n 1 sed -i "$(printf '1s/^\357\273\277//')"
-
           # Merge results
-          npx ctrf merge TestResults --output merged.json
           dotnet coverage merge 'TestResults/*.xml' -o TestResults/cobertura.xml -f cobertura
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -178,13 +175,18 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./TestResults/cobertura.xml
           fail_ci_if_error: false
-      - name: Upload test report
+      - name: Publish test report
+        uses: ctrf-io/github-test-reporter@v1
         if: always()
-        run: |
-          npx github-actions-ctrf summary TestResults/merged.json --annotate
-          npx github-actions-ctrf failed-folded TestResults/merged.json
-          npx github-actions-ctrf skipped TestResults/merged.json
-          npx github-actions-ctrf pull-request TestResults/merged.json --overwrite-comment --comment-tag "${{ github.workflow }}-${{ github.job }}"
+        with:
+          report-path: './TestResults/*.json'
+          summary-report: true
+          failed-folded-report: true
+          skipped-report: true
+          annotate: true
+          pull-request: true
+          overwrite-comment: true
+          comment-tag: '${{ github.workflow }}-${{ github.job }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -196,7 +198,7 @@ jobs:
     steps:
       - name: Fetch build
         id: download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ needs.prepare.outputs.artifacts_name }}
       - name: Unzip
