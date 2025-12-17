@@ -85,7 +85,7 @@ public sealed class TypedIdAttribute : Attribute
     /// <remarks>
     /// Consider SQL Server's 900-byte key limit (~450 nvarchar chars) when choosing this value.
     /// </remarks>
-    public int MaxValuePartLength { get; set; } = -1;
+    public int MaxValueLength { get; set; } = -1;
 
     public TypedIdAttribute(TypedIdFormat format)
     {

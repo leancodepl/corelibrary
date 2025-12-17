@@ -10,7 +10,7 @@ namespace LeanCode.DomainModels.Tests.Ids;
 [TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tps")]
 public readonly partial record struct TestPrefixedStringId;
 
-[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tpm", MaxValuePartLength = 10)]
+[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tpm", MaxValueLength = 10)]
 public readonly partial record struct TestPrefixedStringIdWithMaxLength;
 
 public class PrefixedStringIdTests
@@ -272,16 +272,16 @@ public class PrefixedStringIdTests
 public class PrefixedStringIdWithMaxLengthTests
 {
     [Fact]
-    public void MaxValuePartLength_is_exposed()
+    public void MaxValueLength_is_exposed()
     {
-        Assert.Equal(10, TestPrefixedStringIdWithMaxLength.MaxValuePartLength);
+        Assert.Equal(10, TestPrefixedStringIdWithMaxLength.MaxValueLength);
     }
 
     [Fact]
-    public void MaxLength_is_calculated_correctly()
+    public void MaxRawLength_is_calculated_correctly()
     {
         // prefix "tpm" (3) + separator "_" (1) + max value part (10) = 14
-        Assert.Equal(14, TestPrefixedStringIdWithMaxLength.MaxLength);
+        Assert.Equal(14, TestPrefixedStringIdWithMaxLength.MaxRawLength);
     }
 
     [Fact]

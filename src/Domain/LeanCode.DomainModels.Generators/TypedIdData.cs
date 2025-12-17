@@ -9,7 +9,7 @@ public sealed class TypedIdData
     public string TypeName { get; }
     public string? CustomPrefix { get; }
     public bool SkipRandomGenerator { get; }
-    public int? MaxValuePartLength { get; }
+    public int? MaxValueLength { get; }
     public bool IsValid { get; }
     public Location? Location { get; }
 
@@ -19,7 +19,7 @@ public sealed class TypedIdData
         string typeName,
         string? customPrefix,
         bool skipRandomGenerator,
-        int? maxValuePartLength,
+        int? maxValueLength,
         bool isValid,
         Location? location
     )
@@ -29,7 +29,7 @@ public sealed class TypedIdData
         TypeName = typeName;
         CustomPrefix = customPrefix;
         SkipRandomGenerator = skipRandomGenerator;
-        MaxValuePartLength = maxValuePartLength;
+        MaxValueLength = maxValueLength;
         IsValid = isValid;
         Location = location;
     }

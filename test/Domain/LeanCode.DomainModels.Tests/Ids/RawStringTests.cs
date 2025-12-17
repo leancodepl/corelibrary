@@ -10,7 +10,7 @@ namespace LeanCode.DomainModels.Tests.Ids;
 [TypedId(TypedIdFormat.RawString)]
 public readonly partial record struct TestRawStringId;
 
-[TypedId(TypedIdFormat.RawString, MaxValuePartLength = 10)]
+[TypedId(TypedIdFormat.RawString, MaxValueLength = 10)]
 public readonly partial record struct TestRawStringIdWithMaxLength;
 
 public class RawStringIdTests
@@ -226,9 +226,9 @@ public class RawStringIdTests
 public class RawStringIdWithMaxLengthTests
 {
     [Fact]
-    public void MaxValuePartLength_is_exposed()
+    public void MaxLength_is_exposed()
     {
-        Assert.Equal(10, TestRawStringIdWithMaxLength.MaxValuePartLength);
+        Assert.Equal(10, TestRawStringIdWithMaxLength.MaxLength);
     }
 
     [Fact]

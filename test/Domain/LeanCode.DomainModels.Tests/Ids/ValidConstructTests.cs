@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Ids;
@@ -39,7 +38,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -79,7 +78,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -119,7 +118,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -159,7 +158,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -190,7 +189,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawString, MaxValuePartLength = 100)]
+                [TypedId(TypedIdFormat.RawString, MaxValueLength = 100)]
                 public readonly partial record struct Id;
             """
         );
@@ -199,7 +198,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawString, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.RawString, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -230,7 +229,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.PrefixedString, MaxValuePartLength = 100)]
+                [TypedId(TypedIdFormat.PrefixedString, MaxValueLength = 100)]
                 public readonly partial record struct Id;
             """
         );
@@ -239,13 +238,13 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValuePartLength = 50)]
+                [TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
     }
 
-    private static void AssertCorrect([StringSyntax("C#")] string source)
+    private static void AssertCorrect(string source)
     {
         var diag = GeneratorRunner.RunDiagnostics(source);
         Assert.Empty(diag);
