@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Ids;
@@ -244,7 +245,7 @@ public class ValidConstructTests
         );
     }
 
-    private static void AssertCorrect(string source)
+    private static void AssertCorrect([StringSyntax("C#")] string source)
     {
         var diag = GeneratorRunner.RunDiagnostics(source);
         Assert.Empty(diag);
