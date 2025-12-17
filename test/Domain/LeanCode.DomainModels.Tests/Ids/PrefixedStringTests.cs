@@ -306,4 +306,26 @@ public class PrefixedStringIdWithMaxLengthTests
         Assert.Throws<FormatException>(() => TestPrefixedStringIdWithMaxLength.Parse("tpm_12345678901"));
         Assert.False(TestPrefixedStringIdWithMaxLength.TryParse("tpm_this_is_too_long", out _));
     }
+
+    [Fact]
+    public void FromValuePart_validates_max_length()
+    {
+        // Within limit - should work
+        var id = TestPrefixedStringIdWithMaxLength.FromValuePart("1234567890");
+        Assert.Equal("tpm_1234567890", id.Value);
+
+        // Exceeds limit - should throw
+        Assert.Throws<ArgumentException>(() => TestPrefixedStringIdWithMaxLength.FromValuePart("12345678901"));
+    }
+
+    [Fact]
+    public void Constructor_validates_max_length()
+    {
+        // Within limit - should work
+        var id = new TestPrefixedStringIdWithMaxLength("1234567890", true);
+        Assert.Equal("tpm_1234567890", id.Value);
+
+        // Exceeds limit - should throw
+        Assert.Throws<ArgumentException>(() => new TestPrefixedStringIdWithMaxLength("12345678901", true));
+    }
 }
