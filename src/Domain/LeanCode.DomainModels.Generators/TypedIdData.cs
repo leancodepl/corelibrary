@@ -9,6 +9,7 @@ public sealed class TypedIdData
     public string TypeName { get; }
     public string? CustomPrefix { get; }
     public bool SkipRandomGenerator { get; }
+    public int? MaxValuePartLength { get; }
     public bool IsValid { get; }
     public Location? Location { get; }
 
@@ -16,8 +17,9 @@ public sealed class TypedIdData
         TypedIdFormat format,
         string @namespace,
         string typeName,
-        string? customSlug,
+        string? customPrefix,
         bool skipRandomGenerator,
+        int? maxValuePartLength,
         bool isValid,
         Location? location
     )
@@ -25,8 +27,9 @@ public sealed class TypedIdData
         Format = format;
         Namespace = @namespace;
         TypeName = typeName;
-        CustomPrefix = customSlug;
+        CustomPrefix = customPrefix;
         SkipRandomGenerator = skipRandomGenerator;
+        MaxValuePartLength = maxValuePartLength;
         IsValid = isValid;
         Location = location;
     }

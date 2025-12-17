@@ -10,6 +10,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
     private const string AttributeName = "LeanCode.DomainModels.Ids.TypedIdAttribute";
     private const string CustomPrefixField = "CustomPrefix";
     private const string SkipRandomGeneratorField = "SkipRandomGenerator";
+    private const string MaxValuePartLengthField = "MaxValuePartLength";
 
     private static readonly DiagnosticDescriptor InvalidTypeRule = new(
         "LNCD0005",
@@ -36,6 +37,9 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                 var skipRandomGenerator = attribute
                     .NamedArguments.FirstOrDefault(a => a.Key == SkipRandomGeneratorField)
                     .Value.Value;
+                var maxValuePartLength = attribute
+                    .NamedArguments.FirstOrDefault(a => a.Key == MaxValuePartLengthField)
+                    .Value.Value;
                 var isValid = IsValidSyntaxNode(n.TargetNode);
                 return new TypedIdData(
                     (TypedIdFormat)idFormat,
@@ -43,6 +47,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                     n.TargetSymbol.Name,
                     (string?)customPrefix,
                     skipRandomGenerator is true,
+                    maxValuePartLength is int mvpl && mvpl >= 0 ? mvpl : null,
                     isValid,
                     !isValid ? n.TargetNode.GetLocation() : null
                 );

@@ -5,6 +5,8 @@ public enum TypedIdFormat
     RawInt = 0,
     RawLong = 1,
     RawGuid = 2,
-    PrefixedGuid = 3,
-    PrefixedUlid = 4,
+    RawString = 3,
+    PrefixedGuid = 4,
+    PrefixedUlid = 5,
+    PrefixedString = 6,
 }
