@@ -404,7 +404,7 @@ namespace {{data.Namespace}}
             return valuePart.Length > 0{{maxLengthValidation}};
         }
 
-        public ReadOnlySpan<char> GetValuePart() => Value.AsSpan()[{{prefix.Length + 1}}..];
+        public ReadOnlySpan<char> GetValuePart() => IsEmpty ? ReadOnlySpan<char>.Empty : Value.AsSpan()[{{prefix.Length + 1}}..];
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);

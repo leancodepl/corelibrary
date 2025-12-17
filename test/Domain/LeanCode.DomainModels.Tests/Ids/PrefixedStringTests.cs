@@ -116,6 +116,13 @@ public class PrefixedStringIdTests
     }
 
     [Fact]
+    public void GetValuePart_returns_empty_span_for_Empty_instance()
+    {
+        var empty = TestPrefixedStringId.Empty;
+        Assert.True(empty.GetValuePart().IsEmpty);
+    }
+
+    [Fact]
     public void Equals_behaves_correctly()
     {
         Assert.True(TestPrefixedStringId.Parse(TPS1).Equals(TestPrefixedStringId.Parse(TPS1)));
