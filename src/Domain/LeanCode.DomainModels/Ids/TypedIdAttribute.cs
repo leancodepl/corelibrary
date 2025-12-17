@@ -78,8 +78,10 @@ public sealed class TypedIdAttribute : Attribute
     public bool SkipRandomGenerator { get; set; }
 
     /// <summary>
-    /// Maximum length of the value part. For <see cref="TypedIdFormat.RawString"/>, this is the entire string.
-    /// For <see cref="TypedIdFormat.PrefixedString"/>, this excludes the prefix and separator.
+    /// Maximum length of the value part. Only applies to <see cref="TypedIdFormat.RawString"/> and
+    /// <see cref="TypedIdFormat.PrefixedString"/> formats; ignored for other formats.
+    /// For <see cref="TypedIdFormat.RawString"/>, this constrains the entire string length.
+    /// For <see cref="TypedIdFormat.PrefixedString"/>, this constrains only the value part (excludes prefix and separator).
     /// If not set (default value of -1), no length validation is performed.
     /// </summary>
     /// <remarks>
