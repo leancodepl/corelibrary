@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.Ulids;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -47,6 +48,8 @@ public class TypedIdDatabaseIntegrationTests
         Assert.Equal(a.J, b.J);
         Assert.Equal(a.K, b.K);
         Assert.Equal(a.L, b.L);
+        Assert.Equal(a.M, b.M);
+        Assert.Equal(a.N, b.N);
     }
 
     private sealed class TestDbContext : DbContext
@@ -79,6 +82,7 @@ public class TypedIdDatabaseIntegrationTests
                 configurationBuilder.Properties<GuidId>().AreGuidTypedId();
                 configurationBuilder.Properties<StringId>().AreStringTypedId();
                 configurationBuilder.Properties<PrefixedGuidId>().ArePrefixedTypedId();
+                configurationBuilder.Properties<PrefixedUlidId>().ArePrefixedTypedId();
                 configurationBuilder.Properties<PrefixedStringId>().ArePrefixedTypedId();
 
                 configurationBuilder.Properties<IntId?>().AreIntTypedId();
@@ -86,6 +90,7 @@ public class TypedIdDatabaseIntegrationTests
                 configurationBuilder.Properties<GuidId?>().AreGuidTypedId();
                 configurationBuilder.Properties<StringId?>().AreStringTypedId();
                 configurationBuilder.Properties<PrefixedGuidId?>().ArePrefixedTypedId();
+                configurationBuilder.Properties<PrefixedUlidId?>().ArePrefixedTypedId();
                 configurationBuilder.Properties<PrefixedStringId?>().ArePrefixedTypedId();
             }
         }
@@ -102,12 +107,14 @@ public class TypedIdDatabaseIntegrationTests
                     cfg.Property(e => e.D).IsStringTypedId();
                     cfg.Property(e => e.E).IsPrefixedTypedId();
                     cfg.Property(e => e.F).IsPrefixedTypedId();
-                    cfg.Property(e => e.G).IsIntTypedId();
-                    cfg.Property(e => e.H).IsLongTypedId();
-                    cfg.Property(e => e.I).IsGuidTypedId();
-                    cfg.Property(e => e.J).IsStringTypedId();
-                    cfg.Property(e => e.K).IsPrefixedTypedId();
+                    cfg.Property(e => e.G).IsPrefixedTypedId();
+                    cfg.Property(e => e.H).IsIntTypedId();
+                    cfg.Property(e => e.I).IsLongTypedId();
+                    cfg.Property(e => e.J).IsGuidTypedId();
+                    cfg.Property(e => e.K).IsStringTypedId();
                     cfg.Property(e => e.L).IsPrefixedTypedId();
+                    cfg.Property(e => e.M).IsPrefixedTypedId();
+                    cfg.Property(e => e.N).IsPrefixedTypedId();
                 }
 
                 cfg.HasKey(e => e.A);
@@ -122,44 +129,49 @@ public class TypedIdDatabaseIntegrationTests
         public GuidId C { get; set; }
         public StringId D { get; set; }
         public PrefixedGuidId E { get; set; }
-        public PrefixedStringId F { get; set; }
+        public PrefixedUlidId F { get; set; }
+        public PrefixedStringId G { get; set; }
 
-        public IntId? G { get; set; }
-        public LongId? H { get; set; }
-        public GuidId? I { get; set; }
-        public StringId? J { get; set; }
-        public PrefixedGuidId? K { get; set; }
-        public PrefixedStringId? L { get; set; }
+        public IntId? H { get; set; }
+        public LongId? I { get; set; }
+        public GuidId? J { get; set; }
+        public StringId? K { get; set; }
+        public PrefixedGuidId? L { get; set; }
+        public PrefixedUlidId? M { get; set; }
+        public PrefixedStringId? N { get; set; }
 
         public static Entity CreateFull()
         {
-            return new Entity
+            return new()
             {
                 A = new(1),
                 B = new(2),
                 C = new(Guid.NewGuid()),
                 D = new("a"),
                 E = new(Guid.NewGuid()),
-                F = PrefixedStringId.FromValuePart("b"),
-                G = new(3),
-                H = new(4),
-                I = new(Guid.NewGuid()),
-                J = new("c"),
-                K = new(Guid.NewGuid()),
-                L = PrefixedStringId.FromValuePart("d"),
+                F = new(Ulid.NewUlid()),
+                G = PrefixedStringId.FromValuePart("b"),
+                H = new(3),
+                I = new(4),
+                J = new(Guid.NewGuid()),
+                K = new("c"),
+                L = new(Guid.NewGuid()),
+                M = new(Ulid.NewUlid()),
+                N = PrefixedStringId.FromValuePart("d"),
             };
         }
 
         public static Entity CreatePartial()
         {
-            return new Entity
+            return new()
             {
                 A = new(5),
                 B = new(6),
                 C = new(Guid.NewGuid()),
                 D = new("e"),
                 E = new(Guid.NewGuid()),
-                F = PrefixedStringId.FromValuePart("f"),
+                F = new(Ulid.NewUlid()),
+                G = PrefixedStringId.FromValuePart("f"),
             };
         }
     }

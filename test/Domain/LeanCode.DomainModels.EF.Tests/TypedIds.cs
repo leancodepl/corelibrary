@@ -20,5 +20,8 @@ public readonly partial record struct StringIdWithMaxLength;
 [TypedId(TypedIdFormat.PrefixedGuid)]
 public readonly partial record struct PrefixedGuidId;
 
+[TypedId(TypedIdFormat.PrefixedUlid)]
+public readonly partial record struct PrefixedUlidId;
+
 [TypedId(TypedIdFormat.PrefixedString, MaxValueLength = 50)]
 public readonly partial record struct PrefixedStringId;
