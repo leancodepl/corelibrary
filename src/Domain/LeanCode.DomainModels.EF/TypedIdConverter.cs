@@ -29,6 +29,8 @@ public class RawTypedIdConverter<TBacking, TId> : ValueConverter<TId, TBacking>
 public class PrefixedTypedIdComparer<TId> : ValueComparer<TId>
     where TId : struct, IPrefixedTypedId<TId>
 {
+    public static readonly PrefixedTypedIdComparer<TId> Instance = new();
+
     public PrefixedTypedIdComparer()
         : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
 }
@@ -38,6 +40,8 @@ public class RawTypedIdComparer<TBacking, TId> : ValueComparer<TId>
     where TBacking : struct
     where TId : struct, IRawTypedId<TBacking, TId>
 {
+    public static readonly RawTypedIdComparer<TBacking, TId> Instance = new();
+
     public RawTypedIdComparer()
         : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
 }

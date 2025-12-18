@@ -62,14 +62,14 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>, IConstSizeTypedId
     {
         private const int ValueLength = {{valueLength}};
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
         public static int RawLength { get; } = {{valueLength + 1 + prefix.Length}};
-        public static readonly {{data.TypeName}} Empty = new(Guid.Empty);
+        public static {{data.TypeName}} Empty { get; } = new(Guid.Empty);
 
         private readonly string? value;
 
@@ -190,14 +190,14 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>, IConstSizeTypedId
     {
         private const int ValueLength = {{valueLength}};
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
         public static int RawLength { get; } = {{valueLength + 1 + prefix.Length}};
-        public static readonly {{data.TypeName}} Empty = new(Ulid.Empty);
+        public static {{data.TypeName}} Empty { get; } = new(Ulid.Empty);
 
         private readonly string? value;
 
@@ -298,15 +298,14 @@ namespace {{data.Namespace}}
     {
         var prefix = data.CustomPrefix?.ToLowerInvariant() ?? GetDefaultPrefix(data.TypeName);
 
+        var maxLengthInterfaces = data.MaxValueLength.HasValue ? ", IMaxLengthTypedId" : "";
         var maxLengthProperties = data.MaxValueLength is int maxLen
             ? $$"""
         public static int MaxValueLength { get; } = {{maxLen}};
-        public static int MaxRawLength { get; } = {{prefix.Length + 1 + maxLen}};
+        public static int MaxLength { get; } = {{prefix.Length + 1 + maxLen}};
 """
             : "";
-
         var maxLengthValidation = data.MaxValueLength.HasValue ? " && valuePart.Length <= MaxValueLength" : "";
-
         var maxLengthThrowValidation = data.MaxValueLength.HasValue
             ? $$"""
 
@@ -334,15 +333,15 @@ namespace {{data.Namespace}}
     using global::LeanCode.DomainModels.Ids;
     #pragma warning restore CS8019
 
-    [JsonConverter(typeof(RawStringTypedIdConverter<{{data.TypeName}}>))]
+    [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IRawStringTypedId<{{data.TypeName}}>
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>{{maxLengthInterfaces}}
     {
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
-        public static readonly {{data.TypeName}} Empty = new(string.Empty);
+        public static {{data.TypeName}} Empty { get; } = new(string.Empty);
 {{maxLengthProperties}}
         private readonly string? value;
 
@@ -350,15 +349,6 @@ namespace {{data.Namespace}}
         public bool IsEmpty => string.IsNullOrEmpty(value);
 
         private {{data.TypeName}}(string v) => value = v;
-
-        public {{data.TypeName}}(string valuePart, bool _)
-        {
-            if (valuePart is null)
-            {
-                throw new ArgumentNullException(nameof(valuePart));
-            }{{maxLengthThrowValidation}}
-            value = $"{TypePrefix}{Separator}{valuePart}";
-        }
 
         public static {{data.TypeName}} FromValuePart(string valuePart)
         {
@@ -430,8 +420,8 @@ namespace {{data.Namespace}}
         public static bool operator >({{data.TypeName}} a, {{data.TypeName}} b) => a.CompareTo(b) > 0;
         public static bool operator >=({{data.TypeName}} a, {{data.TypeName}} b) => a.CompareTo(b) >= 0;
 
-        static Expression<Func<string, {{data.TypeName}}>> IRawStringTypedId<{{data.TypeName}}>.FromDatabase { get; } = d => Parse(d);
-        static Expression<Func<{{data.TypeName}}, {{data.TypeName}}, bool>> IRawStringTypedId<{{data.TypeName}}>.DatabaseEquals { get; } = (a, b) => a == b;
+        static Expression<Func<string, {{data.TypeName}}>> IPrefixedTypedId<{{data.TypeName}}>.FromDatabase { get; } = d => Parse(d);
+        static Expression<Func<{{data.TypeName}}, {{data.TypeName}}, bool>> IPrefixedTypedId<{{data.TypeName}}>.DatabaseEquals { get; } = (a, b) => a == b;
 
         public override string ToString() => Value;
         public string ToString(string? format, IFormatProvider? formatProvider) => Value;
@@ -494,7 +484,7 @@ namespace {{data.Namespace}}
     [ExcludeFromCodeCoverage]
     public readonly partial record struct {{data.TypeName}} : IRawTypedId<{{backingType}}, {{data.TypeName}}>
     {
-        public static readonly {{data.TypeName}} Empty = new({{defaultValue}});
+        public static {{data.TypeName}} Empty { get; } = new({{defaultValue}});
 
         public {{backingType}} Value {get;}
         public bool IsEmpty => Value == Empty;
@@ -556,10 +546,10 @@ namespace {{data.Namespace}}
 
     private static string BuildRawString(TypedIdData data)
     {
+        var maxLengthInterfaces = data.MaxValueLength.HasValue ? ", IMaxLengthTypedId" : "";
         var maxLengthProperty = data.MaxValueLength is int maxLen
             ? $"public static int MaxLength {{ get; }} = {maxLen};"
             : "";
-
         var maxLengthValidation = data.MaxValueLength.HasValue ? " && v.Length <= MaxLength" : "";
 
         var parseErrorMessage = data.MaxValueLength.HasValue
@@ -586,9 +576,9 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(RawStringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IRawStringTypedId<{{data.TypeName}}>
+    public readonly partial record struct {{data.TypeName}} : IRawStringTypedId<{{data.TypeName}}>{{maxLengthInterfaces}}
     {
-        public static readonly {{data.TypeName}} Empty = new(string.Empty);
+        public static {{data.TypeName}} Empty { get; } = new(string.Empty);
         {{maxLengthProperty}}
 
         private readonly string? value;

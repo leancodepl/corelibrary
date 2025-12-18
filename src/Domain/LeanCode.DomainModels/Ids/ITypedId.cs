@@ -16,7 +16,7 @@ public interface IPrefixedTypedId<TSelf>
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
     string Value { get; }
-    static abstract int RawLength { get; }
+    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
@@ -39,6 +39,7 @@ public interface IRawTypedId<TBacking, TSelf>
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
+    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(TBacking v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -59,6 +60,7 @@ public interface IRawStringTypedId<TSelf>
     where TSelf : struct, IRawStringTypedId<TSelf>
 {
     string Value { get; }
+    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
@@ -67,4 +69,14 @@ public interface IRawStringTypedId<TSelf>
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
+}
+
+public interface IConstSizeTypedId
+{
+    static abstract int RawLength { get; }
+}
+
+public interface IMaxLengthTypedId
+{
+    static abstract int MaxLength { get; }
 }

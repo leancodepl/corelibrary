@@ -21,10 +21,10 @@ public class PrefixedStringIdTests
     private const string TPS3 = "tps_xyz789";
 
     [Fact]
-    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawStringTypedId` as generic parameter.")]
+    [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IPrefixedTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IRawStringTypedId<TestPrefixedStringId>), new TestPrefixedStringId());
+        Assert.IsAssignableFrom(typeof(IPrefixedTypedId<TestPrefixedStringId>), new TestPrefixedStringId());
     }
 
     [Fact]
@@ -230,7 +230,7 @@ public class PrefixedStringIdTests
         DatabaseExpressionsWork<TestPrefixedStringId>();
 
         static void DatabaseExpressionsWork<T>()
-            where T : struct, IRawStringTypedId<T>
+            where T : struct, IPrefixedTypedId<T>
         {
             Assert.Equal(T.FromDatabase.Compile().Invoke(TPS1), T.Parse(TPS1));
             Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPS1), T.Parse(TPS1)));
@@ -285,10 +285,10 @@ public class PrefixedStringIdWithMaxLengthTests
     }
 
     [Fact]
-    public void MaxRawLength_is_calculated_correctly()
+    public void MaxLength_is_calculated_correctly()
     {
         // prefix "tpm" (3) + separator "_" (1) + max value part (10) = 14
-        Assert.Equal(14, TestPrefixedStringIdWithMaxLength.MaxRawLength);
+        Assert.Equal(14, TestPrefixedStringIdWithMaxLength.MaxLength);
     }
 
     [Fact]
@@ -316,16 +316,5 @@ public class PrefixedStringIdWithMaxLengthTests
 
         // Exceeds limit - should throw
         Assert.Throws<ArgumentException>(() => TestPrefixedStringIdWithMaxLength.FromValuePart("12345678901"));
-    }
-
-    [Fact]
-    public void Constructor_validates_max_length()
-    {
-        // Within limit - should work
-        var id = new TestPrefixedStringIdWithMaxLength("1234567890", true);
-        Assert.Equal("tpm_1234567890", id.Value);
-
-        // Exceeds limit - should throw
-        Assert.Throws<ArgumentException>(() => new TestPrefixedStringIdWithMaxLength("12345678901", true));
     }
 }

@@ -1,3 +1,4 @@
+using System.Reflection;
 using LeanCode.DomainModels.Ids;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -59,10 +60,20 @@ public static class PropertiesConfigurationBuilderExtensions
     )
         where TId : struct, IPrefixedTypedId<TId>
     {
-        return builder
-            .HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>()
-            .HaveMaxLength(TId.RawLength)
-            .AreFixedLength();
+        builder = builder.HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>();
+
+        if (TId.Empty is IConstSizeTypedId)
+        {
+            var rawLength = (int)typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
+            builder.HaveMaxLength(rawLength).AreFixedLength();
+        }
+        else if (TId.Empty is IMaxLengthTypedId)
+        {
+            var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
+            builder.HaveMaxLength(maxLength);
+        }
+
+        return builder;
     }
 
     public static PropertiesConfigurationBuilder<TId?> ArePrefixedTypedId<TId>(
@@ -70,10 +81,20 @@ public static class PropertiesConfigurationBuilderExtensions
     )
         where TId : struct, IPrefixedTypedId<TId>
     {
-        return builder
-            .HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>()
-            .HaveMaxLength(TId.RawLength)
-            .AreFixedLength();
+        builder = builder.HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>();
+
+        if (TId.Empty is IConstSizeTypedId)
+        {
+            var rawLength = (int)typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
+            builder.HaveMaxLength(rawLength).AreFixedLength();
+        }
+        else if (TId.Empty is IMaxLengthTypedId)
+        {
+            var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
+            builder.HaveMaxLength(maxLength);
+        }
+
+        return builder;
     }
 
     private static PropertiesConfigurationBuilder<TId> AreRawTypedId<TBacking, TId>(

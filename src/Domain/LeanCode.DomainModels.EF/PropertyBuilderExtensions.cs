@@ -1,3 +1,4 @@
+using System.Reflection;
 using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
@@ -110,20 +111,42 @@ public static class PropertyBuilderExtensions
     public static PropertyBuilder<TId> IsPrefixedTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
-        return builder
-            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
-            .HasMaxLength(TId.RawLength)
-            .IsFixedLength()
+        builder = builder
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance, PrefixedTypedIdComparer<TId>.Instance)
             .ValueGeneratedNever();
+
+        if (TId.Empty is IConstSizeTypedId)
+        {
+            var rawLength = (int)typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
+            builder.HasMaxLength(rawLength).IsFixedLength();
+        }
+        else if (TId.Empty is IMaxLengthTypedId)
+        {
+            var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
+            builder.HasMaxLength(maxLength);
+        }
+
+        return builder;
     }
 
     public static PropertyBuilder<TId?> IsPrefixedTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
-        return builder
-            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
-            .HasMaxLength(TId.RawLength)
-            .IsFixedLength()
+        builder = builder
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance, PrefixedTypedIdComparer<TId>.Instance)
             .ValueGeneratedNever();
+
+        if (TId.Empty is IConstSizeTypedId)
+        {
+            var rawLength = (int)typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
+            builder.HasMaxLength(rawLength).IsFixedLength();
+        }
+        else if (TId.Empty is IMaxLengthTypedId)
+        {
+            var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
+            builder.HasMaxLength(maxLength);
+        }
+
+        return builder;
     }
 }
