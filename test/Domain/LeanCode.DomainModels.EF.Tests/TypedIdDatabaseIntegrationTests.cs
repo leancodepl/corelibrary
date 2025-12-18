@@ -43,6 +43,10 @@ public class TypedIdDatabaseIntegrationTests
         Assert.Equal(a.F, b.F);
         Assert.Equal(a.G, b.G);
         Assert.Equal(a.H, b.H);
+        Assert.Equal(a.I, b.I);
+        Assert.Equal(a.J, b.J);
+        Assert.Equal(a.K, b.K);
+        Assert.Equal(a.L, b.L);
     }
 
     private sealed class TestDbContext : DbContext
@@ -73,12 +77,16 @@ public class TypedIdDatabaseIntegrationTests
                 configurationBuilder.Properties<IntId>().AreIntTypedId();
                 configurationBuilder.Properties<LongId>().AreLongTypedId();
                 configurationBuilder.Properties<GuidId>().AreGuidTypedId();
+                configurationBuilder.Properties<StringId>().AreStringTypedId();
                 configurationBuilder.Properties<PrefixedGuidId>().ArePrefixedTypedId();
+                configurationBuilder.Properties<PrefixedStringId>().ArePrefixedTypedId();
 
                 configurationBuilder.Properties<IntId?>().AreIntTypedId();
                 configurationBuilder.Properties<LongId?>().AreLongTypedId();
                 configurationBuilder.Properties<GuidId?>().AreGuidTypedId();
+                configurationBuilder.Properties<StringId?>().AreStringTypedId();
                 configurationBuilder.Properties<PrefixedGuidId?>().ArePrefixedTypedId();
+                configurationBuilder.Properties<PrefixedStringId?>().ArePrefixedTypedId();
             }
         }
 
@@ -91,11 +99,15 @@ public class TypedIdDatabaseIntegrationTests
                     cfg.Property(e => e.A).IsIntTypedId();
                     cfg.Property(e => e.B).IsLongTypedId();
                     cfg.Property(e => e.C).IsGuidTypedId();
-                    cfg.Property(e => e.D).IsPrefixedTypedId();
-                    cfg.Property(e => e.E).IsIntTypedId();
-                    cfg.Property(e => e.F).IsLongTypedId();
-                    cfg.Property(e => e.G).IsGuidTypedId();
-                    cfg.Property(e => e.H).IsPrefixedTypedId();
+                    cfg.Property(e => e.D).IsStringTypedId();
+                    cfg.Property(e => e.E).IsPrefixedTypedId();
+                    cfg.Property(e => e.F).IsPrefixedTypedId();
+                    cfg.Property(e => e.G).IsIntTypedId();
+                    cfg.Property(e => e.H).IsLongTypedId();
+                    cfg.Property(e => e.I).IsGuidTypedId();
+                    cfg.Property(e => e.J).IsStringTypedId();
+                    cfg.Property(e => e.K).IsPrefixedTypedId();
+                    cfg.Property(e => e.L).IsPrefixedTypedId();
                 }
 
                 cfg.HasKey(e => e.A);
@@ -108,12 +120,16 @@ public class TypedIdDatabaseIntegrationTests
         public IntId A { get; set; }
         public LongId B { get; set; }
         public GuidId C { get; set; }
-        public PrefixedGuidId D { get; set; }
+        public StringId D { get; set; }
+        public PrefixedGuidId E { get; set; }
+        public PrefixedStringId F { get; set; }
 
-        public IntId? E { get; set; }
-        public LongId? F { get; set; }
-        public GuidId? G { get; set; }
-        public PrefixedGuidId? H { get; set; }
+        public IntId? G { get; set; }
+        public LongId? H { get; set; }
+        public GuidId? I { get; set; }
+        public StringId? J { get; set; }
+        public PrefixedGuidId? K { get; set; }
+        public PrefixedStringId? L { get; set; }
 
         public static Entity CreateFull()
         {
@@ -122,11 +138,15 @@ public class TypedIdDatabaseIntegrationTests
                 A = new(1),
                 B = new(2),
                 C = new(Guid.NewGuid()),
-                D = new(Guid.NewGuid()),
-                E = new(3),
-                F = new(4),
-                G = new(Guid.NewGuid()),
-                H = new(Guid.NewGuid()),
+                D = new("a"),
+                E = new(Guid.NewGuid()),
+                F = PrefixedStringId.FromValuePart("b"),
+                G = new(3),
+                H = new(4),
+                I = new(Guid.NewGuid()),
+                J = new("c"),
+                K = new(Guid.NewGuid()),
+                L = PrefixedStringId.FromValuePart("d"),
             };
         }
 
@@ -137,7 +157,9 @@ public class TypedIdDatabaseIntegrationTests
                 A = new(5),
                 B = new(6),
                 C = new(Guid.NewGuid()),
-                D = new(Guid.NewGuid()),
+                D = new("e"),
+                E = new(Guid.NewGuid()),
+                F = PrefixedStringId.FromValuePart("f"),
             };
         }
     }

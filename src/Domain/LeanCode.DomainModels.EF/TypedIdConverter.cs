@@ -26,6 +26,16 @@ public class RawTypedIdConverter<TBacking, TId> : ValueConverter<TId, TBacking>
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class RawStringTypedIdConverter<TId> : ValueConverter<TId, string>
+    where TId : struct, IRawStringTypedId<TId>
+{
+    public static readonly RawStringTypedIdConverter<TId> Instance = new();
+
+    public RawStringTypedIdConverter()
+        : base(d => d.Value, TId.FromDatabase, mappingHints: null) { }
+}
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class PrefixedTypedIdComparer<TId> : ValueComparer<TId>
     where TId : struct, IPrefixedTypedId<TId>
 {
@@ -43,5 +53,15 @@ public class RawTypedIdComparer<TBacking, TId> : ValueComparer<TId>
     public static readonly RawTypedIdComparer<TBacking, TId> Instance = new();
 
     public RawTypedIdComparer()
+        : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
+}
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class RawStringTypedIdComparer<TId> : ValueComparer<TId>
+    where TId : struct, IRawStringTypedId<TId>
+{
+    public static readonly RawStringTypedIdComparer<TId> Instance = new();
+
+    public RawStringTypedIdComparer()
         : base(TId.DatabaseEquals, d => d.GetHashCode()) { }
 }

@@ -84,10 +84,14 @@ public class PrefixedStringIdTests
     [Fact]
     public void From_value_with_empty_value_part_behaves_correctly()
     {
-        Assert.False(TestPrefixedStringId.IsValid("tps_"));
+        Assert.True(TestPrefixedStringId.IsValid("tps_"));
 
-        Assert.Throws<FormatException>(() => TestPrefixedStringId.Parse("tps_"));
-        Assert.False(TestPrefixedStringId.TryParse("tps_", out _));
+        var id = TestPrefixedStringId.Parse("tps_");
+        Assert.Equal("tps_", id.Value);
+        Assert.True(id.GetValuePart().IsEmpty);
+
+        Assert.True(TestPrefixedStringId.TryParse("tps_", out var parsed));
+        Assert.Equal("tps_", parsed.Value);
     }
 
     [Fact]

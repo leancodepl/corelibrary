@@ -305,7 +305,14 @@ namespace {{data.Namespace}}
         public static int MaxLength { get; } = {{prefix.Length + 1 + maxLen}};
 """
             : "";
-        var maxLengthValidation = data.MaxValueLength.HasValue ? " && valuePart.Length <= MaxValueLength" : "";
+        var maxLengthValidation = data.MaxValueLength.HasValue
+            ? $$"""
+                        var valuePart = span[{{prefix.Length + 1}}..];
+                        return valuePart.Length <= MaxValueLength;
+                """
+            : """
+                        return true;
+                """;
         var maxLengthThrowValidation = data.MaxValueLength.HasValue
             ? $$"""
 
@@ -404,11 +411,12 @@ namespace {{data.Namespace}}
                 return false;
             }
 
-            var valuePart = span[{{prefix.Length + 1}}..];
-            return valuePart.Length > 0{{maxLengthValidation}};
+{{maxLengthValidation}}
         }
 
-        public ReadOnlySpan<char> GetValuePart() => IsEmpty ? ReadOnlySpan<char>.Empty : Value.AsSpan()[{{prefix.Length + 1}}..];
+        public ReadOnlySpan<char> GetValuePart() => IsEmpty
+            ? ReadOnlySpan<char>.Empty
+            : Value.AsSpan()[{{prefix.Length + 1}}..];
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
