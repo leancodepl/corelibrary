@@ -107,6 +107,22 @@ public static class PropertyBuilderExtensions
         return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance, RawTypedIdComparer<Guid, TId>.Instance);
     }
 
+    public static PropertyBuilder<TId> IsStringTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawStringTypedId<TId>
+    {
+        return builder
+            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
+            .ConfigureMaxLengthIfPresent();
+    }
+
+    public static PropertyBuilder<TId?> IsStringTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawStringTypedId<TId>
+    {
+        return builder
+            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
+            .ConfigureMaxLengthIfPresent();
+    }
+
     public static PropertyBuilder<TId> IsPrefixedTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
@@ -125,87 +141,49 @@ public static class PropertyBuilderExtensions
             .ConfigureFixedSizeOrMaxLengthIfPresent();
     }
 
-    public static PropertyBuilder<TId> IsStringTypedId<TId>(this PropertyBuilder<TId> builder)
-        where TId : struct, IRawStringTypedId<TId>
-    {
-        return builder
-            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
-            .ConfigureMaxLengthIfPresent();
-    }
-
-    public static PropertyBuilder<TId?> IsStringTypedId<TId>(this PropertyBuilder<TId?> builder)
-        where TId : struct, IRawStringTypedId<TId>
-    {
-        return builder
-            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
-            .ConfigureMaxLengthIfPresent();
-    }
-
     private static PropertyBuilder<TId> ConfigureFixedSizeOrMaxLengthIfPresent<TId>(this PropertyBuilder<TId> builder)
-        where TId : struct, IPrefixedTypedId<TId>
+        where TId : struct, IHasEmptyId<TId>
     {
-        switch (TId.Empty)
+        if (IHasEmptyId<TId>.GetRawLength() is { } rawLength)
         {
-            case IConstSizeTypedId:
-            {
-                var rawLength = (int)
-                    typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
-                return builder.HasMaxLength(rawLength).IsFixedLength();
-            }
-            case IMaxLengthTypedId:
-            {
-                var maxLength = (int)
-                    typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
-                return builder.HasMaxLength(maxLength);
-            }
-            default:
-                return builder;
+            return builder.HasMaxLength(rawLength).IsFixedLength();
+        }
+        else if (IHasEmptyId<TId>.GetMaxLength() is { } maxLength)
+        {
+            return builder.HasMaxLength(maxLength);
+        }
+        else
+        {
+            return builder;
         }
     }
 
     private static PropertyBuilder<TId?> ConfigureFixedSizeOrMaxLengthIfPresent<TId>(this PropertyBuilder<TId?> builder)
-        where TId : struct, IPrefixedTypedId<TId>
+        where TId : struct, IHasEmptyId<TId>
     {
-        switch (TId.Empty)
+        if (IHasEmptyId<TId>.GetRawLength() is { } rawLength)
         {
-            case IConstSizeTypedId:
-            {
-                var rawLength = (int)
-                    typeof(TId).GetProperty(nameof(IConstSizeTypedId.RawLength))!.GetValue(null, null)!;
-                return builder.HasMaxLength(rawLength).IsFixedLength();
-            }
-            case IMaxLengthTypedId:
-            {
-                var maxLength = (int)
-                    typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
-                return builder.HasMaxLength(maxLength);
-            }
-            default:
-                return builder;
+            return builder.HasMaxLength(rawLength).IsFixedLength();
+        }
+        else if (IHasEmptyId<TId>.GetMaxLength() is { } maxLength)
+        {
+            return builder.HasMaxLength(maxLength);
+        }
+        else
+        {
+            return builder;
         }
     }
 
     private static PropertyBuilder<TId> ConfigureMaxLengthIfPresent<TId>(this PropertyBuilder<TId> builder)
-        where TId : struct, IRawStringTypedId<TId>
+        where TId : struct, IHasEmptyId<TId>
     {
-        if (TId.Empty is not IMaxLengthTypedId)
-        {
-            return builder;
-        }
-
-        var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
-        return builder.HasMaxLength(maxLength);
+        return IHasEmptyId<TId>.GetMaxLength() is { } maxLength ? builder.HasMaxLength(maxLength) : builder;
     }
 
     private static PropertyBuilder<TId?> ConfigureMaxLengthIfPresent<TId>(this PropertyBuilder<TId?> builder)
-        where TId : struct, IRawStringTypedId<TId>
+        where TId : struct, IHasEmptyId<TId>
     {
-        if (TId.Empty is not IMaxLengthTypedId)
-        {
-            return builder;
-        }
-
-        var maxLength = (int)typeof(TId).GetProperty(nameof(IMaxLengthTypedId.MaxLength))!.GetValue(null, null)!;
-        return builder.HasMaxLength(maxLength);
+        return IHasEmptyId<TId>.GetMaxLength() is { } maxLength ? builder.HasMaxLength(maxLength) : builder;
     }
 }

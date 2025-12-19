@@ -12,11 +12,11 @@ public interface IPrefixedTypedId<TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
-        IEqualityOperators<TSelf, TSelf, bool>
+        IEqualityOperators<TSelf, TSelf, bool>,
+        IHasEmptyId<TSelf>
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
     string Value { get; }
-    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
@@ -34,12 +34,12 @@ public interface IRawTypedId<TBacking, TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
-        IEqualityOperators<TSelf, TSelf, bool>
+        IEqualityOperators<TSelf, TSelf, bool>,
+        IHasEmptyId<TSelf>
     where TBacking : struct
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
-    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(TBacking v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -56,11 +56,11 @@ public interface IRawStringTypedId<TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
-        IEqualityOperators<TSelf, TSelf, bool>
+        IEqualityOperators<TSelf, TSelf, bool>,
+        IHasEmptyId<TSelf>
     where TSelf : struct, IRawStringTypedId<TSelf>
 {
     string Value { get; }
-    static abstract TSelf Empty { get; }
     static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
@@ -71,11 +71,20 @@ public interface IRawStringTypedId<TSelf>
     static abstract Expression<Func<TSelf, TSelf, bool>> DatabaseEquals { get; }
 }
 
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IHasEmptyId<TSelf>
+    where TSelf : struct, IHasEmptyId<TSelf>
+{
+    static abstract TSelf Empty { get; }
+}
+
+[EditorBrowsable(EditorBrowsableState.Never)]
 public interface IConstSizeTypedId
 {
     static abstract int RawLength { get; }
 }
 
+[EditorBrowsable(EditorBrowsableState.Never)]
 public interface IMaxLengthTypedId
 {
     static abstract int MaxLength { get; }
