@@ -103,7 +103,7 @@ public readonly partial record struct ExternalId;
 public readonly partial record struct ExternalRefId;
 
 // The `ExternalRefId` has format `ext_(value)` where value can be up to 50 characters.
-// Exposes `MaxValueLength` (50) and `MaxRawLength` (54 = 3 + 1 + 50) static properties.
+// Exposes `MaxValueLength` (50) and `MaxLength` (54 = 3 + 1 + 50) static properties.
 ```
 
 ## Generic type wrappers
