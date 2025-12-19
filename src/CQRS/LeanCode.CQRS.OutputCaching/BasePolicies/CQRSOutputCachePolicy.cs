@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
@@ -28,8 +29,20 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Unsuccessful responses with status codes other than 2xx are not cached by default.
+    /// </remarks>
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
+        if (
+            context.HttpContext.Response.StatusCode
+            is < StatusCodes.Status200OK
+                or >= StatusCodes.Status300MultipleChoices
+        )
+        {
+            context.AllowCacheStorage = false;
+        }
+
         RecordSpanTagsAndMetrics(true, context);
         return ValueTask.CompletedTask;
     }
@@ -41,7 +54,7 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
         return ValueTask.CompletedTask;
     }
 
-    private static void RecordSpanTagsAndMetrics(bool servingFromCache, OutputCacheContext context)
+    protected static void RecordSpanTagsAndMetrics(bool servingFromCache, OutputCacheContext context)
     {
         if (!context.EnableOutputCaching)
         {

@@ -6,18 +6,22 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Integration.OutputCache;
 
-public class CachedTestQuery : IQuery<TestQueryResult>
+[CustomAuthorizeWhen]
+public class CachedTestQuery : IQuery<TestQueryResult>, ICustomAuthorizerParams
 {
     public int X { get; set; }
     public int Y { get; set; }
     public string? VaryByValue { get; set; }
+    public bool FailAuthorization { get; set; }
 }
 
-public class CachedTestOperation : IOperation<TestOperationResult>
+[CustomAuthorizeWhen]
+public class CachedTestOperation : IOperation<TestOperationResult>, ICustomAuthorizerParams
 {
     public int X { get; set; }
     public int Y { get; set; }
     public string? VaryByValue { get; set; }
+    public bool FailAuthorization { get; set; }
 }
 
 public class CachedTestQueryPolicy : CQRSOutputCachePolicy<CachedTestQuery>

@@ -89,6 +89,20 @@ public class RemoteCQRSOutputCachingTests : RemoteCQRSTestsBase
     }
 
     [Fact]
+    public async Task Unsuccessful_requests_are_not_cached_by_default()
+    {
+        var unauthorizedOperationBody = """{ "X": 1, "Y": 2, "FailAuthorization": true }""";
+
+        var (_, firstStatusCode, firstHeaders) = await SendAsync(CachedOperationPath, unauthorizedOperationBody);
+        firstStatusCode.Should().Be(HttpStatusCode.Forbidden);
+        firstHeaders.Should().NotContainKey(HeaderNames.Age);
+
+        var (_, secondStatusCode, secondHeaders) = await SendAsync(CachedOperationPath, unauthorizedOperationBody);
+        secondStatusCode.Should().Be(HttpStatusCode.Forbidden);
+        secondHeaders.Should().NotContainKey(HeaderNames.Age);
+    }
+
+    [Fact]
     public async Task ETag_is_respected_with_if_none_match_header()
     {
         var (_, firstStatusCode, firstHeaders) = await SendAsync(CachedQueryPath, DefaultBody);
