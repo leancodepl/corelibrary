@@ -6,8 +6,13 @@ namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
+    /// <inheritdoc cref="CacheRequestAsync"/>
+    /// <remarks>
+    /// Locking enabled by default.
+    /// </remarks>
     public abstract ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation);
 
+    /// <inheritdoc />
     public async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         context.EnableOutputCaching = true;
@@ -22,12 +27,14 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
         }
     }
 
+    /// <inheritdoc />
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         RecordSpanTagsAndMetrics(true, context);
         return ValueTask.CompletedTask;
     }
 
+    /// <inheritdoc />
     public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         RecordSpanTagsAndMetrics(false, context);
