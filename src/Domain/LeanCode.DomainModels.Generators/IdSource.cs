@@ -24,7 +24,15 @@ internal static class IdSource
                 "CultureInfo.InvariantCulture",
                 "string.Empty, CultureInfo.InvariantCulture"
             ),
-            TypedIdFormat.RawGuid => BuildRaw(data, "Guid", "Guid", "Guid.NewGuid()", "Guid.Empty", "", "string.Empty"),
+            TypedIdFormat.RawGuid => BuildRaw(
+                data,
+                "Guid",
+                "Guid",
+                "Guid.CreateVersion7()",
+                "Guid.Empty",
+                "",
+                "string.Empty"
+            ),
             TypedIdFormat.RawString => BuildRawString(data),
             TypedIdFormat.PrefixedGuid => BuildPrefixedGuid(data),
             TypedIdFormat.PrefixedUlid => BuildPrefixedUlid(data),
@@ -39,7 +47,7 @@ internal static class IdSource
         var valueLength = 32;
 
         var randomFactory = !data.SkipRandomGenerator
-            ? $"public static {data.TypeName} New() => new(Guid.NewGuid());"
+            ? $"public static {data.TypeName} New() => new(Guid.CreateVersion7());"
             : "";
 
         // language=C#
