@@ -30,9 +30,6 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
     }
 
     /// <inheritdoc />
-    /// <remarks>
-    /// Unsuccessful responses with status codes other than 2xx are not cached by default.
-    /// </remarks>
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         RecordSpanTagsAndMetrics(true, context);
@@ -40,6 +37,9 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Responses with status codes other than 2xx are not cached by default.
+    /// </remarks>
     public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         if (
