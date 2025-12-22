@@ -1,13 +1,20 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
+/// <inheritdoc />
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
+    /// <inheritdoc cref="CacheRequestAsync"/>
+    /// <remarks>
+    /// Locking enabled by default.
+    /// </remarks>
     public abstract ValueTask CacheRequestCoreAsync(OutputCacheContext context, CancellationToken cancellation);
 
+    /// <inheritdoc />
     public async ValueTask CacheRequestAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         context.EnableOutputCaching = true;
@@ -22,19 +29,33 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
         }
     }
 
+    /// <inheritdoc />
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
         RecordSpanTagsAndMetrics(true, context);
         return ValueTask.CompletedTask;
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Responses with status codes other than 2xx are not cached by default.
+    /// </remarks>
     public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
     {
+        if (
+            context.HttpContext.Response.StatusCode
+            is < StatusCodes.Status200OK
+                or >= StatusCodes.Status300MultipleChoices
+        )
+        {
+            context.AllowCacheStorage = false;
+        }
+
         RecordSpanTagsAndMetrics(false, context);
         return ValueTask.CompletedTask;
     }
 
-    private static void RecordSpanTagsAndMetrics(bool servingFromCache, OutputCacheContext context)
+    protected static void RecordSpanTagsAndMetrics(bool servingFromCache, OutputCacheContext context)
     {
         if (!context.EnableOutputCaching)
         {

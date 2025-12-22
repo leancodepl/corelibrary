@@ -62,7 +62,7 @@ public abstract class RemoteCQRSTestsBase : IDisposable, IAsyncLifetime
                                 {
                                     cqrs.Queries = q => q.Secure().CacheOutput();
                                     cqrs.Commands = c => c.Secure().Validate();
-                                    cqrs.Operations = o => o.Secure().CacheOutput();
+                                    cqrs.Operations = o => o.CacheOutput().Secure();
                                 }
                             );
 
