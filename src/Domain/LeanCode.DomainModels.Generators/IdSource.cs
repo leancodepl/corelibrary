@@ -83,6 +83,7 @@ namespace {{data.Namespace}}
 
         public string Value => value ?? Empty.Value;
         public bool IsEmpty => value is null || value == Empty;
+        public Guid Guid => value is null ? Guid.Empty : Guid.ParseExact(value.AsSpan()[{{prefix.Length + 1}}..], "N");
 
         private {{data.TypeName}}(string v) => value = v;
         public {{data.TypeName}}(Guid v) => value = string.Create(null, stackalloc char[MaxLength], $"{TypePrefix}{Separator}{v:N}");
@@ -134,6 +135,8 @@ namespace {{data.Namespace}}
                     && Guid.TryParseExact(span[{{prefix.Length + 1}}..], "N", out _);
             }
         }
+
+        public (string prefix, Guid data) Destructure() => (TypePrefix, Guid);
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
@@ -265,6 +268,8 @@ namespace {{data.Namespace}}
             return TryDeconstruct(v.AsSpan(), out _);
         }
 
+        public (string prefix, Ulid data) Destructure() => (TypePrefix, Ulid);
+
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
         public override int GetHashCode() => Value.GetHashCode(StringComparison.Ordinal);
@@ -340,6 +345,7 @@ namespace {{data.Namespace}}
 
         public string Value => value ?? Empty.Value;
         public bool IsEmpty => string.IsNullOrEmpty(value);
+        public string ValuePart => Value[{{prefix.Length + 1}}..];
 
         private {{data.TypeName}}(string v) => value = v;
 
@@ -401,9 +407,8 @@ namespace {{data.Namespace}}
                 + 1}} && span.Length <= MaxLength && span.StartsWith(TypePrefix) && span[{{prefix.Length}}] == Separator;
         }
 
-        public ReadOnlySpan<char> GetValuePart() => IsEmpty
-            ? ReadOnlySpan<char>.Empty
-            : Value.AsSpan()[{{prefix.Length + 1}}..];
+
+        public (string prefix, string data) Destructure() => (TypePrefix, ValuePart);
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);
         public int CompareTo({{data.TypeName}} other) => string.Compare(Value, other.Value, StringComparison.Ordinal);

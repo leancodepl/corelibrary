@@ -252,6 +252,16 @@ public class PrefixedUlidIdTests
     }
 
     [Fact]
+    public void Destructure_extracts_prefix_and_ulid()
+    {
+        var id = TestPrefixedUlidId.Parse(TPU1);
+        var (prefix, data) = id.Destructure();
+
+        prefix.Should().Be("tpu");
+        data.Should().Be(TPG1Ulid);
+    }
+
+    [Fact]
     public void Ids_are_case_insensitive()
     {
         var u1 = TestPrefixedUlidId.Parse("tpu_01ARZ3NDEKTSV4RRFFQ69G5FAV");

@@ -224,6 +224,25 @@ public class PrefixedGuidIdTests
     }
 
     [Fact]
+    public void Raw_guid_can_be_extracted_from_type()
+    {
+        var id = TestPrefixedGuidId.Parse(TPG1);
+        var guid = id.Guid;
+
+        guid.Should().Be(TPG1Guid);
+    }
+
+    [Fact]
+    public void Destructure_extracts_prefix_and_guid()
+    {
+        var id = TestPrefixedGuidId.Parse(TPG1);
+        var (prefix, data) = id.Destructure();
+
+        Assert.Equal("tpg", prefix);
+        Assert.Equal(TPG1Guid, data);
+    }
+
+    [Fact]
     public void TryFormatChar_is_correct()
     {
         var id = TestPrefixedGuidId.Parse(TPG1);

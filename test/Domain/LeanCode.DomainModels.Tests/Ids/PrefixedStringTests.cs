@@ -79,16 +79,17 @@ public class PrefixedStringIdTests
     }
 
     [Fact]
-    public void From_value_with_empty_value_part_behaves_correctly()
+    public void Empty_value_part_behaves_correctly()
     {
         Assert.True(TestPrefixedStringId.IsValid("tps_"));
 
         var id = TestPrefixedStringId.Parse("tps_");
         Assert.Equal("tps_", id.Value);
-        Assert.True(id.GetValuePart().IsEmpty);
+        Assert.Equal(0, id.ValuePart.Length);
 
         Assert.True(TestPrefixedStringId.TryParse("tps_", out var parsed));
         Assert.Equal("tps_", parsed.Value);
+        Assert.Equal(0, parsed.ValuePart.Length);
     }
 
     [Fact]
@@ -110,17 +111,20 @@ public class PrefixedStringIdTests
     }
 
     [Fact]
-    public void GetValuePart_extracts_value_part()
+    public void ValuePart_extracts_value_part()
     {
         var id = TestPrefixedStringId.Parse(TPS1);
-        Assert.Equal("abc123", id.GetValuePart().ToString());
+        Assert.Equal("abc123", id.ValuePart);
     }
 
     [Fact]
-    public void GetValuePart_returns_empty_span_for_Empty_instance()
+    public void Destructure_extracts_prefix_and_data()
     {
-        var empty = TestPrefixedStringId.Empty;
-        Assert.True(empty.GetValuePart().IsEmpty);
+        var id = TestPrefixedStringId.Parse(TPS1);
+        var (prefix, data) = id.Destructure();
+
+        Assert.Equal("tps", prefix);
+        Assert.Equal("abc123", data);
     }
 
     [Fact]
