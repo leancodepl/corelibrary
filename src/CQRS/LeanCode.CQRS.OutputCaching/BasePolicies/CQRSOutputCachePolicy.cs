@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace LeanCode.CQRS.OutputCaching.BasePolicies;
 
+/// <inheritdoc />
 public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TObject>
     where TObject : notnull
 {
@@ -34,6 +35,13 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
     /// </remarks>
     public virtual ValueTask ServeFromCacheAsync(OutputCacheContext context, CancellationToken cancellation)
     {
+        RecordSpanTagsAndMetrics(true, context);
+        return ValueTask.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
+    {
         if (
             context.HttpContext.Response.StatusCode
             is < StatusCodes.Status200OK
@@ -43,13 +51,6 @@ public abstract class CQRSOutputCachePolicy<TObject> : ICQRSOutputCachePolicy<TO
             context.AllowCacheStorage = false;
         }
 
-        RecordSpanTagsAndMetrics(true, context);
-        return ValueTask.CompletedTask;
-    }
-
-    /// <inheritdoc />
-    public virtual ValueTask ServeResponseAsync(OutputCacheContext context, CancellationToken cancellation)
-    {
         RecordSpanTagsAndMetrics(false, context);
         return ValueTask.CompletedTask;
     }
