@@ -8,15 +8,15 @@ namespace LeanCode.DomainModels.Tests.Ids;
 
 public static class GeneratorRunner
 {
-    private static readonly IReadOnlyList<PortableExecutableReference> DefaultAssemblies = new[]
-    {
+    private static readonly IReadOnlyList<PortableExecutableReference> DefaultAssemblies =
+    [
         LoadRefLib("System.Linq"),
         LoadRefLib("System.Linq.Expressions"),
         LoadRefLib("System.Memory"),
         LoadRefLib("System.Runtime"),
         LoadRefLib("System.Text.Json"),
         MetadataReference.CreateFromFile(typeof(TypedIdAttribute).Assembly.Location),
-    };
+    ];
 
     private static PortableExecutableReference LoadRefLib(string name)
     {
@@ -29,7 +29,7 @@ public static class GeneratorRunner
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
         var compilation = CSharpCompilation.Create(
             assemblyName: "Tests",
-            syntaxTrees: new[] { syntaxTree },
+            syntaxTrees: [syntaxTree],
             references: DefaultAssemblies,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
