@@ -13,14 +13,14 @@ public class TimestampTzTests : IAsyncLifetime
 
     private readonly Meeting meeting1 = new()
     {
-        Id = Guid.NewGuid(),
+        Id = MeetingId.New(),
         Name = "First",
         StartTime = new(Date.ToDateTime(new(10, 0), DateTimeKind.Utc), "Asia/Tokyo"),
     };
 
     private readonly Meeting meeting2 = new()
     {
-        Id = Guid.NewGuid(),
+        Id = MeetingId.New(),
         Name = "Second",
         StartTime = new(Date.ToDateTime(new(14, 0), DateTimeKind.Utc), "America/Los_Angeles"),
     };

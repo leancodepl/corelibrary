@@ -15,7 +15,7 @@ public class EFRepositoryTests : IAsyncLifetime
     [IntegrationFact]
     public async Task Default_implementation_of_EFRepository_works()
     {
-        var entity = new Entity { Id = Guid.NewGuid(), Value = "test value" };
+        var entity = new Entity { Id = EntityId.New(), Value = "test value" };
 
         await EnsureEntityDoesNotExistAsync(entity);
         await AddEntityAsync(entity);
@@ -55,7 +55,7 @@ public class EFRepositoryTests : IAsyncLifetime
 
     public ValueTask DisposeAsync() => app.DisposeAsync();
 
-    private sealed class EntityRepository : EFRepository<Entity, Guid, TestDbContext>
+    private sealed class EntityRepository : EFRepository<Entity, EntityId, TestDbContext>
     {
         public EntityRepository(TestDbContext dbContext)
             : base(dbContext) { }

@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.EF;
 using LeanCode.Firebase.FCM;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -32,5 +33,12 @@ public class TestDbContext : DbContext
         modelBuilder.AddOutboxStateEntity();
 
         modelBuilder.ConfigurePushNotificationTokenEntity<Guid>(setTokenColumnMaxLength: true);
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Properties<EntityId>().ArePrefixedTypedId();
+        configurationBuilder.Properties<MeetingId>().ArePrefixedTypedId();
     }
 }
