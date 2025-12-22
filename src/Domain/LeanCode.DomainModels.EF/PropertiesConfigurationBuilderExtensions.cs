@@ -99,7 +99,7 @@ public static class PropertiesConfigurationBuilderExtensions
     )
         where TId : struct, IMaxLengthTypedId
     {
-        return builder.HaveMaxLength(TId.MaxLength);
+        return builder.HaveMaxLength(TId.MaxLength).AreFixedLength();
     }
 
     private static PropertiesConfigurationBuilder<TId?> ConfigureMaxLength<TId>(
@@ -107,7 +107,7 @@ public static class PropertiesConfigurationBuilderExtensions
     )
         where TId : struct, IMaxLengthTypedId
     {
-        return builder.HaveMaxLength(TId.MaxLength);
+        return builder.HaveMaxLength(TId.MaxLength).AreFixedLength();
     }
 
     private static PropertiesConfigurationBuilder<TId> AreRawTypedId<TBacking, TId>(

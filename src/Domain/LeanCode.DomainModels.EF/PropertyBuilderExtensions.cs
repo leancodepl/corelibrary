@@ -144,12 +144,12 @@ public static class PropertyBuilderExtensions
     private static PropertyBuilder<TId> ConfigureMaxLength<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IMaxLengthTypedId
     {
-        return builder.HasMaxLength(TId.MaxLength);
+        return builder.HasMaxLength(TId.MaxLength).IsFixedLength();
     }
 
     private static PropertyBuilder<TId?> ConfigureMaxLength<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IMaxLengthTypedId
     {
-        return builder.HasMaxLength(TId.MaxLength);
+        return builder.HasMaxLength(TId.MaxLength).IsFixedLength();
     }
 }
