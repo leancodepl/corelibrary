@@ -172,24 +172,6 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawString)]
-                public readonly partial record struct Id;
-            """
-        );
-
-        AssertCorrect(
-            """
-                using LeanCode.DomainModels.Ids;
-                namespace Test;
-                [TypedId(TypedIdFormat.RawString, CustomPrefix = "ignored")]
-                public readonly partial record struct Id;
-            """
-        );
-
-        AssertCorrect(
-            """
-                using LeanCode.DomainModels.Ids;
-                namespace Test;
                 [TypedId(TypedIdFormat.RawString, MaxValueLength = 100)]
                 public readonly partial record struct Id;
             """
@@ -208,24 +190,6 @@ public class ValidConstructTests
     [Fact]
     public void Correct_PrefixedString()
     {
-        AssertCorrect(
-            """
-                using LeanCode.DomainModels.Ids;
-                namespace Test;
-                [TypedId(TypedIdFormat.PrefixedString)]
-                public readonly partial record struct Id;
-            """
-        );
-
-        AssertCorrect(
-            """
-                using LeanCode.DomainModels.Ids;
-                namespace Test;
-                [TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "prefix")]
-                public readonly partial record struct Id;
-            """
-        );
-
         AssertCorrect(
             """
                 using LeanCode.DomainModels.Ids;

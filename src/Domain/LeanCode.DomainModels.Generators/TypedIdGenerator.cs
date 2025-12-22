@@ -15,7 +15,16 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
     private static readonly DiagnosticDescriptor InvalidTypeRule = new(
         "LNCD0005",
         "Typed id must be `readonly partial record struct`",
-        @"`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
+        "`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
+        "Domain",
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    private static readonly DiagnosticDescriptor MaxLengthRequiredForStringIdRule = new(
+        "LNCD0012",
+        "String typed id must provide positive `MaxValueLength` in attribute",
+        "`{0}` is invalid string ID. For string typed ids to work, they must provide positive `MaxValueLength` in the `TypedId` attribute.",
         "Domain",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -58,13 +67,22 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
             src,
             static (sources, data) =>
             {
-                if (data.IsValid)
+                if (!data.IsValid)
                 {
-                    sources.AddSource($"{data.TypeName}.g.cs", IdSource.Build(data));
+                    sources.ReportDiagnostic(Diagnostic.Create(InvalidTypeRule, data.Location, data.TypeName));
+                }
+                else if (
+                    data.Format is TypedIdFormat.RawString or TypedIdFormat.PrefixedString
+                    && data.MaxValueLength is null
+                )
+                {
+                    sources.ReportDiagnostic(
+                        Diagnostic.Create(MaxLengthRequiredForStringIdRule, data.Location, data.TypeName)
+                    );
                 }
                 else
                 {
-                    sources.ReportDiagnostic(Diagnostic.Create(InvalidTypeRule, data.Location, data.TypeName));
+                    sources.AddSource($"{data.TypeName}.g.cs", IdSource.Build(data));
                 }
             }
         );

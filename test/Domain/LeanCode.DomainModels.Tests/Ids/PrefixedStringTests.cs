@@ -7,11 +7,8 @@ using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Ids;
 
-[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tps")]
+[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tps", MaxValueLength = 10)]
 public readonly partial record struct TestPrefixedStringId;
-
-[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "tpm", MaxValueLength = 10)]
-public readonly partial record struct TestPrefixedStringIdWithMaxLength;
 
 public class PrefixedStringIdTests
 {
@@ -278,47 +275,44 @@ public class PrefixedStringIdTests
         Assert.True(TestPrefixedStringId.Empty.IsEmpty);
         Assert.False(TestPrefixedStringId.Parse(TPS1).IsEmpty);
     }
-}
 
-public class PrefixedStringIdWithMaxLengthTests
-{
     [Fact]
     public void MaxValueLength_is_exposed()
     {
-        Assert.Equal(10, TestPrefixedStringIdWithMaxLength.MaxValueLength);
+        Assert.Equal(10, TestPrefixedStringId.MaxValueLength);
     }
 
     [Fact]
     public void MaxLength_is_calculated_correctly()
     {
         // prefix "tpm" (3) + separator "_" (1) + max value part (10) = 14
-        Assert.Equal(14, TestPrefixedStringIdWithMaxLength.MaxLength);
+        Assert.Equal(14, TestPrefixedStringId.MaxLength);
     }
 
     [Fact]
     public void String_within_max_length_is_valid()
     {
-        Assert.True(TestPrefixedStringIdWithMaxLength.IsValid("tpm_1234567890")); // value part = 10 chars
-        Assert.True(TestPrefixedStringIdWithMaxLength.IsValid("tpm_short"));
+        Assert.True(TestPrefixedStringId.IsValid("tps_1234567890")); // value part = 10 chars
+        Assert.True(TestPrefixedStringId.IsValid("tps_short"));
     }
 
     [Fact]
     public void String_exceeding_max_length_is_invalid()
     {
-        Assert.False(TestPrefixedStringIdWithMaxLength.IsValid("tpm_12345678901")); // value part = 11 chars
+        Assert.False(TestPrefixedStringId.IsValid("tps_12345678901")); // value part = 11 chars
 
-        Assert.Throws<FormatException>(() => TestPrefixedStringIdWithMaxLength.Parse("tpm_12345678901"));
-        Assert.False(TestPrefixedStringIdWithMaxLength.TryParse("tpm_this_is_too_long", out _));
+        Assert.Throws<FormatException>(() => TestPrefixedStringId.Parse("tps_12345678901"));
+        Assert.False(TestPrefixedStringId.TryParse("tps_this_is_too_long", out _));
     }
 
     [Fact]
     public void FromValuePart_validates_max_length()
     {
         // Within limit - should work
-        var id = TestPrefixedStringIdWithMaxLength.FromValuePart("1234567890");
-        Assert.Equal("tpm_1234567890", id.Value);
+        var id = TestPrefixedStringId.FromValuePart("1234567890");
+        Assert.Equal("tps_1234567890", id.Value);
 
         // Exceeds limit - should throw
-        Assert.Throws<ArgumentException>(() => TestPrefixedStringIdWithMaxLength.FromValuePart("12345678901"));
+        Assert.Throws<ArgumentException>(() => TestPrefixedStringId.FromValuePart("12345678901"));
     }
 }

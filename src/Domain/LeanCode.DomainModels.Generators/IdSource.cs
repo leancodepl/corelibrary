@@ -62,13 +62,13 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>, IConstSizeTypedId
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
     {
         private const int ValueLength = {{valueLength}};
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
-        public static int RawLength { get; } = {{valueLength + 1 + prefix.Length}};
+        public static int MaxLength { get; } = {{valueLength + 1 + prefix.Length}};
         public static {{data.TypeName}} Empty { get; } = new(Guid.Empty);
 
         private readonly string? value;
@@ -77,7 +77,7 @@ namespace {{data.Namespace}}
         public bool IsEmpty => value is null || value == Empty;
 
         private {{data.TypeName}}(string v) => value = v;
-        public {{data.TypeName}}(Guid v) => value = string.Create(null, stackalloc char[RawLength], $"{TypePrefix}{Separator}{v:N}");
+        public {{data.TypeName}}(Guid v) => value = string.Create(null, stackalloc char[MaxLength], $"{TypePrefix}{Separator}{v:N}");
         {{randomFactory}}
 
         public static {{data.TypeName}} Parse(string v)
@@ -120,7 +120,7 @@ namespace {{data.Namespace}}
             else
             {
                 var span = v.AsSpan();
-                return span.Length == RawLength
+                return span.Length == MaxLength
                     && span.StartsWith(TypePrefix)
                     && span[{{prefix.Length}}] == Separator
                     && Guid.TryParseExact(span[{{prefix.Length + 1}}..], "N", out _);
@@ -190,13 +190,13 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>, IConstSizeTypedId
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
     {
         private const int ValueLength = {{valueLength}};
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
-        public static int RawLength { get; } = {{valueLength + 1 + prefix.Length}};
+        public static int MaxLength { get; } = {{valueLength + 1 + prefix.Length}};
         public static {{data.TypeName}} Empty { get; } = new(Ulid.Empty);
 
         private readonly string? value;
@@ -207,7 +207,7 @@ namespace {{data.Namespace}}
 
         private {{data.TypeName}}(string v) => value = v;
 
-        public {{data.TypeName}}(Ulid v) => value = string.Create(null, stackalloc char[RawLength], $"{TypePrefix}{Separator}{v}");
+        public {{data.TypeName}}(Ulid v) => value = string.Create(null, stackalloc char[MaxLength], $"{TypePrefix}{Separator}{v}");
 
         public static {{data.TypeName}} New() => new(Ulid.NewUlid());
 
@@ -246,7 +246,7 @@ namespace {{data.Namespace}}
         {
             rawUlid = Ulid.Empty;
 
-            return span.Length == RawLength
+            return span.Length == MaxLength
                 && span.StartsWith(TypePrefix)
                 && span[{{prefix.Length}}] == Separator
                 && Ulid.TryParse(span[{{prefix.Length + 1}}..], out rawUlid);
@@ -297,31 +297,7 @@ namespace {{data.Namespace}}
     private static string BuildPrefixedString(TypedIdData data)
     {
         var prefix = data.CustomPrefix?.ToLowerInvariant() ?? GetDefaultPrefix(data.TypeName);
-
-        var maxLengthInterfaces = data.MaxValueLength.HasValue ? ", IMaxLengthTypedId" : "";
-        var maxLengthProperties = data.MaxValueLength is int maxLen
-            ? $$"""
-        public static int MaxValueLength { get; } = {{maxLen}};
-        public static int MaxLength { get; } = {{prefix.Length + 1 + maxLen}};
-"""
-            : "";
-        var maxLengthValidation = data.MaxValueLength.HasValue
-            ? $$"""
-                        var valuePart = span[{{prefix.Length + 1}}..];
-                        return valuePart.Length <= MaxValueLength;
-                """
-            : """
-                        return true;
-                """;
-        var maxLengthThrowValidation = data.MaxValueLength.HasValue
-            ? $$"""
-
-                            if (valuePart.Length > MaxValueLength)
-                            {
-                                throw new ArgumentException($"The value part exceeds maximum length of {MaxValueLength}.", nameof(valuePart));
-                            }
-                """
-            : "";
+        var maxValueLength = data.MaxValueLength!.Value;
 
         // language=C#
         return $$"""
@@ -343,13 +319,15 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(StringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>{{maxLengthInterfaces}}
+    public readonly partial record struct {{data.TypeName}} : IPrefixedTypedId<{{data.TypeName}}>
     {
         private const char Separator = '_';
         private const string TypePrefix = "{{prefix}}";
 
         public static {{data.TypeName}} Empty { get; } = new(string.Empty);
-{{maxLengthProperties}}
+        public static int MaxValueLength { get; } = {{maxValueLength}};
+        public static int MaxLength { get; } = {{prefix.Length + 1 + maxValueLength}};
+
         private readonly string? value;
 
         public string Value => value ?? Empty.Value;
@@ -362,7 +340,13 @@ namespace {{data.Namespace}}
             if (valuePart is null)
             {
                 throw new ArgumentNullException(nameof(valuePart));
-            }{{maxLengthThrowValidation}}
+            }
+            if (valuePart.Length > MaxValueLength)
+            {
+                throw new ArgumentException(
+                    $"The value part exceeds maximum length of {MaxValueLength}.",
+                    nameof(valuePart));
+            }
             return new {{data.TypeName}}($"{TypePrefix}{Separator}{valuePart}");
         }
 
@@ -405,13 +389,8 @@ namespace {{data.Namespace}}
             }
 
             var span = v.AsSpan();
-            if (span.Length < {{prefix.Length
-                + 1}} || !span.StartsWith(TypePrefix) || span[{{prefix.Length}}] != Separator)
-            {
-                return false;
-            }
-
-{{maxLengthValidation}}
+            return span.Length >= {{prefix.Length
+                + 1}} && span.Length <= MaxLength && span.StartsWith(TypePrefix) && span[{{prefix.Length}}] == Separator;
         }
 
         public ReadOnlySpan<char> GetValuePart() => IsEmpty
@@ -554,15 +533,7 @@ namespace {{data.Namespace}}
 
     private static string BuildRawString(TypedIdData data)
     {
-        var maxLengthInterfaces = data.MaxValueLength.HasValue ? ", IMaxLengthTypedId" : "";
-        var maxLengthProperty = data.MaxValueLength is int maxLen
-            ? $"public static int MaxLength {{ get; }} = {maxLen};"
-            : "";
-        var maxLengthValidation = data.MaxValueLength.HasValue ? " && v.Length <= MaxLength" : "";
-
-        var parseErrorMessage = data.MaxValueLength.HasValue
-            ? "The ID has invalid format. It must be a non-null string with maximum length of {MaxLength}."
-            : "The ID has invalid format. It must be a non-null string.";
+        var maxValueLength = data.MaxValueLength!.Value;
 
         // language=C#
         return $$"""
@@ -584,10 +555,10 @@ namespace {{data.Namespace}}
     [JsonConverter(typeof(RawStringTypedIdConverter<{{data.TypeName}}>))]
     [DebuggerDisplay("{Value}")]
     [ExcludeFromCodeCoverage]
-    public readonly partial record struct {{data.TypeName}} : IRawStringTypedId<{{data.TypeName}}>{{maxLengthInterfaces}}
+    public readonly partial record struct {{data.TypeName}} : IRawStringTypedId<{{data.TypeName}}>
     {
         public static {{data.TypeName}} Empty { get; } = new(string.Empty);
-        {{maxLengthProperty}}
+        public static int MaxLength { get; } = {{maxValueLength}};
 
         private readonly string? value;
 
@@ -604,7 +575,8 @@ namespace {{data.Namespace}}
             }
             else
             {
-                throw new FormatException($"{{parseErrorMessage}}");
+                throw new FormatException(
+                    $"The ID has invalid format. It must be a non-null string with maximum length of {MaxLength}.");
             }
         }
 
@@ -627,7 +599,7 @@ namespace {{data.Namespace}}
 
         public static bool IsValid([NotNullWhen(true)] string? v)
         {
-            return v is not null{{maxLengthValidation}};
+            return v is not null && v.Length <= MaxLength;
         }
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);

@@ -61,7 +61,7 @@ public static class PropertiesConfigurationBuilderExtensions
     {
         return builder
             .HaveConversion<RawStringTypedIdConverter<TId>, RawStringTypedIdComparer<TId>>()
-            .ConfigureMaxLengthIfPresent();
+            .ConfigureMaxLength();
     }
 
     public static PropertiesConfigurationBuilder<TId?> AreStringTypedId<TId>(
@@ -71,7 +71,7 @@ public static class PropertiesConfigurationBuilderExtensions
     {
         return builder
             .HaveConversion<RawStringTypedIdConverter<TId>, RawStringTypedIdComparer<TId>>()
-            .ConfigureMaxLengthIfPresent();
+            .ConfigureMaxLength();
     }
 
     public static PropertiesConfigurationBuilder<TId> ArePrefixedTypedId<TId>(
@@ -81,7 +81,7 @@ public static class PropertiesConfigurationBuilderExtensions
     {
         return builder
             .HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>()
-            .ConfigureFixedSizeOrMaxLengthIfPresent();
+            .ConfigureMaxLength();
     }
 
     public static PropertiesConfigurationBuilder<TId?> ArePrefixedTypedId<TId>(
@@ -91,61 +91,23 @@ public static class PropertiesConfigurationBuilderExtensions
     {
         return builder
             .HaveConversion<PrefixedTypedIdConverter<TId>, PrefixedTypedIdComparer<TId>>()
-            .ConfigureFixedSizeOrMaxLengthIfPresent();
+            .ConfigureMaxLength();
     }
 
-    private static PropertiesConfigurationBuilder<TId> ConfigureFixedSizeOrMaxLengthIfPresent<TId>(
+    private static PropertiesConfigurationBuilder<TId> ConfigureMaxLength<TId>(
         this PropertiesConfigurationBuilder<TId> builder
     )
-        where TId : struct, IPrefixedTypedId<TId>
+        where TId : struct, IMaxLengthTypedId
     {
-        if (IHasEmptyId<TId>.GetRawLength() is { } rawLength)
-        {
-            return builder.HaveMaxLength(rawLength).AreFixedLength();
-        }
-        else if (IHasEmptyId<TId>.GetMaxLength() is { } maxLength)
-        {
-            return builder.HaveMaxLength(maxLength);
-        }
-        else
-        {
-            return builder;
-        }
+        return builder.HaveMaxLength(TId.MaxLength);
     }
 
-    private static PropertiesConfigurationBuilder<TId?> ConfigureFixedSizeOrMaxLengthIfPresent<TId>(
+    private static PropertiesConfigurationBuilder<TId?> ConfigureMaxLength<TId>(
         this PropertiesConfigurationBuilder<TId?> builder
     )
-        where TId : struct, IHasEmptyId<TId>
+        where TId : struct, IMaxLengthTypedId
     {
-        if (IHasEmptyId<TId>.GetRawLength() is { } rawLength)
-        {
-            return builder.HaveMaxLength(rawLength).AreFixedLength();
-        }
-        else if (IHasEmptyId<TId>.GetMaxLength() is { } maxLength)
-        {
-            return builder.HaveMaxLength(maxLength);
-        }
-        else
-        {
-            return builder;
-        }
-    }
-
-    private static PropertiesConfigurationBuilder<TId> ConfigureMaxLengthIfPresent<TId>(
-        this PropertiesConfigurationBuilder<TId> builder
-    )
-        where TId : struct, IHasEmptyId<TId>
-    {
-        return IHasEmptyId<TId>.GetMaxLength() is { } maxLength ? builder.HaveMaxLength(maxLength) : builder;
-    }
-
-    private static PropertiesConfigurationBuilder<TId?> ConfigureMaxLengthIfPresent<TId>(
-        this PropertiesConfigurationBuilder<TId?> builder
-    )
-        where TId : struct, IHasEmptyId<TId>
-    {
-        return IHasEmptyId<TId>.GetMaxLength() is { } maxLength ? builder.HaveMaxLength(maxLength) : builder;
+        return builder.HaveMaxLength(TId.MaxLength);
     }
 
     private static PropertiesConfigurationBuilder<TId> AreRawTypedId<TBacking, TId>(

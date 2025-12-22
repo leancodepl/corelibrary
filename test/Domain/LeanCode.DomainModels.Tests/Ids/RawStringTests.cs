@@ -7,11 +7,8 @@ using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Ids;
 
-[TypedId(TypedIdFormat.RawString)]
-public readonly partial record struct TestRawStringId;
-
 [TypedId(TypedIdFormat.RawString, MaxValueLength = 10)]
-public readonly partial record struct TestRawStringIdWithMaxLength;
+public readonly partial record struct TestRawStringId;
 
 public class RawStringIdTests
 {
@@ -221,35 +218,32 @@ public class RawStringIdTests
         Assert.True(new TestRawStringId(string.Empty).IsEmpty);
         Assert.False(new TestRawStringId(String1).IsEmpty);
     }
-}
 
-public class RawStringIdWithMaxLengthTests
-{
     [Fact]
     public void MaxLength_is_exposed()
     {
-        Assert.Equal(10, TestRawStringIdWithMaxLength.MaxLength);
+        Assert.Equal(10, TestRawStringId.MaxLength);
     }
 
     [Fact]
     public void String_within_max_length_is_valid()
     {
-        Assert.True(TestRawStringIdWithMaxLength.IsValid("1234567890"));
-        Assert.True(TestRawStringIdWithMaxLength.IsValid("short"));
+        Assert.True(TestRawStringId.IsValid("1234567890"));
+        Assert.True(TestRawStringId.IsValid("short"));
     }
 
     [Fact]
     public void String_exceeding_max_length_is_invalid()
     {
-        Assert.False(TestRawStringIdWithMaxLength.IsValid("12345678901")); // 11 chars
+        Assert.False(TestRawStringId.IsValid("12345678901")); // 11 chars
 
-        Assert.Throws<FormatException>(() => TestRawStringIdWithMaxLength.Parse("12345678901"));
-        Assert.False(TestRawStringIdWithMaxLength.TryParse("this_is_too_long", out _));
+        Assert.Throws<FormatException>(() => TestRawStringId.Parse("12345678901"));
+        Assert.False(TestRawStringId.TryParse("this_is_too_long", out _));
     }
 
     [Fact]
     public void Empty_string_is_valid_with_max_length()
     {
-        Assert.True(TestRawStringIdWithMaxLength.IsValid(string.Empty));
+        Assert.True(TestRawStringId.IsValid(string.Empty));
     }
 }

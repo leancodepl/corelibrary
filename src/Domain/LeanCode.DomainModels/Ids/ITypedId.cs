@@ -13,6 +13,7 @@ public interface IPrefixedTypedId<TSelf>
         ISpanFormattable,
         IUtf8SpanFormattable,
         IEqualityOperators<TSelf, TSelf, bool>,
+        IMaxLengthTypedId,
         IHasEmptyId<TSelf>
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
@@ -57,6 +58,7 @@ public interface IRawStringTypedId<TSelf>
         ISpanFormattable,
         IUtf8SpanFormattable,
         IEqualityOperators<TSelf, TSelf, bool>,
+        IMaxLengthTypedId,
         IHasEmptyId<TSelf>
     where TSelf : struct, IRawStringTypedId<TSelf>
 {
@@ -76,12 +78,6 @@ public interface IHasEmptyId<TSelf>
     where TSelf : struct, IHasEmptyId<TSelf>
 {
     static abstract TSelf Empty { get; }
-}
-
-[EditorBrowsable(EditorBrowsableState.Never)]
-public interface IConstSizeTypedId
-{
-    static abstract int RawLength { get; }
 }
 
 [EditorBrowsable(EditorBrowsableState.Never)]
