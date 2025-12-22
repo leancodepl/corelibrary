@@ -91,7 +91,7 @@ public class RemoteCQRSOutputCachingTests : RemoteCQRSTestsBase
     [Fact]
     public async Task Unsuccessful_requests_are_not_cached_by_default()
     {
-        var unauthorizedOperationBody = """{ "X": 1, "Y": 2, "FailAuthorization": true }""";
+        var unauthorizedOperationBody = """{ "X": 1, "Y": 2, "VaryByValue": "A", "FailAuthorization": true }""";
 
         var (_, firstStatusCode, firstHeaders) = await SendAsync(CachedOperationPath, unauthorizedOperationBody);
         firstStatusCode.Should().Be(HttpStatusCode.Forbidden);
