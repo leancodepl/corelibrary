@@ -166,6 +166,46 @@ public class ValidConstructTests
     }
 
     [Fact]
+    public void Correct_PrefixedUlid()
+    {
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedUlid)]
+                public readonly partial record struct Id;
+            """
+        );
+
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedUlid, CustomPrefix = "prefix")]
+                public readonly partial record struct Id;
+            """
+        );
+
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedUlid, SkipRandomGenerator = true)]
+                public readonly partial record struct Id;
+            """
+        );
+
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedUlid, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValueLength = 50)]
+                public readonly partial record struct Id;
+            """
+        );
+    }
+
+    [Fact]
     public void Correct_RawString()
     {
         AssertCorrect(
