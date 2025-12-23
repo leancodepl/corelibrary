@@ -10,11 +10,21 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
     private const string AttributeName = "LeanCode.DomainModels.Ids.TypedIdAttribute";
     private const string CustomPrefixField = "CustomPrefix";
     private const string SkipRandomGeneratorField = "SkipRandomGenerator";
+    private const string MaxValueLengthField = "MaxValueLength";
 
     private static readonly DiagnosticDescriptor InvalidTypeRule = new(
         "LNCD0005",
         "Typed id must be `readonly partial record struct`",
-        @"`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
+        "`{0}` is invalid. For typed ids to work, the type must be `readonly partial record struct`.",
+        "Domain",
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    private static readonly DiagnosticDescriptor MaxLengthRequiredForStringIdRule = new(
+        "LNCD0012",
+        "String typed id must provide positive `MaxValueLength` in attribute",
+        "`{0}` is invalid string ID. For string typed ids to work, they must provide positive `MaxValueLength` in the `TypedId` attribute.",
         "Domain",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -36,6 +46,9 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                 var skipRandomGenerator = attribute
                     .NamedArguments.FirstOrDefault(a => a.Key == SkipRandomGeneratorField)
                     .Value.Value;
+                var maxValueLength = attribute
+                    .NamedArguments.FirstOrDefault(a => a.Key == MaxValueLengthField)
+                    .Value.Value;
                 var isValid = IsValidSyntaxNode(n.TargetNode);
                 return new TypedIdData(
                     (TypedIdFormat)idFormat,
@@ -43,6 +56,7 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
                     n.TargetSymbol.Name,
                     (string?)customPrefix,
                     skipRandomGenerator is true,
+                    maxValueLength is int mvl && mvl >= 0 ? mvl : null,
                     isValid,
                     !isValid ? n.TargetNode.GetLocation() : null
                 );
@@ -53,13 +67,22 @@ public sealed class TypedIdGenerator : IIncrementalGenerator
             src,
             static (sources, data) =>
             {
-                if (data.IsValid)
+                if (!data.IsValid)
                 {
-                    sources.AddSource($"{data.TypeName}.g.cs", IdSource.Build(data));
+                    sources.ReportDiagnostic(Diagnostic.Create(InvalidTypeRule, data.Location, data.TypeName));
+                }
+                else if (
+                    data.Format is TypedIdFormat.RawString or TypedIdFormat.PrefixedString
+                    && data.MaxValueLength is null
+                )
+                {
+                    sources.ReportDiagnostic(
+                        Diagnostic.Create(MaxLengthRequiredForStringIdRule, data.Location, data.TypeName)
+                    );
                 }
                 else
                 {
-                    sources.ReportDiagnostic(Diagnostic.Create(InvalidTypeRule, data.Location, data.TypeName));
+                    sources.AddSource($"{data.TypeName}.g.cs", IdSource.Build(data));
                 }
             }
         );

@@ -30,11 +30,27 @@ public class TypedIdConverterTests
     }
 
     [Fact]
+    public void RawString_conversion_to_string_and_back_works()
+    {
+        AssertConvertsRawString(new(""));
+        AssertConvertsRawString(new("test-id"));
+        AssertConvertsRawString(new("another-value"));
+    }
+
+    [Fact]
     public void PrefixedGuid_conversion_to_guid_and_back_works()
     {
         AssertConvertsPrefixedGuid(new(Guid.Empty));
         AssertConvertsPrefixedGuid(new(Guid.NewGuid()));
         AssertConvertsPrefixedGuid(PrefixedGuidId.New());
+    }
+
+    [Fact]
+    public void PrefixedString_conversion_to_string_and_back_works()
+    {
+        AssertConvertsPrefixedString(PrefixedStringId.FromValuePart(""));
+        AssertConvertsPrefixedString(PrefixedStringId.FromValuePart("test-id"));
+        AssertConvertsPrefixedString(PrefixedStringId.FromValuePart("another-value"));
     }
 
     [Fact]
@@ -83,6 +99,22 @@ public class TypedIdConverterTests
     }
 
     [Fact]
+    public void RawString_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<StringId>().AreStringTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(StringId));
+        Assert.NotNull(mapping);
+        Assert.IsType<RawStringTypedIdConverter<StringId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(RawStringTypedIdComparer<StringId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(StringId), mapping.ClrType);
+        Assert.Equal(StringId.MaxLength, mapping.GetMaxLength());
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
     public void PrefixedGuid_convention_is_registered_properly()
     {
         var builder = new ModelConfigurationBuilderWrapper();
@@ -94,8 +126,23 @@ public class TypedIdConverterTests
         Assert.IsType<PrefixedTypedIdConverter<PrefixedGuidId>>(mapping.GetValueConverter());
         Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedGuidId>), mapping["ValueComparerType"]);
         Assert.Equal(typeof(PrefixedGuidId), mapping.ClrType);
-        Assert.Equal(mapping.GetMaxLength(), PrefixedGuidId.RawLength);
-        Assert.Equal(mapping["Relational:IsFixedLength"], true);
+        Assert.Equal(PrefixedGuidId.MaxLength, mapping.GetMaxLength());
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void PrefixedString_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<PrefixedStringId>().ArePrefixedTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(PrefixedStringId));
+        Assert.NotNull(mapping);
+        Assert.IsType<PrefixedTypedIdConverter<PrefixedStringId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedStringId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(PrefixedStringId), mapping.ClrType);
+        Assert.Equal(PrefixedStringId.MaxLength, mapping.GetMaxLength());
         Assert.Null(mapping["Relational:ColumnType"]);
     }
 
@@ -145,6 +192,22 @@ public class TypedIdConverterTests
     }
 
     [Fact]
+    public void OptionalRawString_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<StringId?>().AreStringTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(StringId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<RawStringTypedIdConverter<StringId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(RawStringTypedIdComparer<StringId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(StringId?), mapping.ClrType);
+        Assert.Equal(StringId.MaxLength, mapping.GetMaxLength());
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
     public void OptionalPrefixedGuid_convention_is_registered_properly()
     {
         var builder = new ModelConfigurationBuilderWrapper();
@@ -156,8 +219,23 @@ public class TypedIdConverterTests
         Assert.IsType<PrefixedTypedIdConverter<PrefixedGuidId>>(mapping.GetValueConverter());
         Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedGuidId>), mapping["ValueComparerType"]);
         Assert.Equal(typeof(PrefixedGuidId?), mapping.ClrType);
-        Assert.Equal(mapping.GetMaxLength(), PrefixedGuidId.RawLength);
-        Assert.Equal(mapping["Relational:IsFixedLength"], true);
+        Assert.Equal(PrefixedGuidId.MaxLength, mapping.GetMaxLength());
+        Assert.Null(mapping["Relational:ColumnType"]);
+    }
+
+    [Fact]
+    public void OptionalPrefixedString_convention_is_registered_properly()
+    {
+        var builder = new ModelConfigurationBuilderWrapper();
+        builder.Properties<PrefixedStringId?>().ArePrefixedTypedId();
+        var model = builder.Build();
+
+        var mapping = model.FindProperty(typeof(PrefixedStringId?));
+        Assert.NotNull(mapping);
+        Assert.IsType<PrefixedTypedIdConverter<PrefixedStringId>>(mapping.GetValueConverter());
+        Assert.Equal(typeof(PrefixedTypedIdComparer<PrefixedStringId>), mapping["ValueComparerType"]);
+        Assert.Equal(typeof(PrefixedStringId?), mapping.ClrType);
+        Assert.Equal(PrefixedStringId.MaxLength, mapping.GetMaxLength());
         Assert.Null(mapping["Relational:ColumnType"]);
     }
 
@@ -185,10 +263,26 @@ public class TypedIdConverterTests
         Assert.Equal(id, fromResult);
     }
 
+    private static void AssertConvertsRawString(StringId id)
+    {
+        var toResult = RawStringTypedIdConverter<StringId>.Instance.ConvertToProvider(id);
+        var fromResult = RawStringTypedIdConverter<StringId>.Instance.ConvertFromProvider(id.Value);
+        Assert.Equal(id.Value, toResult);
+        Assert.Equal(id, fromResult);
+    }
+
     private static void AssertConvertsPrefixedGuid(PrefixedGuidId id)
     {
         var toResult = PrefixedTypedIdConverter<PrefixedGuidId>.Instance.ConvertToProvider(id);
         var fromResult = PrefixedTypedIdConverter<PrefixedGuidId>.Instance.ConvertFromProvider(id.Value);
+        Assert.Equal(id.Value, toResult);
+        Assert.Equal(id, fromResult);
+    }
+
+    private static void AssertConvertsPrefixedString(PrefixedStringId id)
+    {
+        var toResult = PrefixedTypedIdConverter<PrefixedStringId>.Instance.ConvertToProvider(id);
+        var fromResult = PrefixedTypedIdConverter<PrefixedStringId>.Instance.ConvertFromProvider(id.Value);
         Assert.Equal(id.Value, toResult);
         Assert.Equal(id, fromResult);
     }

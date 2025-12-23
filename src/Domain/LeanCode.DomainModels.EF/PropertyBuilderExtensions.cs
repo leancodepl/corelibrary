@@ -74,56 +74,82 @@ public static class PropertyBuilderExtensions
     public static PropertyBuilder<TId> IsIntTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IRawTypedId<int, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance, RawTypedIdComparer<int, TId>.Instance);
     }
 
     public static PropertyBuilder<TId?> IsIntTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IRawTypedId<int, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<int, TId>.Instance, RawTypedIdComparer<int, TId>.Instance);
     }
 
     public static PropertyBuilder<TId> IsLongTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IRawTypedId<long, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance, RawTypedIdComparer<long, TId>.Instance);
     }
 
     public static PropertyBuilder<TId?> IsLongTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IRawTypedId<long, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<long, TId>.Instance, RawTypedIdComparer<long, TId>.Instance);
     }
 
     public static PropertyBuilder<TId> IsGuidTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IRawTypedId<Guid, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance, RawTypedIdComparer<Guid, TId>.Instance);
     }
 
     public static PropertyBuilder<TId?> IsGuidTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IRawTypedId<Guid, TId>
     {
-        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance);
+        return builder.HasConversion(RawTypedIdConverter<Guid, TId>.Instance, RawTypedIdComparer<Guid, TId>.Instance);
+    }
+
+    public static PropertyBuilder<TId> IsStringTypedId<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IRawStringTypedId<TId>
+    {
+        return builder
+            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
+            .ConfigureMaxLength();
+    }
+
+    public static PropertyBuilder<TId?> IsStringTypedId<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IRawStringTypedId<TId>
+    {
+        return builder
+            .HasConversion(RawStringTypedIdConverter<TId>.Instance, RawStringTypedIdComparer<TId>.Instance)
+            .ConfigureMaxLength();
     }
 
     public static PropertyBuilder<TId> IsPrefixedTypedId<TId>(this PropertyBuilder<TId> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
-            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
-            .HasMaxLength(TId.RawLength)
-            .IsFixedLength()
-            .ValueGeneratedNever();
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance, PrefixedTypedIdComparer<TId>.Instance)
+            .ValueGeneratedNever()
+            .ConfigureMaxLength();
     }
 
     public static PropertyBuilder<TId?> IsPrefixedTypedId<TId>(this PropertyBuilder<TId?> builder)
         where TId : struct, IPrefixedTypedId<TId>
     {
         return builder
-            .HasConversion(PrefixedTypedIdConverter<TId>.Instance)
-            .HasMaxLength(TId.RawLength)
-            .IsFixedLength()
-            .ValueGeneratedNever();
+            .HasConversion(PrefixedTypedIdConverter<TId>.Instance, PrefixedTypedIdComparer<TId>.Instance)
+            .ValueGeneratedNever()
+            .ConfigureMaxLength();
+    }
+
+    private static PropertyBuilder<TId> ConfigureMaxLength<TId>(this PropertyBuilder<TId> builder)
+        where TId : struct, IMaxLengthTypedId
+    {
+        return builder.HasMaxLength(TId.MaxLength).IsFixedLength();
+    }
+
+    private static PropertyBuilder<TId?> ConfigureMaxLength<TId>(this PropertyBuilder<TId?> builder)
+        where TId : struct, IMaxLengthTypedId
+    {
+        return builder.HasMaxLength(TId.MaxLength).IsFixedLength();
     }
 }

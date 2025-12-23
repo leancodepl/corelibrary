@@ -218,9 +218,9 @@ public class PrefixedGuidIdTests
     }
 
     [Fact]
-    public void RawLength_is_correct()
+    public void MaxLength_is_correct()
     {
-        Assert.Equal(TestPrefixedGuidId.RawLength, TPG1.Length);
+        Assert.Equal(TestPrefixedGuidId.MaxLength, TPG1.Length);
     }
 
     [Fact]
@@ -233,9 +233,9 @@ public class PrefixedGuidIdTests
         charsWritten.Should().Be(0);
 
         id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
-        charsWritten.Should().Be(TestPrefixedGuidId.RawLength);
-        new string(buffer[..TestPrefixedGuidId.RawLength]).Should().Be(TPG1);
-        buffer[TestPrefixedGuidId.RawLength..].Should().AllBeEquivalentTo(default(char));
+        charsWritten.Should().Be(TestPrefixedGuidId.MaxLength);
+        new string(buffer[..TestPrefixedGuidId.MaxLength]).Should().Be(TPG1);
+        buffer[TestPrefixedGuidId.MaxLength..].Should().AllBeEquivalentTo(default(char));
     }
 
     [Fact]
@@ -249,8 +249,8 @@ public class PrefixedGuidIdTests
         bytesWritten.Should().Be(0);
 
         id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
-        bytesWritten.Should().Be(TestPrefixedGuidId.RawLength);
-        buffer[..TestPrefixedGuidId.RawLength].Should().BeEquivalentTo(expectedBytes);
-        buffer[TestPrefixedGuidId.RawLength..].Should().AllBeEquivalentTo(default(byte));
+        bytesWritten.Should().Be(TestPrefixedGuidId.MaxLength);
+        buffer[..TestPrefixedGuidId.MaxLength].Should().BeEquivalentTo(expectedBytes);
+        buffer[TestPrefixedGuidId.MaxLength..].Should().AllBeEquivalentTo(default(byte));
     }
 }

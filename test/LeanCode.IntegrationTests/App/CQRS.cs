@@ -29,7 +29,7 @@ public class ListEntities : IQuery<List<EntityDTO>> { }
 
 public class EntityDTO
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; } = default!;
     public string Value { get; set; } = default!;
 }
 
@@ -69,7 +69,7 @@ public class AddEntityCH : ICommandHandler<AddEntity>
 
     public Task ExecuteAsync(HttpContext context, AddEntity command)
     {
-        var entity = new Entity { Id = Guid.NewGuid(), Value = command.Value };
+        var entity = new Entity { Id = EntityId.New(), Value = command.Value };
         DomainEvents.Raise(new EntityAdded(entity));
 
         dbContext.Entities.Add(entity);
@@ -90,7 +90,7 @@ public class EntityAddedConsumer : IConsumer<EntityAdded>
 
     public Task Consume(ConsumeContext<EntityAdded> context)
     {
-        var entity = new Entity { Id = Guid.NewGuid(), Value = $"{context.Message.Value}-consumer" };
+        var entity = new Entity { Id = EntityId.New(), Value = $"{context.Message.Value}-consumer" };
 
         dbContext.Entities.Add(entity);
         // No dbContext.SaveChanges - infrastructure will be handling this

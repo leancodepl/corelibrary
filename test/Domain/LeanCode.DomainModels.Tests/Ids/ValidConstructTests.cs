@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace LeanCode.DomainModels.Tests.Ids;
@@ -38,7 +39,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                [TypedId(TypedIdFormat.RawInt, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -78,7 +79,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                [TypedId(TypedIdFormat.RawLong, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -118,7 +119,7 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true)]
+                [TypedId(TypedIdFormat.RawGuid, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
@@ -158,13 +159,57 @@ public class ValidConstructTests
             """
                 using LeanCode.DomainModels.Ids;
                 namespace Test;
-                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true)]
+                [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValueLength = 50)]
                 public readonly partial record struct Id;
             """
         );
     }
 
-    private static void AssertCorrect(string source)
+    [Fact]
+    public void Correct_RawString()
+    {
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawString, MaxValueLength = 100)]
+                public readonly partial record struct Id;
+            """
+        );
+
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.RawString, CustomPrefix = "ignored", SkipRandomGenerator = true, MaxValueLength = 50)]
+                public readonly partial record struct Id;
+            """
+        );
+    }
+
+    [Fact]
+    public void Correct_PrefixedString()
+    {
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedString, MaxValueLength = 100)]
+                public readonly partial record struct Id;
+            """
+        );
+
+        AssertCorrect(
+            """
+                using LeanCode.DomainModels.Ids;
+                namespace Test;
+                [TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "prefix", SkipRandomGenerator = true, MaxValueLength = 50)]
+                public readonly partial record struct Id;
+            """
+        );
+    }
+
+    private static void AssertCorrect([StringSyntax("C#")] string source)
     {
         var diag = GeneratorRunner.RunDiagnostics(source);
         Assert.Empty(diag);

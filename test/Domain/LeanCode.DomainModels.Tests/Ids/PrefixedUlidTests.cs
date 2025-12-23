@@ -237,9 +237,9 @@ public class PrefixedUlidIdTests
     }
 
     [Fact]
-    public void RawLength_is_correct()
+    public void MaxLength_is_correct()
     {
-        TestPrefixedUlidId.RawLength.Should().Be(TPU1.Length);
+        TestPrefixedUlidId.MaxLength.Should().Be(TPU1.Length);
     }
 
     [Fact]
@@ -270,9 +270,9 @@ public class PrefixedUlidIdTests
         charsWritten.Should().Be(0);
 
         id.TryFormat(buffer, out charsWritten, "", null).Should().BeTrue();
-        charsWritten.Should().Be(TestPrefixedUlidId.RawLength);
-        new string(buffer[..TestPrefixedUlidId.RawLength]).Should().Be(TPU1);
-        buffer[TestPrefixedUlidId.RawLength..].Should().AllBeEquivalentTo(default(char));
+        charsWritten.Should().Be(TestPrefixedUlidId.MaxLength);
+        new string(buffer[..TestPrefixedUlidId.MaxLength]).Should().Be(TPU1);
+        buffer[TestPrefixedUlidId.MaxLength..].Should().AllBeEquivalentTo(default(char));
     }
 
     [Fact]
@@ -286,8 +286,8 @@ public class PrefixedUlidIdTests
         bytesWritten.Should().Be(0);
 
         id.TryFormat(buffer, out bytesWritten, "", null).Should().BeTrue();
-        bytesWritten.Should().Be(TestPrefixedUlidId.RawLength);
-        buffer[..TestPrefixedUlidId.RawLength].Should().BeEquivalentTo(expectedBytes);
-        buffer[TestPrefixedUlidId.RawLength..].Should().AllBeEquivalentTo(default(byte));
+        bytesWritten.Should().Be(TestPrefixedUlidId.MaxLength);
+        buffer[..TestPrefixedUlidId.MaxLength].Should().BeEquivalentTo(expectedBytes);
+        buffer[TestPrefixedUlidId.MaxLength..].Should().AllBeEquivalentTo(default(byte));
     }
 }

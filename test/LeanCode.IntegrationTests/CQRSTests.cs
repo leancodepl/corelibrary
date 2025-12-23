@@ -65,8 +65,8 @@ public class CQRSTests : IAsyncLifetime
         entities
             .Should()
             .Satisfy(
-                e1 => e1.Value == "test-entity" && e1.Id != Guid.Empty,
-                e2 => e2.Value == "test-entity-consumer" && e2.Id != Guid.Empty
+                e1 => e1.Value == "test-entity" && e1.Id != EntityId.Empty,
+                e2 => e2.Value == "test-entity-consumer" && e2.Id != EntityId.Empty
             );
     }
 

@@ -74,17 +74,36 @@ The format of the ID can be configured using:
     - `RawInt` - uses `int` as the underlying type; works as a wrapper over `int`; does not support generating new IDs at runtime by default.
     - `RawLong` - uses `long` as the underlying type; works as a wrapper over `long`; does not support generating new IDs at runtime by default.
     - `RawGuid` - uses `Guid` as the underlying type; works as a wrapper over `Guid`; can generate new ID at runtime using `Guid.NewGuid`.
-    - `PrefixedGuid` - uses `string` as the underlying type; it is represented as a `(prefix)_(guid)` string that can be generated at runtime; by default `(prefix)` is a lowercase class name with `id` at the end removed.
+    - `RawString` - uses `string` as the underlying type; works as a wrapper over arbitrary strings; does not support generating new IDs at runtime.
+    - `PrefixedGuid` - uses `string` as the underlying type; it is represented as a `(prefix)_(guid)` string that can be generated at runtime; by default `(prefix)` is a lowercase class name with `Id` suffix removed.
+    - `PrefixedUlid` - uses `string` as the underlying type; it is represented as a `(prefix)_(ulid)` string that can be generated at runtime; by default `(prefix)` is a lowercase class name with `Id` suffix removed.
+    - `PrefixedString` - uses `string` as the underlying type; it is represented as a `(prefix)_(value)` string where `(value)` is an arbitrary string; does not support generating new IDs at runtime.
 - `CustomPrefix` - for `Prefixed*` formats, you can configure what prefix it uses (if you e.g. want to use a shorter one).
-- `SkipRandomGenerator` - setting this to `true` will skip generating `New` factory method (for `Prefixed` types only).
+- `SkipRandomGenerator` - setting this to `true` will skip generating `New` factory method (for formats that support generation).
+- `MaxValueLength` - optional maximum length constraint for the value part. For `RawString`, this is the entire string length. For `PrefixedString`, this excludes the prefix and separator. When set, validation is performed in `Parse`/`IsValid` methods. Consider SQL Server's 900-byte key limit (~450 nvarchar chars) when choosing this value.
 
-Example:
+Examples:
 
 ```cs
 [TypedId(TypedIdFormat.PrefixedGuid, CustomPrefix = "employee")]
 public readonly partial record struct VeryLongEmployeeId;
 
 // The `VeryLongEmployeeId` will have format `employee_(guid)`, with `New` using `Guid.NewGuid` as random source.
+```
+
+```cs
+[TypedId(TypedIdFormat.RawString, MaxValueLength = 100)]
+public readonly partial record struct ExternalId;
+
+// The `ExternalId` wraps any string up to 100 characters. Exposes `MaxLength` static property.
+```
+
+```cs
+[TypedId(TypedIdFormat.PrefixedString, CustomPrefix = "ext", MaxValueLength = 50)]
+public readonly partial record struct ExternalRefId;
+
+// The `ExternalRefId` has format `ext_(value)` where value can be up to 50 characters.
+// Exposes `MaxValueLength` (50) and `MaxLength` (54 = 3 + 1 + 50) static properties.
 ```
 
 ## Generic type wrappers

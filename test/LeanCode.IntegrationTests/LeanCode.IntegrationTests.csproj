@@ -10,6 +10,10 @@
     <ProjectReference Include="../../src/CQRS/LeanCode.CQRS.Validation.Fluent/LeanCode.CQRS.Validation.Fluent.csproj" />
     <ProjectReference Include="../../src/CQRS/LeanCode.CQRS.MassTransitRelay/LeanCode.CQRS.MassTransitRelay.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels/LeanCode.DomainModels.csproj" />
+    <ProjectReference
+      Include="../../src/Domain/LeanCode.DomainModels.Generators/LeanCode.DomainModels.Generators.csproj"
+      OutputItemType="Analyzer"
+    />
     <ProjectReference Include="../../src/Domain/LeanCode.DomainModels.EF/LeanCode.DomainModels.EF.csproj" />
     <ProjectReference Include="../../src/Domain/LeanCode.TimeProvider/LeanCode.TimeProvider.csproj" />
     <ProjectReference Include="../../src/Infrastructure/LeanCode.Firebase.FCM/LeanCode.Firebase.FCM.csproj" />

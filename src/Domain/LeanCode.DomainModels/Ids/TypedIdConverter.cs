@@ -28,6 +28,26 @@ public class StringTypedIdConverter<TId> : JsonConverter<TId>
 }
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+public class RawStringTypedIdConverter<TId> : JsonConverter<TId>
+    where TId : struct, IRawStringTypedId<TId>
+{
+    public override TId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        TId.Parse(reader.GetString() ?? throw new JsonException("Expected an id string"));
+
+    public override void Write(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.Value);
+
+    public override TId ReadAsPropertyName(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    ) => Read(ref reader, typeToConvert, options);
+
+    public override void WriteAsPropertyName(Utf8JsonWriter writer, TId value, JsonSerializerOptions options) =>
+        writer.WritePropertyName(value.Value);
+}
+
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class IntTypedIdConverter<TId> : JsonConverter<TId>
     where TId : struct, IRawTypedId<int, TId>
 {

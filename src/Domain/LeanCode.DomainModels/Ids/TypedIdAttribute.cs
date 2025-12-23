@@ -24,16 +24,27 @@ public enum TypedIdFormat
     RawGuid = 2,
 
     /// <summary>
+    /// Raw <see cref="string" />, without prefix. It's backing type is <see cref="string" />.
+    /// </summary>
+    RawString = 3,
+
+    /// <summary>
     /// <see cref="Guid" /> prefixed with the class name or <see cref="TypedIdAttribute.CustomPrefix" />. It's backing
     /// type is <see cref="string" />.
     /// </summary>
-    PrefixedGuid = 3,
+    PrefixedGuid = 4,
 
     /// <summary>
     /// <see cref="Ulids.Ulid" /> prefixed with the class name or <see cref="TypedIdAttribute.CustomPrefix" />. It's backing
     /// type is <see cref="string" />.
     /// </summary>
-    PrefixedUlid = 4,
+    PrefixedUlid = 5,
+
+    /// <summary>
+    /// Arbitrary <see cref="string" /> prefixed with the class name or <see cref="TypedIdAttribute.CustomPrefix" />.
+    /// It's backing type is <see cref="string" />.
+    /// </summary>
+    PrefixedString = 6,
 }
 
 /// <summary>
@@ -65,6 +76,19 @@ public sealed class TypedIdAttribute : Attribute
     /// If <c>true</c>, the generated class will not provide `New` factory method by default.
     /// </summary>
     public bool SkipRandomGenerator { get; set; }
+
+    /// <summary>
+    /// Maximum length of the value part.
+    /// Only applies to <see cref="TypedIdFormat.RawString"/> and
+    /// <see cref="TypedIdFormat.PrefixedString"/> formats; ignored for other formats.
+    /// For <see cref="TypedIdFormat.RawString"/>, this constrains the entire string length.
+    /// For <see cref="TypedIdFormat.PrefixedString"/>, this constrains only the value part (excludes prefix and separator).
+    /// Required for string-based IDs.
+    /// </summary>
+    /// <remarks>
+    /// Consider SQL Server's 900-byte key limit (~450 nvarchar chars) when choosing this value.
+    /// </remarks>
+    public int MaxValueLength { get; set; } = -1;
 
     public TypedIdAttribute(TypedIdFormat format)
     {

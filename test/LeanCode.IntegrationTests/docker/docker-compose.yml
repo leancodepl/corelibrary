@@ -33,7 +33,7 @@ services:
 
   #### Infrastructure
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2025-latest
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: Passw12#
@@ -41,7 +41,7 @@ services:
       - "1433:1433"
 
   postgres:
-    image: postgres:15
+    image: postgres:17
     environment:
       POSTGRES_PASSWORD: Passw12#
     ports:

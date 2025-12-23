@@ -1,12 +1,16 @@
 using System.Text.Json.Serialization;
+using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
 
 namespace LeanCode.IntegrationTests.App;
 
-public class Entity : IAggregateRootWithoutOptimisticConcurrency<Guid>
+[TypedId(TypedIdFormat.PrefixedGuid)]
+public readonly partial record struct EntityId;
+
+public class Entity : IAggregateRootWithoutOptimisticConcurrency<EntityId>
 {
-    public Guid Id { get; set; }
+    public EntityId Id { get; set; }
     public string Value { get; set; } = null!;
 }
 
@@ -16,10 +20,10 @@ public class EntityAdded : IDomainEvent
     public DateTime DateOccurred { get; private init; }
 
     public string Value { get; private init; }
-    public Guid EntityId { get; private init; }
+    public EntityId EntityId { get; private init; }
 
     [JsonConstructor]
-    public EntityAdded(Guid id, DateTime dateOccurred, string value, Guid entityId)
+    public EntityAdded(Guid id, DateTime dateOccurred, string value, EntityId entityId)
     {
         Id = id;
         DateOccurred = dateOccurred;
