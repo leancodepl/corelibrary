@@ -47,23 +47,56 @@ public class Employee : IAggregateRoot<EmployeeId>
 
 ### API
 
-The generated ID supports the following operations:
+The generated ID supports the following operations (example for `RawGuid`):
 
 ```cs
-public readonly partial record struct ID
+public readonly partial record struct ID : IEquatable<ID>,
+    IComparable<ID>,
+    ISpanFormattable,
+    IUtf8SpanFormattable,
+    ISpanParsable<ID>,
+    IEqualityOperators<ID, ID, bool>
 {
-    public static readonly TestIntId Empty;
+    public static readonly ID Empty;
 
-    public int Value { get; }
+    public Guid Value { get; }
     public bool IsEmpty { get; }
 
-    public static ID Parse(int? v);
-    public static ID? ParseNullable(int? id);
-    public static bool TryParse([NotNullWhen(true)] int? v, out ID id);
-    public static bool IsValid([NotNullWhen(true)] int? v);
+    // Parsing from backing type (if the ID is just a wrapper for raw backing type)
+    public static ID Parse(Guid v);
+    public static ID? ParseNullable(Guid? id);
+    public static bool TryParse([NotNullWhen(true)] Guid? v, out ID id);
+    public static bool IsValid([NotNullWhen(true)] Guid? v);
 
     public static ID New(); // Only if generation is possible
 }
+```
+
+### Prefixed ID features
+
+Prefixed IDs (`PrefixedGuid`, `PrefixedUlid`, `PrefixedString`) provide additional APIs for accessing components:
+
+```cs
+// PrefixedGuid
+public Guid Guid { get; }
+public (string prefix, Guid data) Destructure();
+
+// PrefixedUlid
+public Ulid Ulid { get; }
+public (string prefix, Ulid data) Destructure();
+
+// PrefixedString
+public string ValuePart { get; }
+public (string prefix, string data) Destructure();
+public static ID FromValuePart(string valuePart);
+```
+
+Example usage:
+
+```cs
+var id = OrderId.Parse("order_01ARZ3NDEKTSV4RRFFQ69G5FAV");
+var (prefix, ulid) = id.Destructure(); // ("order", Ulid)
+var rawUlid = id.Ulid; // Access raw Ulid directly
 ```
 
 ### Configuration
@@ -80,7 +113,7 @@ The format of the ID can be configured using:
     - `PrefixedString` - uses `string` as the underlying type; it is represented as a `(prefix)_(value)` string where `(value)` is an arbitrary string; does not support generating new IDs at runtime.
 - `CustomPrefix` - for `Prefixed*` formats, you can configure what prefix it uses (if you e.g. want to use a shorter one).
 - `SkipRandomGenerator` - setting this to `true` will skip generating `New` factory method (for formats that support generation).
-- `MaxValueLength` - optional maximum length constraint for the value part. For `RawString`, this is the entire string length. For `PrefixedString`, this excludes the prefix and separator. When set, validation is performed in `Parse`/`IsValid` methods. Consider SQL Server's 900-byte key limit (~450 nvarchar chars) when choosing this value.
+- `MaxValueLength` - required maximum length constraint for the value part of the string IDs. For `RawString`, this is the entire string length. For `PrefixedString`, this excludes the prefix and separator. Validation is performed in `Parse`/`IsValid` methods. Used for configuring columns in the database, so consider SQL Server's 900-byte key limit (~450 nvarchar chars) when choosing this value.
 
 Examples:
 
