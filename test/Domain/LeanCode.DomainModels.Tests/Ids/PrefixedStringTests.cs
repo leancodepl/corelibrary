@@ -237,8 +237,8 @@ public class PrefixedStringIdTests
         static void DatabaseExpressionsWork<T>()
             where T : struct, IPrefixedTypedId<T>
         {
-            Assert.Equal(T.FromDatabase.Compile().Invoke(TPS1), T.Parse(TPS1));
-            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPS1), T.Parse(TPS1)));
+            Assert.Equal(T.FromDatabase.Compile().Invoke(TPS1), T.Parse(TPS1, null));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPS1, null), T.Parse(TPS1, null)));
         }
     }
 

@@ -89,11 +89,18 @@ namespace {{data.Namespace}}
         public {{data.TypeName}}(Guid v) => value = string.Create(null, stackalloc char[MaxLength], $"{TypePrefix}{Separator}{v:N}");
         {{randomFactory}}
 
-        public static {{data.TypeName}} Parse(string v)
+        public static bool IsValid([NotNullWhen(true)] string? v)
+            => v is not null && IsValid(v.AsSpan());
+
+        public static bool IsValid(ReadOnlySpan<char> v)
+            => TryParse(v, null, out _);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Guid parsing.")]
+        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(v.AsSpan(), provider, out var id))
             {
-                return new {{data.TypeName}}(v);
+                return id;
             }
             else
             {
@@ -106,33 +113,43 @@ namespace {{data.Namespace}}
         [return: NotNullIfNotNull("id")]
         public static {{data.TypeName}}? ParseNullable(string? id) => id is string v ? Parse(v) : ({{data.TypeName}}?)null;
 
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Guid parsing.")]
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out {{data.TypeName}} result)
+            => TryParse(s.AsSpan(), provider, out result);
+
         public static bool TryParse([NotNullWhen(true)] string? v, out {{data.TypeName}} id)
+            => TryParse(v, null, out id);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Guid parsing.")]
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(s, provider, out var result))
             {
-                id = new {{data.TypeName}}(v);
+                return result;
+            }
+            else
+            {
+                throw new FormatException(
+                    $"The ID has invalid format. It should look like {TypePrefix}{Separator}(id value)."
+                );
+            }
+        }
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Guid parsing.")]
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
+        {
+            if (s.Length == MaxLength
+                && s.StartsWith(TypePrefix)
+                && s[{{prefix.Length}}] == Separator
+                && Guid.TryParseExact(s[{{prefix.Length + 1}}..], "N", out var guid))
+            {
+                result = new {{data.TypeName}}(guid);
                 return true;
             }
             else
             {
-                id = default;
+                result = default;
                 return false;
-            }
-        }
-
-        public static bool IsValid([NotNullWhen(true)] string? v)
-        {
-            if (v is null)
-            {
-                return false;
-            }
-            else
-            {
-                var span = v.AsSpan();
-                return span.Length == MaxLength
-                    && span.StartsWith(TypePrefix)
-                    && span[{{prefix.Length}}] == Separator
-                    && Guid.TryParseExact(span[{{prefix.Length + 1}}..], "N", out _);
             }
         }
 
@@ -222,11 +239,18 @@ namespace {{data.Namespace}}
 
         public static {{data.TypeName}} New() => new(Ulid.NewUlid());
 
-        public static {{data.TypeName}} Parse(string v)
+        public static bool IsValid([NotNullWhen(true)] string? v)
+            => v is not null && IsValid(v.AsSpan());
+
+        public static bool IsValid(ReadOnlySpan<char> v)
+            => TryParse(v, null, out _);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
+        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider = null)
         {
-            if (TryDeconstruct(v.AsSpan(), out var ulid))
+            if (TryParse(v.AsSpan(), provider, out var result))
             {
-                return new {{data.TypeName}}(ulid);
+                return result;
             }
             else
             {
@@ -239,16 +263,39 @@ namespace {{data.Namespace}}
         [return: NotNullIfNotNull("id")]
         public static {{data.TypeName}}? ParseNullable(string? id) => id is string v ? Parse(v) : ({{data.TypeName}}?)null;
 
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out {{data.TypeName}} result)
+            => TryParse(s.AsSpan(), provider, out result);
+
         public static bool TryParse([NotNullWhen(true)] string? v, out {{data.TypeName}} id)
+            => TryParse(v, null, out id);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
         {
-            if (TryDeconstruct(v, out var ulid))
+            if (TryParse(s, provider, out var result))
             {
-                id = new {{data.TypeName}}(ulid);
+                return result;
+            }
+            else
+            {
+                throw new FormatException(
+                    $"The ID has invalid format. It should look like {TypePrefix}{Separator}(id value)."
+                );
+            }
+        }
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
+        {
+            if (TryDeconstruct(s, out var ulid))
+            {
+                result = new {{data.TypeName}}(ulid);
                 return true;
             }
             else
             {
-                id = default;
+                result = default;
                 return false;
             }
         }
@@ -261,11 +308,6 @@ namespace {{data.Namespace}}
                 && span.StartsWith(TypePrefix)
                 && span[{{prefix.Length}}] == Separator
                 && Ulid.TryParse(span[{{prefix.Length + 1}}..], out rawUlid);
-        }
-
-        public static bool IsValid([NotNullWhen(true)] string? v)
-        {
-            return TryDeconstruct(v.AsSpan(), out _);
         }
 
         public (string prefix, Ulid data) Destructure() => (TypePrefix, Ulid);
@@ -364,11 +406,18 @@ namespace {{data.Namespace}}
             return new {{data.TypeName}}($"{TypePrefix}{Separator}{valuePart}");
         }
 
-        public static {{data.TypeName}} Parse(string v)
+        public static bool IsValid([NotNullWhen(true)] string? v)
+            => v is not null && IsValid(v.AsSpan());
+
+        public static bool IsValid(ReadOnlySpan<char> v)
+            => TryParse(v, null, out _);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string format validation.")]
+        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(v.AsSpan(), provider, out var result))
             {
-                return new {{data.TypeName}}(v);
+                return result;
             }
             else
             {
@@ -381,32 +430,45 @@ namespace {{data.Namespace}}
         [return: NotNullIfNotNull("id")]
         public static {{data.TypeName}}? ParseNullable(string? id) => id is string v ? Parse(v) : ({{data.TypeName}}?)null;
 
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string format validation.")]
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out {{data.TypeName}} result)
+            => TryParse(s.AsSpan(), provider, out result);
+
         public static bool TryParse([NotNullWhen(true)] string? v, out {{data.TypeName}} id)
+            => TryParse(v, null, out id);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string format validation.")]
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(s, provider, out var result))
             {
-                id = new {{data.TypeName}}(v);
+                return result;
+            }
+            else
+            {
+                throw new FormatException(
+                    $"The ID has invalid format. It should look like {TypePrefix}{Separator}(value)."
+                );
+            }
+        }
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string format validation.")]
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
+        {
+            if (s.Length >= {{prefix.Length + 1}}
+                && s.Length <= MaxLength
+                && s.StartsWith(TypePrefix)
+                && s[{{prefix.Length}}] == Separator)
+            {
+                result = new {{data.TypeName}}(s.ToString());
                 return true;
             }
             else
             {
-                id = default;
+                result = default;
                 return false;
             }
         }
-
-        public static bool IsValid([NotNullWhen(true)] string? v)
-        {
-            if (v is null)
-            {
-                return false;
-            }
-
-            var span = v.AsSpan();
-            return span.Length >= {{prefix.Length
-                + 1}} && span.Length <= MaxLength && span.StartsWith(TypePrefix) && span[{{prefix.Length}}] == Separator;
-        }
-
 
         public (string prefix, string data) Destructure() => (TypePrefix, ValuePart);
 
@@ -492,6 +554,11 @@ namespace {{data.Namespace}}
         public {{data.TypeName}}({{backingType}} v) => Value = v;
         {{randomFactory}}
 
+        public static bool IsValid([NotNullWhen(true)] {{backingType}}? v)
+        {
+            return v is not null;
+        }
+
         public static {{data.TypeName}} Parse({{backingType}} v)
         {
             return new {{data.TypeName}}(v);
@@ -514,9 +581,45 @@ namespace {{data.Namespace}}
             }
         }
 
-        public static bool IsValid([NotNullWhen(true)] {{backingType}}? v)
+        public static {{data.TypeName}} Parse(string s, IFormatProvider? provider = null)
         {
-            return v is not null;
+            if (TryParse(s.AsSpan(), provider, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new FormatException($"Unable to parse '{s}' as {{data.TypeName}}.");
+            }
+        }
+
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out {{data.TypeName}} result)
+            => TryParse(s.AsSpan(), provider, out result);
+
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+        {
+            if (TryParse(s, provider, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new FormatException($"Unable to parse the span as {{data.TypeName}}.");
+            }
+        }
+
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
+        {
+            if ({{backingType}}.TryParse(s, provider, out var v))
+            {
+                result = new {{data.TypeName}}(v);
+                return true;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
         }
 
         public bool Equals({{data.TypeName}} other) => Value == other.Value;
@@ -580,11 +683,18 @@ namespace {{data.Namespace}}
 
         public {{data.TypeName}}(string v) => value = v ?? throw new ArgumentNullException(nameof(v));
 
-        public static {{data.TypeName}} Parse(string v)
+        public static bool IsValid([NotNullWhen(true)] string? v)
+            => v is not null && IsValid(v.AsSpan());
+
+        public static bool IsValid(ReadOnlySpan<char> v)
+            => TryParse(v, null, out _);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string length validation.")]
+        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(v.AsSpan(), provider, out var result))
             {
-                return new {{data.TypeName}}(v);
+                return result;
             }
             else
             {
@@ -596,23 +706,41 @@ namespace {{data.Namespace}}
         [return: NotNullIfNotNull("id")]
         public static {{data.TypeName}}? ParseNullable(string? id) => id is string v ? Parse(v) : ({{data.TypeName}}?)null;
 
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string length validation.")]
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out {{data.TypeName}} result)
+            => TryParse(s.AsSpan(), provider, out result);
+
         public static bool TryParse([NotNullWhen(true)] string? v, out {{data.TypeName}} id)
+            => TryParse(v, null, out id);
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string length validation.")]
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
         {
-            if (IsValid(v))
+            if (TryParse(s, provider, out var result))
             {
-                id = new {{data.TypeName}}(v);
+                return result;
+            }
+            else
+            {
+                throw new FormatException(
+                    $"The ID has invalid format. It must be a non-null string with maximum length of {MaxLength}."
+                );
+            }
+        }
+
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for string length validation.")]
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
+        {
+            if (s.Length <= MaxLength)
+            {
+                result = new {{data.TypeName}}(s.ToString());
                 return true;
             }
             else
             {
-                id = default;
+                result = default;
                 return false;
             }
-        }
-
-        public static bool IsValid([NotNullWhen(true)] string? v)
-        {
-            return v is not null && v.Length <= MaxLength;
         }
 
         public bool Equals({{data.TypeName}} other) => Value.Equals(other.Value, StringComparison.Ordinal);

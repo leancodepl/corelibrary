@@ -212,8 +212,8 @@ public class PrefixedGuidIdTests
         static void DatabaseExpressionsWork<T>()
             where T : struct, IPrefixedTypedId<T>
         {
-            Assert.Equal(T.FromDatabase.Compile().Invoke(TPG1), T.Parse(TPG1));
-            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPG1), T.Parse(TPG1)));
+            Assert.Equal(T.FromDatabase.Compile().Invoke(TPG1), T.Parse(TPG1, null));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(TPG1, null), T.Parse(TPG1, null)));
         }
     }
 

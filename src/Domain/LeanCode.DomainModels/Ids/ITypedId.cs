@@ -12,13 +12,13 @@ public interface IPrefixedTypedId<TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
+        ISpanParsable<TSelf>,
         IEqualityOperators<TSelf, TSelf, bool>,
         IMaxLengthTypedId,
         IHasEmptyId<TSelf>
     where TSelf : struct, IPrefixedTypedId<TSelf>
 {
     string Value { get; }
-    static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -35,9 +35,10 @@ public interface IRawTypedId<TBacking, TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
+        ISpanParsable<TSelf>,
         IEqualityOperators<TSelf, TSelf, bool>,
         IHasEmptyId<TSelf>
-    where TBacking : struct
+    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     where TSelf : struct, IRawTypedId<TBacking, TSelf>
 {
     TBacking Value { get; }
@@ -57,13 +58,13 @@ public interface IRawStringTypedId<TSelf>
         IComparable<TSelf>,
         ISpanFormattable,
         IUtf8SpanFormattable,
+        ISpanParsable<TSelf>,
         IEqualityOperators<TSelf, TSelf, bool>,
         IMaxLengthTypedId,
         IHasEmptyId<TSelf>
     where TSelf : struct, IRawStringTypedId<TSelf>
 {
     string Value { get; }
-    static abstract TSelf Parse(string v);
     static abstract bool IsValid(string? v);
 
     [EditorBrowsable(EditorBrowsableState.Never)]

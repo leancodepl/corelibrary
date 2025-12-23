@@ -113,7 +113,7 @@ public static class PropertiesConfigurationBuilderExtensions
     private static PropertiesConfigurationBuilder<TId> AreRawTypedId<TBacking, TId>(
         this PropertiesConfigurationBuilder<TId> builder
     )
-        where TBacking : struct
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
         where TId : struct, IRawTypedId<TBacking, TId>
     {
         return builder.HaveConversion<RawTypedIdConverter<TBacking, TId>, RawTypedIdComparer<TBacking, TId>>();
@@ -122,7 +122,7 @@ public static class PropertiesConfigurationBuilderExtensions
     private static PropertiesConfigurationBuilder<TId?> AreRawTypedId<TBacking, TId>(
         this PropertiesConfigurationBuilder<TId?> builder
     )
-        where TBacking : struct
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
         where TId : struct, IRawTypedId<TBacking, TId>
     {
         return builder.HaveConversion<RawTypedIdConverter<TBacking, TId>, RawTypedIdComparer<TBacking, TId>>();

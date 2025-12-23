@@ -175,8 +175,8 @@ public class RawStringIdTests
             where T : struct, IRawStringTypedId<T>
         {
             var str = "test_value";
-            Assert.Equal(T.FromDatabase.Compile().Invoke(str), T.Parse(str));
-            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(str), T.Parse(str)));
+            Assert.Equal(T.FromDatabase.Compile().Invoke(str), T.Parse(str, null));
+            Assert.True(T.DatabaseEquals.Compile().Invoke(T.Parse(str, null), T.Parse(str, null)));
         }
     }
 

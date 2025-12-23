@@ -231,8 +231,8 @@ public class PrefixedUlidIdTests
         static void DatabaseExpressionsWork<T>()
             where T : struct, IPrefixedTypedId<T>
         {
-            T.FromDatabase.Compile().Invoke(TPU1).Should().Be(T.Parse(TPU1));
-            T.DatabaseEquals.Compile().Invoke(T.Parse(TPU1), T.Parse(TPU1)).Should().BeTrue();
+            T.FromDatabase.Compile().Invoke(TPU1).Should().Be(T.Parse(TPU1, null));
+            T.DatabaseEquals.Compile().Invoke(T.Parse(TPU1, null), T.Parse(TPU1, null)).Should().BeTrue();
         }
     }
 

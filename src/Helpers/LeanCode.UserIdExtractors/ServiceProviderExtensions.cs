@@ -34,7 +34,7 @@ public static class UserServiceProviderExtensions
         this IServiceCollection services,
         string userIdClaim = DefaultUserIdClaim
     )
-        where TBacking : struct
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
         where TUserId : struct, IRawTypedId<TBacking, TUserId>
     {
         services.AddSingleton<IUserIdExtractor>(new StringUserIdExtractor(userIdClaim));
