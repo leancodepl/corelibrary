@@ -36,7 +36,7 @@ public class LongIdTests
         Assert.False(TestLongId.IsValid(null));
 
         Assert.Null(TestLongId.ParseNullable(null));
-        Assert.False(TestLongId.TryParse(null, out var value));
+        Assert.False(TestLongId.TryParse((string?)null, out var value));
         Assert.Equal(value, default);
     }
 
@@ -190,5 +190,74 @@ public class LongIdTests
         bytesWritten.Should().Be(4);
         buffer[..4].Should().BeEquivalentTo(expectedBuffer);
         buffer[4..].Should().AllBeEquivalentTo(default(byte));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var span = "1234".AsSpan();
+        var parsed = TestLongId.Parse(span);
+        parsed.Value.Should().Be(1234L);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var span = "1234".AsSpan();
+        var parsed = TestLongId.Parse(span, System.Globalization.CultureInfo.InvariantCulture);
+        parsed.Value.Should().Be(1234L);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "invalid";
+        Assert.Throws<FormatException>(() => TestLongId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var span = "1234".AsSpan();
+        var success = TestLongId.TryParse(span, System.Globalization.CultureInfo.InvariantCulture, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(1234L);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "invalid".AsSpan();
+        var success = TestLongId.TryParse(span, System.Globalization.CultureInfo.InvariantCulture, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestLongId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var success = TestLongId.TryParse("1234", System.Globalization.CultureInfo.InvariantCulture, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(1234L);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestLongId.TryParse("invalid", System.Globalization.CultureInfo.InvariantCulture, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestLongId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestLongId.TryParse(
+            (string?)null,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out var result
+        );
+        success.Should().BeFalse();
+        result.Should().Be(default(TestLongId));
     }
 }

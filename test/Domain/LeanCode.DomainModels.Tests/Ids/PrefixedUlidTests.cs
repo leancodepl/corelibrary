@@ -46,7 +46,7 @@ public class PrefixedUlidIdTests
         var parseNull = () => TestPrefixedUlidId.Parse(null!);
         var parseInvalid = () => TestPrefixedUlidId.ParseNullable("invalid");
 
-        parseNull.Should().Throw<FormatException>();
+        parseNull.Should().Throw<ArgumentNullException>();
         parseInvalid.Should().Throw<FormatException>();
 
         TestPrefixedUlidId.TryParse(null, out var value).Should().BeFalse();
@@ -231,8 +231,8 @@ public class PrefixedUlidIdTests
         static void DatabaseExpressionsWork<T>()
             where T : struct, IPrefixedTypedId<T>
         {
-            T.FromDatabase.Compile().Invoke(TPU1).Should().Be(T.Parse(TPU1));
-            T.DatabaseEquals.Compile().Invoke(T.Parse(TPU1), T.Parse(TPU1)).Should().BeTrue();
+            T.FromDatabase.Compile().Invoke(TPU1).Should().Be(T.Parse(TPU1, null));
+            T.DatabaseEquals.Compile().Invoke(T.Parse(TPU1, null), T.Parse(TPU1, null)).Should().BeTrue();
         }
     }
 
@@ -249,6 +249,16 @@ public class PrefixedUlidIdTests
         var ulid = id.Ulid;
 
         ulid.Should().Be(TPG1Ulid);
+    }
+
+    [Fact]
+    public void Destructure_extracts_prefix_and_ulid()
+    {
+        var id = TestPrefixedUlidId.Parse(TPU1);
+        var (prefix, data) = id.Destructure();
+
+        prefix.Should().Be("tpu");
+        data.Should().Be(TPG1Ulid);
     }
 
     [Fact]
@@ -289,5 +299,77 @@ public class PrefixedUlidIdTests
         bytesWritten.Should().Be(TestPrefixedUlidId.MaxLength);
         buffer[..TestPrefixedUlidId.MaxLength].Should().BeEquivalentTo(expectedBytes);
         buffer[TestPrefixedUlidId.MaxLength..].Should().AllBeEquivalentTo(default(byte));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPU1.AsSpan();
+        var parsed = TestPrefixedUlidId.Parse(span);
+        parsed.Value.Should().Be(TPU1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var span = TPU1.AsSpan();
+        var parsed = TestPrefixedUlidId.Parse(span, null);
+        parsed.Value.Should().Be(TPU1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "invalid";
+        Assert.Throws<FormatException>(() => TestPrefixedUlidId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPU1.AsSpan();
+        var success = TestPrefixedUlidId.TryParse(span, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPU1);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "invalid".AsSpan();
+        var success = TestPrefixedUlidId.TryParse(span, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedUlidId));
+    }
+
+    [Fact]
+    public void IsValid_ReadOnlySpan_works_correctly()
+    {
+        TestPrefixedUlidId.IsValid(TPU1.AsSpan()).Should().BeTrue();
+        TestPrefixedUlidId.IsValid("invalid".AsSpan()).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var success = TestPrefixedUlidId.TryParse(TPU1, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPU1);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestPrefixedUlidId.TryParse("invalid", null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedUlidId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestPrefixedUlidId.TryParse((string?)null, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedUlidId));
     }
 }

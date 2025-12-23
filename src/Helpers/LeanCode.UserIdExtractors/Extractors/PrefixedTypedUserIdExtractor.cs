@@ -18,6 +18,6 @@ public sealed class PrefixedTypedUserIdExtractor<TId> : IUserIdExtractor<TId>
         var claim = user.FindFirst(userIdClaim)?.Value;
         ArgumentException.ThrowIfNullOrEmpty(claim);
 
-        return TId.Parse(claim);
+        return TId.Parse(claim, null);
     }
 }

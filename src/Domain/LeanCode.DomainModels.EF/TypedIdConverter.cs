@@ -16,7 +16,7 @@ public class PrefixedTypedIdConverter<TId> : ValueConverter<TId, string>
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class RawTypedIdConverter<TBacking, TId> : ValueConverter<TId, TBacking>
-    where TBacking : struct
+    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     where TId : struct, IRawTypedId<TBacking, TId>
 {
     public static readonly RawTypedIdConverter<TBacking, TId> Instance = new();
@@ -47,7 +47,7 @@ public class PrefixedTypedIdComparer<TId> : ValueComparer<TId>
 
 [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 public class RawTypedIdComparer<TBacking, TId> : ValueComparer<TId>
-    where TBacking : struct
+    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     where TId : struct, IRawTypedId<TBacking, TId>
 {
     public static readonly RawTypedIdComparer<TBacking, TId> Instance = new();

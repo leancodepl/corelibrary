@@ -12,6 +12,8 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Add CQRS output caching support with new `LeanCode.CQRS.OutputCaching` package
 * Migrate Test infrastructure to Microsoft Testing Platform v2 and xunit v3
 * Add `RawString` and `PrefixedString` source generated typed IDs support
+* Implement `ISpanParsable<TSelf>` in Typed IDs with span-based and string-based parsing APIs
+* Add `Destructure()` method and raw value accessors (`Guid`, `Ulid`, `ValuePart`) to prefixed typed IDs
 
 ## 9.0
 

@@ -47,7 +47,7 @@ public class GuidIdTests
         Assert.False(TestGuidId.IsValid(null));
 
         Assert.Null(TestGuidId.ParseNullable(null));
-        Assert.False(TestGuidId.TryParse(null, out var value));
+        Assert.False(TestGuidId.TryParse((string?)null, out var value));
         Assert.Equal(value, default);
     }
 
@@ -210,5 +210,74 @@ public class GuidIdTests
         bytesWritten.Should().Be(length);
         buffer[..length].Should().BeEquivalentTo(expectedBytes);
         buffer[length..].Should().AllBeEquivalentTo(default(byte));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var guidString = Guid1.ToString();
+        var span = guidString.AsSpan();
+        var parsed = TestGuidId.Parse(span);
+        parsed.Value.Should().Be(Guid1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var guidString = Guid1.ToString();
+        var span = guidString.AsSpan();
+        var parsed = TestGuidId.Parse(span, null);
+        parsed.Value.Should().Be(Guid1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "invalid";
+        Assert.Throws<FormatException>(() => TestGuidId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var guidString = Guid1.ToString();
+        var span = guidString.AsSpan();
+        var success = TestGuidId.TryParse(span, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(Guid1);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "invalid".AsSpan();
+        var success = TestGuidId.TryParse(span, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestGuidId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var guidString = Guid1.ToString();
+        var success = TestGuidId.TryParse(guidString, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(Guid1);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestGuidId.TryParse("invalid", null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestGuidId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestGuidId.TryParse((string?)null, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestGuidId));
     }
 }

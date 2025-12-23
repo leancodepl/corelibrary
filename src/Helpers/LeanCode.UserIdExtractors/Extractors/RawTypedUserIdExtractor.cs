@@ -6,7 +6,7 @@ using LeanCode.DomainModels.Ids;
 namespace LeanCode.UserIdExtractors.Extractors;
 
 public sealed class RawTypedUserIdExtractor<TBacking, TId> : IUserIdExtractor<TId>
-    where TBacking : struct
+    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     where TId : struct, IRawTypedId<TBacking, TId>
 {
     private readonly string userIdClaim;
