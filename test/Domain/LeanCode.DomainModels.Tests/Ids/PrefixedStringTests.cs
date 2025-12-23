@@ -41,7 +41,7 @@ public class PrefixedStringIdTests
     {
         Assert.False(TestPrefixedStringId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestPrefixedStringId.Parse(null!));
+        Assert.Throws<ArgumentNullException>(() => TestPrefixedStringId.Parse(null!));
         Assert.Throws<FormatException>(() => TestPrefixedStringId.ParseNullable("invalid"));
         Assert.False(TestPrefixedStringId.TryParse(null, out var value));
         Assert.Equal(value, default);
@@ -318,5 +318,77 @@ public class PrefixedStringIdTests
 
         // Exceeds limit - should throw
         Assert.Throws<ArgumentException>(() => TestPrefixedStringId.FromValuePart("12345678901"));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPS1.AsSpan();
+        var parsed = TestPrefixedStringId.Parse(span);
+        parsed.Value.Should().Be(TPS1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var span = TPS1.AsSpan();
+        var parsed = TestPrefixedStringId.Parse(span, null);
+        parsed.Value.Should().Be(TPS1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "invalid";
+        Assert.Throws<FormatException>(() => TestPrefixedStringId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPS1.AsSpan();
+        var success = TestPrefixedStringId.TryParse(span, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPS1);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "invalid".AsSpan();
+        var success = TestPrefixedStringId.TryParse(span, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedStringId));
+    }
+
+    [Fact]
+    public void IsValid_ReadOnlySpan_works_correctly()
+    {
+        TestPrefixedStringId.IsValid(TPS1.AsSpan()).Should().BeTrue();
+        TestPrefixedStringId.IsValid("invalid".AsSpan()).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var success = TestPrefixedStringId.TryParse(TPS1, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPS1);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestPrefixedStringId.TryParse("invalid", null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedStringId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestPrefixedStringId.TryParse((string?)null, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedStringId));
     }
 }

@@ -42,7 +42,7 @@ public class PrefixedGuidIdTests
     {
         Assert.False(TestPrefixedGuidId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestPrefixedGuidId.Parse(null!));
+        Assert.Throws<ArgumentNullException>(() => TestPrefixedGuidId.Parse(null!));
         Assert.Throws<FormatException>(() => TestPrefixedGuidId.ParseNullable("invalid"));
         Assert.False(TestPrefixedGuidId.TryParse(null, out var value));
         Assert.Equal(value, default);
@@ -271,5 +271,77 @@ public class PrefixedGuidIdTests
         bytesWritten.Should().Be(TestPrefixedGuidId.MaxLength);
         buffer[..TestPrefixedGuidId.MaxLength].Should().BeEquivalentTo(expectedBytes);
         buffer[TestPrefixedGuidId.MaxLength..].Should().AllBeEquivalentTo(default(byte));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPG1.AsSpan();
+        var parsed = TestPrefixedGuidId.Parse(span);
+        parsed.Value.Should().Be(TPG1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var span = TPG1.AsSpan();
+        var parsed = TestPrefixedGuidId.Parse(span, null);
+        parsed.Value.Should().Be(TPG1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "invalid";
+        Assert.Throws<FormatException>(() => TestPrefixedGuidId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var span = TPG1.AsSpan();
+        var success = TestPrefixedGuidId.TryParse(span, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPG1);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "invalid".AsSpan();
+        var success = TestPrefixedGuidId.TryParse(span, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedGuidId));
+    }
+
+    [Fact]
+    public void IsValid_ReadOnlySpan_works_correctly()
+    {
+        TestPrefixedGuidId.IsValid(TPG1.AsSpan()).Should().BeTrue();
+        TestPrefixedGuidId.IsValid("invalid".AsSpan()).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var success = TestPrefixedGuidId.TryParse(TPG1, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(TPG1);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestPrefixedGuidId.TryParse("invalid", null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedGuidId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestPrefixedGuidId.TryParse((string?)null, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestPrefixedGuidId));
     }
 }

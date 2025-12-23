@@ -46,7 +46,7 @@ public class RawStringIdTests
     {
         Assert.False(TestRawStringId.IsValid(null));
 
-        Assert.Throws<FormatException>(() => TestRawStringId.Parse(null!));
+        Assert.Throws<ArgumentNullException>(() => TestRawStringId.Parse(null!));
         Assert.Null(TestRawStringId.ParseNullable(null));
         Assert.False(TestRawStringId.TryParse(null, out var value));
         Assert.Equal(value, default);
@@ -245,5 +245,77 @@ public class RawStringIdTests
     public void Empty_string_is_valid_with_max_length()
     {
         Assert.True(TestRawStringId.IsValid(string.Empty));
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_works_correctly()
+    {
+        var span = String1.AsSpan();
+        var parsed = TestRawStringId.Parse(span);
+        parsed.Value.Should().Be(String1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_with_provider_works_correctly()
+    {
+        var span = String1.AsSpan();
+        var parsed = TestRawStringId.Parse(span, null);
+        parsed.Value.Should().Be(String1);
+    }
+
+    [Fact]
+    public void Parse_ReadOnlySpan_invalid_throws()
+    {
+        var invalidString = "12345678901"; // exceeds max length
+        Assert.Throws<FormatException>(() => TestRawStringId.Parse(invalidString.AsSpan()));
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_works_correctly()
+    {
+        var span = String1.AsSpan();
+        var success = TestRawStringId.TryParse(span, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(String1);
+    }
+
+    [Fact]
+    public void TryParse_ReadOnlySpan_invalid_returns_false()
+    {
+        var span = "12345678901".AsSpan(); // exceeds max length
+        var success = TestRawStringId.TryParse(span, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestRawStringId));
+    }
+
+    [Fact]
+    public void IsValid_ReadOnlySpan_works_correctly()
+    {
+        TestRawStringId.IsValid(String1.AsSpan()).Should().BeTrue();
+        TestRawStringId.IsValid("12345678901".AsSpan()).Should().BeFalse(); // exceeds max length
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_works_correctly()
+    {
+        var success = TestRawStringId.TryParse(String1, null, out var result);
+        success.Should().BeTrue();
+        result.Value.Should().Be(String1);
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_invalid_returns_false()
+    {
+        var success = TestRawStringId.TryParse("12345678901", null, out var result); // exceeds max length
+        success.Should().BeFalse();
+        result.Should().Be(default(TestRawStringId));
+    }
+
+    [Fact]
+    public void TryParse_string_with_provider_null_returns_false()
+    {
+        var success = TestRawStringId.TryParse((string?)null, null, out var result);
+        success.Should().BeFalse();
+        result.Should().Be(default(TestRawStringId));
     }
 }
