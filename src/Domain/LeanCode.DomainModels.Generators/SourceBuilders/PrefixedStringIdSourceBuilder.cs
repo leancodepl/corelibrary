@@ -40,7 +40,7 @@ namespace {{data.Namespace}}
 
         public string Value => value ?? Empty.Value;
         public bool IsEmpty => string.IsNullOrEmpty(value);
-        public string ValuePart => Value[{{prefix.Length + 1}}..];
+        public string ValuePart => IsEmpty ? string.Empty : Value[{{prefix.Length + 1}}..];
 
         private {{data.TypeName}}(string v) => value = v;
 

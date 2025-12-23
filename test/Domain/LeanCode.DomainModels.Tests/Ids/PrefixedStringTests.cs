@@ -281,6 +281,13 @@ public class PrefixedStringIdTests
     }
 
     [Fact]
+    public void Empty_ValuePart_returns_empty_string()
+    {
+        var empty = TestPrefixedStringId.Empty;
+        Assert.Equal(string.Empty, empty.ValuePart);
+    }
+
+    [Fact]
     public void MaxValueLength_is_exposed()
     {
         Assert.Equal(10, TestPrefixedStringId.MaxValueLength);
