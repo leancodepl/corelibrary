@@ -26,7 +26,8 @@ public static class ChangedEntitiesExtractor
                     .Properties.Select(p =>
                         // This may lose some info comparing to JsonSerializer.Serialize , but we don't get
                         // values in unnecessary "". We accept this tradeoff
-                        p.PropertyInfo?.GetValue(e.Entity, null)?.ToString() ?? "Cannot extract key property"
+                        p.PropertyInfo?.GetValue(e.Entity, null)?.ToString()
+                        ?? "Cannot extract key property"
                     )
                     .ToList(),
                 e.Metadata.ClrType.ToString(),

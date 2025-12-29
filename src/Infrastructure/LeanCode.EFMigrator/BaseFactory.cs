@@ -10,9 +10,8 @@ public abstract class BaseFactory<TContext, TFactory> : IDesignTimeDbContextFact
     where TFactory : BaseFactory<TContext, TFactory>
 {
     protected virtual string AssemblyName =>
-        typeof(TFactory).Assembly.GetName().Name ?? throw new InvalidOperationException(
-            "This type is not supported on Assembly-less runtimes."
-        );
+        typeof(TFactory).Assembly.GetName().Name
+        ?? throw new InvalidOperationException("This type is not supported on Assembly-less runtimes.");
 
     public TContext CreateDbContext(string[] args)
     {
