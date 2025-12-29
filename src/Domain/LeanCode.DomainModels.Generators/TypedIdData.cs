@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 
 namespace LeanCode.DomainModels.Generators;
 
-public sealed class TypedIdData
+public readonly struct TypedIdData : IEquatable<TypedIdData>
 {
     public TypedIdFormat Format { get; }
     public string Namespace { get; }
@@ -11,6 +11,8 @@ public sealed class TypedIdData
     public bool SkipRandomGenerator { get; }
     public int? MaxValueLength { get; }
     public bool IsValid { get; }
+
+    // Excluded from equality comparison because it's not stable across compilations.
     public Location? Location { get; }
 
     public TypedIdData(
@@ -33,4 +35,25 @@ public sealed class TypedIdData
         IsValid = isValid;
         Location = location;
     }
+
+    public bool Equals(TypedIdData other) =>
+        (Format, Namespace, TypeName, CustomPrefix, SkipRandomGenerator, MaxValueLength, IsValid)
+        == (
+            other.Format,
+            other.Namespace,
+            other.TypeName,
+            other.CustomPrefix,
+            other.SkipRandomGenerator,
+            other.MaxValueLength,
+            other.IsValid
+        );
+
+    public override bool Equals(object? obj) => obj is TypedIdData other && Equals(other);
+
+    public override int GetHashCode() =>
+        (Format, Namespace, TypeName, CustomPrefix, SkipRandomGenerator, MaxValueLength, IsValid).GetHashCode();
+
+    public static bool operator ==(TypedIdData left, TypedIdData right) => left.Equals(right);
+
+    public static bool operator !=(TypedIdData left, TypedIdData right) => !left.Equals(right);
 }
