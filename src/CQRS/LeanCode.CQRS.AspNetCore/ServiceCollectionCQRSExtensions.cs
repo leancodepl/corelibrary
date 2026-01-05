@@ -25,13 +25,7 @@ public static class ServiceCollectionCQRSExtensions
     {
         if (configureJsonOptions)
         {
-            serviceCollection.ConfigureHttpJsonOptions(options =>
-            {
-                options.SerializerOptions.Converters.Add(new JsonLaxDateOnlyConverter());
-                options.SerializerOptions.Converters.Add(new JsonLaxTimeOnlyConverter());
-                options.SerializerOptions.Converters.Add(new JsonLaxDateTimeOffsetConverter());
-                options.SerializerOptions.PropertyNamingPolicy = null;
-            });
+            serviceCollection.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureForCQRS());
         }
 
         serviceCollection.AddSingleton<ISerializer, Utf8JsonSerializer>();

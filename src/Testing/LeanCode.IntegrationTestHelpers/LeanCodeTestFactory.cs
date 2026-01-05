@@ -25,17 +25,8 @@ public abstract class LeanCodeTestFactory<TStartup> : WebApplicationFactory<TSta
 
     protected LeanCodeTestFactory()
     {
-        var options = new JsonSerializerOptions
-        {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-            Converters =
-            {
-                new JsonLaxDateOnlyConverter(),
-                new JsonLaxTimeOnlyConverter(),
-                new JsonLaxDateTimeOffsetConverter(),
-            },
-        };
-
+        var options = new JsonSerializerOptions { TypeInfoResolver = new DefaultJsonTypeInfoResolver() };
+        options.ConfigureForCQRS();
         options.MakeReadOnly();
 
         JsonOptions = options;
