@@ -116,9 +116,35 @@ public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
     }
 }
 
+/// <summary>
+/// Generic type mapping for RawStringTypedId.
+/// </summary>
+public class RawStringTypedIdTypeMapping<TId> : RelationalTypeMapping
+    where TId : struct, IRawStringTypedId<TId>
+{
+    private static readonly RawStringTypedIdConverter<TId> ValueConverter = new();
+
+    public RawStringTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
+        : base(
+            new RelationalTypeMappingParameters(
+                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                storeTypeProvider.RawStringStoreType<TId>()
+            )
+        ) { }
+
+    protected RawStringTypedIdTypeMapping(RelationalTypeMappingParameters parameters)
+        : base(parameters) { }
+
+    protected override RelationalTypeMapping Clone(RelationalTypeMappingParameters parameters)
+    {
+        return new RawStringTypedIdTypeMapping<TId>(parameters);
+    }
+}
+
 public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
 {
     private readonly ITypedIdStoreTypeProvider storeTypeProvider;
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<Type, RelationalTypeMapping?> cache = new();
 
     public TypedIdTypeMappingSourcePlugin(ITypedIdStoreTypeProvider storeTypeProvider)
     {
@@ -153,6 +179,11 @@ public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
                 {
                     var backingType = iface.GetGenericArguments()[0];
                     var mappingType = typeof(RawTypedIdTypeMapping<,>).MakeGenericType(backingType, type);
+                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType, storeTypeProvider)!;
+                }
+                else if (genericDefinition == typeof(IRawStringTypedId<>) && iface.GetGenericArguments()[0] == type)
+                {
+                    var mappingType = typeof(RawStringTypedIdTypeMapping<>).MakeGenericType(type);
                     return (RelationalTypeMapping)Activator.CreateInstance(mappingType, storeTypeProvider)!;
                 }
             }
