@@ -1,5 +1,6 @@
 using LeanCode.DomainModels.EF;
 using LeanCode.IntegrationTestHelpers;
+using LeanCode.IntegrationTests.App;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,9 @@ public class SqlServerTestDatabaseConfig : TestDatabaseConfig
 
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
-        builder.UseSqlServer(config.GetValue<string>("SqlServer:ConnectionString"));
+        builder
+            .UseSqlServer(config.GetValue<string>("SqlServer:ConnectionString"))
+            .AddAllTypedIdPlugins(typeof(TestDbContext).Assembly);
     }
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
@@ -51,7 +54,10 @@ public class PostgresTestConfig : TestDatabaseConfig
 
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
-        builder.UseNpgsql(config.GetValue<string>("Postgres:ConnectionString")).AddTimestampTzExpressionInterceptor();
+        builder
+            .UseNpgsql(config.GetValue<string>("Postgres:ConnectionString"))
+            .AddTimestampTzExpressionInterceptor()
+            .AddAllTypedIdPlugins(typeof(TestDbContext).Assembly);
     }
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
