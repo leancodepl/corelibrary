@@ -69,29 +69,44 @@ public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
     }
 }
 
-public class PrefixedTypedIdTypeMappingPlugin<TId> : IRelationalTypeMappingSourcePlugin
-    where TId : struct, IPrefixedTypedId<TId>
+public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
 {
     public RelationalTypeMapping? FindMapping(in RelationalTypeMappingInfo mappingInfo)
     {
-        if (mappingInfo.ClrType == typeof(TId))
+        var type = mappingInfo.ClrType;
+
+        if (type == null)
         {
-            return new PrefixedTypedIdTypeMapping<TId>();
+            return null;
         }
 
-        return null;
+        return CreateMapping(type);
     }
-}
 
-public class RawTypedIdTypeMappingPlugin<TBacking, TId> : IRelationalTypeMappingSourcePlugin
-    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
-    where TId : struct, IRawTypedId<TBacking, TId>
-{
-    public RelationalTypeMapping? FindMapping(in RelationalTypeMappingInfo mappingInfo)
+    private static RelationalTypeMapping? CreateMapping(Type type)
     {
-        if (mappingInfo.ClrType == typeof(TId))
+        if (type.IsAbstract || !type.IsValueType)
         {
-            return new RawTypedIdTypeMapping<TBacking, TId>();
+            return null;
+        }
+
+        foreach (var iface in type.GetInterfaces())
+        {
+            if (iface.IsGenericType)
+            {
+                var genericDefinition = iface.GetGenericTypeDefinition();
+                if (genericDefinition == typeof(IPrefixedTypedId<>) && iface.GetGenericArguments()[0] == type)
+                {
+                    var mappingType = typeof(PrefixedTypedIdTypeMapping<>).MakeGenericType(type);
+                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType)!;
+                }
+                else if (genericDefinition == typeof(IRawTypedId<,>) && iface.GetGenericArguments()[1] == type)
+                {
+                    var backingType = iface.GetGenericArguments()[0];
+                    var mappingType = typeof(RawTypedIdTypeMapping<,>).MakeGenericType(backingType, type);
+                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType)!;
+                }
+            }
         }
 
         return null;
