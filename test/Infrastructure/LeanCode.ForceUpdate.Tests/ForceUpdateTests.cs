@@ -6,16 +6,17 @@ using LeanCode.ForceUpdate.Contracts;
 using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Semver;
 using Xunit;
 
 namespace LeanCode.ForceUpdate.Tests;
 
 public class ForceUpdateTests
 {
-    private const string AndroidMinimumRequiredVersion = "2.0";
-    private const string AndroidCurrentlySupportedVersion = "2.3";
-    private const string IOSMinimumRequiredVersion = "1.0";
-    private const string IOSCurrentlySupportedVersion = "1.3";
+    private const string AndroidMinimumRequiredVersion = "2.0.0";
+    private const string AndroidCurrentlySupportedVersion = "2.3.0";
+    private const string IOSMinimumRequiredVersion = "1.0.0";
+    private const string IOSCurrentlySupportedVersion = "1.3.0";
 
     private readonly IServiceProvider serviceProvider;
     private readonly IQueryHandler<VersionSupport, VersionSupportDTO> handler;
@@ -29,12 +30,12 @@ public class ForceUpdateTests
             .AddCQRS(new(Array.Empty<Assembly>()), new(Array.Empty<Assembly>()))
             .AddForceUpdate(
                 new AndroidVersionsConfiguration(
-                    new Version(AndroidMinimumRequiredVersion),
-                    new Version(AndroidCurrentlySupportedVersion)
+                    SemVersion.Parse(AndroidMinimumRequiredVersion, SemVersionStyles.Any),
+                    SemVersion.Parse(AndroidCurrentlySupportedVersion, SemVersionStyles.Any)
                 ),
                 new IOSVersionsConfiguration(
-                    new Version(IOSMinimumRequiredVersion),
-                    new Version(IOSCurrentlySupportedVersion)
+                    SemVersion.Parse(IOSMinimumRequiredVersion, SemVersionStyles.Any),
+                    SemVersion.Parse(IOSCurrentlySupportedVersion, SemVersionStyles.Any)
                 )
             );
 
@@ -68,6 +69,26 @@ public class ForceUpdateTests
         var result = await handler.ExecuteAsync(
             new DefaultHttpContext(),
             new VersionSupport { Platform = PlatformDTO.Android, Version = "2.2" }
+        );
+
+        result
+            .Should()
+            .BeEquivalentTo(
+                new VersionSupportDTO
+                {
+                    CurrentlySupportedVersion = AndroidCurrentlySupportedVersion,
+                    MinimumRequiredVersion = AndroidMinimumRequiredVersion,
+                    Result = VersionSupportResultDTO.UpdateSuggested,
+                }
+            );
+    }
+
+    [Fact]
+    public async Task Semver_pre_releases_are_respected()
+    {
+        var result = await handler.ExecuteAsync(
+            new DefaultHttpContext(),
+            new VersionSupport { Platform = PlatformDTO.Android, Version = "2.3.0-beta1" }
         );
 
         result

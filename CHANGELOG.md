@@ -14,6 +14,7 @@ but this project DOES NOT adhere to [Semantic Versioning](http://semver.org/).
 * Add `RawString` and `PrefixedString` source generated typed IDs support
 * Implement `ISpanParsable<TSelf>` in Typed IDs with span-based and string-based parsing APIs
 * Add `Destructure()` method and raw value accessors (`Guid`, `Ulid`, `ValuePart`) to prefixed typed IDs
+* `LeanCode.ForceUpdate` is now using semantic versioning
 
 ## 9.0
 

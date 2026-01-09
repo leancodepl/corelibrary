@@ -1,5 +1,26 @@
-﻿namespace LeanCode.ForceUpdate;
+﻿using Semver;
 
-public sealed record IOSVersionsConfiguration(Version MinimumRequiredVersion, Version CurrentlySupportedVersion);
+namespace LeanCode.ForceUpdate;
 
-public sealed record AndroidVersionsConfiguration(Version MinimumRequiredVersion, Version CurrentlySupportedVersion);
+public sealed record IOSVersionsConfiguration(SemVersion MinimumRequiredVersion, SemVersion CurrentlySupportedVersion)
+{
+    [Obsolete("Switch to explicit SemVersion instead")]
+    public IOSVersionsConfiguration(Version minimumRequiredVersion, Version currentlySupportedVersion)
+        : this(
+            SemVersion.Parse(minimumRequiredVersion.ToString(), SemVersionStyles.Any),
+            SemVersion.Parse(currentlySupportedVersion.ToString(), SemVersionStyles.Any)
+        ) { }
+}
+
+public sealed record AndroidVersionsConfiguration(
+    SemVersion MinimumRequiredVersion,
+    SemVersion CurrentlySupportedVersion
+)
+{
+    [Obsolete("Switch to explicit SemVersion instead")]
+    public AndroidVersionsConfiguration(Version minimumRequiredVersion, Version currentlySupportedVersion)
+        : this(
+            SemVersion.Parse(minimumRequiredVersion.ToString(), SemVersionStyles.Any),
+            SemVersion.Parse(currentlySupportedVersion.ToString(), SemVersionStyles.Any)
+        ) { }
+}

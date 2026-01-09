@@ -1,5 +1,6 @@
 using LeanCode.ForceUpdate.Contracts;
 using Microsoft.AspNetCore.Http;
+using Semver;
 
 namespace LeanCode.ForceUpdate.Services;
 
@@ -15,7 +16,7 @@ public class VersionHandler
     }
 
     public virtual ValueTask<VersionSupportResultDTO> CheckVersionAsync(
-        Version version,
+        SemVersion version,
         PlatformDTO platform,
         HttpContext context
     )
@@ -30,11 +31,14 @@ public class VersionHandler
             _ => throw new InvalidOperationException($"Invalid platform: {platform}."),
         };
 
-        if (version < minimumRequiredVersion)
+        if (SemVersion.ComparePrecedence(version, minimumRequiredVersion) < 0)
         {
             return ValueTask.FromResult(VersionSupportResultDTO.UpdateRequired);
         }
-        else if (version >= minimumRequiredVersion && version < currentlySupportedVersion)
+        else if (
+            SemVersion.ComparePrecedence(version, minimumRequiredVersion) >= 0
+            && SemVersion.ComparePrecedence(version, currentlySupportedVersion) < 0
+        )
         {
             return ValueTask.FromResult(VersionSupportResultDTO.UpdateSuggested);
         }
