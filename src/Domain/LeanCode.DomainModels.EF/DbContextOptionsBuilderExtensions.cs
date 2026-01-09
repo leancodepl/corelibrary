@@ -11,9 +11,24 @@ public static class DbContextOptionsBuilderExtensions
     /// Automatically registers TypeMappingPlugin for all TypedIds.
     /// Supports types implementing IPrefixedTypedId and IRawTypedId with any backing type (int, long, Guid).
     /// </summary>
-    public static DbContextOptionsBuilder AddAllTypedIdPlugins(this DbContextOptionsBuilder builder)
+    public static DbContextOptionsBuilder AddPostgresTypedIdMappingPlugins(this DbContextOptionsBuilder builder)
     {
-        ((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(new TypedIdDbContextOptionsExtension());
+        ((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(
+            new TypedIdDbContextOptionsExtension(new PostgresTypedIdStoreTypeProvider())
+        );
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Automatically registers TypeMappingPlugin for all TypedIds.
+    /// Supports types implementing IPrefixedTypedId and IRawTypedId with any backing type (int, long, Guid).
+    /// </summary>
+    public static DbContextOptionsBuilder AddSqlServerTypedIdMappingPlugins(this DbContextOptionsBuilder builder)
+    {
+        ((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(
+            new TypedIdDbContextOptionsExtension(new SqlServerTypedIdStoreTypeProvider())
+        );
 
         return builder;
     }
@@ -21,11 +36,20 @@ public static class DbContextOptionsBuilderExtensions
 
 internal class TypedIdDbContextOptionsExtension : IDbContextOptionsExtension
 {
+    private readonly ITypedIdStoreTypeProvider storeTypeProvider;
+
+    public TypedIdDbContextOptionsExtension(ITypedIdStoreTypeProvider storeTypeProvider)
+    {
+        this.storeTypeProvider = storeTypeProvider;
+    }
+
     public DbContextOptionsExtensionInfo Info => new ExtensionInfo(this);
 
     public void ApplyServices(IServiceCollection services)
     {
-        services.AddSingleton<IRelationalTypeMappingSourcePlugin, TypedIdTypeMappingSourcePlugin>();
+        services.AddSingleton<IRelationalTypeMappingSourcePlugin>(
+            new TypedIdTypeMappingSourcePlugin(storeTypeProvider)
+        );
     }
 
     public void Validate(IDbContextOptions options) { }

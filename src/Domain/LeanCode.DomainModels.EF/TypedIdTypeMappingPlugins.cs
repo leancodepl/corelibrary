@@ -1,61 +1,33 @@
 using LeanCode.DomainModels.Ids;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LeanCode.DomainModels.EF;
 
-/// <summary>
-/// Generic type mapping for PrefixedTypedId (PrefixedGuid and PrefixedUlid).
-/// Maps to PostgreSQL citext type.
-/// </summary>
-public class PrefixedTypedIdTypeMapping<TId> : RelationalTypeMapping
-    where TId : struct, IPrefixedTypedId<TId>
+public interface ITypedIdStoreTypeProvider
 {
-    private static readonly PrefixedTypedIdConverter<TId> ValueConverter = new();
+    string PrefixedStoreType<TId>()
+        where TId : struct, IPrefixedTypedId<TId>;
 
-    public PrefixedTypedIdTypeMapping()
-        : base(
-            new RelationalTypeMappingParameters(new CoreTypeMappingParameters(typeof(TId), ValueConverter), "citext")
-        ) { }
+    string RawStringStoreType<TId>()
+        where TId : struct, IRawStringTypedId<TId>;
 
-    protected PrefixedTypedIdTypeMapping(RelationalTypeMappingParameters parameters)
-        : base(parameters) { }
-
-    protected override RelationalTypeMapping Clone(RelationalTypeMappingParameters parameters)
-    {
-        return new PrefixedTypedIdTypeMapping<TId>(parameters);
-    }
+    string RawStoreType<TId, TBacking>()
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
+        where TId : struct, IRawTypedId<TBacking, TId>;
 }
 
-/// <summary>
-/// Generic type mapping for RawTypedId with any backing type.
-/// Automatically determines the correct PostgreSQL type based on the backing type.
-/// </summary>
-public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
-    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
-    where TId : struct, IRawTypedId<TBacking, TId>
+public class PostgresTypedIdStoreTypeProvider : ITypedIdStoreTypeProvider
 {
-    private static readonly ValueConverter<TId, TBacking> ValueConverter = new(id => id.Value, TId.FromDatabase);
-    private static readonly ValueComparer<TId> ValueComparer = new(TId.DatabaseEquals, d => d.GetHashCode());
+    public string PrefixedStoreType<TId>()
+        where TId : struct, IPrefixedTypedId<TId> => "citext";
 
-    public RawTypedIdTypeMapping()
-        : base(
-            new RelationalTypeMappingParameters(
-                new CoreTypeMappingParameters(typeof(TId), ValueConverter, ValueComparer),
-                GetStoreType()
-            )
-        ) { }
+    public string RawStringStoreType<TId>()
+        where TId : struct, IRawStringTypedId<TId> => "citext";
 
-    protected RawTypedIdTypeMapping(RelationalTypeMappingParameters parameters)
-        : base(parameters) { }
-
-    protected override RelationalTypeMapping Clone(RelationalTypeMappingParameters parameters)
-    {
-        return new RawTypedIdTypeMapping<TBacking, TId>(parameters);
-    }
-
-    private static string GetStoreType()
+    public string RawStoreType<TId, TBacking>()
+        where TId : struct, IRawTypedId<TBacking, TId>
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     {
         return typeof(TBacking) switch
         {
@@ -69,8 +41,90 @@ public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
     }
 }
 
+public class SqlServerTypedIdStoreTypeProvider : ITypedIdStoreTypeProvider
+{
+    public string PrefixedStoreType<TId>()
+        where TId : struct, IPrefixedTypedId<TId> => $"nchar({TId.MaxLength})";
+
+    public string RawStringStoreType<TId>()
+        where TId : struct, IRawStringTypedId<TId> => $"nvarchar({TId.MaxLength})";
+
+    public string RawStoreType<TId, TBacking>()
+        where TId : struct, IRawTypedId<TBacking, TId>
+        where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
+    {
+        return typeof(TBacking) switch
+        {
+            Type t when t == typeof(int) => "int",
+            Type t when t == typeof(long) => "bigint",
+            Type t when t == typeof(Guid) => "uniqueidentifier",
+            _ => throw new NotSupportedException(
+                $"Backing type {typeof(TBacking).Name} is not supported for RawTypedId."
+            ),
+        };
+    }
+}
+
+/// <summary>
+/// Generic type mapping for PrefixedTypedId (PrefixedGuid and PrefixedUlid).
+/// </summary>
+public class PrefixedTypedIdTypeMapping<TId> : RelationalTypeMapping
+    where TId : struct, IPrefixedTypedId<TId>
+{
+    private static readonly PrefixedTypedIdConverter<TId> ValueConverter = new();
+
+    public PrefixedTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
+        : base(
+            new RelationalTypeMappingParameters(
+                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                storeTypeProvider.PrefixedStoreType<TId>()
+            )
+        ) { }
+
+    protected PrefixedTypedIdTypeMapping(RelationalTypeMappingParameters parameters)
+        : base(parameters) { }
+
+    protected override RelationalTypeMapping Clone(RelationalTypeMappingParameters parameters)
+    {
+        return new PrefixedTypedIdTypeMapping<TId>(parameters);
+    }
+}
+
+/// <summary>
+/// Generic type mapping for RawTypedId with any backing type.
+/// </summary>
+public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
+    where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
+    where TId : struct, IRawTypedId<TBacking, TId>
+{
+    private static readonly ValueConverter<TId, TBacking> ValueConverter = new(id => id.Value, TId.FromDatabase);
+
+    public RawTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
+        : base(
+            new RelationalTypeMappingParameters(
+                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                storeTypeProvider.RawStoreType<TId, TBacking>()
+            )
+        ) { }
+
+    protected RawTypedIdTypeMapping(RelationalTypeMappingParameters parameters)
+        : base(parameters) { }
+
+    protected override RelationalTypeMapping Clone(RelationalTypeMappingParameters parameters)
+    {
+        return new RawTypedIdTypeMapping<TBacking, TId>(parameters);
+    }
+}
+
 public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
 {
+    private readonly ITypedIdStoreTypeProvider storeTypeProvider;
+
+    public TypedIdTypeMappingSourcePlugin(ITypedIdStoreTypeProvider storeTypeProvider)
+    {
+        this.storeTypeProvider = storeTypeProvider;
+    }
+
     public RelationalTypeMapping? FindMapping(in RelationalTypeMappingInfo mappingInfo)
     {
         var type = mappingInfo.ClrType;
@@ -80,11 +134,6 @@ public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
             return null;
         }
 
-        return CreateMapping(type);
-    }
-
-    private static RelationalTypeMapping? CreateMapping(Type type)
-    {
         if (type.IsAbstract || !type.IsValueType)
         {
             return null;
@@ -98,13 +147,13 @@ public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
                 if (genericDefinition == typeof(IPrefixedTypedId<>) && iface.GetGenericArguments()[0] == type)
                 {
                     var mappingType = typeof(PrefixedTypedIdTypeMapping<>).MakeGenericType(type);
-                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType)!;
+                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType, storeTypeProvider)!;
                 }
                 else if (genericDefinition == typeof(IRawTypedId<,>) && iface.GetGenericArguments()[1] == type)
                 {
                     var backingType = iface.GetGenericArguments()[0];
                     var mappingType = typeof(RawTypedIdTypeMapping<,>).MakeGenericType(backingType, type);
-                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType)!;
+                    return (RelationalTypeMapping)Activator.CreateInstance(mappingType, storeTypeProvider)!;
                 }
             }
         }
