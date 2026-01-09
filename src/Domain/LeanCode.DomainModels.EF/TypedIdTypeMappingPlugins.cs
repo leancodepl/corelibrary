@@ -1,6 +1,5 @@
 using LeanCode.DomainModels.Ids;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LeanCode.DomainModels.EF;
 
@@ -71,12 +70,14 @@ public class SqlServerTypedIdStoreTypeProvider : ITypedIdStoreTypeProvider
 public class PrefixedTypedIdTypeMapping<TId> : RelationalTypeMapping
     where TId : struct, IPrefixedTypedId<TId>
 {
-    private static readonly PrefixedTypedIdConverter<TId> ValueConverter = new();
-
     public PrefixedTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
         : base(
             new RelationalTypeMappingParameters(
-                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                new CoreTypeMappingParameters(
+                    typeof(TId),
+                    PrefixedTypedIdConverter<TId>.Instance,
+                    PrefixedTypedIdComparer<TId>.Instance
+                ),
                 storeTypeProvider.PrefixedStoreType<TId>()
             )
         ) { }
@@ -97,12 +98,14 @@ public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
     where TBacking : struct, IEquatable<TBacking>, IComparable<TBacking>, ISpanParsable<TBacking>
     where TId : struct, IRawTypedId<TBacking, TId>
 {
-    private static readonly ValueConverter<TId, TBacking> ValueConverter = new(id => id.Value, TId.FromDatabase);
-
     public RawTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
         : base(
             new RelationalTypeMappingParameters(
-                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                new CoreTypeMappingParameters(
+                    typeof(TId),
+                    RawTypedIdConverter<TBacking, TId>.Instance,
+                    RawTypedIdComparer<TBacking, TId>.Instance
+                ),
                 storeTypeProvider.RawStoreType<TId, TBacking>()
             )
         ) { }
@@ -122,12 +125,14 @@ public class RawTypedIdTypeMapping<TBacking, TId> : RelationalTypeMapping
 public class RawStringTypedIdTypeMapping<TId> : RelationalTypeMapping
     where TId : struct, IRawStringTypedId<TId>
 {
-    private static readonly RawStringTypedIdConverter<TId> ValueConverter = new();
-
     public RawStringTypedIdTypeMapping(ITypedIdStoreTypeProvider storeTypeProvider)
         : base(
             new RelationalTypeMappingParameters(
-                new CoreTypeMappingParameters(typeof(TId), ValueConverter),
+                new CoreTypeMappingParameters(
+                    typeof(TId),
+                    RawStringTypedIdConverter<TId>.Instance,
+                    RawStringTypedIdComparer<TId>.Instance
+                ),
                 storeTypeProvider.RawStringStoreType<TId>()
             )
         ) { }
@@ -144,7 +149,6 @@ public class RawStringTypedIdTypeMapping<TId> : RelationalTypeMapping
 public class TypedIdTypeMappingSourcePlugin : IRelationalTypeMappingSourcePlugin
 {
     private readonly ITypedIdStoreTypeProvider storeTypeProvider;
-    private readonly System.Collections.Concurrent.ConcurrentDictionary<Type, RelationalTypeMapping?> cache = new();
 
     public TypedIdTypeMappingSourcePlugin(ITypedIdStoreTypeProvider storeTypeProvider)
     {

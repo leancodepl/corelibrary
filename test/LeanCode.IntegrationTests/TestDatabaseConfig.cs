@@ -36,9 +36,7 @@ public class SqlServerTestDatabaseConfig : TestDatabaseConfig
 
     public override void ConfigureDbContext(DbContextOptionsBuilder builder, IConfiguration config)
     {
-        builder
-            .UseSqlServer(config.GetValue<string>("SqlServer:ConnectionString"))
-            .AddAllTypedIdPlugins(typeof(TestDbContext).Assembly);
+        builder.UseSqlServer(config.GetValue<string>("SqlServer:ConnectionString")).AddSqlServerTypedIdMappingPlugins();
     }
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
@@ -57,7 +55,7 @@ public class PostgresTestConfig : TestDatabaseConfig
         builder
             .UseNpgsql(config.GetValue<string>("Postgres:ConnectionString"))
             .AddTimestampTzExpressionInterceptor()
-            .AddAllTypedIdPlugins(typeof(TestDbContext).Assembly);
+            .AddPostgresTypedIdMappingPlugins();
     }
 
     public override void ConfigureMassTransitOutbox(IEntityFrameworkOutboxConfigurator configurator)
