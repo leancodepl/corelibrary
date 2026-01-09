@@ -9,12 +9,13 @@ public class TypedIdDatabaseIntegrationTests
     [Fact]
     public void Data_is_stored_and_restored_correctly()
     {
-        Do(false);
-        Do(true);
+        Do(RegistrationMethod.Explicit);
+        Do(RegistrationMethod.ConventionManual);
+        Do(RegistrationMethod.ConventionAssemblyScan);
 
-        static void Do(bool useConventions)
+        static void Do(RegistrationMethod registrationMethod)
         {
-            using var dbContext = TestDbContext.Create(useConventions);
+            using var dbContext = TestDbContext.Create(registrationMethod);
             var a = Entity.CreateFull();
             var b = Entity.CreatePartial();
 
@@ -54,28 +55,28 @@ public class TypedIdDatabaseIntegrationTests
 
     private sealed class TestDbContext : DbContext
     {
-        private readonly bool useConventions;
+        private readonly RegistrationMethod registrationMethod;
 
         public DbSet<Entity> Entities => Set<Entity>();
 
-        public TestDbContext(bool useConventions, DbContextOptions<TestDbContext> options)
+        public TestDbContext(RegistrationMethod registrationMethod, DbContextOptions<TestDbContext> options)
             : base(options)
         {
-            this.useConventions = useConventions;
+            this.registrationMethod = registrationMethod;
         }
 
-        public static TestDbContext Create(bool useConventions)
+        public static TestDbContext Create(RegistrationMethod registrationMethod)
         {
             var options = new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase($"TestDb{Guid.NewGuid():N}")
                 .Options;
-            return new(useConventions, options);
+            return new(registrationMethod, options);
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             base.ConfigureConventions(configurationBuilder);
-            if (useConventions)
+            if (registrationMethod == RegistrationMethod.ConventionManual)
             {
                 configurationBuilder.Properties<IntId>().AreIntTypedId();
                 configurationBuilder.Properties<LongId>().AreLongTypedId();
@@ -93,13 +94,18 @@ public class TypedIdDatabaseIntegrationTests
                 configurationBuilder.Properties<PrefixedUlidId?>().ArePrefixedTypedId();
                 configurationBuilder.Properties<PrefixedStringId?>().ArePrefixedTypedId();
             }
+
+            if (registrationMethod == RegistrationMethod.ConventionAssemblyScan)
+            {
+                configurationBuilder.ConfigureTypedIdsConventions(typeof(IntId).Assembly);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Entity>(cfg =>
             {
-                if (!useConventions)
+                if (registrationMethod == RegistrationMethod.Explicit)
                 {
                     cfg.Property(e => e.A).IsIntTypedId();
                     cfg.Property(e => e.B).IsLongTypedId();
@@ -120,6 +126,13 @@ public class TypedIdDatabaseIntegrationTests
                 cfg.HasKey(e => e.A);
             });
         }
+    }
+
+    private enum RegistrationMethod
+    {
+        Explicit,
+        ConventionManual,
+        ConventionAssemblyScan,
     }
 
     private sealed record Entity

@@ -15,7 +15,7 @@ public class IntegrationFactAttribute : FactAttribute, ITraitAttribute
     )
         : base(sourceFilePath, sourceLineNumber)
     {
-        Explicit = false;
+        Explicit = true;
     }
 
     public virtual IReadOnlyCollection<KeyValuePair<string, string>> GetTraits() =>
