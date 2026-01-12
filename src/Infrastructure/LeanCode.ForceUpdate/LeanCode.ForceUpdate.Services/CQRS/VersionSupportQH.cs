@@ -2,6 +2,7 @@ using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;
 using LeanCode.Logging;
 using Microsoft.AspNetCore.Http;
+using Semver;
 using VersionSupport = LeanCode.ForceUpdate.Contracts.VersionSupport;
 
 namespace LeanCode.ForceUpdate.Services.CQRS;
@@ -28,7 +29,10 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO>
 
     public async Task<VersionSupportDTO> ExecuteAsync(HttpContext context, VersionSupport query)
     {
-        if (!Version.TryParse(query.Version, out var version) || !Enum.IsDefined(query.Platform))
+        if (
+            !SemVersion.TryParse(query.Version, SemVersionStyles.Any, out var version)
+            || !Enum.IsDefined(query.Platform)
+        )
         {
             logger.Warning("Invalid input: {Version}, {Platform}", query.Version, query.Platform);
             return new VersionSupportDTO
@@ -50,7 +54,7 @@ public class VersionSupportQH : IQueryHandler<VersionSupport, VersionSupportDTO>
         }
     }
 
-    private (Version Minimum, Version Current) GetVersions(PlatformDTO platform)
+    private (SemVersion Minimum, SemVersion Current) GetVersions(PlatformDTO platform)
     {
         return platform switch
         {
