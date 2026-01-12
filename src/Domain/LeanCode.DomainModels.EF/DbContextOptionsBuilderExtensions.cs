@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.Ids;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,7 +10,7 @@ public static class DbContextOptionsBuilderExtensions
 {
     /// <summary>
     /// Automatically registers TypeMappingPlugin for all TypedIds.
-    /// Supports types implementing IPrefixedTypedId and IRawTypedId with any backing type (int, long, Guid).
+    /// Supports types implementing <see cref="IPrefixedTypedId{TSelf}"/>, <see cref="IRawStringTypedId{TSelf}"/> and <see cref="IRawTypedId{TBacking,TSelf}"/> with any backing type (int, long, Guid).
     /// </summary>
     public static DbContextOptionsBuilder AddPostgresTypedIdMappingPlugins(this DbContextOptionsBuilder builder)
     {
@@ -22,7 +23,7 @@ public static class DbContextOptionsBuilderExtensions
 
     /// <summary>
     /// Automatically registers TypeMappingPlugin for all TypedIds.
-    /// Supports types implementing IPrefixedTypedId and IRawTypedId with any backing type (int, long, Guid).
+    /// Supports types implementing <see cref="IPrefixedTypedId{TSelf}"/>, <see cref="IRawStringTypedId{TSelf}"/> and <see cref="IRawTypedId{TBacking,TSelf}"/> with any backing type (int, long, Guid).
     /// </summary>
     public static DbContextOptionsBuilder AddSqlServerTypedIdMappingPlugins(this DbContextOptionsBuilder builder)
     {

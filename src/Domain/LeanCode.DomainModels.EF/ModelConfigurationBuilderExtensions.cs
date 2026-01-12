@@ -83,6 +83,9 @@ public static class ModelConfigurationBuilderExtensions
             });
     }
 
+    /// <summary>
+    /// Registers conventions for all types <see cref="IPrefixedTypedId{TSelf}"/>, <see cref="IRawStringTypedId{TSelf}"/> and <see cref="IRawTypedId{TBacking,TSelf}"/> defined in the assemblies.
+    /// </summary>
     public static ModelConfigurationBuilder ConfigureTypedIdsConventions(
         this ModelConfigurationBuilder configurationBuilder,
         params Assembly[] assemblies
