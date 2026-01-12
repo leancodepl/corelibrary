@@ -9,7 +9,6 @@ public class TestDbContext : DbContext
 {
     public DbSet<Entity> Entities => Set<Entity>();
     public DbSet<Meeting> Meetings => Set<Meeting>();
-    public DbSet<PushNotificationTokenEntity<Guid>> Tokens => Set<PushNotificationTokenEntity<Guid>>();
 
     public TestDbContext(DbContextOptions<TestDbContext> opts)
         : base(opts) { }
@@ -32,7 +31,7 @@ public class TestDbContext : DbContext
         modelBuilder.AddOutboxMessageEntity();
         modelBuilder.AddOutboxStateEntity();
 
-        modelBuilder.ConfigurePushNotificationTokenEntity<Guid>(setTokenColumnMaxLength: true);
+        modelBuilder.ConfigurePushNotificationTokenEntity<PNUserId>(setTokenColumnMaxLength: true);
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -40,5 +39,6 @@ public class TestDbContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.Properties<EntityId>().ArePrefixedTypedId();
         configurationBuilder.Properties<MeetingId>().ArePrefixedTypedId();
+        configurationBuilder.Properties<PNUserId>().AreGuidTypedId();
     }
 }

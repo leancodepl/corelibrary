@@ -1,3 +1,4 @@
+using LeanCode.DomainModels.Ids;
 using LeanCode.Firebase.FCM;
 using LeanCode.IntegrationTests.App;
 using LeanCode.Logging;
@@ -7,11 +8,14 @@ using Xunit;
 
 namespace LeanCode.IntegrationTests;
 
+[TypedId(TypedIdFormat.RawGuid)]
+public readonly partial record struct PNUserId;
+
 public class PushNotificationTokenStoreTests : IAsyncLifetime
 {
     private readonly TestApp app;
     private AsyncServiceScope scope;
-    private PushNotificationTokenStore<TestDbContext, Guid> store = default!;
+    private PushNotificationTokenStore<TestDbContext, PNUserId> store = default!;
 
     public PushNotificationTokenStoreTests()
     {
@@ -22,7 +26,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     public async Task Gets_freshly_saved_token()
     {
         const string Token = "token";
-        var uid = Guid.NewGuid();
+        var uid = PNUserId.New();
 
         await store.AddUserTokenAsync(uid, Token);
         var result = await store.GetTokensAsync(uid);
@@ -35,7 +39,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = Guid.NewGuid();
+        var uid = PNUserId.New();
 
         await store.AddUserTokenAsync(uid, Token1);
         await store.AddUserTokenAsync(uid, Token2);
@@ -49,13 +53,13 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        var uid1 = PNUserId.New();
+        var uid2 = PNUserId.New();
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);
 
-        var result = await store.GetTokensAsync(new HashSet<Guid> { uid1, uid2 });
+        var result = await store.GetTokensAsync(new HashSet<PNUserId> { uid1, uid2 });
 
         Assert.Equal(2, result.Count);
         var first = Assert.Single(result, e => e.Key == uid1);
@@ -72,7 +76,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = Guid.NewGuid();
+        var uid = PNUserId.New();
 
         await store.AddUserTokenAsync(uid, Token1);
         await store.AddUserTokenAsync(uid, Token2);
@@ -87,8 +91,8 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        var uid1 = PNUserId.New();
+        var uid2 = PNUserId.New();
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);
@@ -108,8 +112,8 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid1 = Guid.NewGuid();
-        var uid2 = Guid.NewGuid();
+        var uid1 = PNUserId.New();
+        var uid2 = PNUserId.New();
 
         await store.AddUserTokenAsync(uid1, Token1);
         await store.AddUserTokenAsync(uid2, Token2);
@@ -128,7 +132,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
     {
         const string Token1 = "token1";
         const string Token2 = "token2";
-        var uid = Guid.NewGuid();
+        var uid = PNUserId.New();
 
         await store.AddUserTokenAsync(uid, Token1);
         await store.AddUserTokenAsync(uid, Token2);
@@ -147,7 +151,7 @@ public class PushNotificationTokenStoreTests : IAsyncLifetime
 
         store = new(
             scope.ServiceProvider.GetRequiredService<TestDbContext>(),
-            scope.ServiceProvider.GetRequiredService<ILogger<PushNotificationTokenStore<TestDbContext, Guid>>>()
+            scope.ServiceProvider.GetRequiredService<ILogger<PushNotificationTokenStore<TestDbContext, PNUserId>>>()
         );
     }
 
