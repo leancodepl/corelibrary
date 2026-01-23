@@ -7,6 +7,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using LeanCode.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AuditLogs;
 
@@ -33,7 +34,7 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
         TableServiceClient tableClient,
         AzureBlobAuditLogStorageConfiguration config,
         ILogger<AzureBlobAuditLogStorage> logger,
-        JsonSerializerOptions? options = null
+        [FromKeyedServices(AuditLogsExtensions.JsonSerializerOptionsKey)] JsonSerializerOptions? options = null
     )
     {
         this.blobClient = blobClient;

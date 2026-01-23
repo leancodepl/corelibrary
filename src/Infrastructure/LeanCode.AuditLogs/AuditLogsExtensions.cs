@@ -5,6 +5,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AuditLogsExtensions
 {
+    public const string JsonSerializerOptionsKey = "AuditLogs";
+
     public static IServiceCollection AddAzureStorageAuditLogs(
         this IServiceCollection services,
         AzureBlobAuditLogStorageConfiguration config,
@@ -14,7 +16,7 @@ public static class AuditLogsExtensions
         services.AddSingleton(config);
         if (jsonSerializerOptions is not null)
         {
-            services.AddSingleton(jsonSerializerOptions);
+            services.AddKeyedSingleton(JsonSerializerOptionsKey, jsonSerializerOptions);
         }
         services.AddTransient<AuditLogsPublisher>();
         services.AddTransient<IAuditLogStorage, AzureBlobAuditLogStorage>();
