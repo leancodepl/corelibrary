@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using LeanCode.OpenTelemetry;
 using LeanCode.TimeProvider;
 using MassTransit;
@@ -6,8 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeanCode.AuditLogs;
 
-public class AuditLogsPublisher
+public class AuditLogsPublisher(JsonSerializerOptions? jsonSerializerOptions = null)
 {
+    private readonly JsonSerializerOptions? jsonSerializerOptions = jsonSerializerOptions;
+
     public virtual async Task ExtractAndPublishAsync(
         DbContext dbContext,
         IPublishEndpoint bus,
@@ -15,7 +18,7 @@ public class AuditLogsPublisher
         CancellationToken cancellationToken
     )
     {
-        var entitiesChanged = ChangedEntitiesExtractor.Extract(dbContext);
+        var entitiesChanged = ChangedEntitiesExtractor.Extract(dbContext, jsonSerializerOptions);
         if (entitiesChanged.Count != 0)
         {
             var actorId = Activity.Current?.GetBaggageItem(IdentityTraceBaggageHelpers.CurrentUserIdKey);

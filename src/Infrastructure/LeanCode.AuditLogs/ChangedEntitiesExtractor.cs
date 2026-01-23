@@ -7,15 +7,17 @@ namespace LeanCode.AuditLogs;
 
 public static class ChangedEntitiesExtractor
 {
-    private static readonly JsonSerializerOptions Options = new()
+    private static readonly JsonSerializerOptions DefaultOptions = new()
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
         WriteIndented = false,
     };
 
-    public static IReadOnlyList<EntityData> Extract(DbContext dbContext)
+    public static IReadOnlyList<EntityData> Extract(DbContext dbContext, JsonSerializerOptions? options = null)
     {
+        var serializerOptions = options ?? DefaultOptions;
+
         return dbContext
             .ChangeTracker.Entries()
             .Where(e => e.State != EntityState.Unchanged && e.State != EntityState.Detached)
@@ -31,7 +33,7 @@ public static class ChangedEntitiesExtractor
                     )
                     .ToList(),
                 e.Metadata.ClrType.ToString(),
-                JsonSerializer.SerializeToDocument(e.Entity, Options),
+                JsonSerializer.SerializeToDocument(e.Entity, serializerOptions),
                 JsonSerializer.SerializeToDocument(
                     e.Properties.Where(p => p.Metadata.IsShadowProperty())
                         .Select(p => new
@@ -40,7 +42,7 @@ public static class ChangedEntitiesExtractor
                             p.OriginalValue,
                             p.CurrentValue,
                         }),
-                    Options
+                    serializerOptions
                 ),
                 e.State.ToString()
             ))
