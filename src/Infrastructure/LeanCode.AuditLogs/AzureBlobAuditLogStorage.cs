@@ -7,6 +7,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using LeanCode.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.AuditLogs;
 
@@ -15,7 +16,7 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
     private const string SuffixKey = "Suffix";
 
     private static ReadOnlySpan<byte> NewLineBytes => "\n"u8;
-    private static readonly JsonSerializerOptions Options = new()
+    private static readonly JsonSerializerOptions DefaultOptions = new()
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
@@ -25,18 +26,21 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
     private readonly BlobServiceClient blobClient;
     private readonly TableServiceClient tableClient;
     private readonly AzureBlobAuditLogStorageConfiguration config;
+    private readonly JsonSerializerOptions options;
     private readonly ILogger<AzureBlobAuditLogStorage> logger;
 
     public AzureBlobAuditLogStorage(
         BlobServiceClient blobClient,
         TableServiceClient tableClient,
         AzureBlobAuditLogStorageConfiguration config,
-        ILogger<AzureBlobAuditLogStorage> logger
+        ILogger<AzureBlobAuditLogStorage> logger,
+        [FromKeyedServices(AuditLogsExtensions.JsonSerializerOptionsKey)] JsonSerializerOptions? options = null
     )
     {
         this.blobClient = blobClient;
         this.tableClient = tableClient;
         this.config = config;
+        this.options = options ?? DefaultOptions;
         this.logger = logger;
     }
 
@@ -78,10 +82,10 @@ public class AzureBlobAuditLogStorage : IAuditLogStorage
         return blob;
     }
 
-    private static MemoryStream Serialize(AuditLogMessage auditLogMessage)
+    private MemoryStream Serialize(AuditLogMessage auditLogMessage)
     {
         var stream = new MemoryStream();
-        JsonSerializer.Serialize(stream, auditLogMessage, Options);
+        JsonSerializer.Serialize(stream, auditLogMessage, options);
         stream.Write(NewLineBytes);
         stream.Position = 0;
         return stream;

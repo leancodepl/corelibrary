@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -15,6 +17,14 @@ public class AzureStorageAuditLogIntegrationTests
 {
     private readonly BlobServiceClient blobServiceClient;
     private readonly AzureBlobAuditLogStorage storage;
+    private readonly AzureBlobAuditLogStorage storageWithCustomOptions;
+    private readonly JsonSerializerOptions customOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+    };
 
     public AzureStorageAuditLogIntegrationTests()
     {
@@ -23,20 +33,29 @@ public class AzureStorageAuditLogIntegrationTests
             new Uri(Environment.GetEnvironmentVariable(Env.AzureBlobStorageServiceUriKey) ?? "https://unset"),
             credential
         );
+        var tableServiceClient = new TableServiceClient(
+            new Uri(
+                Environment.GetEnvironmentVariable(Env.AzureTableStorageServiceUriKey)
+                    ?? "https://UNSET.table.core.windows.net/"
+            ),
+            credential
+        );
+        var config = new AzureBlobAuditLogStorageConfiguration(
+            Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey) ?? "unset",
+            Environment.GetEnvironmentVariable(Env.AzureTableStorageTableNameKey) ?? "unset"
+        );
         storage = new AzureBlobAuditLogStorage(
             blobServiceClient,
-            new TableServiceClient(
-                new Uri(
-                    Environment.GetEnvironmentVariable(Env.AzureTableStorageServiceUriKey)
-                        ?? "https://UNSET.table.core.windows.net/"
-                ),
-                credential
-            ),
-            new(
-                Environment.GetEnvironmentVariable(Env.AzureBlobStorageContainerNameKey) ?? "unset",
-                Environment.GetEnvironmentVariable(Env.AzureTableStorageTableNameKey) ?? "unset"
-            ),
+            tableServiceClient,
+            config,
             NullLogger<AzureBlobAuditLogStorage>.Instance
+        );
+        storageWithCustomOptions = new AzureBlobAuditLogStorage(
+            blobServiceClient,
+            tableServiceClient,
+            config,
+            NullLogger<AzureBlobAuditLogStorage>.Instance,
+            customOptions
         );
     }
 
@@ -51,6 +70,36 @@ public class AzureStorageAuditLogIntegrationTests
                     [id.ToString()],
                     type,
                     JsonSerializer.SerializeToDocument(new { Foo = "bar" }),
+                    JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
+                    "state"
+                ),
+                "actionName",
+                Time.NowWithOffset,
+                "actorId",
+                "traceId",
+                "spanId"
+            ),
+            default
+        );
+
+        var (lineCount, blobCount) = await CheckLinesAndBlobsCountAsync(type, id);
+
+        lineCount.Should().Be(1);
+        blobCount.Should().Be(1);
+    }
+
+    [AzureStorageFact]
+    public async Task Ensure_that_log_is_correctly_uploaded_to_storage_with_custom_json_options()
+    {
+        var type = "type_custom";
+        var id = Guid.NewGuid();
+        var testObject = new { Value = double.NaN, Name = "test" };
+        await storageWithCustomOptions.StoreEventAsync(
+            new AuditLogMessage(
+                new(
+                    [id.ToString()],
+                    type,
+                    JsonSerializer.SerializeToDocument(testObject, customOptions),
                     JsonSerializer.SerializeToDocument(new { Shadow = "property" }),
                     "state"
                 ),

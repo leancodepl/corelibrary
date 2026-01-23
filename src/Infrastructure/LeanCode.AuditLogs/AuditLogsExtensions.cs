@@ -1,15 +1,23 @@
+using System.Text.Json;
 using LeanCode.AuditLogs;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AuditLogsExtensions
 {
+    public const string JsonSerializerOptionsKey = "AuditLogs";
+
     public static IServiceCollection AddAzureStorageAuditLogs(
         this IServiceCollection services,
-        AzureBlobAuditLogStorageConfiguration config
+        AzureBlobAuditLogStorageConfiguration config,
+        JsonSerializerOptions? jsonSerializerOptions = null
     )
     {
         services.AddSingleton(config);
+        if (jsonSerializerOptions is not null)
+        {
+            services.AddKeyedSingleton(JsonSerializerOptionsKey, jsonSerializerOptions);
+        }
         services.AddTransient<AuditLogsPublisher>();
         services.AddTransient<IAuditLogStorage, AzureBlobAuditLogStorage>();
         return services;
