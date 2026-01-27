@@ -53,8 +53,10 @@ namespace {{data.Namespace}}
         public static bool IsValid([NotNullWhen(true)] string? v) => v is not null && IsValid(v.AsSpan());
         public static bool IsValid(ReadOnlySpan<char> v) => TryParse(v, null, out _);
 
+        public static {{data.TypeName}} Parse(string v) => Parse(v, null);
+
         [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
-        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider = null)
+        public static {{data.TypeName}} Parse(string v, IFormatProvider? provider)
         {
             ArgumentNullException.ThrowIfNull(v);
             if (TryParse(v.AsSpan(), provider, out var result))
@@ -86,8 +88,10 @@ namespace {{data.Namespace}}
             return TryParse(s.AsSpan(), provider, out result);
         }
 
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s) => Parse(s, null);
+
         [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
-        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
         {
             if (TryParse(s, provider, out var result))
             {
@@ -100,6 +104,9 @@ namespace {{data.Namespace}}
                 );
             }
         }
+
+        public static bool TryParse(ReadOnlySpan<char> s, out {{data.TypeName}} result)
+            => TryParse(s, null, out result);
 
         [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "IFormatProvider is ignored for Ulid parsing.")]
         public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)

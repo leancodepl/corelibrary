@@ -69,7 +69,9 @@ namespace {{data.Namespace}}
             }
         }
 
-        public static {{data.TypeName}} Parse(string s, IFormatProvider? provider = null)
+        public static {{data.TypeName}} Parse(string s) => Parse(s, null);
+
+        public static {{data.TypeName}} Parse(string s, IFormatProvider? provider)
         {
             ArgumentNullException.ThrowIfNull(s);
             if (TryParse(s.AsSpan(), provider, out var result))
@@ -95,7 +97,9 @@ namespace {{data.Namespace}}
             return TryParse(s.AsSpan(), provider, out result);
         }
 
-        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s) => Parse(s, null);
+
+        public static {{data.TypeName}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
         {
             if (TryParse(s, provider, out var result))
             {
@@ -106,6 +110,9 @@ namespace {{data.Namespace}}
                 throw new FormatException($"Unable to parse the span as {{data.TypeName}}.");
             }
         }
+
+        public static bool TryParse(ReadOnlySpan<char> s, out {{data.TypeName}} result)
+            => TryParse(s, null, out result);
 
         public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out {{data.TypeName}} result)
         {
