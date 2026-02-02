@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" VersionOverride="10.0.2" />
     <ProjectReference Include="../LeanCode.Logging/LeanCode.Logging.csproj" />
 
     <PackageReference Include="Serilog.Extensions.Logging" />
