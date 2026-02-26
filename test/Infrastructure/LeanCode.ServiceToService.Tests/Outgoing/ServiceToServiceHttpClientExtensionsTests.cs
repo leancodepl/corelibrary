@@ -1,27 +1,30 @@
+using FluentAssertions;
+using LeanCode.ServiceToService.Outgoing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace LeanCode.ServiceToService.Tests;
+namespace LeanCode.ServiceToService.Tests.Outgoing;
 
 public class ServiceToServiceHttpClientExtensionsTests
 {
     [Fact]
     public void Adds_caller_identity_header_to_configured_http_client()
     {
-        const string serviceName = "notifications-service";
+        const string ServiceName = "notifications-service";
 
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
-            .AddCallerIdentity(serviceName)
+            .AddCallerIdentity(ServiceName)
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
         var client = clientFactory.CreateClient("outgoing");
 
-        Assert.True(
-            client.DefaultRequestHeaders.TryGetValues(ServiceToServiceConstants.CallerIdHeaderName, out var values)
-        );
-        Assert.Equal(new[] { serviceName }, values);
+        client
+            .DefaultRequestHeaders.Should()
+            .ContainSingle(kv => kv.Key == ServiceToServiceDefaults.CallerIdHeaderName)
+            .Which.Value.Should()
+            .ContainSingle(ServiceName);
     }
 
     [Fact]
@@ -29,13 +32,13 @@ public class ServiceToServiceHttpClientExtensionsTests
     {
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://example.com"))
+            .ConfigureHttpClient(client => client.BaseAddress = new("https://example.com"))
             .AddCallerIdentity("admin-panel")
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
         var client = clientFactory.CreateClient("outgoing");
 
-        Assert.Equal(new Uri("https://example.com"), client.BaseAddress);
+        client.BaseAddress.Should().Be(new Uri("https://example.com"));
     }
 }

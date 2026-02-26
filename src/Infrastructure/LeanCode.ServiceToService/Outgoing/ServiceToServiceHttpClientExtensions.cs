@@ -1,13 +1,13 @@
-using LeanCode.ServiceToService;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace LeanCode.ServiceToService.Outgoing;
 
 public static class ServiceToServiceHttpClientExtensions
 {
     public static IHttpClientBuilder AddCallerIdentity(this IHttpClientBuilder builder, string serviceName)
     {
         return builder.ConfigureHttpClient(client =>
-            client.DefaultRequestHeaders.Add(ServiceToServiceConstants.CallerIdHeaderName, serviceName)
+            client.DefaultRequestHeaders.Add(ServiceToServiceDefaults.CallerIdHeaderName, serviceName)
         );
     }
 }
