@@ -8,9 +8,16 @@ public class ServiceToServiceAuthenticationOptions : AuthenticationSchemeOptions
 {
     public string NameClaimType { get; set; } = "sub";
     public string RoleClaimType { get; set; } = "role";
+    public string S2SApiKeyHeaderName { get; set; } = ServiceToServiceDefaults.S2SApiKeyHeaderName;
+    public string S2SApiKey { get; set; } = "";
+
     public FrozenDictionary<string, FrozenSet<string>> CallerRoles { get; set; } =
         FrozenDictionary<string, FrozenSet<string>>.Empty;
+    public bool RejectMissingS2SApiKey { get; set; } = true;
+
     public bool RejectUnknownCallers { get; set; } = true;
     public bool RejectMissingCallerId { get; set; } = true;
+    public bool ValidateS2SApiKeyAtStartup { get; set; } = true;
+
     public bool ValidateCallerRolesAtStartup { get; set; } = true;
 }

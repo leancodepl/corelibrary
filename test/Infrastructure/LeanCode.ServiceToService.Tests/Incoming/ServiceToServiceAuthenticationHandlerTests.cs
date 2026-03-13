@@ -15,8 +15,10 @@ namespace LeanCode.ServiceToService.Tests.Incoming;
 
 public class ServiceToServiceAuthenticationHandlerTests
 {
+    private const string ValidS2SApiKey = "project-dev-api-key";
+
     [Fact]
-    public async Task Returns_failure_when_caller_id_header_is_missing_and_rejection_is_enabled()
+    public async Task Returns_failure_when_s2s_api_key_is_missing_and_rejection_is_enabled()
     {
         var handler = ConfigureServices();
 
@@ -30,11 +32,62 @@ public class ServiceToServiceAuthenticationHandlerTests
     }
 
     [Fact]
+    public async Task Returns_none_when_s2s_api_key_is_missing_and_rejection_is_disabled()
+    {
+        var handler = ConfigureServices(options => options.RejectMissingS2SApiKey = false);
+
+        var result = await AuthenticateAsync(handler, []);
+
+        using var _ = new AssertionScope();
+        result.None.Should().BeTrue();
+        result.Failure.Should().BeNull();
+        result.Ticket.Should().BeNull();
+        result.Principal.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Returns_failure_when_s2s_api_key_is_invalid_and_rejection_is_enabled()
+    {
+        var handler = ConfigureServices();
+
+        var result = await AuthenticateAsync(
+            handler,
+            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = "invalid-api-key" }
+        );
+
+        using var _ = new AssertionScope();
+        result.None.Should().BeFalse();
+        result.Ticket.Should().BeNull();
+        result.Principal.Should().BeNull();
+        result.Failure.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Returns_failure_when_caller_id_header_is_missing_and_rejection_is_enabled()
+    {
+        var handler = ConfigureServices();
+
+        var result = await AuthenticateAsync(
+            handler,
+            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey }
+        );
+
+        using var _ = new AssertionScope();
+        result.None.Should().BeFalse();
+        result.Ticket.Should().BeNull();
+        result.Principal.Should().BeNull();
+        result.Failure.Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task Returns_none_when_caller_id_header_is_missing_and_rejection_is_disabled()
     {
         var handler = ConfigureServices(options => options.RejectMissingCallerId = false);
 
-        var result = await AuthenticateAsync(handler, []);
+        var result = await AuthenticateAsync(
+            handler,
+            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey }
+        );
 
         using var _ = new AssertionScope();
         result.None.Should().BeTrue();
@@ -50,7 +103,11 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service" }
+            new()
+            {
+                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service",
+            }
         );
 
         using var _ = new AssertionScope();
@@ -67,7 +124,11 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service" }
+            new()
+            {
+                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service",
+            }
         );
 
         using var _ = new AssertionScope();
@@ -78,7 +139,7 @@ public class ServiceToServiceAuthenticationHandlerTests
     }
 
     [Fact]
-    public async Task Returns_success_with_subject_and_role_claims_for_known_caller()
+    public async Task Returns_success_with_subject_and_role_claims_for_known_caller_with_valid_s2s_api_key()
     {
         var handler = ConfigureServices(options =>
         {
@@ -92,7 +153,11 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.CallerIdHeaderName] = "notifications-service" }
+            new()
+            {
+                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceDefaults.CallerIdHeaderName] = "notifications-service",
+            }
         );
 
         using var _ = new AssertionScope();
@@ -129,6 +194,7 @@ public class ServiceToServiceAuthenticationHandlerTests
             .AddServiceToService(options =>
             {
                 options.RoleClaimType = ClaimTypes.Role;
+                options.S2SApiKey = ValidS2SApiKey;
                 options.CallerRoles = new Dictionary<string, FrozenSet<string>>
                 {
                     ["notifications-service"] = ["system_notifications_service"],

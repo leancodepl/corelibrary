@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -10,6 +12,7 @@ namespace LeanCode.ServiceToService.Incoming;
 /// Authenticates callers based on <c>LNCD-Caller-Id</c>.
 /// Security depends on infrastructure-level header enforcement (for example service mesh or ingress middleware).
 /// If the header is not enforced and can be set by arbitrary clients, caller identity can be spoofed.
+/// S2S requests are additionally guarded by <c>S2SApiKey</c> as defense in depth.
 /// </summary>
 public partial class ServiceToServiceAuthenticationHandler(
     IOptionsMonitor<ServiceToServiceAuthenticationOptions> options,
@@ -19,10 +22,24 @@ public partial class ServiceToServiceAuthenticationHandler(
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (
-            !Request.Headers.TryGetValue(ServiceToServiceDefaults.CallerIdHeaderName, out var values)
-            || string.IsNullOrWhiteSpace(values.ToString())
-        )
+        if (!TryGetNonEmptyHeaderValue(Options.S2SApiKeyHeaderName, out var s2SApiKey))
+        {
+            if (Options.RejectMissingS2SApiKey)
+            {
+                LogMissingS2SApiKeyHeader(Logger, Options.S2SApiKeyHeaderName);
+                return Task.FromResult(AuthenticateResult.Fail("Missing S2S API key header."));
+            }
+
+            return Task.FromResult(AuthenticateResult.NoResult());
+        }
+
+        if (!VerifyApiKey(s2SApiKey, Options.S2SApiKey))
+        {
+            LogInvalidS2SApiKey(Logger);
+            return Task.FromResult(AuthenticateResult.Fail("Invalid S2S API key."));
+        }
+
+        if (!TryGetNonEmptyHeaderValue(ServiceToServiceDefaults.CallerIdHeaderName, out var callerId))
         {
             if (Options.RejectMissingCallerId)
             {
@@ -32,8 +49,6 @@ public partial class ServiceToServiceAuthenticationHandler(
 
             return Task.FromResult(AuthenticateResult.NoResult());
         }
-
-        var callerId = values.ToString();
 
         if (!Options.CallerRoles.TryGetValue(callerId, out var roles))
         {
@@ -57,14 +72,47 @@ public partial class ServiceToServiceAuthenticationHandler(
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Missing {Header} header")]
+    private bool TryGetNonEmptyHeaderValue(string headerName, out string value)
+    {
+        if (!Request.Headers.TryGetValue(headerName, out var headerValues))
+        {
+            value = string.Empty;
+            return false;
+        }
+
+        var headerValue = headerValues.ToString();
+        if (string.IsNullOrWhiteSpace(headerValue))
+        {
+            value = string.Empty;
+            return false;
+        }
+
+        value = headerValue;
+        return true;
+    }
+
+    private static bool VerifyApiKey(string left, string right)
+    {
+        var leftBytes = MemoryMarshal.AsBytes(left.AsSpan());
+        var rightBytes = MemoryMarshal.AsBytes(right.AsSpan());
+
+        return CryptographicOperations.FixedTimeEquals(leftBytes, rightBytes);
+    }
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Missing {Header} S2S API key header")]
+    private static partial void LogMissingS2SApiKeyHeader(ILogger logger, string header);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Invalid S2S API key")]
+    private static partial void LogInvalidS2SApiKey(ILogger logger);
+
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing {Header} header")]
     private static partial void LogMissingCallerIdHeader(ILogger logger, string header);
 
-    [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Unknown service caller: {CallerId}")]
+    [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Unknown service caller: {CallerId}")]
     private static partial void LogUnknownServiceCaller(ILogger logger, string callerId);
 
     [LoggerMessage(
-        EventId = 3,
+        EventId = 5,
         Level = LogLevel.Debug,
         Message = "Authenticated s2s caller {CallerId} with roles [{Roles}]"
     )]

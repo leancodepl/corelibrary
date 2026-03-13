@@ -1,4 +1,5 @@
 using FluentAssertions;
+using FluentAssertions.Execution;
 using LeanCode.ServiceToService.Outgoing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -8,23 +9,30 @@ namespace LeanCode.ServiceToService.Tests.Outgoing;
 public class ServiceToServiceHttpClientExtensionsTests
 {
     [Fact]
-    public void Adds_caller_identity_header_to_configured_http_client()
+    public void Adds_caller_identity_and_s2s_api_key_headers_to_configured_http_client()
     {
         const string ServiceName = "notifications-service";
+        const string S2SApiKey = "test-project-dev-api-key";
 
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
-            .AddCallerIdentity(ServiceName)
+            .AddCallerIdentity(ServiceName, S2SApiKey)
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
         var client = clientFactory.CreateClient("outgoing");
 
+        using var _ = new AssertionScope();
         client
             .DefaultRequestHeaders.Should()
             .ContainSingle(kv => kv.Key == ServiceToServiceDefaults.CallerIdHeaderName)
             .Which.Value.Should()
             .ContainSingle(ServiceName);
+        client
+            .DefaultRequestHeaders.Should()
+            .ContainSingle(kv => kv.Key == ServiceToServiceDefaults.S2SApiKeyHeaderName)
+            .Which.Value.Should()
+            .ContainSingle(S2SApiKey);
     }
 
     [Fact]
@@ -33,7 +41,7 @@ public class ServiceToServiceHttpClientExtensionsTests
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
             .ConfigureHttpClient(client => client.BaseAddress = new("https://example.com"))
-            .AddCallerIdentity("admin-panel")
+            .AddCallerIdentity("admin-panel", "test-project-dev-api-key")
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();

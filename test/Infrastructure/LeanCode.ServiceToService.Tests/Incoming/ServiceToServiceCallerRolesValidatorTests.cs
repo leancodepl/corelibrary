@@ -15,6 +15,7 @@ public class ServiceToServiceCallerRolesValidatorTests
         var validator = CreateValidator(["system_notifications_service", "system_admin_panel"]);
         var options = new ServiceToServiceAuthenticationOptions
         {
+            S2SApiKey = "project-dev-api-key",
             CallerRoles = new Dictionary<string, FrozenSet<string>>
             {
                 ["notifications-service"] = ["system_notifications_service"],
@@ -35,6 +36,7 @@ public class ServiceToServiceCallerRolesValidatorTests
         var validator = CreateValidator(["system_notifications_service"]);
         var options = new ServiceToServiceAuthenticationOptions
         {
+            S2SApiKey = "project-dev-api-key",
             CallerRoles = new Dictionary<string, FrozenSet<string>>
             {
                 ["notifications-service"] = ["unknown-role", "system_notifications_service"],
@@ -58,6 +60,7 @@ public class ServiceToServiceCallerRolesValidatorTests
         var validator = CreateValidator([]);
         var options = new ServiceToServiceAuthenticationOptions
         {
+            ValidateS2SApiKeyAtStartup = false,
             ValidateCallerRolesAtStartup = false,
             CallerRoles = new Dictionary<string, FrozenSet<string>>
             {
@@ -70,6 +73,29 @@ public class ServiceToServiceCallerRolesValidatorTests
         using var _ = new AssertionScope();
         result.Skipped.Should().BeTrue();
         result.Failures.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void Fails_when_s2s_api_key_is_missing_and_validation_is_enabled()
+    {
+        var validator = CreateValidator(["system_notifications_service"]);
+        var options = new ServiceToServiceAuthenticationOptions
+        {
+            CallerRoles = new Dictionary<string, FrozenSet<string>>
+            {
+                ["notifications-service"] = ["system_notifications_service"],
+            }.ToFrozenDictionary(),
+        };
+
+        var result = validator.Validate(name: null, options);
+
+        using var _ = new AssertionScope();
+        result.Failed.Should().BeTrue();
+        result
+            .Failures.Should()
+            .ContainSingle()
+            .Which.Should()
+            .Be("S2SApiKey must be configured when ValidateS2SApiKeyAtStartup is enabled.");
     }
 
     private static ServiceToServiceCallerRolesValidator CreateValidator(string[] registeredRoles)

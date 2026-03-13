@@ -38,8 +38,7 @@ public static class ServiceToServiceAuthenticationExtensions
     public static AuthenticationBuilder AddServiceToServicePolicyScheme(
         this AuthenticationBuilder builder,
         string defaultScheme,
-        string? ingressCallerId = null,
-        bool fallbackToDefaultSchemeOnMissingHeader = false,
+        string s2SApiKeyHeaderName = ServiceToServiceDefaults.S2SApiKeyHeaderName,
         string policyScheme = ServiceToServiceDefaults.PolicyScheme
     )
     {
@@ -51,21 +50,8 @@ public static class ServiceToServiceAuthenticationExtensions
                 schemeOptions.ForwardDefaultSelector = context =>
                 {
                     if (
-                        !context.Request.Headers.TryGetValue(
-                            ServiceToServiceDefaults.CallerIdHeaderName,
-                            out var values
-                        ) || string.IsNullOrWhiteSpace(values.ToString())
-                    )
-                    {
-                        return fallbackToDefaultSchemeOnMissingHeader
-                            ? defaultScheme
-                            : ServiceToServiceDefaults.AuthenticationScheme;
-                    }
-
-                    var callerId = values.ToString();
-                    if (
-                        ingressCallerId is not null
-                        && string.Equals(callerId, ingressCallerId, StringComparison.Ordinal)
+                        !context.Request.Headers.TryGetValue(s2SApiKeyHeaderName, out var s2SApiKeyValues)
+                        || string.IsNullOrWhiteSpace(s2SApiKeyValues.ToString())
                     )
                     {
                         return defaultScheme;

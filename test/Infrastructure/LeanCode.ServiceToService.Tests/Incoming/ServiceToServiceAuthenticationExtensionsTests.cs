@@ -12,72 +12,33 @@ namespace LeanCode.ServiceToService.Tests.Incoming;
 public class ServiceToServiceAuthenticationExtensionsTests
 {
     [Fact]
-    public void Policy_scheme_routes_to_service_to_service_for_missing_header_by_default()
+    public void Policy_scheme_routes_to_default_for_missing_s2s_api_key_header()
+    {
+        var selected = SelectScheme(headers: [], defaultScheme: "Kratos");
+
+        selected.Should().Be("Kratos");
+    }
+
+    [Fact]
+    public void Policy_scheme_routes_to_service_to_service_for_present_s2s_api_key_header()
     {
         var selected = SelectScheme(
-            headers: [],
-            fallbackToDefaultSchemeOnMissingHeader: false,
+            headers: new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = "some-api-key" },
             defaultScheme: "Kratos"
         );
 
         selected.Should().Be(ServiceToServiceDefaults.AuthenticationScheme);
     }
 
-    [Fact]
-    public void Policy_scheme_routes_to_default_for_missing_header_when_fallback_is_enabled()
+    private static string SelectScheme(Dictionary<string, StringValues> headers, string defaultScheme)
     {
-        var selected = SelectScheme(headers: [], fallbackToDefaultSchemeOnMissingHeader: true, defaultScheme: "Kratos");
-
-        selected.Should().Be("Kratos");
-    }
-
-    [Fact]
-    public void Policy_scheme_routes_to_default_for_ingress_caller()
-    {
-        var selected = SelectScheme(
-            headers: new() { [ServiceToServiceDefaults.CallerIdHeaderName] = "traefik" },
-            fallbackToDefaultSchemeOnMissingHeader: false,
-            defaultScheme: "Kratos",
-            ingressCallerId: "traefik"
-        );
-
-        selected.Should().Be("Kratos");
-    }
-
-    [Fact]
-    public void Policy_scheme_routes_to_service_to_service_for_non_ingress_caller()
-    {
-        var selected = SelectScheme(
-            headers: new() { [ServiceToServiceDefaults.CallerIdHeaderName] = "notifications-service" },
-            fallbackToDefaultSchemeOnMissingHeader: false,
-            defaultScheme: "Kratos",
-            ingressCallerId: "traefik"
-        );
-
-        selected.Should().Be(ServiceToServiceDefaults.AuthenticationScheme);
-    }
-
-    private static string SelectScheme(
-        Dictionary<string, StringValues> headers,
-        bool fallbackToDefaultSchemeOnMissingHeader,
-        string defaultScheme,
-        string ingressCallerId = null
-    )
-    {
-        const string PolicyScheme = "S2SOrDefault";
-
         using var provider = new ServiceCollection()
             .AddAuthentication()
-            .AddServiceToServicePolicyScheme(
-                defaultScheme: defaultScheme,
-                ingressCallerId: ingressCallerId,
-                fallbackToDefaultSchemeOnMissingHeader: fallbackToDefaultSchemeOnMissingHeader,
-                policyScheme: PolicyScheme
-            )
+            .AddServiceToServicePolicyScheme(defaultScheme: defaultScheme)
             .Services.BuildServiceProvider();
 
         var optionsMonitor = provider.GetRequiredService<IOptionsMonitor<PolicySchemeOptions>>();
-        var options = optionsMonitor.Get(PolicyScheme);
+        var options = optionsMonitor.Get(ServiceToServiceDefaults.PolicyScheme);
         var context = new DefaultHttpContext();
         foreach (var (key, value) in headers)
         {
