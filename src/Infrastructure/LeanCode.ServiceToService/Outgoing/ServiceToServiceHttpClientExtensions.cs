@@ -4,17 +4,16 @@ namespace LeanCode.ServiceToService.Outgoing;
 
 public static class ServiceToServiceHttpClientExtensions
 {
-    public static IHttpClientBuilder AddCallerIdentity(
+    public static IHttpClientBuilder AddServiceToServiceCallerIdentity(
         this IHttpClientBuilder builder,
         string serviceName,
-        string s2SApiKey,
-        string s2SApiKeyHeaderName = ServiceToServiceDefaults.S2SApiKeyHeaderName
+        string s2SApiKey
     )
     {
         return builder.ConfigureHttpClient(client =>
         {
             client.DefaultRequestHeaders.Add(ServiceToServiceDefaults.CallerIdHeaderName, serviceName);
-            client.DefaultRequestHeaders.Add(s2SApiKeyHeaderName, s2SApiKey);
+            client.DefaultRequestHeaders.Add(ServiceToServiceDefaults.S2SApiKeyHeaderName, s2SApiKey);
         });
     }
 }

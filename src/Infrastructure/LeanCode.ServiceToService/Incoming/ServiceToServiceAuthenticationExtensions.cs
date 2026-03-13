@@ -38,7 +38,6 @@ public static class ServiceToServiceAuthenticationExtensions
     public static AuthenticationBuilder AddServiceToServicePolicyScheme(
         this AuthenticationBuilder builder,
         string defaultScheme,
-        string s2SApiKeyHeaderName = ServiceToServiceDefaults.S2SApiKeyHeaderName,
         string policyScheme = ServiceToServiceDefaults.PolicyScheme
     )
     {
@@ -50,8 +49,10 @@ public static class ServiceToServiceAuthenticationExtensions
                 schemeOptions.ForwardDefaultSelector = context =>
                 {
                     if (
-                        !context.Request.Headers.TryGetValue(s2SApiKeyHeaderName, out var s2SApiKeyValues)
-                        || string.IsNullOrWhiteSpace(s2SApiKeyValues.ToString())
+                        !context.Request.Headers.TryGetValue(
+                            ServiceToServiceDefaults.S2SApiKeyHeaderName,
+                            out var s2SApiKeyValues
+                        ) || string.IsNullOrWhiteSpace(s2SApiKeyValues.ToString())
                     )
                     {
                         return defaultScheme;

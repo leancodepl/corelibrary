@@ -22,9 +22,15 @@ public partial class ServiceToServiceAuthenticationHandler(
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (!TryGetSingleHeaderValue(Options.S2SApiKeyHeaderName, out var s2SApiKey, out var multipleS2SApiKeys))
+        if (
+            !TryGetSingleHeaderValue(
+                ServiceToServiceDefaults.S2SApiKeyHeaderName,
+                out var s2SApiKey,
+                out var multipleS2SApiKeys
+            )
+        )
         {
-            LogMissingOrMultipleS2SApiKeyHeader(Logger, Options.S2SApiKeyHeaderName);
+            LogMissingOrMultipleS2SApiKeyHeader(Logger, ServiceToServiceDefaults.S2SApiKeyHeaderName);
             if (multipleS2SApiKeys)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Multiple S2S API key headers are not allowed."));

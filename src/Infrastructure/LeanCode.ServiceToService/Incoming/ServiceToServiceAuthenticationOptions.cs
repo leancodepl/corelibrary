@@ -8,7 +8,6 @@ public class ServiceToServiceAuthenticationOptions : AuthenticationSchemeOptions
 {
     public string NameClaimType { get; set; } = "sub";
     public string RoleClaimType { get; set; } = "role";
-    public string S2SApiKeyHeaderName { get; set; } = ServiceToServiceDefaults.S2SApiKeyHeaderName;
     public string S2SApiKey { get; set; } = "";
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(

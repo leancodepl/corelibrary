@@ -16,7 +16,7 @@ public class ServiceToServiceHttpClientExtensionsTests
 
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
-            .AddCallerIdentity(ServiceName, S2SApiKey)
+            .AddServiceToServiceCallerIdentity(ServiceName, S2SApiKey)
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
@@ -41,7 +41,7 @@ public class ServiceToServiceHttpClientExtensionsTests
         using var provider = new ServiceCollection()
             .AddHttpClient("outgoing")
             .ConfigureHttpClient(client => client.BaseAddress = new("https://example.com"))
-            .AddCallerIdentity("admin-panel", "test-project-dev-api-key")
+            .AddServiceToServiceCallerIdentity("admin-panel", "test-project-dev-api-key")
             .Services.BuildServiceProvider();
 
         var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
