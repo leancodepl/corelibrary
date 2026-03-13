@@ -12,8 +12,8 @@ public static class ServiceToServiceHttpClientExtensions
     {
         return builder.ConfigureHttpClient(client =>
         {
-            client.DefaultRequestHeaders.Add(ServiceToServiceDefaults.CallerIdHeaderName, serviceName);
-            client.DefaultRequestHeaders.Add(ServiceToServiceDefaults.S2SApiKeyHeaderName, s2SApiKey);
+            client.DefaultRequestHeaders.Add(ServiceToServiceConsts.CallerIdHeaderName, serviceName);
+            client.DefaultRequestHeaders.Add(ServiceToServiceConsts.S2SApiKeyHeaderName, s2SApiKey);
         });
     }
 }

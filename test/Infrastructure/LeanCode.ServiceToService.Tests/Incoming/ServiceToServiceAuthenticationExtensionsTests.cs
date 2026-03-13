@@ -23,11 +23,11 @@ public class ServiceToServiceAuthenticationExtensionsTests
     public void Policy_scheme_routes_to_service_to_service_for_present_s2s_api_key_header()
     {
         var selected = SelectScheme(
-            headers: new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = "some-api-key" },
+            headers: new() { [ServiceToServiceConsts.S2SApiKeyHeaderName] = "some-api-key" },
             defaultScheme: "Kratos"
         );
 
-        selected.Should().Be(ServiceToServiceDefaults.AuthenticationScheme);
+        selected.Should().Be(ServiceToServiceConsts.AuthenticationScheme);
     }
 
     private static string SelectScheme(Dictionary<string, StringValues> headers, string defaultScheme)
@@ -38,7 +38,7 @@ public class ServiceToServiceAuthenticationExtensionsTests
             .Services.BuildServiceProvider();
 
         var optionsMonitor = provider.GetRequiredService<IOptionsMonitor<PolicySchemeOptions>>();
-        var options = optionsMonitor.Get(ServiceToServiceDefaults.PolicyScheme);
+        var options = optionsMonitor.Get(ServiceToServiceConsts.PolicyScheme);
         var context = new DefaultHttpContext();
         foreach (var (key, value) in headers)
         {

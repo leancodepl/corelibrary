@@ -25,12 +25,12 @@ public class ServiceToServiceHttpClientExtensionsTests
         using var _ = new AssertionScope();
         client
             .DefaultRequestHeaders.Should()
-            .ContainSingle(kv => kv.Key == ServiceToServiceDefaults.CallerIdHeaderName)
+            .ContainSingle(kv => kv.Key == ServiceToServiceConsts.CallerIdHeaderName)
             .Which.Value.Should()
             .ContainSingle(ServiceName);
         client
             .DefaultRequestHeaders.Should()
-            .ContainSingle(kv => kv.Key == ServiceToServiceDefaults.S2SApiKeyHeaderName)
+            .ContainSingle(kv => kv.Key == ServiceToServiceConsts.S2SApiKeyHeaderName)
             .Which.Value.Should()
             .ContainSingle(S2SApiKey);
     }

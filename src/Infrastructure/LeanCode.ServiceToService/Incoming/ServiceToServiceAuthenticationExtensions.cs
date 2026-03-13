@@ -12,45 +12,37 @@ public static class ServiceToServiceAuthenticationExtensions
         Action<ServiceToServiceAuthenticationOptions> configureOptions
     )
     {
-        return builder.AddServiceToService(ServiceToServiceDefaults.AuthenticationScheme, configureOptions);
-    }
-
-    public static AuthenticationBuilder AddServiceToService(
-        this AuthenticationBuilder builder,
-        string authenticationScheme,
-        Action<ServiceToServiceAuthenticationOptions> configureOptions
-    )
-    {
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Singleton<
                 IValidateOptions<ServiceToServiceAuthenticationOptions>,
                 ServiceToServiceCallerRolesValidator
             >()
         );
-        builder.Services.AddOptions<ServiceToServiceAuthenticationOptions>(authenticationScheme).ValidateOnStart();
+        builder
+            .Services.AddOptions<ServiceToServiceAuthenticationOptions>(ServiceToServiceConsts.AuthenticationScheme)
+            .ValidateOnStart();
 
         return builder.AddScheme<ServiceToServiceAuthenticationOptions, ServiceToServiceAuthenticationHandler>(
-            authenticationScheme,
+            ServiceToServiceConsts.AuthenticationScheme,
             configureOptions
         );
     }
 
     public static AuthenticationBuilder AddServiceToServicePolicyScheme(
         this AuthenticationBuilder builder,
-        string defaultScheme,
-        string policyScheme = ServiceToServiceDefaults.PolicyScheme
+        string defaultScheme
     )
     {
         return builder.AddPolicyScheme(
-            policyScheme,
-            policyScheme,
+            ServiceToServiceConsts.PolicyScheme,
+            ServiceToServiceConsts.PolicyScheme,
             schemeOptions =>
             {
                 schemeOptions.ForwardDefaultSelector = context =>
                 {
                     if (
                         !context.Request.Headers.TryGetValue(
-                            ServiceToServiceDefaults.S2SApiKeyHeaderName,
+                            ServiceToServiceConsts.S2SApiKeyHeaderName,
                             out var s2SApiKeyValues
                         ) || string.IsNullOrWhiteSpace(s2SApiKeyValues.ToString())
                     )
@@ -58,7 +50,7 @@ public static class ServiceToServiceAuthenticationExtensions
                         return defaultScheme;
                     }
 
-                    return ServiceToServiceDefaults.AuthenticationScheme;
+                    return ServiceToServiceConsts.AuthenticationScheme;
                 };
             }
         );

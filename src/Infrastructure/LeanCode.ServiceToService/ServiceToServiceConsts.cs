@@ -1,6 +1,6 @@
 namespace LeanCode.ServiceToService;
 
-public static class ServiceToServiceDefaults
+public static class ServiceToServiceConsts
 {
     public const string CallerIdHeaderName = "LNCD-Caller-Id";
     public const string S2SApiKeyHeaderName = "LNCD-S2S-Api-Key";

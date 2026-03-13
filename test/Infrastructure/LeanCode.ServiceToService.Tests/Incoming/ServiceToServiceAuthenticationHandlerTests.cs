@@ -52,7 +52,7 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = "invalid-api-key" }
+            new() { [ServiceToServiceConsts.S2SApiKeyHeaderName] = "invalid-api-key" }
         );
 
         using var _ = new AssertionScope();
@@ -69,7 +69,7 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey }
+            new() { [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey }
         );
 
         using var _ = new AssertionScope();
@@ -86,7 +86,7 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         var result = await AuthenticateAsync(
             handler,
-            new() { [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey }
+            new() { [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey }
         );
 
         using var _ = new AssertionScope();
@@ -105,8 +105,8 @@ public class ServiceToServiceAuthenticationHandlerTests
             handler,
             new()
             {
-                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
-                [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service",
+                [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceConsts.CallerIdHeaderName] = "unknown-service",
             }
         );
 
@@ -126,8 +126,8 @@ public class ServiceToServiceAuthenticationHandlerTests
             handler,
             new()
             {
-                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
-                [ServiceToServiceDefaults.CallerIdHeaderName] = new StringValues([
+                [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceConsts.CallerIdHeaderName] = new StringValues([
                     "notifications-service",
                     "another-service",
                 ]),
@@ -150,8 +150,8 @@ public class ServiceToServiceAuthenticationHandlerTests
             handler,
             new()
             {
-                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
-                [ServiceToServiceDefaults.CallerIdHeaderName] = "unknown-service",
+                [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceConsts.CallerIdHeaderName] = "unknown-service",
             }
         );
 
@@ -179,8 +179,8 @@ public class ServiceToServiceAuthenticationHandlerTests
             handler,
             new()
             {
-                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
-                [ServiceToServiceDefaults.CallerIdHeaderName] = "notifications-service",
+                [ServiceToServiceConsts.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceConsts.CallerIdHeaderName] = "notifications-service",
             }
         );
 
@@ -241,8 +241,8 @@ public class ServiceToServiceAuthenticationHandlerTests
 
         await handler.InitializeAsync(
             new(
-                ServiceToServiceDefaults.AuthenticationScheme,
-                ServiceToServiceDefaults.AuthenticationScheme,
+                ServiceToServiceConsts.AuthenticationScheme,
+                ServiceToServiceConsts.AuthenticationScheme,
                 handler.GetType()
             ),
             context

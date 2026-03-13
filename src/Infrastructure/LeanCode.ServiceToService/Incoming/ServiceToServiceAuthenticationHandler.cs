@@ -24,13 +24,13 @@ public partial class ServiceToServiceAuthenticationHandler(
     {
         if (
             !TryGetSingleHeaderValue(
-                ServiceToServiceDefaults.S2SApiKeyHeaderName,
+                ServiceToServiceConsts.S2SApiKeyHeaderName,
                 out var s2SApiKey,
                 out var multipleS2SApiKeys
             )
         )
         {
-            LogMissingOrMultipleS2SApiKeyHeader(Logger, ServiceToServiceDefaults.S2SApiKeyHeaderName);
+            LogMissingOrMultipleS2SApiKeyHeader(Logger, ServiceToServiceConsts.S2SApiKeyHeaderName);
             if (multipleS2SApiKeys)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Multiple S2S API key headers are not allowed."));
@@ -52,13 +52,13 @@ public partial class ServiceToServiceAuthenticationHandler(
 
         if (
             !TryGetSingleHeaderValue(
-                ServiceToServiceDefaults.CallerIdHeaderName,
+                ServiceToServiceConsts.CallerIdHeaderName,
                 out var callerId,
                 out var multipleCallerIds
             )
         )
         {
-            LogMissingOrMultipleCallerIdHeader(Logger, ServiceToServiceDefaults.CallerIdHeaderName);
+            LogMissingOrMultipleCallerIdHeader(Logger, ServiceToServiceConsts.CallerIdHeaderName);
             if (multipleCallerIds)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Multiple caller identity headers are not allowed."));
