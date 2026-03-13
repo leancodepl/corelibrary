@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using LeanCode.CQRS.Security;
@@ -16,11 +15,11 @@ public class ServiceToServiceCallerRolesValidatorTests
         var options = new ServiceToServiceAuthenticationOptions
         {
             S2SApiKey = "project-dev-api-key",
-            CallerRoles = new Dictionary<string, FrozenSet<string>>
+            CallerRoles = new Dictionary<string, HashSet<string>>
             {
                 ["notifications-service"] = ["system_notifications_service"],
                 ["admin-panel"] = ["system_admin_panel", "system_notifications_service"],
-            }.ToFrozenDictionary(),
+            },
         };
 
         var result = validator.Validate(name: null, options);
@@ -37,10 +36,10 @@ public class ServiceToServiceCallerRolesValidatorTests
         var options = new ServiceToServiceAuthenticationOptions
         {
             S2SApiKey = "project-dev-api-key",
-            CallerRoles = new Dictionary<string, FrozenSet<string>>
+            CallerRoles = new Dictionary<string, HashSet<string>>
             {
                 ["notifications-service"] = ["unknown-role", "system_notifications_service"],
-            }.ToFrozenDictionary(),
+            },
         };
 
         var result = validator.Validate(name: null, options);
@@ -62,10 +61,7 @@ public class ServiceToServiceCallerRolesValidatorTests
         {
             ValidateS2SApiKeyAtStartup = false,
             ValidateCallerRolesAtStartup = false,
-            CallerRoles = new Dictionary<string, FrozenSet<string>>
-            {
-                ["notifications-service"] = ["unknown-role"],
-            }.ToFrozenDictionary(),
+            CallerRoles = new Dictionary<string, HashSet<string>> { ["notifications-service"] = ["unknown-role"] },
         };
 
         var result = validator.Validate(name: null, options);
@@ -81,10 +77,10 @@ public class ServiceToServiceCallerRolesValidatorTests
         var validator = CreateValidator(["system_notifications_service"]);
         var options = new ServiceToServiceAuthenticationOptions
         {
-            CallerRoles = new Dictionary<string, FrozenSet<string>>
+            CallerRoles = new Dictionary<string, HashSet<string>>
             {
                 ["notifications-service"] = ["system_notifications_service"],
-            }.ToFrozenDictionary(),
+            },
         };
 
         var result = validator.Validate(name: null, options);

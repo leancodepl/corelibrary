@@ -1,9 +1,18 @@
+using LeanCode.ServiceToService;
+using LeanCode.ServiceToService.Incoming;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace LeanCode.ServiceToService.Incoming;
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "?",
+    "IDE0130:NamespaceDoesNotMatchFolderStructure",
+    Justification = "Extensions on AuthenticationBuilder by convention live in Microsoft.Extensions.DependencyInjection namespace.",
+    Scope = "namespace",
+    Target = "~N:Microsoft.Extensions.DependencyInjection"
+)]
+
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceToServiceAuthenticationExtensions
 {

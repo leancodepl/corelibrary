@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 
@@ -15,8 +14,7 @@ public class ServiceToServiceAuthenticationOptions : AuthenticationSchemeOptions
         "CA2227",
         Justification = "Options binding requires a public setter."
     )]
-    public FrozenDictionary<string, FrozenSet<string>> CallerRoles { get; set; } =
-        FrozenDictionary<string, FrozenSet<string>>.Empty;
+    public Dictionary<string, HashSet<string>> CallerRoles { get; set; } = [];
     public bool RejectMissingS2SApiKey { get; set; } = true;
 
     public bool RejectUnknownCallers { get; set; } = true;

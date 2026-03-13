@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using System.Security.Claims;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -169,10 +168,10 @@ public class ServiceToServiceAuthenticationHandlerTests
         {
             options.NameClaimType = "sub";
             options.RoleClaimType = "role";
-            options.CallerRoles = new Dictionary<string, FrozenSet<string>>
+            options.CallerRoles = new Dictionary<string, HashSet<string>>
             {
                 ["notifications-service"] = ["system_notifications_service", "system_admin_panel"],
-            }.ToFrozenDictionary();
+            };
         });
 
         var result = await AuthenticateAsync(
@@ -219,10 +218,10 @@ public class ServiceToServiceAuthenticationHandlerTests
             {
                 options.RoleClaimType = ClaimTypes.Role;
                 options.S2SApiKey = ValidS2SApiKey;
-                options.CallerRoles = new Dictionary<string, FrozenSet<string>>
+                options.CallerRoles = new Dictionary<string, HashSet<string>>
                 {
                     ["notifications-service"] = ["system_notifications_service"],
-                }.ToFrozenDictionary();
+                };
                 configure?.Invoke(options);
             });
 
