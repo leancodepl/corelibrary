@@ -11,6 +11,11 @@ public class ServiceToServiceAuthenticationOptions : AuthenticationSchemeOptions
     public string S2SApiKeyHeaderName { get; set; } = ServiceToServiceDefaults.S2SApiKeyHeaderName;
     public string S2SApiKey { get; set; } = "";
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA2227",
+        Justification = "Options binding requires a public setter."
+    )]
     public FrozenDictionary<string, FrozenSet<string>> CallerRoles { get; set; } =
         FrozenDictionary<string, FrozenSet<string>>.Empty;
     public bool RejectMissingS2SApiKey { get; set; } = true;
