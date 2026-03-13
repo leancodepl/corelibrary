@@ -22,11 +22,16 @@ public partial class ServiceToServiceAuthenticationHandler(
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (!TryGetNonEmptyHeaderValue(Options.S2SApiKeyHeaderName, out var s2SApiKey))
+        if (!TryGetSingleHeaderValue(Options.S2SApiKeyHeaderName, out var s2SApiKey, out var multipleS2SApiKeys))
         {
+            LogMissingOrMultipleS2SApiKeyHeader(Logger, Options.S2SApiKeyHeaderName);
+            if (multipleS2SApiKeys)
+            {
+                return Task.FromResult(AuthenticateResult.Fail("Multiple S2S API key headers are not allowed."));
+            }
+
             if (Options.RejectMissingS2SApiKey)
             {
-                LogMissingS2SApiKeyHeader(Logger, Options.S2SApiKeyHeaderName);
                 return Task.FromResult(AuthenticateResult.Fail("Missing S2S API key header."));
             }
 
@@ -39,11 +44,22 @@ public partial class ServiceToServiceAuthenticationHandler(
             return Task.FromResult(AuthenticateResult.Fail("Invalid S2S API key."));
         }
 
-        if (!TryGetNonEmptyHeaderValue(ServiceToServiceDefaults.CallerIdHeaderName, out var callerId))
+        if (
+            !TryGetSingleHeaderValue(
+                ServiceToServiceDefaults.CallerIdHeaderName,
+                out var callerId,
+                out var multipleCallerIds
+            )
+        )
         {
+            LogMissingOrMultipleCallerIdHeader(Logger, ServiceToServiceDefaults.CallerIdHeaderName);
+            if (multipleCallerIds)
+            {
+                return Task.FromResult(AuthenticateResult.Fail("Multiple caller identity headers are not allowed."));
+            }
+
             if (Options.RejectMissingCallerId)
             {
-                LogMissingCallerIdHeader(Logger, ServiceToServiceDefaults.CallerIdHeaderName);
                 return Task.FromResult(AuthenticateResult.Fail("Missing caller identity header."));
             }
 
@@ -72,18 +88,25 @@ public partial class ServiceToServiceAuthenticationHandler(
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
-    private bool TryGetNonEmptyHeaderValue(string headerName, out string value)
+    private bool TryGetSingleHeaderValue(string headerName, out string value, out bool multipleValues)
     {
+        value = string.Empty;
+        multipleValues = false;
+
         if (!Request.Headers.TryGetValue(headerName, out var headerValues))
         {
-            value = string.Empty;
             return false;
         }
 
-        var headerValue = headerValues.ToString();
+        if (headerValues.Count > 1)
+        {
+            multipleValues = true;
+            return false;
+        }
+
+        var headerValue = headerValues[0];
         if (string.IsNullOrWhiteSpace(headerValue))
         {
-            value = string.Empty;
             return false;
         }
 
@@ -99,14 +122,14 @@ public partial class ServiceToServiceAuthenticationHandler(
         return CryptographicOperations.FixedTimeEquals(leftBytes, rightBytes);
     }
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Missing {Header} S2S API key header")]
-    private static partial void LogMissingS2SApiKeyHeader(ILogger logger, string header);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Missing or multiple {Header} headers")]
+    private static partial void LogMissingOrMultipleS2SApiKeyHeader(ILogger logger, string header);
 
     [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Invalid S2S API key")]
     private static partial void LogInvalidS2SApiKey(ILogger logger);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing {Header} header")]
-    private static partial void LogMissingCallerIdHeader(ILogger logger, string header);
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Missing or multiple {Header} headers")]
+    private static partial void LogMissingOrMultipleCallerIdHeader(ILogger logger, string header);
 
     [LoggerMessage(EventId = 4, Level = LogLevel.Warning, Message = "Unknown service caller: {CallerId}")]
     private static partial void LogUnknownServiceCaller(ILogger logger, string callerId);

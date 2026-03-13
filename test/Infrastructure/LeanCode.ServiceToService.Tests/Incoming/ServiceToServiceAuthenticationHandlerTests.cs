@@ -118,6 +118,30 @@ public class ServiceToServiceAuthenticationHandlerTests
     }
 
     [Fact]
+    public async Task Returns_failure_when_multiple_caller_id_headers_are_present()
+    {
+        var handler = ConfigureServices();
+
+        var result = await AuthenticateAsync(
+            handler,
+            new()
+            {
+                [ServiceToServiceDefaults.S2SApiKeyHeaderName] = ValidS2SApiKey,
+                [ServiceToServiceDefaults.CallerIdHeaderName] = new StringValues([
+                    "notifications-service",
+                    "another-service",
+                ]),
+            }
+        );
+
+        using var _ = new AssertionScope();
+        result.None.Should().BeFalse();
+        result.Ticket.Should().BeNull();
+        result.Principal.Should().BeNull();
+        result.Failure.Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task Returns_none_for_unknown_caller_when_rejection_is_disabled()
     {
         var handler = ConfigureServices(options => options.RejectUnknownCallers = false);
