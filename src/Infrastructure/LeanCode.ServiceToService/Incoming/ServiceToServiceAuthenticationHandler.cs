@@ -96,28 +96,20 @@ public partial class ServiceToServiceAuthenticationHandler(
 
     private bool TryGetSingleHeaderValue(string headerName, out string value, out bool multipleValues)
     {
+        if (
+            Request.Headers.TryGetValue(headerName, out var headerValues)
+            && headerValues is [var headerValue]
+            && !string.IsNullOrWhiteSpace(headerValue)
+        )
+        {
+            value = headerValue;
+            multipleValues = false;
+            return true;
+        }
+
         value = string.Empty;
-        multipleValues = false;
-
-        if (!Request.Headers.TryGetValue(headerName, out var headerValues))
-        {
-            return false;
-        }
-
-        if (headerValues.Count > 1)
-        {
-            multipleValues = true;
-            return false;
-        }
-
-        var headerValue = headerValues[0];
-        if (string.IsNullOrWhiteSpace(headerValue))
-        {
-            return false;
-        }
-
-        value = headerValue;
-        return true;
+        multipleValues = headerValues is { Count: > 1 };
+        return false;
     }
 
     private static bool VerifyApiKey(string left, string right)
