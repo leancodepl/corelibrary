@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Polly" VersionOverride="8.6.6" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
     <PackageReference Include="LeanCode.Kratos.Client" />
