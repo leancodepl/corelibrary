@@ -9,5 +9,6 @@
   <ItemGroup>
     <PackageReference Include="MassTransit" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+  <PackageReference Include="Microsoft.Extensions.Configuration" VersionOverride="10.0.5" />
   </ItemGroup>
 </Project>
