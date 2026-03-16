@@ -16,6 +16,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceToServiceAuthenticationExtensions
 {
+    /// <summary>Registers S2S authentication under the module scheme.</summary>
+    /// <remarks>
+    /// Security relies on infrastructure validating and enforcing S2S caller identity headers.
+    /// </remarks>
+    /// <param name="builder">The authentication builder.</param>
+    /// <param name="configureOptions">The S2S options configuration callback.</param>
     public static AuthenticationBuilder AddServiceToService(
         this AuthenticationBuilder builder,
         Action<ServiceToServiceAuthenticationOptions> configureOptions
@@ -37,6 +43,12 @@ public static class ServiceToServiceAuthenticationExtensions
         );
     }
 
+    /// <summary>Registers a policy scheme that selects default or S2S auth.</summary>
+    /// <remarks>
+    /// The policy selects S2S authentication when <c>LNCD-S2S-Api-Key</c> header is present.
+    /// </remarks>
+    /// <param name="builder">The authentication builder.</param>
+    /// <param name="defaultScheme">The fallback scheme when S2S key header is missing.</param>
     public static AuthenticationBuilder AddServiceToServicePolicyScheme(
         this AuthenticationBuilder builder,
         string defaultScheme
