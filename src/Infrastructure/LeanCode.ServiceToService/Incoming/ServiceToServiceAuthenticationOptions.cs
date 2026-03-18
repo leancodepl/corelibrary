@@ -15,10 +15,8 @@ public class ServiceToServiceAuthenticationOptions : AuthenticationSchemeOptions
         Justification = "Options binding requires a public setter."
     )]
     public Dictionary<string, HashSet<string>> CallerRoles { get; set; } = [];
-    public bool RejectMissingS2SApiKey { get; set; } = true;
 
     public bool RejectUnknownCallers { get; set; } = true;
-    public bool RejectMissingCallerId { get; set; } = true;
     public bool ValidateS2SApiKeyAtStartup { get; set; } = true;
 
     public bool ValidateCallerRolesAtStartup { get; set; } = true;

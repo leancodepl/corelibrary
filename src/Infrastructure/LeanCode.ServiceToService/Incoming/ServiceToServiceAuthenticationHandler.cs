@@ -36,12 +36,7 @@ public partial class ServiceToServiceAuthenticationHandler(
                 return Task.FromResult(AuthenticateResult.Fail("Multiple S2S API key headers are not allowed."));
             }
 
-            if (Options.RejectMissingS2SApiKey)
-            {
-                return Task.FromResult(AuthenticateResult.Fail("Missing S2S API key header."));
-            }
-
-            return Task.FromResult(AuthenticateResult.NoResult());
+            return Task.FromResult(AuthenticateResult.Fail("Missing S2S API key header."));
         }
 
         if (!VerifyApiKey(s2SApiKey, Options.S2SApiKey))
@@ -64,12 +59,7 @@ public partial class ServiceToServiceAuthenticationHandler(
                 return Task.FromResult(AuthenticateResult.Fail("Multiple caller identity headers are not allowed."));
             }
 
-            if (Options.RejectMissingCallerId)
-            {
-                return Task.FromResult(AuthenticateResult.Fail("Missing caller identity header."));
-            }
-
-            return Task.FromResult(AuthenticateResult.NoResult());
+            return Task.FromResult(AuthenticateResult.Fail("Missing caller identity header."));
         }
 
         if (!Options.CallerRoles.TryGetValue(callerId, out var roles))
