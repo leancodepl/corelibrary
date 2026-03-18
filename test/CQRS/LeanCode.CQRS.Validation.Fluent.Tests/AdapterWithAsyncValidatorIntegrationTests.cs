@@ -48,8 +48,18 @@ public class AdapterWithAsyncValidatorIntegrationTests
             .BeEquivalentTo(
                 new ValidationError[]
                 {
-                    new(nameof(Command.Data), Validator.MinValueErrorMessage, Validator.MinValueErrorCode),
-                    new(nameof(Command.FailCustom), Validator.CustomErrorMessage, Validator.CustomErrorCode),
+                    new(
+                        nameof(Command.Data),
+                        Validator.MinValueErrorMessage,
+                        Validator.MinValueErrorCode,
+                        Validator.MinValueErrorName
+                    ),
+                    new(
+                        nameof(Command.FailCustom),
+                        Validator.CustomErrorMessage,
+                        Validator.CustomErrorCode,
+                        Validator.CustomErrorName
+                    ),
                 }
             );
     }
@@ -81,8 +91,10 @@ public class AdapterWithAsyncValidatorIntegrationTests
 
         public const int MinValueErrorCode = 1;
         public const string MinValueErrorMessage = "Min value error message";
+        public const string MinValueErrorName = nameof(MinValueErrorCode);
         public const int CustomErrorCode = 2;
         public const string CustomErrorMessage = "Custom error message";
+        public const string CustomErrorName = nameof(CustomErrorCode);
 
         public Validator()
         {
