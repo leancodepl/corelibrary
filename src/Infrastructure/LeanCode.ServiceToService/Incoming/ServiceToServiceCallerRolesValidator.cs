@@ -26,7 +26,7 @@ public class ServiceToServiceCallerRolesValidator(RoleRegistry roleRegistry)
             var unknownRoles = options
                 .CallerRoles.Values.SelectMany(roles => roles)
                 .Distinct(StringComparer.Ordinal)
-                .Where(role => !availableRoles.Contains(role))
+                .Except(availableRoles, StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
                 .ToArray();
 
