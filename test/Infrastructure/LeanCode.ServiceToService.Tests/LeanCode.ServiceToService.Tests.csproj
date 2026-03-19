@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Infrastructure/LeanCode.ServiceToService/LeanCode.ServiceToService.csproj" />
+  </ItemGroup>
+</Project>

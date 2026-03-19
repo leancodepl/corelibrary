@@ -52,6 +52,7 @@
     <Project Path="src/Infrastructure/LeanCode.PeriodicService/LeanCode.PeriodicService.csproj" />
     <Project Path="src/Infrastructure/LeanCode.SendGrid/LeanCode.SendGrid.csproj" />
     <Project Path="src/Infrastructure/LeanCode.Serialization/LeanCode.Serialization.csproj" />
+    <Project Path="src/Infrastructure/LeanCode.ServiceToService/LeanCode.ServiceToService.csproj" />
     <Project Path="src/Infrastructure/LeanCode.SmsSender/LeanCode.SmsSender.csproj" />
     <Project Path="src/Infrastructure/LeanCode.ViewRenderer.Razor/LeanCode.ViewRenderer.Razor.csproj" />
     <Project Path="src/Infrastructure/LeanCode.ViewRenderer/LeanCode.ViewRenderer.csproj" />
@@ -104,6 +105,7 @@
     <Project Path="test/Infrastructure/LeanCode.Mixpanel.Tests/LeanCode.Mixpanel.Tests.csproj" />
     <Project Path="test/Infrastructure/LeanCode.SendGrid.Tests/LeanCode.SendGrid.Tests.csproj" />
     <Project Path="test/Infrastructure/LeanCode.Serialization.Tests/LeanCode.Serialization.Tests.csproj" />
+    <Project Path="test/Infrastructure/LeanCode.ServiceToService.Tests/LeanCode.ServiceToService.Tests.csproj" />
     <Project Path="test/Infrastructure/LeanCode.SmsSender.Tests/LeanCode.SmsSender.Tests.csproj" />
     <Project Path="test/Infrastructure/LeanCode.ViewRenderer.Razor.Tests/LeanCode.ViewRenderer.Razor.Tests.csproj" />
   </Folder>
