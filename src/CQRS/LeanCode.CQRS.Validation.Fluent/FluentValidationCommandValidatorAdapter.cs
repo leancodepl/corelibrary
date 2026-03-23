@@ -32,7 +32,7 @@ public class FluentValidationCommandValidatorAdapter<TCommand> : ICommandValidat
     {
         var state = failure.CustomState as FluentValidatorErrorState;
 
-        return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0);
+        return new ValidationError(failure.PropertyName, failure.ErrorMessage, state?.ErrorCode ?? 0, state?.ErrorName);
     }
 
     private static ValidationContext<TCommand> PrepareContext(HttpContext httpContext, TCommand command)
