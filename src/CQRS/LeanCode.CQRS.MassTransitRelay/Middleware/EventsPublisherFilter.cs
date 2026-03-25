@@ -29,7 +29,10 @@ public class EventsPublisherFilter<TConsumer, TMessage> : IFilter<ConsumerConsum
 
 public static class EventsPublisherFilterExtensions
 {
-    public static void UseDomainEventsPublishing(this IConsumePipeConfigurator configurator, IServiceProvider provider)
+    public static void UseDomainEventsPublishing(
+        this IConsumerConfigurationObserverConnector configurator,
+        IServiceProvider provider
+    )
     {
         configurator.UseTypedConsumeFilter<Observer>(provider);
     }

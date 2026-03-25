@@ -8,7 +8,7 @@ namespace LeanCode.CQRS.MassTransitRelay;
 public static class TypedConsumerFilterExtensions
 {
     public static void UseTypedConsumeFilter<TObserver>(
-        this IConsumePipeConfigurator configurator,
+        this IConsumerConfigurationObserverConnector configurator,
         IServiceProvider provider
     )
         where TObserver : ScopedTypedConsumerConsumePipeSpecificationObserver, new()

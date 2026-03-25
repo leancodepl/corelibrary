@@ -37,7 +37,10 @@ public class AuditLogsFilter<TDbContext, TConsumer, TMessage> : IFilter<Consumer
 
 public static class EventsPublisherFilterExtensions
 {
-    public static void UseAuditLogs<TDbContext>(this IConsumePipeConfigurator configurator, IServiceProvider provider)
+    public static void UseAuditLogs<TDbContext>(
+        this IConsumerConfigurationObserverConnector configurator,
+        IServiceProvider provider
+    )
         where TDbContext : DbContext
     {
         configurator.UseTypedConsumeFilter<Observer<TDbContext>>(provider);

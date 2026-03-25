@@ -110,7 +110,7 @@ public sealed class ScopedFiltersTests : IAsyncLifetime, IDisposable
 
     private sealed class Filter1Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public static void UseFilter1(IConsumePipeConfigurator configurator, IServiceProvider provider)
+        public static void UseFilter1(IConsumerConfigurationObserverConnector configurator, IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Filter1Observer>(provider);
         }
@@ -152,7 +152,7 @@ public sealed class ScopedFiltersTests : IAsyncLifetime, IDisposable
 
     private sealed class Filter2Observer : ScopedTypedConsumerConsumePipeSpecificationObserver
     {
-        public static void UseFilter2(IConsumePipeConfigurator configurator, IServiceProvider provider)
+        public static void UseFilter2(IConsumerConfigurationObserverConnector configurator, IServiceProvider provider)
         {
             configurator.UseTypedConsumeFilter<Filter2Observer>(provider);
         }
