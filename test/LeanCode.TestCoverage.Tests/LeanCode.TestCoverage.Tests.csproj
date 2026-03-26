@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" />
     <ProjectReference Include="../../src/**/*.csproj" />
   </ItemGroup>
 </Project>
