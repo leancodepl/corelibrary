@@ -5,6 +5,7 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 !!! Prerequisites info
     Prior to proceeding with this tutorial, ensure you have the following requirements installed: [kubectl](https://kubernetes.io/docs/tasks/tools/),
     [K3D](https://k3d.io/#installation), [Helm](https://helm.sh/docs/intro/quickstart/), [Tilt](https://docs.tilt.dev/install.html), [Terraform](https://www.terraform.io/), [dotnet](https://dotnet.microsoft.com/en-us/download), [git](https://git-scm.com/).
+    If you want to use the Docker Compose based setup instead of the local Kubernetes cluster, install [Docker](https://docs.docker.com/get-docker/).
 
 ## Setting up the template
 
@@ -127,7 +128,6 @@ Once Tilt starts the API it should be available at: <https://projectname.local.l
 ```sh
 tilt up projectname-integration_tests
 ```
-
 ## Troubleshooting
 
 - If the `deploy.sh` script fails during the local cluster creation process, you can address the issue by either applying missing services with the `terraform apply -auto-approve` command or by re-running the `deploy.sh` script to redeploy the cluster.
@@ -143,3 +143,12 @@ tilt up projectname-integration_tests
 [Seq]: https://datalust.co/seq
 [SignalR]: https://dotnet.microsoft.com/en-us/apps/aspnet/signalr
 [Traefik]: https://traefik.io/traefik/
+
+## Docker Compose
+
+As an alternative to the local Kubernetes setup, `example-app` also ships Docker Compose files in `backend/dev/compose`. From a generated project, you can start that environment with:
+
+```sh
+cd backend/dev/compose
+docker compose up
+```
