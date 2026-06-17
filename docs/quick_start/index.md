@@ -128,6 +128,7 @@ Once Tilt starts the API it should be available at: <https://projectname.local.l
 ```sh
 tilt up projectname-integration_tests
 ```
+
 ## Troubleshooting
 
 - If the `deploy.sh` script fails during the local cluster creation process, you can address the issue by either applying missing services with the `terraform apply -auto-approve` command or by re-running the `deploy.sh` script to redeploy the cluster.
