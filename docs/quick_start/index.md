@@ -4,8 +4,8 @@ LeanCode CoreLibrary offers flexibility to suit different needs. Whether you wan
 
 !!! Prerequisites info
     Prior to proceeding with this tutorial, ensure you have the following requirements installed: [kubectl](https://kubernetes.io/docs/tasks/tools/),
-    [K3D](https://k3d.io/#installation), [Helm](https://helm.sh/docs/intro/quickstart/), [Tilt](https://docs.tilt.dev/install.html), [Terraform](https://www.terraform.io/), [dotnet](https://dotnet.microsoft.com/en-us/download), [git](https://git-scm.com/).
-    If you want to use the Docker Compose based setup instead of the local Kubernetes cluster, install [Docker](https://docs.docker.com/get-docker/).
+    [K3D](https://k3d.io/#installation), [Docker](https://docs.docker.com/get-docker/), [Helm](https://helm.sh/docs/intro/quickstart/), [Tilt](https://docs.tilt.dev/install.html), [Terraform](https://www.terraform.io/), [dotnet](https://dotnet.microsoft.com/en-us/download), [git](https://git-scm.com/), and [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
+    Azure CLI is required to access ACR with the provided certificates. If you want to use the Docker Compose based setup instead of the local Kubernetes cluster, make sure to have the Docker Compose plugin installed as well.
 
 ## Setting up the template
 
@@ -147,9 +147,11 @@ tilt up projectname-integration_tests
 
 ## Docker Compose
 
-As an alternative to the local Kubernetes setup, `example-app` also ships Docker Compose files in `backend/dev/compose`. From a generated project, you can start that environment with:
+As an alternative to the local Kubernetes setup, `exampleapp` also ships Compose files in `backend/dev/compose`. Docker is still required for the default setup because K3D runs k3s inside Docker, but this path additionally requires the Compose plugin, which may be distributed separately (for example, as a distinct `docker-compose` package on Arch Linux). From a generated project, you can start that environment with:
 
 ```sh
 cd backend/dev/compose
 docker compose up
 ```
+
+The Compose Specification is not Docker-specific, so using Podman with `podman-compose` can work too, although it requires manual tweaks to the generated Compose files.
