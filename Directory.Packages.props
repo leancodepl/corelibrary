@@ -9,6 +9,10 @@
     <!-- Do not update to v9, as it changed license that is mostly unusable for us -->
     <MassTransitVersion>8.5.10</MassTransitVersion>
 
+    <OpenTelemetryCoreVersion>1.18.0</OpenTelemetryCoreVersion>
+    <SwashbuckleVersion>10.2.3</SwashbuckleVersion>
+    <XunitVersion>4.0.1</XunitVersion>
+
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
     <CodeAnalysisVersion>5.9.0</CodeAnalysisVersion>
@@ -110,12 +114,12 @@
     <PackageVersion Include="MassTransit" Version="$(MassTransitVersion)" />
     <PackageVersion Include="MassTransit.EntityFrameworkCore" Version="$(MassTransitVersion)" />
 
-    <PackageVersion Include="OpenTelemetry" Version="1.18.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry" Version="$(OpenTelemetryCoreVersion)" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryCoreVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.18.0" />
 
-    <PackageVersion Include="Swashbuckle.AspNetCore.ReDoc" Version="10.2.3" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.ReDoc" Version="$(SwashbuckleVersion)" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="$(SwashbuckleVersion)" />
 
     <PackageVersion Include="NUlid" Version="1.7.3" />
   </ItemGroup>
@@ -125,9 +129,9 @@
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.2" />
     <PackageVersion Include="xunit.analyzers" Version="2.1.0" />
-    <PackageVersion Include="xunit.v3.assert" Version="4.0.1" />
-    <PackageVersion Include="xunit.v3.extensibility.core" Version="4.0.1" />
-    <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.1" />
+    <PackageVersion Include="xunit.v3.assert" Version="$(XunitVersion)" />
+    <PackageVersion Include="xunit.v3.extensibility.core" Version="$(XunitVersion)" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="$(XunitVersion)" />
 
     <PackageVersion Include="Microsoft.NETCore.App.Ref" Version="$(DomainModelsTestsNetCoreAppRefVersion)" />
   </ItemGroup>
