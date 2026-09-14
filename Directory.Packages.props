@@ -47,7 +47,7 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.Seq" Version="9.1.0" />
 
-    <PackageVersion Include="IdentityModel" Version="7.0.0" />
+    <PackageVersion Include="Duende.IdentityModel" Version="8.1.0" />
 
     <PackageVersion Include="FirebaseAdmin" Version="3.6.0" />
     <PackageVersion Include="Google.Cloud.Firestore" Version="4.4.0" />

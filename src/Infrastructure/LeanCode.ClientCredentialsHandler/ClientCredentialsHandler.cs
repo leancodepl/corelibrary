@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using LeanCode.Logging;
 
 namespace LeanCode.ClientCredentialsHandler;
