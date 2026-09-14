@@ -96,9 +96,9 @@ It has a `docker` folder that contains necessary configuration. You can run the 
 
 ```sh
 # For running tests with SQL Server
-$ DB=sqlserver docker-compose run test
+$ DB=sqlserver docker compose run test
 # For running tests with PostgreSQL
-$ DB=postgres docker-compose run test
+$ DB=postgres docker compose run test
 ```
 
 ### Publishing

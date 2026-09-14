@@ -3,7 +3,7 @@ resource "azurerm_postgresql_flexible_server" "server" {
   location            = var.location
 
   name       = var.postgres_server_name
-  version    = "14"
+  version    = "18"
   sku_name   = "B_Standard_B1ms"
   storage_mb = "32768"
 

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
-    <EntityFrameworkCoreVersion>11.0.0-rc.1.26425.128</EntityFrameworkCoreVersion>
+    <EntityFrameworkCoreVersion>11.0.0-rc.1.26431.118</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>11.0.0-rc.1.26425.128</AspNetCoreVersion>
     <ExtensionsVersion>11.0.0-rc.1.26425.128</ExtensionsVersion>
 
@@ -110,7 +110,7 @@
     <PackageVersion Include="ModelContextProtocol" Version="2.2.0" />
 
     <PackageVersion Include="Npgsql" Version="10.0.3" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-preview.6" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.1" />
 
     <PackageVersion Include="MassTransit" Version="$(MassTransitVersion)" />
     <PackageVersion Include="MassTransit.EntityFrameworkCore" Version="$(MassTransitVersion)" />
