@@ -15,6 +15,7 @@
 
     <!-- Do not bump these dependencies if you don't want to force users to use newer .NET Core SDK -->
     <!-- Keep the major.minor values at exactly the one listed here: https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md -->
+    <!-- TODO: Once .NET 11 is fully released, update Roslyn here if appropriate. -->
     <CodeAnalysisVersion>5.9.0</CodeAnalysisVersion>
 
     <DomainModelsTestsNetCoreAppRefVersion>11.0.0-rc.1.26425.128</DomainModelsTestsNetCoreAppRefVersion>
