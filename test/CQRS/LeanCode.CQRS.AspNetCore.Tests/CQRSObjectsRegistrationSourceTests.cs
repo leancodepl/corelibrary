@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Registration;

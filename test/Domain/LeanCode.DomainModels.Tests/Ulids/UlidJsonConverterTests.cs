@@ -23,7 +23,7 @@ SOFTWARE.
  */
 
 using System.Text.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Ulids;
 using Xunit;
 

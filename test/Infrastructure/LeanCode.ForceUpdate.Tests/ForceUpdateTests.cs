@@ -1,5 +1,5 @@
 using System.Reflection;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.AspNetCore;
 using LeanCode.CQRS.Execution;
 using LeanCode.ForceUpdate.Contracts;

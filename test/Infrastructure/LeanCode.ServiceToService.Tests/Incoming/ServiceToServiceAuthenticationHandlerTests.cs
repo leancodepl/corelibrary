@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using LeanCode.CQRS.Security;
 using LeanCode.ServiceToService.Incoming;
 using Microsoft.AspNetCore.Authentication;

@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using System.Security.Claims;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Local;

@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.OutputCaching.Registration;
 using Microsoft.AspNetCore.OutputCaching;
 using Xunit;

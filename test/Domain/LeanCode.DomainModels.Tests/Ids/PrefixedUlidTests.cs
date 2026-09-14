@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Ids;
 using LeanCode.DomainModels.Ulids;
 using Xunit;

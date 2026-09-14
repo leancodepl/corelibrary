@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Ids;
 using Xunit;
 

@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Contracts;
 using LeanCode.CQRS.Annotations;
 using LeanCode.CQRS.AspNetCore.Tests.CQRSEndpointsDataSourceTestsContracts;

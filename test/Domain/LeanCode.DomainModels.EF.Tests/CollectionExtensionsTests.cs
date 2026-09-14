@@ -1,5 +1,5 @@
 #nullable enable
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.QueryableExtensions;
 using Xunit;
 

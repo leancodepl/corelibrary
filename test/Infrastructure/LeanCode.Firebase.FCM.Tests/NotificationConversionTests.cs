@@ -1,5 +1,5 @@
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace LeanCode.Firebase.FCM.Tests;

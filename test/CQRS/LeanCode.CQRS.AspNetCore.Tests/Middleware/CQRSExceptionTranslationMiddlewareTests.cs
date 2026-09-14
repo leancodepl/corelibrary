@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Contracts;
 using LeanCode.Contracts.Validation;
 using LeanCode.CQRS.AspNetCore.Middleware;

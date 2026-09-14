@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.MassTransitRelay;
 using LeanCode.Logging;
 using LeanCode.OpenTelemetry;

@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.AspNetCore.Local.Context;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
