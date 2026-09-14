@@ -1,7 +1,9 @@
 using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace LeanCode.ForceUpdate.Contracts;
 
+[AllowUnauthorized]
 public class VersionSupport : IQuery<VersionSupportDTO>
 {
     public PlatformDTO Platform { get; set; }
