@@ -1,5 +1,5 @@
 #nullable enable
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

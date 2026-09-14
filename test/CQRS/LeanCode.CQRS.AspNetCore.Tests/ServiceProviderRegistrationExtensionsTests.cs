@@ -1,6 +1,6 @@
-using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentAssertions.Primitives;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
+using AwesomeAssertions.Primitives;
 using LeanCode.Components;
 using LeanCode.Contracts.Security;
 using LeanCode.CQRS.AspNetCore.Local;
@@ -116,21 +116,21 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
 {
     protected override string Identifier => "services";
 
-    public ServiceProviderAssertions(ServiceProvider subject)
-        : base(subject) { }
+    public ServiceProviderAssertions(ServiceProvider subject, AssertionChain assertionChain)
+        : base(subject, assertionChain) { }
 
     public void HaveService<T>(string because = "", params object[] becauseArgs)
     {
-        Execute
-            .Assertion.BecauseOf(because, becauseArgs)
+        CurrentAssertionChain
+            .BecauseOf(because, becauseArgs)
             .ForCondition(Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
     }
 
     public void HaveKeyedService<T>(object? serviceKey, string because = "", params object[] becauseArgs)
     {
-        Execute
-            .Assertion.BecauseOf(because, becauseArgs)
+        CurrentAssertionChain
+            .BecauseOf(because, becauseArgs)
             .ForCondition(
                 Subject.GetRequiredService<IServiceProviderIsKeyedService>().IsKeyedService(typeof(T), serviceKey)
             )
@@ -139,8 +139,8 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
 
     public void NotHaveService<T>(string because = "", params object[] becauseArgs)
     {
-        Execute
-            .Assertion.BecauseOf(because, becauseArgs)
+        CurrentAssertionChain
+            .BecauseOf(because, becauseArgs)
             .ForCondition(!Subject.GetRequiredService<IServiceProviderIsService>().IsService(typeof(T)))
             .FailWith("Expected to have {0} registered{reason}", typeof(T));
     }
@@ -148,5 +148,5 @@ file sealed class ServiceProviderAssertions : ReferenceTypeAssertions<ServicePro
 
 file static class ServiceProviderExtensions
 {
-    public static ServiceProviderAssertions Should(this ServiceProvider sp) => new(sp);
+    public static ServiceProviderAssertions Should(this ServiceProvider sp) => new(sp, AssertionChain.GetOrCreate());
 }

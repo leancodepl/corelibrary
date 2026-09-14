@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Npgsql.ActiveDirectory;
 using LeanCode.Test.Helpers;
 using Npgsql;

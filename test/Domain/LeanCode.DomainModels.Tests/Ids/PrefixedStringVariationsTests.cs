@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Ids;
 using Xunit;
 

@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Metrics;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.AspNetCore.Serialization;
 using LeanCode.Logging.AspNetCore;
 using LeanCode.OpenTelemetry;

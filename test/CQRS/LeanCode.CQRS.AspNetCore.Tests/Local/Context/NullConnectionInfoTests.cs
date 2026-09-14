@@ -1,5 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.AspNetCore.Local.Context;
 using NSubstitute;
 using Xunit;

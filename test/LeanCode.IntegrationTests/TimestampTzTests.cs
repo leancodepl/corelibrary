@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Model;
 using LeanCode.IntegrationTests.App;
 using Microsoft.EntityFrameworkCore;

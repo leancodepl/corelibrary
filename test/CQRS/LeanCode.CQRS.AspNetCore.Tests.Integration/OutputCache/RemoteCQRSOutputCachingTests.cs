@@ -1,5 +1,5 @@
 using System.Net;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Net.Http.Headers;
 using Xunit;
 
@@ -197,7 +197,7 @@ public class RemoteCQRSOutputCachingTests : RemoteCQRSTestsBase
         secondHeaders.Should().ContainKey(HeaderNames.Age);
         var ageValue = secondHeaders.GetValues(HeaderNames.Age).FirstOrDefault();
         ageValue.Should().NotBeNull();
-        int.Parse(ageValue!, System.Globalization.CultureInfo.InvariantCulture).Should().BeGreaterOrEqualTo(0);
+        int.Parse(ageValue!, System.Globalization.CultureInfo.InvariantCulture).Should().BeGreaterThanOrEqualTo(0);
     }
 
     [Fact]

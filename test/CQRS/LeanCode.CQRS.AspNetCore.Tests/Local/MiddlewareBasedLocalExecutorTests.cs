@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.Components;
 using LeanCode.Contracts;
 using LeanCode.CQRS.AspNetCore.Local;

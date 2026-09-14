@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.ServiceToService.Incoming;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;

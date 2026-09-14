@@ -23,7 +23,7 @@ SOFTWARE.
  */
 
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.DomainModels.Ulids;
 using Xunit;
 

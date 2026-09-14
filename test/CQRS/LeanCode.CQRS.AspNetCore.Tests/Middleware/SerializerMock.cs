@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using LeanCode.CQRS.AspNetCore.Serialization;
 
 namespace LeanCode.CQRS.AspNetCore.Tests.Middleware;
