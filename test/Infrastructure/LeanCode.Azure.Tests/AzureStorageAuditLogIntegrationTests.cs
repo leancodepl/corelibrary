@@ -200,7 +200,14 @@ public class AzureStorageAuditLogIntegrationTests
 
         var blobsFound = 0;
         var linesFound = 0;
-        await foreach (var b in containerClient.GetBlobsAsync(BlobTraits.All, BlobStates.All, $"{type}/{id}"))
+        await foreach (
+            var b in containerClient.GetBlobsAsync(
+                BlobTraits.All,
+                BlobStates.All,
+                $"{type}/{id}",
+                CancellationToken.None
+            )
+        )
         {
             var blockBlob = containerClient.GetBlobClient(b.Name);
             using var stream = new MemoryStream();

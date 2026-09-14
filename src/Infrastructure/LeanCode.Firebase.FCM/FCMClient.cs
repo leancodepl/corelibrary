@@ -62,9 +62,9 @@ public class FCMClient<TUserId>
         CancellationToken cancellationToken = default
     )
     {
-        message.Tokens = await tokenStore.GetTokensAsync(userId, cancellationToken);
+        message.Fids = await tokenStore.GetTokensAsync(userId, cancellationToken);
 
-        if (message.Tokens.Count == 0)
+        if (message.Fids.Count == 0)
         {
             logger.Information("Cannot send push to user {UserId} - no tokens", userId);
         }
@@ -73,10 +73,10 @@ public class FCMClient<TUserId>
             logger.Debug(
                 "Sending push notification to user {UserId} that targets {Count} devices",
                 userId,
-                message.Tokens.Count
+                message.Fids.Count
             );
             var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
-            await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
+            await HandleBatchResponseAsync(response, message.Fids, cancellationToken);
         }
     }
 
@@ -88,9 +88,9 @@ public class FCMClient<TUserId>
     )
     {
         var tokens = await tokenStore.GetTokensAsync(userIds, cancellationToken);
-        message.Tokens = tokens.SelectMany(t => t.Value).ToList();
+        message.Fids = tokens.SelectMany(t => t.Value).ToList();
 
-        if (message.Tokens.Count == 0)
+        if (message.Fids.Count == 0)
         {
             logger.Information("Cannot send push to users {UserIds} - no tokens", userIds);
         }
@@ -99,10 +99,10 @@ public class FCMClient<TUserId>
             logger.Debug(
                 "Sending push notification to user {Count} users, targeting {Count} devices",
                 userIds.Count,
-                message.Tokens.Count
+                message.Fids.Count
             );
             var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
-            await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
+            await HandleBatchResponseAsync(response, message.Fids, cancellationToken);
         }
     }
 
@@ -116,7 +116,7 @@ public class FCMClient<TUserId>
         logger.Debug("Sending {Count} push messages", messages.Count());
 
         var response = await messaging.SendEachAsync(messages, dryRun, cancellationToken);
-        await HandleBatchResponseAsync(response, messages.Select(m => m.Token), cancellationToken);
+        await HandleBatchResponseAsync(response, messages.Select(m => m.Fid), cancellationToken);
     }
 
     public virtual async Task SendMulticastAsync(
@@ -125,10 +125,10 @@ public class FCMClient<TUserId>
         CancellationToken cancellationToken = default
     )
     {
-        logger.Debug("Sending multicast push message to {Count} targets", message.Tokens.Count);
+        logger.Debug("Sending multicast push message to {Count} targets", message.Fids.Count);
 
         var response = await messaging.SendEachForMulticastAsync(message, dryRun, cancellationToken);
-        await HandleBatchResponseAsync(response, message.Tokens, cancellationToken);
+        await HandleBatchResponseAsync(response, message.Fids, cancellationToken);
     }
 
     private async Task HandleBatchResponseAsync(

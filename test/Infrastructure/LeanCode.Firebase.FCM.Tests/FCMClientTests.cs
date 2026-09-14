@@ -73,7 +73,7 @@ public class FCMClientTests
 
         await client.SendToUserAsync(UserId, message);
 
-        var token = Assert.Single(message.Tokens);
+        var token = Assert.Single(message.Fids);
         Assert.Equal(Token, token);
     }
 }

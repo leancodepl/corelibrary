@@ -49,7 +49,11 @@ public static class DefaultLeanCodeCredential
 
         if (config.UseManagedIdentity)
         {
-            return new ManagedIdentityCredential(config.ClientId);
+            var managedIdentityId = string.IsNullOrEmpty(config.ClientId)
+                ? ManagedIdentityId.SystemAssigned
+                : ManagedIdentityId.FromUserAssignedClientId(config.ClientId);
+
+            return new ManagedIdentityCredential(managedIdentityId);
         }
         else if (config.UseAzureCLI)
         {
