@@ -15,7 +15,7 @@ public class LongIdTests
     [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IRawTypedId<long, TestLongId>), new TestLongId());
+        Assert.IsType(typeof(IRawTypedId<long, TestLongId>), new TestLongId(), exactMatch: false);
     }
 
     [Fact]

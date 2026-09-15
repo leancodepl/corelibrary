@@ -20,7 +20,7 @@ public class RawStringIdTests
     [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawStringTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IRawStringTypedId<TestRawStringId>), new TestRawStringId());
+        Assert.IsType(typeof(IRawStringTypedId<TestRawStringId>), new TestRawStringId(), exactMatch: false);
     }
 
     [Fact]

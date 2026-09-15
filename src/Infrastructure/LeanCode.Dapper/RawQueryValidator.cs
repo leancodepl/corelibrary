@@ -6,7 +6,7 @@ namespace LeanCode.Dapper;
 
 // Inspired by QueryValidator.Fody
 // https://github.com/kamil-mrzyglod/QueryValidator.Fody/blob/master/QueryValidator.Fody/QueryValidator.Fody/ModuleWeaver.cs
-public static class RawQueryValidator
+public static partial class RawQueryValidator
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2100", Justification = "It does not. :)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA2201", Justification = "Doesn't need to be specific.")]
@@ -29,8 +29,8 @@ public static class RawQueryValidator
                 var sqlText = (string?)sql.GetValue(null) ?? "";
 
                 // https://xkcd.com/208/
-                sqlText = Regex.Replace(sqlText, "IN @[a-zA-Z]{0,}", "IN (1)", RegexOptions.Compiled);
-                sqlText = Regex.Replace(sqlText, "(?i)(?<!DECLARE\\s+)@[a-zA-Z0-9]{0,}", "''", RegexOptions.Compiled);
+                sqlText = CollectionParameterRegex().Replace(sqlText, "IN (1)");
+                sqlText = ParameterRegex().Replace(sqlText, "''");
 
                 using var command = new SqlCommand($"SET FMTONLY ON; {sqlText}", connection);
 
@@ -45,4 +45,10 @@ public static class RawQueryValidator
             }
         }
     }
+
+    [GeneratedRegex("IN @[a-zA-Z]{0,}")]
+    private static partial Regex CollectionParameterRegex();
+
+    [GeneratedRegex("(?i)(?<!DECLARE\\s+)@[a-zA-Z0-9]{0,}")]
+    private static partial Regex ParameterRegex();
 }

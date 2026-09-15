@@ -79,7 +79,11 @@ public partial class ServiceToServiceAuthenticationHandler(
         var identity = new ClaimsIdentity(claims, Scheme.Name, Options.NameClaimType, Options.RoleClaimType);
         var ticket = new AuthenticationTicket(new(identity), Scheme.Name);
 
-        LogAuthenticatedServiceCaller(Logger, callerId, string.Join(", ", roles));
+        if (Logger.IsEnabled(LogLevel.Debug))
+        {
+            var formattedRoles = string.Join(", ", roles);
+            LogAuthenticatedServiceCaller(Logger, callerId, formattedRoles);
+        }
 
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }

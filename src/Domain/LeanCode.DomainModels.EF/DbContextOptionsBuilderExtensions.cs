@@ -35,7 +35,7 @@ public static class DbContextOptionsBuilderExtensions
     }
 }
 
-internal class TypedIdDbContextOptionsExtension : IDbContextOptionsExtension
+internal sealed class TypedIdDbContextOptionsExtension : IDbContextOptionsExtension
 {
     private readonly ITypedIdStoreTypeProvider storeTypeProvider;
 

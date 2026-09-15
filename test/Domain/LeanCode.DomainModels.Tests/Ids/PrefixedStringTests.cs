@@ -21,7 +21,7 @@ public class PrefixedStringIdTests
     [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IPrefixedTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IPrefixedTypedId<TestPrefixedStringId>), new TestPrefixedStringId());
+        Assert.IsType(typeof(IPrefixedTypedId<TestPrefixedStringId>), new TestPrefixedStringId(), exactMatch: false);
     }
 
     [Fact]
