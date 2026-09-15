@@ -28,7 +28,7 @@ public static class FirebaseConfiguration
             return FirebaseApp.Create(
                 new AppOptions
                 {
-                    Credential = GoogleCredential.FromJson(cfg),
+                    Credential = CredentialFactory.FromJson<ServiceAccountCredential>(cfg).ToGoogleCredential(),
                     ProjectId = JsonNode.Parse(cfg)?["project_id"]?.ToString(),
                 },
                 name

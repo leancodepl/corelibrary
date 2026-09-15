@@ -3,7 +3,7 @@
 ![Corelibrary Build & Publish](https://github.com/leancodepl/corelibrary/workflows/Corelibrary%20Build%20&%20Publish/badge.svg)
 [![Nuget](https://img.shields.io/nuget/vpre/LeanCode.Components)](https://www.nuget.org/packages/LeanCode.Components)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https%3A%2F%2Ff.feedz.io%2Fleancode%2Fpublic%2Fshield%2FLeanCode.Components%2Flatest)](https://feedz.io/org/leancode/repository/public/packages/LeanCode.Components)
-[![codecov](https://codecov.io/gh/leancodepl/corelibrary/branch/v10.0-preview/graph/badge.svg?token=ROFNA3WTTD)](https://codecov.io/gh/leancodepl/corelibrary)
+[![codecov](https://codecov.io/gh/leancodepl/corelibrary/branch/v11.0-preview/graph/badge.svg?token=ROFNA3WTTD)](https://codecov.io/gh/leancodepl/corelibrary)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 The LeanCode Core Library is a set of helper libraries developed at [our company](https://leancode.co/) that aids our day-to-day development. Not only does it serve as a facilitator in our day-to-day coding activities, but it also encapsulates comprehensive guidelines, gathers our collective knowledge on application architecture and development best practices.
@@ -50,7 +50,7 @@ All of the libraries that are part of the CoreLib are versioned together and req
 
 ## Supported versions
 
-Here is the list of available major versions of the library (as of 2024-08-16):
+Here is the list of available major versions of the library (as of 2026-09-14):
 
 | CoreLib | .NET Core | Under development | Stable     | Notes             |
 |---------|-----------|-------------------|------------|-------------------|
@@ -65,7 +65,8 @@ Here is the list of available major versions of the library (as of 2024-08-16):
 | v8.0    | 8.0       |                   |            | Unmaintained      |
 | v8.1    | 8.0       |                   | &#x2714;   |                   |
 | v9.0    | 9.0       |                   | &#x2714;   |                   |
-| v10.0   | 10.0      | &#x2714;          |            |                   |
+| v10.0   | 10.0      |                   | &#x2714;   |                   |
+| v11.0   | 11.0      | &#x2714;          |            | Release candidate |
 
 ## Building & Testing
 
@@ -95,9 +96,9 @@ It has a `docker` folder that contains necessary configuration. You can run the 
 
 ```sh
 # For running tests with SQL Server
-$ DB=sqlserver docker-compose run test
+$ DB=sqlserver docker compose run test
 # For running tests with PostgreSQL
-$ DB=postgres docker-compose run test
+$ DB=postgres docker compose run test
 ```
 
 ### Publishing

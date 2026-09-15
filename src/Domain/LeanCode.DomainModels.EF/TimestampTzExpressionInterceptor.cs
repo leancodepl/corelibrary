@@ -9,6 +9,7 @@ public sealed class TimestampTzExpressionRewriter : ExpressionVisitor
 {
     private static readonly Type TimestampTzType = typeof(TimestampTz);
     private static readonly Type TimeZoneInfoType = typeof(TimeZoneInfo);
+    private static readonly Type DateTimeType = typeof(DateTime);
     private static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
 
     public static readonly PropertyInfo LocalTimestampWithoutOffsetProperty =
@@ -27,6 +28,10 @@ public sealed class TimestampTzExpressionRewriter : ExpressionVisitor
         DateTimeOffsetType.GetProperty(nameof(DateTimeOffset.UtcDateTime))
         ?? throw new MissingMemberException(DateTimeOffsetType.FullName, nameof(DateTimeOffset.UtcDateTime));
 
+    public static readonly MethodInfo ToUniversalTimeMethod =
+        DateTimeType.GetMethod(nameof(DateTime.ToUniversalTime), Type.EmptyTypes)
+        ?? throw new MissingMemberException(DateTimeType.FullName, nameof(DateTime.ToUniversalTime));
+
     public static readonly MethodInfo ConvertDateTimeBySystemTimeZoneIdMethod =
         TimeZoneInfoType.GetMethod(
             nameof(TimeZoneInfo.ConvertTimeBySystemTimeZoneId),
@@ -44,7 +49,15 @@ public sealed class TimestampTzExpressionRewriter : ExpressionVisitor
             return Expression.Call(
                 null,
                 ConvertDateTimeBySystemTimeZoneIdMethod,
-                Expression.Property(Expression.Property(node.Expression, UtcTimestampProperty), UtcDateTimeProperty),
+                // Npgsql 11 translates UtcDateTime as a no-op which retains DateTimeOffset as the SQL
+                // expression's CLR type. ToUniversalTime retags it as DateTime, which the outer translator requires.
+                Expression.Call(
+                    Expression.Property(
+                        Expression.Property(node.Expression, UtcTimestampProperty),
+                        UtcDateTimeProperty
+                    ),
+                    ToUniversalTimeMethod
+                ),
                 Expression.Property(node.Expression, TimeZoneIdProperty)
             );
         }

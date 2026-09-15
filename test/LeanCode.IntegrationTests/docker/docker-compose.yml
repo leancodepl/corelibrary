@@ -9,6 +9,9 @@ services:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     environment:
+      UseArtifactsOutput: "true"
+      ArtifactsPath: /tmp/corelibrary-artifacts
+      ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /app/code/test/LeanCode.IntegrationTests
       LeanCodeIntegrationTests__Database: ${DB:?}
       SqlServer__ConnectionStringBase: Server=sqlserver;User Id=sa;Password=Passw12#;Encrypt=false
       Postgres__ConnectionStringBase: Host=postgres;Username=postgres;Password=Passw12#;SSL Mode=Disable
@@ -24,6 +27,9 @@ services:
       - ../../..:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     environment:
+      UseArtifactsOutput: "true"
+      ArtifactsPath: /tmp/corelibrary-artifacts
+      ASPNETCORE_TEST_CONTENTROOT_LEANCODE_INTEGRATIONTESTS: /app/code/test/LeanCode.IntegrationTests
       LeanCodeIntegrationTests__Database: ${DB:?}
       SqlServer__ConnectionStringBase: Server=sqlserver;User Id=sa;Password=Passw12#;Encrypt=false
       Postgres__ConnectionStringBase: Host=postgres;Username=postgres;Password=Passw12#;SSL Mode=Disable
@@ -41,7 +47,7 @@ services:
       - "1433:1433"
 
   postgres:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: Passw12#
     ports:

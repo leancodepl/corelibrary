@@ -19,8 +19,6 @@
 
     <PackageReference Include="MassTransit.EntityFrameworkCore" />
 
-    <PackageReference Include="IdentityModel" />
-
     <PackageReference Include="Polly" />
     <PackageReference Include="Npgsql" />
   </ItemGroup>

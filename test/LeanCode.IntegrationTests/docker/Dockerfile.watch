@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+FROM mcr.microsoft.com/dotnet/sdk:11.0
 
-# Wait for SQL Server first
 WORKDIR /app/code/test/LeanCode.IntegrationTests
-ENTRYPOINT dotnet restore && dotnet watch test -- --explicit on
+ENTRYPOINT dotnet restore && \
+    dotnet watch test -- --explicit on

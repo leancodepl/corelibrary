@@ -20,7 +20,7 @@ public class GuidIdTests
     [SuppressMessage("?", "xUnit2007", Justification = "Cannot use `IRawTypedId` as generic parameter.")]
     public void Generated_class_implements_ITypedId()
     {
-        Assert.IsAssignableFrom(typeof(IRawTypedId<Guid, TestGuidId>), new TestGuidId());
+        Assert.IsType(typeof(IRawTypedId<Guid, TestGuidId>), new TestGuidId(), exactMatch: false);
     }
 
     [Fact]

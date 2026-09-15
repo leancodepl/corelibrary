@@ -72,7 +72,7 @@ public sealed class PushNotificationTokenStore<TDbContext, TUserId> : IPushNotif
             var dateCreatedColumn = GetTokensColumnName(nameof(PushNotificationTokenEntity<TUserId>.DateCreated));
 
             // perform an upsert using SQL merge, ensuring that given token is assigned to our user and no-one else
-            await dbContext.Database.ExecuteSqlInterpolatedAsync(
+            await dbContext.Database.ExecuteSqlAsync(
                 FormattableStringFactory.Create(
                     $$"""
                     MERGE INTO {{tokensTable}} "pt"
