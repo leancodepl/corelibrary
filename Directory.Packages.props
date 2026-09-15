@@ -4,7 +4,7 @@
 
     <EntityFrameworkCoreVersion>11.0.0-rc.1.26431.118</EntityFrameworkCoreVersion>
     <AspNetCoreVersion>11.0.0-rc.1.26425.128</AspNetCoreVersion>
-    <ExtensionsVersion>11.0.0-rc.1.26425.128</ExtensionsVersion>
+    <ExtensionsVersion>11.0.0-rc.1.26431.118</ExtensionsVersion>
 
     <!-- Do not update to v9, as it changed license that is mostly unusable for us -->
     <MassTransitVersion>8.5.10</MassTransitVersion>
